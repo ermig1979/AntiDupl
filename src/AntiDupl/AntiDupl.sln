@@ -7,6 +7,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibOpenJpeg32", "..\3rd\Lib
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibOpenJpeg64", "..\3rd\LibOpenJpeg\LibOpenJpeg64.vcproj", "{FAE14E3A-1698-4D7D-B8FB-24BE678AC2D7}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Simd32", "..\3rd\Simd\Simd32.vcproj", "{0DC3E870-30E7-45A3-982F-75EB38ED88EE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Simd64", "..\3rd\Simd\Simd64.vcproj", "{458FD02B-844E-4263-9F50-8F798A767627}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +47,30 @@ Global
 		{FAE14E3A-1698-4D7D-B8FB-24BE678AC2D7}.Release|Win32.ActiveCfg = Release|x64
 		{FAE14E3A-1698-4D7D-B8FB-24BE678AC2D7}.Release|x64.ActiveCfg = Release|x64
 		{FAE14E3A-1698-4D7D-B8FB-24BE678AC2D7}.Release|x64.Build.0 = Release|x64
+		{0DC3E870-30E7-45A3-982F-75EB38ED88EE}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{0DC3E870-30E7-45A3-982F-75EB38ED88EE}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{0DC3E870-30E7-45A3-982F-75EB38ED88EE}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{0DC3E870-30E7-45A3-982F-75EB38ED88EE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0DC3E870-30E7-45A3-982F-75EB38ED88EE}.Debug|Win32.Build.0 = Debug|Win32
+		{0DC3E870-30E7-45A3-982F-75EB38ED88EE}.Debug|x64.ActiveCfg = Debug|Win32
+		{0DC3E870-30E7-45A3-982F-75EB38ED88EE}.Release|Any CPU.ActiveCfg = Release|Win32
+		{0DC3E870-30E7-45A3-982F-75EB38ED88EE}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{0DC3E870-30E7-45A3-982F-75EB38ED88EE}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{0DC3E870-30E7-45A3-982F-75EB38ED88EE}.Release|Win32.ActiveCfg = Release|Win32
+		{0DC3E870-30E7-45A3-982F-75EB38ED88EE}.Release|Win32.Build.0 = Release|Win32
+		{0DC3E870-30E7-45A3-982F-75EB38ED88EE}.Release|x64.ActiveCfg = Release|Win32
+		{458FD02B-844E-4263-9F50-8F798A767627}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{458FD02B-844E-4263-9F50-8F798A767627}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{458FD02B-844E-4263-9F50-8F798A767627}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{458FD02B-844E-4263-9F50-8F798A767627}.Debug|Win32.ActiveCfg = Debug|x64
+		{458FD02B-844E-4263-9F50-8F798A767627}.Debug|x64.ActiveCfg = Debug|x64
+		{458FD02B-844E-4263-9F50-8F798A767627}.Debug|x64.Build.0 = Debug|x64
+		{458FD02B-844E-4263-9F50-8F798A767627}.Release|Any CPU.ActiveCfg = Release|x64
+		{458FD02B-844E-4263-9F50-8F798A767627}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{458FD02B-844E-4263-9F50-8F798A767627}.Release|Mixed Platforms.Build.0 = Release|x64
+		{458FD02B-844E-4263-9F50-8F798A767627}.Release|Win32.ActiveCfg = Release|x64
+		{458FD02B-844E-4263-9F50-8F798A767627}.Release|x64.ActiveCfg = Release|x64
+		{458FD02B-844E-4263-9F50-8F798A767627}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,5 +78,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{8F84A429-1AFD-4E16-A52D-65A120D9B561} = {6AAA79AF-45A0-4BDD-AD8B-F84EC0601A14}
 		{FAE14E3A-1698-4D7D-B8FB-24BE678AC2D7} = {6AAA79AF-45A0-4BDD-AD8B-F84EC0601A14}
+		{0DC3E870-30E7-45A3-982F-75EB38ED88EE} = {6AAA79AF-45A0-4BDD-AD8B-F84EC0601A14}
+		{458FD02B-844E-4263-9F50-8F798A767627} = {6AAA79AF-45A0-4BDD-AD8B-F84EC0601A14}
 	EndGlobalSection
 EndGlobal
