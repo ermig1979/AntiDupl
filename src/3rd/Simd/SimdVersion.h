@@ -34,7 +34,7 @@
 
 namespace Simd
 {
-	const int VERSION = 24;
+	const int VERSION = 26;
 }
 
 #endif//__SimdVersion_h__
