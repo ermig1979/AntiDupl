@@ -1,0 +1,129 @@
+/*
+* AntiDupl Dynamic-Link Library.
+*
+* Copyright (c) 2002-2013 Yermalayeu Ihar.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy 
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+* copies of the Software, and to permit persons to whom the Software is 
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in 
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+*/
+#include "adOptions.h"
+#include "adImageData.h"
+
+namespace ad
+{
+    //-------------------------------------------------------------------------
+    void TImageData::Init()
+    {
+        ratio = 0;
+        valid = false;
+        index = AD_IS_NOT_EXIST;
+        defect = AD_DEFECT_UNDEFINE;
+        crc32 = 0;
+        data = NULL;
+        m_copy = false;
+        hGlobal = NULL;
+    }
+
+    TImageData::~TImageData()
+    {
+        if(m_copy)
+        {
+            delete data;
+        }
+        FreeGlobal();
+    }
+
+    TImageData& TImageData::operator = (const TImageData& imageData)
+    {
+        *(static_cast<TImageInfo*>(this)) = imageData;
+        ratio = imageData.ratio;
+        valid = imageData.valid;
+        defect = imageData.defect;
+        if(m_copy && imageData.data->side != data->side)
+        {
+            delete data;
+            m_copy = false;
+        }
+        if(!m_copy)
+        {
+            data = new TPixelData(*imageData.data);
+            m_copy = true;
+        }
+        else
+        {
+            memcpy(data->fast, imageData.data->fast, data->full);
+        }
+        return *this;
+    }
+
+    bool TImageData::PixelDataFillingNeed(TOptions *pOptions) const
+    {
+        return (pOptions->check.checkOnEquality == TRUE || pOptions->check.checkOnDefect == TRUE) && 
+            !data->filled && type != AD_IMAGE_NONE;
+    }
+
+    bool TImageData::DefectCheckingNeed(TOptions *pOptions) const
+    {
+        return pOptions->check.checkOnDefect == TRUE && defect == AD_DEFECT_UNDEFINE;
+    }
+
+    void TImageData::FillOther(TOptions *pOptions)
+    {
+        if(type > AD_IMAGE_NONE)
+        {
+            data->FillFast(pOptions->GetIgnoreWidthFrame());
+
+            const int resolution = pOptions->advanced.ratioResolution;
+            if(width > height)
+            {
+                ratio = height*resolution/width - resolution;
+            }
+            else
+            {
+                ratio = resolution - width*resolution/height;
+            }
+
+            valid = pOptions->validPaths.IsHasSubPath(path) != AD_IS_NOT_EXIST || 
+                pOptions->validPaths.IsHasPath(path) != AD_IS_NOT_EXIST;
+
+            index = std::min(pOptions->searchPaths.IsHasSubPath(path), pOptions->searchPaths.IsHasPath(path));
+        }
+    }
+
+    void TImageData::Turn(TUInt8 *pBuffer)
+    {
+        std::swap(width, height);
+        ratio = -ratio;
+        data->Turn(pBuffer);
+    }
+
+    void TImageData::Mirror(TUInt8 *pBuffer)
+    {
+        data->Mirror(pBuffer);
+    }
+    
+    void TImageData::FreeGlobal()
+    {
+        if(hGlobal)
+        {
+            ::GlobalFree(hGlobal);
+            hGlobal = NULL;
+        }
+    }
+}
+
