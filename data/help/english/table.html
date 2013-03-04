@@ -1,0 +1,227 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html" />
+<title>Table of Results</title>
+</head>
+<body><table width=800><tr><td>
+
+<h3>Table of Results</h3>
+
+<p align="justify">
+Table of Results is placed in the right side of main window for <b>vertical</b> orientation of results:
+</p>
+
+<img src="files/MainForm.png" />
+
+<p align="justify">
+or in the bottom side of main window for <b>horizontal</b> orientation of results:
+</p>
+
+<img src="files/MainForm2.png" />
+
+<p align="justify">
+Switching the orientation is carried out using the item <b>View - Orientation</b> of <a href="index.html?page=menu.html" target="_top">Main Menu</a>.
+The Table of Results is designed for displaying and processing of results of the program. 
+You can navigate between the results with using the mouse and standard keyboard
+(<b>Up</b>, <b>Down</b>, <b>Page Up</b>, <b>Page Down</b>, <b>Home</b> and <b>End</b>) and its combinations (<b>Control+A</b>).
+This picture (s) of the current results will be displayed in the <a href="index.html?page=preview.html" target="_top">Preview Panel</a>, 
+and the number of the current results, the number of selected results and their total number will be displayed in the 
+<a href="index.html?page=status.html" target="_top">Status Bar</a>.
+</p>
+
+<p align="justify">
+Table of results in the vertical and the horizontal orientation includes the following columns:
+</p>
+
+<ul>
+ <li><p align="justify">
+<b>Type</b> - this column displayed type result
+This can be: 
+ <ul type="circle">
+  <li><p align="justify">
+<img src="../../resources/images/DuplPairVerticalIcon.img" /> or <img src="../../resources/images/DuplPairHorizontalIcon.img" /> 
+ - <b>Duplicate pair of pictures</b>. For vertical orientation of results this type is displayed in the form of a double line.
+  </p></li>
+  <li><p align="justify">
+<img src="../../resources/images/DefectIcon.img" /> - <b>Defect picture</b>.
+  </p></li>
+ </ul>
+ </p></li>
+ <li><p align="justify">
+<b>Group</b> - searched pairs of duplicate images can be combined into groups with similar results.
+This column displays the number of such groups. 
+ </p></li>
+ <li><p align="justify">
+<b>Difference</b> - it displays the percentage mean-square difference of content of pictures of duplicate pair.
+If the images are fully identical, the difference is shown in green.
+ </p></li>
+ <li><p align="justify">
+<b>Defect Type</b> - it shows the type of defect images. 
+The program can find defects in the following types:
+ <ul type="circle">
+  <li><p align="justify">
+<img src="../../resources/images/UnknownDefectIcon.img" /> - <b>Unknown Defect</b>. 
+This means that the program failed to correctly open the file.
+  </p></li>
+  <li><p align="justify">
+<img src="../../resources/images/JpegEndMarkerIsAbsentIcon.img" /> - <b>There is no marker of the end of JPEG file</b>.
+How understandable from the names given type defect arises, if JPEG file not finish till end.
+This may happen, for example, when downloading from the internet with poor quality communication.
+  </p></li>
+ </ul>
+ </p></li>
+ <li><p align="justify">
+<b>Transformation</b> - it is a type of transformation that you need to make over the top/left image 
+that it would coincide with the bottom/rifght image.
+Information of this column is relevant when searching for mirroring and rotate the image.
+There are eight types of transformation:
+ <ul type="circle">
+  <li><p align="justify">
+<img src="../../resources/images/Turn_0_Icon.img" /> - <b>Original</b>. 
+A transformation is not required for the coincidence.
+  </p></li>
+  <li><p align="justify">
+<img src="../../resources/images/Turn_90_Icon.img" /> - <b>Rotated 90°</b>.
+Here and below all the turns are measured in a direction counter-clockwise. 
+  </p></li>
+  <li><p align="justify">
+<img src="../../resources/images/Turn_180_Icon.img" /> - <b>Rotated 180°</b>. 
+  </p></li>
+  <li><p align="justify">
+<img src="../../resources/images/Turn_270_Icon.img" /> - <b>Rotated 270°</b>. 
+  </p></li>
+  <li><p align="justify">
+<img src="../../resources/images/MirrorTurn_0_Icon.img" /> - <b>Horizontal mirror</b>. 
+  </p></li>
+  <li><p align="justify">
+<img src="../../resources/images/MirrorTurn_90_Icon.img" /> - <b>Horizontal mirror and rotated 90°</b>. 
+  </p></li>
+  <li><p align="justify">
+<img src="../../resources/images/MirrorTurn_180_Icon.img" /> - <b>Horizontal mirror and rotated 180°</b> (Vertical mirror). 
+  </p></li>
+  <li><p align="justify">
+<img src="../../resources/images/MirrorTurn_270_Icon.img" /> - <b>Horizontal mirror and rotated 270°</b>. 
+  </p></li>
+ </ul>
+ </p></li>
+ <li><p align="justify">
+<b>Recommendation</b> - it displays the action that the computer recommends the user to perform. 
+The recommendation is given when possible to unambiguously determine which image of a pair is better or at least no worse.
+In the case of completely identical images, there is some uncertainty with the choice of pictures to delete.
+To avoid this uncertainty you can define <b>Delete Paths</b> in the <a href="index.html?page=paths.html" target="_top">Paths Window</a>.
+Then the computer ceteris paribus would recommend removing the picture of those paths. 
+If, however, the image in <b>Delete Paths</b> will be with the best quality, they will be encouraged to move (rename) it from there. 
+The recommendation may has next values:
+ <ul type="circle">
+  <li><p align="justify">
+<img src="../../resources/images/DeleteDefectIcon.img" /> - <b>Delete picture</b>. 
+  </p></li>
+  <li><p align="justify">
+<img src="../../resources/images/DeleteFirstVerticalIcon.img" /> or 
+<img src="../../resources/images/DeleteFirstHorizontalIcon.img" /> - <b>Delete first picture</b>.
+  </p></li>
+  <li><p align="justify">
+<img src="../../resources/images/DeleteSecondVerticalIcon.img" /> or 
+<img src="../../resources/images/DeleteSecondHorizontalIcon.img" /> - <b>Delete second picture</b>. 
+  </p></li>
+  <li><p align="justify">
+<img src="../../resources/images/RenameFirstToSecondVerticalIcon.img" /> or 
+<img src="../../resources/images/RenameFirstToSecondHorizontalIcon.img" /> - <b>Replace second picture by the first picture</b>. 
+  </p></li>
+  <li><p align="justify">
+<img src="../../resources/images/RenameSecondToFirstVerticalIcon.img" /> or 
+<img src="../../resources/images/RenameSecondToFirstHorizontalIcon.img" /> - <b>Replace first picture by the second picture</b>. 
+  </p></li>
+ </ul>
+</ul>
+
+<p align="justify">
+Next columns are enabled only for vertical orientation (the cells of the columns will be doubled in the case of duplicate pair)
+</p>
+
+<ul>
+ <li><p align="justify">
+<b>Name</b> - it contains the file name of the picture. 
+ </p></li>
+ <li><p align="justify">
+<b>In folder</b> - it displays the directory in which the image is located.  
+ </p></li>
+ <li><p align="justify">
+<b>Dimmensions</b> - it contains picture size (width and height).
+ </p></li>
+ <li><p align="justify">
+<b>Image Type</b> - it displays image file format (<b>BMP</b>, <b>GIF</b>, <b>JPEG</b>, <b>PNG</b>, <b>TIFF</b>, <b>EMF</b>, <b>WMF</b>, <b>EXIF</b>, <b>ICON</b>, <b>JP2</b> or <b>PSD</b>).
+ </p></li>
+ <li><p align="justify">
+<b>Size</b> - it contains size of the picture file.
+ </p></li>
+ <li><p align="justify">
+<b>Date modified</b> - it contains date of last change the image file.
+ </p></li>
+</ul>
+
+<p align="justify">
+And these columns are enabled only for horizontal orientation:
+</p>
+
+<ul>
+ <li><p align="justify">
+<b>1: Name</b> - it contains the file name of the first picture. 
+ </p></li>
+ <li><p align="justify">
+<b>1: In folder</b> - it displays the directory in which the first image is located.  
+ </p></li>
+ <li><p align="justify">
+<b>1: Dimmensions</b> - it contains first picture size (width and height).
+ </p></li>
+ <li><p align="justify">
+<b>1: Image Type</b> - it displays first image file format (<b>BMP</b>, <b>GIF</b>, <b>JPEG</b>, <b>PNG</b>, <b>TIFF</b>, <b>EMF</b>, <b>WMF</b>, <b>EXIF</b>, <b>ICON</b>, <b>JP2</b> or <b>PSD</b>).
+ </p></li>
+ <li><p align="justify">
+<b>1: Size</b> - it contains size of the first picture file.
+ </p></li>
+ <li><p align="justify">
+<b>1: Date modified</b> - it contains date of last change the first image file.
+ </p></li>
+ <li><p align="justify">
+<b>2: Name</b> - it contains the file name of the second picture. 
+ </p></li>
+ <li><p align="justify">
+<b>2: In folder</b> - it displays the directory in which the second image is located.  
+ </p></li>
+ <li><p align="justify">
+<b>2: Dimmensions</b> - it contains second picture size (width and height).
+ </p></li>
+ <li><p align="justify">
+<b>2: Image Type</b> - it displays the second image file format (<b>BMP</b>, <b>GIF</b>, <b>JPEG</b>, <b>PNG</b>, <b>TIFF</b>, <b>EMF</b>, <b>WMF</b>, <b>EXIF</b>, <b>ICON</b>, <b>JP2</b> or <b>PSD</b>).
+ </p></li>
+ <li><p align="justify">
+<b>2: Size</b> - it contains size of the second picture file.
+ </p></li>
+ <li><p align="justify">
+<b>2: Date modified</b> - it contains date of last change the second image file.
+ </p></li>
+</ul>
+
+<p align="justify">
+Note that if a duplicate images have of different type, then this information is highlighted in red.
+Also smaller image dimensions and smaller file size are highlighted in red.
+</p>
+
+<p align="justify">
+The visibility of table columns you can customize in the item <b>View - Select Columns</b> of the <a href="index.html?page=menu.html" target="_top">Main Menu</a>. 
+Their width and order can be easily adjusted by using the mouse.
+If you click on the column header, then the table will be sorted by content of the column.
+When you click here again, sorting will be performed in the opposite direction.
+Note that the column on which sorting was carried out and its direction are stored, and re-search results will be sorted the same way.
+</p>
+
+<p align="justify">
+If the user clicks the right mouse button on the table of results, 
+it will cause a <a href="index.html?page=context.html" target="_top">Context Menu</a> where you can process the selected results. 
+Note that the functionality of the context menu are duplicated on the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>. 
+As you press <b>Control+C</b>, the selected row in the result will be copied to the clipboard.
+</p>
+
+</td></tr></table></body>
+</html>
