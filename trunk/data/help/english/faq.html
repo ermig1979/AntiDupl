@@ -1,0 +1,143 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html" />
+<title>Frequently Asked Questions</title>
+</head>
+<body><table width=800><tr><td>
+
+<h3>Frequently Asked Questions</h3>
+
+<p align="justify">
+This section provides answers to frequently asked questions.
+</p>
+
+<ul>
+ <li><p align="justify"><i>
+The program created a huge list of duplicates after checking.
+They are almost all exactly the same. 
+How do I remove them faster?
+ </i></p><p align="justify">
+I recommend you the following sequence of actions:
+ <ul type = "circle">
+  <li><p align="justify">
+Select all the results by pressing <b>Ctrl-A</b>.
+  </p></li>
+  <li><p align="justify">
+Click the button <b>Perform the recommendations of the computer</b> <img src="../../resources/images/PerformHintButton.img" />  on the 
+<a href="index.html?page=toolbar.html" target="_top">Toolbar</a>. 
+  </p></li>
+ </ul>
+ </p></li>
+ <li><p align="justify"><i>
+I gathered a large collection of pictures and periodically add new there. 
+After each addition of pictures I run your program to avoid duplicates.
+Pictures are scanned every time again a fairly long time. 
+How can I speed up this process?
+ </i></p><p align="justify">
+First, check whether you have enabled option <b>Remember images</b>,
+which is located on the <b>Advanced</b> tag of the <a href="index.html?page=options.html" target="_top">Options Window</a>. 
+It significantly accelerates the process of re-search.
+In addition, folders with images that you previously checked, and which do not contain new pictures
+you must add to the list located on the <b>Valid</b> tag of the <a href="index.html?page=paths.html" target="_top">Paths Window</a>.
+Then these pictures will not be compared with each other, which also accelerates the time of re-search.
+ </p></li>
+ <li><p align="justify"><i>
+The files with GIF-animation have a many frames. How do you compare these files? 
+ </i></p><p align="justify">
+The comparison is performed on the first frame of the sequence.
+ </p></li>
+ <li><p align="justify"><i>
+I was completely satisfied by the functionality of the program.
+But I do not like the icons that are used in the program.
+Are you going to improve the interface?
+ </i></p><p align="justify">
+Unfortunately, I am a programmer, but not a designer.
+I was painting icons as I could.
+If you have the ability and desire, you can replace the standard icons.
+They are located in the directory <b>data\resources\images</b> in the files with the extension <b>*.img</b>.
+In fact, this is standard PNG-images.
+If you manage to create a better version of the icons then send it to me and I will be pleased to place them on the site.
+ </p></li>
+ <li><p align="justify"><i>
+I am a programmer too and would like to ask what language is written your program. 
+ </i></p><p align="justify">
+The core program is written in C++, its shell in C#.
+More information about the history of its creation can be read <a href="index.html?page=history.html" target="_top">here</a>.
+ </p></li>
+ <li><p align="justify"><i>
+Why, when I add drive D to the search path, no search is performed? 
+ </i></p><p align="justify">
+In Windows disks are system directories. 
+Therefore, in order that a program can implement a search there, you must enable the option <b>Search system folders/files</b>,
+which is located on the tab <b>Search</b> in <a href="index.html?page=options.html" target="_top">Options Window</a>.
+ </p></li>
+ <li><p align="justify"><i>
+How does the program makes recommendations to remove duplicate files? 
+ </i></p><p align="justify">
+If a duplicate pair of images in the same format, but the difference is less than half of the threshold image difference,
+the program recommends to remove the image, which has the smaller the size of picture and/or smaller file size.
+If the program will meet two identical images, then it will recommend to remove the one
+which is located in the <a href="index.html?page=paths.html" target="_top">Remove Paths</a>.
+If a picture with better quality will be in the directory to delete, the program recommends move it to place of picture in the normal directory.
+ </p></li>
+ <li><p align="justify"><i>
+Why you did not translate the program into my native language? 
+ </i></p><p align="justify">
+Unfortunately, I know only Russian and English.
+However, you have the opportunity to translate the program into their native language. 
+To do so, you need create your own version of the file string resources in xml-format and put it to the directory <b>data\resources\strings</b>.
+If you send me your translation, then I will be able to include it into the standard version of the program and place on my site.  
+ </p></li>
+ <li><p align="justify"><i>
+How do I get a list of the results in text format? 
+ </i></p><p align="justify">
+Select list of results with using key combination <b>Ctrl-A</b>.
+Copy to clipboard with using key combination <b>Ctrl-C</b>.
+Then copy it into your text file with using key combination <b>Ctrl-V</b>.
+ </p></li>
+ <li><p align="justify"><i>
+How do I check whether has this picture duplicates in the given directory? 
+ </i></p><p align="justify">
+You need to do the following steps:
+ <ul type = "circle">
+  <li><p align="justify">
+Add the image and the directory in which you want to perform search, into <a href="index.html?page=paths.html" target="_top">paths</a> <b>Search</b>.
+  </p></li>
+  <li><p align="justify">
+Disable the option <b>Check - Compare images from one path with one another</b>, placed into <a href="index.html?page=options.html" target="_top">search options</a>. 
+  </p></li>
+  <li><p align="justify">
+Start the search.
+  </p></li>
+ </ul>
+ </p></li>
+ <li><p align="justify"><i>
+Could you briefly describe the algorithm for image comparison, which is used in your program? 
+ </i></p><p align="justify">
+In simplified form, my algorithm of image comparison comprises the following steps:
+ <ul type = "circle">
+  <li><p align="justify">
+Resizing all the images to the same size (by default, this size is 32x32).
+  </p></li>
+  <li><p align="justify">
+The discarding the color information (conversion to grayscale image).
+  </p></li>
+  <li><p align="justify">
+The finding of mean square differences for each pair of reduced grayscale images.
+  </p></li>
+  <li><p align="justify">
+Comparison of the mean square difference with threshold - if the difference is less than the threshold, it is supposed that these images are similar.
+  </p></li>
+ </ul>
+ </p></li>
+</ul>
+
+<p align="justify">
+If you do not find in this list answers to your questions, it is recommended to look at
+<a href="http://antidupl.narod.ru/english/index.html" target="_top">site</a> of the program, as well as its
+<a href="http://antidupl.livejournal.com" target="_top">journal</a> (in Russian).
+There you can ask your question, and I will answer it as quickly as possible.
+</p>
+
+</td></tr></table></body>
+</html>
