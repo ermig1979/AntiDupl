@@ -95,7 +95,6 @@
     <Compile Include="CoreImageInfo.cs" />
     <Compile Include="CoreDll.cs" />
     <Compile Include="CoreResult.cs" />
-    <Compile Include="CoreRevision.cs" />
     <Compile Include="CoreSearchOptions.cs" />
     <Compile Include="CoreStatistic.cs" />
     <Compile Include="CoreStatus.cs" />

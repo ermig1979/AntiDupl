@@ -130,7 +130,7 @@ extern "C"
         AD_ERROR_INVALID_ACTION_ENABLE_TYPE = 27,
         AD_ERROR_INVALID_PARAMETER_COMBINATION = 28,
         AD_ERROR_INVALID_RENAME_CURRENT_TYPE = 29,
-        AD_ERROR_INVALID_INFO_TYPE = 30,
+        AD_ERROR_INVALID_VERSION_TYPE = 30,
 		AD_ERROR_INVALID_GROUP_ID = 31,
 		AD_ERROR_INVALID_SELECTION_TYPE = 32
 	};
@@ -334,11 +334,12 @@ extern "C"
         AD_THREAD_TYPE_SIZE
     };
 
-	enum adInfoType : adInt32
+	enum adVersionType : adInt32
 	{
-		AD_INFO_VERSION = 0,
-		AD_INFO_REVISION = 1,
-		AD_INFO_SIZE
+		AD_VERSION_TYPE_ANTIDUPL = 0,
+		AD_VERSION_TYPE_SIMD = 1,
+		AD_VERSION_TYPE_OPENJPEG = 2,
+		AD_VERSION_TYPE_SIZE
 	};
 
 	enum adSelectionType : adInt32
@@ -355,18 +356,12 @@ extern "C"
 
     struct adVersion
     {
-        adUInt32 major;
-        adUInt32 minor;
-        adUInt32 release;
+        adInt32 major;
+        adInt32 minor;
+        adInt32 release;
+		adInt32 revision;
     };
     typedef adVersion* adVersionPtr;
-
-	struct adRevision
-	{
-		adUInt32 antidupl;
-		adUInt32 common;
-	};
-	typedef adRevision* adRevisionPtr;
 
     struct adSearchOptions
     {
@@ -518,7 +513,7 @@ extern "C"
 
     /*------------Functions-------------------------------------------------------*/
 
-    DLLAPI adError adInfoGet(adInfoType infoType, void* pInfo);
+    DLLAPI adError adVersionGet(adVersionType versionType, adVersionPtr pVersion);
 
     DLLAPI adHandle adCreate();
     DLLAPI adError adRelease(adHandle handle);

@@ -28,9 +28,7 @@
 
 namespace ad
 {
-	void GetVersion(adVersionPtr pVersion);
-
-	void GetRevision(adRevisionPtr pRevision);
+	bool GetVersion(adVersionType versionType, adVersionPtr pVersion);
 }
 #endif//__adInfo_h__
 
