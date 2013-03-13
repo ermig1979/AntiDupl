@@ -48,7 +48,7 @@ namespace AntiDupl.NET
             {
                 throw new Exception("Can't load core library!");
             }
-            if (Version.Compatible(GetVersion()))
+            if (Version.Compatible(GetVersion(CoreDll.VersionType.AntiDupl)))
             {
                 m_handle = m_dll.adCreate();
             }
@@ -85,24 +85,14 @@ namespace AntiDupl.NET
             GC.SuppressFinalize(this);
         }
 
-        public CoreVersion GetVersion()
+        public CoreVersion GetVersion(CoreDll.VersionType versionType)
         {
             CoreDll.adVersion[] version = new CoreDll.adVersion[1];
-            if(m_dll.adInfoGet(CoreDll.InfoType.Version, Marshal.UnsafeAddrOfPinnedArrayElement(version, 0)) == CoreDll.Error.Ok)
+            if (m_dll.adVersionGet(versionType, Marshal.UnsafeAddrOfPinnedArrayElement(version, 0)) == CoreDll.Error.Ok)
             {
                 return new CoreVersion(ref version[0]);
             }
             return null; 
-        }
-
-        public CoreRevision GetRevision()
-        {
-            CoreDll.adRevision[] revision = new CoreDll.adRevision[1];
-            if (m_dll.adInfoGet(CoreDll.InfoType.Revision, Marshal.UnsafeAddrOfPinnedArrayElement(revision, 0)) == CoreDll.Error.Ok)
-            {
-                return new CoreRevision(ref revision[0]);
-            }
-            return null;
         }
 
         public bool IsInited()

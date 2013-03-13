@@ -29,25 +29,48 @@ namespace AntiDupl.NET
 {
     public class CoreVersion
     {
-        public UInt32 major;
-        public UInt32 minor;
-        public UInt32 release;
+        public Int32 major;
+        public Int32 minor;
+        public Int32 release;
+        public Int32 revision;
 
         public CoreVersion(ref CoreDll.adVersion adVersion)
         {
             major = adVersion.major;
             minor = adVersion.minor;
             release = adVersion.release;
+            revision = adVersion.revision;
         }
         
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(major.ToString());
-            builder.Append(".");
-            builder.Append(minor.ToString());
-            builder.Append(".");
-            builder.Append(release.ToString());
+            bool already = false;
+            if (major >= 0)
+            {
+                builder.Append(major.ToString());
+                already = true;
+            }
+            if (minor >= 0)
+            {
+                if(already)
+                    builder.Append(".");
+                builder.Append(minor.ToString());
+                already = true;
+            }
+            if (release >= 0)
+            {
+                if (already)
+                    builder.Append(".");
+                builder.Append(release.ToString());
+                already = true;
+            }
+            if(revision >= 0)
+            {
+                if (already)
+                    builder.Append(".");
+                builder.Append(revision.ToString());
+            }
             return builder.ToString();
         }
     }

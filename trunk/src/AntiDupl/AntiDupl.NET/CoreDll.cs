@@ -262,10 +262,11 @@ namespace AntiDupl.NET
             Compare = 2
         }
 
-        public enum InfoType : int
+        public enum VersionType : int
         {
-            Version = 0,
-            Revision = 1
+            AntiDupl = 0,
+            Simd = 1,
+            OpenJpeg = 2,
         }
 
         public enum SelectionType : int
@@ -282,16 +283,10 @@ namespace AntiDupl.NET
         [StructLayout(LayoutKind.Sequential)]
         public struct adVersion
         {
-            public uint major;
-            public uint minor;
-            public uint release;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct adRevision
-        {
-            public uint antidupl;
-            public uint common;
+            public int major;
+            public int minor;
+            public int release;
+            public int revision;
         }
         
         [StructLayout(LayoutKind.Sequential)]
@@ -415,9 +410,9 @@ namespace AntiDupl.NET
         //-------------------API functions:------------------------------------
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
-        public delegate Error adInfoGet_fn(InfoType infoType, IntPtr pInfo);
-        [DynamicModuleApi] 
-        public adInfoGet_fn adInfoGet = null;
+        public delegate Error adVersionGet_fn(VersionType versionType, IntPtr pVersion);
+        [DynamicModuleApi]
+        public adVersionGet_fn adVersionGet = null;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
         public delegate IntPtr adCreate_fn();

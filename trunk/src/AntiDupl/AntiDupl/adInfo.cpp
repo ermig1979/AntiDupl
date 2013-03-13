@@ -21,29 +21,50 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
+#define OPJ_STATIC
+#include "LibOpenJpeg/openjpeg.h"
+
 #include "adExternal.h"
 #include "adInfo.h"
 
 namespace ad
 {
-	void GetVersion(adVersionPtr pVersion)
+	static void ParseVersion(const char * string, adVersionPtr pVersion)
 	{
-		std::string string = VERSION;
-		for(size_t i = 0; i < string.size(); ++i)
+		std::string buffer(string);
+		for(size_t i = 0; i < buffer.size(); ++i)
 		{
-			if(string[i] == '.')
-				string[i] = ' ';
+			if(buffer[i] == '.')
+				buffer[i] = ' ';
 		}
-		std::stringstream stream(string);
+		std::stringstream stream(buffer);
 		stream >> pVersion->major;
 		stream >> pVersion->minor;
 		stream >> pVersion->release;
 	}
 
-	void GetRevision(adRevisionPtr pRevision)
+	bool GetVersion(adVersionType versionType, adVersionPtr pVersion)
 	{
-		pRevision->antidupl = REVISION;
-		pRevision->common = 0;
+		switch(versionType)
+		{
+		case AD_VERSION_TYPE_ANTIDUPL:
+			ParseVersion(ad::VERSION, pVersion);
+			pVersion->revision = ad::REVISION;
+			break;
+		case AD_VERSION_TYPE_SIMD:
+			pVersion->major = AD_UNDEFINED;
+			pVersion->minor = AD_UNDEFINED;
+			pVersion->release = AD_UNDEFINED;
+			pVersion->revision = Simd::VERSION;
+			break;
+		case AD_VERSION_TYPE_OPENJPEG:
+			ParseVersion(opj_version(), pVersion);
+			pVersion->revision = AD_UNDEFINED;
+			break;
+		default:
+			return false;
+		}
+		return true;
 	}
 }
 

@@ -76,23 +76,17 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReasonForCall, LPVOID lpReserved)
     return TRUE;
 }
 
-DLLAPI adError adInfoGet(adInfoType infoType, void* pInfo)
+DLLAPI adError adVersionGet(adVersionType versionType, adVersionPtr pVersion)
 {
-    CHECK_POINTER(pInfo);
+    CHECK_POINTER(pVersion);
 
-	switch(infoType)
-	{
-	case AD_INFO_VERSION:
-		ad::GetVersion((adVersionPtr)pInfo);
-		break;
-	case AD_INFO_REVISION:
-		ad::GetRevision((adRevisionPtr)pInfo);
-		break;
-	default:
-		return AD_ERROR_INVALID_INFO_TYPE;
-	}
+	if(versionType < AD_VERSION_TYPE_ANTIDUPL || versionType >= AD_VERSION_TYPE_SIZE)
+		return AD_ERROR_INVALID_VERSION_TYPE;
 
-    return AD_OK;
+	if(ad::GetVersion(versionType, pVersion))
+		return AD_OK;
+	else
+		return AD_ERROR_UNKNOWN;
 }
 
 DLLAPI adHandle adCreate()
