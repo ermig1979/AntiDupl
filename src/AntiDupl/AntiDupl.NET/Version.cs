@@ -106,14 +106,5 @@ namespace AntiDupl.NET
                 version.minor == coreVersion.minor &&
                 version.release == coreVersion.release;
         }
-
-        static public string GetRevisionString()
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.Append(External.Revision.ToString());
-            //builder.Append(".");
-            //builder.Append(Math.Max(External.SvnCommon, External.Svn3rd).ToString());
-            return builder.ToString();
-        }
     }
 }

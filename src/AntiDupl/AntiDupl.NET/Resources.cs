@@ -289,19 +289,24 @@ namespace AntiDupl.NET
 
         static public class WebLinks
         {
-            public const string SiteRoot = "http://antidupl.narod.ru";
-            public const string SiteEnglish = "http://antidupl.narod.ru/english/index.html";
-            public const string SiteRussian = "http://antidupl.narod.ru/russian/index.html";
+            public const string AntiduplNarodRu = "http://antidupl.narod.ru";
+            public const string AntiduplNarodRuEnglish = "http://antidupl.narod.ru/english/index.html";
+            public const string AntiduplNarodRuRussian = "http://antidupl.narod.ru/russian/index.html";
             public const string Version = "http://antidupl.narod.ru/net/version.xml";
 
-            public static string SiteCurrent
+            public const string SourceforgeNetSimd = "http://sourceforge.net/projects/simd/?source=directory";
+            public const string SourceforgeNetAntidupl = "http://sourceforge.net/projects/antidupl/?source=directory";
+
+            public const string OpenjpegOrg = "http://www.openjpeg.org";
+
+            public static string AntiduplNarodRuCurrent
             {
                 get
                 {
                     if (Strings.IsCurrentRussianFamily())
-                        return SiteRussian;
+                        return AntiduplNarodRuRussian;
                     else
-                        return SiteEnglish;
+                        return AntiduplNarodRuEnglish;
                 }
             }
         }

@@ -123,6 +123,15 @@ namespace AntiDupl.NET
                 label.Font = Font.Create(fontSize);
                 return label;
             }
+
+            public static System.Windows.Forms.Label Create(string text, System.Drawing.Font font)
+            {
+                System.Windows.Forms.Label label = new System.Windows.Forms.Label();
+                label.AutoSize = true;
+                label.Font = font;
+                label.Text = text;
+                return label;
+            }
         };
 
         public static class CheckBox

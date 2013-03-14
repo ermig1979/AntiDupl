@@ -384,7 +384,7 @@ namespace AntiDupl.NET
 
         private void AboutProgramAction(object sender, EventArgs e)
         {
-            AboutProgramForm aboutProgramForm = new AboutProgramForm();
+            AboutProgramForm aboutProgramForm = new AboutProgramForm(m_core);
             aboutProgramForm.ShowDialog();
         }
 

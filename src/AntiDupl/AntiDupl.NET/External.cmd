@@ -59,8 +59,7 @@ echo namespace AntiDupl.NET>>%EXTERNAL_FILE%
 echo {>>%EXTERNAL_FILE%
 echo     static public class External>>%EXTERNAL_FILE%
 echo     {>>%EXTERNAL_FILE%
-echo         public const string Version = "%VERSION%";>>%EXTERNAL_FILE%
-echo         public const int Revision = $WCREV$;>>%EXTERNAL_FILE%
+echo         public const string Version = "%VERSION%.$WCREV$";>>%EXTERNAL_FILE%
 echo     }>>%EXTERNAL_FILE%
 echo }>>%EXTERNAL_FILE%
 echo.>>%EXTERNAL_FILE%

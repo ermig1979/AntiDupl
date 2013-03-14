@@ -46,11 +46,9 @@ namespace AntiDupl.NET
         
         public string WarningMessage_ChangeFileExtension;
 
+        public string AboutProgramPanel_CopyrightLabel0_Text;
+        public string AboutProgramPanel_ComponentLabel_Text;
         public string AboutProgramPanel_VersionLabel_Text;
-        public string AboutProgramPanel_RevisionLabel_Text;
-        public string AboutProgramPanel_TimeLabel_Text;
-        public string AboutProgramPanel_PlaceLabel_Text;
-        public string AboutProgramPanel_AuthorLabel_Text;
 
         public string AboutProgramForm_Text;
 

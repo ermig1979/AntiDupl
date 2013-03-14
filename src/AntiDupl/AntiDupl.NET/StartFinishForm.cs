@@ -65,7 +65,7 @@ namespace AntiDupl.NET
 
         private void InitializeComponent()
         {
-            ClientSize = new System.Drawing.Size(310, 175);
+            ClientSize = new System.Drawing.Size(310, 200);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             StartPosition = FormStartPosition.CenterScreen;
             ShowInTaskbar = false;
@@ -78,7 +78,7 @@ namespace AntiDupl.NET
             mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 15F));
             Controls.Add(mainTableLayoutPanel);
 
-            m_aboutProgramPanel = new AboutProgramPanel();
+            m_aboutProgramPanel = new AboutProgramPanel(m_core);
             m_aboutProgramPanel.Location = new Point(0, 0);
             m_aboutProgramPanel.Dock = DockStyle.Fill;
             mainTableLayoutPanel.Controls.Add(m_aboutProgramPanel, 0, 0);
