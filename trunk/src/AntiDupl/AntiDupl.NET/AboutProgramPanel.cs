@@ -25,95 +25,132 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace AntiDupl.NET
 {
     public class AboutProgramPanel : Panel
     {
-        private PictureBox m_logotypePictureBox;
-        private Label m_programNameLabel;
-        private Label m_versionLabel;
-        private Label m_revisionLabel;
-        private Label m_timeLabel;
-        private Label m_placeLabel;
-        private Label m_authorLabel;
-        private LinkLabel m_siteLinkLabel;
+        private const int LOGO_SIZE = 32;
 
-        public AboutProgramPanel()
+        private CoreLib m_core;
+
+        public AboutProgramPanel(CoreLib core)
         {
+            m_core = core;
             InitializeComponent();
-            UpdateStrings();
         }
 
         private void InitializeComponent()
         {
-            TableLayoutPanel mainTableLayoutPanel = InitFactory.Layout.Create(2, 1);
-            mainTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
-            mainTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 70F));
-            Controls.Add(mainTableLayoutPanel);
+            TableLayoutPanel layout = InitFactory.Layout.Create(1, 3, 5, 0);
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            layout.AutoSize = true;
 
-            m_logotypePictureBox = new PictureBox();
-            m_logotypePictureBox.Location = new System.Drawing.Point(0, 0);
-            m_logotypePictureBox.Dock = DockStyle.Fill;
-            m_logotypePictureBox.Image = Resources.Images.Get("AboutProgramImage");
-            mainTableLayoutPanel.Controls.Add(m_logotypePictureBox, 0, 0);
+            layout.Controls.Add(CreateLogotype(new Font(this.Font.FontFamily, this.Font.Size * 2.0f)), 0, 0);
 
-            TableLayoutPanel labelsTableLayoutPanel = InitFactory.Layout.Create(1, 7);
-            mainTableLayoutPanel.Controls.Add(labelsTableLayoutPanel, 1, 0);
+            Label label = CreateLabel(Resources.Strings.Current.AboutProgramPanel_CopyrightLabel0_Text, 
+                new Font(this.Font.FontFamily, this.Font.Size * 1.2f));
+            label.Margin = new Padding(0, 10, 0, 10);
+            layout.Controls.Add(label, 0, 1);
 
-            m_programNameLabel = InitFactory.Label.Create(15F);
-            labelsTableLayoutPanel.Controls.Add(m_programNameLabel, 0, 0);
+            layout.Controls.Add(CreateInfoTable(Font), 0, 2);
 
-            m_versionLabel = InitFactory.Label.Create(10F);
-            labelsTableLayoutPanel.Controls.Add(m_versionLabel, 0, 1);
-
-            m_revisionLabel = InitFactory.Label.Create(10F);
-            labelsTableLayoutPanel.Controls.Add(m_revisionLabel, 0, 2);
-
-            m_timeLabel = InitFactory.Label.Create(10F);
-            labelsTableLayoutPanel.Controls.Add(m_timeLabel, 0, 3);
-
-            m_placeLabel = InitFactory.Label.Create(10F);
-            labelsTableLayoutPanel.Controls.Add(m_placeLabel, 0, 4);
-
-            m_authorLabel = InitFactory.Label.Create(10F);
-            labelsTableLayoutPanel.Controls.Add(m_authorLabel, 0, 5);
-
-            m_siteLinkLabel = new LinkLabel();
-            m_siteLinkLabel.AutoSize = true;
-            m_siteLinkLabel.Font = InitFactory.Font.Create(10F);
-            m_siteLinkLabel.Links.Add(new LinkLabel.Link());
-            m_siteLinkLabel.LinkClicked += new LinkLabelLinkClickedEventHandler(OnSiteLinkLabelLinkClicked);
-            labelsTableLayoutPanel.Controls.Add(m_siteLinkLabel, 0, 6);
+            Controls.Add(layout);
         }
 
-        private void UpdateStrings()
+        private TableLayoutPanel CreateLogotype(Font font)
         {
-            Strings s = Resources.Strings.Current;
+            TableLayoutPanel layout = InitFactory.Layout.Create(4, 1, 0, 0);
+            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            layout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            layout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            layout.AutoSize = true;
 
-            m_programNameLabel.Text = Application.ProductName;
-            {
-                StringBuilder builder = new StringBuilder();
-                builder.Append(s.AboutProgramPanel_VersionLabel_Text);
-                builder.Append(Application.ProductVersion.ToString());
-                m_versionLabel.Text = builder.ToString();
-            }
-            {
-                StringBuilder builder = new StringBuilder();
-                builder.Append(s.AboutProgramPanel_RevisionLabel_Text);
-                builder.Append(Version.GetRevisionString());
-                m_revisionLabel.Text = builder.ToString();
-            }
-            m_timeLabel.Text = s.AboutProgramPanel_TimeLabel_Text;
-            m_placeLabel.Text = s.AboutProgramPanel_PlaceLabel_Text;
-            m_authorLabel.Text = s.AboutProgramPanel_AuthorLabel_Text;
-            m_siteLinkLabel.Text = Resources.WebLinks.SiteRoot;
+            Bitmap bitmap = Resources.Icons.Get(new Size(LOGO_SIZE, LOGO_SIZE)).ToBitmap();
+            PictureBox pictureBox = new PictureBox();
+            pictureBox.Location = new System.Drawing.Point(0, 0);
+            pictureBox.Dock = DockStyle.Fill;
+            pictureBox.Padding = new Padding(0);
+            pictureBox.Margin = new Padding(0);
+            pictureBox.ClientSize = bitmap.Size;
+            pictureBox.Image = bitmap;
+            layout.Controls.Add(pictureBox, 1, 0);
+
+            layout.Controls.Add(CreateLinkLabel(Application.ProductName, 
+                Resources.WebLinks.AntiduplNarodRu, font), 2, 0);
+
+            return layout;
         }
 
-        private void OnSiteLinkLabelLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private Control CreateInfoTable(Font font)
         {
-            m_siteLinkLabel.Links[0].Visited = true;
-            System.Diagnostics.Process.Start(Resources.WebLinks.SiteCurrent);
+            TableLayoutPanel table = InitFactory.Layout.Create(2, 4, 0, 0);
+            table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            table.CellBorderStyle = TableLayoutPanelCellBorderStyle.Inset;
+            table.Dock = DockStyle.Top;
+            table.AutoSize = true;
+
+            table.Controls.Add(CreateLabel(Resources.Strings.Current.AboutProgramPanel_ComponentLabel_Text, 
+                new Font(font, FontStyle.Bold)), 0, 0);
+            table.Controls.Add(CreateLabel(Resources.Strings.Current.AboutProgramPanel_VersionLabel_Text, 
+                new Font(font, FontStyle.Bold)), 1, 0);
+
+            table.Controls.Add(CreateLinkLabel(Application.ProductName, Resources.WebLinks.SourceforgeNetAntidupl, font), 0, 1);
+            table.Controls.Add(CreateLabel(m_core.GetVersion(CoreDll.VersionType.AntiDupl).ToString(), font), 1, 1);
+
+            table.Controls.Add(CreateLinkLabel("Simd", Resources.WebLinks.SourceforgeNetSimd, font), 0, 2);
+            table.Controls.Add(CreateLabel(m_core.GetVersion(CoreDll.VersionType.Simd).ToString(), font), 1, 2);
+
+            table.Controls.Add(CreateLinkLabel("OpenJPEG", Resources.WebLinks.OpenjpegOrg, font), 0, 3);
+            table.Controls.Add(CreateLabel(m_core.GetVersion(CoreDll.VersionType.OpenJpeg).ToString(), font), 1, 3);
+
+            return table;
+        }
+
+        private Label CreateLabel(string text, Font font)
+        {
+            System.Windows.Forms.Label label = new System.Windows.Forms.Label();
+            label.AutoSize = true;
+            label.Padding = new System.Windows.Forms.Padding(2);
+            label.Font = font;
+            label.Text = text;
+            label.Dock = DockStyle.Fill;
+            label.TextAlign = ContentAlignment.MiddleCenter;
+            return label;
+        }
+
+        private LinkLabel CreateLinkLabel(string text, string link, Font font)
+        {
+            LinkLabel linkLabel = new LinkLabel();
+            linkLabel.AutoSize = true;
+            linkLabel.Font = font;
+            linkLabel.Text = text;
+            linkLabel.Dock = DockStyle.Fill;
+            linkLabel.LinkBehavior = LinkBehavior.HoverUnderline;
+            linkLabel.Padding = new System.Windows.Forms.Padding(2);
+            linkLabel.Links.Add(new LinkLabel.Link(0, text.Length, link));
+            linkLabel.LinkClicked += new LinkLabelLinkClickedEventHandler(OnLinkLabelLinkClicked);
+            linkLabel.TextAlign = ContentAlignment.MiddleCenter;
+
+            ToolTip toolTip = new ToolTip();
+            toolTip.ShowAlways = true;
+            toolTip.SetToolTip(linkLabel, link);
+
+            return linkLabel;
+        }
+
+        private void OnLinkLabelLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            LinkLabel linkLabel = (LinkLabel)sender;
+            int linkIndex = linkLabel.Links.IndexOf(e.Link);
+            LinkLabel.Link link = linkLabel.Links[linkIndex];
+            link.Visited = true;
+            System.Diagnostics.Process.Start(link.LinkData.ToString());
         }
     }
 }

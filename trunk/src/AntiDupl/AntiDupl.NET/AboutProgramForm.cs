@@ -30,18 +30,21 @@ namespace AntiDupl.NET
 {
     public class AboutProgramForm : Form
     {
+        private CoreLib m_core;
+
         private AboutProgramPanel m_aboutProgramPanel;
         private Button m_okButton;
 
-        public AboutProgramForm()
+        public AboutProgramForm(CoreLib core)
         {
+            m_core = core;
             InitializeComponent();
             UpdateStrings();
         }
 
         private void InitializeComponent()
         {
-            ClientSize = new System.Drawing.Size(310, 200);
+            ClientSize = new System.Drawing.Size(310, 225);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             StartPosition = FormStartPosition.CenterScreen;
             ShowInTaskbar = false;
@@ -49,11 +52,11 @@ namespace AntiDupl.NET
             MinimizeBox = false;
 
             TableLayoutPanel mainTableLayoutPanel = InitFactory.Layout.Create(1, 2, 5);
-            mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 75F));
-            mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+            mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 80F));
+            mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
             Controls.Add(mainTableLayoutPanel);
 
-            m_aboutProgramPanel = new AboutProgramPanel();
+            m_aboutProgramPanel = new AboutProgramPanel(m_core);
             m_aboutProgramPanel.Location = new System.Drawing.Point(0, 0);
             m_aboutProgramPanel.Dock = DockStyle.Fill;
             mainTableLayoutPanel.Controls.Add(m_aboutProgramPanel, 0, 0);
