@@ -63,8 +63,8 @@ namespace AntiDupl.NET
 
             DropDownItems.Add(m_verticalPairTableMenuItem);
             DropDownItems.Add(m_horizontalPairTableMenuItem);
-            DropDownItems.Add(new ToolStripSeparator());
-            DropDownItems.Add(m_groupedThumbnailsMenuItem);
+            //DropDownItems.Add(new ToolStripSeparator());
+            //DropDownItems.Add(m_groupedThumbnailsMenuItem);
         }
 
         private void OnClick(object sender, EventArgs e)
