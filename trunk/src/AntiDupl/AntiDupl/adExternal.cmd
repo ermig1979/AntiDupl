@@ -57,11 +57,7 @@ echo.>>%EXTERNAL_FILE%
 echo #ifndef __adExternal_h__>>%EXTERNAL_FILE%
 echo #define __adExternal_h__>>%EXTERNAL_FILE%
 echo.>>%EXTERNAL_FILE%
-echo namespace ad>>%EXTERNAL_FILE%
-echo {>>%EXTERNAL_FILE%
-echo 	const char *VERSION = "%VERSION%";>>%EXTERNAL_FILE%
-echo 	const int REVISION = $WCREV$;>>%EXTERNAL_FILE%
-echo }>>%EXTERNAL_FILE%
+echo #define AD_VERSION "%VERSION%.$WCREV$">>%EXTERNAL_FILE%
 echo.>>%EXTERNAL_FILE%
 echo #endif//__adExternal_h__>>%EXTERNAL_FILE%
 echo.>>%EXTERNAL_FILE%

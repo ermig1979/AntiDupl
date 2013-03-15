@@ -34,12 +34,13 @@ namespace AntiDupl.NET
         public Int32 release;
         public Int32 revision;
 
-        public CoreVersion(ref CoreDll.adVersion adVersion)
+        public CoreVersion(sbyte[] buffer)
         {
-            major = adVersion.major;
-            minor = adVersion.minor;
-            release = adVersion.release;
-            revision = adVersion.revision;
+            string[] versions = Parse(buffer).Split('.');
+            major = versions.Length > 0 ? Convert.ToInt32(versions[0]) : -1;
+            minor = versions.Length > 1 ? Convert.ToInt32(versions[1]) : -1;
+            release = versions.Length > 2 ? Convert.ToInt32(versions[2]) : -1;
+            revision = versions.Length > 3 ? Convert.ToInt32(versions[3]) : -1;
         }
         
         public override string ToString()
@@ -70,6 +71,18 @@ namespace AntiDupl.NET
                 if (already)
                     builder.Append(".");
                 builder.Append(revision.ToString());
+            }
+            return builder.ToString();
+        }
+
+        private string Parse(sbyte[] buffer)
+        {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < buffer.Length; ++i)
+            {
+                if(buffer[i] == 0)
+                    break;
+                builder.Append(Convert.ToChar(buffer[i]));
             }
             return builder.ToString();
         }
