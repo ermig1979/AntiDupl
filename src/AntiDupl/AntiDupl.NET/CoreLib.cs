@@ -31,6 +31,7 @@ namespace AntiDupl.NET
 {
     public class CoreLib : IDisposable
     {
+        private const uint VERSION_SIZE = 40;
         private const uint PAGE_SIZE = 16;
 
         private IntPtr m_handle = IntPtr.Zero;
@@ -87,10 +88,13 @@ namespace AntiDupl.NET
 
         public CoreVersion GetVersion(CoreDll.VersionType versionType)
         {
-            CoreDll.adVersion[] version = new CoreDll.adVersion[1];
-            if (m_dll.adVersionGet(versionType, Marshal.UnsafeAddrOfPinnedArrayElement(version, 0)) == CoreDll.Error.Ok)
+            sbyte[] version = new sbyte[VERSION_SIZE];
+            IntPtr[] pVersionSize = new IntPtr[1];
+            pVersionSize[0] = new IntPtr(VERSION_SIZE);
+            if (m_dll.adVersionGet(versionType, Marshal.UnsafeAddrOfPinnedArrayElement(version, 0), 
+                Marshal.UnsafeAddrOfPinnedArrayElement(pVersionSize, 0)) == CoreDll.Error.Ok)
             {
-                return new CoreVersion(ref version[0]);
+                return new CoreVersion(version);
             }
             return null; 
         }

@@ -321,14 +321,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\adInfo.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\adInfo.h"
-			>
-		</File>
-		<File
 			RelativePath=".\adIniFile.cpp"
 			>
 		</File>

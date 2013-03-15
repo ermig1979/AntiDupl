@@ -21,6 +21,10 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
+
+#define OPJ_STATIC
+#include "LibOpenJpeg/openjpeg.h"
+
 #include <windows.h>
 
 namespace ad
@@ -44,7 +48,7 @@ typedef ad::TEngine* adHandle;
 #include "adEngine.h"
 #include "adImageUtils.h"
 #include "adRecycleBin.h"
-#include "adInfo.h"
+#include "adExternal.h"
 
 #define CHECK_HANDLE \
     if(handle == NULL) \
@@ -76,17 +80,36 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReasonForCall, LPVOID lpReserved)
     return TRUE;
 }
 
-DLLAPI adError adVersionGet(adVersionType versionType, adVersionPtr pVersion)
+DLLAPI adError adVersionGet(adVersionType versionType, adCharA * pVersion, adSizePtr pVersionSize)
 {
-    CHECK_POINTER(pVersion);
+	CHECK_POINTER(pVersion);
+	CHECK_POINTER(pVersionSize);
 
-	if(versionType < AD_VERSION_TYPE_ANTIDUPL || versionType >= AD_VERSION_TYPE_SIZE)
+	std::string version;
+	switch(versionType)
+	{
+	case AD_VERSION_TYPE_ANTIDUPL:
+		version = AD_VERSION;
+		break;
+	case AD_VERSION_TYPE_SIMD:
+		version = SIMD_VERSION;
+		break;
+	case AD_VERSION_TYPE_OPENJPEG:
+		version = opj_version();
+		break;
+	default:
 		return AD_ERROR_INVALID_VERSION_TYPE;
+	}
 
-	if(ad::GetVersion(versionType, pVersion))
-		return AD_OK;
-	else
-		return AD_ERROR_UNKNOWN;
+	if(version.size() + 1 > *pVersionSize)
+	{
+		*pVersionSize = version.size() + 1;
+		return AD_ERROR_OUTPUT_BUFFER_IS_TOO_SMALL;
+	}
+
+	memcpy(pVersion, version.c_str(), version.size() + 1);
+
+	return AD_OK;
 }
 
 DLLAPI adHandle adCreate()

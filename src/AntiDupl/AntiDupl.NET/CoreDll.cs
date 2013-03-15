@@ -281,15 +281,6 @@ namespace AntiDupl.NET
         //-----------API structures--------------------------------------------
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct adVersion
-        {
-            public int major;
-            public int minor;
-            public int release;
-            public int revision;
-        }
-        
-        [StructLayout(LayoutKind.Sequential)]
         public struct adSearchOptions
         {
             public int subFolders;
@@ -410,7 +401,7 @@ namespace AntiDupl.NET
         //-------------------API functions:------------------------------------
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
-        public delegate Error adVersionGet_fn(VersionType versionType, IntPtr pVersion);
+        public delegate Error adVersionGet_fn(VersionType versionType, IntPtr pVersion, IntPtr pVersionSize);
         [DynamicModuleApi]
         public adVersionGet_fn adVersionGet = null;
 

@@ -354,15 +354,6 @@ extern "C"
 
     /*------------Structures-----------------------------------------------------*/
 
-    struct adVersion
-    {
-        adInt32 major;
-        adInt32 minor;
-        adInt32 release;
-		adInt32 revision;
-    };
-    typedef adVersion* adVersionPtr;
-
     struct adSearchOptions
     {
         adBool subFolders;
@@ -513,7 +504,7 @@ extern "C"
 
     /*------------Functions-------------------------------------------------------*/
 
-    DLLAPI adError adVersionGet(adVersionType versionType, adVersionPtr pVersion);
+    DLLAPI adError adVersionGet(adVersionType versionType, adCharA * pVersion, adSizePtr pVersionSize);
 
     DLLAPI adHandle adCreate();
     DLLAPI adError adRelease(adHandle handle);
