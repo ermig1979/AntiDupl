@@ -162,12 +162,12 @@ namespace ad
         uint64_t mainDifference = 0;
         if(m_pOptions->advanced.ignoreFrameWidth > 0)
         {
-            Simd::SquaredDifferenceSum(pFirst->data->main, FAST_DATA_SIZE, pSecond->data->main, FAST_DATA_SIZE, 
-				m_pMask, FAST_DATA_SIZE, m_mainSize, 1, &mainDifference);
+            Simd::SquaredDifferenceSum(pFirst->data->main, m_mainSize, pSecond->data->main, m_mainSize, 
+				m_pMask, m_mainSize, m_mainSize, 1, &mainDifference);
         }
         else
         {
-			Simd::SquaredDifferenceSum(pFirst->data->main, FAST_DATA_SIZE, pSecond->data->main, FAST_DATA_SIZE, 
+			Simd::SquaredDifferenceSum(pFirst->data->main, m_mainSize, pSecond->data->main, m_mainSize, 
 				m_mainSize, 1, &mainDifference);
         }
         if(mainDifference > m_mainThreshold)
