@@ -37,13 +37,22 @@ namespace AntiDupl.NET
 {
     static public class Resources
     {
-        static internal string GetPath(string path, string name, string extension)
+        static private string GetPath(string path, string name, string extension)
         {
             return string.Format("{0}\\{1}{2}", path, name, extension);
         }
 
-        static private string m_savePath = Application.StartupPath;
-        static public string SavePath { get { return m_savePath; } set { m_savePath = value; } }
+        static private string GetDefaultUserPath()
+        {
+            string userPath = string.Format("{0}\\user", Application.StartupPath);
+            DirectoryInfo directoryInfo = new DirectoryInfo(userPath);
+            if (!directoryInfo.Exists)
+                directoryInfo.Create();
+            return userPath;
+        }
+
+        static private string m_userPath = GetDefaultUserPath();
+        static public string UserPath { get { return m_userPath; } set { m_userPath = value; } }
 
         static public string DataPath { get { return string.Format("{0}\\data", Application.StartupPath); } }
 

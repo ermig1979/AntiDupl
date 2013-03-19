@@ -183,25 +183,26 @@ namespace AntiDupl.NET
         static public string GetOptionsFileName()
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(Resources.SavePath);
-            builder.Append("\\Options.xml");
+            builder.Append(Resources.UserPath);
+            builder.Append("\\options.xml");
             return builder.ToString();
         }
 
         static public string GetMistakeDataBaseFileName()
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(Resources.SavePath);
-            builder.Append("\\Mistakes.adm");
+            builder.Append(Resources.UserPath);
+            builder.Append("\\mistakes.adm");
             return builder.ToString();
         }
 
         public string GetImageDataBaseFileName()
         {
-            StringBuilder builder = new StringBuilder();
-            builder.Append(Resources.SavePath);
-            builder.AppendFormat("\\Images{0}x{0}.adi", coreOptions.advancedOptions.reducedImageSize);
-            return builder.ToString();
+            string directory = string.Format("{0}\\images\\{1}x{1}", Resources.UserPath, coreOptions.advancedOptions.reducedImageSize);
+            DirectoryInfo directoryInfo = new DirectoryInfo(directory);
+            if (!directoryInfo.Exists)
+                directoryInfo.Create();
+            return string.Format("{0}\\index.adr", directory);
         }
 
         public bool Equals(Options options)
