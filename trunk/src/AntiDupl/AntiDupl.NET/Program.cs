@@ -39,7 +39,7 @@ namespace AntiDupl.NET
                 DirectoryInfo directoryInfo = new DirectoryInfo(customSavePath);
                 if (!directoryInfo.Exists)
                     throw new Exception(String.Format("The directory '{0}' is not exists!", customSavePath));
-                Resources.SavePath = customSavePath;
+                Resources.UserPath = customSavePath;
             }
             Resources.Strings.Initialize();
             Application.EnableVisualStyles();

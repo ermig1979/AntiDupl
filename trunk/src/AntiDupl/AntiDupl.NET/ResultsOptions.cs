@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace AntiDupl.NET
 {
@@ -332,10 +333,11 @@ namespace AntiDupl.NET
 
         static public string GetDefaultResultsFileName()
         {
-            StringBuilder builder = new StringBuilder();
-            builder.Append(Resources.SavePath);
-            builder.Append("\\Results.adr");
-            return builder.ToString();
+            string directory = string.Format("{0}\\results", Resources.UserPath);
+            DirectoryInfo directoryInfo = new DirectoryInfo(directory);
+            if (!directoryInfo.Exists)
+                directoryInfo.Create();
+            return string.Format("{0}\\default.adr", directory);
         }
     }
 }
