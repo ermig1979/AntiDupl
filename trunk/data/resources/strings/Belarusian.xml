@@ -86,7 +86,7 @@
   <SearchExecuterForm_Result>Апрацоўка вынікаў</SearchExecuterForm_Result>
   <SearchExecuterForm_Search>Пошук</SearchExecuterForm_Search>
   <SearchExecuterForm_Stopped>Прыпынак пошуку</SearchExecuterForm_Stopped>
-  <SearchExecuterForm_MinimizeToSystrayButton_Text>Згарнуць</SearchExecuterForm_MinimizeToSystrayButton_Text>
+  <SearchExecuterForm_MinimizeToTaskbarButton_Text>Згарнуць</SearchExecuterForm_MinimizeToTaskbarButton_Text>
   <SearchExecuterForm_MinimizeToSystrayButton_Text>Фонавы рэжым</SearchExecuterForm_MinimizeToSystrayButton_Text>
   <ResultsPreviewBase_NextButton_ToolTip_Text>Перайсці да наступнага выніку</ResultsPreviewBase_NextButton_ToolTip_Text>
   <ResultsPreviewBase_PreviousButton_ToolTip_Text>Перайсці да папярэдняга выніку</ResultsPreviewBase_PreviousButton_ToolTip_Text>
