@@ -24,38 +24,36 @@
 #ifndef __adImageDataStorage_h__
 #define __adImageDataStorage_h__
 
-#include <map>
-
-#include "adImageMultiData.h"
+#include "adImageData.h"
 
 namespace ad
 {
     class TEngine;
     //-------------------------------------------------------------------------
-    class TImageDataStorage
-    {
-    public:
-        TImageDataStorage(TEngine *pEngine);
-        ~TImageDataStorage() {Clear();}
+	class TImageDataStorage
+	{
+	public:
+		TImageDataStorage(TEngine *pEngine);
+		~TImageDataStorage() {Clear();}
 
-        TImageDataPtr Get(const TFileInfo& fileInfo);
+		TImageDataPtr Get(const TFileInfo& fileInfo);
 
-        adError Load(const TChar *fileName, bool check);
-        adError Save(const TChar *fileName) const;
+		adError Load(const TChar *fileName, bool check);
+		adError Save(const TChar *fileName) const;
 
-        void Clear();
+		void Clear();
 
-    private:
-        typedef std::multimap<TUInt32, TImageMultiDataPtr> TStorage;
-        typedef std::pair<TUInt32, TImageMultiDataPtr> TRecord;
+	private:
+		typedef std::multimap<TUInt32, TImageDataPtr> TStorage;
+		typedef std::pair<TUInt32, TImageDataPtr> TRecord;
 
-        TStorage::iterator Find(const TFileInfo& fileInfo);
-        TStorage::iterator Insert(TImageMultiData* pImageMultiData);
+		TStorage::iterator Find(const TFileInfo& fileInfo);
+		TStorage::iterator Insert(TImageData* pImageData);
 
-        TStorage m_storage;
-        TStatus *m_pStatus;
-        TOptions *m_pOptions;
-    };
+		TStorage m_storage;
+		TStatus *m_pStatus;
+		TOptions *m_pOptions;
+	};
     //-------------------------------------------------------------------------
 }
 #endif //__adImageDataStorage_h__

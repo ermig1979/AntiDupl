@@ -24,51 +24,56 @@
 #ifndef __adImageData_h__
 #define __adImageData_h__
 
-#include <list>
-
 #include "adConfig.h"
 #include "adImageInfo.h"
 #include "adPixelData.h"
 
 namespace ad
 {
-    struct TOptions;
-    //-------------------------------------------------------------------------
-    struct TImageData : public TImageInfo
-    {
-        TInt32 ratio; // Ratio between height and width of image;
-        bool valid; // The Image lie in 'valid' directory;
-        size_t index; // Index of the path where this image were found;
-        TDefectType defect;
-        TUInt32 crc32;
-        TPixelDataPtr data;
-        HGLOBAL hGlobal; 
+	struct TOptions;
+	//-------------------------------------------------------------------------
+	struct TImageData : public TImageInfo
+	{
+		TInt32 ratio; // Ratio between height and width of image;
+		bool valid; // The Image lie in 'valid' directory;
+		size_t index; // Index of the path where this image were found;
+		TDefectType defect;
+		TUInt32 crc32;
+		TPixelDataPtr data;
+		HGLOBAL hGlobal; 
 
-        TImageData(const TString& path_ = TString()) : TImageInfo(path_) {Init();}
-        TImageData(const TString& path_, TUInt64 size_, TUInt64 time_) : TImageInfo(path_, size_, time_) {Init();}
-        TImageData(const TFileInfo& fileInfo) : TImageInfo(fileInfo) {Init();}
-        TImageData(const TImageData& imageData) :TImageInfo(imageData) {Init(); *this = imageData;};
-        virtual ~TImageData();
+		TImageData(const TString& path_ = TString()) : TImageInfo(path_) {Init();}
+		TImageData(const TString& path_, TUInt64 size_, TUInt64 time_) : TImageInfo(path_, size_, time_) {Init();}
+		TImageData(const TFileInfo& fileInfo) : TImageInfo(fileInfo) {Init();}
+		TImageData(const TImageData& imageData) :TImageInfo(imageData) {Init(); *this = imageData;};
+		virtual ~TImageData();
 
-        TImageData& operator = (const TImageData& imageData);
+		TImageData& operator = (const TImageData& imageData);
 
-        bool PixelDataFillingNeed(TOptions *pOptions) const;
-        bool DefectCheckingNeed(TOptions *pOptions) const;
+		bool PixelDataFillingNeed(TOptions *pOptions) const;
+		bool DefectCheckingNeed(TOptions *pOptions) const;
 
-        void FillOther(TOptions *pOptions);
+		void FillOther(TOptions *pOptions);
 
-        void Turn(TUInt8 *pBuffer);
-        void Mirror(TUInt8 *pBuffer);
-        
-        void FreeGlobal();
+		void Turn(TUInt8 *pBuffer);
+		void Mirror(TUInt8 *pBuffer);
 
-    private:
-        void Init();
+		void FreeGlobal();
 
-        bool m_copy;
-    };
-    typedef TImageData* TImageDataPtr;
-    typedef std::list<TImageDataPtr> TImageDataPtrs;
+		bool Load(HANDLE hIn);
+		bool Save(HANDLE hOut) const;
+
+		bool NeedToSave() const;
+
+		bool SetData(size_t reducedImageSize);
+
+	private:
+		void Init();
+
+		bool m_owner;
+	};
+	typedef TImageData* TImageDataPtr;
+	typedef std::list<TImageDataPtr> TImageDataPtrs;
 }
 
 #endif/*__adImageData_h__*/

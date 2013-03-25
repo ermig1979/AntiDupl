@@ -306,14 +306,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\adImageMultiData.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\adImageMultiData.h"
-			>
-		</File>
-		<File
 			RelativePath=".\adImageUtils.cpp"
 			>
 		</File>

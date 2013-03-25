@@ -23,107 +23,170 @@
 */
 #include "adOptions.h"
 #include "adImageData.h"
+#include "adIO.h"
 
 namespace ad
 {
-    //-------------------------------------------------------------------------
-    void TImageData::Init()
-    {
-        ratio = 0;
-        valid = false;
-        index = AD_IS_NOT_EXIST;
-        defect = AD_DEFECT_UNDEFINE;
-        crc32 = 0;
-        data = NULL;
-        m_copy = false;
-        hGlobal = NULL;
-    }
+	void TImageData::Init()
+	{
+		ratio = 0;
+		valid = false;
+		index = AD_IS_NOT_EXIST;
+		defect = AD_DEFECT_UNDEFINE;
+		crc32 = 0;
+		data = NULL;
+		m_owner = false;
+		hGlobal = NULL;
+	}
 
-    TImageData::~TImageData()
-    {
-        if(m_copy)
-        {
-            delete data;
-        }
-        FreeGlobal();
-    }
+	TImageData::~TImageData()
+	{
+		if(m_owner)
+		{
+			delete data;
+		}
+		FreeGlobal();
+	}
 
-    TImageData& TImageData::operator = (const TImageData& imageData)
-    {
-        *(static_cast<TImageInfo*>(this)) = imageData;
-        ratio = imageData.ratio;
-        valid = imageData.valid;
-        defect = imageData.defect;
-        if(m_copy && imageData.data->side != data->side)
-        {
-            delete data;
-            m_copy = false;
-        }
-        if(!m_copy)
-        {
-            data = new TPixelData(*imageData.data);
-            m_copy = true;
-        }
-        else
-        {
-            memcpy(data->fast, imageData.data->fast, data->full);
-        }
-        return *this;
-    }
+	TImageData& TImageData::operator = (const TImageData& imageData)
+	{
+		*(static_cast<TImageInfo*>(this)) = imageData;
+		ratio = imageData.ratio;
+		valid = imageData.valid;
+		defect = imageData.defect;
+		if(m_owner && imageData.data->side != data->side)
+		{
+			delete data;
+			m_owner = false;
+		}
+		if(!m_owner)
+		{
+			data = new TPixelData(*imageData.data);
+			m_owner = true;
+		}
+		else
+		{
+			memcpy(data->fast, imageData.data->fast, data->full);
+		}
+		return *this;
+	}
 
-    bool TImageData::PixelDataFillingNeed(TOptions *pOptions) const
-    {
-        return (pOptions->check.checkOnEquality == TRUE || pOptions->check.checkOnDefect == TRUE) && 
-            !data->filled && type != AD_IMAGE_NONE;
-    }
+	bool TImageData::PixelDataFillingNeed(TOptions *pOptions) const
+	{
+		return (pOptions->check.checkOnEquality == TRUE || pOptions->check.checkOnDefect == TRUE) && 
+			!data->filled && type != AD_IMAGE_NONE;
+	}
 
-    bool TImageData::DefectCheckingNeed(TOptions *pOptions) const
-    {
-        return pOptions->check.checkOnDefect == TRUE && defect == AD_DEFECT_UNDEFINE;
-    }
+	bool TImageData::DefectCheckingNeed(TOptions *pOptions) const
+	{
+		return pOptions->check.checkOnDefect == TRUE && defect == AD_DEFECT_UNDEFINE;
+	}
 
-    void TImageData::FillOther(TOptions *pOptions)
-    {
-        if(type > AD_IMAGE_NONE)
-        {
-            data->FillFast(pOptions->GetIgnoreWidthFrame());
+	void TImageData::FillOther(TOptions *pOptions)
+	{
+		if(type > AD_IMAGE_NONE)
+		{
+			data->FillFast(pOptions->GetIgnoreWidthFrame());
 
-            const int resolution = pOptions->advanced.ratioResolution;
-            if(width > height)
-            {
-                ratio = height*resolution/width - resolution;
-            }
-            else
-            {
-                ratio = resolution - width*resolution/height;
-            }
+			const int resolution = pOptions->advanced.ratioResolution;
+			if(width > height)
+			{
+				ratio = height*resolution/width - resolution;
+			}
+			else
+			{
+				ratio = resolution - width*resolution/height;
+			}
 
-            valid = pOptions->validPaths.IsHasSubPath(path) != AD_IS_NOT_EXIST || 
-                pOptions->validPaths.IsHasPath(path) != AD_IS_NOT_EXIST;
+			valid = pOptions->validPaths.IsHasSubPath(path) != AD_IS_NOT_EXIST || 
+				pOptions->validPaths.IsHasPath(path) != AD_IS_NOT_EXIST;
 
-            index = std::min(pOptions->searchPaths.IsHasSubPath(path), pOptions->searchPaths.IsHasPath(path));
-        }
-    }
+			index = std::min(pOptions->searchPaths.IsHasSubPath(path), pOptions->searchPaths.IsHasPath(path));
+		}
+	}
 
-    void TImageData::Turn(TUInt8 *pBuffer)
-    {
-        std::swap(width, height);
-        ratio = -ratio;
-        data->Turn(pBuffer);
-    }
+	void TImageData::Turn(TUInt8 *pBuffer)
+	{
+		std::swap(width, height);
+		ratio = -ratio;
+		data->Turn(pBuffer);
+	}
 
-    void TImageData::Mirror(TUInt8 *pBuffer)
-    {
-        data->Mirror(pBuffer);
-    }
-    
-    void TImageData::FreeGlobal()
-    {
-        if(hGlobal)
-        {
-            ::GlobalFree(hGlobal);
-            hGlobal = NULL;
-        }
-    }
+	void TImageData::Mirror(TUInt8 *pBuffer)
+	{
+		data->Mirror(pBuffer);
+	}
+
+	void TImageData::FreeGlobal()
+	{
+		if(hGlobal)
+		{
+			::GlobalFree(hGlobal);
+			hGlobal = NULL;
+		}
+	}
+
+	bool TImageData::SetData(size_t reducedImageSize)
+	{
+		if(data == NULL || data->side != reducedImageSize)
+		{
+			if(m_owner && data != NULL)
+			{
+				delete data;
+				m_owner = false;
+			}
+			data = new TPixelData(reducedImageSize);
+			m_owner = true;
+		}
+		return data->filled;
+	}
+
+	bool TImageData::Load(HANDLE hIn)
+	{
+		if(!(static_cast<TImageInfo*>(this))->Load(hIn))
+			return false;
+
+		READ_VALUE_FROM_FILE(hIn, defect);
+		READ_VALUE_FROM_FILE(hIn, crc32);
+
+		if(m_owner && data != NULL)
+		{
+			delete data;
+			m_owner = false;
+		}
+
+		bool exist = false;
+		READ_VALUE_FROM_FILE(hIn, exist);
+		if(exist)
+		{
+			data = TPixelData::Load(hIn);
+			if(data == NULL)
+				return false;
+			else
+				m_owner = true;
+		}
+
+		return true;
+	}
+
+	bool TImageData::Save(HANDLE hOut) const
+	{
+		if(!(static_cast<const TImageInfo*>(this))->Save(hOut))
+			return false;
+
+		WRITE_VALUE_TO_FILE(hOut, defect);
+		WRITE_VALUE_TO_FILE(hOut, crc32);
+
+		bool exist = data != NULL && data->filled;
+		WRITE_VALUE_TO_FILE(hOut, exist);
+		if(exist)
+			return data->Save(hOut);
+
+		return true;
+	}
+
+	bool TImageData::NeedToSave() const 
+	{
+		return (data != NULL && data->filled) || defect != AD_DEFECT_UNDEFINE;
+	}
 }
-
