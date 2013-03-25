@@ -146,8 +146,8 @@ namespace ad
 		if(!(static_cast<TImageInfo*>(this))->Load(hIn))
 			return false;
 
-		READ_VALUE_FROM_FILE(hIn, defect);
-		READ_VALUE_FROM_FILE(hIn, crc32);
+		AD_READ_VALUE_FROM_FILE(hIn, defect);
+		AD_READ_VALUE_FROM_FILE(hIn, crc32);
 
 		if(m_owner && data != NULL)
 		{
@@ -156,7 +156,7 @@ namespace ad
 		}
 
 		bool exist = false;
-		READ_VALUE_FROM_FILE(hIn, exist);
+		AD_READ_VALUE_FROM_FILE(hIn, exist);
 		if(exist)
 		{
 			data = TPixelData::Load(hIn);
@@ -174,11 +174,11 @@ namespace ad
 		if(!(static_cast<const TImageInfo*>(this))->Save(hOut))
 			return false;
 
-		WRITE_VALUE_TO_FILE(hOut, defect);
-		WRITE_VALUE_TO_FILE(hOut, crc32);
+		AD_WRITE_VALUE_TO_FILE(hOut, defect);
+		AD_WRITE_VALUE_TO_FILE(hOut, crc32);
 
 		bool exist = data != NULL && data->filled;
-		WRITE_VALUE_TO_FILE(hOut, exist);
+		AD_WRITE_VALUE_TO_FILE(hOut, exist);
 		if(exist)
 			return data->Save(hOut);
 

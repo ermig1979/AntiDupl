@@ -56,7 +56,7 @@ namespace ad
         Clear();
 
         size_t size = 0;
-        READ_BOUNDED_SIZE_FROM_FILE(hIn, size, 0xffffffff);
+        AD_READ_BOUNDED_SIZE_FROM_FILE(hIn, size, 0xffffffff);
 
         m_loadVector.reserve(size);
         for(size_t i = 0; i < size; i++)
@@ -89,7 +89,7 @@ namespace ad
     bool TImageInfoStorage::Save(HANDLE hOut) const
     {
         size_t size = m_mainList.size();
-        WRITE_SIZE_TO_FILE(hOut, size);
+        AD_WRITE_SIZE_TO_FILE(hOut, size);
 
         size_t index = 0;
         for(TMainList::const_iterator it = m_mainList.begin(); it != m_mainList.end(); ++it, ++index)

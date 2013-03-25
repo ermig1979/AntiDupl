@@ -204,14 +204,14 @@ namespace ad
     {
         size_t index;
 
-        READ_BOUNDED_VALUE_FROM_FILE(hIn, type, 0, AD_RESULT_SIZE);
+        AD_READ_BOUNDED_VALUE_FROM_FILE(hIn, type, 0, AD_RESULT_SIZE);
 
-        READ_SIZE_FROM_FILE(hIn, index)
+        AD_READ_SIZE_FROM_FILE(hIn, index)
         first = pImageInfoStorage->Get(index);
         if(first == NULL)
             return false;
 
-        READ_SIZE_FROM_FILE(hIn, index)
+        AD_READ_SIZE_FROM_FILE(hIn, index)
         if(type == AD_RESULT_DUPL_IMAGE_PAIR)
         {
             second = pImageInfoStorage->Get(index);
@@ -221,25 +221,25 @@ namespace ad
         else
             second = pImageInfoStorage->GetStub();
 
-        READ_BOUNDED_VALUE_FROM_FILE(hIn, defect, 0, AD_DEFECT_SIZE);
-        READ_CHECKED_VALUE_FROM_FILE(hIn, difference, difference < 0 || difference > DENOMINATOR);
-        READ_BOUNDED_VALUE_FROM_FILE(hIn, transform, 0, AD_TRANSFORM_SIZE);
-        READ_SIZE_FROM_FILE(hIn, group);
-        READ_BOUNDED_VALUE_FROM_FILE(hIn, hint, 0, AD_HINT_SIZE);
+        AD_READ_BOUNDED_VALUE_FROM_FILE(hIn, defect, 0, AD_DEFECT_SIZE);
+        AD_READ_CHECKED_VALUE_FROM_FILE(hIn, difference, difference < 0 || difference > DENOMINATOR);
+        AD_READ_BOUNDED_VALUE_FROM_FILE(hIn, transform, 0, AD_TRANSFORM_SIZE);
+        AD_READ_SIZE_FROM_FILE(hIn, group);
+        AD_READ_BOUNDED_VALUE_FROM_FILE(hIn, hint, 0, AD_HINT_SIZE);
 
         return true;
     }
 
     bool TResult::Save(HANDLE hOut) const
     {
-        WRITE_VALUE_TO_FILE(hOut, type);
-        WRITE_SIZE_TO_FILE(hOut, first->index);
-        WRITE_SIZE_TO_FILE(hOut, second->index);
-        WRITE_VALUE_TO_FILE(hOut, defect);
-        WRITE_VALUE_TO_FILE(hOut, difference);
-        WRITE_VALUE_TO_FILE(hOut, transform);
-        WRITE_SIZE_TO_FILE(hOut, group);
-        WRITE_VALUE_TO_FILE(hOut, hint);
+        AD_WRITE_VALUE_TO_FILE(hOut, type);
+        AD_WRITE_SIZE_TO_FILE(hOut, first->index);
+        AD_WRITE_SIZE_TO_FILE(hOut, second->index);
+        AD_WRITE_VALUE_TO_FILE(hOut, defect);
+        AD_WRITE_VALUE_TO_FILE(hOut, difference);
+        AD_WRITE_VALUE_TO_FILE(hOut, transform);
+        AD_WRITE_SIZE_TO_FILE(hOut, group);
+        AD_WRITE_VALUE_TO_FILE(hOut, hint);
 
         return true;
     }

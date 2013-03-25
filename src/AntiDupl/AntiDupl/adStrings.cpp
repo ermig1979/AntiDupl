@@ -231,9 +231,9 @@ namespace ad
 	bool TString::Save(HANDLE hOut) const
 	{
 		size_t size = this->size();
-		WRITE_SIZE_TO_FILE(hOut, size);
+		AD_WRITE_SIZE_TO_FILE(hOut, size);
 
-		WRITE_BUFFER_TO_FILE(hOut, c_str(), size*sizeof(TChar));
+		AD_WRITE_BUFFER_TO_FILE(hOut, c_str(), size*sizeof(TChar));
 
 		return true;
 	}
@@ -241,10 +241,10 @@ namespace ad
 	bool TString::Load(HANDLE hIn)
 	{
 		size_t size;
-		READ_SIZE_FROM_FILE(hIn, size);
+		AD_READ_SIZE_FROM_FILE(hIn, size);
 		resize(size, 0);
 
-		READ_BUFFER_FROM_FILE(hIn, c_str(), size*sizeof(TChar));
+		AD_READ_BUFFER_FROM_FILE(hIn, c_str(), size*sizeof(TChar));
 
 		return true;
 	}

@@ -82,9 +82,9 @@ namespace ad
         if(!path.Load(hIn))
             return false;
 
-        READ_VALUE_FROM_FILE(hIn, size);
-        READ_VALUE_FROM_FILE(hIn, time);
-        READ_VALUE_FROM_FILE(hIn, hash);
+        AD_READ_VALUE_FROM_FILE(hIn, size);
+        AD_READ_VALUE_FROM_FILE(hIn, time);
+        AD_READ_VALUE_FROM_FILE(hIn, hash);
 
         if(hash != path.GetCrc32())
             return false;
@@ -99,9 +99,9 @@ namespace ad
         if(!path.Save(hOut))
             return false;
 
-        WRITE_VALUE_TO_FILE(hOut, size);
-        WRITE_VALUE_TO_FILE(hOut, time);
-        WRITE_VALUE_TO_FILE(hOut, hash);
+        AD_WRITE_VALUE_TO_FILE(hOut, size);
+        AD_WRITE_VALUE_TO_FILE(hOut, time);
+        AD_WRITE_VALUE_TO_FILE(hOut, hash);
 
         return true;
     }
