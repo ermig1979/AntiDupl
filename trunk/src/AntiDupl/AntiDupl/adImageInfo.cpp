@@ -96,9 +96,9 @@ namespace ad
         if(!(static_cast<TFileInfo*>(this))->Load(hIn))
             return false;
 
-        READ_VALUE_FROM_FILE(hIn, type);
-        READ_VALUE_FROM_FILE(hIn, width);
-        READ_VALUE_FROM_FILE(hIn, height);
+        AD_READ_VALUE_FROM_FILE(hIn, type);
+        AD_READ_VALUE_FROM_FILE(hIn, width);
+        AD_READ_VALUE_FROM_FILE(hIn, height);
 
         return true;
     }
@@ -108,9 +108,9 @@ namespace ad
         if(!(static_cast<const TFileInfo*>(this))->Save(hOut))
             return false;
 
-        WRITE_VALUE_TO_FILE(hOut, type);
-        WRITE_VALUE_TO_FILE(hOut, width);
-        WRITE_VALUE_TO_FILE(hOut, height);
+        AD_WRITE_VALUE_TO_FILE(hOut, type);
+        AD_WRITE_VALUE_TO_FILE(hOut, width);
+        AD_WRITE_VALUE_TO_FILE(hOut, height);
 
         return true;
     }

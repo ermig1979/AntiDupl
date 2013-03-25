@@ -64,7 +64,7 @@ namespace ad
     {
         size_t side;
 
-        READ_SIZE_FROM_FILE(hIn, side);
+        AD_READ_SIZE_FROM_FILE(hIn, side);
         if(side < 0x10 || side > 0x100 || side%0x10 != 0)
             return NULL;
 
@@ -82,9 +82,9 @@ namespace ad
 
     bool TPixelData::Save(HANDLE hOut) const
     {
-        WRITE_SIZE_TO_FILE(hOut, side);
+        AD_WRITE_SIZE_TO_FILE(hOut, side);
 
-        WRITE_BUFFER_TO_FILE(hOut, main, size);
+        AD_WRITE_BUFFER_TO_FILE(hOut, main, size);
 
         return true;
     }
