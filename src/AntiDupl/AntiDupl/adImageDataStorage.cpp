@@ -36,187 +36,187 @@ namespace ad
     const char CONTROL_bytes[] = "adi06";
 
     //-------------------------------------------------------------------------
-    TImageDataStorage::TImageDataStorage(TEngine *pEngine)
-        :m_pStatus(pEngine->Status()),
-        m_pOptions(pEngine->Options())
-    {
-    }
+	TImageDataStorage::TImageDataStorage(TEngine *pEngine)
+		:m_pStatus(pEngine->Status()),
+		m_pOptions(pEngine->Options())
+	{
+	}
 
-    TImageDataStorage::TStorage::iterator TImageDataStorage::Find(const TFileInfo& fileInfo)
-    {
-        TStorage::iterator it = m_storage.lower_bound(fileInfo.hash);
-        TStorage::iterator itEnd = m_storage.upper_bound(fileInfo.hash);
-        for(;it != itEnd; ++it)
-        {
-            if(TPath::EqualByPath(it->second->path, fileInfo.path))
-                return it;
-        }
-        return m_storage.end();
-    }
+	TImageDataStorage::TStorage::iterator TImageDataStorage::Find(const TFileInfo& fileInfo)
+	{
+		TStorage::iterator it = m_storage.lower_bound(fileInfo.hash);
+		TStorage::iterator itEnd = m_storage.upper_bound(fileInfo.hash);
+		for(;it != itEnd; ++it)
+		{
+			if(TPath::EqualByPath(it->second->path, fileInfo.path))
+				return it;
+		}
+		return m_storage.end();
+	}
 
-    TImageDataStorage::TStorage::iterator TImageDataStorage::Insert(TImageMultiData* pImageMultiData)
-    {
-        return m_storage.insert(TRecord(pImageMultiData->hash, pImageMultiData));
-    }
+	TImageDataStorage::TStorage::iterator TImageDataStorage::Insert(TImageData* pImageData)
+	{
+		return m_storage.insert(TRecord(pImageData->hash, pImageData));
+	}
 
-    void TImageDataStorage::Clear()
-    {
-        //Bs::HeapCompacter heapCompacter;
-        for(TStorage::iterator it = m_storage.begin(); it != m_storage.end(); ++it)
-            delete it->second;
-        m_storage.clear();
-    }
+	void TImageDataStorage::Clear()
+	{
+		//Bs::HeapCompacter heapCompacter;
+		for(TStorage::iterator it = m_storage.begin(); it != m_storage.end(); ++it)
+			delete it->second;
+		m_storage.clear();
+	}
 
-    TImageDataPtr TImageDataStorage::Get(const TFileInfo& fileInfo)
-    {
-        TStorage::iterator it = Find(fileInfo);
-        if(it != m_storage.end())
-        {
-            if(it->second->size != fileInfo.size || it->second->time != fileInfo.time)
-            {
-                delete it->second;
-                it->second = new TImageMultiData(fileInfo);
-            }
-        }
-        else
-        {
-            it = Insert(new TImageMultiData(fileInfo));
-        }
-        it->second->SetData(m_pOptions->advanced.reducedImageSize);
-        return it->second;
-    }
+	TImageDataPtr TImageDataStorage::Get(const TFileInfo& fileInfo)
+	{
+		TStorage::iterator it = Find(fileInfo);
+		if(it != m_storage.end())
+		{
+			if(it->second->size != fileInfo.size || it->second->time != fileInfo.time)
+			{
+				delete it->second;
+				it->second = new TImageData(fileInfo);
+			}
+		}
+		else
+		{
+			it = Insert(new TImageData(fileInfo));
+		}
+		it->second->SetData(m_pOptions->advanced.reducedImageSize);
+		return it->second;
+	}
 
-    adError TImageDataStorage::Load(const TChar *fileName, bool check)
-    {
-        HANDLE hFile;
-        size_t size;
-        DWORD byte_was_read;
-        BOOL result;
-        TUInt64 value;
+	adError TImageDataStorage::Load(const TChar *fileName, bool check)
+	{
+		HANDLE hFile;
+		size_t size;
+		DWORD byte_was_read;
+		BOOL result;
+		TUInt64 value;
 
-        TString path;
-        if(fileName == NULL)
-            path = CreatePath(GetApplicationDirectory(), DEFAULT_fileName);
-        else
-            path = fileName;
+		TString path;
+		if(fileName == NULL)
+			path = CreatePath(GetApplicationDirectory(), DEFAULT_fileName);
+		else
+			path = fileName;
 
-        if(!IsFileExists(path.c_str()))
-            return AD_ERROR_FILE_IS_NOT_EXIST;
+		if(!IsFileExists(path.c_str()))
+			return AD_ERROR_FILE_IS_NOT_EXIST;
 
-        hFile = CreateFile(path.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
-        if (hFile == INVALID_HANDLE_VALUE)
-            return AD_ERROR_CANT_OPEN_FILE;
+		hFile = CreateFile(path.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
+		if (hFile == INVALID_HANDLE_VALUE)
+			return AD_ERROR_CANT_OPEN_FILE;
 
-        char control_bytes[sizeof(CONTROL_bytes)];
-        result = ReadFile(hFile, &control_bytes, sizeof(CONTROL_bytes), 
-            &byte_was_read, NULL); 
-        if(result != TRUE || byte_was_read < sizeof(CONTROL_bytes) ||
-            memcmp(control_bytes, CONTROL_bytes, sizeof(CONTROL_bytes)) != 0)
-        {
-            CloseHandle(hFile);
-            return AD_ERROR_INVALID_FILE_FORMAT;
-        }
+		char control_bytes[sizeof(CONTROL_bytes)];
+		result = ReadFile(hFile, &control_bytes, sizeof(CONTROL_bytes), 
+			&byte_was_read, NULL); 
+		if(result != TRUE || byte_was_read < sizeof(CONTROL_bytes) ||
+			memcmp(control_bytes, CONTROL_bytes, sizeof(CONTROL_bytes)) != 0)
+		{
+			CloseHandle(hFile);
+			return AD_ERROR_INVALID_FILE_FORMAT;
+		}
 
-        result = ReadFile(hFile, &value, sizeof(TUInt64), &byte_was_read, NULL); 
-        if(result != TRUE || byte_was_read < sizeof(TUInt64) || value > 0xffffffff)
-        {
-            CloseHandle(hFile);
-            return AD_ERROR_INVALID_FILE_FORMAT;
-        }
-        size = (size_t)value;
+		result = ReadFile(hFile, &value, sizeof(TUInt64), &byte_was_read, NULL); 
+		if(result != TRUE || byte_was_read < sizeof(TUInt64) || value > 0xffffffff)
+		{
+			CloseHandle(hFile);
+			return AD_ERROR_INVALID_FILE_FORMAT;
+		}
+		size = (size_t)value;
 
-        for(size_t i = 0; i < size; i++)
-        {
-            m_pStatus->SetProgress(i, size);
-            TImageMultiData *pImageMultiData = new TImageMultiData();
-            if(!pImageMultiData->Load(hFile))
-            {
+		for(size_t i = 0; i < size; i++)
+		{
+			m_pStatus->SetProgress(i, size);
+			TImageData *pImageData = new TImageData();
+			if(!pImageData->Load(hFile))
+			{
 				CloseHandle(hFile);
-                m_pStatus->Reset();
-                delete pImageMultiData;
-                return AD_ERROR_CANT_READ_FILE;
-            }
+				m_pStatus->Reset();
+				delete pImageData;
+				return AD_ERROR_CANT_READ_FILE;
+			}
 			else if(m_pStatus->Stopped())
 			{
 				Clear();
 				break;
 			}
 			else
-            {
-                TStorage::iterator it = Find(*pImageMultiData);
-                bool add = (!check || pImageMultiData->Actual()) && it == m_storage.end();
-                if(add)
-                {
-                    Insert(pImageMultiData);
-                }
-                else
-                {
-                    delete pImageMultiData;
-                }
-            }
-        }
-        m_pStatus->Reset();
-        CloseHandle(hFile);
-        return AD_OK;
-    }
+			{
+				TStorage::iterator it = Find(*pImageData);
+				bool add = (!check || pImageData->Actual()) && it == m_storage.end();
+				if(add)
+				{
+					Insert(pImageData);
+				}
+				else
+				{
+					delete pImageData;
+				}
+			}
+		}
+		m_pStatus->Reset();
+		CloseHandle(hFile);
+		return AD_OK;
+	}
 
-    adError TImageDataStorage::Save(const TChar *fileName) const
-    {
-        HANDLE hFile;
-        DWORD byte_was_written;
-        BOOL result;
+	adError TImageDataStorage::Save(const TChar *fileName) const
+	{
+		HANDLE hFile;
+		DWORD byte_was_written;
+		BOOL result;
 
-        TString path;
-        if(fileName == NULL)
-            path = CreatePath(GetApplicationDirectory(), DEFAULT_fileName);
-        else
-            path = fileName;
+		TString path;
+		if(fileName == NULL)
+			path = CreatePath(GetApplicationDirectory(), DEFAULT_fileName);
+		else
+			path = fileName;
 
-        hFile = CreateFile(path.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
-        if (hFile == INVALID_HANDLE_VALUE)
-            return AD_ERROR_CANT_CREATE_FILE;
+		hFile = CreateFile(path.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
+		if (hFile == INVALID_HANDLE_VALUE)
+			return AD_ERROR_CANT_CREATE_FILE;
 
-        result = WriteFile(hFile, CONTROL_bytes, sizeof(CONTROL_bytes), 
-            &byte_was_written, NULL);
-        if(result != TRUE || byte_was_written < sizeof(CONTROL_bytes))
-        {
-            CloseHandle(hFile);
-            return AD_ERROR_CANT_WRITE_FILE;
-        }
+		result = WriteFile(hFile, CONTROL_bytes, sizeof(CONTROL_bytes), 
+			&byte_was_written, NULL);
+		if(result != TRUE || byte_was_written < sizeof(CONTROL_bytes))
+		{
+			CloseHandle(hFile);
+			return AD_ERROR_CANT_WRITE_FILE;
+		}
 
-        size_t size = 0;
-        for(TStorage::const_iterator it = m_storage.begin(); it != m_storage.end(); ++it)
-        {
-            if(it->second->FilledDataSize() > 0 || it->second->defect != AD_DEFECT_UNDEFINE)
-                size++;
-        }
+		size_t size = 0;
+		for(TStorage::const_iterator it = m_storage.begin(); it != m_storage.end(); ++it)
+		{
+			if(it->second->NeedToSave())
+				size++;
+		}
 
-        TUInt64 value = size;
-        result = WriteFile(hFile, &value, sizeof(TUInt64), 
-            &byte_was_written, NULL);
-        if(result != TRUE || byte_was_written < sizeof(TUInt64))
-        {
-            CloseHandle(hFile);
-            return AD_ERROR_CANT_WRITE_FILE;
-        }
+		TUInt64 value = size;
+		result = WriteFile(hFile, &value, sizeof(TUInt64), 
+			&byte_was_written, NULL);
+		if(result != TRUE || byte_was_written < sizeof(TUInt64))
+		{
+			CloseHandle(hFile);
+			return AD_ERROR_CANT_WRITE_FILE;
+		}
 
-        size_t i = 0;
-        for(TStorage::const_iterator it = m_storage.begin(); it != m_storage.end(); ++it)
-        {
-            if(it->second->FilledDataSize() > 0 || it->second->defect != AD_DEFECT_UNDEFINE)
-            {
-                m_pStatus->SetProgress(++i, size);
-                if(!it->second->Save(hFile) || m_pStatus->Stopped())
-                {
-                    m_pStatus->Reset();
-                    CloseHandle(hFile);
-                    return AD_ERROR_CANT_WRITE_FILE;
-                }
-            }
-        }
+		size_t i = 0;
+		for(TStorage::const_iterator it = m_storage.begin(); it != m_storage.end(); ++it)
+		{
+			if(it->second->NeedToSave())
+			{
+				m_pStatus->SetProgress(++i, size);
+				if(!it->second->Save(hFile) || m_pStatus->Stopped())
+				{
+					m_pStatus->Reset();
+					CloseHandle(hFile);
+					return AD_ERROR_CANT_WRITE_FILE;
+				}
+			}
+		}
 
-        m_pStatus->Reset();
-        CloseHandle(hFile);
-        return AD_OK;
-    }
+		m_pStatus->Reset();
+		CloseHandle(hFile);
+		return AD_OK;
+	}
 }
