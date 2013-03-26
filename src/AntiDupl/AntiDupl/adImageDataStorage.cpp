@@ -149,7 +149,8 @@ namespace ad
 			return AD_ERROR_DIRECTORY_IS_NOT_EXIST;
 
 		TIndex index;
-		LoadIndex(index, path);
+		if(!LoadIndex(index, CreatePath(path, TString(INDEX_FILE_NAME) + FILE_EXTENSION).c_str()))
+			LoadIndex(index, CreatePath(path, TString(BACKUP_FILE_NAME) + FILE_EXTENSION).c_str());
 		UpdateIndex(index);
 		if(SaveIndex(index, path))
 		{
