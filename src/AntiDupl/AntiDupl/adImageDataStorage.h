@@ -38,14 +38,15 @@ namespace ad
 
 		TImageDataPtr Get(const TFileInfo& fileInfo);
 
-		adError Load(const TChar *fileName, bool check);
-		adError Save(const TChar *fileName) const;
+		adError Load(const TChar *path);
+		adError Save(const TChar *path) const;
 
+		void Check();
 		void Clear();
 
 	private:
 		typedef std::multimap<TUInt32, TImageDataPtr> TStorage;
-		typedef std::pair<TUInt32, TImageDataPtr> TRecord;
+		typedef std::vector<TImageDataPtr> TVector;
 
 		TStorage::iterator Find(const TFileInfo& fileInfo);
 		TStorage::iterator Insert(TImageData* pImageData);
@@ -53,6 +54,38 @@ namespace ad
 		TStorage m_storage;
 		TStatus *m_pStatus;
 		TOptions *m_pOptions;
+
+		struct TData
+		{
+			enum Type
+			{
+				Skip,
+				Old,
+				New,
+			} type;
+			short key;
+			size_t size;
+			TPath first;
+			TPath last;
+			TVector data;
+
+			TData(short key_ = 0) : key(key_), size(0), type(Skip) {}
+		};
+		typedef std::map<short, TData> TIndex;
+
+		void CreateSorted(TVector & sorted) const;
+		void SetOld(TIndex & index) const;
+		void UpdateIndex(TIndex & index) const;
+
+		TString GetDataFileName(short key) const;
+
+		bool SaveIndex(const TIndex & index, const TChar *path) const;
+		bool SaveData(const TData & data, const TChar *path) const;
+		bool SaveDataHeader(const TData & data, HANDLE hOut) const;
+
+		bool LoadIndex(TIndex & index, const TChar *fileName) const;
+		bool LoadData(TData & data, const TChar *path, short key);
+		bool LoadDataHeader(TData & data, HANDLE hIn) const;
 	};
     //-------------------------------------------------------------------------
 }

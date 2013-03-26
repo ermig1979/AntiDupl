@@ -148,7 +148,7 @@ namespace AntiDupl.NET
             if (m_options.useImageDataBase)
             {
                 m_state = State.LoadImages;
-                m_core.Load(CoreDll.FileType.ImageDataBase, m_options.GetImageDataBaseFileName(), false);
+                m_core.Load(CoreDll.FileType.ImageDataBase, m_options.GetImageDataBasePath(), false);
             }
             m_state = State.Search;
             m_core.Search();
@@ -159,7 +159,7 @@ namespace AntiDupl.NET
             if (m_options.useImageDataBase)
             {
                 m_state = State.SaveImages;
-                m_core.Save(CoreDll.FileType.ImageDataBase, m_options.GetImageDataBaseFileName());
+                m_core.Save(CoreDll.FileType.ImageDataBase, m_options.GetImageDataBasePath());
             }
             m_core.Clear(CoreDll.FileType.ImageDataBase);
             m_core.SortResult((CoreDll.SortType)m_options.resultsOptions.sortTypeDefault, m_options.resultsOptions.increasingDefault);

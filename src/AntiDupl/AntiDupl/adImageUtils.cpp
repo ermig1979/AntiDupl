@@ -33,10 +33,10 @@ namespace ad
         AD_FUNCTION_PERFORMANCE_TEST
 
         TView fullSizeGray(pImage->View()->width, pImage->View()->height, Simd::View::Gray8, NULL);
-        BgraToGray(*pImage->View(), fullSizeGray);
+		Simd::BgraToGray(*pImage->View(), fullSizeGray);
 
         TView reducedGray(width, height, width, Simd::View::Gray8, pGrayBuffer);
-        ResizeBilinear(fullSizeGray, reducedGray);
+        Simd::ResizeBilinear(fullSizeGray, reducedGray);
     }
 
     adError LoadBitmap(const TString& fileName, adBitmapPtr pBitmap)
@@ -70,7 +70,7 @@ namespace ad
                 if(format)
                 {
                     TView view(pBitmap->width, pBitmap->height, pBitmap->stride, format, pBitmap->data);
-                    ResizeBilinear(*pImage->View(), view);
+                    Simd::ResizeBilinear(*pImage->View(), view);
                     result = AD_OK;
                 }
                 delete pImage;
