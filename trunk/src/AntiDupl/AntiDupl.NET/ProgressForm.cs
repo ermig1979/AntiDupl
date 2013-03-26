@@ -238,11 +238,11 @@ namespace AntiDupl.NET
                case Type.RefreshImages:
                     {
                         m_type = Type.LoadImages;
-                        m_core.Load(CoreDll.FileType.ImageDataBase, m_options.GetImageDataBaseFileName(), true);
+                        m_core.Load(CoreDll.FileType.ImageDataBase, m_options.GetImageDataBasePath(), true);
                         if (m_state == State.Work)
                         {
                             m_type = Type.SaveImages;
-                            m_core.Save(CoreDll.FileType.ImageDataBase, m_options.GetImageDataBaseFileName());
+                            m_core.Save(CoreDll.FileType.ImageDataBase, m_options.GetImageDataBasePath());
                         }
                         m_updateResults = false;
                         break;

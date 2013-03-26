@@ -196,13 +196,13 @@ namespace AntiDupl.NET
             return builder.ToString();
         }
 
-        public string GetImageDataBaseFileName()
+        public string GetImageDataBasePath()
         {
             string directory = string.Format("{0}\\images\\{1}x{1}", Resources.UserPath, coreOptions.advancedOptions.reducedImageSize);
             DirectoryInfo directoryInfo = new DirectoryInfo(directory);
             if (!directoryInfo.Exists)
                 directoryInfo.Create();
-            return string.Format("{0}\\index.adr", directory);
+            return directory;
         }
 
         public bool Equals(Options options)

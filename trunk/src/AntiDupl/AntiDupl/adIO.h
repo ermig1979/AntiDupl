@@ -86,6 +86,42 @@
 
 namespace ad
 {
+	inline bool SaveFormatVersion(HANDLE hOut, const std::string & format, TUInt32 version)
+	{
+		DWORD byte_was_written;
+		BOOL result;
+
+		result = WriteFile(hOut, format.c_str(), (DWORD)format.size(), &byte_was_written, NULL);
+		if(result != TRUE || byte_was_written < (DWORD)format.size())
+			return false;
+
+		result = WriteFile(hOut, &version, (DWORD)sizeof(version), 
+			&byte_was_written, NULL);
+		if(result != TRUE || byte_was_written < (DWORD)sizeof(version))
+			return false;
+
+		return true;
+	}
+
+	inline bool LoadFormatVersion(HANDLE hIn, const std::string & format, TUInt32 version)
+	{
+		DWORD byte_was_read;
+		BOOL result;
+
+		std::string current_format = format;
+		result = ReadFile(hIn, (void*)current_format.c_str(), (DWORD)current_format.size(), 
+			&byte_was_read, NULL); 
+		if(result != TRUE || byte_was_read < (DWORD)current_format.size() || current_format != format)
+			return false;
+
+		TUInt32 current_version = version;
+		result = ReadFile(hIn, &current_version, sizeof(TUInt32), &byte_was_read, NULL); 
+		if(result != TRUE || byte_was_read < sizeof(TUInt32) || current_version != version)
+			return false;
+
+		return true;
+	}
+
     inline unsigned short InvertByteOrder(unsigned short value)
     {
         return
