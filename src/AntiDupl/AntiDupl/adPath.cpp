@@ -169,6 +169,15 @@ namespace ad
 		return NONE;
 	}
 
+	bool TPath::Valid(size_t size)
+	{
+#ifdef UNICODE
+		return size < MAX_PATH_EX;
+#else//UNICODE
+		return size < MAX_PATH;
+#endif//UNICODE
+	}
+
     //----------------Key names:-----------------------------------------------
 
     const TChar KEY_pathCount[] = TEXT("PathCount");

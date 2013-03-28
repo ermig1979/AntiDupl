@@ -42,10 +42,9 @@ namespace ad
 		TPixelDataPtr data;
 		HGLOBAL hGlobal; 
 
-		TImageData(const TString& path_ = TString()) : TImageInfo(path_) {Init();}
-		TImageData(const TString& path_, TUInt64 size_, TUInt64 time_) : TImageInfo(path_, size_, time_) {Init();}
-		TImageData(const TFileInfo& fileInfo) : TImageInfo(fileInfo) {Init();}
-		TImageData(const TImageData& imageData) :TImageInfo(imageData) {Init(); *this = imageData;};
+		TImageData(size_t reducedImageSize);
+		TImageData(const TFileInfo& fileInfo, size_t reducedImageSize);
+		TImageData(const TImageData& imageData);
 		virtual ~TImageData();
 
 		TImageData& operator = (const TImageData& imageData);
@@ -60,15 +59,11 @@ namespace ad
 
 		void FreeGlobal();
 
-		bool Load(HANDLE hIn);
-		bool Save(HANDLE hOut) const;
-
 		bool NeedToSave() const;
-
-		bool SetData(size_t reducedImageSize);
 
 	private:
 		void Init();
+		void SetData(size_t reducedImageSize);
 
 		bool m_owner;
 	};

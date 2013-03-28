@@ -21,32 +21,23 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
-#ifndef __adPixelData_h__
-#define __adPixelData_h__
+#ifndef __adException_h__
+#define __adException_h__
 
 #include "adConfig.h"
 
 namespace ad
 {
-    struct TPixelData
-    {
-        TUInt8* const fast;
-        TUInt8* const main;
-        const size_t side;
-        const size_t size;
-        const size_t full;
-        bool filled;
+	class TException
+	{
+	public:
+		const adError Error;
 
-        TPixelData(size_t side_);
-        TPixelData(const TPixelData& pixelData);
-        ~TPixelData();
-
-        void FillFast(int ignoreFrameWidth);
-        void Turn(TUInt8 *buffer);
-        void Mirror(TUInt8 *buffer);
-    };
-
-    typedef TPixelData* TPixelDataPtr;
+		TException(adError error) 
+			:Error(error)
+		{
+		}
+	};
 }
 
-#endif/*__adPixelData_h__*/
+#endif//__adException_h__ 

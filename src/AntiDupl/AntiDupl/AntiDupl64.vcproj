@@ -213,6 +213,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\adException.h"
+			>
+		</File>
+		<File
 			RelativePath=".\adExternal.h"
 			>
 		</File>
@@ -222,6 +226,14 @@
 		</File>
 		<File
 			RelativePath=".\adFileInfo.h"
+			>
+		</File>
+		<File
+			RelativePath=".\adFileStream.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\adFileStream.h"
 			>
 		</File>
 		<File

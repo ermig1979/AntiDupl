@@ -145,6 +145,8 @@ namespace ad
 		static inline bool BiggerByName(const TPath& path1, const TPath& path2) {return CompareByName(path1, path2) > 0;}
 		static inline bool BiggerByNameWithExtension(const TPath& path1, const TPath& path2) {return CompareByNameWithExtension(path1, path2) > 0;}
 		static inline bool BiggerByExtension(const TPath& path1, const TPath& path2) {return CompareByPath(path1, path2) > 0;}
+
+		static bool Valid(size_t size);
 	};
 
     //-------------------------------------------------------------------------
