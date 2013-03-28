@@ -81,11 +81,9 @@ namespace ad
 
 		bool SaveIndex(const TIndex & index, const TChar *path) const;
 		bool SaveData(const TData & data, const TChar *path) const;
-		bool SaveDataHeader(const TData & data, HANDLE hOut) const;
 
 		bool LoadIndex(TIndex & index, const TChar *fileName) const;
 		bool LoadData(TData & data, const TChar *path, short key);
-		bool LoadDataHeader(TData & data, HANDLE hIn) const;
 	};
     //-------------------------------------------------------------------------
 }

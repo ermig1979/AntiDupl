@@ -27,6 +27,26 @@
 
 namespace ad
 {
+	TImageData::TImageData(size_t reducedImageSize)
+	{
+		Init();
+		SetData(reducedImageSize);
+	}
+
+	TImageData::TImageData(const TFileInfo& fileInfo, size_t reducedImageSize) 
+		: TImageInfo(fileInfo) 
+	{
+		Init();
+		SetData(reducedImageSize);
+	}
+
+	TImageData::TImageData(const TImageData& imageData) 
+		: TImageInfo(imageData)
+	{
+		Init(); 
+		*this = imageData;
+	}
+
 	void TImageData::Init()
 	{
 		ratio = 0;
@@ -37,6 +57,20 @@ namespace ad
 		data = NULL;
 		m_owner = false;
 		hGlobal = NULL;
+	}
+
+	void TImageData::SetData(size_t reducedImageSize)
+	{
+		if(data == NULL || data->side != reducedImageSize)
+		{
+			if(m_owner && data != NULL)
+			{
+				delete data;
+				m_owner = false;
+			}
+			data = new TPixelData(reducedImageSize);
+			m_owner = true;
+		}
 	}
 
 	TImageData::~TImageData()
@@ -124,65 +158,6 @@ namespace ad
 			::GlobalFree(hGlobal);
 			hGlobal = NULL;
 		}
-	}
-
-	bool TImageData::SetData(size_t reducedImageSize)
-	{
-		if(data == NULL || data->side != reducedImageSize)
-		{
-			if(m_owner && data != NULL)
-			{
-				delete data;
-				m_owner = false;
-			}
-			data = new TPixelData(reducedImageSize);
-			m_owner = true;
-		}
-		return data->filled;
-	}
-
-	bool TImageData::Load(HANDLE hIn)
-	{
-		if(!(static_cast<TImageInfo*>(this))->Load(hIn))
-			return false;
-
-		AD_READ_VALUE_FROM_FILE(hIn, defect);
-		AD_READ_VALUE_FROM_FILE(hIn, crc32);
-
-		if(m_owner && data != NULL)
-		{
-			delete data;
-			m_owner = false;
-		}
-
-		bool exist = false;
-		AD_READ_VALUE_FROM_FILE(hIn, exist);
-		if(exist)
-		{
-			data = TPixelData::Load(hIn);
-			if(data == NULL)
-				return false;
-			else
-				m_owner = true;
-		}
-
-		return true;
-	}
-
-	bool TImageData::Save(HANDLE hOut) const
-	{
-		if(!(static_cast<const TImageInfo*>(this))->Save(hOut))
-			return false;
-
-		AD_WRITE_VALUE_TO_FILE(hOut, defect);
-		AD_WRITE_VALUE_TO_FILE(hOut, crc32);
-
-		bool exist = data != NULL && data->filled;
-		AD_WRITE_VALUE_TO_FILE(hOut, exist);
-		if(exist)
-			return data->Save(hOut);
-
-		return true;
 	}
 
 	bool TImageData::NeedToSave() const 

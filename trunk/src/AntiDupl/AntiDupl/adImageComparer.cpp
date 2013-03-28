@@ -70,7 +70,7 @@ namespace ad
 
         if(m_pOptions->check.transformedImage == TRUE)
         {
-            m_pTransformedImageData = new TImageData();
+            m_pTransformedImageData = new TImageData(m_pOptions->advanced.reducedImageSize);
             m_pBuffer = (TUInt8*)Simd::Allocate(m_mainSize + FAST_DATA_SIZE);
         }
     }

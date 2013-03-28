@@ -60,34 +60,6 @@ namespace ad
         Simd::Free((void*)fast);
     }
 
-    TPixelData* TPixelData::Load(HANDLE hIn)
-    {
-        size_t side;
-
-        AD_READ_SIZE_FROM_FILE(hIn, side);
-        if(side < 0x10 || side > 0x100 || side%0x10 != 0)
-            return NULL;
-
-        TPixelData *pPixelData = new TPixelData(side);
-        DWORD byte_was_read;
-        BOOL result = ReadFile(hIn, pPixelData->main, (DWORD)pPixelData->size, &byte_was_read, NULL); 
-        if(result != TRUE || byte_was_read < (DWORD)pPixelData->size) 
-        {
-            delete pPixelData;
-            return NULL;
-        }
-        pPixelData->filled = true;
-        return pPixelData;
-    }
-
-    bool TPixelData::Save(HANDLE hOut) const
-    {
-        AD_WRITE_SIZE_TO_FILE(hOut, side);
-
-        AD_WRITE_BUFFER_TO_FILE(hOut, main, size);
-
-        return true;
-    }
 
     void TPixelData::FillFast(int ignoreFrameWidth)
     {
