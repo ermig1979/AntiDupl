@@ -26,6 +26,7 @@
 
 #include "adConfig.h"
 #include "adStrings.h"
+#include "adException.h"
 
 namespace ad
 {
@@ -61,9 +62,34 @@ namespace ad
 			Load(&t, sizeof(T));
 			return t;
 		}
-		template <class T> void Load(T & t) const {	Load(&t, sizeof(T)); }
-		size_t LoadSize() const { return (size_t)Load<TUInt64>(); }
-		void LoadSize(size_t & size) const { size = LoadSize(); }
+
+		template <class T> void Load(T & t) const 
+		{	
+			Load(&t, sizeof(T)); 
+		}
+
+		template <class T> T LoadChecked(T tMin, T tMax) const
+		{
+			T t = Load<T>();
+			if(t < tMin || t > tMax)
+				throw TException(AD_ERROR_INVALID_FILE_FORMAT);
+			return t;
+		}
+
+		template <class T> void LoadChecked(T & t, T tMin, T tMax) const 
+		{	
+			t = LoadChecked(tMin, tMax); 
+		}
+
+		template <class T> void Check(const T & t) const 
+		{	
+			LoadChecked(t, t); 
+		}
+
+		size_t LoadSize() const;
+		void LoadSize(size_t & size) const;
+		size_t LoadSizeChecked(size_t sizeMax) const;
+		void LoadSizeChecked(size_t & size, size_t sizeMax) const;
 
 		void Load(TString & string) const;
 		void Load(class TPath & path) const;
@@ -71,6 +97,7 @@ namespace ad
 		void Load(struct TImageInfo & imageInfo) const;
 		void Load(struct TPixelData & pixelData) const;
 		void Load(struct TImageData & imageData) const;
+		void Load(struct TResult & result) const;
 	};
 
 	//-------------------------------------------------------------------------
@@ -82,8 +109,12 @@ namespace ad
 
 		void Save(const void * buffer, size_t size) const;
 
-		template <class T> void Save(T t) const { Save(&t, sizeof(T)); }
-		void SaveSize(size_t size) const { Save<TUInt64>(size); }
+		template <class T> void Save(T t) const 
+		{ 
+			Save(&t, sizeof(T)); 
+		}
+
+		void SaveSize(size_t size) const;
 
 		void Save(const TString & string) const;
 		void Save(const class TPath & path) const;
@@ -91,6 +122,7 @@ namespace ad
 		void Save(const struct TImageInfo & imageInfo) const;
 		void Save(const struct TPixelData & pixelData) const;
 		void Save(const struct TImageData & imageData) const;
+		void Save(const struct TResult & result) const;
 	};
 }
 

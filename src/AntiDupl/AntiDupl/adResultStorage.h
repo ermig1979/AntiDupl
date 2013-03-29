@@ -40,7 +40,9 @@ namespace ad
 	class TCriticalSection;
 
     typedef TResult* TResultPtr;
+
     //-------------------------------------------------------------------------
+
     class TResultStorage
     {
         typedef std::vector<TResultPtr> TResultPtrVector;
@@ -101,6 +103,5 @@ namespace ad
         TUndoRedoEngine *m_pUndoRedoEngine;
         size_t m_nextId;
     };
-    //-------------------------------------------------------------------------
 }
 #endif//__adResultStorage_h__ 

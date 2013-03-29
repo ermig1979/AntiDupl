@@ -28,8 +28,6 @@
 
 namespace ad
 {
-    class TImageInfoStorage;
-    //-------------------------------------------------------------------------
     struct TResult
     {
         size_t id;
@@ -53,12 +51,11 @@ namespace ad
 
         bool Export(adResultPtrA pResult) const;
         bool Export(adResultPtrW pResult) const;
-
-        bool Load(HANDLE hIn, TImageInfoStorage *pImageInfoStorage);
-        bool Save(HANDLE hOut) const;
     };
     typedef TResult* TResultPtr;
+
     //-------------------------------------------------------------------------
+
     class TResultPtrLesser
     {
     public:
@@ -70,6 +67,5 @@ namespace ad
         TSortType m_sortType;
         bool m_increasing;
     };
-    //-------------------------------------------------------------------------
 }
 #endif//__adResult_h__ 

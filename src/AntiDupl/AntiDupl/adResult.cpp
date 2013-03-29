@@ -21,29 +21,11 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
-#include <algorithm>
-#include <list>
-#include <vector>
 
-#include <math.h>
-
-#include "adImageInfoStorage.h"
-#include "adStatus.h"
-#include "adOptions.h"
-#include "adEngine.h"
 #include "adResult.h"
-#include "adImageGroup.h"
-#include "adIO.h"
 
 namespace ad
 {
-    //-------------------------------------------------------------------------
-
-    const TChar DEFAULT_fileName[] = TEXT("AntiDupl.adr");
-
-    const char CONTROL_bytes[] = "adr2";
-
-    //-------------------------------------------------------------------------
     TResult::TResult()
         :id(-1),
         selected(false),
@@ -200,50 +182,8 @@ namespace ad
         return result;
     }
 
-    bool TResult::Load(HANDLE hIn, TImageInfoStorage *pImageInfoStorage)
-    {
-        size_t index;
+	//-------------------------------------------------------------------------
 
-        AD_READ_BOUNDED_VALUE_FROM_FILE(hIn, type, 0, AD_RESULT_SIZE);
-
-        AD_READ_SIZE_FROM_FILE(hIn, index)
-        first = pImageInfoStorage->Get(index);
-        if(first == NULL)
-            return false;
-
-        AD_READ_SIZE_FROM_FILE(hIn, index)
-        if(type == AD_RESULT_DUPL_IMAGE_PAIR)
-        {
-            second = pImageInfoStorage->Get(index);
-            if(second == NULL)
-                return false;
-        }
-        else
-            second = pImageInfoStorage->GetStub();
-
-        AD_READ_BOUNDED_VALUE_FROM_FILE(hIn, defect, 0, AD_DEFECT_SIZE);
-        AD_READ_CHECKED_VALUE_FROM_FILE(hIn, difference, difference < 0 || difference > DENOMINATOR);
-        AD_READ_BOUNDED_VALUE_FROM_FILE(hIn, transform, 0, AD_TRANSFORM_SIZE);
-        AD_READ_SIZE_FROM_FILE(hIn, group);
-        AD_READ_BOUNDED_VALUE_FROM_FILE(hIn, hint, 0, AD_HINT_SIZE);
-
-        return true;
-    }
-
-    bool TResult::Save(HANDLE hOut) const
-    {
-        AD_WRITE_VALUE_TO_FILE(hOut, type);
-        AD_WRITE_SIZE_TO_FILE(hOut, first->index);
-        AD_WRITE_SIZE_TO_FILE(hOut, second->index);
-        AD_WRITE_VALUE_TO_FILE(hOut, defect);
-        AD_WRITE_VALUE_TO_FILE(hOut, difference);
-        AD_WRITE_VALUE_TO_FILE(hOut, transform);
-        AD_WRITE_SIZE_TO_FILE(hOut, group);
-        AD_WRITE_VALUE_TO_FILE(hOut, hint);
-
-        return true;
-    }
-    //-------------------------------------------------------------------------
     TResultPtrLesser::TResultPtrLesser(TSortType sortType, bool increasing) 
         :m_sortType(sortType),
         m_increasing(increasing)
@@ -302,5 +242,4 @@ namespace ad
 
         return false;
     }
-    //-------------------------------------------------------------------------
 }

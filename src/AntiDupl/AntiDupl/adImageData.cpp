@@ -41,7 +41,6 @@ namespace ad
 	}
 
 	TImageData::TImageData(const TImageData& imageData) 
-		: TImageInfo(imageData)
 	{
 		Init(); 
 		*this = imageData;

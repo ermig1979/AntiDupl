@@ -25,6 +25,7 @@
 #include "adEngine.h"
 #include "adStatus.h"
 #include "adImageInfoStorage.h"
+#include "adFileStream.h"
 
 namespace ad
 {
@@ -51,57 +52,48 @@ namespace ad
         return (index < m_loadVector.size() ? m_loadVector[index] : NULL);
     }
 
-    bool TImageInfoStorage::Load(HANDLE hIn, bool check)
-    {
-        Clear();
+	void TImageInfoStorage::Load(const TInputFileStream & inputFile, bool check)
+	{
+		Clear();
 
-        size_t size = 0;
-        AD_READ_BOUNDED_SIZE_FROM_FILE(hIn, size, 0xffffffff);
+		size_t size = inputFile.LoadSizeChecked(SIZE_CHECK_LIMIT);
+		m_loadVector.reserve(size);
+		TImageInfo imageInfo;
+		for(size_t i = 0; i < size; i++)
+		{
+			inputFile.Load(imageInfo);
+			TImageInfo *pImageInfo = new TImageInfo(imageInfo);
+			m_loadVector.push_back(pImageInfo);
+			m_mainList.push_back(pImageInfo);
+			m_pStatus->SetProgress(i, size);
+			if(m_pStatus->Stopped())
+				return;
+		}
 
-        m_loadVector.reserve(size);
-        for(size_t i = 0; i < size; i++)
-        {
-            m_pStatus->SetProgress(i, size);
-            TImageInfo *pImageInfo = new TImageInfo();
-            if(!pImageInfo->Load(hIn) || m_pStatus->Stopped())
-            {
-                m_pStatus->Reset();
-                delete pImageInfo;
-                return false;
-            }
-            else
-            {
-                m_loadVector.push_back(pImageInfo);
-                m_mainList.push_back(pImageInfo);
-            }
-        }
+		for(size_t i = 0; i < size; i++)
+		{
+			TImageInfo *pImageInfo = m_loadVector[i];
+			pImageInfo->removed = check && !pImageInfo->Actual();
+			m_pStatus->SetProgress(i, size);
+			if(m_pStatus->Stopped())
+				return;
+		}
+	}
 
-        for(size_t i = 0; i < size; i++)
-        {
-            m_pStatus->SetProgress(i, size);
-            TImageInfo *pImageInfo = m_loadVector[i];
-            pImageInfo->removed = check && !pImageInfo->Actual();
-        }
-
-        return true;
-    }
-
-    bool TImageInfoStorage::Save(HANDLE hOut) const
-    {
-        size_t size = m_mainList.size();
-        AD_WRITE_SIZE_TO_FILE(hOut, size);
-
-        size_t index = 0;
-        for(TMainList::const_iterator it = m_mainList.begin(); it != m_mainList.end(); ++it, ++index)
-        {
-            (*it)->index = index;
-            m_pStatus->SetProgress(index, size);
-            if(!(*it)->Save(hOut) || m_pStatus->Stopped())
-                return false;
-        }
-
-        return true;
-    }
+	void TImageInfoStorage::Save(const TOutputFileStream & outputFile) const
+	{
+		size_t size = m_mainList.size();
+		outputFile.SaveSize(size);
+		size_t index = 0;
+		for(TMainList::const_iterator it = m_mainList.begin(); it != m_mainList.end(); ++it, ++index)
+		{
+			(*it)->index = index;
+			outputFile.Save(**it);
+			m_pStatus->SetProgress(index, size);
+			if(m_pStatus->Stopped())
+				return;
+		}
+	}
 
     void TImageInfoStorage::Clear()
     {

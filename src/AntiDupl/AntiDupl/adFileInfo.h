@@ -35,7 +35,8 @@ namespace ad
         TUInt64 time;
         TUInt32 hash;
 
-        TFileInfo(const TString& path_ = TString());
+		TFileInfo();
+        TFileInfo(const TString& path_);
         TFileInfo(const TString& path_, TUInt64 size_, TUInt64 time_);
         TFileInfo(const TFileInfo& fileInfo) {*this = fileInfo;};
   
@@ -45,9 +46,6 @@ namespace ad
         inline bool operator!=(const TFileInfo &fileInfo) const {return !(*this == fileInfo);}
         inline bool operator>(const TFileInfo &fileInfo) const {return TPath::BiggerByPath(path, fileInfo.path);}
         inline bool operator<(const TFileInfo &fileInfo) const {return TPath::LesserByPath(path, fileInfo.path);}
-
-        bool Load(HANDLE hIn);
-        bool Save(HANDLE hOut) const;
 
         bool Actual(bool update = false);
 

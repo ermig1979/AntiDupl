@@ -90,29 +90,5 @@ namespace ad
 
         return true;
     }
-
-    bool TImageInfo::Load(HANDLE hIn)
-    {
-        if(!(static_cast<TFileInfo*>(this))->Load(hIn))
-            return false;
-
-        AD_READ_VALUE_FROM_FILE(hIn, type);
-        AD_READ_VALUE_FROM_FILE(hIn, width);
-        AD_READ_VALUE_FROM_FILE(hIn, height);
-
-        return true;
-    }
-
-    bool TImageInfo::Save(HANDLE hOut) const
-    {
-        if(!(static_cast<const TFileInfo*>(this))->Save(hOut))
-            return false;
-
-        AD_WRITE_VALUE_TO_FILE(hOut, type);
-        AD_WRITE_VALUE_TO_FILE(hOut, width);
-        AD_WRITE_VALUE_TO_FILE(hOut, height);
-
-        return true;
-    }
 }
 
