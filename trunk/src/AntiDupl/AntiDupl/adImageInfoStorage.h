@@ -34,6 +34,9 @@ namespace ad
     class TEngine;
     class TStatus;
 
+	class TInputFileStream;
+	class TOutputFileStream;
+
     typedef std::list<TImageInfoPtr> TImageInfoPtrList;
     //-------------------------------------------------------------------------
     class TImageInfoStorage
@@ -47,8 +50,8 @@ namespace ad
         TImageInfoPtr Get(size_t index) const;
         TImageInfoPtr GetStub() {return &m_stub;};
 
-        bool Load(HANDLE hIn, bool check);
-        bool Save(HANDLE hOut) const;
+		void Load(const TInputFileStream & inputFile, bool check);
+		void Save(const TOutputFileStream & outputFile) const;
 
         void Clear();
 

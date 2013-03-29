@@ -42,6 +42,7 @@
 #include <iostream>
 #include <exception>
 #include <algorithm>
+#include <limits>
 
 #include "Simd/Simd.h"
 
@@ -102,6 +103,7 @@ namespace ad
 
 	const size_t IMAGE_DATA_FILE_SIZE_MAX = 0x10000;
 	const TUInt32 FILE_VERSION = 1;
+	const size_t SIZE_CHECK_LIMIT = UINT_MAX;
     //-------------------------------------------------------------------------
 }
 

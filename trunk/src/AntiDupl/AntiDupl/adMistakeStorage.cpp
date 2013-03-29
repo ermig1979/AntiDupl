@@ -24,172 +24,69 @@
 #include "adFileUtils.h"
 #include "adImageInfo.h"
 #include "adMistakeStorage.h"
+#include "adFileStream.h"
 
 namespace ad
 {
-    //-------------------------------------------------------------------------
-
-    const TChar DEFAULT_fileName[] = TEXT("AntiDupl.adm");
-
-    const char CONTROL_bytes[] = "adm2";
+    const char MISTAKE_CONTROL_BYTES[] = "adm";
 
     //-------------------------------------------------------------------------
+
     adError TMistakeStorage::Save(const TChar *fileName)
     {
-        HANDLE hFile;
-        size_t size;
-        DWORD byte_was_written;
-        BOOL result;
-        TUInt64 value;
+		try
+		{
+			TOutputFileStream outputFile(fileName, MISTAKE_CONTROL_BYTES);
 
-        TString path;
-        if(fileName == NULL)
-            path = CreatePath(GetApplicationDirectory(), DEFAULT_fileName);
-        else
-            path = fileName;
+			outputFile.SaveSize(m_singles.size());
+			for(TImageInfoPtrMultiSet::iterator it = m_singles.begin(); it != m_singles.end(); ++it)
+			{
+				outputFile.Save(**it);
+			}
 
-        hFile = CreateFile(path.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
-        if (hFile == INVALID_HANDLE_VALUE)
-            return AD_ERROR_CANT_CREATE_FILE;
-
-        result = WriteFile(hFile, CONTROL_bytes, sizeof(CONTROL_bytes), 
-            &byte_was_written, NULL);
-        if(result != TRUE || byte_was_written < sizeof(CONTROL_bytes))
-        {
-            CloseHandle(hFile);
-            return AD_ERROR_CANT_WRITE_FILE;
-        }
-
-        size = m_singles.size();
-        value = size;
-        result = WriteFile(hFile, &value, sizeof(TUInt64), 
-            &byte_was_written, NULL);
-        if(result != TRUE || byte_was_written < sizeof(TUInt64))
-        {
-            CloseHandle(hFile);
-            return AD_ERROR_CANT_WRITE_FILE;
-        }
-
-        for(TImageInfoPtrMultiSet::iterator it = m_singles.begin(); it != m_singles.end(); ++it)
-        {
-            if(!(*it)->Save(hFile))
-            {
-                CloseHandle(hFile);
-                return AD_ERROR_CANT_WRITE_FILE;
-            }
-        }
-
-        size = m_pairs.size();
-        value = size;
-        result = WriteFile(hFile, &value, sizeof(TUInt64), 
-            &byte_was_written, NULL);
-        if(result != TRUE || byte_was_written < sizeof(TUInt64))
-        {
-            CloseHandle(hFile);
-            return AD_ERROR_CANT_WRITE_FILE;
-        }
-
-        for(TImageInfoPtrPairMultiSet::iterator it = m_pairs.begin(); it != m_pairs.end(); ++it)
-        {
-            if(!it->first->Save(hFile))
-            {
-                CloseHandle(hFile);
-                return AD_ERROR_CANT_WRITE_FILE;
-            }
-            if(!it->second->Save(hFile))
-            {
-                CloseHandle(hFile);
-                return AD_ERROR_CANT_WRITE_FILE;
-            }
-        }
-
-        CloseHandle(hFile);
-        return AD_OK;
+			outputFile.SaveSize(m_pairs.size());
+			for(TImageInfoPtrPairMultiSet::iterator it = m_pairs.begin(); it != m_pairs.end(); ++it)
+			{
+				outputFile.Save(*it->first);
+				outputFile.Save(*it->second);
+			}
+		}
+		catch (TException e)
+		{
+			return e.Error;
+		}
+		return AD_OK;
     }
 
     adError TMistakeStorage::Load(const TChar *fileName, bool check)
     {
-        HANDLE hFile;
-        size_t size;
-        DWORD byte_was_read;
-        BOOL result;
-        TUInt64 value;
+		try
+		{
+			TInputFileStream inputFile(fileName, MISTAKE_CONTROL_BYTES);
 
-        Clear();
+			size_t singleSize = inputFile.LoadSizeChecked(SIZE_CHECK_LIMIT);
+			for(size_t i = 0; i < singleSize; i++)
+			{
+				TImageInfo single;
+				inputFile.Load(single);
+				if(!check || single.Actual())
+					m_singles.insert(new TImageInfo(single));
+			}
 
-        TString path;
-        if(fileName == NULL)
-            path = CreatePath(GetApplicationDirectory(), DEFAULT_fileName);
-        else
-            path = fileName;
-
-        if(!IsFileExists(path.c_str()))
-            return AD_ERROR_FILE_IS_NOT_EXIST;
-
-        hFile = CreateFile(path.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
-        if (hFile == INVALID_HANDLE_VALUE)
-            return AD_ERROR_CANT_OPEN_FILE;
-
-        char control_bytes[sizeof(CONTROL_bytes)];
-        result = ReadFile(hFile, &control_bytes, sizeof(CONTROL_bytes), 
-            &byte_was_read, NULL); 
-        if(result != TRUE || byte_was_read < sizeof(CONTROL_bytes) ||
-            memcmp(control_bytes, CONTROL_bytes, sizeof(CONTROL_bytes)) != 0)
-        {
-            CloseHandle(hFile);
-            return AD_ERROR_INVALID_FILE_FORMAT;
-        }
-
-        result = ReadFile(hFile, &value, sizeof(TUInt64), &byte_was_read, NULL); 
-        if(result != TRUE || byte_was_read < sizeof(TUInt64) || value > 0xffffffff)
-        {
-            CloseHandle(hFile);
-            return AD_ERROR_INVALID_FILE_FORMAT;
-        }
-        size = (size_t)value;
-
-        for(size_t i = 0; i < size; i++)
-        {
-            TImageInfo single;
-            if(!single.Load(hFile))
-            {
-                CloseHandle(hFile);
-                Clear();
-                return AD_ERROR_CANT_READ_FILE;
-            }
-            if(!check || single.Actual())
-                m_singles.insert(new TImageInfo(single));
-        }
-
-        result = ReadFile(hFile, &value, sizeof(TUInt64), &byte_was_read, NULL); 
-        if(result != TRUE || byte_was_read < sizeof(TUInt64) || value > 0xffffffff)
-        {
-            CloseHandle(hFile);
-            return AD_ERROR_INVALID_FILE_FORMAT;
-        }
-        size = (size_t)value;
-
-        for(size_t i = 0; i < size; i++)
-        {
-            TImageInfo first;
-            if(!first.Load(hFile))
-            {
-                CloseHandle(hFile);
-                Clear();
-                return AD_ERROR_CANT_READ_FILE;
-            }
-            TImageInfo second;
-            if(!second.Load(hFile))
-            {
-                CloseHandle(hFile);
-                Clear();
-                return AD_ERROR_CANT_READ_FILE;
-            }
-            if(!check || (first.Actual() && second.Actual()))
-                m_pairs.insert(TImageInfoPtrPair(new TImageInfo(first), new TImageInfo(second)));
-        }
-
-        CloseHandle(hFile);
+			size_t pairSize = inputFile.LoadSizeChecked(SIZE_CHECK_LIMIT);
+			for(size_t i = 0; i < pairSize; i++)
+			{
+				TImageInfo first, second;
+				inputFile.Load(first);
+				inputFile.Load(second);
+				if(!check || (first.Actual() && second.Actual()))
+					m_pairs.insert(TImageInfoPtrPair(new TImageInfo(first), new TImageInfo(second)));
+			}
+		}
+		catch (TException e)
+		{
+			return e.Error;
+		}
         return AD_OK;
     }
 
@@ -372,5 +269,4 @@ namespace ad
         }
         return m_singles.end();
     }
-    //-------------------------------------------------------------------------
 }

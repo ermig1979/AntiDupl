@@ -41,14 +41,11 @@
 #include "adUndoRedoTypes.h"
 #include "adUndoRedoEngine.h"
 #include "adResultStorage.h"
+#include "adFileStream.h"
 
 namespace ad
 {
-    //-------------------------------------------------------------------------
-
-    const TChar DEFAULT_fileName[] = TEXT("AntiDupl.adr");
-
-    const char CONTROL_bytes[] = "adr3";
+	const char RESULT_CONTROL_BYTES[] = "adr";
 
     //-------------------------------------------------------------------------
     TResultStorage::TResultStorage(TEngine *pEngine)
@@ -286,171 +283,105 @@ namespace ad
 
     adError TResultStorage::Load(const TChar* fileName, bool check)
     {
-        HANDLE hFile;
-        size_t size;
-        DWORD byte_was_read;
-        BOOL result;
-        TResult searchResult;
-        TUInt64 value;
+		adError error = AD_OK;
+		m_pStatus->Reset();
+		m_pStatus->ClearStatistic();
+		Clear();
+		try
+		{
+			TInputFileStream inputFile(fileName, RESULT_CONTROL_BYTES);
 
-        m_pStatus->ClearStatistic();
-        Clear();
+			m_pImageInfoStorage->Load(inputFile, check);
 
-        TString path;
-        if(fileName == NULL)
-            path = GetApplicationDirectory() + TEXT("\\") + DEFAULT_fileName;
-        else
-            path = fileName;
-
-        if(!IsFileExists(path.c_str()))
-            return AD_ERROR_FILE_IS_NOT_EXIST;
-
-        hFile = CreateFile(path.c_str(), GENERIC_READ, 0, NULL, 
-            OPEN_EXISTING, 0, NULL);
-        if (hFile == INVALID_HANDLE_VALUE)
-            return AD_ERROR_CANT_OPEN_FILE;
-
-        char control_bytes[sizeof(CONTROL_bytes)];
-        result = ReadFile(hFile, &control_bytes, sizeof(CONTROL_bytes), 
-            &byte_was_read, NULL); 
-        if(result != TRUE || byte_was_read < sizeof(CONTROL_bytes) ||
-            memcmp(control_bytes, CONTROL_bytes, sizeof(CONTROL_bytes)) != 0)
-        {
-            CloseHandle(hFile);
-            return AD_ERROR_INVALID_FILE_FORMAT;
-        }
-
-        if(!m_pImageInfoStorage->Load(hFile, check))
-        {
-            CloseHandle(hFile);
-            return AD_ERROR_INVALID_FILE_FORMAT;
-        }
-
-        result = ReadFile(hFile, &value, sizeof(TUInt64), &byte_was_read, NULL); 
-        if(result != TRUE || byte_was_read < sizeof(TUInt64) || value > 0xffffffff)
-        {
-            CloseHandle(hFile);
-            return AD_ERROR_INVALID_FILE_FORMAT;
-        }
-        size = (size_t)value;
-
-        m_pStatus->SetProgress(0, 0);
-        TResultPtrVector &results = m_pUndoRedoEngine->Current()->results;
-        results.reserve(size);
-        for(size_t i = 0; i < size; i++)
-        {
-            m_pStatus->SetProgress(i, size);
-            if(searchResult.Load(hFile, m_pImageInfoStorage))
-            {
-                if(searchResult.type == AD_RESULT_DEFECT_IMAGE && 
-					(!check || searchResult.first->Actual()))
-                {
-                    if(m_pOptions->advanced.mistakeDataBase == FALSE ||
-                        !m_pMistakeStorage->IsHas(searchResult.first))
-                    {
-                        m_pStatus->AddDefectImage();
-                        results.push_back(new TResult(searchResult));
-                        results.back()->id = m_nextId++;
-                        results.back()->first->links++;
-                        if(results.back()->first->group == AD_UNDEFINED)
-                            results.back()->first->group = results.back()->group;
-                    }
-                }
-                if(searchResult.type == AD_RESULT_DUPL_IMAGE_PAIR && 
-					(!check || (searchResult.first->Actual() && searchResult.second->Actual())))
-                {
-                    if(m_pOptions->advanced.mistakeDataBase == FALSE ||
-                        !m_pMistakeStorage->IsHas(searchResult.first, searchResult.second))
-                    {
-                        m_pStatus->AddDuplImagePair();
-                        results.push_back(new TResult(searchResult));
-                        results.back()->id = m_nextId++;
-                        results.back()->first->links++;
-                        results.back()->second->links++;
-                        if(results.back()->first->group == AD_UNDEFINED)
-                            results.back()->first->group = results.back()->group;
-                        if(results.back()->second->group == AD_UNDEFINED)
-                            results.back()->second->group = results.back()->group;
-                    }
-                }
-            }
-            else
-            {
-                m_pStatus->ClearStatistic();
-                m_pStatus->Reset();
-                CloseHandle(hFile);
-                Clear();
-                return AD_ERROR_CANT_READ_FILE;
-            }
-        }
-
-        m_pUndoRedoEngine->Current()->UpdateGroups();
-        m_pUndoRedoEngine->Current()->UpdateHints(m_pOptions, true);
-
-        m_pStatus->Reset();
-        CloseHandle(hFile);
-
-        return AD_OK;
+			size_t size = inputFile.LoadSizeChecked(SIZE_CHECK_LIMIT);
+			TResultPtrVector &results = m_pUndoRedoEngine->Current()->results;
+			results.reserve(size);
+			TResult result;
+			for(size_t i = 0; i < size; i++)
+			{
+				m_pStatus->SetProgress(i, size);
+				inputFile.Load(result);
+				if(result.type == AD_RESULT_DEFECT_IMAGE)
+				{
+					result.first = m_pImageInfoStorage->Get((size_t)result.first);
+					result.second = m_pImageInfoStorage->GetStub();
+					if(!check || result.first->Actual())
+					{
+						if(m_pOptions->advanced.mistakeDataBase == FALSE ||
+							!m_pMistakeStorage->IsHas(result.first))
+						{
+							m_pStatus->AddDefectImage();
+							results.push_back(new TResult(result));
+							results.back()->id = m_nextId++;
+							results.back()->first->links++;
+							if(results.back()->first->group == AD_UNDEFINED)
+								results.back()->first->group = results.back()->group;
+						}
+					}
+				}
+				if(result.type == AD_RESULT_DUPL_IMAGE_PAIR)
+				{
+					result.first = m_pImageInfoStorage->Get((size_t)result.first);
+					result.second = m_pImageInfoStorage->Get((size_t)result.second);
+					if(!check || (result.first->Actual() && result.second->Actual()))
+					{
+						if(m_pOptions->advanced.mistakeDataBase == FALSE ||
+							!m_pMistakeStorage->IsHas(result.first, result.second))
+						{
+							m_pStatus->AddDuplImagePair();
+							results.push_back(new TResult(result));
+							results.back()->id = m_nextId++;
+							results.back()->first->links++;
+							results.back()->second->links++;
+							if(results.back()->first->group == AD_UNDEFINED)
+								results.back()->first->group = results.back()->group;
+							if(results.back()->second->group == AD_UNDEFINED)
+								results.back()->second->group = results.back()->group;
+						}
+					}
+				}
+			}
+			m_pUndoRedoEngine->Current()->UpdateGroups();
+			m_pUndoRedoEngine->Current()->UpdateHints(m_pOptions, true);
+		}
+		catch (TException e)
+		{
+			m_pStatus->ClearStatistic();
+			Clear();
+			return error = e.Error;
+		}
+		m_pStatus->Reset();		
+        return error;
     }
 
     adError TResultStorage::Save(const TChar* fileName) const
     {
-        HANDLE hFile;
-        size_t size;
-        DWORD byte_was_written;
-        BOOL result;
-        TUInt64 value;
+		try
+		{
+			m_pStatus->Reset();
+			TOutputFileStream outputFile(fileName, RESULT_CONTROL_BYTES);
 
-        TString path;
-        if(fileName == NULL)
-            path = GetApplicationDirectory() + TEXT("\\") + DEFAULT_fileName;
-        else
-            path = fileName;
+			m_pImageInfoStorage->Save(outputFile);
 
-        hFile = CreateFile(path.c_str(), GENERIC_WRITE, 0, NULL, 
-            CREATE_ALWAYS, 0, NULL);
-        if (hFile == INVALID_HANDLE_VALUE)
-            return AD_ERROR_CANT_CREATE_FILE;
+			TResultPtrVector &results = m_pUndoRedoEngine->Current()->results;
+			outputFile.SaveSize(results.size());
 
-        result = WriteFile(hFile, CONTROL_bytes, sizeof(CONTROL_bytes), 
-            &byte_was_written, NULL);
-        if(result != TRUE || byte_was_written < sizeof(CONTROL_bytes))
-        {
-            CloseHandle(hFile);
-            return AD_ERROR_CANT_WRITE_FILE;
-        }
-
-        if(!m_pImageInfoStorage->Save(hFile))
-        {
-            m_pStatus->Reset();
-            CloseHandle(hFile);
-            return AD_ERROR_CANT_WRITE_FILE;
-        }
-
-        TResultPtrVector &results = m_pUndoRedoEngine->Current()->results;
-        size = results.size();
-        value = size;
-        result = WriteFile(hFile, &value, sizeof(TUInt64), &byte_was_written, NULL); 
-        if(result != TRUE || byte_was_written < sizeof(TUInt64))
-        {
-            CloseHandle(hFile);
-            return AD_ERROR_CANT_WRITE_FILE;
-        }
-
-        m_pStatus->SetProgress(0, 0);
-        TResultPtrVector::iterator i;
-        for(i = results.begin(); i != results.end(); i++)
-        {
-            if(!(*i)->Save(hFile))
-            {
-                m_pStatus->Reset();
-                CloseHandle(hFile);
-                return AD_ERROR_CANT_WRITE_FILE;
-            }
-        }
-
-        m_pStatus->Reset();
-        CloseHandle(hFile);
+			m_pStatus->SetProgress(0, 0);
+			size_t i = 0;
+			for(TResultPtrVector::iterator it = results.begin(); it != results.end(); it++, i++)
+			{
+				outputFile.Save(**it);
+				m_pStatus->SetProgress(i, results.size());
+				if(m_pStatus->Stopped())
+					break;
+			}
+			m_pStatus->Reset();
+		}
+		catch (TException e)
+		{
+			m_pStatus->Reset();
+			return e.Error;
+		}
         return AD_OK;
     }
 

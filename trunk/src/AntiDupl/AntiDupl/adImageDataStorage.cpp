@@ -334,13 +334,8 @@ namespace ad
 		{
 			TInputFileStream inputFile(fileName, INDEX_CONTROL_BYTES);
 
-			TUInt32 reducedImageSize = inputFile.Load<TUInt32>();
-			if(m_pOptions->advanced.reducedImageSize != reducedImageSize)
-				throw TException(AD_ERROR_INVALID_FILE_FORMAT);
-
-			size_t size = inputFile.LoadSize();
-			if(size > 0xffffffff)
-				throw TException(AD_ERROR_INVALID_FILE_FORMAT);
+			inputFile.Check<TUInt32>(m_pOptions->advanced.reducedImageSize);
+			size_t size = inputFile.LoadSizeChecked(SIZE_CHECK_LIMIT);
 
 			index.clear();
 			for(size_t i = 0; i < size; i++)
@@ -369,17 +364,12 @@ namespace ad
 			TString fileName = CreatePath(path, GetDataFileName(key));
 			TInputFileStream inputFile(fileName.c_str(), DATA_CONTROL_BYTES);
 
-			TUInt32 reducedImageSize = inputFile.Load<TUInt32>();
-			if(m_pOptions->advanced.reducedImageSize != reducedImageSize)
-				throw TException(AD_ERROR_INVALID_FILE_FORMAT);
+			inputFile.Check<TUInt32>(m_pOptions->advanced.reducedImageSize);
 
-			inputFile.Load(data.key);
+			inputFile.LoadChecked(data.key, key, key);
 			inputFile.Load(data.first);
 			inputFile.Load(data.last);
-			inputFile.LoadSize(data.size);
-
-			if(data.key != key || data.size > 0xffffffff)
-				throw TException(AD_ERROR_INVALID_FILE_FORMAT);
+			inputFile.LoadSizeChecked(data.size, SIZE_CHECK_LIMIT);
 
 			TImageData imageData(m_pOptions->advanced.reducedImageSize);
 			for(size_t i = 0; i < data.size; i++)

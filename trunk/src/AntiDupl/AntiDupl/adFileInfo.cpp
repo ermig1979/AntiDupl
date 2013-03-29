@@ -26,6 +26,14 @@
 
 namespace ad
 {
+	TFileInfo::TFileInfo()
+		: size(0)
+		, time(0)
+		, hash(0)
+		, m_actual(AD_UNDEFINED)
+	{
+	}
+
     TFileInfo::TFileInfo(const TString& path_)
         :path(path_),
         size(0),
@@ -75,35 +83,6 @@ namespace ad
             (TPath::EqualByPath(path, fileInfo.path) &&
             size == fileInfo.size &&
             time == fileInfo.time);
-    }
-
-    bool TFileInfo::Load(HANDLE hIn)
-    {
-        if(!path.Load(hIn))
-            return false;
-
-        AD_READ_VALUE_FROM_FILE(hIn, size);
-        AD_READ_VALUE_FROM_FILE(hIn, time);
-        AD_READ_VALUE_FROM_FILE(hIn, hash);
-
-        if(hash != path.GetCrc32())
-            return false;
-
-        m_actual = AD_UNDEFINED;
-
-        return true;
-    }
-
-    bool TFileInfo::Save(HANDLE hOut) const
-    {
-        if(!path.Save(hOut))
-            return false;
-
-        AD_WRITE_VALUE_TO_FILE(hOut, size);
-        AD_WRITE_VALUE_TO_FILE(hOut, time);
-        AD_WRITE_VALUE_TO_FILE(hOut, hash);
-
-        return true;
     }
 
     bool TFileInfo::Actual(bool update)

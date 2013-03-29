@@ -23,12 +23,12 @@
 */
 
 #include "adFileStream.h"
-#include "adException.h"
 #include "adPath.h"
 #include "adFileInfo.h"
 #include "adImageInfo.h"
 #include "adImageData.h"
 #include "adFileUtils.h"
+#include "adResult.h"
 
 namespace ad
 {
@@ -65,13 +65,33 @@ namespace ad
 			if(format != m_format)
 				throw TException(AD_ERROR_INVALID_FILE_FORMAT);
 
-			m_version = Load<TUInt32>();
+			m_version = LoadChecked<TUInt32>(1, FILE_VERSION);
 		}
 		catch (TException e)
 		{
 			::CloseHandle(m_hFile);
 			throw TException(e.Error);
 		}
+	}
+
+	size_t TInputFileStream::LoadSize() const 
+	{ 
+		return (size_t)Load<TUInt64>(); 
+	}
+
+	void TInputFileStream::LoadSize(size_t & size) const 
+	{ 
+		size = LoadSize(); 
+	}
+
+	size_t TInputFileStream::LoadSizeChecked(size_t sizeMax) const
+	{
+		return (size_t)LoadChecked<TUInt64>(0, sizeMax); 
+	}
+
+	void TInputFileStream::LoadSizeChecked(size_t & size, size_t sizeMax) const
+	{
+		size = LoadSizeChecked(sizeMax); 
 	}
 
 	void TInputFileStream::Load(void * buffer, size_t size) const
@@ -84,7 +104,7 @@ namespace ad
 
 	void TInputFileStream::Load(TString & string) const
 	{
-		size_t size = LoadSize();
+		size_t size = LoadSizeChecked(SIZE_CHECK_LIMIT);
 		string.resize(size, 0);
 		Load((void*)string.c_str(), size*sizeof(TChar));
 	}
@@ -136,6 +156,18 @@ namespace ad
 			Load(*imageData.data);
 	}
 
+	void TInputFileStream::Load(TResult & result) const
+	{
+		Load(result.type);
+		result.first = (TImageInfoPtr)LoadSizeChecked(SIZE_CHECK_LIMIT);
+		result.second = (TImageInfoPtr)LoadSizeChecked(SIZE_CHECK_LIMIT);
+		Load(result.defect);
+		Load(result.difference);
+		Load(result.transform);
+		LoadSizeChecked(result.group, SIZE_CHECK_LIMIT);
+		Load(result.hint);
+	}
+
 	//-------------------------------------------------------------------------
 
 	TOutputFileStream::TOutputFileStream(const TChar * fileName, const char * format)
@@ -156,6 +188,11 @@ namespace ad
 			::CloseHandle(m_hFile);
 			throw TException(e.Error);
 		}
+	}
+
+	void TOutputFileStream::SaveSize(size_t size) const 
+	{ 
+		Save<TUInt64>(size); 
 	}
 
 	void TOutputFileStream::Save(const void * buffer, size_t size) const
@@ -207,5 +244,17 @@ namespace ad
 		Save(imageData.data->filled);
 		if(imageData.data->filled)
 			Save(*imageData.data);
+	}
+
+	void TOutputFileStream::Save(const TResult & result) const
+	{
+		Save(result.type);
+		SaveSize(result.first->index);
+		SaveSize(result.second->index);
+		Save(result.defect);
+		Save(result.difference);
+		Save(result.transform);
+		SaveSize(result.group);
+		Save(result.hint);
 	}
 }

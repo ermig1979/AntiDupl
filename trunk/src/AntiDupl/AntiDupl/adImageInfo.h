@@ -42,7 +42,8 @@ namespace ad
         bool removed;
 		bool selected;
         
-        TImageInfo(const TString& path_ = TString()) : TFileInfo(path_) {Init();}
+		TImageInfo() {Init();}
+        TImageInfo(const TString& path_) : TFileInfo(path_) {Init();}
         TImageInfo(const TString& path_, TUInt64 size_, TUInt64 time_) : TFileInfo(path_, size_, time_) {Init();}
         TImageInfo(const TFileInfo& fileInfo) : TFileInfo(fileInfo) {Init();}
         TImageInfo(const TImageInfo& imageInfo) {Init(); *this = imageInfo;};
@@ -52,9 +53,6 @@ namespace ad
 
         bool Export(adImageInfoPtrA pImageInfo) const;
         bool Export(adImageInfoPtrW pImageInfo) const;
-
-        bool Load(HANDLE hIn);
-        bool Save(HANDLE hOut) const;
 
     private:
         void Init();
