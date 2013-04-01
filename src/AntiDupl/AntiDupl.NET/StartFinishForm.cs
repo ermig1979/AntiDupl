@@ -33,12 +33,15 @@ namespace AntiDupl.NET
 {
     public class StartFinishForm : Form
     {
+        static private TimeSpan VIEW_START_TIME_MIN = TimeSpan.FromSeconds(3.0);
+
         private enum State
         {
             Start,
             LoadImages,
             LoadMistakes,
             LoadResults,
+            ViewStart,
             SaveImages,
             SaveMistakes,
             SaveResults,
@@ -74,8 +77,8 @@ namespace AntiDupl.NET
             MinimizeBox = false;
 
             TableLayoutPanel mainTableLayoutPanel = InitFactory.Layout.Create(1, 2, 5);
-            mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 85F));
-            mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 15F));
+            mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 90F));
+            mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
             Controls.Add(mainTableLayoutPanel);
 
             m_aboutProgramPanel = new AboutProgramPanel(m_core);
@@ -100,6 +103,8 @@ namespace AntiDupl.NET
 
         private void CoreStartThreadTask()
         {
+            DateTime startTime = DateTime.Now;
+
             m_state = State.LoadMistakes;
             m_core.Load(CoreDll.FileType.MistakeDataBase, Options.GetMistakeDataBaseFileName(), true);
 
@@ -107,6 +112,13 @@ namespace AntiDupl.NET
             if (!File.Exists(m_options.resultsOptions.resultsFileName))
                 m_options.resultsOptions.resultsFileName = ResultsOptions.GetDefaultResultsFileName();
             m_core.Load(CoreDll.FileType.Result, m_options.resultsOptions.resultsFileName, m_options.checkResultsAtLoading);
+
+            TimeSpan viewTime = DateTime.Now - startTime;
+            if (viewTime < VIEW_START_TIME_MIN)
+            {
+                m_state = State.ViewStart;
+                Thread.Sleep(VIEW_START_TIME_MIN - viewTime);
+            }
 
             m_state = State.Finish;
         }
@@ -150,6 +162,11 @@ namespace AntiDupl.NET
             if (m_state == State.Finish)
             {
                 Close();
+            }
+            else if(m_state == State.ViewStart)
+            {
+                m_progressBar.Visible = false;
+                Text = Application.ProductName;
             }
             else
             {
