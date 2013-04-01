@@ -87,6 +87,7 @@ namespace ad
 		ratio = imageData.ratio;
 		valid = imageData.valid;
 		defect = imageData.defect;
+		crc32 = imageData.crc32;
 		if(m_owner && imageData.data->side != data->side)
 		{
 			delete data;
