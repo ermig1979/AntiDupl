@@ -22,6 +22,8 @@
 * SOFTWARE.
 */
 #include "adFileUtils.h"
+#include "adEngine.h"
+#include "adStatus.h"
 #include "adImageInfo.h"
 #include "adMistakeStorage.h"
 #include "adFileStream.h"
@@ -31,35 +33,49 @@ namespace ad
     const char MISTAKE_CONTROL_BYTES[] = "adm";
 
     //-------------------------------------------------------------------------
+    
+    TMistakeStorage::TMistakeStorage(TEngine *pEngine) 
+        : m_pStatus(pEngine->Status())
+    {
+    }
+
 
     adError TMistakeStorage::Save(const TChar *fileName)
     {
+        adError error = AD_OK;
 		try
 		{
+		    size_t i;
 			TOutputFileStream outputFile(fileName, MISTAKE_CONTROL_BYTES);
 
 			outputFile.SaveSize(m_singles.size());
-			for(TImageInfoPtrMultiSet::iterator it = m_singles.begin(); it != m_singles.end(); ++it)
+			i = 0;
+			for(TImageInfoPtrMultiSet::iterator it = m_singles.begin(); it != m_singles.end(); ++it, ++i)
 			{
 				outputFile.Save(**it);
+				m_pStatus->SetProgress(i, m_singles.size());
 			}
 
 			outputFile.SaveSize(m_pairs.size());
-			for(TImageInfoPtrPairMultiSet::iterator it = m_pairs.begin(); it != m_pairs.end(); ++it)
+			i = 0;
+			for(TImageInfoPtrPairMultiSet::iterator it = m_pairs.begin(); it != m_pairs.end(); ++it, ++i)
 			{
 				outputFile.Save(*it->first);
 				outputFile.Save(*it->second);
+                m_pStatus->SetProgress(i, m_pairs.size());
 			}
 		}
 		catch (TException e)
 		{
-			return e.Error;
+			error = e.Error;
 		}
-		return AD_OK;
+		m_pStatus->Reset();
+		return error;
     }
 
     adError TMistakeStorage::Load(const TChar *fileName, bool check)
     {
+        adError error = AD_OK;
 		try
 		{
 			TInputFileStream inputFile(fileName, MISTAKE_CONTROL_BYTES);
@@ -71,6 +87,7 @@ namespace ad
 				inputFile.Load(single);
 				if(!check || single.Actual())
 					m_singles.insert(new TImageInfo(single));
+                m_pStatus->SetProgress(i, singleSize);
 			}
 
 			size_t pairSize = inputFile.LoadSizeChecked(SIZE_CHECK_LIMIT);
@@ -81,13 +98,15 @@ namespace ad
 				inputFile.Load(second);
 				if(!check || (first.Actual() && second.Actual()))
 					m_pairs.insert(TImageInfoPtrPair(new TImageInfo(first), new TImageInfo(second)));
+                m_pStatus->SetProgress(i, pairSize);
 			}
 		}
 		catch (TException e)
 		{
-			return e.Error;
+			error = e.Error;
 		}
-        return AD_OK;
+        m_pStatus->Reset();
+        return error;
     }
 
     void TMistakeStorage::Add(const TImageInfoPtr first, const TImageInfoPtr second)
