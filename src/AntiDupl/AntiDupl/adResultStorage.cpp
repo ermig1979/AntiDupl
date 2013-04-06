@@ -348,7 +348,7 @@ namespace ad
 		{
 			m_pStatus->ClearStatistic();
 			Clear();
-			return error = e.Error;
+			error = e.Error;
 		}
 		m_pStatus->Reset();		
         return error;

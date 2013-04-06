@@ -46,8 +46,8 @@ namespace ad
 #endif//AD_LOGGER_ENABLE
         m_pInit = new TInit();
         m_pOptions = new TOptions();
-        m_pMistakeStorage = new TMistakeStorage();
         m_pStatus = new TStatus();
+        m_pMistakeStorage = new TMistakeStorage(this);
         m_pImageDataStorage = new TImageDataStorage(this);
         m_pRecycleBin = new TRecycleBin(this);        
         m_pResult = new TResultStorage(this);

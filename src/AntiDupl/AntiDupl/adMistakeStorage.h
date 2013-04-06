@@ -30,14 +30,18 @@
 
 namespace ad
 {
+    class TEngine;
+    class TStatus;
+
     struct TImageInfo;
 
     typedef TImageInfo* TImageInfoPtr;
+    
     //------------------------------------------------------------------------
     class TMistakeStorage
     {
     public:
-        TMistakeStorage() {}
+        TMistakeStorage(TEngine *pEngine);
         ~TMistakeStorage() {Clear();}
 
         adError Save(const TChar *fileName);
@@ -76,6 +80,8 @@ namespace ad
         TImageInfoPtrPairMultiSet::iterator Find(const TImageInfoPtr first, const TImageInfoPtr second);
         TImageInfoPtrMultiSet::const_iterator Find(const TImageInfoPtr single) const;
         TImageInfoPtrMultiSet::iterator Find(const TImageInfoPtr single);
+        
+        TStatus *m_pStatus;
     };
 }
 #endif //__adMistakeStorage_h__
