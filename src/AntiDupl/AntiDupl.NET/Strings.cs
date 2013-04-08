@@ -236,6 +236,7 @@ namespace AntiDupl.NET
         public string MainMenu_Search_OnePathMenuItem_Text;
         public string MainMenu_Search_UseImageDataBaseMenuItem_Text;
         public string MainMenu_Search_CheckResultsAtLoadingMenuItem_Text;
+        public string MainMenu_Search_CheckMistakesAtLoadingMenuItem_Text;
 
         public string MainMenu_HelpMenuItem_Text;
         public string MainMenu_Help_HelpMenuItem_Text;

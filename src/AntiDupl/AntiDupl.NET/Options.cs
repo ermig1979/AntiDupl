@@ -64,6 +64,7 @@ namespace AntiDupl.NET
         public bool checkingForUpdates = true;
         public bool useImageDataBase = true;
         public bool checkResultsAtLoading = true;
+        public bool checkMistakesAtLoading = true;
 
         public MainFormOptions mainFormOptions;
         public ResultsOptions resultsOptions;
@@ -122,6 +123,7 @@ namespace AntiDupl.NET
             checkingForUpdates = options.checkingForUpdates;
             useImageDataBase = options.useImageDataBase;
             checkResultsAtLoading = options.checkResultsAtLoading;
+            checkMistakesAtLoading = options.checkMistakesAtLoading;
         }
 
         public void Save()
@@ -154,6 +156,7 @@ namespace AntiDupl.NET
             options.checkingForUpdates = checkingForUpdates;
             options.useImageDataBase = useImageDataBase;
             options.checkResultsAtLoading = checkResultsAtLoading;
+            options.checkMistakesAtLoading = checkMistakesAtLoading;
         }
 
         public static void PathCopy(string[] source, ref string[] destination)
@@ -214,6 +217,8 @@ namespace AntiDupl.NET
             if (useImageDataBase != options.useImageDataBase)
                 return false;
             if (checkResultsAtLoading != options.checkResultsAtLoading)
+                return false;
+            if (checkMistakesAtLoading != options.checkMistakesAtLoading)
                 return false;
             if (m_language != options.m_language)
                 return false;
