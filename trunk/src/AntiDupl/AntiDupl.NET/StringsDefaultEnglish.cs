@@ -233,6 +233,7 @@ namespace AntiDupl.NET
             s.MainMenu_Search_OnePathMenuItem_Text = "One search path";
             s.MainMenu_Search_UseImageDataBaseMenuItem_Text = "Use database of image";
             s.MainMenu_Search_CheckResultsAtLoadingMenuItem_Text = "Check the results at loading";
+            s.MainMenu_Search_CheckMistakesAtLoadingMenuItem_Text = "Check the database of mistakes at loading";
 
             s.MainMenu_HelpMenuItem_Text = "Help";
             s.MainMenu_Help_HelpMenuItem_Text = "Help";

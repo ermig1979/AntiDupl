@@ -106,7 +106,7 @@ namespace AntiDupl.NET
             DateTime startTime = DateTime.Now;
 
             m_state = State.LoadMistakes;
-            m_core.Load(CoreDll.FileType.MistakeDataBase, Options.GetMistakeDataBaseFileName(), true);
+            m_core.Load(CoreDll.FileType.MistakeDataBase, Options.GetMistakeDataBaseFileName(), m_options.checkMistakesAtLoading);
 
             m_state = State.LoadResults;
             if (!File.Exists(m_options.resultsOptions.resultsFileName))

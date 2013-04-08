@@ -68,6 +68,7 @@ namespace AntiDupl.NET
         private ToolStripMenuItem m_search_onePathMenuItem;
         private ToolStripMenuItem m_search_useImageDataBaseMenuItem;
         private ToolStripMenuItem m_search_checkResultsAtLoadingMenuItem;
+        private ToolStripMenuItem m_search_checkMistakesAtLoadingMenuItem;
 
         private ToolStripMenuItem m_helpMenuItem;
         private ToolStripMenuItem m_help_helpMenuItem;
@@ -145,6 +146,7 @@ namespace AntiDupl.NET
             m_search_onePathMenuItem = InitFactory.MenuItem.Create(null, null, UseOnePathAction, m_options.onePath);
             m_search_useImageDataBaseMenuItem = InitFactory.MenuItem.Create(null, null, UseImageDataBaseAction, m_options.useImageDataBase);
             m_search_checkResultsAtLoadingMenuItem = InitFactory.MenuItem.Create(null, null, CheckResultsAtLoadingAction, m_options.checkResultsAtLoading);
+            m_search_checkMistakesAtLoadingMenuItem = InitFactory.MenuItem.Create(null, null, CheckMistakesAtLoadingAction, m_options.checkMistakesAtLoading);
 
             m_searchMenuItem = new ToolStripMenuItem();
             m_searchMenuItem.DropDownItems.Add(m_search_startMenuItem);
@@ -157,6 +159,7 @@ namespace AntiDupl.NET
             m_searchMenuItem.DropDownItems.Add(m_search_onePathMenuItem);
             m_searchMenuItem.DropDownItems.Add(m_search_useImageDataBaseMenuItem);
             m_searchMenuItem.DropDownItems.Add(m_search_checkResultsAtLoadingMenuItem);
+            m_searchMenuItem.DropDownItems.Add(m_search_checkMistakesAtLoadingMenuItem);
 
             m_help_helpMenuItem = InitFactory.MenuItem.Create("HelpMenu", null, HelpAction);
             m_help_aboutProgramMenuItem = InitFactory.MenuItem.Create(null, null, AboutProgramAction);
@@ -209,6 +212,7 @@ namespace AntiDupl.NET
             m_search_onePathMenuItem.Text = s.MainMenu_Search_OnePathMenuItem_Text;
             m_search_useImageDataBaseMenuItem.Text = s.MainMenu_Search_UseImageDataBaseMenuItem_Text;
             m_search_checkResultsAtLoadingMenuItem.Text = s.MainMenu_Search_CheckResultsAtLoadingMenuItem_Text;
+            m_search_checkMistakesAtLoadingMenuItem.Text = s.MainMenu_Search_CheckMistakesAtLoadingMenuItem_Text;
             
             m_helpMenuItem.Text = s.MainMenu_HelpMenuItem_Text;
             m_help_helpMenuItem.Text = s.MainMenu_Help_HelpMenuItem_Text;
@@ -375,6 +379,11 @@ namespace AntiDupl.NET
         private void CheckResultsAtLoadingAction(object sender, EventArgs e)
         {
             m_options.checkResultsAtLoading = m_search_checkResultsAtLoadingMenuItem.Checked;
+        }
+
+        private void CheckMistakesAtLoadingAction(object sender, EventArgs e)
+        {
+            m_options.checkMistakesAtLoading = m_search_checkMistakesAtLoadingMenuItem.Checked;
         }
 
         public void HelpAction(object sender, EventArgs e)
