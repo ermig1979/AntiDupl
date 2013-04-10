@@ -81,7 +81,7 @@ namespace AntiDupl.NET
             layout.Controls.Add(pictureBox, 1, 0);
 
             layout.Controls.Add(CreateLinkLabel(Application.ProductName, 
-                Resources.WebLinks.AntiduplNarodRu, font), 2, 0);
+                Resources.WebLinks.AntiduplSourceforgeNet, font), 2, 0);
 
             return layout;
         }

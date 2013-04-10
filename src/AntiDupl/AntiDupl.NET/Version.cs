@@ -35,7 +35,6 @@ namespace AntiDupl.NET
         public int major;
         public int minor;
         public int release;
-        public int build = 0;
 
         public Version()
         {

@@ -298,10 +298,10 @@ namespace AntiDupl.NET
 
         static public class WebLinks
         {
-            public const string AntiduplNarodRu = "http://antidupl.narod.ru";
-            public const string AntiduplNarodRuEnglish = "http://antidupl.narod.ru/english/index.html";
-            public const string AntiduplNarodRuRussian = "http://antidupl.narod.ru/russian/index.html";
-            public const string Version = "http://antidupl.narod.ru/net/version.xml";
+            public const string AntiduplSourceforgeNet = "http://antidupl.sourceforge.net/";
+            public const string AntiduplSourceforgeNetEnglish = "http://antidupl.sourceforge.net/english/index.html";
+            public const string AntiduplSourceforgeNetRussian = "http://antidupl.sourceforge.net/russian/index.html";
+            public const string Version = "http://antidupl.sourceforge.net/version.xml";
 
             public const string SourceforgeNetSimd = "http://sourceforge.net/projects/simd/?source=directory";
             public const string SourceforgeNetAntidupl = "http://sourceforge.net/projects/antidupl/?source=directory";
@@ -313,9 +313,9 @@ namespace AntiDupl.NET
                 get
                 {
                     if (Strings.IsCurrentRussianFamily())
-                        return AntiduplNarodRuRussian;
+                        return AntiduplSourceforgeNetRussian;
                     else
-                        return AntiduplNarodRuEnglish;
+                        return AntiduplSourceforgeNetEnglish;
                 }
             }
         }
