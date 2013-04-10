@@ -1,0 +1,263 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html" />
+<title>Options Window</title>
+</head>
+<body><table width=800><tr><td>
+
+<h3>Options Window</h3>
+
+<p align="justify">
+Customize your search is carried out in the options window.
+Open it may be either the main window using the <b>Options</b> button
+</p>   
+
+<img src="../../resources/images/OptionsButton.img" />
+
+<p align="justify">
+ or select the <b>Search - Options</b> item from the <a href="index.html?page=menu.html" target="_top">Main Menu</a>.
+In this window, there are three groups of settings: check options, search options and additional options. 
+Each of these groups is located on the corresponding tab.
+</p>
+
+<h4>Check Options</h4>
+
+<p align="justify">
+On the <b>Check</b> tag
+</p>
+
+<img src="files/CheckOptionsForm.png" />
+
+<p align="justify">
+there are following settings:
+</p>
+
+<ul>
+ <li><p align="justify">
+<b>Check on defect</b> - option specifies whether you want to check the images for defects. 
+By default, this option is enabled.
+ </p></li>
+ <li><p align="justify">
+<b>Search image dupls</b> - determines the need to look for duplicate images. 
+By default it is enabled.
+ </p></li>
+ <li><p align="justify">
+<b>Search rotated and mirror image dupls</b> - 	
+Enabling this option allows you to search rotated and mirrored duplicate images.
+It has to do more comparisons; therefore search is slowed down eight times. 
+By default, this option is disabled. 
+ </p></li>
+ <li><p align="justify">
+<b>Control image size</b> - if this options is enabled then the program take into account the size of pictures.
+For example, the picture sizes 1024x768 and 800x600 will be different, even if they are to be shown the same thing.
+By default, this option is disabled.
+ </p></li>
+ <li><p align="justify">
+<b>Control image type</b> - if this options is enabled then the program take into account the type of image in comparison.
+For example, images in PNG and GIF formats will be different, regardless of their contents.
+The default option is disabled.
+ </p></li>
+ <li><p align="justify">
+<b>Control image width/height ratio</b> - when you turn on this option, the program checks the ratio of width and height of images.
+For example, this allows us not to compare the square and rectangular images among themselves, which greatly accelerates the search.
+The degree of difference ratio of the width and height of images is governed by the parameter <b>Image width/height ratio precision</b>,
+located on the Advanced tab options (see below).
+By default, this option is enabled.
+ </p></li>
+ <li><p align="justify">
+<b>Threshold difference</b> -  when images are compared between each other, the standard deviation of brightness for each pair of images is calculated.
+If this difference is below the value determined by this parameter, then the pictures are duplicates.
+When setting this option at a low level, the program can not detect some of the duplicates.
+If it is equal to zero then program will be able to find only fully identical images.
+If he set too high, then increase the likelihood of false positives.
+Also worth noting that the increase in this parameter leads to a slower speed of the algorithm and vice versa.
+It can vary in the range from 0 to 15%.
+By default, this parameter is equal to 5%.
+This parameter is duplicated on the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>.
+ </p></li>
+ <li><p align="justify">
+<b>Minimal image width/height</b> - sets the minimum width/height of images is necessary that they will be checked for the presence of duplicates.
+This option allows you to exclude from the search too small images.
+The default setting is 64. 
+ </p></li>
+ <li><p align="justify">
+<b>Compare images from one path with one another</b> - when this option is enabled, the program compares one with another pictures that are located in the same <a href="index.html?page=paths.html" target="_top">search path</a>. 
+Otherwise, the program will only compare the images from different search paths.
+By default, this option is disabled.
+ </p></li>
+</ul><p align="justify">
+Note that necessarily must be included either option <b>Check on defect</b>, either option <b>Search image dupls</b>.
+</p>
+
+<h4>Search Options</h4>
+
+<p align="justify">
+On the <b>Search</b> tag
+</p>
+
+<img src="files/SearchOptionsForm.png" />
+
+<p align="justify">
+there are following settings:
+</p>
+
+<ul>
+ <li><p align="justify">
+<b>Search types:</b>
+ <ul type="circle">
+  <li><p align="justify">
+<b>BMP</b> - this option specifies whether you want to search for BMP (BitMaP) pictures.
+They usually have an extension <b>*.bmp</b>, <b>*.dib</b> or <b>*.rle</b>. 
+By default, this option is enabled.
+  </p></li>
+  <li><p align="justify">
+<b>GIF</b> - this option specifies whether you want to search for GIF (Graphics Interchange Format) pictures. 
+They usually have an extension <b>*.gif</b>. 
+By default, this option is enabled.
+  </p></li>
+  <li><p align="justify">
+<b>JPEG</b> - this option specifies whether you want to search for JPEG (Joint Photographic Experts Group) pictures. 
+They usually have an extension <b>*.jpeg</b>, <b>*.jfif</b>, <b>*.jpg</b>, <b>*.jpe</b>, <b>*.jiff</b>, <b>*.jif</b>, <b>*.j</b>, <b>*.jng</b> or <b>*.jff</b>.  
+By default, this option is enabled.
+  </p></li>
+  <li><p align="justify">
+<b>PNG</b> - this option specifies whether you want to search for PNG (Portable Network Graphics) pictures. 
+They usually have an extension <b>*.png</b>. 
+By default, this option is enabled.
+  </p></li>
+  <li><p align="justify">
+<b>TIFF</b> - this option specifies whether you want to search for TIFF (Tagged Image File Format) pictures. 
+They usually have an extension <b>*.tif</b> or <b>*.tiff</b>. 
+By default, this option is enabled.
+  </p></li>
+  <li><p align="justify">
+<b>EMF</b> - this option specifies whether you want to search for EMF(Enhanced MetaFile) pictures. 
+They usually have an extension <b>*.emf</b> or <b>*.emz</b>. 
+By default, this option is enabled.
+  </p></li>
+  <li><p align="justify">
+<b>WMF</b> - this option specifies whether you want to search for WMF(Windows MetaFile) pictures. 
+They usually have an extension <b>*.wmf</b>. 
+By default, this option is enabled.
+  </p></li>
+  <li><p align="justify">
+<b>EXIF</b> - this option specifies whether you want to search for EXIF(EXchangeable Image File) pictures. 
+They usually have an extension <b>*.exif</b>. 
+By default, this option is enabled.
+  </p></li>
+  <li><p align="justify">
+<b>ICON</b> - this option specifies whether you want to search for ICON(Windows ICON image format) pictures. 
+They usually have an extension <b>*.icon</b>, <b>*.ico</b> or <b>*.icn</b>. 
+By default, this option is enabled.
+  </p></li> 
+  <li><p align="justify">
+<b>JP2</b> - this option specifies whether you want to search for JP2(JPEG 2000 image format) pictures. 
+They usually have an extension <b>*.jp2</b>, <b>*.j2k</b>, <b>*.j2c</b>, <b>*.jpc</b>, <b>*.jpf</b> or <b>*.jpx</b>. 
+By default, this option is enabled.
+  </p></li> 
+  <li><p align="justify">
+<b>PSD</b> - this option specifies whether you want to search for PSD(Photoshop Document) pictures. 
+They usually have an extension <b>*.psd</b>. 
+By default, this option is enabled.
+  </p></li> 
+ </ul>
+Note: Be sure to include  into search at least one of the above types.
+ </p></li>
+ <li><p align="justify">
+<b>Search system folders/files</b> - the option specifies whether you want to search for pictures in the system directories. 
+By default, this option is disabled.
+ </p></li>
+ <li><p align="justify">
+<b>Search hidden folders/files</b> - the option specifies whether you want to search for pictures in the hidden directories. 
+By default, this option is disabled.
+ </p></li>
+ <li><p align="justify">
+<b>Search in subdirectories</b> - the option specifies whether you want to search for pictures in all subdirectories also. 
+By default, this option is enabled.
+ </p></li>
+</ul>
+
+
+<h4>Advanced options</h4>
+
+<p align="justify">
+On the <b>Advanced</b> tag
+</p>
+
+<img src="files/AdvancedOptionsForm.png" />
+
+<p align="justify">
+there are following settings:
+</p>
+
+<ul>
+ <li><p align="justify">
+<b>Delete to recycle bin</b> - when you turn on this option, files will be removed in the recycle bin.
+Otherwise, they will be deleted permanently.
+By default, this option is enabled.
+ </p></li>
+ <li><p align="justify">
+<b>Remember mistakes</b> - option specifies whether you want to use when searching a database of false positives.
+So the user during the processing of search results can mark false positives, for example, using the <b>Mark current result as a mistake</b> button
+of the на <a href="index.html?page=preview.html" target="_top">Preview Panel</a>.
+Then, when re-search more, these results will not be shown.  
+By default, this option is enabled.
+ </p></li>
+ <li><p align="justify">
+<b>Image width/height ration precision</b> - option determines the accuracy
+which must be respected by the ratio of width/height of the compared images.
+It can be 1/8, 1/16, 1/32 or 1/64.
+The default value is 1/32.
+ </p></li>
+ <li><p align="justify">
+<b>Compare threads count</b> - option specifies the number of threads of comparison, which are created when searching for duplicates.
+It can take values Auto (number of threads is determined by the program), 1, ..., the number of processor cores in the system.
+The default value is Auto.
+ </p></li>
+ <li><p align="justify">
+<b>Load thread count</b> - option specifies the number of threads of image loading, which are created when searching.
+It can take values Auto (number of threads is determined by the program), 1, ..., the number of processor cores in the system.
+The default value is Auto.
+ </p></li>
+ <li><p align="justify">
+<b>Normalized image size</b> - this parameter can be described as follows:
+because images can be absolutely arbitrary size, then the correct comparison of their need to lead to a common denominator. 
+To do this, all images are scaled to the same size and converted into 8-bit gray.
+Then have these normalized images are compared with each other and stored in a database.
+This option determines the size of these images.
+The more normalized the size of images, the higher the accuracy of the program.
+Adverse effects of this increase will be decrease of speed of the program,
+and large requirements to the memory and the free disk space (to store the database of previously scanned images).
+Can take the values 16x16, 32x32, 64x64 or 128x128.
+The default value is 32х32.
+ </p></li>
+ </p></li>
+ <li><p align="justify">
+<b>Queue size of undo</b> - this parameter controls the maximum number of actions that the user can cancel a row.
+This parameter can range from 0 to 16.
+The default value is 10.
+Note that in order to cancel the operation, the program needs to save its intermediate state and changes made during this operation.
+For example, when deleting an image, there is no removal of images, but their hide and rename (received hidden temporary files are deleted later).
+Naturally, these operations require additional resources and can slow down the program.
+At low values of the queue size is performed saving of program resource.
+In particular, if this parameter has a zero value, images will be removed directly without intermediate renaming and hiding, which speeds up the program.
+ </p></li>
+ <li><p align="justify">
+<b>Maximal count of results</b> - this parameter controls the maximum number of results that a program can be found in one search.
+For example, if during the search program will be achieved this the number of results, the search will be automatically terminated.
+This restriction is useful to save program resources allocated to the graphical representation of the results list.
+By default, this value is 100000.
+ </p></li>
+ <li><p align="justify">
+<b>Width of ignored frame of image</b> - This parameter determines the width of frame of the image, the contents of which will be ignored during the comparison of images.
+This option is relevant if you want to compare pictures with frames of different colors or small inscription on the edge.
+By default, this value is 0 %.
+ </p></li>
+</ul>
+
+<p align="justify">
+Note: most users it is better not to change the settings on this tab.
+</p>
+
+</td></tr></table></body>
+</html>
