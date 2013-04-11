@@ -172,6 +172,7 @@
   <MainMenu_Search_OnePathMenuItem_Text>Адзін шлях пошуку</MainMenu_Search_OnePathMenuItem_Text>
   <MainMenu_Search_UseImageDataBaseMenuItem_Text>Выкарыстоўваць базу дадзеных аб малюнках</MainMenu_Search_UseImageDataBaseMenuItem_Text>
   <MainMenu_Search_CheckResultsAtLoadingMenuItem_Text>Правяраць вынікі пры загрузцы</MainMenu_Search_CheckResultsAtLoadingMenuItem_Text>
+  <MainMenu_Search_CheckMistakesAtLoadingMenuItem_Text>Правяраць базу дадзеных аб памылках пры загрузцы</MainMenu_Search_CheckMistakesAtLoadingMenuItem_Text>
   <MainMenu_HelpMenuItem_Text>Даведка</MainMenu_HelpMenuItem_Text>
   <MainMenu_Help_HelpMenuItem_Text>Даведка</MainMenu_Help_HelpMenuItem_Text>
   <MainMenu_Help_AboutProgramMenuItem_Text>Аб праграме...</MainMenu_Help_AboutProgramMenuItem_Text>
