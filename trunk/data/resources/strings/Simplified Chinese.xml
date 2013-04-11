@@ -172,6 +172,7 @@
   <MainMenu_Search_OnePathMenuItem_Text>一个搜索路径</MainMenu_Search_OnePathMenuItem_Text>
   <MainMenu_Search_UseImageDataBaseMenuItem_Text>使用图像数据库</MainMenu_Search_UseImageDataBaseMenuItem_Text>
   <MainMenu_Search_CheckResultsAtLoadingMenuItem_Text>加载检查结果</MainMenu_Search_CheckResultsAtLoadingMenuItem_Text>
+  <MainMenu_Search_CheckMistakesAtLoadingMenuItem_Text>检查数据库加载错误</MainMenu_Search_CheckMistakesAtLoadingMenuItem_Text>
   <MainMenu_HelpMenuItem_Text>帮助</MainMenu_HelpMenuItem_Text>
   <MainMenu_Help_HelpMenuItem_Text>帮助</MainMenu_Help_HelpMenuItem_Text>
   <MainMenu_Help_AboutProgramMenuItem_Text>关于</MainMenu_Help_AboutProgramMenuItem_Text>
