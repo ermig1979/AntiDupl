@@ -33,7 +33,10 @@
 
 namespace ad
 {
+	const unsigned char FRAME_MASK_INDEX = 0xFF;
+
     //-------------------------------------------------------------------------
+
     TImageComparer::TImageComparer(TEngine *pEngine)
         :m_pOptions(pEngine->Options()),
         m_pResult(pEngine->Result()),
@@ -58,7 +61,7 @@ namespace ad
             {
                 for(int col = ignoreFrameWidth; col < m_pOptions->advanced.reducedImageSize - ignoreFrameWidth; ++col)
                 {
-                    m_pMask[row*m_pOptions->advanced.reducedImageSize + col] = 0xFF;
+                    m_pMask[row*m_pOptions->advanced.reducedImageSize + col] = FRAME_MASK_INDEX;
                 }
             }
         }
@@ -163,7 +166,7 @@ namespace ad
         if(m_pOptions->advanced.ignoreFrameWidth > 0)
         {
             Simd::SquaredDifferenceSum(pFirst->data->main, m_mainSize, pSecond->data->main, m_mainSize, 
-				m_pMask, m_mainSize, m_mainSize, 1, &mainDifference);
+				m_pMask, m_mainSize, FRAME_MASK_INDEX, m_mainSize, 1, &mainDifference);
         }
         else
         {
