@@ -156,6 +156,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\SimdAbsSecondDerivativeHistogram.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\SimdAbsSecondDerivativeHistogram.h"
+			>
+		</File>
+		<File
 			RelativePath=".\SimdAverage.cpp"
 			>
 		</File>
@@ -329,6 +337,10 @@
 		</File>
 		<File
 			RelativePath=".\SimdResizeBilinear.h"
+			>
+		</File>
+		<File
+			RelativePath=".\SimdSet.h"
 			>
 		</File>
 		<File
