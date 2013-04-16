@@ -41,6 +41,10 @@ namespace AntiDupl.NET
                     throw new Exception(String.Format("The directory '{0}' is not exists!", customSavePath));
                 Resources.UserPath = customSavePath;
             }
+            else
+            {
+                Resources.UserPath = Resources.GetDefaultUserPath();
+            }
             Resources.Strings.Initialize();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

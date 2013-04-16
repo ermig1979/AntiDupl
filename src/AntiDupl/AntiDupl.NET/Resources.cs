@@ -42,7 +42,7 @@ namespace AntiDupl.NET
             return string.Format("{0}\\{1}{2}", path, name, extension);
         }
 
-        static private string GetDefaultUserPath()
+        static public string GetDefaultUserPath()
         {
             string userPath = string.Format("{0}\\user", Application.StartupPath);
             DirectoryInfo directoryInfo = new DirectoryInfo(userPath);
@@ -51,7 +51,7 @@ namespace AntiDupl.NET
             return userPath;
         }
 
-        static private string m_userPath = GetDefaultUserPath();
+        static private string m_userPath = null;
         static public string UserPath { get { return m_userPath; } set { m_userPath = value; } }
 
         static public string DataPath { get { return string.Format("{0}\\data", Application.StartupPath); } }
