@@ -289,7 +289,8 @@ namespace AntiDupl.NET
             public static bool IsCurrentRussianFamily()
             {
                 return IsCurrentRussian() ||
-                    Current.Name.CompareTo("Belarusian") == 0;
+                    Current.Name.CompareTo("Belarusian") == 0 ||
+                    Current.Name.CompareTo("Ukrainian") == 0;
             }
             
             private static ArrayList m_strings = new ArrayList();
