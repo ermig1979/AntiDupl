@@ -160,6 +160,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\SimdAbsGradientSaturatedSum.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\SimdAbsGradientSaturatedSum.h"
+			>
+		</File>
+		<File
 			RelativePath=".\SimdAbsSecondDerivativeHistogram.cpp"
 			>
 		</File>
@@ -205,6 +213,14 @@
 		</File>
 		<File
 			RelativePath=".\SimdBgrToGray.h"
+			>
+		</File>
+		<File
+			RelativePath=".\SimdBinarization.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\SimdBinarization.h"
 			>
 		</File>
 		<File
@@ -348,11 +364,27 @@
 			>
 		</File>
 		<File
+			RelativePath=".\SimdShiftBilinear.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\SimdShiftBilinear.h"
+			>
+		</File>
+		<File
 			RelativePath=".\SimdSquaredDifferenceSum.cpp"
 			>
 		</File>
 		<File
 			RelativePath=".\SimdSquaredDifferenceSum.h"
+			>
+		</File>
+		<File
+			RelativePath=".\SimdStatistic.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\SimdStatistic.h"
 			>
 		</File>
 		<File
