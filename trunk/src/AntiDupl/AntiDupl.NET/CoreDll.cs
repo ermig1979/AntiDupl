@@ -218,7 +218,8 @@ namespace AntiDupl.NET
             Exif = 8,
             Icon = 9,
             Jp2 = 10,
-            Psd = 11
+            Psd = 11,
+            Dds = 12,
         }
 
         public enum DefectType : int
@@ -297,6 +298,7 @@ namespace AntiDupl.NET
             public int ICON;
             public int JP2;
             public int PSD;
+            public int DDS;
         }
 
         [StructLayout(LayoutKind.Sequential)]

@@ -49,6 +49,8 @@
 //#define AD_PERFORMANCE_TEST_ENABLE
 //#define AD_LOGGER_ENABLE
 
+#define AD_INLINE SIMD_INLINE
+
 namespace ad
 {
     //-------------------------------------------------------------------------

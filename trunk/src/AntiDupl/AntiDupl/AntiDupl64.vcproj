@@ -197,6 +197,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\adDds.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\adDds.h"
+			>
+		</File>
+		<File
 			RelativePath=".\adDuplResultFilter.cpp"
 			>
 		</File>

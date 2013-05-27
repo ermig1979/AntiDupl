@@ -26,6 +26,7 @@
 #include "adGdiplus.h"
 #include "adOpenJpeg.h"
 #include "adPsd.h"
+#include "adDds.h"
 
 namespace ad
 {
@@ -42,8 +43,9 @@ namespace ad
         {TEXT("WMF") , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Wmf = 7
         {TEXT("EXIF"), 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Exif = 8
         {TEXT("ICON"), TEXT("ICO") , TEXT("ICN") , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Icon = 9
-        {TEXT("JP2"),  TEXT("J2K") , TEXT("J2C") , TEXT("JPC") , TEXT("JPF") , TEXT("JPX") , 0           , 0           , 0           , 0},// Jp2 = 10
-        {TEXT("PSD"),  0           , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Psd = 11
+        {TEXT("JP2") , TEXT("J2K") , TEXT("J2C") , TEXT("JPC") , TEXT("JPF") , TEXT("JPX") , 0           , 0           , 0           , 0},// Jp2 = 10
+        {TEXT("PSD") , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Psd = 11
+		{TEXT("DDS") , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Dds = 12
     };
     //-------------------------------------------------------------------------
 
@@ -83,6 +85,8 @@ namespace ad
             return TOpenJpeg::Load(hGlobal);
         else if(TPsd::Supported(hGlobal))
             return TPsd::Load(hGlobal);
+		else if(TDds::Supported(hGlobal))
+			return TDds::Load(hGlobal);
         else
             return TGdiplus::Load(hGlobal);
     }
