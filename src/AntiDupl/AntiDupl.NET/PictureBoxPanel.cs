@@ -72,31 +72,38 @@ namespace AntiDupl.NET
             if(currentImageInfo != null)
             {
                 StopAnimate();
-                if (m_currentImageInfo.path.Length < MAX_PATH && m_currentImageInfo.type <= CoreDll.ImageType.Icon)
+                if (m_currentImageInfo.type != CoreDll.ImageType.None)
                 {
-                    try
+                    if (m_currentImageInfo.path.Length < MAX_PATH && m_currentImageInfo.type <= CoreDll.ImageType.Icon)
                     {
-                        if (LoadFileToMemoryStream(m_currentImageInfo.path))
+                        try
                         {
-                            m_bitmap = new Bitmap(m_memoryStream);
-                            m_animationEnable = ImageAnimator.CanAnimate(m_bitmap);
-                            if (m_animationEnable)
-                                m_currentlyAnimating = false;
+                            if (LoadFileToMemoryStream(m_currentImageInfo.path))
+                            {
+                                m_bitmap = new Bitmap(m_memoryStream);
+                                m_animationEnable = ImageAnimator.CanAnimate(m_bitmap);
+                                if (m_animationEnable)
+                                    m_currentlyAnimating = false;
+                            }
+                            else
+                            {
+                                m_bitmap = null;
+                            }
                         }
-                        else
+                        catch
                         {
-                            m_bitmap = null;
+                            m_bitmap = m_core.LoadBitmap(m_currentImageInfo);
                         }
                     }
-                    catch
+                    else
                     {
                         m_bitmap = m_core.LoadBitmap(m_currentImageInfo);
-                    }
+                    } 
                 }
                 else
                 {
-                    m_bitmap = m_core.LoadBitmap(m_currentImageInfo);
-                } 
+                    m_bitmap = null;
+                }
             }
         }
 

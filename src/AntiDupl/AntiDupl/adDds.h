@@ -21,51 +21,19 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
-#ifndef __adImage_h__
-#define __adImage_h__
+#ifndef __adDds_h__
+#define __adDds_h__
 
-#include "adStrings.h"
+#include "adImage.h"
 
 namespace ad
 {
-    class TImage
-    {
-    public:
-        enum TFormat
-        {
-            None = 0,
-            Bmp = 1,
-            Gif = 2,
-            Jpeg = 3,
-            Png = 4,
-            Tiff = 5,
-            Emf = 6,
-            Wmf = 7,
-            Exif = 8,
-            Icon = 9,
-            Jp2 = 10,
-            Psd = 11,
-			Dds = 12,
-            FormatSize
-        };
-
-        virtual ~TImage();
-
-        TFormat Format() const {return m_format;}
-        TView* View() const {return m_pView;}
-        
-        static TStrings Extensions(TFormat format);
-        static TImage* Load(HGLOBAL hGlobal);
-        static TImage* Load(const TChar * fileName);
-
-    protected:
-        TImage();
-
-        void FreeView();
-
-        TView *m_pView;
-        TFormat m_format;
-    };
+	class TDds : public TImage
+	{
+	public:
+		static TDds* Load(HGLOBAL hGlobal);
+		static bool Supported(HGLOBAL hGlobal);
+	};
 }
 
-#endif//__adImage_h__
+#endif//__adDds_h__

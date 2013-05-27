@@ -41,6 +41,7 @@ namespace AntiDupl.NET
         private static string[] s_iconExtensions = {"ICON", "ICO", "ICN"};
         private static string[] s_jp2Extensions = {"JP2", "J2K", "J2C", "JPC", "JPF", "JPX"};
         private static string[] s_psdExtensions = {"PSD"};
+        private static string[] s_ddsExtensions = {"DDS"};
 
         public bool subFolders;
         public bool system;
@@ -56,6 +57,7 @@ namespace AntiDupl.NET
         public bool ICON;
         public bool JP2;
         public bool PSD;
+        public bool DDS;
 
         public CoreSearchOptions()
         {
@@ -77,6 +79,7 @@ namespace AntiDupl.NET
             ICON = searchOptions.ICON;
             JP2 = searchOptions.JP2;
             PSD = searchOptions.PSD;
+            DDS = searchOptions.DDS;
         }
 
         public CoreSearchOptions(CoreDll.adSearchOptions searchOptions)
@@ -95,6 +98,7 @@ namespace AntiDupl.NET
             ICON = searchOptions.ICON != CoreDll.FALSE;
             JP2 = searchOptions.JP2 != CoreDll.FALSE;
             PSD = searchOptions.PSD != CoreDll.FALSE;
+            DDS = searchOptions.DDS != CoreDll.FALSE;
         }
 
         public void ConvertTo(ref CoreDll.adSearchOptions searchOptions)
@@ -113,6 +117,7 @@ namespace AntiDupl.NET
             searchOptions.ICON = ICON ? CoreDll.TRUE : CoreDll.FALSE;
             searchOptions.JP2 = JP2 ? CoreDll.TRUE : CoreDll.FALSE;
             searchOptions.PSD = PSD ? CoreDll.TRUE : CoreDll.FALSE;
+            searchOptions.DDS = DDS ? CoreDll.TRUE : CoreDll.FALSE;
         }
 
         public CoreSearchOptions Clone()
@@ -136,7 +141,8 @@ namespace AntiDupl.NET
                 EXIF == searchOptions.EXIF &&
                 ICON == searchOptions.ICON &&
                 JP2 == searchOptions.JP2 &&
-                PSD == searchOptions.PSD;
+                PSD == searchOptions.PSD &&
+                DDS == searchOptions.DDS;
         }
 
         public string[] GetActualExtensions()
@@ -162,6 +168,8 @@ namespace AntiDupl.NET
                 extensions.AddRange(s_jp2Extensions);
             if(PSD)
                 extensions.AddRange(s_psdExtensions);
+            if (DDS)
+                extensions.AddRange(s_ddsExtensions);
             return (string[])extensions.ToArray(typeof(string));
         }
     }

@@ -74,7 +74,8 @@ namespace AntiDupl.NET
         public string CoreOptionsForm_ExifCheckBox_Text;
         public string CoreOptionsForm_IconCheckBox_Text;
         public string CoreOptionsForm_Jp2CheckBox_Text;
-        public string CoreOptionsForm_PsdCheckBox_Text; 
+        public string CoreOptionsForm_PsdCheckBox_Text;
+        public string CoreOptionsForm_DdsCheckBox_Text;
         public string CoreOptionsForm_SearchSystemCheckBox_Text;
         public string CoreOptionsForm_SearchHiddenCheckBox_Text;
         public string CoreOptionsForm_SearchSubFoldersCheckBox_Text;

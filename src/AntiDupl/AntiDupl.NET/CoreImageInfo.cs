@@ -98,6 +98,9 @@ namespace AntiDupl.NET
                 case CoreDll.ImageType.Psd:
                     builder.Append("PSD");
                     break;
+                case CoreDll.ImageType.Dds:
+                    builder.Append("DDS");
+                    break;
             }
             return builder.ToString();
         }

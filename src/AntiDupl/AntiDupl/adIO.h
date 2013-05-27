@@ -189,6 +189,21 @@ namespace ad
         return InvertByteOrder(ReadValue<unsigned long long>(pStream));
     }
 
+	inline unsigned short ReadLittleEndianShort(IStream *pStream)
+	{
+		return ReadValue<unsigned short>(pStream);
+	}
+
+	inline unsigned long ReadLittleEndianLong(IStream *pStream)
+	{
+		return ReadValue<unsigned long>(pStream);
+	}
+
+	inline unsigned long long ReadLittleEndianLongLong(IStream *pStream)
+	{
+		return ReadValue<unsigned long long>(pStream);
+	}
+
     inline void ReadBuffer(IStream *pStream, unsigned char *buffer, size_t size)
     {
         if(size > 0)
