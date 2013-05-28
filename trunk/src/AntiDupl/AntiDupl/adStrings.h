@@ -53,9 +53,6 @@ namespace ad
 		bool CopyTo(char *buffer, size_t size) const;
 		bool CopyTo(wchar_t *buffer, size_t size) const;
 
-		bool Load(HANDLE hIn);
-		bool Save(HANDLE hOut) const;
-
 		bool ToUpper(); // Convert string characters to upper case;
 		TString GetUpper(); // Get string with characters converted to upper case;
 	};

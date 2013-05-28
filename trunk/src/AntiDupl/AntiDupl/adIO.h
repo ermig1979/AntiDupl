@@ -26,64 +26,6 @@
 
 #include "adConfig.h"
 
-#define AD_READ_CHECKED_VALUE_FROM_FILE(hIn, value, condition) \
-    {  \
-        DWORD byte_was_read; \
-        BOOL result = ReadFile(hIn, &value, (DWORD)sizeof(value), &byte_was_read, NULL); \
-        if(result != TRUE || byte_was_read < (DWORD)sizeof(value) || (condition)) \
-            return false; \
-    }
-
-#define AD_READ_VALUE_FROM_FILE(hIn, value) \
-    AD_READ_CHECKED_VALUE_FROM_FILE(hIn, value, false)
-
-#define AD_READ_BOUNDED_VALUE_FROM_FILE(hIn, value, min, max) \
-    AD_READ_CHECKED_VALUE_FROM_FILE(hIn, value, value < min || value >= max)
-    
-#define AD_READ_BOUNDED_SIZE_FROM_FILE(hIn, size, max) \
-    { \
-        unsigned __int64 value; \
-        AD_READ_CHECKED_VALUE_FROM_FILE(hIn, value, value >= (unsigned __int64)max) \
-        size = (size_t)value; \
-    }
-    
-#define AD_READ_SIZE_FROM_FILE(hIn, size) \
-    { \
-        unsigned __int64 value; \
-        AD_READ_CHECKED_VALUE_FROM_FILE(hIn, value, false) \
-        size = (size_t)value; \
-    }
-
-#define AD_WRITE_VALUE_TO_FILE(hOut, value) \
-    {  \
-        DWORD byte_was_written; \
-        BOOL result = WriteFile(hOut, &value, (DWORD)sizeof(value), &byte_was_written, NULL); \
-        if(result != TRUE || byte_was_written < (DWORD)sizeof(value)) \
-            return false; \
-    }
-    
-#define AD_WRITE_SIZE_TO_FILE(hOut, size) \
-    { \
-        unsigned __int64 value = size; \
-        AD_WRITE_VALUE_TO_FILE(hOut, value) \
-    }
-
-#define AD_READ_BUFFER_FROM_FILE(hIn, buffer, size) \
-    {  \
-        DWORD byte_was_read; \
-        BOOL result = ReadFile(hIn, (void*)buffer, (DWORD)(size), &byte_was_read, NULL); \
-        if(result != TRUE || byte_was_read < (DWORD)(size)) \
-            return false; \
-    }
-
-#define AD_WRITE_BUFFER_TO_FILE(hOut, buffer, size) \
-    {  \
-        DWORD byte_was_written; \
-        BOOL result = WriteFile(hOut, buffer, (DWORD)(size), &byte_was_written, NULL); \
-        if(result != TRUE || byte_was_written < (DWORD)(size)) \
-            return false; \
-    }
-
 namespace ad
 {
 	inline bool SaveFormatVersion(HANDLE hOut, const std::string & format, TUInt32 version)

@@ -122,35 +122,6 @@ namespace ad
 		return 0;
 	}
 
-	bool TPath::Load(HANDLE hIn)
-	{
-		TString path;
-		bool result = path.Load(hIn);
-#ifdef UNICODE
-		if(result && path.length() > MAX_PATH_EX)
-			result = false;
-#else//UNICODE
-		if(result && path.length() > MAX_PATH)
-			result = false;
-#endif//UNICODE
-		if(!result)
-			path = TString();
-		Update(path);
-		return result;
-	}
-
-	bool TPath::Save(HANDLE hOut) const 
-	{
-#ifdef UNICODE
-		if(m_original.string.length() > MAX_PATH_EX)
-			return false;
-#else//UNICODE
-		if(m_original.string.length() > MAX_PATH)
-			return false;
-#endif//UNICODE
-		return m_original.string.Save(hOut);
-	}
-
 	TPath::TIsSubPath TPath::IsSubPath(const TPath& path1, const TPath& path2)
 	{
 		const TChar *p1 = path1.m_compare.directory.first;

@@ -185,6 +185,66 @@
 		/>
 	</References>
 	<Files>
+		<Filter
+			Name="Img"
+			>
+			<File
+				RelativePath=".\adDds.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\adDds.h"
+				>
+			</File>
+			<File
+				RelativePath=".\adGdiplus.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\adGdiplus.h"
+				>
+			</File>
+			<File
+				RelativePath=".\adImage.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\adImage.h"
+				>
+			</File>
+			<File
+				RelativePath=".\adInit.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\adInit.h"
+				>
+			</File>
+			<File
+				RelativePath=".\adOpenJpeg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\adOpenJpeg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\adPsd.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\adPsd.h"
+				>
+			</File>
+			<File
+				RelativePath=".\adTga.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\adTga.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\adConfig.h"
 			>
@@ -195,14 +255,6 @@
 		</File>
 		<File
 			RelativePath=".\adDataCollector.h"
-			>
-		</File>
-		<File
-			RelativePath=".\adDds.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\adDds.h"
 			>
 		</File>
 		<File
@@ -254,27 +306,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\adGdiplus.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\adGdiplus.h"
-			>
-		</File>
-		<File
 			RelativePath=".\adHintSetter.cpp"
 			>
 		</File>
 		<File
 			RelativePath=".\adHintSetter.h"
-			>
-		</File>
-		<File
-			RelativePath=".\adImage.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\adImage.h"
 			>
 		</File>
 		<File
@@ -342,14 +378,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\adInit.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\adInit.h"
-			>
-		</File>
-		<File
 			RelativePath=".\adIO.h"
 			>
 		</File>
@@ -367,14 +395,6 @@
 		</File>
 		<File
 			RelativePath=".\adMistakeStorage.h"
-			>
-		</File>
-		<File
-			RelativePath=".\adOpenJpeg.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\adOpenJpeg.h"
 			>
 		</File>
 		<File
@@ -407,14 +427,6 @@
 		</File>
 		<File
 			RelativePath=".\adPixelData.h"
-			>
-		</File>
-		<File
-			RelativePath=".\adPsd.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\adPsd.h"
 			>
 		</File>
 		<File
@@ -463,14 +475,6 @@
 		</File>
 		<File
 			RelativePath=".\adStrings.h"
-			>
-		</File>
-		<File
-			RelativePath=".\adTga.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\adTga.h"
 			>
 		</File>
 		<File
