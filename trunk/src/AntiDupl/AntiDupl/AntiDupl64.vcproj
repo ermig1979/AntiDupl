@@ -469,6 +469,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\adTga.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\adTga.h"
+			>
+		</File>
+		<File
 			RelativePath=".\adThreadManagement.cpp"
 			>
 		</File>

@@ -24,10 +24,6 @@
 #define OPJ_STATIC
 #include "LibOpenJpeg/openjpeg.h"
 
-#include <windows.h>
-#include <gdiplus.h>
-#pragma comment (lib, "GDIPlus.lib")
-
 #include "adPerformance.h"
 #include "adOpenJpeg.h"
 

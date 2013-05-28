@@ -27,6 +27,7 @@
 #include "adOpenJpeg.h"
 #include "adPsd.h"
 #include "adDds.h"
+#include "adTga.h"
 
 namespace ad
 {
@@ -46,6 +47,7 @@ namespace ad
         {TEXT("JP2") , TEXT("J2K") , TEXT("J2C") , TEXT("JPC") , TEXT("JPF") , TEXT("JPX") , 0           , 0           , 0           , 0},// Jp2 = 10
         {TEXT("PSD") , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Psd = 11
 		{TEXT("DDS") , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Dds = 12
+		{TEXT("TGA") , TEXT("TPIC"), 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Tga = 13
     };
     //-------------------------------------------------------------------------
 
@@ -87,6 +89,8 @@ namespace ad
             return TPsd::Load(hGlobal);
 		else if(TDds::Supported(hGlobal))
 			return TDds::Load(hGlobal);
+		else if(TTga::Supported(hGlobal))
+			return TTga::Load(hGlobal);
         else
             return TGdiplus::Load(hGlobal);
     }

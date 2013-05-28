@@ -75,6 +75,7 @@ namespace AntiDupl.NET
         private CheckBox m_jp2CheckBox;
         private CheckBox m_psdCheckBox;
         private CheckBox m_ddsCheckBox;
+        private CheckBox m_tgaCheckBox;
         private CheckBox m_searchSystemCheckBox;
         private CheckBox m_searchHiddenCheckBox;
         private CheckBox m_searchSubFoldersCheckBox;
@@ -244,6 +245,9 @@ namespace AntiDupl.NET
             m_ddsCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
             searchFileTypeTableLayoutPanel.Controls.Add(m_ddsCheckBox, 2, 1);
 
+            m_tgaCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
+            searchFileTypeTableLayoutPanel.Controls.Add(m_tgaCheckBox, 2, 2);
+
             m_searchSystemCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
             searchTableLayoutPanel.Controls.Add(m_searchSystemCheckBox, 0, 1);
 
@@ -333,6 +337,7 @@ namespace AntiDupl.NET
             m_jp2CheckBox.Checked = m_newOptions.searchOptions.JP2;
             m_psdCheckBox.Checked = m_newOptions.searchOptions.PSD;
             m_ddsCheckBox.Checked = m_newOptions.searchOptions.DDS;
+            m_tgaCheckBox.Checked = m_newOptions.searchOptions.TGA;
             m_searchSystemCheckBox.Checked = m_newOptions.searchOptions.system;
             m_searchHiddenCheckBox.Checked = m_newOptions.searchOptions.hidden;
             m_searchSubFoldersCheckBox.Checked = m_newOptions.searchOptions.subFolders;
@@ -372,6 +377,7 @@ namespace AntiDupl.NET
             m_newOptions.searchOptions.JP2 = m_jp2CheckBox.Checked;
             m_newOptions.searchOptions.PSD = m_psdCheckBox.Checked;
             m_newOptions.searchOptions.DDS = m_ddsCheckBox.Checked;
+            m_newOptions.searchOptions.TGA = m_tgaCheckBox.Checked;
             m_newOptions.searchOptions.system = m_searchSystemCheckBox.Checked;
             m_newOptions.searchOptions.hidden = m_searchHiddenCheckBox.Checked;
             m_newOptions.searchOptions.subFolders = m_searchSubFoldersCheckBox.Checked;
@@ -421,6 +427,7 @@ namespace AntiDupl.NET
             m_jp2CheckBox.Text = s.CoreOptionsForm_Jp2CheckBox_Text;
             m_psdCheckBox.Text = s.CoreOptionsForm_PsdCheckBox_Text;
             m_ddsCheckBox.Text = s.CoreOptionsForm_DdsCheckBox_Text;
+            m_tgaCheckBox.Text = s.CoreOptionsForm_TgaCheckBox_Text;
             m_searchSystemCheckBox.Text = s.CoreOptionsForm_SearchSystemCheckBox_Text;
             m_searchHiddenCheckBox.Text = s.CoreOptionsForm_SearchHiddenCheckBox_Text;
             m_searchSubFoldersCheckBox.Text = s.CoreOptionsForm_SearchSubFoldersCheckBox_Text;
@@ -461,7 +468,8 @@ namespace AntiDupl.NET
               m_newOptions.searchOptions.ICON ||
               m_newOptions.searchOptions.JP2 ||
               m_newOptions.searchOptions.PSD ||
-              m_newOptions.searchOptions.DDS))
+              m_newOptions.searchOptions.DDS ||
+              m_newOptions.searchOptions.TGA))
             {
                 m_inited = false;
                 m_newOptions.searchOptions.JPEG = true;

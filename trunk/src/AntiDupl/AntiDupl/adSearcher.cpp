@@ -156,6 +156,7 @@ namespace ad
         AddExtensions(AD_IMAGE_JP2, m_pOptions->search.JP2);
         AddExtensions(AD_IMAGE_PSD, m_pOptions->search.PSD);
 		AddExtensions(AD_IMAGE_DDS, m_pOptions->search.DDS);
+		AddExtensions(AD_IMAGE_TGA, m_pOptions->search.TGA);
     }
 
     void TSearcher::AddExtensions(TImageType imageType, adBool enable)

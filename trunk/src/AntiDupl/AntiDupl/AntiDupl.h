@@ -286,6 +286,7 @@ extern "C"
         AD_IMAGE_JP2 = 10,
         AD_IMAGE_PSD = 11,
 		AD_IMAGE_DDS = 12,
+		AD_IMAGE_TGA = 13,
         AD_IMAGE_SIZE
     };
 
@@ -373,6 +374,7 @@ extern "C"
         adBool JP2;
         adBool PSD;
 		adBool DDS;
+		adBool TGA;
     };
     typedef adSearchOptions* adSearchOptionsPtr;
 

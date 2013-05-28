@@ -21,10 +21,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
-#include <windows.h>
-#include <gdiplus.h>
-#pragma comment (lib, "GDIPlus.lib")
-
 #include "adPerformance.h"
 #include "adIO.h"
 #include "adPsd.h"
