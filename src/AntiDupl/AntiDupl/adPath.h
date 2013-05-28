@@ -71,9 +71,6 @@ namespace ad
 			return *this;
 		}
 
-		bool Load(HANDLE hIn);
-		bool Save(HANDLE hOut) const;
-
 		const TString& Original() const {return m_original.string;}
 
 		enum TIsSubPath
