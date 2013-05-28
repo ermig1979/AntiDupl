@@ -220,6 +220,7 @@ namespace AntiDupl.NET
             Jp2 = 10,
             Psd = 11,
             Dds = 12,
+            Tga = 13,
         }
 
         public enum DefectType : int
@@ -299,6 +300,7 @@ namespace AntiDupl.NET
             public int JP2;
             public int PSD;
             public int DDS;
+            public int TGA;
         }
 
         [StructLayout(LayoutKind.Sequential)]
