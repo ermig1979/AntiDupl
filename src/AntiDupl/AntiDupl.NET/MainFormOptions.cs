@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace AntiDupl.NET
 {
@@ -68,8 +69,8 @@ namespace AntiDupl.NET
             }
         }
 
-        public int width = MainForm.MIN_WIDTH;
-        public int height = MainForm.MIN_HEIGHT;
+        public Point location = DefaultLocation();
+        public Size size = new Size(MainForm.MIN_WIDTH, MainForm.MIN_HEIGHT);
         public bool maximized = false;
 
         public MainFormOptions()
@@ -79,8 +80,8 @@ namespace AntiDupl.NET
 
         public MainFormOptions(MainFormOptions options)
         {
-            width = options.width;
-            height = options.height;
+            location = options.location;
+            size = options.size;
             maximized = options.maximized;
             m_toolStripView = options.m_toolStripView;
             m_statusStripView = options.m_statusStripView;
@@ -88,8 +89,8 @@ namespace AntiDupl.NET
 
         public void CopyTo(ref MainFormOptions options)
         {
-            options.width = width;
-            options.height = height;
+            options.location = location;
+            options.size = size;
             options.maximized = maximized;
             options.m_toolStripView = m_toolStripView;
             options.m_statusStripView = m_statusStripView;
@@ -97,9 +98,9 @@ namespace AntiDupl.NET
 
         public bool Equals(MainFormOptions options)
         {
-            if (width != options.width)
+            if (location != options.location)
                 return false;
-            if (height != options.height)
+            if (size != options.size)
                 return false;
             if (maximized != options.maximized)
                 return false;
@@ -113,11 +114,19 @@ namespace AntiDupl.NET
 
         public void SetDefault()
         {
-            width = MainForm.MIN_WIDTH;
-            height = MainForm.MIN_HEIGHT;
+            location = DefaultLocation();
+            size = new Size(MainForm.MIN_WIDTH, MainForm.MIN_HEIGHT);
             maximized = false;
             m_toolStripView = true;
             m_statusStripView = true;
+        }
+
+        static private Point DefaultLocation()
+        {
+            Rectangle rect = Screen.PrimaryScreen.WorkingArea;
+            int left = (rect.Left + rect.Width - MainForm.MIN_WIDTH)/2;
+            int top = (rect.Top + rect.Height - MainForm.MIN_HEIGHT)/2;
+            return new Point(left, top);
         }
     }
 }
