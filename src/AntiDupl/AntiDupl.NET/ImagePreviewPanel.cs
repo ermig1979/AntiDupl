@@ -266,14 +266,16 @@ namespace AntiDupl.NET
 
         public void RenameImage(object sender, EventArgs e)
         {
+            FileInfo fileInfo = new FileInfo(m_currentImageInfo.path);
             SaveFileDialog dialog = new SaveFileDialog();
-            dialog.FileName = m_currentImageInfo.path;
+            dialog.FileName = fileInfo.FullName;
             dialog.OverwritePrompt = false;
             dialog.AddExtension = true;
             dialog.CheckPathExists = true;
-            dialog.DefaultExt = (new FileInfo(m_currentImageInfo.path)).Extension;
+            dialog.DefaultExt = fileInfo.Extension;
             dialog.FileOk += new System.ComponentModel.CancelEventHandler(OnRenameImageDialogFileOk);
             dialog.Title = Resources.Strings.Current.ImagePreviewContextMenu_RenameImageItem_Text;
+            dialog.InitialDirectory = fileInfo.Directory.ToString();
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 m_resultsListView.RenameCurrent(m_renameCurrentType, dialog.FileName);
