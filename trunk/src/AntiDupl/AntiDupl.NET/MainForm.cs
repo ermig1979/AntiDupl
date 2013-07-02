@@ -83,7 +83,6 @@ namespace AntiDupl.NET
             Controls.Add(m_mainMenu);
 
             FormClosed += new FormClosedEventHandler(OnFormClosed);
-            SizeChanged += new EventHandler(OnSizeChanged);
             Shown += new EventHandler(OnFormShown);
         }
 
@@ -100,24 +99,36 @@ namespace AntiDupl.NET
 
         private void SetLoadedViewOptions()
         {
-            Size = new Size(
-              Math.Min(Math.Max(m_options.mainFormOptions.width, MIN_WIDTH), Screen.PrimaryScreen.WorkingArea.Width),
-              Math.Min(Math.Max(m_options.mainFormOptions.height, MIN_HEIGHT), Screen.PrimaryScreen.WorkingArea.Height));
+            Point loc = m_options.mainFormOptions.location;
+            Size size = m_options.mainFormOptions.size;
 
+            Size sizeMin = new Size(MIN_WIDTH, MIN_HEIGHT);
+            Size sizeMax = Screen.PrimaryScreen.WorkingArea.Size;
+
+            Point locMin = Screen.PrimaryScreen.WorkingArea.Location;
+            Point locMax = locMin + Screen.PrimaryScreen.WorkingArea.Size - sizeMin;
+
+            loc = new Point(Restrict(loc.X, locMin.X, locMax.X), Restrict(loc.Y, locMin.Y, locMax.Y));
+            size = new Size(Restrict(size.Width, sizeMin.Width, sizeMax.Width - loc.X),
+                Restrict(size.Height, sizeMin.Height, sizeMax.Height - loc.Y));
+
+            Location = loc;
+            Size = size;
             WindowState = (m_options.mainFormOptions.maximized ? FormWindowState.Maximized : FormWindowState.Normal);
+        }
+
+        private int Restrict(int value, int min, int max)
+        {
+            return Math.Min(Math.Max(value, min), max);
         }
 
         private void GetSavedViewOptions()
         {
             m_options.mainFormOptions.maximized = (WindowState == FormWindowState.Maximized);
-        }
-
-        private void OnSizeChanged(object sender, System.EventArgs e)
-        {
             if (WindowState == FormWindowState.Normal)
             {
-                m_options.mainFormOptions.width = Size.Width;
-                m_options.mainFormOptions.height = Size.Height;
+                m_options.mainFormOptions.size = Size;
+                m_options.mainFormOptions.location = Location;
             }
         }
 
