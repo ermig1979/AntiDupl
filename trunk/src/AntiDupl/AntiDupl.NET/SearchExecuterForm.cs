@@ -52,6 +52,7 @@ namespace AntiDupl.NET
 
         private CoreLib m_core;
         private Options m_options;
+        private CoreOptions m_coreOptions;
         private MainSplitContainer m_mainSplitContainer;
         private MainForm m_mainForm;
         private System.Windows.Forms.Timer m_timer;
@@ -64,10 +65,11 @@ namespace AntiDupl.NET
         private ProgressPanel m_progressPanel;
         private NotifyIcon m_notifyIcon;
 
-        public SearchExecuterForm(CoreLib core, Options options, MainSplitContainer mainSplitContainer, MainForm mainForm)
+        public SearchExecuterForm(CoreLib core, Options options, CoreOptions coreOptions, MainSplitContainer mainSplitContainer, MainForm mainForm)
         {
             m_core = core;
             m_options = options;
+            m_coreOptions = coreOptions;
             m_mainSplitContainer = mainSplitContainer;
             m_mainForm = mainForm;
             m_mainFormWindowState = m_mainForm.WindowState;
@@ -140,7 +142,7 @@ namespace AntiDupl.NET
         private void CoreThreadTask()
         {
             m_startDateTime = DateTime.Now;
-            m_options.coreOptions.Set(m_core, m_options.onePath);
+            m_coreOptions.Set(m_core, m_options.onePath);
             m_state = State.ClearResults;
             m_core.Clear(CoreDll.FileType.Result);
             m_state = State.ClearTemporary;
@@ -148,7 +150,7 @@ namespace AntiDupl.NET
             if (m_options.useImageDataBase)
             {
                 m_state = State.LoadImages;
-                m_core.Load(CoreDll.FileType.ImageDataBase, m_options.GetImageDataBasePath(), false);
+                m_core.Load(CoreDll.FileType.ImageDataBase, m_coreOptions.GetImageDataBasePath(), false);
             }
             m_state = State.Search;
             m_core.Search();
@@ -159,7 +161,7 @@ namespace AntiDupl.NET
             if (m_options.useImageDataBase)
             {
                 m_state = State.SaveImages;
-                m_core.Save(CoreDll.FileType.ImageDataBase, m_options.GetImageDataBasePath());
+                m_core.Save(CoreDll.FileType.ImageDataBase, m_coreOptions.GetImageDataBasePath());
             }
             m_core.Clear(CoreDll.FileType.ImageDataBase);
             m_core.SortResult((CoreDll.SortType)m_options.resultsOptions.sortTypeDefault, m_options.resultsOptions.increasingDefault);
@@ -337,7 +339,7 @@ namespace AntiDupl.NET
                 total = mainThreadStatus.total;
                 if(mainThreadStatus.current > 0)
                 {
-                    if(m_options.coreOptions.checkOptions.checkOnEquality)
+                    if(m_coreOptions.checkOptions.checkOnEquality)
                     {
                         for(int i = 0; ; i++)
                         {

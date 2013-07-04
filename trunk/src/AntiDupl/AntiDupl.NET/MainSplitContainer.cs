@@ -39,6 +39,7 @@ namespace AntiDupl.NET
         private MainForm m_mainForm;
         private Options m_options;
         CoreLib m_core;
+        private CoreOptions m_coreOptions;
 
         private ResultsListView m_resultsListView;
         private ResultsPreviewContainer m_resultsPreviewContainer;
@@ -60,14 +61,15 @@ namespace AntiDupl.NET
         public delegate void SelectedResultsChangedHandler();
         public event SelectedResultsChangedHandler OnSelectedResultsChanged;
 
-        public MainSplitContainer(CoreLib core, Options options, MainForm mainForm)
+        public MainSplitContainer(CoreLib core, Options options, CoreOptions coreOptions, MainForm mainForm)
         {
             m_mainForm = mainForm;
             m_options = options;
             m_core = core;
+            m_coreOptions = coreOptions;
 
-            m_resultsListView = new ResultsListView(m_core, m_options, this);
-            m_resultsPreviewContainer = new ResultsPreviewContainer(m_core, m_options, this);
+            m_resultsListView = new ResultsListView(m_core, m_options, m_coreOptions, this);
+            m_resultsPreviewContainer = new ResultsPreviewContainer(m_core, m_options, m_coreOptions, this);
 
             //m_resultsListView.UpdateResults();
 

@@ -66,13 +66,18 @@ namespace AntiDupl.NET
         public bool checkResultsAtLoading = true;
         public bool checkMistakesAtLoading = true;
 
-        public MainFormOptions mainFormOptions;
-        public ResultsOptions resultsOptions;
-        public HotKeyOptions hotKeyOptions;
+        public MainFormOptions mainFormOptions = new MainFormOptions();
+        public ResultsOptions resultsOptions = new ResultsOptions();
+        public HotKeyOptions hotKeyOptions= new HotKeyOptions();
 
-        public CoreOptions coreOptions;
+        public string coreOptionsFileName = GetDefaultCoreOptionsFileName();
 
-        static public Options Load(CoreLib core)
+        public string GetResultsFileName()
+        {
+            return Path.ChangeExtension(coreOptionsFileName, ".adr");
+        }
+
+        static public Options Load()
         {
             FileInfo fileInfo = new FileInfo(Options.GetOptionsFileName());
             if (fileInfo.Exists)
@@ -83,32 +88,19 @@ namespace AntiDupl.NET
                     FileStream fileStream = new FileStream(Options.GetOptionsFileName(), FileMode.Open);
                     Options options = (Options)xmlSerializer.Deserialize(fileStream);
                     fileStream.Close();
-                    options.coreOptions.Validate(core, options.onePath);
                     return options;
                 }
                 catch
                 {
-                    return new Options(core);
+                    return new Options();
                 }
             }
             else
-                return new Options(core);
+                return new Options();
         }
 
         public Options()
         {
-            resultsOptions = new ResultsOptions();
-            mainFormOptions = new MainFormOptions();
-            hotKeyOptions = new HotKeyOptions();
-            coreOptions = new CoreOptions();
-        }
-
-        public Options(CoreLib core)
-        {
-            resultsOptions = new ResultsOptions();
-            mainFormOptions = new MainFormOptions();
-            hotKeyOptions = new HotKeyOptions();
-            coreOptions = new CoreOptions(core);
         }
 
         public Options(Options options)
@@ -116,7 +108,7 @@ namespace AntiDupl.NET
             resultsOptions = new ResultsOptions(options.resultsOptions);
             mainFormOptions = new MainFormOptions(options.mainFormOptions);
             hotKeyOptions = new HotKeyOptions(options.hotKeyOptions);
-            coreOptions = new CoreOptions(options.coreOptions);
+            coreOptionsFileName = (string)options.coreOptionsFileName.Clone();
             
             Language = options.Language;
             onePath = options.onePath;
@@ -149,7 +141,7 @@ namespace AntiDupl.NET
             resultsOptions.CopyTo(ref options.resultsOptions);
             mainFormOptions.CopyTo(ref options.mainFormOptions);
             hotKeyOptions.CopyTo(ref options.hotKeyOptions);
-            coreOptions.CopyTo(ref options.coreOptions);
+            options.coreOptionsFileName = (string)coreOptionsFileName.Clone();
 
             options.Language = Language;
             options.onePath = onePath;
@@ -199,13 +191,9 @@ namespace AntiDupl.NET
             return builder.ToString();
         }
 
-        public string GetImageDataBasePath()
+        static public string GetDefaultCoreOptionsFileName()
         {
-            string directory = string.Format("{0}\\images\\{1}x{1}", Resources.UserPath, coreOptions.advancedOptions.reducedImageSize);
-            DirectoryInfo directoryInfo = new DirectoryInfo(directory);
-            if (!directoryInfo.Exists)
-                directoryInfo.Create();
-            return directory;
+            return string.Format("{0}\\default.xml", Resources.ProfilesPath);
         }
 
         public bool Equals(Options options)
@@ -228,7 +216,7 @@ namespace AntiDupl.NET
                 return false;
             if (!hotKeyOptions.Equals(options.hotKeyOptions))
                 return false;
-            if (!coreOptions.Equals(options.coreOptions))
+            if (!coreOptionsFileName.Equals(options.coreOptionsFileName))
                 return false;
             return true;
         }

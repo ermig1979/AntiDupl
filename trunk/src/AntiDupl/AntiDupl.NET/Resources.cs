@@ -42,17 +42,23 @@ namespace AntiDupl.NET
             return string.Format("{0}\\{1}{2}", path, name, extension);
         }
 
-        static public string GetDefaultUserPath()
+        static private string CreateIfNotExists(string path)
         {
-            string userPath = string.Format("{0}\\user", Application.StartupPath);
-            DirectoryInfo directoryInfo = new DirectoryInfo(userPath);
+            DirectoryInfo directoryInfo = new DirectoryInfo(path);
             if (!directoryInfo.Exists)
                 directoryInfo.Create();
-            return userPath;
+            return path;
+        }
+
+        static public string GetDefaultUserPath()
+        {
+            return CreateIfNotExists(string.Format("{0}\\user", Application.StartupPath));
         }
 
         static private string m_userPath = null;
         static public string UserPath { get { return m_userPath; } set { m_userPath = value; } }
+
+        static public string ProfilesPath { get { return CreateIfNotExists(string.Format("{0}\\profiles", UserPath)); } }
 
         static public string DataPath { get { return string.Format("{0}\\data", Application.StartupPath); } }
 

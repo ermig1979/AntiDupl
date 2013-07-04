@@ -26,6 +26,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace AntiDupl.NET
 {
@@ -194,6 +196,51 @@ namespace AntiDupl.NET
                 return false;
 
             return true;
+        }
+
+        static public CoreOptions Load(string fileName, CoreLib core, bool onePath)
+        {
+            FileInfo fileInfo = new FileInfo(fileName);
+            if (fileInfo.Exists)
+            {
+                try
+                {
+                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(CoreOptions));
+                    FileStream fileStream = new FileStream(fileName, FileMode.Open);
+                    CoreOptions coreOptions = (CoreOptions)xmlSerializer.Deserialize(fileStream);
+                    fileStream.Close();
+                    coreOptions.Validate(core, onePath);
+                    return coreOptions;
+                }
+                catch
+                {
+                    return new CoreOptions(core);
+                }
+            }
+            else
+                return new CoreOptions(core);
+        }
+
+        public void Save(string fileName)
+        {
+            try
+            {
+                TextWriter writer = new StreamWriter(fileName);
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(CoreOptions));
+                xmlSerializer.Serialize(writer, this);
+            }
+            catch
+            {
+            }
+        }
+
+        public string GetImageDataBasePath()
+        {
+            string directory = string.Format("{0}\\images\\{1}x{1}", Resources.UserPath, advancedOptions.reducedImageSize);
+            DirectoryInfo directoryInfo = new DirectoryInfo(directory);
+            if (!directoryInfo.Exists)
+                directoryInfo.Create();
+            return directory;
         }
     }
 }

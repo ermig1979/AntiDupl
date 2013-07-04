@@ -209,8 +209,8 @@ namespace AntiDupl.NET
             s.MainStatusStrip_SelectedLabel_Text = "Selected: ";
 
             s.MainMenu_FileMenuItem_Text = "File";
-            s.MainMenu_File_SaveMenuItem_Text = "Save results";
-            s.MainMenu_File_LoadMenuItem_Text = "Load results";
+            s.MainMenu_File_SaveMenuItem_Text = "Save search profile";
+            s.MainMenu_File_LoadMenuItem_Text = "Load search profile";
             s.MainMenu_File_ExitMenuItem_Text = "Exit";
 
             s.MainMenu_EditMenuItem_Text = "Edit";

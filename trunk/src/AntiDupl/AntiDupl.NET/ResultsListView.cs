@@ -76,6 +76,7 @@ namespace AntiDupl.NET
         private MainSplitContainer m_mainSplitContainer;
         private CoreLib m_core;
         private AntiDupl.NET.Options m_options;
+        private CoreOptions m_coreOptions;
         private CoreResult[] m_results;
         private ResultsOptions.ViewMode m_viewMode = ResultsOptions.ViewMode.VerticalPairTable;
 
@@ -90,10 +91,11 @@ namespace AntiDupl.NET
         ContextMenuStrip m_contextMenuStrip;
         ResultRowSetter m_resultRowSetter;
 
-        public ResultsListView(CoreLib core, AntiDupl.NET.Options options, MainSplitContainer mainSplitContainer)
+        public ResultsListView(CoreLib core, AntiDupl.NET.Options options, CoreOptions coreOptions, MainSplitContainer mainSplitContainer)
         {
             m_core = core;
             m_options = options;
+            m_coreOptions = coreOptions;
             m_mainSplitContainer = mainSplitContainer;
             m_results = new CoreResult[0];
             m_resultRowSetter = new ResultRowSetter(m_options, this);
@@ -128,7 +130,7 @@ namespace AntiDupl.NET
             DoubleBuffered = true;
             Location = new Point(0, 0);
             Dock = DockStyle.Fill;
-            m_contextMenuStrip = new ResultsListViewContextMenu(m_core, m_options, m_mainSplitContainer);
+            m_contextMenuStrip = new ResultsListViewContextMenu(m_core, m_options, m_coreOptions, m_mainSplitContainer);
             m_contextMenuStrip.KeyUp += new KeyEventHandler(OnContextMenuKeyUp);
         }
 
@@ -217,7 +219,7 @@ namespace AntiDupl.NET
         public void MakeAction(CoreDll.LocalActionType action, CoreDll.TargetType target)
         {
             m_makeAction = true;
-            ProgressForm progressForm = new ProgressForm(action, target, m_core, m_options, m_mainSplitContainer);
+            ProgressForm progressForm = new ProgressForm(action, target, m_core, m_options, m_coreOptions, m_mainSplitContainer);
             progressForm.Execute();
             m_makeAction = false;
         }
@@ -225,7 +227,7 @@ namespace AntiDupl.NET
         public void RenameCurrent(CoreDll.RenameCurrentType renameCurrentType, string newFileName)
         {
             m_makeAction = true;
-            ProgressForm progressForm = new ProgressForm(renameCurrentType, newFileName, m_core, m_options, m_mainSplitContainer);
+            ProgressForm progressForm = new ProgressForm(renameCurrentType, newFileName, m_core, m_options, m_coreOptions, m_mainSplitContainer);
             progressForm.Execute();
             m_makeAction = false;
         }
@@ -234,14 +236,14 @@ namespace AntiDupl.NET
         {
             if (hotKey == (Keys.Z | Keys.Control) && m_core.CanApply(CoreDll.ActionEnableType.Undo))
             {
-                ProgressForm progressForm = new ProgressForm(ProgressForm.Type.Undo, m_core, m_options, m_mainSplitContainer);
+                ProgressForm progressForm = new ProgressForm(ProgressForm.Type.Undo, m_core, m_options, m_coreOptions, m_mainSplitContainer);
                 progressForm.Execute();
                 return;
             }
 
             if (hotKey == (Keys.Y | Keys.Control) && m_core.CanApply(CoreDll.ActionEnableType.Redo))
             {
-                ProgressForm progressForm = new ProgressForm(ProgressForm.Type.Redo, m_core, m_options, m_mainSplitContainer);
+                ProgressForm progressForm = new ProgressForm(ProgressForm.Type.Redo, m_core, m_options, m_coreOptions, m_mainSplitContainer);
                 progressForm.Execute();
                 return;
             }

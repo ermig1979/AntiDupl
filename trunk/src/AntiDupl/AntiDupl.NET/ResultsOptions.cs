@@ -115,8 +115,6 @@ namespace AntiDupl.NET
         public int sortTypeDefault;
         public bool increasingDefault;
 
-        public string resultsFileName;
-
         public int splitterDistanceVerticalMaximized;
         public int splitterDistanceVerticalNormal;
         public int splitterDistanceHorizontalMaximized;
@@ -134,7 +132,6 @@ namespace AntiDupl.NET
                 columnOptionsHorizontal[i] = options.columnOptionsHorizontal[i];
             sortTypeDefault = options.sortTypeDefault;
             increasingDefault = options.increasingDefault;
-            resultsFileName = options.resultsFileName;
             splitterDistanceVerticalMaximized = options.splitterDistanceVerticalMaximized;
             splitterDistanceVerticalNormal = options.splitterDistanceVerticalNormal;
             splitterDistanceHorizontalMaximized = options.splitterDistanceHorizontalMaximized;
@@ -157,7 +154,6 @@ namespace AntiDupl.NET
                 options.columnOptionsHorizontal[i] = columnOptionsHorizontal[i];
             options.sortTypeDefault = sortTypeDefault;
             options.increasingDefault = increasingDefault;
-            options.resultsFileName = resultsFileName;
             options.splitterDistanceVerticalMaximized = splitterDistanceVerticalMaximized;
             options.splitterDistanceVerticalNormal = splitterDistanceVerticalNormal;
             options.splitterDistanceHorizontalMaximized = splitterDistanceHorizontalMaximized;
@@ -177,8 +173,6 @@ namespace AntiDupl.NET
                 return false;
             if (increasingDefault != options.increasingDefault)
                 return false;
-            if (resultsFileName != options.resultsFileName)
-                return false;
             if (splitterDistanceVerticalMaximized != options.splitterDistanceVerticalMaximized)
                 return false;
             if (splitterDistanceVerticalNormal != options.splitterDistanceVerticalNormal)
@@ -197,8 +191,6 @@ namespace AntiDupl.NET
         {
             sortTypeDefault = (int)CoreDll.SortType.ByDifference;
             increasingDefault = true;
-
-            resultsFileName = GetDefaultResultsFileName();
 
             splitterDistanceVerticalMaximized = MainSplitContainer.VIEW_MIN_WIDTH;
             splitterDistanceVerticalNormal = MainSplitContainer.VIEW_MIN_WIDTH;
@@ -329,15 +321,6 @@ namespace AntiDupl.NET
             columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileTime].visible = false;
             columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileTime].width = 115;
             columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileTime].order = 16;
-        }
-
-        static public string GetDefaultResultsFileName()
-        {
-            string directory = string.Format("{0}\\results", Resources.UserPath);
-            DirectoryInfo directoryInfo = new DirectoryInfo(directory);
-            if (!directoryInfo.Exists)
-                directoryInfo.Create();
-            return string.Format("{0}\\default.adr", directory);
         }
     }
 }

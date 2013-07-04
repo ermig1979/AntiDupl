@@ -34,6 +34,7 @@ namespace AntiDupl.NET
     {
         private CoreLib m_core;
         private Options m_options;
+        private CoreOptions m_coreOptions;
         private MainSplitContainer m_mainSplitContainer;
 
         private ToolStripMenuItem m_deleteDefectItem;
@@ -43,10 +44,11 @@ namespace AntiDupl.NET
         private ToolStripMenuItem m_performHintItem;
         private ToolStripMenuItem m_mistakeItem;
 
-        public ResultsListViewContextMenu(CoreLib core, Options options, MainSplitContainer mainSplitContainer)
+        public ResultsListViewContextMenu(CoreLib core, Options options, CoreOptions coreOptions, MainSplitContainer mainSplitContainer)
         {
             m_core = core;
             m_options = options;
+            m_coreOptions = coreOptions;
             m_mainSplitContainer = mainSplitContainer;
             InitializeComponents();
             UpdateStrings();
@@ -134,7 +136,7 @@ namespace AntiDupl.NET
 
         private void OnOptionsChanged()
         {
-            m_mistakeItem.Enabled = m_options.coreOptions.advancedOptions.mistakeDataBase;
+            m_mistakeItem.Enabled = m_coreOptions.advancedOptions.mistakeDataBase;
         }
         
         public void SetViewMode(ResultsOptions.ViewMode viewMode)

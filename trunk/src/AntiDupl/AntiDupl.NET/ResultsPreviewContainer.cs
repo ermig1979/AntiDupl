@@ -43,17 +43,17 @@ namespace AntiDupl.NET
         private ResultsPreviewDuplPair m_resultsPreviewDuplPair;
         private MainSplitContainer m_mainSplitContainer;
 
-        public ResultsPreviewContainer(CoreLib core, Options options, MainSplitContainer mainSplitContainer)
+        public ResultsPreviewContainer(CoreLib core, Options options, CoreOptions coreOptions, MainSplitContainer mainSplitContainer)
         {
             Location = new Point(0, 0);
             Dock = DockStyle.Fill;
 
             m_mainSplitContainer = mainSplitContainer;
-            m_resultsPreviewDefect = new ResultsPreviewDefect(core, options, m_mainSplitContainer.resultsListView);
+            m_resultsPreviewDefect = new ResultsPreviewDefect(core, options, coreOptions, m_mainSplitContainer.resultsListView);
             m_resultsPreviewDefect.Location = new System.Drawing.Point(0, 0);
             m_resultsPreviewDefect.Dock = DockStyle.Fill;
 
-            m_resultsPreviewDuplPair = new ResultsPreviewDuplPair(core, options, m_mainSplitContainer.resultsListView);
+            m_resultsPreviewDuplPair = new ResultsPreviewDuplPair(core, options, coreOptions, m_mainSplitContainer.resultsListView);
             m_resultsPreviewDuplPair.Location = new System.Drawing.Point(0, 0);
             m_resultsPreviewDuplPair.Dock = DockStyle.Fill;
 

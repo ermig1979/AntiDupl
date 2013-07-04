@@ -81,6 +81,7 @@ namespace AntiDupl.NET
             ICON = searchOptions.ICON;
             JP2 = searchOptions.JP2;
             PSD = searchOptions.PSD;
+            DDS = searchOptions.DDS;
             TGA = searchOptions.TGA;
         }
 

@@ -36,8 +36,8 @@ namespace AntiDupl.NET
         private ToolStripButton m_deleteButton;
         private ToolStripButton m_mistakeButton;
 
-        public ResultsPreviewDefect(CoreLib core, Options options, ResultsListView resultsListView)
-            : base(core, options, resultsListView)
+        public ResultsPreviewDefect(CoreLib core, Options options, CoreOptions coreOptions, ResultsListView resultsListView)
+            : base(core, options, coreOptions, resultsListView)
         {
             InitializeComponents();
             UpdateStrings();
@@ -85,7 +85,7 @@ namespace AntiDupl.NET
 
         private void OnOptionsChanged()
         {
-            m_mistakeButton.Enabled = m_options.coreOptions.advancedOptions.mistakeDataBase;
+            m_mistakeButton.Enabled = m_coreOptions.advancedOptions.mistakeDataBase;
         }
 
         protected override void AddItems(ResultsOptions.ViewMode viewMode)
