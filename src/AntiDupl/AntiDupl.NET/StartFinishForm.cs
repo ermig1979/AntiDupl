@@ -109,9 +109,7 @@ namespace AntiDupl.NET
             m_core.Load(CoreDll.FileType.MistakeDataBase, Options.GetMistakeDataBaseFileName(), m_options.checkMistakesAtLoading);
 
             m_state = State.LoadResults;
-            if (!File.Exists(m_options.resultsOptions.resultsFileName))
-                m_options.resultsOptions.resultsFileName = ResultsOptions.GetDefaultResultsFileName();
-            m_core.Load(CoreDll.FileType.Result, m_options.resultsOptions.resultsFileName, m_options.checkResultsAtLoading);
+            m_core.Load(CoreDll.FileType.Result, m_options.GetResultsFileName(), m_options.checkResultsAtLoading);
 
             TimeSpan viewTime = DateTime.Now - startTime;
             if (viewTime < VIEW_START_TIME_MIN)
@@ -129,7 +127,7 @@ namespace AntiDupl.NET
             m_core.Save(CoreDll.FileType.MistakeDataBase, Options.GetMistakeDataBaseFileName());
 
             m_state = State.SaveResults;
-            m_core.Save(CoreDll.FileType.Result, m_options.resultsOptions.resultsFileName);
+            m_core.Save(CoreDll.FileType.Result, m_options.GetResultsFileName());
 
             m_state = State.ClearResults;
             m_core.Clear(CoreDll.FileType.Result);

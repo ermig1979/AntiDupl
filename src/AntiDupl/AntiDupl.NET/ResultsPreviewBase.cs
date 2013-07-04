@@ -34,6 +34,7 @@ namespace AntiDupl.NET
         protected ResultsListView m_resultsListView;
         protected Options m_options;
         protected CoreLib m_core;
+        protected CoreOptions m_coreOptions;
         protected CoreResult m_currentSearchResult;
 
         protected TableLayoutPanel m_mainLayout;
@@ -46,10 +47,11 @@ namespace AntiDupl.NET
         protected ToolStripButton m_nextButton;
         protected ToolStripButton m_previousButton;
 
-        public ResultsPreviewBase(CoreLib core, Options options, ResultsListView resultsListView)
+        public ResultsPreviewBase(CoreLib core, Options options, CoreOptions coreOptions, ResultsListView resultsListView)
         {
             m_core = core;
             m_options = options;
+            m_coreOptions = coreOptions;
             m_resultsListView = resultsListView;
 
             InitializeComponents();

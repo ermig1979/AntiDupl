@@ -42,6 +42,7 @@ namespace AntiDupl.NET
 
         private Options m_options;
         private CoreLib m_core;
+        private CoreOptions m_coreOptions;
 
         private MainSplitContainer m_mainSplitContainer;
         private MainMenu m_mainMenu;
@@ -51,7 +52,8 @@ namespace AntiDupl.NET
         public MainForm()
         {
             m_core = new CoreLib();
-            m_options = Options.Load(m_core);
+            m_options = Options.Load();
+            m_coreOptions = CoreOptions.Load(m_options.coreOptionsFileName, m_core, m_options.onePath);
             Resources.Strings.SetCurrent(m_options.Language);
 
             StartFinishForm startFinishForm = new StartFinishForm(m_core, m_options);
@@ -62,17 +64,16 @@ namespace AntiDupl.NET
 
         private void InitializeComponents()
         {
-            m_mainSplitContainer = new MainSplitContainer(m_core, m_options, this);
+            m_mainSplitContainer = new MainSplitContainer(m_core, m_options, m_coreOptions, this);
             m_mainSplitContainer.Dock = DockStyle.Fill;
             m_mainSplitContainer.Location = new System.Drawing.Point(0, 0);
 
-            m_mainMenu = new MainMenu(m_core, m_options, this, m_mainSplitContainer);
+            m_mainMenu = new MainMenu(m_core, m_options, m_coreOptions, this, m_mainSplitContainer);
 
-            m_mainToolStrip = new MainToolStrip(m_core, m_options, m_mainMenu, this, m_mainSplitContainer);
+            m_mainToolStrip = new MainToolStrip(m_core, m_options, m_coreOptions, m_mainMenu, this, m_mainSplitContainer);
 
             m_mainStatusStrip = new MainStatusStrip(m_mainSplitContainer, m_options);
 
-            Text = Application.ProductName;
             Size = new Size(MIN_WIDTH, MIN_HEIGHT);
             MinimumSize = new Size(MIN_WIDTH, MIN_HEIGHT);
             Icon = Resources.Icons.Get(Icon.Size);
@@ -84,10 +85,14 @@ namespace AntiDupl.NET
 
             FormClosed += new FormClosedEventHandler(OnFormClosed);
             Shown += new EventHandler(OnFormShown);
+
+            UpdateCaption();
         }
 
         private void OnFormClosed(object sender, FormClosedEventArgs e)
         {
+            m_coreOptions.Save(m_options.coreOptionsFileName);
+
             m_mainSplitContainer.ClearResults();
             GetSavedViewOptions();
             m_options.Save();
@@ -136,6 +141,11 @@ namespace AntiDupl.NET
         {
             SetLoadedViewOptions();
             m_mainSplitContainer.SetViewMode(m_options.resultsOptions.viewMode);
-        } 
+        }
+
+        public void UpdateCaption()
+        {
+            Text = string.Format("{0} - {1}", Application.ProductName, Path.GetFileNameWithoutExtension(m_options.coreOptionsFileName));
+        }
     }
 }

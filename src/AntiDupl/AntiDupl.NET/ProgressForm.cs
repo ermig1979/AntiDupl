@@ -69,6 +69,7 @@ namespace AntiDupl.NET
 
         private CoreLib m_core;
         private Options m_options;
+        private CoreOptions m_coreOptions;
         private MainSplitContainer m_mainSplitContainer;
         private System.Windows.Forms.Timer m_timer;
         private DateTime m_startDateTime;
@@ -77,34 +78,35 @@ namespace AntiDupl.NET
         private Button m_cancelButton;
         private ProgressPanel m_progressPanel;
 
-        public ProgressForm(Type type, CoreLib core, Options options, MainSplitContainer mainSplitContainer)
+        public ProgressForm(Type type, CoreLib core, Options options, CoreOptions coreOptions, MainSplitContainer mainSplitContainer)
         {
             if (type == Type.ApplyAction)
                 throw new Exception("Wrong using of ProgressForm type!");
             m_type = type;
-            Initialize(core, options, mainSplitContainer);
+            Initialize(core, options, coreOptions, mainSplitContainer);
         }
 
-        public ProgressForm(CoreDll.LocalActionType action, CoreDll.TargetType target, CoreLib core, Options options, MainSplitContainer mainSplitContainer)
+        public ProgressForm(CoreDll.LocalActionType action, CoreDll.TargetType target, CoreLib core, Options options, CoreOptions coreOptions, MainSplitContainer mainSplitContainer)
         {
             m_type = Type.ApplyAction;
             m_action = action;
             m_target = target;
-            Initialize(core, options, mainSplitContainer);
+            Initialize(core, options, coreOptions, mainSplitContainer);
         }
 
-        public ProgressForm(CoreDll.RenameCurrentType renameCurrentType, string newFileName, CoreLib core, Options options, MainSplitContainer mainSplitContainer)
+        public ProgressForm(CoreDll.RenameCurrentType renameCurrentType, string newFileName, CoreLib core, Options options, CoreOptions coreOptions, MainSplitContainer mainSplitContainer)
         {
             m_type = Type.RenameCurrent; 
             m_renameCurrentType = renameCurrentType;
             m_newFileName = newFileName;
-            Initialize(core, options, mainSplitContainer);
+            Initialize(core, options, coreOptions, mainSplitContainer);
         }
 
-        private void Initialize(CoreLib core, Options options, MainSplitContainer mainSplitContainer)
+        private void Initialize(CoreLib core, Options options, CoreOptions coreOptions, MainSplitContainer mainSplitContainer)
         {
             m_core = core;
             m_options = options;
+            m_coreOptions = coreOptions;
             m_mainSplitContainer = mainSplitContainer;
             InitializeComponent();
             UpdateStrings();
@@ -184,7 +186,7 @@ namespace AntiDupl.NET
         {
             m_startDateTime = DateTime.Now;
             m_state = State.Work;
-            m_options.coreOptions.Set(m_core, m_options.onePath);
+            m_coreOptions.Set(m_core, m_options.onePath);
             switch (m_type)
             {
                 case Type.ApplyAction:
@@ -225,24 +227,24 @@ namespace AntiDupl.NET
                         m_type = Type.ClearTemporary;
                         m_core.Clear(CoreDll.FileType.Temporary);
                         m_type = Type.LoadResults;
-                        m_core.Load(CoreDll.FileType.Result, m_options.resultsOptions.resultsFileName, m_options.checkResultsAtLoading);
+                        m_core.Load(CoreDll.FileType.Result, m_options.GetResultsFileName(), m_options.checkResultsAtLoading);
                         m_updateResults = true;
                         break;
                     }
                case Type.SaveResults:
                     {
-                        m_core.Save(CoreDll.FileType.Result, m_options.resultsOptions.resultsFileName);
+                        m_core.Save(CoreDll.FileType.Result, m_options.GetResultsFileName());
                         m_updateResults = false;
                         break;
                     }
                case Type.RefreshImages:
                     {
                         m_type = Type.LoadImages;
-                        m_core.Load(CoreDll.FileType.ImageDataBase, m_options.GetImageDataBasePath(), true);
+                        m_core.Load(CoreDll.FileType.ImageDataBase, m_coreOptions.GetImageDataBasePath(), true);
                         if (m_state == State.Work)
                         {
                             m_type = Type.SaveImages;
-                            m_core.Save(CoreDll.FileType.ImageDataBase, m_options.GetImageDataBasePath());
+                            m_core.Save(CoreDll.FileType.ImageDataBase, m_coreOptions.GetImageDataBasePath());
                         }
                         m_updateResults = false;
                         break;

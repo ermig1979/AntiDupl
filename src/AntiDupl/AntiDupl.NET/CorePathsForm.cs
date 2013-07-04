@@ -36,7 +36,8 @@ namespace AntiDupl.NET
     {
         private CoreLib m_core;
         private Options m_options;
-        private CoreOptions m_newOptions;
+        private CoreOptions m_oldCoreOptions;
+        private CoreOptions m_newCoreOptions;
 
         private Button m_okButton;
         private Button m_cancelButton;
@@ -55,11 +56,12 @@ namespace AntiDupl.NET
         private TabPage m_deleteTabPage;
         private ListBox m_deleteListBox;
 
-        public CorePathsForm(CoreLib core, Options options)
+        public CorePathsForm(CoreLib core, Options options, CoreOptions coreOptions)
         {
             m_core = core;
             m_options = options;
-            m_newOptions = new CoreOptions(m_options.coreOptions);
+            m_oldCoreOptions = coreOptions;
+            m_newCoreOptions = m_oldCoreOptions.Clone();
             InitializeComponent();
             UpdateStrings();
             UpdatePath();
@@ -195,13 +197,13 @@ namespace AntiDupl.NET
             switch ((CoreDll.PathType)m_tabControl.SelectedTab.Tag)
             {
                 case CoreDll.PathType.Search:
-                    return m_newOptions.searchPath;
+                    return m_newCoreOptions.searchPath;
                 case CoreDll.PathType.Ignore:
-                    return m_newOptions.ignorePath;
+                    return m_newCoreOptions.ignorePath;
                 case CoreDll.PathType.Valid:
-                    return m_newOptions.validPath;
+                    return m_newCoreOptions.validPath;
                 case CoreDll.PathType.Delete:
-                    return m_newOptions.deletePath;
+                    return m_newCoreOptions.deletePath;
                 default:
                     return null;
             }
@@ -229,16 +231,16 @@ namespace AntiDupl.NET
             switch ((CoreDll.PathType)m_tabControl.SelectedTab.Tag)
             {
                 case CoreDll.PathType.Search:
-                    m_newOptions.searchPath = path;
+                    m_newCoreOptions.searchPath = path;
                     break;
                 case CoreDll.PathType.Ignore:
-                    m_newOptions.ignorePath = path;
+                    m_newCoreOptions.ignorePath = path;
                     break;
                 case CoreDll.PathType.Valid:
-                    m_newOptions.validPath = path;
+                    m_newCoreOptions.validPath = path;
                     break;
                 case CoreDll.PathType.Delete:
-                    m_newOptions.deletePath = path;
+                    m_newCoreOptions.deletePath = path;
                     break;
                 default:
                     return;
@@ -261,50 +263,50 @@ namespace AntiDupl.NET
         {
             StringBuilder builder = new StringBuilder();
             builder.Append("Image files: ");
-            if (m_newOptions.searchOptions.JPEG)
+            if (m_newCoreOptions.searchOptions.JPEG)
                 builder.Append("JPEG; ");
-            if (m_newOptions.searchOptions.GIF)
+            if (m_newCoreOptions.searchOptions.GIF)
                 builder.Append("GIF; ");
-            if (m_newOptions.searchOptions.PNG)
+            if (m_newCoreOptions.searchOptions.PNG)
                 builder.Append("PNG; ");
-            if (m_newOptions.searchOptions.BMP)
+            if (m_newCoreOptions.searchOptions.BMP)
                 builder.Append("BMP; ");
-            if (m_newOptions.searchOptions.TIFF)
+            if (m_newCoreOptions.searchOptions.TIFF)
                 builder.Append("TIFF; ");
-            if (m_newOptions.searchOptions.EMF)
+            if (m_newCoreOptions.searchOptions.EMF)
                 builder.Append("EMF; ");
-            if (m_newOptions.searchOptions.WMF)
+            if (m_newCoreOptions.searchOptions.WMF)
                 builder.Append("WMF; ");
-            if (m_newOptions.searchOptions.EXIF)
+            if (m_newCoreOptions.searchOptions.EXIF)
                 builder.Append("EXIF; ");
-            if (m_newOptions.searchOptions.ICON)
+            if (m_newCoreOptions.searchOptions.ICON)
                 builder.Append("ICON; ");
-            if (m_newOptions.searchOptions.JP2)
+            if (m_newCoreOptions.searchOptions.JP2)
                 builder.Append("JP2; ");
-            if (m_newOptions.searchOptions.PSD)
+            if (m_newCoreOptions.searchOptions.PSD)
                 builder.Append("PSD; ");
             builder.Append("|");
-            if (m_newOptions.searchOptions.JPEG)
+            if (m_newCoreOptions.searchOptions.JPEG)
                 builder.Append("*.jpeg;*.jfif;*.jpg;*.jpe;*.jiff;*.jif;*.j;*.jng;*.jff;");
-            if (m_newOptions.searchOptions.GIF)
+            if (m_newCoreOptions.searchOptions.GIF)
                 builder.Append("*.gif;");
-            if (m_newOptions.searchOptions.PNG)
+            if (m_newCoreOptions.searchOptions.PNG)
                 builder.Append("*.png;");
-            if (m_newOptions.searchOptions.BMP)
+            if (m_newCoreOptions.searchOptions.BMP)
                 builder.Append("*.bmp;*.dib;*.rle;");
-            if (m_newOptions.searchOptions.TIFF)
+            if (m_newCoreOptions.searchOptions.TIFF)
                 builder.Append("*.tif;*.tiff;");
-            if (m_newOptions.searchOptions.EMF)
+            if (m_newCoreOptions.searchOptions.EMF)
                 builder.Append("*.emf;*.emz;");
-            if (m_newOptions.searchOptions.WMF)
+            if (m_newCoreOptions.searchOptions.WMF)
                 builder.Append("*.wmf");
-            if (m_newOptions.searchOptions.EXIF)
+            if (m_newCoreOptions.searchOptions.EXIF)
                 builder.Append("*.exif;");
-            if (m_newOptions.searchOptions.ICON)
+            if (m_newCoreOptions.searchOptions.ICON)
                 builder.Append("*.icon;*.ico;*.icn;");
-            if (m_newOptions.searchOptions.JP2)
+            if (m_newCoreOptions.searchOptions.JP2)
                 builder.Append("*.jp2;*.j2k;*.j2c;*.jpc;*.jpf;*.jpx;");
-            if (m_newOptions.searchOptions.PSD)
+            if (m_newCoreOptions.searchOptions.PSD)
                 builder.Append("*.psd;");
             return builder.ToString();
         }
@@ -321,15 +323,15 @@ namespace AntiDupl.NET
 
         private void UpdatePath()
         {
-            UpdatePath(m_newOptions.searchPath, m_searchListBox);
-            UpdatePath(m_newOptions.ignorePath, m_ignoreListBox);
-            UpdatePath(m_newOptions.validPath, m_validListBox);
-            UpdatePath(m_newOptions.deletePath, m_deleteListBox);
+            UpdatePath(m_newCoreOptions.searchPath, m_searchListBox);
+            UpdatePath(m_newCoreOptions.ignorePath, m_ignoreListBox);
+            UpdatePath(m_newCoreOptions.validPath, m_validListBox);
+            UpdatePath(m_newCoreOptions.deletePath, m_deleteListBox);
         }
 
         private void OnOkButtonClick(object sender, EventArgs e)
         {
-            m_newOptions.CopyTo(ref m_options.coreOptions);
+            m_newCoreOptions.CopyTo(ref m_oldCoreOptions);
             Close();
         }
 
@@ -351,7 +353,7 @@ namespace AntiDupl.NET
                 Array.Resize(ref path, path.Length + 1);
                 path[path.Length - 1] = dialog.SelectedPath;
                 SetCurrentPath(path);
-                m_newOptions.Validate(m_core, m_options.onePath);
+                m_newCoreOptions.Validate(m_core, m_options.onePath);
                 UpdatePath();
                 UpdateButtonEnabling();
             }
@@ -373,7 +375,7 @@ namespace AntiDupl.NET
                 for (int i = 0; i < dialog.FileNames.Length; ++i)
                     path[path.Length - 1 - i] = dialog.FileNames[dialog.FileNames.Length - 1 - i];
                 SetCurrentPath(path);
-                m_newOptions.Validate(m_core, m_options.onePath);
+                m_newCoreOptions.Validate(m_core, m_options.onePath);
                 UpdatePath();
                 UpdateButtonEnabling();
             }
@@ -421,7 +423,7 @@ namespace AntiDupl.NET
                 {
                     path[listBox.SelectedIndex] = dialog.SelectedPath;
                     SetCurrentPath(path);
-                    m_newOptions.Validate(m_core, m_options.onePath);
+                    m_newCoreOptions.Validate(m_core, m_options.onePath);
                     UpdatePath();
                     UpdateButtonEnabling();
                 }
@@ -436,7 +438,7 @@ namespace AntiDupl.NET
                 {
                     path[listBox.SelectedIndex] = dialog.FileName;
                     SetCurrentPath(path);
-                    m_newOptions.Validate(m_core, m_options.onePath);
+                    m_newCoreOptions.Validate(m_core, m_options.onePath);
                     UpdatePath();
                     UpdateButtonEnabling();
                 }
@@ -467,13 +469,13 @@ namespace AntiDupl.NET
                     m_removeButton.Enabled = true;
             }
 
-            m_okButton.Enabled = !m_options.coreOptions.Equals(m_newOptions);
+            m_okButton.Enabled = !m_oldCoreOptions.Equals(m_newCoreOptions);
         }
 
         private string[] GetActualPath(string[] path)
         {
             ArrayList actualPath = new ArrayList();
-            string[] actualExtensions = m_options.coreOptions.searchOptions.GetActualExtensions();
+            string[] actualExtensions = m_oldCoreOptions.searchOptions.GetActualExtensions();
             for (int i = 0; i < path.Length; ++i)
             {
                 if (Directory.Exists(path[i]))
@@ -513,7 +515,7 @@ namespace AntiDupl.NET
                     path.AddRange(current);
                     path.AddRange(actual);
                     SetCurrentPath((string[])path.ToArray(typeof(string)));
-                    m_newOptions.Validate(m_core, m_options.onePath);
+                    m_newCoreOptions.Validate(m_core, m_options.onePath);
                     UpdatePath();
                     UpdateButtonEnabling();
                 }
@@ -538,7 +540,7 @@ namespace AntiDupl.NET
             }
             path[listBox.SelectedIndex] = "";
             SetCurrentPath(path);
-            m_newOptions.Validate(m_core, m_options.onePath);
+            m_newCoreOptions.Validate(m_core, m_options.onePath);
             UpdatePath();
             UpdateButtonEnabling();
         }

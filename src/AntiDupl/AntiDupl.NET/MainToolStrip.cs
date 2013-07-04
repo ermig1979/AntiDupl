@@ -33,6 +33,7 @@ namespace AntiDupl.NET
     {
         private CoreLib m_core;
         private Options m_options;
+        private CoreOptions m_coreOptions;
         private MainMenu m_mainMenu;
         private MainForm m_mainForm;
         private MainSplitContainer m_mainSplitContainer;
@@ -55,10 +56,11 @@ namespace AntiDupl.NET
 
         private ToolStripButton m_helpButton;
 
-        public MainToolStrip(CoreLib core, Options options, MainMenu mainMenu, MainForm mainForm, MainSplitContainer mainSplitContainer)
+        public MainToolStrip(CoreLib core, Options options, CoreOptions coreOptions, MainMenu mainMenu, MainForm mainForm, MainSplitContainer mainSplitContainer)
         {
             m_core = core;
             m_options = options;
+            m_coreOptions = coreOptions;
             m_mainMenu = mainMenu;
             m_mainForm = mainForm;
             m_mainSplitContainer = mainSplitContainer;
@@ -173,9 +175,9 @@ namespace AntiDupl.NET
 
         private void OnOptionsChanged()
         {
-            m_mistakeButton.Enabled = m_options.coreOptions.advancedOptions.mistakeDataBase &&
+            m_mistakeButton.Enabled = m_coreOptions.advancedOptions.mistakeDataBase &&
                  m_core.CanApply(CoreDll.ActionEnableType.Any);
-            m_thresholdDifferenceComboBox.SelectedIndex = m_options.coreOptions.checkOptions.thresholdDifference;
+            m_thresholdDifferenceComboBox.SelectedIndex = m_coreOptions.checkOptions.thresholdDifference;
         }
 
         public void SetViewMode(ResultsOptions.ViewMode viewMode)
@@ -223,7 +225,7 @@ namespace AntiDupl.NET
 
         private void OnThresholdDifferenceChanged(object sender, EventArgs e)
         {
-            m_options.coreOptions.checkOptions.thresholdDifference = m_thresholdDifferenceComboBox.SelectedIndex;
+            m_coreOptions.checkOptions.thresholdDifference = m_thresholdDifferenceComboBox.SelectedIndex;
         }
     }
 }

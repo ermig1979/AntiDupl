@@ -33,8 +33,9 @@ namespace AntiDupl.NET
 {
     public class MainMenu : MenuStrip
     {
-        CoreLib m_core;
+        private CoreLib m_core;
         private Options m_options;
+        private CoreOptions m_coreOptions;
 
         private MainForm m_mainForm;
         private MainSplitContainer m_mainSplitContainer;
@@ -77,10 +78,11 @@ namespace AntiDupl.NET
 
         private NewVersionMenuItem m_newVersionMenuItem;
 
-        public MainMenu(CoreLib core, Options options, MainForm mainForm, MainSplitContainer mainSplitContainer)
+        public MainMenu(CoreLib core, Options options, CoreOptions coreOptions, MainForm mainForm, MainSplitContainer mainSplitContainer)
         {
             m_core = core;
             m_options = options;
+            m_coreOptions = coreOptions;
             m_mainForm = mainForm;
             m_mainSplitContainer = mainSplitContainer;
             InitializeComponents();
@@ -97,8 +99,8 @@ namespace AntiDupl.NET
             ShowItemToolTips = true;
 
             m_file_exitMenuItem = InitFactory.MenuItem.Create(null, null, ExitAction);
-            m_file_saveMenuItem = InitFactory.MenuItem.Create(null, null, SaveResultsAction);
-            m_file_loadMenuItem = InitFactory.MenuItem.Create(null, null, LoadResultsAction);
+            m_file_saveMenuItem = InitFactory.MenuItem.Create(null, null, SaveSearchProfileAction);
+            m_file_loadMenuItem = InitFactory.MenuItem.Create(null, null, LoadSearchProfileAction);
 
             m_fileMenuItem = new ToolStripMenuItem();
             m_fileMenuItem.DropDownItems.Add(m_file_saveMenuItem);
@@ -266,31 +268,31 @@ namespace AntiDupl.NET
 
         public void StartSearchAction(object sender, EventArgs e)
         {
-            SearchExecuterForm searchExecuterForm = new SearchExecuterForm(m_core, m_options, m_mainSplitContainer, m_mainForm);
+            SearchExecuterForm searchExecuterForm = new SearchExecuterForm(m_core, m_options, m_coreOptions, m_mainSplitContainer, m_mainForm);
             searchExecuterForm.Execute();
         }
 
         public void RefreshResultsAction(object sender, EventArgs e)
         {
-            ProgressForm progressForm = new ProgressForm(ProgressForm.Type.RefreshResults, m_core, m_options, m_mainSplitContainer);
+            ProgressForm progressForm = new ProgressForm(ProgressForm.Type.RefreshResults, m_core, m_options, m_coreOptions, m_mainSplitContainer);
             progressForm.Execute();
         }
 
         private void RefreshImagesAction(object sender, EventArgs e)
         {
-            ProgressForm progressForm = new ProgressForm(ProgressForm.Type.RefreshImages, m_core, m_options, m_mainSplitContainer);
+            ProgressForm progressForm = new ProgressForm(ProgressForm.Type.RefreshImages, m_core, m_options, m_coreOptions, m_mainSplitContainer);
             progressForm.Execute();
         }
 
         public void UndoAction(object sender, EventArgs e)
         {
-            ProgressForm progressForm = new ProgressForm(ProgressForm.Type.Undo, m_core, m_options, m_mainSplitContainer);
+            ProgressForm progressForm = new ProgressForm(ProgressForm.Type.Undo, m_core, m_options, m_coreOptions, m_mainSplitContainer);
             progressForm.Execute();
         }
 
         public void RedoAction(object sender, EventArgs e)
         {
-            ProgressForm progressForm = new ProgressForm(ProgressForm.Type.Redo, m_core, m_options, m_mainSplitContainer);
+            ProgressForm progressForm = new ProgressForm(ProgressForm.Type.Redo, m_core, m_options, m_coreOptions, m_mainSplitContainer);
             progressForm.Execute();
         }
 
@@ -300,38 +302,50 @@ namespace AntiDupl.NET
             m_mainSplitContainer.resultsListView.Invalidate();
         }
         
-        private void SaveResultsAction(object sender, EventArgs e)
+        private void SaveSearchProfileAction(object sender, EventArgs e)
         {
             SaveFileDialog dialog = new SaveFileDialog();
-            if (File.Exists(m_options.resultsOptions.resultsFileName))
-                dialog.FileName = m_options.resultsOptions.resultsFileName;
+            FileInfo fileInfo = new FileInfo(m_options.coreOptionsFileName);
+            if (fileInfo.Exists)
+            {
+                dialog.FileName = m_options.coreOptionsFileName;
+                dialog.InitialDirectory = fileInfo.Directory.ToString();
+            }
             else
-                dialog.InitialDirectory = Application.StartupPath;
+                dialog.InitialDirectory = Resources.ProfilesPath;
             dialog.OverwritePrompt = false;
-            dialog.DefaultExt = "adr";
-            dialog.Filter = "Antidupl results files (*.adr)|*.adr";
+            dialog.DefaultExt = "xml";
+            dialog.Filter = "Antidupl profile files (*.xml)|*.xml";
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                m_options.resultsOptions.resultsFileName = dialog.FileName;
-                ProgressForm progressForm = new ProgressForm(ProgressForm.Type.SaveResults, m_core, m_options, m_mainSplitContainer);
+                m_options.coreOptionsFileName = dialog.FileName;
+                m_coreOptions.Save(m_options.coreOptionsFileName);
+                ProgressForm progressForm = new ProgressForm(ProgressForm.Type.SaveResults, m_core, m_options, m_coreOptions, m_mainSplitContainer);
                 progressForm.Execute();
+                m_mainForm.UpdateCaption();
             }
         }
 
-        private void LoadResultsAction(object sender, EventArgs e)
+        private void LoadSearchProfileAction(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
-            if (File.Exists(m_options.resultsOptions.resultsFileName))
-                dialog.FileName = m_options.resultsOptions.resultsFileName;
+            FileInfo fileInfo = new FileInfo(m_options.coreOptionsFileName);
+            if (fileInfo.Exists)
+            {
+                dialog.FileName = m_options.coreOptionsFileName;
+                dialog.InitialDirectory = fileInfo.Directory.ToString();
+            }
             else
-                dialog.InitialDirectory = Application.StartupPath;
-            dialog.DefaultExt = "adr";
-            dialog.Filter = "Antidupl results files (*.adr)|*.adr";
+                dialog.InitialDirectory = Resources.ProfilesPath;
+            dialog.DefaultExt = "xml";
+            dialog.Filter = "Antidupl profile files (*.xml)|*.xml";
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                m_options.resultsOptions.resultsFileName = dialog.FileName;
-                ProgressForm progressForm = new ProgressForm(ProgressForm.Type.LoadResults, m_core, m_options, m_mainSplitContainer);
+                m_options.coreOptionsFileName = dialog.FileName;
+                m_coreOptions = CoreOptions.Load(m_options.coreOptionsFileName, m_core, m_options.onePath);
+                ProgressForm progressForm = new ProgressForm(ProgressForm.Type.LoadResults, m_core, m_options, m_coreOptions, m_mainSplitContainer);
                 progressForm.Execute();
+                m_mainForm.UpdateCaption();
             }
         }
 
@@ -346,23 +360,23 @@ namespace AntiDupl.NET
             {
                 FolderBrowserDialog dialog = new FolderBrowserDialog();
                 dialog.ShowNewFolderButton = false;
-                if (Directory.Exists(m_options.coreOptions.searchPath[0]))
-                    dialog.SelectedPath = m_options.coreOptions.searchPath[0];
+                if (Directory.Exists(m_coreOptions.searchPath[0]))
+                    dialog.SelectedPath = m_coreOptions.searchPath[0];
                 else
                     dialog.SelectedPath = Application.StartupPath;
                 dialog.ShowDialog();
-                m_options.coreOptions.searchPath[0] = dialog.SelectedPath;
+                m_coreOptions.searchPath[0] = dialog.SelectedPath;
             }
             else
             {
-                CorePathsForm form = new CorePathsForm(m_core, m_options);
+                CorePathsForm form = new CorePathsForm(m_core, m_options, m_coreOptions);
                 form.ShowDialog();
             }
         }
 
         public void OptionsAction(object sender, EventArgs e)
         {
-            CoreOptionsForm form = new CoreOptionsForm(m_core, m_options);
+            CoreOptionsForm form = new CoreOptionsForm(m_core, m_options, m_coreOptions);
             form.ShowDialog();
         }
 
