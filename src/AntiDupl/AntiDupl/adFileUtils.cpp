@@ -79,7 +79,7 @@ namespace ad
         if (oldLength >= MAX_PATH || newLength >= MAX_PATH)
         {
 #ifdef UNICODE
-            return ::MoveFileEx(oldName, newName, MOVEFILE_REPLACE_EXISTING) != FALSE;
+            return ::MoveFileEx(oldName, newName, MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED) != FALSE;
 #else
             return false;
 #endif

@@ -121,7 +121,8 @@ namespace ad
     {
         TUndoRedoChange *pOldChange = m_pCurrent->change;
         m_pCurrent->change = new TUndoRedoChange();
-        if(::MoveFileEx(pImageInfo->path.Original().c_str(), newFileName.c_str(), MOVEFILE_REPLACE_EXISTING) != FALSE)
+        if(::MoveFileEx(pImageInfo->path.Original().c_str(), newFileName.c_str(), 
+			MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED) != FALSE)
         {
             m_pCurrent->change->renamedImages.push_back(TRename(pImageInfo, pImageInfo->path.Original(), newFileName));
             m_pStatus->RenameImage(1);
@@ -184,7 +185,8 @@ namespace ad
         TRenameList & renamedImages = m_pCurrent->change->renamedImages;
         for(TRenameList::iterator it = renamedImages.begin(); it != renamedImages.end(); ++it, ++current)
         {
-            if(::MoveFileEx(it->second.c_str(), it->first.c_str(), MOVEFILE_REPLACE_EXISTING) != TRUE)
+            if(::MoveFileEx(it->second.c_str(), it->first.c_str(), 
+				MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED) != TRUE)
                 return false;
             m_pMistakeStorage->Rename(it->info, it->first);
             it->info->Rename(it->first);
@@ -242,7 +244,8 @@ namespace ad
         TRenameList & renamedImages = m_pCurrent->change->renamedImages;
         for(TRenameList::iterator it = renamedImages.begin(); it != renamedImages.end(); ++it, ++current)
         {
-            if(::MoveFileEx(it->first.c_str(), it->second.c_str(), MOVEFILE_REPLACE_EXISTING) != TRUE)
+            if(::MoveFileEx(it->first.c_str(), it->second.c_str(), 
+				MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED) != TRUE)
                 return false;
             m_pMistakeStorage->Rename(it->info, it->second);
             it->info->Rename(it->second);
@@ -439,7 +442,8 @@ namespace ad
 
         if(Delete(pNewImageInfo))
         {
-            if(::MoveFileEx(oldName, newPath.c_str(), MOVEFILE_REPLACE_EXISTING) != FALSE)
+            if(::MoveFileEx(oldName, newPath.c_str(), 
+				MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED) != FALSE)
             {
                 m_pCurrent->change->renamedImages.push_back(TRename(pOldImageInfo, pOldImageInfo->path.Original(), newPath));
                 m_pStatus->RenameImage(1);
