@@ -48,23 +48,26 @@ namespace ad
             return;
         }
 
+		const TImageInfo * first = pResult->first;
+		const TImageInfo * second = pResult->second;
+
         bool isFirstInDeletePath = 
-            m_pOptions->deletePaths.IsHasPath(pResult->first->path) != AD_IS_NOT_EXIST ||
-            m_pOptions->deletePaths.IsHasSubPath(pResult->first->path)  != AD_IS_NOT_EXIST;
+            m_pOptions->deletePaths.IsHasPath(first->path) != AD_IS_NOT_EXIST ||
+            m_pOptions->deletePaths.IsHasSubPath(first->path)  != AD_IS_NOT_EXIST;
         bool isSecondInDeletePath = 
-            m_pOptions->deletePaths.IsHasPath(pResult->second->path) != AD_IS_NOT_EXIST ||
-            m_pOptions->deletePaths.IsHasSubPath(pResult->second->path) != AD_IS_NOT_EXIST;
+            m_pOptions->deletePaths.IsHasPath(second->path) != AD_IS_NOT_EXIST ||
+            m_pOptions->deletePaths.IsHasSubPath(second->path) != AD_IS_NOT_EXIST;
 
         if(pResult->difference == 0)
         {
-            if(pResult->first->size > pResult->second->size)
+            if(first->size > second->size)
             {
                 if(isSecondInDeletePath || !isFirstInDeletePath)
                     pResult->hint = AD_HINT_DELETE_SECOND;
                 else
                     pResult->hint = canRename ? AD_HINT_RENAME_FIRST_TO_SECOND : AD_HINT_NONE;
             }
-            else if(pResult->first->size < pResult->second->size)
+            else if(first->size < second->size)
             {
                 if(!isSecondInDeletePath || isFirstInDeletePath)
                     pResult->hint = AD_HINT_DELETE_FIRST;
@@ -73,20 +76,40 @@ namespace ad
             }
             else
             {
-                if(isSecondInDeletePath || !isFirstInDeletePath)
-                    pResult->hint = AD_HINT_DELETE_SECOND;
-                else
-                    pResult->hint = AD_HINT_DELETE_FIRST;
+				if(isSecondInDeletePath && !isFirstInDeletePath)
+					pResult->hint = AD_HINT_DELETE_SECOND;
+				else if(!isSecondInDeletePath && isFirstInDeletePath)
+					pResult->hint = AD_HINT_DELETE_FIRST;
+				else
+				{
+					if(first->time > second->time)
+						pResult->hint = AD_HINT_DELETE_FIRST;
+					else
+						pResult->hint = AD_HINT_DELETE_SECOND;
+				}
             }
             return;
         }
 
-        if(pResult->difference < m_autoDeleteThresholdDifference &&
-            pResult->first->type == pResult->second->type)
+        if(pResult->difference < m_autoDeleteThresholdDifference && first->type == second->type)
         {
-            if(pResult->first->size >= pResult->second->size && 
-                pResult->first->width*pResult->first->height >= 
-                pResult->second->width*pResult->second->height)
+			if(first->size == second->size && first->Area() == second->Area())
+			{
+				if(isSecondInDeletePath && !isFirstInDeletePath)
+					pResult->hint = AD_HINT_DELETE_SECOND;
+				else if(!isSecondInDeletePath && isFirstInDeletePath)
+					pResult->hint = AD_HINT_DELETE_FIRST;
+				else
+				{
+					if(first->time > second->time)
+						pResult->hint = AD_HINT_DELETE_FIRST;
+					else
+						pResult->hint = AD_HINT_DELETE_SECOND;
+				}
+				return;
+			}
+
+            if(first->size >= second->size && first->Area() >= second->Area())
             {
                 if(isSecondInDeletePath || !isFirstInDeletePath)
                     pResult->hint = AD_HINT_DELETE_SECOND;
@@ -95,9 +118,7 @@ namespace ad
                 return;
             }
 
-            if(pResult->first->size <= pResult->second->size && 
-                pResult->first->width*pResult->first->height <= 
-                pResult->second->width*pResult->second->height)
+            if(first->size <= second->size && first->Area() <= second->Area())
             {
                 if(!isSecondInDeletePath || isFirstInDeletePath)
                     pResult->hint = AD_HINT_DELETE_FIRST;
