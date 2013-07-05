@@ -203,10 +203,11 @@ namespace AntiDupl.NET
             FileInfo fileInfo = new FileInfo(fileName);
             if (fileInfo.Exists)
             {
+                FileStream fileStream = null;
                 try
                 {
                     XmlSerializer xmlSerializer = new XmlSerializer(typeof(CoreOptions));
-                    FileStream fileStream = new FileStream(fileName, FileMode.Open);
+                    fileStream = new FileStream(fileName, FileMode.Open);
                     CoreOptions coreOptions = (CoreOptions)xmlSerializer.Deserialize(fileStream);
                     fileStream.Close();
                     coreOptions.Validate(core, onePath);
@@ -214,6 +215,8 @@ namespace AntiDupl.NET
                 }
                 catch
                 {
+                    if(fileStream != null)
+                        fileStream.Close();
                     return new CoreOptions(core);
                 }
             }
@@ -223,15 +226,18 @@ namespace AntiDupl.NET
 
         public void Save(string fileName)
         {
+            TextWriter writer = null;
             try
             {
-                TextWriter writer = new StreamWriter(fileName);
+                writer = new StreamWriter(fileName);
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(CoreOptions));
                 xmlSerializer.Serialize(writer, this);
             }
             catch
             {
             }
+            if (writer != null)
+                writer.Close();
         }
 
         public string GetImageDataBasePath()

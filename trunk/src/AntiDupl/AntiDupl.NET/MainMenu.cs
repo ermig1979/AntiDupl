@@ -318,6 +318,7 @@ namespace AntiDupl.NET
             dialog.Filter = "Antidupl profile files (*.xml)|*.xml";
             if (dialog.ShowDialog() == DialogResult.OK)
             {
+                m_coreOptions.Save(m_options.coreOptionsFileName);
                 m_options.coreOptionsFileName = dialog.FileName;
                 m_coreOptions.Save(m_options.coreOptionsFileName);
                 ProgressForm progressForm = new ProgressForm(ProgressForm.Type.SaveResults, m_core, m_options, m_coreOptions, m_mainSplitContainer);
@@ -341,6 +342,7 @@ namespace AntiDupl.NET
             dialog.Filter = "Antidupl profile files (*.xml)|*.xml";
             if (dialog.ShowDialog() == DialogResult.OK)
             {
+                m_coreOptions.Save(m_options.coreOptionsFileName);
                 m_options.coreOptionsFileName = dialog.FileName;
                 CoreOptions coreOptions = CoreOptions.Load(m_options.coreOptionsFileName, m_core, m_options.onePath);
                 coreOptions.CopyTo(ref m_coreOptions);
