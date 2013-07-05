@@ -342,7 +342,8 @@ namespace AntiDupl.NET
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 m_options.coreOptionsFileName = dialog.FileName;
-                m_coreOptions = CoreOptions.Load(m_options.coreOptionsFileName, m_core, m_options.onePath);
+                CoreOptions coreOptions = CoreOptions.Load(m_options.coreOptionsFileName, m_core, m_options.onePath);
+                coreOptions.CopyTo(ref m_coreOptions);
                 ProgressForm progressForm = new ProgressForm(ProgressForm.Type.LoadResults, m_core, m_options, m_coreOptions, m_mainSplitContainer);
                 progressForm.Execute();
                 m_mainForm.UpdateCaption();
