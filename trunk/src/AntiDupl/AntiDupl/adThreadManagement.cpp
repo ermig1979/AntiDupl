@@ -279,11 +279,11 @@ namespace ad
 
     bool TCompareManager::CanCompare(TImageData *pImageData) const
     {
+		const adCheckOptions & check = m_pOptions->check;
         return 
-            (m_pOptions->check.checkOnEquality == TRUE) &&
-            (pImageData->type > AD_IMAGE_NONE) &&
-            (pImageData->width >= (TUInt32)m_pOptions->check.minimalImageSize) &&
-            (pImageData->height >= (TUInt32)m_pOptions->check.minimalImageSize);
+            check.checkOnEquality == TRUE && pImageData->type > AD_IMAGE_NONE &&
+            pImageData->width >= (TUInt32)check.minimalImageSize && pImageData->width <= (TUInt32)check.maximalImageSize &&
+            pImageData->height >= (TUInt32)check.minimalImageSize && pImageData->height <= (TUInt32)check.maximalImageSize;
     }
     //-------------------------------------------------------------------------
     TCollectManager::TCollectManager(TEngine *pEngine, TCompareManager* pCompareManager)

@@ -94,6 +94,7 @@ namespace ad
         m_options.push_back(TOption(&check.ratioControl, TEXT("CheckOptions"), TEXT("RatioControl"), TRUE, FALSE, TRUE));
         m_options.push_back(TOption(&check.thresholdDifference, TEXT("CheckOptions"), TEXT("ThresholdDifference"), 5, 0, 15));
         m_options.push_back(TOption(&check.minimalImageSize, TEXT("CheckOptions"), TEXT("MinimalImageSize"), 64, 0, INT_MAX));
+		m_options.push_back(TOption(&check.maximalImageSize, TEXT("CheckOptions"), TEXT("MaximalImageSize"), 8196, 0, INT_MAX));
         m_options.push_back(TOption(&check.compareInsideOneFolder, TEXT("CheckOptions"), TEXT("CompareInsideOneFolder"), TRUE, FALSE, TRUE));
 
         m_options.push_back(TOption(&advanced.deleteToRecycleBin, TEXT("AdvancedOptions"), TEXT("DeleteToRecycleBin"), TRUE, FALSE, TRUE));

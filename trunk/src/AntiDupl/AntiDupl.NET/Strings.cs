@@ -90,6 +90,7 @@ namespace AntiDupl.NET
         public string CoreOptionsForm_RatioControlCheckBox_Text;
         public string CoreOptionsForm_ThresholdDifferenceLabeledComboBox_Text;
         public string CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text;
+        public string CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text;
         public string CoreOptionsForm_CompareInsideOneFolderCheckBox_Text;
 
         public string CoreOptionsForm_AdvancedTabPage_Text;

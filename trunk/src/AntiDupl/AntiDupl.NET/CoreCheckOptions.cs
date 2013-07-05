@@ -37,6 +37,7 @@ namespace AntiDupl.NET
         public bool ratioControl;
         public int thresholdDifference;
         public int minimalImageSize;
+        public int maximalImageSize;
         public bool compareInsideOneFolder;
 
         public CoreCheckOptions()
@@ -53,6 +54,7 @@ namespace AntiDupl.NET
             ratioControl = checkOptions.ratioControl;
             thresholdDifference = checkOptions.thresholdDifference;
             minimalImageSize = checkOptions.minimalImageSize;
+            maximalImageSize = checkOptions.maximalImageSize;
             compareInsideOneFolder = checkOptions.compareInsideOneFolder;
         }
 
@@ -66,6 +68,7 @@ namespace AntiDupl.NET
             ratioControl = checkOptions.ratioControl != CoreDll.FALSE;
             thresholdDifference = checkOptions.thresholdDifference;
             minimalImageSize = checkOptions.minimalImageSize;
+            maximalImageSize = checkOptions.maximalImageSize;
             compareInsideOneFolder = checkOptions.compareInsideOneFolder != CoreDll.FALSE;
         }
 
@@ -79,6 +82,7 @@ namespace AntiDupl.NET
             checkOptions.ratioControl = ratioControl ? CoreDll.TRUE : CoreDll.FALSE;
             checkOptions.thresholdDifference = thresholdDifference;
             checkOptions.minimalImageSize = minimalImageSize;
+            checkOptions.maximalImageSize = maximalImageSize;
             checkOptions.compareInsideOneFolder = compareInsideOneFolder ? CoreDll.TRUE : CoreDll.FALSE;
         }
 
@@ -98,6 +102,7 @@ namespace AntiDupl.NET
                 ratioControl == checkOptions.ratioControl &&
                 thresholdDifference == checkOptions.thresholdDifference &&
                 minimalImageSize == checkOptions.minimalImageSize &&
+                maximalImageSize == checkOptions.maximalImageSize &&
                 compareInsideOneFolder == checkOptions.compareInsideOneFolder;
         }
     }

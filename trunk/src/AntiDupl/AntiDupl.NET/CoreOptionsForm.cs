@@ -60,6 +60,7 @@ namespace AntiDupl.NET
         private CheckBox m_ratioControlCheckBox;
         private LabeledComboBox m_thresholdDifferenceLabeledComboBox;
         private LabeledIntegerEdit m_minimalImageSizeLabeledIntegerEdit;
+        private LabeledIntegerEdit m_maximalImageSizeLabeledIntegerEdit;
         private CheckBox m_compareInsideOneFolderCheckBox;
 
         private TabPage m_searchTabPage;
@@ -161,7 +162,7 @@ namespace AntiDupl.NET
             m_checkTabPage = new TabPage();
             m_mainTabControl.Controls.Add(m_checkTabPage);
 
-            TableLayoutPanel checkTableLayoutPanel = InitFactory.Layout.Create(1, 9, 5);
+            TableLayoutPanel checkTableLayoutPanel = InitFactory.Layout.Create(1, 10, 5);
             m_checkTabPage.Controls.Add(checkTableLayoutPanel);
 
             m_checkOnDefectCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
@@ -192,8 +193,13 @@ namespace AntiDupl.NET
             m_minimalImageSizeLabeledIntegerEdit.Default = m_defaultCoreOptions.checkOptions.minimalImageSize;
             checkTableLayoutPanel.Controls.Add(m_minimalImageSizeLabeledIntegerEdit, 0, 7);
 
+            m_maximalImageSizeLabeledIntegerEdit = new LabeledIntegerEdit(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
+            m_maximalImageSizeLabeledIntegerEdit.Min = 0;
+            m_maximalImageSizeLabeledIntegerEdit.Default = m_defaultCoreOptions.checkOptions.maximalImageSize;
+            checkTableLayoutPanel.Controls.Add(m_maximalImageSizeLabeledIntegerEdit, 0, 8);
+
             m_compareInsideOneFolderCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            checkTableLayoutPanel.Controls.Add(m_compareInsideOneFolderCheckBox, 0, 8);
+            checkTableLayoutPanel.Controls.Add(m_compareInsideOneFolderCheckBox, 0, 9);
         }
 
         private void InitilizeSearchTabPage()
@@ -325,6 +331,7 @@ namespace AntiDupl.NET
             m_ratioControlCheckBox.Checked = m_newCoreOptions.checkOptions.ratioControl;
             m_thresholdDifferenceLabeledComboBox.SelectedValue = m_newCoreOptions.checkOptions.thresholdDifference;
             m_minimalImageSizeLabeledIntegerEdit.Value = m_newCoreOptions.checkOptions.minimalImageSize;
+            m_maximalImageSizeLabeledIntegerEdit.Value = m_newCoreOptions.checkOptions.maximalImageSize;
             m_compareInsideOneFolderCheckBox.Checked = m_newCoreOptions.checkOptions.compareInsideOneFolder;
 
             m_bmpCheckBox.Checked = m_newCoreOptions.searchOptions.BMP;
@@ -365,6 +372,7 @@ namespace AntiDupl.NET
             m_newCoreOptions.checkOptions.ratioControl = m_ratioControlCheckBox.Checked;
             m_newCoreOptions.checkOptions.thresholdDifference = m_thresholdDifferenceLabeledComboBox.SelectedValue;
             m_newCoreOptions.checkOptions.minimalImageSize = m_minimalImageSizeLabeledIntegerEdit.Value;
+            m_newCoreOptions.checkOptions.maximalImageSize = m_maximalImageSizeLabeledIntegerEdit.Value;
             m_newCoreOptions.checkOptions.compareInsideOneFolder = m_compareInsideOneFolderCheckBox.Checked;
 
             m_newCoreOptions.searchOptions.BMP = m_bmpCheckBox.Checked;
@@ -413,6 +421,7 @@ namespace AntiDupl.NET
             m_ratioControlCheckBox.Text = s.CoreOptionsForm_RatioControlCheckBox_Text;
             m_thresholdDifferenceLabeledComboBox.Text = s.CoreOptionsForm_ThresholdDifferenceLabeledComboBox_Text;
             m_minimalImageSizeLabeledIntegerEdit.Text = s.CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text;
+            m_maximalImageSizeLabeledIntegerEdit.Text = s.CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text;
             m_compareInsideOneFolderCheckBox.Text = s.CoreOptionsForm_CompareInsideOneFolderCheckBox_Text;
 
             m_searchTabPage.Text = s.CoreOptionsForm_SearchTabPage_Text;
@@ -488,7 +497,6 @@ namespace AntiDupl.NET
             m_ratioControlCheckBox.Enabled = m_newCoreOptions.checkOptions.checkOnEquality &&
               !m_newCoreOptions.checkOptions.sizeControl;
             m_thresholdDifferenceLabeledComboBox.Enabled = m_newCoreOptions.checkOptions.checkOnEquality;
-            m_minimalImageSizeLabeledIntegerEdit.Enabled = m_newCoreOptions.checkOptions.checkOnEquality;
             m_compareInsideOneFolderCheckBox.Enabled = m_newCoreOptions.checkOptions.checkOnEquality;
 
             m_ratioResolutionLabeledComboBox.Enabled = m_newCoreOptions.checkOptions.checkOnEquality &&

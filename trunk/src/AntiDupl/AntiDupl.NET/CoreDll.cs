@@ -314,6 +314,7 @@ namespace AntiDupl.NET
             public int ratioControl;
             public int thresholdDifference;
             public int minimalImageSize;
+            public int maximalImageSize;
             public int compareInsideOneFolder;
         }
 
