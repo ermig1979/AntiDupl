@@ -13,5 +13,5 @@ mkdir %OUT_DIR%\data
 mkdir %OUT_DIR%\data\resources
 mkdir %OUT_DIR%\data\help
 
-xcopy %DATA_DIR%\resources\* %OUT_DIR%\data\resources\* /y /i /s
+xcopy %DATA_DIR%\resources\* %OUT_DIR%\data\resources\* /y /i /s /e
 xcopy %DATA_DIR%\help\* %OUT_DIR%\data\help\* /y /i /s
