@@ -213,8 +213,8 @@ namespace AntiDupl.NET
         public string MainStatusStrip_SelectedLabel_Text;
 
         public string MainMenu_FileMenuItem_Text;
-        public string MainMenu_File_SaveMenuItem_Text;
-        public string MainMenu_File_LoadMenuItem_Text;
+        public string MainMenu_File_OpenProfileMenuItem_Text;
+        public string MainMenu_File_SaveProfileAsMenuItem_Text;
         public string MainMenu_File_ExitMenuItem_Text;
 
         public string MainMenu_EditMenuItem_Text;

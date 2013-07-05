@@ -210,8 +210,8 @@ namespace AntiDupl.NET
             s.MainStatusStrip_SelectedLabel_Text = "Выделено: ";
 
             s.MainMenu_FileMenuItem_Text = "Файл";
-            s.MainMenu_File_SaveMenuItem_Text = "Сохранить профиль поиска";
-            s.MainMenu_File_LoadMenuItem_Text = "Загрузить профиль поиска";
+            s.MainMenu_File_OpenProfileMenuItem_Text = "Открыть профиль поиска";
+            s.MainMenu_File_SaveProfileAsMenuItem_Text = "Сохранить профиль поиска как";
             s.MainMenu_File_ExitMenuItem_Text = "Выход";
 
             s.MainMenu_EditMenuItem_Text = "Правка";
