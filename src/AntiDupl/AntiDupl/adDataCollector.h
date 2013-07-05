@@ -53,6 +53,7 @@ namespace ad
         void CheckOnDefect(TImageData* pImageData);
         void SetCrc32(TImageData* pImageData);
         void ReduceGray2x2(const TPixelData* pSrc, TPixelData* pDst);
-    };
+		bool CanAddDefect(const TImageData * pImageData);
+};
 }
 #endif//__adDataCollector_h__ 

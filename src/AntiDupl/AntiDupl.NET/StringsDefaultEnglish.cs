@@ -87,6 +87,7 @@ namespace AntiDupl.NET
             s.CoreOptionsForm_RatioControlCheckBox_Text = "Control image width/height ratio";
             s.CoreOptionsForm_ThresholdDifferenceLabeledComboBox_Text = "Threshold difference";
             s.CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text = "Minimal image width/height";
+            s.CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text = "Maximal image width/height";
             s.CoreOptionsForm_CompareInsideOneFolderCheckBox_Text = "Compare images from one path with one another";
 
             s.CoreOptionsForm_AdvancedTabPage_Text = "Advanced";

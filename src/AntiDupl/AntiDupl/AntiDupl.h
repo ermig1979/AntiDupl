@@ -388,6 +388,7 @@ extern "C"
         adBool ratioControl;
         adInt32 thresholdDifference;
         adInt32 minimalImageSize;
+		adInt32 maximalImageSize;
         adBool compareInsideOneFolder;
     };
     typedef adCheckOptions* adCheckOptionsPtr;

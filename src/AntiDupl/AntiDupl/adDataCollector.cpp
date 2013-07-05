@@ -57,7 +57,7 @@ namespace ad
             FillPixelData(pImageData);
         if(pImageData->DefectCheckingNeed(m_pOptions))
             CheckOnDefect(pImageData);
-        if(m_pOptions->check.checkOnDefect == TRUE && pImageData->defect > AD_DEFECT_NONE)
+        if(CanAddDefect(pImageData))
             m_pResult->AddDefectImage(pImageData, pImageData->defect);
         pImageData->FillOther(m_pOptions);
         pImageData->FreeGlobal();
@@ -141,4 +141,13 @@ namespace ad
     {
        Simd::ReduceGray2x2(pSrc->main, pSrc->side, pSrc->side, pSrc->side, pDst->main, pDst->side, pDst->side, pDst->side);
     }
+
+	bool TDataCollector::CanAddDefect(const TImageData * pImageData)
+	{
+		const adCheckOptions & check = m_pOptions->check;
+		return 
+			check.checkOnDefect == TRUE && pImageData->defect > AD_DEFECT_NONE &&
+			pImageData->width >= (TUInt32)check.minimalImageSize && pImageData->width <= (TUInt32)check.maximalImageSize &&
+			pImageData->height >= (TUInt32)check.minimalImageSize && pImageData->height <= (TUInt32)check.maximalImageSize;
+	}
 }
