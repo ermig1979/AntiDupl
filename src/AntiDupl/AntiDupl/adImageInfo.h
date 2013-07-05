@@ -54,7 +54,8 @@ namespace ad
         bool Export(adImageInfoPtrA pImageInfo) const;
         bool Export(adImageInfoPtrW pImageInfo) const;
 
-    private:
+		TUInt32 Area() const {return width*height;}
+private:
         void Init();
     };
 
