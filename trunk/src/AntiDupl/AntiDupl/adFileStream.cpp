@@ -159,8 +159,8 @@ namespace ad
 	void TInputFileStream::Load(TResult & result) const
 	{
 		Load(result.type);
-		result.first = (TImageInfoPtr)LoadSizeChecked(SIZE_CHECK_LIMIT);
-		result.second = (TImageInfoPtr)LoadSizeChecked(SIZE_CHECK_LIMIT);
+		result.first = (TImageInfoPtr)LoadSize();
+		result.second = (TImageInfoPtr)LoadSize();
 		Load(result.defect);
 		Load(result.difference);
 		Load(result.transform);
