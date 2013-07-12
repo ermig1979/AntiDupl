@@ -82,16 +82,19 @@ namespace AntiDupl.NET
             FileInfo fileInfo = new FileInfo(Options.GetOptionsFileName());
             if (fileInfo.Exists)
             {
+                FileStream fileStream = null;
                 try
                 {
                     XmlSerializer xmlSerializer = new XmlSerializer(typeof(Options));
-                    FileStream fileStream = new FileStream(Options.GetOptionsFileName(), FileMode.Open);
+                    fileStream = new FileStream(Options.GetOptionsFileName(), FileMode.Open);
                     Options options = (Options)xmlSerializer.Deserialize(fileStream);
                     fileStream.Close();
                     return options;
                 }
                 catch
                 {
+                    if (fileStream != null)
+                        fileStream.Close();
                     return new Options();
                 }
             }
@@ -120,15 +123,18 @@ namespace AntiDupl.NET
 
         public void Save()
         {
+            TextWriter writer = null;
             try
             {
-                TextWriter writer = new StreamWriter(Options.GetOptionsFileName());
+                writer = new StreamWriter(Options.GetOptionsFileName());
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(Options));
                 xmlSerializer.Serialize(writer, this);
             }
             catch
             {
             }
+            if (writer != null)
+                writer.Close();
         }
  
         public Options Clone()
