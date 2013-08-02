@@ -318,8 +318,13 @@ namespace AntiDupl.NET
             dialog.Filter = "Antidupl profile files (*.xml)|*.xml";
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                m_coreOptions.Save(m_options.coreOptionsFileName);
-                m_options.coreOptionsFileName = dialog.FileName;
+                if (string.Compare(dialog.FileName, m_options.coreOptionsFileName) != 0)
+                {
+                    m_coreOptions.Save(m_options.coreOptionsFileName);
+                    ProgressForm saveProgressForm = new ProgressForm(ProgressForm.Type.SaveResults, m_core, m_options, m_coreOptions, m_mainSplitContainer);
+                    saveProgressForm.Execute();
+                    m_options.coreOptionsFileName = dialog.FileName;
+                }
                 m_coreOptions.Save(m_options.coreOptionsFileName);
                 ProgressForm progressForm = new ProgressForm(ProgressForm.Type.SaveResults, m_core, m_options, m_coreOptions, m_mainSplitContainer);
                 progressForm.Execute();
@@ -342,13 +347,21 @@ namespace AntiDupl.NET
             dialog.Filter = "Antidupl profile files (*.xml)|*.xml";
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                m_coreOptions.Save(m_options.coreOptionsFileName);
-                m_options.coreOptionsFileName = dialog.FileName;
+                if (string.Compare(dialog.FileName, m_options.coreOptionsFileName) != 0)
+                {
+                    m_coreOptions.Save(m_options.coreOptionsFileName);
+                    ProgressForm saveProgressForm = new ProgressForm(ProgressForm.Type.SaveResults, m_core, m_options, m_coreOptions, m_mainSplitContainer);
+                    saveProgressForm.Execute();
+                    m_options.coreOptionsFileName = dialog.FileName;
+                }
+
                 CoreOptions coreOptions = CoreOptions.Load(m_options.coreOptionsFileName, m_core, m_options.onePath);
                 coreOptions.CopyTo(ref m_coreOptions);
-                ProgressForm progressForm = new ProgressForm(ProgressForm.Type.LoadResults, m_core, m_options, m_coreOptions, m_mainSplitContainer);
-                progressForm.Execute();
+                ProgressForm loadProgressForm = new ProgressForm(ProgressForm.Type.LoadResults, m_core, m_options, m_coreOptions, m_mainSplitContainer);
+                loadProgressForm.Execute();
+
                 m_mainForm.UpdateCaption();
+                m_options.Change();
             }
         }
 
