@@ -41,8 +41,8 @@ namespace AntiDupl.NET
         private MainSplitContainer m_mainSplitContainer;
 
         private ToolStripMenuItem m_fileMenuItem;
-        private ToolStripMenuItem m_file_openProfileMenuItem;
-        private ToolStripMenuItem m_file_saveProfileAsMenuItem;
+        private ToolStripMenuItem m_file_profileOpenMenuItem;
+        private ToolStripMenuItem m_file_profileSaveAsMenuItem;
         private ToolStripMenuItem m_file_exitMenuItem;
 
         private ToolStripMenuItem m_editMenuItem;
@@ -99,12 +99,12 @@ namespace AntiDupl.NET
             ShowItemToolTips = true;
 
             m_file_exitMenuItem = InitFactory.MenuItem.Create(null, null, ExitAction);
-            m_file_openProfileMenuItem = InitFactory.MenuItem.Create(null, null, OpenProfileAction);
-            m_file_saveProfileAsMenuItem = InitFactory.MenuItem.Create(null, null, SaveProfileAsAction);
+            m_file_profileOpenMenuItem = InitFactory.MenuItem.Create("ProfileOpenMenu", null, ProfileOpenAction);
+            m_file_profileSaveAsMenuItem = InitFactory.MenuItem.Create("ProfileSaveAsMenu", null, ProfileSaveAsAction);
 
             m_fileMenuItem = new ToolStripMenuItem();
-            m_fileMenuItem.DropDownItems.Add(m_file_openProfileMenuItem);
-            m_fileMenuItem.DropDownItems.Add(m_file_saveProfileAsMenuItem);
+            m_fileMenuItem.DropDownItems.Add(m_file_profileOpenMenuItem);
+            m_fileMenuItem.DropDownItems.Add(m_file_profileSaveAsMenuItem);
             m_fileMenuItem.DropDownItems.Add(new ToolStripSeparator());
             m_fileMenuItem.DropDownItems.Add(m_file_exitMenuItem);
 
@@ -188,8 +188,8 @@ namespace AntiDupl.NET
             Strings s = Resources.Strings.Current;
 
             m_fileMenuItem.Text = s.MainMenu_FileMenuItem_Text;
-            m_file_openProfileMenuItem.Text = s.MainMenu_File_OpenProfileMenuItem_Text;
-            m_file_saveProfileAsMenuItem.Text = s.MainMenu_File_SaveProfileAsMenuItem_Text;
+            m_file_profileOpenMenuItem.Text = s.MainMenu_File_OpenProfileMenuItem_Text;
+            m_file_profileSaveAsMenuItem.Text = s.MainMenu_File_SaveProfileAsMenuItem_Text;
             m_file_exitMenuItem.Text = s.MainMenu_File_ExitMenuItem_Text;
 
             m_editMenuItem.Text = s.MainMenu_EditMenuItem_Text;
@@ -302,7 +302,7 @@ namespace AntiDupl.NET
             m_mainSplitContainer.resultsListView.Invalidate();
         }
         
-        private void SaveProfileAsAction(object sender, EventArgs e)
+        public void ProfileSaveAsAction(object sender, EventArgs e)
         {
             SaveFileDialog dialog = new SaveFileDialog();
             FileInfo fileInfo = new FileInfo(m_options.coreOptionsFileName);
@@ -332,7 +332,7 @@ namespace AntiDupl.NET
             }
         }
 
-        private void OpenProfileAction(object sender, EventArgs e)
+        public void ProfileOpenAction(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
             FileInfo fileInfo = new FileInfo(m_options.coreOptionsFileName);

@@ -38,6 +38,9 @@ namespace AntiDupl.NET
         private MainForm m_mainForm;
         private MainSplitContainer m_mainSplitContainer;
 
+        private ToolStripButton m_profileOpenButton;
+        private ToolStripButton m_profileSaveAsButton;
+
         private ToolStripButton m_startButton;
         private ToolStripButton m_refreshButton;
         private ToolStripButton m_pathsButton;
@@ -78,6 +81,9 @@ namespace AntiDupl.NET
             BackColor = SystemColors.Control;
             GripStyle = ToolStripGripStyle.Hidden;
 
+            m_profileOpenButton = InitFactory.ToolButton.Create("ProfileOpenButton", null, m_mainMenu.ProfileOpenAction);
+            m_profileSaveAsButton = InitFactory.ToolButton.Create("ProfileSaveAsButton", null, m_mainMenu.ProfileSaveAsAction);
+
             m_startButton = InitFactory.ToolButton.Create("StartButton", null, m_mainMenu.StartSearchAction);
             m_refreshButton = InitFactory.ToolButton.Create("RefreshButton", null, m_mainMenu.RefreshResultsAction);
             m_pathsButton = InitFactory.ToolButton.Create("PathsButton", null, m_mainMenu.PathsAction);
@@ -117,6 +123,9 @@ namespace AntiDupl.NET
         private void UpdateStrings()
         {
             Strings s = Resources.Strings.Current;
+
+            m_profileOpenButton.ToolTipText = s.MainMenu_File_OpenProfileMenuItem_Text;
+            m_profileSaveAsButton.ToolTipText = s.MainMenu_File_SaveProfileAsMenuItem_Text;
 
             m_startButton.ToolTipText = s.MainMenu_Search_StartMenuItem_Text;
             m_refreshButton.ToolTipText = s.MainMenu_Search_RefreshResultsMenuItem_Text;
@@ -183,7 +192,10 @@ namespace AntiDupl.NET
         public void SetViewMode(ResultsOptions.ViewMode viewMode)
         {
             Items.Clear();
-        
+
+            Items.Add(m_profileOpenButton);
+            Items.Add(m_profileSaveAsButton);
+            Items.Add(new ToolStripSeparator());
             Items.Add(m_startButton);
             Items.Add(m_refreshButton);
             Items.Add(m_pathsButton);
