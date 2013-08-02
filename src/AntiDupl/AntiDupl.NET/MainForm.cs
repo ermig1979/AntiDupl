@@ -38,7 +38,7 @@ namespace AntiDupl.NET
     public class MainForm : Form
     {
         public const int MIN_HEIGHT = 520;
-        public const int MIN_WIDTH = 660;
+        public const int MIN_WIDTH = 750;
 
         private Options m_options;
         private CoreLib m_core;
