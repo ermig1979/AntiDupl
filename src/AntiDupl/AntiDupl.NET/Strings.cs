@@ -259,9 +259,12 @@ namespace AntiDupl.NET
         public string ViewModeMenuItem_GroupedThumbnailsMenuItem_Text;
 
         public string ImagePreviewContextMenu_CopyPathItem_Text;
+        public string ImagePreviewContextMenu_CopyFileNameItem_Text;
         public string ImagePreviewContextMenu_OpenImageItem_Text;
         public string ImagePreviewContextMenu_OpenFolderItem_Text;
         public string ImagePreviewContextMenu_RenameImageItem_Text;
+        public string ImagePreviewContextMenu_RenameLikeNeighbour_Text;
         public string ImagePreviewContextMenu_MoveImageToNeighbourItem_Text;
+        public string ImagePreviewContextMenu_MoveAndRenameImageToNeighbourItem_Text;
     }
 }

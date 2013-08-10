@@ -256,10 +256,13 @@ namespace AntiDupl.NET
             s.ViewModeMenuItem_GroupedThumbnailsMenuItem_Text = "Сгруппированные миниатюры";
 
             s.ImagePreviewContextMenu_CopyPathItem_Text = "Скопировать путь";
+            s.ImagePreviewContextMenu_CopyFileNameItem_Text = "Скопировать имя картинки";
             s.ImagePreviewContextMenu_OpenImageItem_Text = "Открыть картинку";
             s.ImagePreviewContextMenu_OpenFolderItem_Text = "Открыть каталог с картинкой";
             s.ImagePreviewContextMenu_RenameImageItem_Text = "Переименовать картинку";
+            s.ImagePreviewContextMenu_RenameLikeNeighbour_Text = "Переименовать как соседнию";
             s.ImagePreviewContextMenu_MoveImageToNeighbourItem_Text = "Переместить картинку к соседней";
+            s.ImagePreviewContextMenu_MoveAndRenameImageToNeighbourItem_Text = "Переместить и переименовать к соседней";
         }
 
         static private Strings Create()
