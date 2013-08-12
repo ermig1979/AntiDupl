@@ -1,7 +1,7 @@
 ﻿/*
 * AntiDupl.NET Program.
 *
-* Copyright (c) 2002-2013 Yermalayeu Ihar.
+* Copyright (c) 2002-2013 Yermalayeu Ihar, Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -172,7 +172,7 @@ namespace AntiDupl.NET
             m_resultsListView.RenameCurrent(this.m_imagePreviewPanel.RenameCurrentType, GetNewNameToMove());
         }
 
-        #region Rename
+        #region Rename image
         private string GetNewNameToMove()
         {
             StringBuilder builder = new StringBuilder(m_imagePreviewPanel.NeighbourImageInfo.GetDirectoryString());
@@ -225,12 +225,12 @@ namespace AntiDupl.NET
         }
 
         /// <summary>
-        /// Проверка есть ли в имени файла число отделенное символом "_" от остальной части файла. Возврашает число или 0 в случае неудачи.
+        /// Check is in file name number separated by the character "_" from remaining part of file name. Returns number or 0 in case of failure.
         /// </summary>
-        /// <param name="name">имя файла</param>
-        /// <param name="digname">Выходное имя файла без числа и "_"</param>
-        /// <param name="zero"> Количество лидирующих нулей</param>
-        /// <returns>0 или полученное число</returns>
+        /// <param name="name">file name</param>
+        /// <param name="digname">Output file name without number and "_"</param>
+        /// <param name="zero">Number of leading zero</param>
+        /// <returns>0 or the received number</returns>
         private ulong GetDigit(string name, out string digname, out int zero)
         {
             int len = name.Length;
@@ -254,11 +254,11 @@ namespace AntiDupl.NET
         }
 
         /// <summary>
-        /// Добавление к имени файла числа в случае когда в нем его не было.
+        /// Adding to number file name in a case when in it it wasn't.
         /// </summary>
-        /// <param name="oldname">Старое имя</param>
-        /// <param name="i">Число</param>
-        /// <returns>Новое имя</returns>
+        /// <param name="oldname">Old name</param>
+        /// <param name="i">Number</param>
+        /// <returns>New name</returns>
         private string GetNewNameForFileAdd(string oldname, ulong i)
         {
             string newname = string.Format("{0}\\{1}_{2}{3}", Directory.GetParent(oldname).ToString(), Path.GetFileNameWithoutExtension(oldname), i, Path.GetExtension(oldname));
@@ -271,12 +271,12 @@ namespace AntiDupl.NET
         }
 
         /// <summary>
-        /// Добавление к имени файла числа в случае когда в нем было число.
+        /// Adding to number file name in a case when in it was number.
         /// </summary>
-        /// <param name="oldname">Старое имя</param>
-        /// <param name="i">Число</param>
-        /// <param name="ext">Расширение файла</param>
-        /// <returns>Новое имя</returns>
+        /// <param name="oldname">Old name</param>
+        /// <param name="i">Number</param>
+        /// <param name="ext">Filename extension</param>
+        /// <returns>New name</returns>
         private string GetNewNameForFileDig(string oldname, int zero, ulong i, string ext, string sourceName)
         {
             string newname = String.Empty;

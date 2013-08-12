@@ -1,7 +1,7 @@
 /*
 * AntiDupl.NET Program.
 *
-* Copyright (c) 2002-2013 Yermalayeu Ihar.
+* Copyright (c) 2002-2013 Yermalayeu Ihar, Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -260,7 +260,7 @@ namespace AntiDupl.NET
             s.ImagePreviewContextMenu_OpenImageItem_Text = "Открыть картинку";
             s.ImagePreviewContextMenu_OpenFolderItem_Text = "Открыть каталог с картинкой";
             s.ImagePreviewContextMenu_RenameImageItem_Text = "Переименовать картинку";
-            s.ImagePreviewContextMenu_RenameLikeNeighbour_Text = "Переименовать как соседнию";
+            s.ImagePreviewContextMenu_RenameLikeNeighbour_Text = "Переименовать как соседнею";
             s.ImagePreviewContextMenu_MoveImageToNeighbourItem_Text = "Переместить картинку к соседней";
             s.ImagePreviewContextMenu_MoveAndRenameImageToNeighbourItem_Text = "Переместить и переименовать к соседней";
         }
