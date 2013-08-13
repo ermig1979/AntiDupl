@@ -1,7 +1,7 @@
 ﻿/*
 * AntiDupl.NET Program.
 *
-* Copyright (c) 2002-2013 Yermalayeu Ihar, Borisov Dmitry.
+* Copyright (c) 2002-2013 Yermalayeu Ihar, 2013 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -207,18 +207,18 @@ namespace AntiDupl.NET
 
         private string SimilarRename(String targetPath)
         {
-            ulong dig = 0;
-            string digname = String.Empty;
+            ulong digit = 0;
+            string digitName = String.Empty;
             int leadingZero = 0;
 
-            dig = GetDigit(Path.GetFileNameWithoutExtension(targetPath), out digname, out leadingZero);
+            digit = GetDigit(Path.GetFileNameWithoutExtension(targetPath), out digitName, out leadingZero);
 
-            if (dig == 0)
+            if (digit == 0)
                 targetPath = GetNewNameForFileAdd(targetPath, 2);
             else
-                targetPath = GetNewNameForFileDig(Path.Combine(Directory.GetParent(targetPath).ToString() + "\\", digname),
+                targetPath = GetNewNameForFileDig(Path.Combine(Directory.GetParent(targetPath).ToString() + "\\", digitName),
                                                 leadingZero,
-                                                dig + 1,
+                                                digit + 1,
                                                 Path.GetExtension(targetPath),
                                                 targetPath);
             return targetPath;
@@ -228,15 +228,15 @@ namespace AntiDupl.NET
         /// Check is in file name number separated by the character "_" from remaining part of file name. Returns number or 0 in case of failure.
         /// </summary>
         /// <param name="name">file name</param>
-        /// <param name="digname">Output file name without number and "_"</param>
+        /// <param name="digitName">Output file name without number and "_"</param>
         /// <param name="zero">Number of leading zero</param>
         /// <returns>0 or the received number</returns>
-        private ulong GetDigit(string name, out string digname, out int zero)
+        private ulong GetDigit(string name, out string digitName, out int zero)
         {
-            int len = name.Length;
+            int length = name.Length;
             int sym = name.LastIndexOf('_');
             bool ren = true;
-            for (int u = sym + 1; u < len; u++)
+            for (int u = sym + 1; u < length; u++)
                 if (!char.IsDigit(name[u]))
                     ren = false;
 
@@ -249,51 +249,51 @@ namespace AntiDupl.NET
                 zero = intPar.Length - result.ToString().Length;
             }
 
-            digname = name.Substring(0, sym + 1);
+            digitName = name.Substring(0, sym + 1);
             return result;
         }
 
         /// <summary>
         /// Adding to number file name in a case when in it it wasn't.
         /// </summary>
-        /// <param name="oldname">Old name</param>
+        /// <param name="oldName">Old name</param>
         /// <param name="i">Number</param>
         /// <returns>New name</returns>
-        private string GetNewNameForFileAdd(string oldname, ulong i)
+        private string GetNewNameForFileAdd(string oldName, ulong i)
         {
-            string newname = string.Format("{0}\\{1}_{2}{3}", Directory.GetParent(oldname).ToString(), Path.GetFileNameWithoutExtension(oldname), i, Path.GetExtension(oldname));
-            if (File.Exists(newname))
+            string newName = string.Format("{0}\\{1}_{2}{3}", Directory.GetParent(oldName).ToString(), Path.GetFileNameWithoutExtension(oldName), i, Path.GetExtension(oldName));
+            if (File.Exists(newName))
             {
                 i = i + 1;
-                newname = GetNewNameForFileAdd(oldname, i);
+                newName = GetNewNameForFileAdd(oldName, i);
             }
-            return newname;
+            return newName;
         }
 
         /// <summary>
         /// Adding to number file name in a case when in it was number.
         /// </summary>
-        /// <param name="oldname">Old name</param>
+        /// <param name="oldName">Old name</param>
         /// <param name="i">Number</param>
-        /// <param name="ext">Filename extension</param>
+        /// <param name="extension">Filename extension</param>
         /// <returns>New name</returns>
-        private string GetNewNameForFileDig(string oldname, int zero, ulong i, string ext, string sourceName)
+        private string GetNewNameForFileDig(string oldName, int zero, ulong i, string extension, string sourceName)
         {
-            string newname = String.Empty;
+            string newName = String.Empty;
             if (i.ToString().Length > (i - 1).ToString().Length)
                 zero--;
-            StringBuilder builder = new StringBuilder(oldname);
+            StringBuilder builder = new StringBuilder(oldName);
             for (int j = 0; j < zero; j++)
                 builder.Append("0");
             builder.Append(i);
-            builder.Append(ext);
-            newname = builder.ToString();
+            builder.Append(extension);
+            newName = builder.ToString();
 
-            if (File.Exists(newname))
+            if (File.Exists(newName))
             {
-                newname = GetNewNameForFileAdd(sourceName, 2);
+                newName = GetNewNameForFileAdd(sourceName, 2);
             }
-            return newname;
+            return newName;
         }
         #endregion
     }
