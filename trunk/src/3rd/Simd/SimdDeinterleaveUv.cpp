@@ -111,6 +111,11 @@ namespace Simd
 	void DeinterleaveUv(const uchar * uv, size_t uvStride, size_t width, size_t height, 
 		uchar * u, size_t uStride, uchar * v, size_t vStride)
 	{
+#ifdef SIMD_AVX2_ENABLE
+        if(Avx2::Enable && width >= Avx2::A)
+            Avx2::DeinterleaveUv(uv, uvStride, width, height, u, uStride, v, vStride);
+        else
+#endif//SIMD_AVX2_ENABLE
 #ifdef SIMD_SSE2_ENABLE
 		if(Sse2::Enable && width >= Sse2::A)
 			Sse2::DeinterleaveUv(uv, uvStride, width, height, u, uStride, v, vStride);

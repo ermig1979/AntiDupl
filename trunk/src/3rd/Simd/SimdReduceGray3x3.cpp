@@ -31,23 +31,6 @@ namespace Simd
 {
     namespace Base
     {
-		template <bool compensation> SIMD_INLINE int DivideBy16(int value);
-
-		template <> SIMD_INLINE int DivideBy16<true>(int value)
-		{
-			return (value + 8) >> 4;
-		}
-
-		template <> SIMD_INLINE int DivideBy16<false>(int value)
-		{
-			return value >> 4;
-		}
-
-        template <bool compensation> SIMD_INLINE int GaussianBlur(const uchar *s0, const uchar *s1, const uchar *s2, size_t x0, size_t x1, size_t x2)
-        {
-            return DivideBy16<compensation>(s0[x0] + 2*s0[x1] + s0[x2] + (s1[x0] + 2*s1[x1] + s1[x2])*2 + s2[x0] + 2*s2[x1] + s2[x2]);
-        }
-
         template <bool compensation> void ReduceGray3x3(const uchar *src, size_t srcWidth, size_t srcHeight, size_t srcStride, 
             uchar *dst, size_t dstWidth, size_t dstHeight, size_t dstStride)
         {
@@ -126,7 +109,7 @@ namespace Simd
 
         template <bool compensation> SIMD_INLINE __m128i ReduceRow(const __m128i & r0, const __m128i & r1, const __m128i & r2)
         {
-            return _mm_packus_epi16(_mm_and_si128(DivideBy16<compensation>(BinomialSum16(r0, r1, r2)), K16_00FF), K_ZERO);
+            return _mm_packus_epi16(DivideBy16<compensation>(BinomialSum16(r0, r1, r2)), K_ZERO);
         }
         
         template<bool align, bool compensation> void ReduceGray3x3(
@@ -188,6 +171,11 @@ namespace Simd
     void ReduceGray3x3(const uchar *src, size_t srcWidth, size_t srcHeight, size_t srcStride, 
         uchar *dst, size_t dstWidth, size_t dstHeight, size_t dstStride, bool compensation)
     {
+#ifdef SIMD_AVX2_ENABLE
+        if(Avx2::Enable && srcWidth >= Avx2::DA)
+            Avx2::ReduceGray3x3(src, srcWidth, srcHeight, srcStride, dst, dstWidth, dstHeight, dstStride, compensation);
+        else
+#endif//SIMD_AVX2_ENABLE
 #ifdef SIMD_SSE2_ENABLE
         if(Sse2::Enable && srcWidth >= Sse2::A)
 			Sse2::ReduceGray3x3(src, srcWidth, srcHeight, srcStride, dst, dstWidth, dstHeight, dstStride, compensation);

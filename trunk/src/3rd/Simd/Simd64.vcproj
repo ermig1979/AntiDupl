@@ -59,7 +59,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalOptions="/MACHINE:X64"
+				AdditionalOptions="/MACHINE:X64&#x0D;&#x0A;/ignore:4221 "
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -121,7 +121,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalOptions="/MACHINE:X64"
+				AdditionalOptions="/MACHINE:X64&#x0D;&#x0A;/ignore:4221 "
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -243,11 +243,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SimdAverage.cpp"
+				RelativePath=".\SimdAddFeatureDifference.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\SimdAverage.h"
+				RelativePath=".\SimdAddFeatureDifference.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdBackground.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdBackground.h"
 				>
 			</File>
 			<File
@@ -315,6 +323,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimdEdgeBackground.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdEdgeBackground.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdGaussianBlur3x3.cpp"
 				>
 			</File>
@@ -344,6 +360,14 @@
 			</File>
 			<File
 				RelativePath=".\SimdMedianFilterSquare5x5.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdOperation.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdOperation.h"
 				>
 			</File>
 			<File
@@ -411,6 +435,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimdStretchGray2x2.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdStretchGray2x2.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdTexture.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdTexture.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdYuvToBgr.cpp"
 				>
 			</File>
@@ -434,6 +474,110 @@
 				RelativePath=".\SimdYuvToHue.h"
 				>
 			</File>
+			<Filter
+				Name="Avx"
+				>
+				<File
+					RelativePath=".\SimdAbsDifferenceSumA.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdAbsGradientSaturatedSumA.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdAbsSecondDerivativeHistogramA.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdAddFeatureDifferenceA.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdBackgroundA.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdBgraToGrayA.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdBinarizationA.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdDeinterleaveUvA.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdEdgeBackgroundA.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdGaussianBlur3x3A.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdMedianFilterSquare3x3A.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdMedianFilterSquare5x5A.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdOperationA.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdReduceGray2x2A.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdReduceGray3x3A.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdReduceGray4x4A.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdReduceGray5x5A.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdResizeBilinearA.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdShiftBilinearA.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdSquaredDifferenceSumA.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdStatisticA.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdStretchGray2x2A.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdTextureA.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdYuvToBgraA.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdYuvToHueA.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

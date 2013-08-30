@@ -21,8 +21,8 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
-#ifndef __SimdAverage_h__
-#define __SimdAverage_h__
+#ifndef __SimdAddFeatureDifference_h__
+#define __SimdAddFeatureDifference_h__
 
 #include "Simd/SimdView.h"
 
@@ -30,29 +30,33 @@ namespace Simd
 {
 	namespace Base
 	{
-		void Average(const uchar * a, size_t aStride, const uchar * b, size_t bStride, 
-			size_t width, size_t height, size_t channelCount, uchar * dst, size_t dstStride);
+		void AddFeatureDifference(const uchar * value, size_t valueStride, size_t width, size_t height, 
+			const uchar * lo, size_t loStride, const uchar * hi, size_t hiStride,
+            ushort weight, uchar * difference, size_t differenceStride);
 	}
 
 #ifdef SIMD_SSE2_ENABLE    
 	namespace Sse2
 	{
-		void Average(const uchar * a, size_t aStride, const uchar * b, size_t bStride, 
-			size_t width, size_t height, size_t channelCount, uchar * dst, size_t dstStride);
+        void AddFeatureDifference(const uchar * value, size_t valueStride, size_t width, size_t height, 
+            const uchar * lo, size_t loStride, const uchar * hi, size_t hiStride,
+            ushort weight, uchar * difference, size_t differenceStride);
 	}
 #endif// SIMD_SSE2_ENABLE
 
 #ifdef SIMD_AVX2_ENABLE    
-	namespace Avx2
-	{
-		void Average(const uchar * a, size_t aStride, const uchar * b, size_t bStride, 
-			size_t width, size_t height, size_t channelCount, uchar * dst, size_t dstStride);
-	}
+    namespace Avx2
+    {
+        void AddFeatureDifference(const uchar * value, size_t valueStride, size_t width, size_t height, 
+            const uchar * lo, size_t loStride, const uchar * hi, size_t hiStride,
+            ushort weight, uchar * difference, size_t differenceStride);
+    }
 #endif// SIMD_AVX2_ENABLE
 
-	void Average(const uchar * a, size_t aStride, const uchar * b, size_t bStride, 
-		size_t width, size_t height, size_t channelCount, uchar * dst, size_t dstStride);
+    void AddFeatureDifference(const uchar * value, size_t valueStride, size_t width, size_t height, 
+        const uchar * lo, size_t loStride, const uchar * hi, size_t hiStride,
+        ushort weight, uchar * difference, size_t differenceStride);
 
-	void Average(const View & a, const View & b, View & dst);
+    void AddFeatureDifference(const View & value, const View & lo, const View & hi, ushort weight, View & difference);
 }
-#endif//__SimdAverage_h__
+#endif//__SimdAddFeatureDifference_h__
