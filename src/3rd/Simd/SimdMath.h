@@ -133,6 +133,13 @@ namespace Simd
 			int m = ~(d >> 8);
 			return a - (d & m);
 		}
+
+        SIMD_INLINE int SaturatedSubtractionU8(int a, int b)
+        {
+            int d = a - b;
+            int m = ~(d >> 8);
+            return (d & m);
+        }
 	}
 
 #ifdef SIMD_SSE2_ENABLE    
@@ -199,7 +206,78 @@ namespace Simd
 		{
 			return _mm_sub_epi8(_mm_max_epu8(a, b), _mm_min_epu8(a, b));
 		}
+
+		SIMD_INLINE __m128i GreaterThenU8(__m128i a, __m128i b)
+		{
+			return _mm_andnot_si128(_mm_cmpeq_epi8(_mm_min_epu8(a, b), a), K_INV_ZERO);
+		}
+
+		SIMD_INLINE __m128i LesserThenU8(__m128i a, __m128i b)
+		{
+			return _mm_andnot_si128(_mm_cmpeq_epi8(_mm_max_epu8(a, b), a), K_INV_ZERO);
+		}
+
+        SIMD_INLINE __m128i MulU8(__m128i a, __m128i b)
+        {
+            __m128i lo = _mm_mullo_epi16(_mm_unpacklo_epi8(a, K_ZERO), _mm_unpacklo_epi8(b, K_ZERO));
+            __m128i hi = _mm_mullo_epi16(_mm_unpackhi_epi8(a, K_ZERO), _mm_unpackhi_epi8(b, K_ZERO));
+            return _mm_packus_epi16(lo, hi);
+        }
 	}
 #endif// SIMD_SSE2_ENABLE
+
+#ifdef SIMD_AVX2_ENABLE    
+    namespace Avx2
+    {
+        SIMD_INLINE __m256i SaturateI16ToU8(__m256i value)
+        {
+            return _mm256_min_epi16(K16_00FF, _mm256_max_epi16(value, K_ZERO));
+        }
+
+        SIMD_INLINE __m256i MaxI16(__m256i a, __m256i b, __m256i c)
+        {
+            return _mm256_max_epi16(a, _mm256_max_epi16(b, c));
+        }
+
+        SIMD_INLINE __m256i MinI16(__m256i a, __m256i b, __m256i c)
+        {
+            return _mm256_min_epi16(a, _mm256_min_epi16(b, c));
+        }
+
+        SIMD_INLINE void SortU8(__m256i & a, __m256i & b)
+        {
+            __m256i t = a;
+            a = _mm256_min_epu8(t, b);
+            b = _mm256_max_epu8(t, b);
+        }
+
+        SIMD_INLINE __m256i HorizontalSum32(__m256i a)
+        {
+            return _mm256_unpacklo_epi32(_mm256_hadd_epi32(a, K_ZERO), K_ZERO);
+        }
+
+        SIMD_INLINE __m256i AbsDifferenceU8(__m256i a, __m256i b)
+        {
+            return _mm256_sub_epi8(_mm256_max_epu8(a, b), _mm256_min_epu8(a, b));
+        }
+
+        SIMD_INLINE __m256i GreaterThenU8(__m256i a, __m256i b)
+        {
+            return _mm256_andnot_si256(_mm256_cmpeq_epi8(_mm256_min_epu8(a, b), a), K_INV_ZERO);
+        }
+
+        SIMD_INLINE __m256i LesserThenU8(__m256i a, __m256i b)
+        {
+            return _mm256_andnot_si256(_mm256_cmpeq_epi8(_mm256_max_epu8(a, b), a), K_INV_ZERO);
+        }
+
+        SIMD_INLINE __m256i MulU8(__m256i a, __m256i b)
+        {
+            __m256i lo = _mm256_mullo_epi16(_mm256_unpacklo_epi8(a, K_ZERO), _mm256_unpacklo_epi8(b, K_ZERO));
+            __m256i hi = _mm256_mullo_epi16(_mm256_unpackhi_epi8(a, K_ZERO), _mm256_unpackhi_epi8(b, K_ZERO));
+            return _mm256_packus_epi16(lo, hi);
+        }
+    }
+#endif// SIMD_AVX2_ENABLE
 }
 #endif//__SimdMath_h__

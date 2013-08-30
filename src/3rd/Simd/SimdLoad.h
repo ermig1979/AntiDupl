@@ -122,7 +122,99 @@ namespace Simd
 		{
 			return _mm256_load_si256(p); 
 		}
-	}
+
+        template <bool align> SIMD_INLINE __m256i LoadPermuted(const __m256i * p)
+        {
+            return _mm256_permute4x64_epi64(Load<align>(p), 0xD8); 
+        }
+
+        template <bool align> SIMD_INLINE __m256i LoadMaskI8(const __m256i * p, __m256i index)
+        {
+            return _mm256_cmpeq_epi8(Load<align>(p), index);
+        }
+
+        template <bool align, size_t step> SIMD_INLINE __m256i LoadBeforeFirst(const uchar * p)
+        {
+            __m128i lo = Sse2::LoadBeforeFirst<step>(Sse2::Load<align>((__m128i*)p));
+            __m128i hi = _mm_loadu_si128((__m128i*)(p + Sse2::A - step));
+            return _mm256_inserti128_si256(_mm256_castsi128_si256(lo), hi, 0x1);
+        }
+
+        template <bool align, size_t step> SIMD_INLINE void LoadBeforeFirst(const uchar * p, __m256i & first, __m256i & second)
+        {
+            __m128i firstLo = Sse2::LoadBeforeFirst<step>(Sse2::Load<align>((__m128i*)p));
+            __m128i firstHi= _mm_loadu_si128((__m128i*)(p + Sse2::A - step));
+            first = _mm256_inserti128_si256(_mm256_castsi128_si256(firstLo), firstHi, 0x1);
+
+            __m128i secondLo = Sse2::LoadBeforeFirst<step>(firstLo);
+            __m128i secondHi= _mm_loadu_si128((__m128i*)(p + Sse2::A - 2*step));
+            second = _mm256_inserti128_si256(_mm256_castsi128_si256(secondLo), secondHi, 0x1);
+        }
+
+        template <bool align, size_t step> SIMD_INLINE __m256i LoadAfterLast(const uchar * p)
+        {
+            __m128i lo = _mm_loadu_si128((__m128i*)(p + step)); 
+            __m128i hi = Sse2::LoadAfterLast<step>(Sse2::Load<align>((__m128i*)(p + Sse2::A)));
+            return _mm256_inserti128_si256(_mm256_castsi128_si256(lo), hi, 0x1);
+        }
+
+        template <bool align, size_t step> SIMD_INLINE void LoadAfterLast(const uchar * p, __m256i & first, __m256i & second)
+        {
+            __m128i firstLo = _mm_loadu_si128((__m128i*)(p + step)); 
+            __m128i firstHi = Sse2::LoadAfterLast<step>(Sse2::Load<align>((__m128i*)(p + Sse2::A)));
+            first = _mm256_inserti128_si256(_mm256_castsi128_si256(firstLo), firstHi, 0x1);
+
+            __m128i secondLo = _mm_loadu_si128((__m128i*)(p + 2*step)); 
+            __m128i secondHi = Sse2::LoadAfterLast<step>(firstHi);
+            second = _mm256_inserti128_si256(_mm256_castsi128_si256(secondLo), secondHi, 0x1);
+        }
+
+        template <bool align, size_t step> SIMD_INLINE void LoadNose3(const uchar * p, __m256i a[3])
+        {
+            a[0] = LoadBeforeFirst<align, step>(p);
+            a[1] = Load<align>((__m256i*)p);
+            a[2] = _mm256_loadu_si256((__m256i*)(p + step));
+        }
+
+        template <bool align, size_t step> SIMD_INLINE void LoadBody3(const uchar * p, __m256i a[3])
+        {
+            a[0] = _mm256_loadu_si256((__m256i*)(p - step));
+            a[1] = Load<align>((__m256i*)p);
+            a[2] = _mm256_loadu_si256((__m256i*)(p + step));
+        }
+
+        template <bool align, size_t step> SIMD_INLINE void LoadTail3(const uchar * p, __m256i a[3])
+        {
+            a[0] = _mm256_loadu_si256((__m256i*)(p - step));
+            a[1] = Load<align>((__m256i*)p);
+            a[2] = LoadAfterLast<align, step>(p);
+        }
+
+        template <bool align, size_t step> SIMD_INLINE void LoadNose5(const uchar * p, __m256i a[5])
+        {
+            LoadBeforeFirst<align, step>(p, a[1], a[0]);
+            a[2] = Load<align>((__m256i*)p);
+            a[3] = _mm256_loadu_si256((__m256i*)(p + step));
+            a[4] = _mm256_loadu_si256((__m256i*)(p + 2*step));
+        }
+
+        template <bool align, size_t step> SIMD_INLINE void LoadBody5(const uchar * p, __m256i a[5])
+        {
+            a[0] = _mm256_loadu_si256((__m256i*)(p - 2*step));
+            a[1] = _mm256_loadu_si256((__m256i*)(p - step));
+            a[2] = Load<align>((__m256i*)p);
+            a[3] = _mm256_loadu_si256((__m256i*)(p + step));
+            a[4] = _mm256_loadu_si256((__m256i*)(p + 2*step));
+        }
+
+        template <bool align, size_t step> SIMD_INLINE void LoadTail5(const uchar * p, __m256i a[5])
+        {
+            a[0] = _mm256_loadu_si256((__m256i*)(p - 2*step));
+            a[1] = _mm256_loadu_si256((__m256i*)(p - step));
+            a[2] = Load<align>((__m256i*)p);
+            LoadAfterLast<align, step>(p, a[3], a[4]);
+        }
+    }
 #endif//SIMD_AVX2_ENABLE
 }
 #endif//__SimdLoad_h__

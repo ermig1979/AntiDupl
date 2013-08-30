@@ -151,6 +151,11 @@ namespace Simd
 	void AbsSecondDerivativeHistogram(const uchar *src, size_t width, size_t height, size_t stride,
 		size_t step, size_t indent, uint * histogram)
 	{
+#ifdef SIMD_AVX2_ENABLE
+        if(Avx2::Enable && width >= Avx2::A + 2*indent)
+            Avx2::AbsSecondDerivativeHistogram(src, width, height, stride, step, indent, histogram);
+        else
+#endif//SIMD_AVX2_ENABLE
 #ifdef SIMD_SSE2_ENABLE
 		if(Sse2::Enable && width >= Sse2::A + 2*indent)
 			Sse2::AbsSecondDerivativeHistogram(src, width, height, stride, step, indent, histogram);

@@ -219,9 +219,9 @@ namespace ad
 									*p = colors[index];
 								else
 								{
-									p->red = index;
-									p->green = index;
-									p->blue = index;
+									p->red = (unsigned char)index;
+									p->green = (unsigned char)index;
+									p->blue = (unsigned char)index;
 								}
 								break;
 							}

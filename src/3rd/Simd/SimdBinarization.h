@@ -28,46 +28,57 @@
 
 namespace Simd
 {
+    enum CompareType
+    {
+        CompareGreaterThen,
+        CompareLesserThen,
+        CompareEqualTo,
+    };
+
 	namespace Base
 	{
-		void GreaterThenBinarization(const uchar * src, size_t srcStride, size_t width, size_t height, 
-			uchar value, uchar positive, uchar negative, uchar * dst, size_t dstStride);
+        void Binarization(const uchar * src, size_t srcStride, size_t width, size_t height, 
+            uchar value, uchar positive, uchar negative, uchar * dst, size_t dstStride, CompareType compareType);
 
-		void LesserThenBinarization(const uchar * src, size_t srcStride, size_t width, size_t height, 
-			uchar value, uchar positive, uchar negative, uchar * dst, size_t dstStride);
-
-		void EqualToBinarization(const uchar * src, size_t srcStride, size_t width, size_t height, 
-			uchar value, uchar positive, uchar negative, uchar * dst, size_t dstStride);
+        void AveragingBinarization(const uchar * src, size_t srcStride, size_t width, size_t height,
+            uchar value, size_t neighborhood, uchar threshold, uchar positive, uchar negative, 
+            uchar * dst, size_t dstStride, CompareType compareType);
 	}
 
 #ifdef SIMD_SSE2_ENABLE    
 	namespace Sse2
 	{
-		void GreaterThenBinarization(const uchar * src, size_t srcStride, size_t width, size_t height, 
-			uchar value, uchar positive, uchar negative, uchar * dst, size_t dstStride);
+        void Binarization(const uchar * src, size_t srcStride, size_t width, size_t height, 
+            uchar value, uchar positive, uchar negative, uchar * dst, size_t dstStride, CompareType compareType);
 
-		void LesserThenBinarization(const uchar * src, size_t srcStride, size_t width, size_t height, 
-			uchar value, uchar positive, uchar negative, uchar * dst, size_t dstStride);
-
-		void EqualToBinarization(const uchar * src, size_t srcStride, size_t width, size_t height, 
-			uchar value, uchar positive, uchar negative, uchar * dst, size_t dstStride);
-	}
+        void AveragingBinarization(const uchar * src, size_t srcStride, size_t width, size_t height,
+            uchar value, size_t neighborhood, uchar threshold, uchar positive, uchar negative, 
+            uchar * dst, size_t dstStride, CompareType compareType);
+    }
 #endif// SIMD_SSE2_ENABLE
 
-	void GreaterThenBinarization(const uchar * src, size_t srcStride, size_t width, size_t height, 
-		uchar value, uchar positive, uchar negative, uchar * dst, size_t dstStride);
+#ifdef SIMD_AVX2_ENABLE    
+    namespace Avx2
+    {
+        void Binarization(const uchar * src, size_t srcStride, size_t width, size_t height, 
+            uchar value, uchar positive, uchar negative, uchar * dst, size_t dstStride, CompareType compareType);
 
-	void LesserThenBinarization(const uchar * src, size_t srcStride, size_t width, size_t height, 
-		uchar value, uchar positive, uchar negative, uchar * dst, size_t dstStride);
+        void AveragingBinarization(const uchar * src, size_t srcStride, size_t width, size_t height,
+            uchar value, size_t neighborhood, uchar threshold, uchar positive, uchar negative, 
+            uchar * dst, size_t dstStride, CompareType compareType);
+    }
+#endif// SIMD_AVX2_ENABLE
 
-	void EqualToBinarization(const uchar * src, size_t srcStride, size_t width, size_t height, 
-		uchar value, uchar positive, uchar negative, uchar * dst, size_t dstStride);
+    void Binarization(const uchar * src, size_t srcStride, size_t width, size_t height, 
+        uchar value, uchar positive, uchar negative, uchar * dst, size_t dstStride, CompareType compareType);
 
+    void AveragingBinarization(const uchar * src, size_t srcStride, size_t width, size_t height,
+        uchar value, size_t neighborhood, uchar threshold, uchar positive, uchar negative, 
+        uchar * dst, size_t dstStride, CompareType compareType);
 
-	void GreaterThenBinarization(const View & src, uchar value, uchar positive, uchar negative, View & dst);
+    void Binarization(const View & src, uchar value, uchar positive, uchar negative, View & dst, CompareType compareType);
 
-	void LesserThenBinarization(const View & src, uchar value, uchar positive, uchar negative, View & dst);
-
-	void EqualToBinarization(const View & src, uchar value, uchar positive, uchar negative, View & dst);
+    void AveragingBinarization(const View & src, uchar value, size_t neighborhood, 
+        uchar threshold, uchar positive, uchar negative, View & dst, CompareType compareType);
 }
 #endif//__SimdBinarization_h__
