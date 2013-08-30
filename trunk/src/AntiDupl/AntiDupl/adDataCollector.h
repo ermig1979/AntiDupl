@@ -40,7 +40,7 @@ namespace ad
     {
         TOptions *m_pOptions;
         TResultStorage *m_pResult;
-        std::vector<TPixelData*> m_pGrayBuffers;
+        std::vector<TView*> m_pGrayBuffers;
 
     public:
         TDataCollector(TEngine *pEngine);
@@ -52,8 +52,8 @@ namespace ad
         void FillPixelData(TImageData* pImageData);
         void CheckOnDefect(TImageData* pImageData);
         void SetCrc32(TImageData* pImageData);
-        void ReduceGray2x2(const TPixelData* pSrc, TPixelData* pDst);
 		bool CanAddDefect(const TImageData * pImageData);
-};
+		double GetBlockiness(const TView & gray);
+	};
 }
 #endif//__adDataCollector_h__ 

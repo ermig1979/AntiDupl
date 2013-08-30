@@ -39,7 +39,7 @@ namespace ad
         m_pResult(pEngine->Result())
     {
         for(int size = INITIAL_REDUCED_IMAGE_SIZE; size > m_pOptions->advanced.reducedImageSize; size >>= 1)
-            m_pGrayBuffers.push_back(new TPixelData(size));
+			m_pGrayBuffers.push_back(new TView(size, size, size, Simd::View::Gray8, NULL));
     }
 
     TDataCollector::~TDataCollector() 
@@ -73,13 +73,19 @@ namespace ad
             pImageData->width = (TUInt32)pImage->View()->width;
             pImageData->type = (TImageType)pImage->Format();
 
-            GetGrayResized(pImage, INITIAL_REDUCED_IMAGE_SIZE, INITIAL_REDUCED_IMAGE_SIZE, m_pGrayBuffers.front()->main);
-            for(size_t i = 1; i < m_pGrayBuffers.size(); ++i)
-                ReduceGray2x2(m_pGrayBuffers[i - 1], m_pGrayBuffers[i]);
-            ReduceGray2x2(m_pGrayBuffers.back(), pImageData->data);
-            pImageData->data->filled = true;
+			TView gray(pImage->View()->width, pImage->View()->height, Simd::View::Gray8, NULL);
+			Simd::BgraToGray(*pImage->View(), gray);
 
-            delete pImage;
+			double blockiness = GetBlockiness(gray);
+
+			Simd::ResizeBilinear(gray, *m_pGrayBuffers.front());
+            for(size_t i = 1; i < m_pGrayBuffers.size(); ++i)
+				Simd::ReduceGray2x2(*m_pGrayBuffers[i - 1], *m_pGrayBuffers[i]);
+			TPixelData & data = *pImageData->data;
+            ReduceGray2x2(*m_pGrayBuffers.back(), TView(data.side, data.side, data.side, Simd::View::Gray8, data.main));
+            data.filled = true;
+
+			delete pImage;
         }
         else
         {
@@ -137,11 +143,6 @@ namespace ad
         }
     }
 
-    void TDataCollector::ReduceGray2x2(const TPixelData* pSrc, TPixelData* pDst)
-    {
-       Simd::ReduceGray2x2(pSrc->main, pSrc->side, pSrc->side, pSrc->side, pDst->main, pDst->side, pDst->side, pDst->side);
-    }
-
 	bool TDataCollector::CanAddDefect(const TImageData * pImageData)
 	{
 		const adCheckOptions & check = m_pOptions->check;
@@ -149,5 +150,39 @@ namespace ad
 			check.checkOnDefect == TRUE && pImageData->defect > AD_DEFECT_NONE &&
 			pImageData->width >= (TUInt32)check.minimalImageSize && pImageData->width <= (TUInt32)check.maximalImageSize &&
 			pImageData->height >= (TUInt32)check.minimalImageSize && pImageData->height <= (TUInt32)check.maximalImageSize;
+	}
+
+	double TDataCollector::GetBlockiness(const TView & gray)
+	{
+		const size_t BLOCK_SIZE = 8;
+		if(gray.height < BLOCK_SIZE + 2 || gray.width < BLOCK_SIZE + 2)
+			return 0;
+
+		TView absGradient(gray.width, gray.height, Simd::View::Gray8, NULL);
+		Simd::AbsGradientSaturatedSum(gray, absGradient);
+
+		std::vector<unsigned int> rowSums(gray.height);
+		Simd::GetRowSums(absGradient, &rowSums[0]);
+		unsigned int vertical[BLOCK_SIZE] = {0};
+		size_t rowEnd = 1 + (gray.height - 2)/BLOCK_SIZE*BLOCK_SIZE; 
+		for(size_t row = 1; row < rowEnd; ++row)
+			vertical[row%BLOCK_SIZE] += rowSums[row];
+		std::sort(vertical, vertical + BLOCK_SIZE);
+		double verticalBlockiness = 
+			double(vertical[BLOCK_SIZE - 1] + vertical[BLOCK_SIZE - 2] - vertical[BLOCK_SIZE - 3] - vertical[BLOCK_SIZE - 4])/
+			double(vertical[BLOCK_SIZE - 1] + vertical[BLOCK_SIZE - 2] + vertical[BLOCK_SIZE - 3] + vertical[BLOCK_SIZE - 4]);
+
+		std::vector<unsigned int> colSums(gray.width);
+		Simd::GetColSums(absGradient, &colSums[0]);
+		unsigned int horizontal[BLOCK_SIZE] = {0};
+		size_t colEnd = 1 + (gray.width - 2)/BLOCK_SIZE*BLOCK_SIZE; 
+		for(size_t col = 1; col < colEnd; ++col)
+			horizontal[col%BLOCK_SIZE] += colSums[col];
+		std::sort(horizontal, horizontal + BLOCK_SIZE);
+		double horizontalBlockiness = 
+			double(horizontal[BLOCK_SIZE - 1] + horizontal[BLOCK_SIZE - 2] - horizontal[BLOCK_SIZE - 3] - horizontal[BLOCK_SIZE - 4])/
+			double(horizontal[BLOCK_SIZE - 1] + horizontal[BLOCK_SIZE - 2] + horizontal[BLOCK_SIZE - 3] + horizontal[BLOCK_SIZE - 4]);
+
+		return std::min(verticalBlockiness, horizontalBlockiness);
 	}
 }

@@ -28,17 +28,6 @@
 
 namespace ad
 {
-    void GetGrayResized(TImage *pImage, TUInt32 width, TUInt32 height, TUInt8* pGrayBuffer)
-    {
-        AD_FUNCTION_PERFORMANCE_TEST
-
-        TView fullSizeGray(pImage->View()->width, pImage->View()->height, Simd::View::Gray8, NULL);
-		Simd::BgraToGray(*pImage->View(), fullSizeGray);
-
-        TView reducedGray(width, height, width, Simd::View::Gray8, pGrayBuffer);
-        Simd::ResizeBilinear(fullSizeGray, reducedGray);
-    }
-
     adError LoadBitmap(const TString& fileName, adBitmapPtr pBitmap)
     {
         if(pBitmap == NULL)
