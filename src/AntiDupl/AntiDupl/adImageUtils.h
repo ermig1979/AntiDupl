@@ -28,8 +28,6 @@
 
 namespace ad
 {
-    void GetGrayResized(TImage *pImage, TUInt32 width, TUInt32 height, TUInt8* pGrayBuffer);
-
     adError LoadBitmap(const TString& fileName, adBitmapPtr pBitmap);
 }
 #endif//__adImages_h__
