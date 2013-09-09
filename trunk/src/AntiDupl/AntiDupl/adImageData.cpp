@@ -105,15 +105,20 @@ namespace ad
 		return *this;
 	}
 
-	bool TImageData::PixelDataFillingNeed(TOptions *pOptions) const
+	bool TImageData::PixelDataFillingNeed(TOptions * pOptions) const
 	{
-		return (pOptions->check.checkOnEquality == TRUE || pOptions->check.checkOnDefect == TRUE) && 
-			!data->filled && type != AD_IMAGE_NONE;
+		return (pOptions->check.checkOnEquality == TRUE || 
+			pOptions->check.checkOnDefect == TRUE || 
+			pOptions->check.checkOnBlockiness == TRUE) && 
+			(!data->filled || blockiness < 0) &&
+			type != AD_IMAGE_NONE;
 	}
 
-	bool TImageData::DefectCheckingNeed(TOptions *pOptions) const
+	bool TImageData::DefectCheckingNeed(TOptions * pOptions) const
 	{
-		return pOptions->check.checkOnDefect == TRUE && defect == AD_DEFECT_UNDEFINE;
+		return (pOptions->check.checkOnDefect == TRUE && defect == AD_DEFECT_UNDEFINE) ||
+			(pOptions->check.checkOnBlockiness == TRUE && (defect == AD_DEFECT_UNDEFINE || defect == AD_DEFECT_NONE) &&
+			blockiness > pOptions->check.blockinessThreshold); 
 	}
 
 	void TImageData::FillOther(TOptions *pOptions)

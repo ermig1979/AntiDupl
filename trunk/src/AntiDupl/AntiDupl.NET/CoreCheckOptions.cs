@@ -30,6 +30,8 @@ namespace AntiDupl.NET
     public class CoreCheckOptions
     {
         public bool checkOnDefect;
+        public bool checkOnBlockiness;
+        public int blockinessThreshold;
         public bool checkOnEquality;
         public bool transformedImage;
         public bool sizeControl;
@@ -47,6 +49,8 @@ namespace AntiDupl.NET
         public CoreCheckOptions(CoreCheckOptions checkOptions)
         {
             checkOnDefect = checkOptions.checkOnDefect;
+            checkOnBlockiness = checkOptions.checkOnBlockiness;
+            blockinessThreshold = checkOptions.blockinessThreshold;
             checkOnEquality = checkOptions.checkOnEquality;
             transformedImage = checkOptions.transformedImage;
             sizeControl = checkOptions.sizeControl;
@@ -61,6 +65,8 @@ namespace AntiDupl.NET
         public CoreCheckOptions(ref CoreDll.adCheckOptions checkOptions)
         {
             checkOnDefect = checkOptions.checkOnDefect != CoreDll.FALSE;
+            checkOnBlockiness = checkOptions.checkOnBlockiness != CoreDll.FALSE;
+            blockinessThreshold = checkOptions.blockinessThreshold;
             checkOnEquality = checkOptions.checkOnEquality != CoreDll.FALSE;
             transformedImage = checkOptions.transformedImage != CoreDll.FALSE;
             sizeControl = checkOptions.sizeControl != CoreDll.FALSE;
@@ -75,6 +81,8 @@ namespace AntiDupl.NET
         public void ConvertTo(ref CoreDll.adCheckOptions checkOptions)
         {
             checkOptions.checkOnDefect = checkOnDefect ? CoreDll.TRUE : CoreDll.FALSE;
+            checkOptions.checkOnBlockiness = checkOnBlockiness ? CoreDll.TRUE : CoreDll.FALSE;
+            checkOptions.blockinessThreshold = blockinessThreshold;
             checkOptions.checkOnEquality = checkOnEquality ? CoreDll.TRUE : CoreDll.FALSE;
             checkOptions.transformedImage = transformedImage ? CoreDll.TRUE : CoreDll.FALSE;
             checkOptions.sizeControl = sizeControl ? CoreDll.TRUE : CoreDll.FALSE;
@@ -95,6 +103,8 @@ namespace AntiDupl.NET
         {
             return
                 checkOnDefect == checkOptions.checkOnDefect &&
+                checkOnBlockiness == checkOptions.checkOnBlockiness &&
+                blockinessThreshold == checkOptions.blockinessThreshold &&
                 checkOnEquality == checkOptions.checkOnEquality &&
                 transformedImage == checkOptions.transformedImage &&
                 sizeControl == checkOptions.sizeControl &&

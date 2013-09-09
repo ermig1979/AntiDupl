@@ -136,6 +136,8 @@ namespace ad
 		Load(imageInfo.type);
 		Load(imageInfo.width);
 		Load(imageInfo.height);
+		if(m_version > 1)
+			Load(imageInfo.blockiness); 
 	}
 
 	void TInputFileStream::Load(TPixelData & pixelData) const
@@ -228,6 +230,7 @@ namespace ad
 		Save(imageInfo.type);
 		Save(imageInfo.width);
 		Save(imageInfo.height);
+		Save(imageInfo.blockiness); 
 	}
 
 	void TOutputFileStream::Save(const TPixelData & pixelData) const

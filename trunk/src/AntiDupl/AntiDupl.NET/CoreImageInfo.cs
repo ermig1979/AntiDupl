@@ -36,6 +36,7 @@ namespace AntiDupl.NET
         public CoreDll.ImageType type;
         public uint width;
         public uint height;
+        public double blockiness;
 
         public CoreImageInfo(ref CoreDll.adImageInfoW imageInfo)
         {
@@ -46,6 +47,7 @@ namespace AntiDupl.NET
             type = imageInfo.type;
             width = imageInfo.width;
             height = imageInfo.height;
+            blockiness = imageInfo.blockiness;
         }
 
         public string GetImageSizeString()

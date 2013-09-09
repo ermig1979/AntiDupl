@@ -296,6 +296,7 @@ extern "C"
         AD_DEFECT_NONE = 0,
         AD_DEFECT_UNKNOWN = 1,
         AD_DEFECT_JPEG_END_MARKER_IS_ABSENT = 2,
+        AD_DEFECT_BLOCKINESS = 3,
         AD_DEFECT_SIZE
     };
 
@@ -381,6 +382,8 @@ extern "C"
     struct adCheckOptions
     {
         adBool checkOnDefect;
+        adBool checkOnBlockiness;
+        adInt32 blockinessThreshold;
         adBool checkOnEquality;    
         adBool transformedImage;    
         adBool sizeControl;
@@ -450,6 +453,7 @@ extern "C"
         adImageType type;
         adUInt32 width;
         adUInt32 height;
+		double blockiness;
     };
     typedef adImageInfoA* adImageInfoPtrA;
 
@@ -462,7 +466,8 @@ extern "C"
         adImageType type;
         adUInt32 width;
         adUInt32 height;
-    };
+ 		double blockiness;
+   };
     typedef adImageInfoW* adImageInfoPtrW;
 
     struct adResultA
