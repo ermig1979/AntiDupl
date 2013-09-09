@@ -227,7 +227,8 @@ namespace AntiDupl.NET
         {
             None = 0,
             Unknown = 1,
-            JpegEndMarkerIsAbsent = 2
+            JpegEndMarkerIsAbsent = 2,
+            Blockiness = 3
         }
 
         public enum TransformType : int
@@ -307,6 +308,8 @@ namespace AntiDupl.NET
         public struct adCheckOptions
         {
             public int checkOnDefect;
+            public int checkOnBlockiness;
+            public int blockinessThreshold;
             public int checkOnEquality;
             public int transformedImage;
             public int sizeControl;
@@ -369,6 +372,7 @@ namespace AntiDupl.NET
             public ImageType type;
             public uint width;
             public uint height;
+            public double blockiness;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]

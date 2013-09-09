@@ -54,6 +54,7 @@ namespace ad
         void SetCrc32(TImageData* pImageData);
 		bool CanAddDefect(const TImageData * pImageData);
 		double GetBlockiness(const TView & gray);
+		double GetBlockiness(const std::vector<unsigned int> & sums);
 	};
 }
 #endif//__adDataCollector_h__ 

@@ -31,6 +31,7 @@ namespace ad
         type = AD_IMAGE_UNDEFINE;
         width = 0;
         height = 0;
+		blockiness = 0;
 
         index = AD_UNDEFINED;
         group = AD_UNDEFINED;
@@ -50,6 +51,7 @@ namespace ad
         type = imageInfo.type;
         width = imageInfo.width;
         height = imageInfo.height;
+		blockiness = imageInfo.blockiness;
 
         index = imageInfo.index;
         group = imageInfo.group;
@@ -71,6 +73,7 @@ namespace ad
         pImageInfo->type = type;
         pImageInfo->width = width;
         pImageInfo->height = height;
+		pImageInfo->blockiness = blockiness;
 
         return true;
     }
@@ -87,6 +90,7 @@ namespace ad
         pImageInfo->type = type;
         pImageInfo->width = width;
         pImageInfo->height = height;
+		pImageInfo->blockiness = blockiness;
 
         return true;
     }

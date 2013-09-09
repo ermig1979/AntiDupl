@@ -34,6 +34,7 @@ namespace ad
         TImageType type;
         TUInt32 width;
         TUInt32 height;
+		double blockiness;
 
         size_t index;
 
