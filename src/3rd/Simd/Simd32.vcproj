@@ -210,14 +210,6 @@
 				RelativePath=".\SimdVersion.h"
 				>
 			</File>
-			<File
-				RelativePath=".\SimdView.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SimdView.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Alg"
@@ -582,6 +574,26 @@
 					>
 				</File>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="Utl"
+			>
+			<File
+				RelativePath=".\SimdUtils.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdUtils.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdView.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdView.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

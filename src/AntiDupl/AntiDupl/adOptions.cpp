@@ -88,7 +88,7 @@ namespace ad
 
         m_options.push_back(TOption(&check.checkOnDefect, TEXT("CheckOptions"), TEXT("CheckOnDefect"), TRUE, FALSE, TRUE));
         m_options.push_back(TOption(&check.checkOnBlockiness, TEXT("CheckOptions"), TEXT("CheckOnBlockiness"), TRUE, FALSE, TRUE));
-        m_options.push_back(TOption(&check.blockinessThreshold, TEXT("CheckOptions"), TEXT("BlockinessThreshold"), 5, 0, 100));
+        m_options.push_back(TOption(&check.blockinessThreshold, TEXT("CheckOptions"), TEXT("BlockinessThreshold"), 10, 0, 100));
         m_options.push_back(TOption(&check.checkOnEquality, TEXT("CheckOptions"), TEXT("CheckOnEquality"), TRUE, FALSE, TRUE));
         m_options.push_back(TOption(&check.transformedImage, TEXT("CheckOptions"), TEXT("TransformedImage"), FALSE, FALSE, TRUE));
         m_options.push_back(TOption(&check.sizeControl, TEXT("CheckOptions"), TEXT("SizeControl"), FALSE, FALSE, TRUE));
