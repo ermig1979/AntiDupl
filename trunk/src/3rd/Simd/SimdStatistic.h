@@ -24,7 +24,7 @@
 #ifndef __SimdStatistic_h__
 #define __SimdStatistic_h__
 
-#include "Simd/SimdView.h"
+#include "Simd/SimdTypes.h"
 
 namespace Simd
 {
@@ -39,6 +39,10 @@ namespace Simd
         void GetRowSums(const uchar * src, size_t stride, size_t width, size_t height, uint * sums);
 
         void GetColSums(const uchar * src, size_t stride, size_t width, size_t height, uint * sums);
+
+        void GetAbsDyRowSums(const uchar * src, size_t stride, size_t width, size_t height, uint * sums);
+
+        void GetAbsDxColSums(const uchar * src, size_t stride, size_t width, size_t height, uint * sums);
     }
 
 #ifdef SIMD_SSE2_ENABLE    
@@ -53,6 +57,10 @@ namespace Simd
         void GetRowSums(const uchar * src, size_t stride, size_t width, size_t height, uint * sums);
 
         void GetColSums(const uchar * src, size_t stride, size_t width, size_t height, uint * sums);
+
+        void GetAbsDyRowSums(const uchar * src, size_t stride, size_t width, size_t height, uint * sums);
+
+        void GetAbsDxColSums(const uchar * src, size_t stride, size_t width, size_t height, uint * sums);
     }
 #endif// SIMD_SSE2_ENABLE
 
@@ -68,6 +76,10 @@ namespace Simd
         void GetRowSums(const uchar * src, size_t stride, size_t width, size_t height, uint * sums);
 
         void GetColSums(const uchar * src, size_t stride, size_t width, size_t height, uint * sums);
+
+        void GetAbsDyRowSums(const uchar * src, size_t stride, size_t width, size_t height, uint * sums);
+
+        void GetAbsDxColSums(const uchar * src, size_t stride, size_t width, size_t height, uint * sums);
     }
 #endif// SIMD_AVX2_ENABLE
 
@@ -81,12 +93,8 @@ namespace Simd
 
     void GetColSums(const uchar * src, size_t stride, size_t width, size_t height, uint * sums);
 
-	void GetStatistic(const View & src, uchar * min, uchar * max, uchar * average);
+    void GetAbsDyRowSums(const uchar * src, size_t stride, size_t width, size_t height, uint * sums);
 
-    void GetMoments(const View & mask, uchar index, uint64_t * area, uint64_t * x, uint64_t * y, uint64_t * xx, uint64_t * xy, uint64_t * yy);
-
-    void GetRowSums(const View & src, uint * sums);
-
-    void GetColSums(const View & src, uint * sums);
+    void GetAbsDxColSums(const uchar * src, size_t stride, size_t width, size_t height, uint * sums);
 }
 #endif//__SimdStatistic_h__
