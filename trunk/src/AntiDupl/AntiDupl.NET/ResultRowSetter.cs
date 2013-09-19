@@ -1,7 +1,7 @@
 /*
 * AntiDupl.NET Program.
 *
-* Copyright (c) 2002-2013 Yermalayeu Ihar.
+* Copyright (c) 2002-2013 Yermalayeu Ihar, 2013 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,10 @@ using System.IO;
 
 namespace AntiDupl.NET
 {
+    /// <summary>
+    /// Set table of out defect and dublicate pair.
+    /// ”становка таблицы вывода дефектов и дубликатов.
+    /// </summary>
     public class ResultRowSetter
     {
         private AntiDupl.NET.Options m_options;
@@ -44,6 +48,7 @@ namespace AntiDupl.NET
 
         private Image m_unknownDefectIcon;
         private Image m_jpegEndMarkerIsAbsentIcon;
+        private Image m_blockinessIcon;
 
         private Image m_deleteDefectIcon;
         private Image m_deleteFirstVerticalIcon;
@@ -69,6 +74,7 @@ namespace AntiDupl.NET
 
         private string m_unknownDefectIconToolTipText;
         private string m_jpegEndMarkerIsAbsentIconToolTipText;
+        private string m_blockinessIconToolTipText;
 
         private string m_deleteDefectIconToolTipText;
         private string m_deleteFirstIconToolTipText;
@@ -104,6 +110,7 @@ namespace AntiDupl.NET
 
             m_unknownDefectIcon = Resources.Images.Get("UnknownDefectIcon");
             m_jpegEndMarkerIsAbsentIcon = Resources.Images.Get("JpegEndMarkerIsAbsentIcon");
+            m_blockinessIcon = Resources.Images.Get("BlockinessIcon");
 
             m_deleteDefectIcon = Resources.Images.Get("DeleteDefectIcon");
             m_deleteFirstVerticalIcon = Resources.Images.Get("DeleteFirstVerticalIcon");
@@ -134,6 +141,7 @@ namespace AntiDupl.NET
 
             m_unknownDefectIconToolTipText = s.ResultRowSetter_UnknownDefectIcon_ToolTip_Text;
             m_jpegEndMarkerIsAbsentIconToolTipText = s.ResultRowSetter_JpegEndMarkerIsAbsentIcon_ToolTip_Text;
+            m_blockinessIconToolTipText = s.ResultRowSetter_blockinessIcon_ToolTip_Text;
 
             m_deleteDefectIconToolTipText = s.ResultRowSetter_DeleteDefectIcon_ToolTip_Text;
             m_deleteFirstIconToolTipText = s.ResultRowSetter_DeleteFirstIcon_ToolTip_Text;
@@ -195,6 +203,10 @@ namespace AntiDupl.NET
                     cells[(int)ResultsListView.ColumnsTypeHorizontal.Defect].Value = m_jpegEndMarkerIsAbsentIcon;
                     cells[(int)ResultsListView.ColumnsTypeHorizontal.Defect].ToolTipText = m_jpegEndMarkerIsAbsentIconToolTipText;
                     break;
+                case CoreDll.DefectType.Blockiness:
+                    cells[(int)ResultsListView.ColumnsTypeHorizontal.Defect].Value = m_blockinessIcon;
+                    cells[(int)ResultsListView.ColumnsTypeHorizontal.Defect].ToolTipText = m_blockinessIconToolTipText;
+                    break;
             }
 
             cells[(int)ResultsListView.ColumnsTypeHorizontal.Transform] = new DataGridViewTextBoxCell();
@@ -224,6 +236,10 @@ namespace AntiDupl.NET
             }
         }
 
+        /// <summary>
+        /// Set cell defect in vertical mode.
+        /// ”становка €йчейки дефектов в вертикальном режиме.
+        /// </summary>
         private void SetDefectToRowVertical(DataGridViewCellCollection cells, CoreResult result)
         {
             for (int col = (int)ResultsListView.ColumnsTypeVertical.FileName; col < (int)ResultsListView.ColumnsTypeVertical.Size; col++)
@@ -232,6 +248,7 @@ namespace AntiDupl.NET
             cells[(int)ResultsListView.ColumnsTypeVertical.FileDirectory].Value = result.first.GetDirectoryString();
             cells[(int)ResultsListView.ColumnsTypeVertical.ImageSize].Value = result.first.GetImageSizeString();
             cells[(int)ResultsListView.ColumnsTypeVertical.ImageType].Value = result.first.GetImageTypeString();
+            cells[(int)ResultsListView.ColumnsTypeVertical.ImageBlockiness].Value = result.first.GetBlockinessString();
 
             cells[(int)ResultsListView.ColumnsTypeVertical.FileSize].Value = result.first.GetFileSizeString();
             cells[(int)ResultsListView.ColumnsTypeVertical.FileSize].Style.Alignment = DataGridViewContentAlignment.MiddleRight;
@@ -239,6 +256,10 @@ namespace AntiDupl.NET
             cells[(int)ResultsListView.ColumnsTypeVertical.FileTime].Value = result.first.GetFileTimeString();
         }
 
+        /// <summary>
+        /// Set cell defect in horizontal mode.
+        /// ”становка €йчейки дефектов в горизонтальном режиме.
+        /// </summary>
         private void SetDefectToRowHorizontal(DataGridViewCellCollection cells, CoreResult result)
         {
             for (int col = (int)ResultsListView.ColumnsTypeHorizontal.FirstFileName; col < (int)ResultsListView.ColumnsTypeHorizontal.Size; col++)
@@ -247,6 +268,7 @@ namespace AntiDupl.NET
             cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileDirectory].Value = result.first.GetDirectoryString();
             cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageSize].Value = result.first.GetImageSizeString();
             cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageType].Value = result.first.GetImageTypeString();
+            cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageBlockiness].Value = result.first.GetBlockinessString();
             cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileSize].Value = result.first.GetFileSizeString();
             cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileSize].Style.Alignment = DataGridViewContentAlignment.MiddleRight;
             cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileTime].Value = result.first.GetFileTimeString();
@@ -354,6 +376,10 @@ namespace AntiDupl.NET
             }
         }
 
+        /// <summary>
+        /// Set cell duplicate pair in vertical mode.
+        /// ”становка €йчеек пар дубликатов в вертикальном режиме.
+        /// </summary>
         private void SetDuplPairToRowVertical(DataGridViewCellCollection cells, CoreResult result)
         {
             cells[(int)ResultsListView.ColumnsTypeVertical.Type].Value = m_duplPairVerticalIcon;
@@ -400,6 +426,14 @@ namespace AntiDupl.NET
             cells[(int)ResultsListView.ColumnsTypeVertical.FileSize] = doubleCell;
             cells[(int)ResultsListView.ColumnsTypeVertical.FileSize].Style.Alignment = DataGridViewContentAlignment.MiddleRight;
 
+            doubleCell = new DataGridViewDoubleTextBoxCell(result.first.GetBlockinessString(), result.second.GetBlockinessString());
+            if (result.first.blockiness > result.second.blockiness) //подсветка highlight
+                doubleCell.markType = DataGridViewDoubleTextBoxCell.MarkType.First;
+            else if (result.first.blockiness < result.second.blockiness)
+                doubleCell.markType = DataGridViewDoubleTextBoxCell.MarkType.Second;
+            cells[(int)ResultsListView.ColumnsTypeVertical.ImageBlockiness] = doubleCell;
+            cells[(int)ResultsListView.ColumnsTypeVertical.ImageBlockiness].Style.Alignment = DataGridViewContentAlignment.MiddleRight;
+
             cells[(int)ResultsListView.ColumnsTypeVertical.FileTime] = new DataGridViewDoubleTextBoxCell(result.first.GetFileTimeString(), result.second.GetFileTimeString());
         }
 
@@ -429,6 +463,7 @@ namespace AntiDupl.NET
             cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileDirectory].Value = result.first.GetDirectoryString();
             cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageSize].Value = result.first.GetImageSizeString();
             cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageType].Value = result.first.GetImageTypeString();
+            cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageBlockiness].Value = result.first.GetBlockinessString();
             cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileSize].Value = result.first.GetFileSizeString();
             cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileSize].Style.Alignment = DataGridViewContentAlignment.MiddleRight;
             cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileTime].Value = result.first.GetFileTimeString();
@@ -437,11 +472,12 @@ namespace AntiDupl.NET
             cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileDirectory].Value = result.second.GetDirectoryString();
             cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageSize].Value = result.second.GetImageSizeString();
             cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageType].Value = result.second.GetImageTypeString();
+            cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageBlockiness].Value = result.second.GetBlockinessString();
             cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileSize].Value = result.second.GetFileSizeString();
             cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileSize].Style.Alignment = DataGridViewContentAlignment.MiddleRight;
             cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileTime].Value = result.second.GetFileTimeString();
 
-            if (result.first.height * result.first.width > result.second.height * result.second.width)
+            if (result.first.height * result.first.width > result.second.height * result.second.width) //подсветка highlight
             {
                 cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageSize].Style.ForeColor = m_dataGridView.DefaultCellStyle.ForeColor;
                 cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageSize].Style.ForeColor = Color.Red;
@@ -461,6 +497,17 @@ namespace AntiDupl.NET
             {
                 cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileSize].Style.ForeColor = Color.Red;
                 cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileSize].Style.ForeColor = m_dataGridView.DefaultCellStyle.ForeColor;
+            }
+
+            if (result.first.blockiness > result.second.blockiness)
+            {
+                cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageBlockiness].Style.ForeColor = Color.Red;
+                cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageBlockiness].Style.ForeColor = m_dataGridView.DefaultCellStyle.ForeColor;
+            }
+            else if (result.first.blockiness < result.second.blockiness)
+            {
+                cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageBlockiness].Style.ForeColor = m_dataGridView.DefaultCellStyle.ForeColor;
+                cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageBlockiness].Style.ForeColor = Color.Red;
             }
 
             if (result.first.type != result.second.type)

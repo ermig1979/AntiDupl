@@ -1,7 +1,7 @@
 /*
 * AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2013 Yermalayeu Ihar.
+* Copyright (c) 2002-2013 Yermalayeu Ihar, 2013 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -100,6 +100,10 @@ namespace ad
             return (increasing ? 
                 pFirst->width*pSecond->height < pSecond->width*pFirst->height : 
                 pFirst->width*pSecond->height > pSecond->width*pFirst->height);
+		case AD_SORT_BY_SORTED_BLOCKINESS:
+			return (increasing ? 
+                pFirst->blockiness < pSecond->blockiness : 
+                pFirst->blockiness > pSecond->blockiness);
         }
 
         return false;

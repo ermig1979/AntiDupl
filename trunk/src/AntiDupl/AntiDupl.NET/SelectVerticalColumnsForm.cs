@@ -1,7 +1,7 @@
 /*
 * AntiDupl.NET Program.
 *
-* Copyright (c) 2002-2013 Yermalayeu Ihar.
+* Copyright (c) 2002-2013 Yermalayeu Ihar, 2013 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,7 @@ namespace AntiDupl.NET
 
         private void InitializeComponents()
         {
-            ClientSize = new System.Drawing.Size(300, 210);
+            ClientSize = new System.Drawing.Size(400, 210);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             StartPosition = FormStartPosition.CenterScreen;
             ShowInTaskbar = false;
@@ -70,7 +70,7 @@ namespace AntiDupl.NET
             mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
             Controls.Add(mainTableLayoutPanel);
 
-            TableLayoutPanel columnsTableLayoutPanel = InitFactory.Layout.Create(2, 6, 5);
+            TableLayoutPanel columnsTableLayoutPanel = InitFactory.Layout.Create(3, 6, 5); //columns, rows, padding
             columnsTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             columnsTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             mainTableLayoutPanel.Controls.Add(columnsTableLayoutPanel, 0, 0);
@@ -96,10 +96,12 @@ namespace AntiDupl.NET
             columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.ImageSize], 1, 2);
             m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.ImageType] = InitFactory.CheckBox.Create(OnOptionChanged);
             columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.ImageType], 1, 3);
+            m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.ImageBlockiness] = InitFactory.CheckBox.Create(OnOptionChanged);
+            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.ImageBlockiness], 1, 4);
             m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.FileSize] = InitFactory.CheckBox.Create(OnOptionChanged);
-            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.FileSize], 1, 4);
+            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.FileSize], 1, 5);
             m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.FileTime] = InitFactory.CheckBox.Create(OnOptionChanged);
-            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.FileTime], 1, 5);
+            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.FileTime], 2, 0);
 
             TableLayoutPanel buttonsTableLayoutPanel = InitFactory.Layout.Create(3, 1);
             buttonsTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
@@ -135,6 +137,7 @@ namespace AntiDupl.NET
             m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.FileDirectory].Text = s.ResultsListView_FileDirectory_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.ImageSize].Text = s.ResultsListView_ImageSize_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.ImageType].Text = s.ResultsListView_ImageType_Column_Text;
+            m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.ImageBlockiness].Text = s.ResultsListView_ImageBlockiness_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.FileSize].Text = s.ResultsListView_FileSize_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.FileTime].Text = s.ResultsListView_FileTime_Column_Text;
         }

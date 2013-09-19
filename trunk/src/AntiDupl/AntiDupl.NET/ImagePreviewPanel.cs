@@ -1,7 +1,7 @@
 /*
 * AntiDupl.NET Program.
 *
-* Copyright (c) 2002-2013 Yermalayeu Ihar.
+* Copyright (c) 2002-2013 Yermalayeu Ihar, 2013 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -64,6 +64,7 @@ namespace AntiDupl.NET
         private Label m_fileSizeLabel;
         private Label m_imageSizeLabel;
         private Label m_imageTypeLabel;
+        private Label m_imageBlocknessLabel;
         private Label m_pathLabel;
 
         public ImagePreviewPanel(CoreLib core, Options options, ResultsListView resultsListView, Position position)
@@ -103,6 +104,14 @@ namespace AntiDupl.NET
             m_imageSizeLabel.TextAlign = ContentAlignment.TopCenter;
             m_imageSizeLabel.AutoSize = true;
 
+            m_imageBlocknessLabel = new Label();
+            m_imageBlocknessLabel.Dock = DockStyle.Fill;
+            m_imageBlocknessLabel.BorderStyle = BorderStyle.Fixed3D;
+            m_imageBlocknessLabel.Padding = new Padding(1, 3, 1, 0);
+            m_imageBlocknessLabel.Margin = new Padding(IBW, 0, 0, 0);
+            m_imageBlocknessLabel.TextAlign = ContentAlignment.TopCenter;
+            m_imageBlocknessLabel.AutoSize = true;
+
             m_imageTypeLabel = new Label();
             m_imageTypeLabel.Dock = DockStyle.Fill;
             m_imageTypeLabel.BorderStyle = BorderStyle.Fixed3D;
@@ -120,6 +129,10 @@ namespace AntiDupl.NET
             m_pathLabel.DoubleClick += new EventHandler(RenameImage);
         }
 
+        /// <summary>
+        /// Set information in image panel.
+        /// Установка информации в панели изображения.
+        /// </summary>
         private void SetImageInfo(CoreImageInfo currentImageInfo, CoreImageInfo neighbourImageInfo)
         {
             bool updateCurrent = UpdateImageInfo(ref m_currentImageInfo, currentImageInfo);
@@ -129,9 +142,10 @@ namespace AntiDupl.NET
                 m_pictureBoxPanel.UpdateImage(currentImageInfo);
                 m_fileSizeLabel.Text = m_currentImageInfo.GetFileSizeString();
                 m_imageSizeLabel.Text = m_currentImageInfo.GetImageSizeString();
+                m_imageBlocknessLabel.Text = m_currentImageInfo.GetBlockinessString();
                 m_imageTypeLabel.Text = m_currentImageInfo.type == CoreDll.ImageType.None ? "   " : m_currentImageInfo.GetImageTypeString();
                 m_pathLabel.Text = m_currentImageInfo.path;
-                if (m_neighbourImageInfo != null)
+                if (m_neighbourImageInfo != null) //подсветка highlight
                 {
                     m_imageSizeLabel.ForeColor =
                             m_currentImageInfo.height * m_currentImageInfo.width < m_neighbourImageInfo.height * m_neighbourImageInfo.width ?
@@ -139,6 +153,8 @@ namespace AntiDupl.NET
                     m_imageTypeLabel.ForeColor = m_currentImageInfo.type != m_neighbourImageInfo.type ?
                             Color.Red : TableLayoutPanel.DefaultForeColor;
                     m_fileSizeLabel.ForeColor = m_currentImageInfo.size < m_neighbourImageInfo.size ?
+                            Color.Red : TableLayoutPanel.DefaultForeColor;
+                    m_imageBlocknessLabel.ForeColor = m_currentImageInfo.blockiness > m_neighbourImageInfo.blockiness ?
                             Color.Red : TableLayoutPanel.DefaultForeColor;
                 }
             }
@@ -188,6 +204,10 @@ namespace AntiDupl.NET
             }
         }
         
+        /// <summary>
+        /// Adding controls in panel
+        /// Добавление контролеров на панель
+        /// </summary>
         public void SetPosition(Position position)
         {
             m_position = position;
@@ -203,7 +223,7 @@ namespace AntiDupl.NET
                     break;
             }
             
-            TableLayoutPanel infoLayout = InitFactory.Layout.Create(4, 1);
+            TableLayoutPanel infoLayout = InitFactory.Layout.Create(5, 1); //number of controls in panel
             infoLayout.Height = m_imageSizeLabel.Height;
             if (m_position != Position.Left)
             {
@@ -212,15 +232,17 @@ namespace AntiDupl.NET
                 m_fileSizeLabel.Margin = new Padding(EBW, 0, 0, 0);
                 m_pathLabel.Margin = new Padding(IBW, 0, EBW, 0);
 
-                infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-                infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-                infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize)); 
-                infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+                infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));//fileSizeLabel
+                infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));//imageSizeLabel
+                infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));//imageBlocknessLabel
+                infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));//imageTypeLabel
+                infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));//pathLabel
 
                 infoLayout.Controls.Add(m_fileSizeLabel, 0, 0);
                 infoLayout.Controls.Add(m_imageSizeLabel, 1, 0);
-                infoLayout.Controls.Add(m_imageTypeLabel, 2, 0); 
-                infoLayout.Controls.Add(m_pathLabel, 3, 0);
+                infoLayout.Controls.Add(m_imageBlocknessLabel, 2, 0);
+                infoLayout.Controls.Add(m_imageTypeLabel, 3, 0); 
+                infoLayout.Controls.Add(m_pathLabel, 4, 0);
             }
             else
             {
@@ -229,15 +251,17 @@ namespace AntiDupl.NET
                 m_pathLabel.Margin = new Padding(EBW, 0, 0, 0);
                 m_fileSizeLabel.Margin = new Padding(IBW, 0, EBW, 0);
 
-                infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-                infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize)); 
-                infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-                infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+                infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));//pathLabel
+                infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));//imageTypeLabel
+                infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));//imageBlocknessLabel
+                infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));//imageSizeLabel
+                infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));//fileSizeLabel
 
                 infoLayout.Controls.Add(m_pathLabel, 0, 0);
-                infoLayout.Controls.Add(m_imageTypeLabel, 1, 0); 
-                infoLayout.Controls.Add(m_imageSizeLabel, 2, 0);
-                infoLayout.Controls.Add(m_fileSizeLabel, 3, 0);
+                infoLayout.Controls.Add(m_imageTypeLabel, 1, 0);
+                infoLayout.Controls.Add(m_imageBlocknessLabel, 2, 0); 
+                infoLayout.Controls.Add(m_imageSizeLabel, 3, 0);
+                infoLayout.Controls.Add(m_fileSizeLabel, 4, 0);
             }
 
             Controls.Clear();

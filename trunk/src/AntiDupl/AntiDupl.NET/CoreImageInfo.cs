@@ -1,7 +1,7 @@
 ﻿/*
 * AntiDupl.NET Program.
 *
-* Copyright (c) 2002-2013 Yermalayeu Ihar.
+* Copyright (c) 2002-2013 Yermalayeu Ihar, 2013 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -105,6 +105,11 @@ namespace AntiDupl.NET
                     break;
             }
             return builder.ToString();
+        }
+
+        public string GetBlockinessString()
+        {
+            return blockiness.ToString().Remove(9); //обрезаем trim
         }
 
         public string GetFileTimeString()

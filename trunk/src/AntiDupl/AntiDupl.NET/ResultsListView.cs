@@ -1,7 +1,7 @@
 /*
 * AntiDupl.NET Program.
 *
-* Copyright (c) 2002-2013 Yermalayeu Ihar.
+* Copyright (c) 2002-2013 Yermalayeu Ihar, 2013 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,10 @@ using System.IO;
 
 namespace AntiDupl.NET
 {
+    /// <summary>
+    /// Class output result in ListView.
+    /// Класс вывода результатов в ListView.
+    /// </summary>
     public class ResultsListView : DataGridView
     {
         public enum ColumnsTypeVertical
@@ -45,6 +49,7 @@ namespace AntiDupl.NET
             FileDirectory,
             ImageSize,
             ImageType,
+            ImageBlockiness,
             FileSize,
             FileTime,
             Size
@@ -62,12 +67,14 @@ namespace AntiDupl.NET
             FirstFileDirectory,
             FirstImageSize,
             FirstImageType,
+            FirstImageBlockiness,
             FirstFileSize,
             FirstFileTime,
             SecondFileName,
             SecondFileDirectory,
             SecondImageSize,
             SecondImageType,
+            SecondImageBlockiness,
             SecondFileSize,
             SecondFileTime,
             Size
@@ -150,6 +157,7 @@ namespace AntiDupl.NET
                 Columns[(int)ColumnsTypeVertical.FileDirectory].Name = s.ResultsListView_FileDirectory_Column_Text;
                 Columns[(int)ColumnsTypeVertical.ImageSize].Name = s.ResultsListView_ImageSize_Column_Text;
                 Columns[(int)ColumnsTypeVertical.ImageType].Name = s.ResultsListView_ImageType_Column_Text;
+                Columns[(int)ColumnsTypeVertical.ImageBlockiness].Name = s.ResultsListView_ImageBlockiness_Column_Text;
                 Columns[(int)ColumnsTypeVertical.FileSize].Name = s.ResultsListView_FileSize_Column_Text;
                 Columns[(int)ColumnsTypeVertical.FileTime].Name = s.ResultsListView_FileTime_Column_Text;
             }
@@ -159,12 +167,14 @@ namespace AntiDupl.NET
                 Columns[(int)ColumnsTypeHorizontal.FirstFileDirectory].Name = s.ResultsListView_FirstFileDirectory_Column_Text;
                 Columns[(int)ColumnsTypeHorizontal.FirstImageSize].Name = s.ResultsListView_FirstImageSize_Column_Text;
                 Columns[(int)ColumnsTypeHorizontal.FirstImageType].Name = s.ResultsListView_FirstImageType_Column_Text;
+                Columns[(int)ColumnsTypeHorizontal.FirstImageBlockiness].Name = s.ResultsListView_ImageBlockiness_Column_Text;
                 Columns[(int)ColumnsTypeHorizontal.FirstFileSize].Name = s.ResultsListView_FirstFileSize_Column_Text;
                 Columns[(int)ColumnsTypeHorizontal.FirstFileTime].Name = s.ResultsListView_FirstFileTime_Column_Text;
                 Columns[(int)ColumnsTypeHorizontal.SecondFileName].Name = s.ResultsListView_SecondFileName_Column_Text;
                 Columns[(int)ColumnsTypeHorizontal.SecondFileDirectory].Name = s.ResultsListView_SecondFileDirectory_Column_Text;
                 Columns[(int)ColumnsTypeHorizontal.SecondImageSize].Name = s.ResultsListView_SecondImageSize_Column_Text;
                 Columns[(int)ColumnsTypeHorizontal.SecondImageType].Name = s.ResultsListView_SecondImageType_Column_Text;
+                Columns[(int)ColumnsTypeHorizontal.SecondImageBlockiness].Name = s.ResultsListView_ImageBlockiness_Column_Text;
                 Columns[(int)ColumnsTypeHorizontal.SecondFileSize].Name = s.ResultsListView_SecondFileSize_Column_Text;
                 Columns[(int)ColumnsTypeHorizontal.SecondFileTime].Name = s.ResultsListView_SecondFileTime_Column_Text;
             }
@@ -391,6 +401,9 @@ namespace AntiDupl.NET
                     case ColumnsTypeVertical.ImageType:
                         sortType = CoreDll.SortType.BySortedType;
                         break;
+                    case ColumnsTypeVertical.ImageBlockiness:
+                        sortType = CoreDll.SortType.BySortedBlockiness;
+                        break;
                     case ColumnsTypeVertical.FileSize:
                         sortType = CoreDll.SortType.BySortedSize;
                         break;
@@ -436,6 +449,9 @@ namespace AntiDupl.NET
                     case ColumnsTypeHorizontal.FirstFileSize:
                         sortType = CoreDll.SortType.ByFirstSize;
                         break;
+                    case ColumnsTypeHorizontal.FirstImageBlockiness:
+                        sortType = CoreDll.SortType.ByFirstBlockiness;
+                        break;
                     case ColumnsTypeHorizontal.FirstFileTime:
                         sortType = CoreDll.SortType.ByFirstTime;
                         break;
@@ -453,6 +469,9 @@ namespace AntiDupl.NET
                         break;
                     case ColumnsTypeHorizontal.SecondFileSize:
                         sortType = CoreDll.SortType.BySecondSize;
+                        break;
+                    case ColumnsTypeHorizontal.SecondImageBlockiness:
+                        sortType = CoreDll.SortType.BySecondBlockiness;
                         break;
                     case ColumnsTypeHorizontal.SecondFileTime:
                         sortType = CoreDll.SortType.BySecondTime;

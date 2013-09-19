@@ -1,7 +1,7 @@
 /*
 * AntiDupl.NET Program.
 *
-* Copyright (c) 2002-2013 Yermalayeu Ihar.
+* Copyright (c) 2002-2013 Yermalayeu Ihar, 2013 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,7 @@ namespace AntiDupl.NET
     public class CoreOptionsForm : Form
     {
         static public int THRESHOLD_DIFFERENCE_MAX = 15;
+        static public int THRESHOLD_BLOCKINESS_MAX = 60;
         static public int IGNORE_FRAME_WIDTH_MAX = 12;
         static public int IGNORE_FRAME_WIDTH_STEP = 3;
         
@@ -52,7 +53,6 @@ namespace AntiDupl.NET
         private TabControl m_mainTabControl;
 
         private TabPage m_checkTabPage;
-        private CheckBox m_checkOnDefectCheckBox;
         private CheckBox m_checkOnEqualityCheckBox;
         private CheckBox m_transformedImageCheckBox;
         private CheckBox m_sizeControlCheckBox;
@@ -62,6 +62,12 @@ namespace AntiDupl.NET
         private LabeledIntegerEdit m_minimalImageSizeLabeledIntegerEdit;
         private LabeledIntegerEdit m_maximalImageSizeLabeledIntegerEdit;
         private CheckBox m_compareInsideOneFolderCheckBox;
+
+        private TabPage m_defectTabPage;
+        private CheckBox m_checkOnDefectCheckBox;
+        private CheckBox m_checkOnBlockinessCheckBox;
+        private LabeledComboBox m_blockinessThresholdLabeledComboBox;
+        private CheckBox m_checkOnBlockinessOnlyNotJpegCheckBox;
 
         private TabPage m_searchTabPage;
         private GroupBox m_searchFileTypeGroupBox;
@@ -99,9 +105,9 @@ namespace AntiDupl.NET
         {
             m_core = core;
             m_options = options;
-            m_oldCoreOptions = coreOptions;
-            m_newCoreOptions = m_oldCoreOptions.Clone();
-            m_defaultCoreOptions = new CoreOptions(m_core, m_options.onePath);
+            m_oldCoreOptions = coreOptions; //old options - cancel
+            m_newCoreOptions = m_oldCoreOptions.Clone();  //new created options
+            m_defaultCoreOptions = new CoreOptions(m_core, m_options.onePath); //default options
             InitializeComponent();
             UpdateStrings();
             GetOptions();
@@ -131,6 +137,8 @@ namespace AntiDupl.NET
             mainTableLayoutPanel.Controls.Add(m_mainTabControl, 0, 0);
 
             InitilizeCheckTabPage();
+
+            InitilizeDefectTabPage();
 
             InitilizeSearchTabPage();
 
@@ -162,26 +170,23 @@ namespace AntiDupl.NET
             m_checkTabPage = new TabPage();
             m_mainTabControl.Controls.Add(m_checkTabPage);
 
-            TableLayoutPanel checkTableLayoutPanel = InitFactory.Layout.Create(1, 10, 5);
+            TableLayoutPanel checkTableLayoutPanel = InitFactory.Layout.Create(1, 10, 5); //column, row, padding
             m_checkTabPage.Controls.Add(checkTableLayoutPanel);
 
-            m_checkOnDefectCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            checkTableLayoutPanel.Controls.Add(m_checkOnDefectCheckBox, 0, 0);
-
             m_checkOnEqualityCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            checkTableLayoutPanel.Controls.Add(m_checkOnEqualityCheckBox, 0, 1);
+            checkTableLayoutPanel.Controls.Add(m_checkOnEqualityCheckBox, 0, 0);
 
             m_transformedImageCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            checkTableLayoutPanel.Controls.Add(m_transformedImageCheckBox, 0, 2);
+            checkTableLayoutPanel.Controls.Add(m_transformedImageCheckBox, 0, 1);
 
             m_sizeControlCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            checkTableLayoutPanel.Controls.Add(m_sizeControlCheckBox, 0, 3);
+            checkTableLayoutPanel.Controls.Add(m_sizeControlCheckBox, 0, 2);
 
             m_typeControlCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            checkTableLayoutPanel.Controls.Add(m_typeControlCheckBox, 0, 4);
+            checkTableLayoutPanel.Controls.Add(m_typeControlCheckBox, 0, 3);
 
             m_ratioControlCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            checkTableLayoutPanel.Controls.Add(m_ratioControlCheckBox, 0, 5);
+            checkTableLayoutPanel.Controls.Add(m_ratioControlCheckBox, 0, 4);
 
             m_thresholdDifferenceLabeledComboBox = new LabeledComboBox(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
             for (int i = 0; i <= THRESHOLD_DIFFERENCE_MAX; i++)
@@ -200,6 +205,30 @@ namespace AntiDupl.NET
 
             m_compareInsideOneFolderCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
             checkTableLayoutPanel.Controls.Add(m_compareInsideOneFolderCheckBox, 0, 9);
+        }
+
+        private void InitilizeDefectTabPage()
+        {
+            m_defectTabPage = new TabPage();
+            m_mainTabControl.Controls.Add(m_defectTabPage);
+
+            TableLayoutPanel defectTableLayoutPanel = InitFactory.Layout.Create(1, 1, 5); //column, row, padding
+            m_defectTabPage.Controls.Add(defectTableLayoutPanel);
+
+            m_checkOnDefectCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
+            defectTableLayoutPanel.Controls.Add(m_checkOnDefectCheckBox, 0, 0);
+
+            m_checkOnBlockinessCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
+            defectTableLayoutPanel.Controls.Add(m_checkOnBlockinessCheckBox, 0, 1);
+
+            m_blockinessThresholdLabeledComboBox = new LabeledComboBox(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
+            for (int i = 0; i <= THRESHOLD_BLOCKINESS_MAX; i++)
+                m_blockinessThresholdLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value(i, string.Format("{0}", i)));
+            defectTableLayoutPanel.Controls.Add(m_blockinessThresholdLabeledComboBox, 0, 2);
+
+            m_checkOnBlockinessOnlyNotJpegCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
+            defectTableLayoutPanel.Controls.Add(m_checkOnBlockinessOnlyNotJpegCheckBox, 0, 3);
+
         }
 
         private void InitilizeSearchTabPage()
@@ -323,7 +352,6 @@ namespace AntiDupl.NET
 
         private void GetOptions()
         {
-            m_checkOnDefectCheckBox.Checked = m_newCoreOptions.checkOptions.checkOnDefect;
             m_checkOnEqualityCheckBox.Checked = m_newCoreOptions.checkOptions.checkOnEquality;
             m_transformedImageCheckBox.Checked = m_newCoreOptions.checkOptions.transformedImage;
             m_sizeControlCheckBox.Checked = m_newCoreOptions.checkOptions.sizeControl;
@@ -333,6 +361,8 @@ namespace AntiDupl.NET
             m_minimalImageSizeLabeledIntegerEdit.Value = m_newCoreOptions.checkOptions.minimalImageSize;
             m_maximalImageSizeLabeledIntegerEdit.Value = m_newCoreOptions.checkOptions.maximalImageSize;
             m_compareInsideOneFolderCheckBox.Checked = m_newCoreOptions.checkOptions.compareInsideOneFolder;
+
+            m_checkOnDefectCheckBox.Checked = m_newCoreOptions.checkOptions.checkOnDefect;
 
             m_bmpCheckBox.Checked = m_newCoreOptions.searchOptions.BMP;
             m_gifCheckBox.Checked = m_newCoreOptions.searchOptions.GIF;
@@ -413,7 +443,6 @@ namespace AntiDupl.NET
             m_setDefaultButton.Text = s.SetDefaultButton_Text;
 
             m_checkTabPage.Text = s.CoreOptionsForm_CheckTabPage_Text;
-            m_checkOnDefectCheckBox.Text = s.CoreOptionsForm_CheckOnDefectCheckBox_Text;
             m_checkOnEqualityCheckBox.Text = s.CoreOptionsForm_CheckOnEqualityCheckBox_Text;
             m_transformedImageCheckBox.Text = s.CoreOptionsForm_TransformedImageCheckBox_Text;
             m_sizeControlCheckBox.Text = s.CoreOptionsForm_SizeControlCheckBox_Text;
@@ -423,6 +452,12 @@ namespace AntiDupl.NET
             m_minimalImageSizeLabeledIntegerEdit.Text = s.CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text;
             m_maximalImageSizeLabeledIntegerEdit.Text = s.CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text;
             m_compareInsideOneFolderCheckBox.Text = s.CoreOptionsForm_CompareInsideOneFolderCheckBox_Text;
+
+            m_defectTabPage.Text = s.CoreOptionsForm_DefectTabPage_Text;
+            m_checkOnDefectCheckBox.Text = s.CoreOptionsForm_CheckOnDefectCheckBox_Text;
+            m_checkOnBlockinessCheckBox.Text = s.CoreOptionsForm_CheckOnBlockinessCheckBox_Text; ;
+            m_blockinessThresholdLabeledComboBox.Text = s.CoreOptionsForm_BlockinessThresholdLabeledComboBox_Text;
+            m_checkOnBlockinessOnlyNotJpegCheckBox.Text = s.CoreOptionsForm_CheckOnBlockinessOnlyNotJpegCheckBox_Text; ;
 
             m_searchTabPage.Text = s.CoreOptionsForm_SearchTabPage_Text;
             m_searchFileTypeGroupBox.Text = s.CoreOptionsForm_SearchFileTypeGroupBox_Text;

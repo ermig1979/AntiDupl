@@ -79,7 +79,6 @@ namespace AntiDupl.NET
             s.CoreOptionsForm_SearchSubFoldersCheckBox_Text = "Искать в подкаталогах";
 
             s.CoreOptionsForm_CheckTabPage_Text = "Проверка";
-            s.CoreOptionsForm_CheckOnDefectCheckBox_Text = "Проверять на дефекты";
             s.CoreOptionsForm_CheckOnEqualityCheckBox_Text = "Искать дублирующие картинки";
             s.CoreOptionsForm_TransformedImageCheckBox_Text = "Искать повернутые и зеркальные дубликаты";
             s.CoreOptionsForm_SizeControlCheckBox_Text = "Учитывать размер картинок";
@@ -89,6 +88,12 @@ namespace AntiDupl.NET
             s.CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text = "Минимальная ширина/высота картинок";
             s.CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text = "Максимальная ширина/высота картинок";
             s.CoreOptionsForm_CompareInsideOneFolderCheckBox_Text = "Сравнивать картинки из одного пути друг с другом";
+
+            s.CoreOptionsForm_DefectTabPage_Text = "Дефекты";
+            s.CoreOptionsForm_CheckOnDefectCheckBox_Text = "Проверять на дефекты";
+            s.CoreOptionsForm_CheckOnBlockinessCheckBox_Text = "Проверять на блочность";
+            s.CoreOptionsForm_BlockinessThresholdLabeledComboBox_Text = "Порог блочности";
+            s.CoreOptionsForm_CheckOnBlockinessOnlyNotJpegCheckBox_Text = "Проверять на блочность только для не Jpeg";
 
             s.CoreOptionsForm_AdvancedTabPage_Text = "Дополнительные";
             s.CoreOptionsForm_DeleteToRecycleBinCheckBox_Text = "Удалять в корзину";
@@ -155,6 +160,7 @@ namespace AntiDupl.NET
 
             s.ResultRowSetter_UnknownDefectIcon_ToolTip_Text = "Неизвестный дефект";
             s.ResultRowSetter_JpegEndMarkerIsAbsentIcon_ToolTip_Text = "Отсутствует маркер конца JPEG файла";
+            s.ResultRowSetter_blockinessIcon_ToolTip_Text = "Блочность не в JPEG изображение";
 
             s.ResultRowSetter_DeleteDefectIcon_ToolTip_Text = "Удалить картинку";
             s.ResultRowSetter_DeleteFirstIcon_ToolTip_Text = "Удалить первую картинку";
@@ -182,6 +188,7 @@ namespace AntiDupl.NET
             s.ResultsListView_FileDirectory_Column_Text = "В каталоге";
             s.ResultsListView_ImageSize_Column_Text = "Размеры";
             s.ResultsListView_ImageType_Column_Text = "Тип картинки";
+            s.ResultsListView_ImageBlockiness_Column_Text = "Блочность картинки";
             s.ResultsListView_FileSize_Column_Text = "Размер";
             s.ResultsListView_FileTime_Column_Text = "Дата изменения";
 
@@ -189,12 +196,14 @@ namespace AntiDupl.NET
             s.ResultsListView_FirstFileDirectory_Column_Text = "1: В каталоге";
             s.ResultsListView_FirstImageSize_Column_Text = "1: Размеры";
             s.ResultsListView_FirstImageType_Column_Text = "1: Тип картинки";
+            s.ResultsListView_FirstImageBlockiness_Column_Text = "1: Блочность картинки";
             s.ResultsListView_FirstFileSize_Column_Text = "1: Размер";
             s.ResultsListView_FirstFileTime_Column_Text = "1: Дата изменения";
             s.ResultsListView_SecondFileName_Column_Text = "2: Имя";
             s.ResultsListView_SecondFileDirectory_Column_Text = "2: В каталоге";
             s.ResultsListView_SecondImageSize_Column_Text = "2: Размеры";
             s.ResultsListView_SecondImageType_Column_Text = "2: Тип картинки";
+            s.ResultsListView_SecondImageBlockiness_Column_Text = "2: Блочность картинки";
             s.ResultsListView_SecondFileSize_Column_Text = "2: Размер";
             s.ResultsListView_SecondFileTime_Column_Text = "2: Дата изменения";
 
