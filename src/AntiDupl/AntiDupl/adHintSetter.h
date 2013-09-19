@@ -35,6 +35,7 @@ namespace ad
     {
         TOptions *m_pOptions;
         double m_autoDeleteThresholdDifference;
+		adInt32 m_blockinessThreshold;
     public:
         THintSetter(TOptions *pOptions);
 

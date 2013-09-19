@@ -82,7 +82,7 @@ namespace AntiDupl.NET
         public string CoreOptionsForm_SearchSubFoldersCheckBox_Text;
 
         public string CoreOptionsForm_CheckTabPage_Text;
-        public string CoreOptionsForm_CheckOnDefectCheckBox_Text;
+        //public string CoreOptionsForm_CheckOnDefectCheckBox_Text;
         public string CoreOptionsForm_CheckOnEqualityCheckBox_Text;
         public string CoreOptionsForm_TransformedImageCheckBox_Text;
         public string CoreOptionsForm_SizeControlCheckBox_Text;
@@ -92,6 +92,12 @@ namespace AntiDupl.NET
         public string CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text;
         public string CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text;
         public string CoreOptionsForm_CompareInsideOneFolderCheckBox_Text;
+
+        public string CoreOptionsForm_DefectTabPage_Text;
+        public string CoreOptionsForm_CheckOnDefectCheckBox_Text;
+        public string CoreOptionsForm_CheckOnBlockinessCheckBox_Text;
+        public string CoreOptionsForm_BlockinessThresholdLabeledComboBox_Text;
+        public string CoreOptionsForm_CheckOnBlockinessOnlyNotJpegCheckBox_Text;
 
         public string CoreOptionsForm_AdvancedTabPage_Text;
         public string CoreOptionsForm_DeleteToRecycleBinCheckBox_Text;
@@ -158,6 +164,7 @@ namespace AntiDupl.NET
 
         public string ResultRowSetter_UnknownDefectIcon_ToolTip_Text;
         public string ResultRowSetter_JpegEndMarkerIsAbsentIcon_ToolTip_Text;
+        public string ResultRowSetter_blockinessIcon_ToolTip_Text;
 
         public string ResultRowSetter_DeleteDefectIcon_ToolTip_Text;
         public string ResultRowSetter_DeleteFirstIcon_ToolTip_Text;
@@ -185,6 +192,7 @@ namespace AntiDupl.NET
         public string ResultsListView_FileDirectory_Column_Text;
         public string ResultsListView_ImageSize_Column_Text;
         public string ResultsListView_ImageType_Column_Text;
+        public string ResultsListView_ImageBlockiness_Column_Text;
         public string ResultsListView_FileSize_Column_Text;
         public string ResultsListView_FileTime_Column_Text;
 
@@ -192,12 +200,14 @@ namespace AntiDupl.NET
         public string ResultsListView_FirstFileDirectory_Column_Text;
         public string ResultsListView_FirstImageSize_Column_Text;
         public string ResultsListView_FirstImageType_Column_Text;
+        public string ResultsListView_FirstImageBlockiness_Column_Text;
         public string ResultsListView_FirstFileSize_Column_Text;
         public string ResultsListView_FirstFileTime_Column_Text;
         public string ResultsListView_SecondFileName_Column_Text;
         public string ResultsListView_SecondFileDirectory_Column_Text;
         public string ResultsListView_SecondImageSize_Column_Text;
         public string ResultsListView_SecondImageType_Column_Text;
+        public string ResultsListView_SecondImageBlockiness_Column_Text;
         public string ResultsListView_SecondFileSize_Column_Text;
         public string ResultsListView_SecondFileTime_Column_Text;
 

@@ -1,7 +1,7 @@
 /*
 * AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2013 Yermalayeu Ihar.
+* Copyright (c) 2002-2013 Yermalayeu Ihar, 2013 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,8 @@ namespace ad
     {
         m_autoDeleteThresholdDifference = std::min(double(AUTO_DELETE_DIFFERENCE_MAX),
             double(m_pOptions->check.thresholdDifference)/AUTO_DELETE_DIFFERENCE_FACTOR);
+
+		m_blockinessThreshold = m_pOptions->check.blockinessThreshold;
     }
 
     void THintSetter::Execute(TResult *pResult, bool canRename) const
@@ -42,7 +44,7 @@ namespace ad
             return;
         }
 
-        if(pResult->type == AD_RESULT_DEFECT_IMAGE)
+        if(pResult->type == AD_RESULT_DEFECT_IMAGE) //if image has defect
         {
             pResult->hint = AD_HINT_DELETE_FIRST;
             return;
@@ -58,11 +60,11 @@ namespace ad
             m_pOptions->deletePaths.IsHasPath(second->path) != AD_IS_NOT_EXIST ||
             m_pOptions->deletePaths.IsHasSubPath(second->path) != AD_IS_NOT_EXIST;
 
-        if(pResult->difference == 0)
+        if(pResult->difference == 0) //если различие нулевое
         {
-            if(first->size > second->size)
+            if(first->size > second->size) //если размер первой больше второй
             {
-                if(isSecondInDeletePath || !isFirstInDeletePath)
+                if(isSecondInDeletePath || !isFirstInDeletePath) //если вторая в пути для удаления или первая не в пути
                     pResult->hint = AD_HINT_DELETE_SECOND;
                 else
                     pResult->hint = canRename ? AD_HINT_RENAME_FIRST_TO_SECOND : AD_HINT_NONE;
@@ -91,9 +93,9 @@ namespace ad
             return;
         }
 
-        if(pResult->difference < m_autoDeleteThresholdDifference && first->type == second->type)
+        if(pResult->difference < m_autoDeleteThresholdDifference && first->type == second->type) //если различие меньше порога и тип один
         {
-			if(first->size == second->size && first->Area() == second->Area())
+			if(first->size == second->size && first->Area() == second->Area() && first->blockiness < m_blockinessThreshold && second->blockiness < m_blockinessThreshold)
 			{
 				if(isSecondInDeletePath && !isFirstInDeletePath)
 					pResult->hint = AD_HINT_DELETE_SECOND;
@@ -109,7 +111,7 @@ namespace ad
 				return;
 			}
 
-            if(first->size >= second->size && first->Area() >= second->Area())
+            if(first->size >= second->size && first->Area() >= second->Area() && first->blockiness <= second->blockiness) //размер и разрешение первой больше второй
             {
                 if(isSecondInDeletePath || !isFirstInDeletePath)
                     pResult->hint = AD_HINT_DELETE_SECOND;
@@ -118,7 +120,7 @@ namespace ad
                 return;
             }
 
-            if(first->size <= second->size && first->Area() <= second->Area())
+            if(first->size <= second->size && first->Area() <= second->Area() && first->blockiness >= second->blockiness)
             {
                 if(!isSecondInDeletePath || isFirstInDeletePath)
                     pResult->hint = AD_HINT_DELETE_FIRST;

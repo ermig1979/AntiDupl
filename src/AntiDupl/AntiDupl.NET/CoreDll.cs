@@ -1,7 +1,7 @@
 ﻿/*
 * AntiDupl.NET Program.
 *
-* Copyright (c) 2002-2013 Yermalayeu Ihar.
+* Copyright (c) 2002-2013 Yermalayeu Ihar, 2013 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -120,31 +120,34 @@ namespace AntiDupl.NET
             BySortedHeight = 8,
             BySortedArea = 9,
             BySortedRatio = 10,
-            ByFirstPath = 11,
-            ByFirstName = 12,
-            ByFirstDirectory = 13,
-            ByFirstSize = 14,
-            ByFirstTime = 15,
-            ByFirstType = 16,
-            ByFirstWidth = 17,
-            ByFirstHeight = 18,
-            ByFirstArea = 19,
-            ByFirstRatio = 20,
-            BySecondPath = 21,
-            BySecondName = 22,
-            BySecondDirectory = 23,
-            BySecondSize = 24,
-            BySecondTime = 25,
-            BySecondType = 26,
-            BySecondWidth = 27,
-            BySecondHeight = 28,
-            BySecondArea = 29,
-            BySecondRatio = 30,
-            ByDefect = 31,
-            ByDifference = 32,
-            ByTransform = 33,
-            ByGroup = 34,
-            ByHint = 35
+            BySortedBlockiness = 11,
+            ByFirstPath = 12,
+            ByFirstName = 13,
+            ByFirstDirectory = 14,
+            ByFirstSize = 15,
+            ByFirstTime = 16,
+            ByFirstType = 17,
+            ByFirstWidth = 18,
+            ByFirstHeight = 19,
+            ByFirstArea = 20,
+            ByFirstRatio = 21,
+            ByFirstBlockiness = 22,
+            BySecondPath = 23,
+            BySecondName = 24,
+            BySecondDirectory = 25,
+            BySecondSize = 26,
+            BySecondTime = 27,
+            BySecondType = 28,
+            BySecondWidth = 29,
+            BySecondHeight = 30,
+            BySecondArea = 31,
+            BySecondRatio = 32,
+            BySecondBlockiness = 33,
+            ByDefect = 34,
+            ByDifference = 35,
+            ByTransform = 36,
+            ByGroup = 37,
+            ByHint = 38
         }
 
         public enum GlobalActionType : int

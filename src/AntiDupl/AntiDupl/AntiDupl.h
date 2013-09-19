@@ -1,7 +1,7 @@
 /*
 * AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2013 Yermalayeu Ihar.
+* Copyright (c) 2002-2013 Yermalayeu Ihar, 2013 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -177,31 +177,34 @@ extern "C"
         AD_SORT_BY_SORTED_HEIGHT = 8,
         AD_SORT_BY_SORTED_AREA = 9,
         AD_SORT_BY_SORTED_RATIO = 10,
-        AD_SORT_BY_FIRST_PATH = 11,
-        AD_SORT_BY_FIRST_NAME = 12,
-        AD_SORT_BY_FIRST_DIRECTORY = 13,
-        AD_SORT_BY_FIRST_SIZE = 14,
-        AD_SORT_BY_FIRST_TIME = 15,
-        AD_SORT_BY_FIRST_TYPE = 16,
-        AD_SORT_BY_FIRST_WIDTH = 17,
-        AD_SORT_BY_FIRST_HEIGHT = 18,
-        AD_SORT_BY_FIRST_AREA = 19,
-        AD_SORT_BY_FIRST_RATIO = 20,
-        AD_SORT_BY_SECOND_PATH = 21,
-        AD_SORT_BY_SECOND_NAME = 22,
-        AD_SORT_BY_SECOND_DIRECTORY = 23,
-        AD_SORT_BY_SECOND_SIZE = 24,
-        AD_SORT_BY_SECOND_TIME = 25,
-        AD_SORT_BY_SECOND_TYPE = 26,
-        AD_SORT_BY_SECOND_WIDTH = 27,
-        AD_SORT_BY_SECOND_HEIGHT = 28,
-        AD_SORT_BY_SECOND_AREA = 29,
-        AD_SORT_BY_SECOND_RATIO = 30,
-        AD_SORT_BY_DEFECT = 31,
-        AD_SORT_BY_DIFFERENCE = 32,
-        AD_SORT_BY_TRANSFORM = 33,
-        AD_SORT_BY_GROUP = 34,
-        AD_SORT_BY_HINT = 35,
+		AD_SORT_BY_SORTED_BLOCKINESS = 11,
+        AD_SORT_BY_FIRST_PATH = 12,
+        AD_SORT_BY_FIRST_NAME = 13,
+        AD_SORT_BY_FIRST_DIRECTORY = 14,
+        AD_SORT_BY_FIRST_SIZE = 15,
+        AD_SORT_BY_FIRST_TIME = 16,
+        AD_SORT_BY_FIRST_TYPE = 17,
+        AD_SORT_BY_FIRST_WIDTH = 18,
+        AD_SORT_BY_FIRST_HEIGHT = 19,
+        AD_SORT_BY_FIRST_AREA = 20,
+        AD_SORT_BY_FIRST_RATIO = 21,
+		AD_SORT_BY_FIRST_BLOCKINESS = 22,
+        AD_SORT_BY_SECOND_PATH = 23,
+        AD_SORT_BY_SECOND_NAME = 24,
+        AD_SORT_BY_SECOND_DIRECTORY = 25,
+        AD_SORT_BY_SECOND_SIZE = 26,
+        AD_SORT_BY_SECOND_TIME = 27,
+        AD_SORT_BY_SECOND_TYPE = 28,
+        AD_SORT_BY_SECOND_WIDTH = 29,
+        AD_SORT_BY_SECOND_HEIGHT = 30,
+        AD_SORT_BY_SECOND_AREA = 31,
+        AD_SORT_BY_SECOND_RATIO = 32,
+		AD_SORT_BY_SECOND_BLOCKINESS = 33,
+        AD_SORT_BY_DEFECT = 34,
+        AD_SORT_BY_DIFFERENCE = 35,
+        AD_SORT_BY_TRANSFORM = 36,
+        AD_SORT_BY_GROUP = 37,
+        AD_SORT_BY_HINT = 38,
         AD_SORT_SIZE
     };
 
