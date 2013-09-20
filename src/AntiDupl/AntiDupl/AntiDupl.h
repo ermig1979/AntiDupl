@@ -149,8 +149,9 @@ extern "C"
     {
         AD_OPTIONS_SET_DEFAULT = -1,
         AD_OPTIONS_SEARCH = 0,
-        AD_OPTIONS_CHECK = 1,
-        AD_OPTIONS_ADVANCED = 2,
+        AD_OPTIONS_COMPARE = 1,
+        AD_OPTIONS_DEFECT = 2,
+        AD_OPTIONS_ADVANCED = 3,
         AD_OPTIONS_SIZE
     };
 
@@ -382,11 +383,8 @@ extern "C"
     };
     typedef adSearchOptions* adSearchOptionsPtr;
 
-    struct adCheckOptions
+    struct adCompareOptions
     {
-        adBool checkOnDefect;
-        adBool checkOnBlockiness;
-        adInt32 blockinessThreshold;
         adBool checkOnEquality;    
         adBool transformedImage;    
         adBool sizeControl;
@@ -397,7 +395,15 @@ extern "C"
 		adInt32 maximalImageSize;
         adBool compareInsideOneFolder;
     };
-    typedef adCheckOptions* adCheckOptionsPtr;
+    typedef adCompareOptions* adCompareOptionsPtr;
+	
+    struct adDefectOptions
+    {
+        adBool checkOnDefect;
+        adBool checkOnBlockiness;
+        adInt32 blockinessThreshold;
+    };
+    typedef adDefectOptions* adDefectOptionsPtr;
 
     struct adAdvancedOptions
     {

@@ -31,9 +31,9 @@ namespace ad
         :m_pOptions(pOptions)
     {
         m_autoDeleteThresholdDifference = std::min(double(AUTO_DELETE_DIFFERENCE_MAX),
-            double(m_pOptions->check.thresholdDifference)/AUTO_DELETE_DIFFERENCE_FACTOR);
+            double(m_pOptions->compare.thresholdDifference)/AUTO_DELETE_DIFFERENCE_FACTOR);
 
-		m_blockinessThreshold = m_pOptions->check.blockinessThreshold;
+		m_blockinessThreshold = m_pOptions->defect.blockinessThreshold;
     }
 
     void THintSetter::Execute(TResult *pResult, bool canRename) const

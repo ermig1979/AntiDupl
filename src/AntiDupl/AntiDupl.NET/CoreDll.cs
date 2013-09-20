@@ -94,8 +94,9 @@ namespace AntiDupl.NET
         {
             SetDefault = -1,
             Search = 0,
-            Check = 1,
-            Advanced = 2
+            Compare = 1,
+            Defect = 2,
+            Advanced = 3
         }
 
         public enum FileType : int
@@ -308,11 +309,8 @@ namespace AntiDupl.NET
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct adCheckOptions
+        public struct adCompareOptions
         {
-            public int checkOnDefect;
-            public int checkOnBlockiness;
-            public int blockinessThreshold;
             public int checkOnEquality;
             public int transformedImage;
             public int sizeControl;
@@ -322,6 +320,14 @@ namespace AntiDupl.NET
             public int minimalImageSize;
             public int maximalImageSize;
             public int compareInsideOneFolder;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct adDefectOptions
+        {
+            public int checkOnDefect;
+            public int checkOnBlockiness;
+            public int blockinessThreshold;
         }
 
         [StructLayout(LayoutKind.Sequential)]

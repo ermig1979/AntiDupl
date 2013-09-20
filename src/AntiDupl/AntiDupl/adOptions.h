@@ -64,7 +64,8 @@ namespace ad
         TPathContainer deletePaths;
 
         adSearchOptions search;
-        adCheckOptions check;
+        adCompareOptions compare;
+        adDefectOptions defect;
         adAdvancedOptions advanced;
 
         TOptions();

@@ -186,7 +186,7 @@ namespace AntiDupl.NET
         {
             m_mistakeButton.Enabled = m_coreOptions.advancedOptions.mistakeDataBase &&
                  m_core.CanApply(CoreDll.ActionEnableType.Any);
-            m_thresholdDifferenceComboBox.SelectedIndex = m_coreOptions.checkOptions.thresholdDifference;
+            m_thresholdDifferenceComboBox.SelectedIndex = m_coreOptions.compareOptions.thresholdDifference;
         }
 
         public void SetViewMode(ResultsOptions.ViewMode viewMode)
@@ -237,7 +237,7 @@ namespace AntiDupl.NET
 
         private void OnThresholdDifferenceChanged(object sender, EventArgs e)
         {
-            m_coreOptions.checkOptions.thresholdDifference = m_thresholdDifferenceComboBox.SelectedIndex;
+            m_coreOptions.compareOptions.thresholdDifference = m_thresholdDifferenceComboBox.SelectedIndex;
         }
     }
 }

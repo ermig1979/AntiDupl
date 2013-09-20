@@ -90,7 +90,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CoreAdvancedOptions.cs" />
-    <Compile Include="CoreCheckOptions.cs" />
+    <Compile Include="CoreCompareOptions.cs" />
+    <Compile Include="CoreDefectOptions.cs" />
     <Compile Include="CoreGroup.cs" />
     <Compile Include="CoreImageInfo.cs" />
     <Compile Include="CoreDll.cs" />

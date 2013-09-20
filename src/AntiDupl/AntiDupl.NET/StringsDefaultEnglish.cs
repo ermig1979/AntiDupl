@@ -78,7 +78,7 @@ namespace AntiDupl.NET
             s.CoreOptionsForm_SearchHiddenCheckBox_Text = "Search hidden folders/files";
             s.CoreOptionsForm_SearchSubFoldersCheckBox_Text = "Search in subdirectories";
 
-            s.CoreOptionsForm_CheckTabPage_Text = "Check";
+            s.CoreOptionsForm_CompareTabPage_Text = "Compare";
             s.CoreOptionsForm_CheckOnEqualityCheckBox_Text = "Search image dupls";
             s.CoreOptionsForm_TransformedImageCheckBox_Text = "Search rotated and mirror image dupls";
             s.CoreOptionsForm_SizeControlCheckBox_Text = "Control image size";

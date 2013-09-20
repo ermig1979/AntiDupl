@@ -271,7 +271,7 @@ namespace ad
     size_t TCompareManager::DefaultThreadCount(size_t imageCount)
     {
         size_t threadCountMax = GetProcessorCount();
-        if(imageCount > (size_t)LARGE_IMAGE_COLLECTION_SIZE_MIN || m_pOptions->check.transformedImage == TRUE)
+        if(imageCount > (size_t)LARGE_IMAGE_COLLECTION_SIZE_MIN || m_pOptions->compare.transformedImage == TRUE)
             return threadCountMax;
         else
             return Simd::Max((size_t)1, threadCountMax/2);
@@ -279,11 +279,11 @@ namespace ad
 
     bool TCompareManager::CanCompare(TImageData *pImageData) const
     {
-		const adCheckOptions & check = m_pOptions->check;
+		const adCompareOptions & compare = m_pOptions->compare;
         return 
-            check.checkOnEquality == TRUE && pImageData->type > AD_IMAGE_NONE &&
-            pImageData->width >= (TUInt32)check.minimalImageSize && pImageData->width <= (TUInt32)check.maximalImageSize &&
-            pImageData->height >= (TUInt32)check.minimalImageSize && pImageData->height <= (TUInt32)check.maximalImageSize;
+            compare.checkOnEquality == TRUE && pImageData->type > AD_IMAGE_NONE &&
+            pImageData->width >= (TUInt32)compare.minimalImageSize && pImageData->width <= (TUInt32)compare.maximalImageSize &&
+            pImageData->height >= (TUInt32)compare.minimalImageSize && pImageData->height <= (TUInt32)compare.maximalImageSize;
     }
     //-------------------------------------------------------------------------
     TCollectManager::TCollectManager(TEngine *pEngine, TCompareManager* pCompareManager)
@@ -325,7 +325,7 @@ namespace ad
         }
         else
         {
-            if(m_pOptions->check.checkOnDefect == TRUE && pImageData->defect > AD_DEFECT_NONE)
+            if(m_pOptions->defect.checkOnDefect == TRUE && pImageData->defect > AD_DEFECT_NONE)
                 m_pEngine->Result()->AddDefectImage(pImageData, pImageData->defect);
             pImageData->FillOther(m_pOptions);
             m_pCompareManager->Add(pImageData);

@@ -90,7 +90,7 @@ namespace ad
 
         m_pSearcher->SearchImages();
 
-        if(m_pOptions->check.checkOnEquality == TRUE)
+        if(m_pOptions->compare.checkOnEquality == TRUE)
         {
             m_pCompareManager->Start(m_pImageDataPtrs->size());
             m_pCompareManager->SetPriority(THREAD_PRIORITY_LOWEST);
@@ -108,7 +108,7 @@ namespace ad
         }
         m_pCollectManager->Finish();
 
-        if(m_pOptions->check.checkOnEquality == TRUE)
+        if(m_pOptions->compare.checkOnEquality == TRUE)
         {
             m_pStatus->SetProgress(current, total);
             m_pStatus->Wait(AD_THREAD_TYPE_MAIN, 0);

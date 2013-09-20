@@ -480,19 +480,35 @@ namespace AntiDupl.NET
             }
         }
 
-        public CoreCheckOptions checkOptions
+        public CoreCompareOptions compareOptions
         {
             get
             {
-                CoreDll.adCheckOptions[] options = new CoreDll.adCheckOptions[1];
-                m_dll.adOptionsGet(m_handle, CoreDll.OptionsType.Check, Marshal.UnsafeAddrOfPinnedArrayElement(options, 0));
-                return new CoreCheckOptions(ref options[0]);
+                CoreDll.adCompareOptions[] options = new CoreDll.adCompareOptions[1];
+                m_dll.adOptionsGet(m_handle, CoreDll.OptionsType.Compare, Marshal.UnsafeAddrOfPinnedArrayElement(options, 0));
+                return new CoreCompareOptions(ref options[0]);
             }
             set
             {
-                CoreDll.adCheckOptions[] options = new CoreDll.adCheckOptions[1];
+                CoreDll.adCompareOptions[] options = new CoreDll.adCompareOptions[1];
                 value.ConvertTo(ref options[0]);
-                m_dll.adOptionsSet(m_handle, CoreDll.OptionsType.Check, Marshal.UnsafeAddrOfPinnedArrayElement(options, 0));
+                m_dll.adOptionsSet(m_handle, CoreDll.OptionsType.Compare, Marshal.UnsafeAddrOfPinnedArrayElement(options, 0));
+            }
+        }
+
+        public CoreDefectOptions defectOptions
+        {
+            get
+            {
+                CoreDll.adDefectOptions[] options = new CoreDll.adDefectOptions[1];
+                m_dll.adOptionsGet(m_handle, CoreDll.OptionsType.Defect, Marshal.UnsafeAddrOfPinnedArrayElement(options, 0));
+                return new CoreDefectOptions(ref options[0]);
+            }
+            set
+            {
+                CoreDll.adDefectOptions[] options = new CoreDll.adDefectOptions[1];
+                value.ConvertTo(ref options[0]);
+                m_dll.adOptionsSet(m_handle, CoreDll.OptionsType.Defect, Marshal.UnsafeAddrOfPinnedArrayElement(options, 0));
             }
         }
 
