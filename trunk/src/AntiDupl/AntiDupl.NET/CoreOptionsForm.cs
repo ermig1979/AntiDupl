@@ -226,8 +226,8 @@ namespace AntiDupl.NET
                 m_blockinessThresholdLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value(i, string.Format("{0}", i)));
             defectTableLayoutPanel.Controls.Add(m_blockinessThresholdLabeledComboBox, 0, 2);
 
-            //m_checkOnBlockinessOnlyNotJpegCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            //defectTableLayoutPanel.Controls.Add(m_checkOnBlockinessOnlyNotJpegCheckBox, 0, 3);
+            m_checkOnBlockinessOnlyNotJpegCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
+            defectTableLayoutPanel.Controls.Add(m_checkOnBlockinessOnlyNotJpegCheckBox, 0, 3);
         }
 
         private void InitilizeSearchTabPage()
@@ -364,6 +364,7 @@ namespace AntiDupl.NET
             m_checkOnDefectCheckBox.Checked = m_newCoreOptions.defectOptions.checkOnDefect;
             m_checkOnBlockinessCheckBox.Checked = m_newCoreOptions.defectOptions.checkOnBlockiness;
             m_blockinessThresholdLabeledComboBox.SelectedValue = m_newCoreOptions.defectOptions.blockinessThreshold;
+			m_checkOnBlockinessOnlyNotJpegCheckBox.Checked = m_newCoreOptions.defectOptions.checkOnBlockinessOnlyNotJpeg;
 
             m_bmpCheckBox.Checked = m_newCoreOptions.searchOptions.BMP;
             m_gifCheckBox.Checked = m_newCoreOptions.searchOptions.GIF;
@@ -408,6 +409,7 @@ namespace AntiDupl.NET
             m_newCoreOptions.defectOptions.checkOnDefect = m_checkOnDefectCheckBox.Checked;
             m_newCoreOptions.defectOptions.checkOnBlockiness = m_checkOnBlockinessCheckBox.Checked;
             m_newCoreOptions.defectOptions.blockinessThreshold = m_blockinessThresholdLabeledComboBox.SelectedValue;
+			m_newCoreOptions.defectOptions.checkOnBlockinessOnlyNotJpeg = m_checkOnBlockinessOnlyNotJpegCheckBox.Checked;
 
             m_newCoreOptions.searchOptions.BMP = m_bmpCheckBox.Checked;
             m_newCoreOptions.searchOptions.GIF = m_gifCheckBox.Checked;
@@ -461,7 +463,7 @@ namespace AntiDupl.NET
             m_checkOnDefectCheckBox.Text = s.CoreOptionsForm_CheckOnDefectCheckBox_Text;
             m_checkOnBlockinessCheckBox.Text = s.CoreOptionsForm_CheckOnBlockinessCheckBox_Text; ;
             m_blockinessThresholdLabeledComboBox.Text = s.CoreOptionsForm_BlockinessThresholdLabeledComboBox_Text;
-            //m_checkOnBlockinessOnlyNotJpegCheckBox.Text = s.CoreOptionsForm_CheckOnBlockinessOnlyNotJpegCheckBox_Text; ;
+            m_checkOnBlockinessOnlyNotJpegCheckBox.Text = s.CoreOptionsForm_CheckOnBlockinessOnlyNotJpegCheckBox_Text; ;
 
             m_searchTabPage.Text = s.CoreOptionsForm_SearchTabPage_Text;
             m_searchFileTypeGroupBox.Text = s.CoreOptionsForm_SearchFileTypeGroupBox_Text;
@@ -545,6 +547,7 @@ namespace AntiDupl.NET
             m_ignoreFrameWidthLabeledComboBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
 
             m_blockinessThresholdLabeledComboBox.Enabled = m_newCoreOptions.defectOptions.checkOnBlockiness;
+			m_checkOnBlockinessOnlyNotJpegCheckBox.Enabled = m_newCoreOptions.defectOptions.checkOnBlockiness;
 
             int step = Math.Max(1, 64 / m_newCoreOptions.advancedOptions.reducedImageSize) * IGNORE_FRAME_WIDTH_STEP;
             if (m_ignoreFrameWidthLabeledComboBox.comboBox.Items.Count != IGNORE_FRAME_WIDTH_MAX/step + 1)

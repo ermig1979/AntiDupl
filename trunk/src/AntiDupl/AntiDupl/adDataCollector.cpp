@@ -124,15 +124,22 @@ namespace ad
             }
         }
 
-		/*if(m_pOptions->check.checkOnBlockiness == TRUE &&
-			m_pOptions->check.checkOnBlockinessOnlyNotJpeg == TRUE &&
-			pImageData->blockiness > m_pOptions->check.blockinessThreshold &&
-			pImageData->type != AD_IMAGE_JPEG)*/
 		if(m_pOptions->defect.checkOnBlockiness == TRUE && 
 			pImageData->blockiness > m_pOptions->defect.blockinessThreshold)
 		{
-			pImageData->defect = AD_DEFECT_BLOCKINESS;
-			return;
+			if(m_pOptions->defect.checkOnBlockinessOnlyNotJpeg == TRUE)
+			{
+				if(pImageData->type != AD_IMAGE_JPEG)
+				{
+					pImageData->defect = AD_DEFECT_BLOCKINESS;
+					return;
+				}
+			}
+			else
+			{
+				pImageData->defect = AD_DEFECT_BLOCKINESS;
+				return;
+			}
 		}
 
         pImageData->defect = AD_DEFECT_NONE;

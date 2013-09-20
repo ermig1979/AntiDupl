@@ -328,6 +328,7 @@ namespace AntiDupl.NET
             public int checkOnDefect;
             public int checkOnBlockiness;
             public int blockinessThreshold;
+            public int checkOnBlockinessOnlyNotJpeg;
         }
 
         [StructLayout(LayoutKind.Sequential)]

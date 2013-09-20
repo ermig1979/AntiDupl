@@ -158,6 +158,11 @@ namespace AntiDupl.NET
                             Color.Red : TableLayoutPanel.DefaultForeColor;
                 }
             }
+            else if (m_neighbourImageInfo != null)
+            {
+               m_imageTypeLabel.ForeColor = m_currentImageInfo.type != m_neighbourImageInfo.type ?
+                      Color.Red : TableLayoutPanel.DefaultForeColor;
+            }
             if (updateCurrent || updateNeighbour)
             {
                 Size neighbourSizeMax = new Size(0, 0);
