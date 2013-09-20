@@ -363,6 +363,9 @@ namespace AntiDupl.NET
             m_compareInsideOneFolderCheckBox.Checked = m_newCoreOptions.checkOptions.compareInsideOneFolder;
 
             m_checkOnDefectCheckBox.Checked = m_newCoreOptions.checkOptions.checkOnDefect;
+            m_checkOnBlockinessCheckBox.Checked = m_newCoreOptions.checkOptions.checkOnBlockiness;
+            m_blockinessThresholdLabeledComboBox.SelectedValue = m_newCoreOptions.checkOptions.blockinessThreshold;
+            //m_checkOnBlockinessOnlyNotJpegCheckBox.Checked = m_newCoreOptions.checkOptions.;
 
             m_bmpCheckBox.Checked = m_newCoreOptions.searchOptions.BMP;
             m_gifCheckBox.Checked = m_newCoreOptions.searchOptions.GIF;
@@ -394,7 +397,6 @@ namespace AntiDupl.NET
 
         private void SetOptions()
         {
-            m_newCoreOptions.checkOptions.checkOnDefect = m_checkOnDefectCheckBox.Checked;
             m_newCoreOptions.checkOptions.checkOnEquality = m_checkOnEqualityCheckBox.Checked;
             m_newCoreOptions.checkOptions.transformedImage = m_transformedImageCheckBox.Checked;
             m_newCoreOptions.checkOptions.sizeControl = m_sizeControlCheckBox.Checked;
@@ -404,6 +406,10 @@ namespace AntiDupl.NET
             m_newCoreOptions.checkOptions.minimalImageSize = m_minimalImageSizeLabeledIntegerEdit.Value;
             m_newCoreOptions.checkOptions.maximalImageSize = m_maximalImageSizeLabeledIntegerEdit.Value;
             m_newCoreOptions.checkOptions.compareInsideOneFolder = m_compareInsideOneFolderCheckBox.Checked;
+
+            m_newCoreOptions.checkOptions.checkOnDefect = m_checkOnDefectCheckBox.Checked;
+            m_newCoreOptions.checkOptions.checkOnBlockiness = m_checkOnBlockinessCheckBox.Checked;
+            m_newCoreOptions.checkOptions.blockinessThreshold = m_blockinessThresholdLabeledComboBox.SelectedValue;
 
             m_newCoreOptions.searchOptions.BMP = m_bmpCheckBox.Checked;
             m_newCoreOptions.searchOptions.GIF = m_gifCheckBox.Checked;
