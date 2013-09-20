@@ -158,7 +158,7 @@ namespace ad
 	{
 		const adCheckOptions & check = m_pOptions->check;
 		return 
-			((check.checkOnDefect == TRUE && pImageData->defect > AD_DEFECT_NONE && pImageData->defect > AD_DEFECT_BLOCKINESS) || 
+			((check.checkOnDefect == TRUE && pImageData->defect > AD_DEFECT_NONE && pImageData->defect < AD_DEFECT_BLOCKINESS) || 
 			(check.checkOnBlockiness == TRUE && pImageData->defect == AD_DEFECT_BLOCKINESS))  &&
 			pImageData->width >= (TUInt32)check.minimalImageSize && pImageData->width <= (TUInt32)check.maximalImageSize &&
 			pImageData->height >= (TUInt32)check.minimalImageSize && pImageData->height <= (TUInt32)check.maximalImageSize;

@@ -109,7 +109,7 @@ namespace AntiDupl.NET
 
         public string GetBlockinessString()
         {
-            return blockiness.ToString().Remove(9); //обрезаем trim
+            return blockiness.ToString("F2");
         }
 
         public string GetFileTimeString()
