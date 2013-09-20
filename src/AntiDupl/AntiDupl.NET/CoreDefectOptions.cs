@@ -1,7 +1,7 @@
 ﻿/*
 * AntiDupl.NET Program.
 *
-* Copyright (c) 2002-2013 Yermalayeu Ihar.
+* Copyright (c) 2002-2013 Yermalayeu Ihar, 2013 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,7 @@ namespace AntiDupl.NET
         public bool checkOnDefect;
         public bool checkOnBlockiness;
         public int blockinessThreshold;
+        public bool checkOnBlockinessOnlyNotJpeg;
 
         public CoreDefectOptions()
         {
@@ -42,6 +43,7 @@ namespace AntiDupl.NET
             checkOnDefect = defectOptions.checkOnDefect;
             checkOnBlockiness = defectOptions.checkOnBlockiness;
             blockinessThreshold = defectOptions.blockinessThreshold;
+			checkOnBlockinessOnlyNotJpeg = defectOptions.checkOnBlockinessOnlyNotJpeg;
         }
 
         public CoreDefectOptions(ref CoreDll.adDefectOptions defectOptions)
@@ -49,6 +51,7 @@ namespace AntiDupl.NET
             checkOnDefect = defectOptions.checkOnDefect != CoreDll.FALSE;
             checkOnBlockiness = defectOptions.checkOnBlockiness != CoreDll.FALSE;
             blockinessThreshold = defectOptions.blockinessThreshold;
+			checkOnBlockinessOnlyNotJpeg = defectOptions.checkOnBlockinessOnlyNotJpeg != CoreDll.FALSE;
         }
 
         public void ConvertTo(ref CoreDll.adDefectOptions defectOptions)
@@ -56,6 +59,7 @@ namespace AntiDupl.NET
             defectOptions.checkOnDefect = checkOnDefect ? CoreDll.TRUE : CoreDll.FALSE;
             defectOptions.checkOnBlockiness = checkOnBlockiness ? CoreDll.TRUE : CoreDll.FALSE;
             defectOptions.blockinessThreshold = blockinessThreshold;
+			defectOptions.checkOnBlockinessOnlyNotJpeg = checkOnBlockinessOnlyNotJpeg ? CoreDll.TRUE : CoreDll.FALSE;
         }
 
         public CoreDefectOptions Clone()
@@ -68,7 +72,8 @@ namespace AntiDupl.NET
             return
                 checkOnDefect == defectOptions.checkOnDefect &&
                 checkOnBlockiness == defectOptions.checkOnBlockiness &&
-                blockinessThreshold == defectOptions.blockinessThreshold;
+                blockinessThreshold == defectOptions.blockinessThreshold &&
+ 				checkOnBlockinessOnlyNotJpeg == defectOptions.checkOnBlockinessOnlyNotJpeg;
         }
     }
 }

@@ -82,7 +82,6 @@ namespace AntiDupl.NET
         public string CoreOptionsForm_SearchSubFoldersCheckBox_Text;
 
         public string CoreOptionsForm_CompareTabPage_Text;
-        //public string CoreOptionsForm_CheckOnDefectCheckBox_Text;
         public string CoreOptionsForm_CheckOnEqualityCheckBox_Text;
         public string CoreOptionsForm_TransformedImageCheckBox_Text;
         public string CoreOptionsForm_SizeControlCheckBox_Text;

@@ -402,6 +402,7 @@ extern "C"
         adBool checkOnDefect;
         adBool checkOnBlockiness;
         adInt32 blockinessThreshold;
+		adBool checkOnBlockinessOnlyNotJpeg;
     };
     typedef adDefectOptions* adDefectOptionsPtr;
 
