@@ -89,7 +89,7 @@ namespace ad
         pResult->difference = difference;
         pResult->transform = transform;
         if((m_pOptions->advanced.mistakeDataBase == TRUE && m_pMistakeStorage->IsHas(pResult->first, pResult->second)) ||
-           (m_pOptions->check.transformedImage == TRUE && m_pDuplResultFilter->AlreadyHas(pResult)))
+           (m_pOptions->compare.transformedImage == TRUE && m_pDuplResultFilter->AlreadyHas(pResult)))
         {
             delete pResult;
             return false;

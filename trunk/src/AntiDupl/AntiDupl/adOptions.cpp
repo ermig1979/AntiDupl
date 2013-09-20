@@ -86,18 +86,19 @@ namespace ad
         m_options.push_back(TOption(&search.JP2, TEXT("SearchOptions"), TEXT("JP2"), TRUE, FALSE, TRUE));
         m_options.push_back(TOption(&search.PSD, TEXT("SearchOptions"), TEXT("PSD"), TRUE, FALSE, TRUE));
 
-        m_options.push_back(TOption(&check.checkOnDefect, TEXT("CheckOptions"), TEXT("CheckOnDefect"), TRUE, FALSE, TRUE));
-        m_options.push_back(TOption(&check.checkOnBlockiness, TEXT("CheckOptions"), TEXT("CheckOnBlockiness"), TRUE, FALSE, TRUE));
-        m_options.push_back(TOption(&check.blockinessThreshold, TEXT("CheckOptions"), TEXT("BlockinessThreshold"), 10, 0, 100));
-        m_options.push_back(TOption(&check.checkOnEquality, TEXT("CheckOptions"), TEXT("CheckOnEquality"), TRUE, FALSE, TRUE));
-        m_options.push_back(TOption(&check.transformedImage, TEXT("CheckOptions"), TEXT("TransformedImage"), FALSE, FALSE, TRUE));
-        m_options.push_back(TOption(&check.sizeControl, TEXT("CheckOptions"), TEXT("SizeControl"), FALSE, FALSE, TRUE));
-        m_options.push_back(TOption(&check.typeControl, TEXT("CheckOptions"), TEXT("TypeControl"), FALSE, FALSE, TRUE));
-        m_options.push_back(TOption(&check.ratioControl, TEXT("CheckOptions"), TEXT("RatioControl"), TRUE, FALSE, TRUE));
-        m_options.push_back(TOption(&check.thresholdDifference, TEXT("CheckOptions"), TEXT("ThresholdDifference"), 5, 0, 15));
-        m_options.push_back(TOption(&check.minimalImageSize, TEXT("CheckOptions"), TEXT("MinimalImageSize"), 64, 0, INT_MAX));
-		m_options.push_back(TOption(&check.maximalImageSize, TEXT("CheckOptions"), TEXT("MaximalImageSize"), 8196, 0, INT_MAX));
-        m_options.push_back(TOption(&check.compareInsideOneFolder, TEXT("CheckOptions"), TEXT("CompareInsideOneFolder"), TRUE, FALSE, TRUE));
+        m_options.push_back(TOption(&compare.checkOnEquality, TEXT("CompareOptions"), TEXT("CheckOnEquality"), TRUE, FALSE, TRUE));
+        m_options.push_back(TOption(&compare.transformedImage, TEXT("CompareOptions"), TEXT("TransformedImage"), FALSE, FALSE, TRUE));
+        m_options.push_back(TOption(&compare.sizeControl, TEXT("CompareOptions"), TEXT("SizeControl"), FALSE, FALSE, TRUE));
+        m_options.push_back(TOption(&compare.typeControl, TEXT("CompareOptions"), TEXT("TypeControl"), FALSE, FALSE, TRUE));
+        m_options.push_back(TOption(&compare.ratioControl, TEXT("CompareOptions"), TEXT("RatioControl"), TRUE, FALSE, TRUE));
+        m_options.push_back(TOption(&compare.thresholdDifference, TEXT("CompareOptions"), TEXT("ThresholdDifference"), 5, 0, 15));
+        m_options.push_back(TOption(&compare.minimalImageSize, TEXT("CompareOptions"), TEXT("MinimalImageSize"), 64, 0, INT_MAX));
+		m_options.push_back(TOption(&compare.maximalImageSize, TEXT("CompareOptions"), TEXT("MaximalImageSize"), 8196, 0, INT_MAX));
+        m_options.push_back(TOption(&compare.compareInsideOneFolder, TEXT("CompareOptions"), TEXT("CompareInsideOneFolder"), TRUE, FALSE, TRUE));
+
+        m_options.push_back(TOption(&defect.checkOnDefect, TEXT("DefectOptions"), TEXT("CheckOnDefect"), TRUE, FALSE, TRUE));
+        m_options.push_back(TOption(&defect.checkOnBlockiness, TEXT("DefectOptions"), TEXT("CheckOnBlockiness"), TRUE, FALSE, TRUE));
+        m_options.push_back(TOption(&defect.blockinessThreshold, TEXT("DefectOptions"), TEXT("BlockinessThreshold"), 10, 0, 100));
 
         m_options.push_back(TOption(&advanced.deleteToRecycleBin, TEXT("AdvancedOptions"), TEXT("DeleteToRecycleBin"), TRUE, FALSE, TRUE));
         m_options.push_back(TOption(&advanced.mistakeDataBase, TEXT("AdvancedOptions"), TEXT("MistakeDataBase"), TRUE, FALSE, TRUE));
@@ -134,7 +135,7 @@ namespace ad
         }
     }
 
-    adError TOptions::Import(adOptionsType optionsType, void* pOptions)
+    adError TOptions::Import(adOptionsType optionsType, void * pOptions)
     {
         if(pOptions == NULL)
             return AD_ERROR_INVALID_POINTER;
@@ -144,8 +145,11 @@ namespace ad
         case AD_OPTIONS_SEARCH:
             memcpy(&search, pOptions, sizeof(adSearchOptions));
             break;
-        case AD_OPTIONS_CHECK:
-            memcpy(&check, pOptions, sizeof(adCheckOptions));
+        case AD_OPTIONS_COMPARE:
+            memcpy(&compare, pOptions, sizeof(adCompareOptions));
+            break;
+        case AD_OPTIONS_DEFECT:
+            memcpy(&defect, pOptions, sizeof(adDefectOptions));
             break;
         case AD_OPTIONS_ADVANCED:
             memcpy(&advanced, pOptions, sizeof(adAdvancedOptions));
@@ -169,8 +173,11 @@ namespace ad
         case AD_OPTIONS_SEARCH:
             memcpy(pOptions, &search, sizeof(adSearchOptions));
             break;
-        case AD_OPTIONS_CHECK:
-            memcpy(pOptions, &check, sizeof(adCheckOptions));
+        case AD_OPTIONS_COMPARE:
+            memcpy(pOptions, &compare, sizeof(adCompareOptions));
+            break;
+        case AD_OPTIONS_DEFECT:
+            memcpy(pOptions, &defect, sizeof(adDefectOptions));
             break;
         case AD_OPTIONS_ADVANCED:
             memcpy(pOptions, &advanced, sizeof(adAdvancedOptions));

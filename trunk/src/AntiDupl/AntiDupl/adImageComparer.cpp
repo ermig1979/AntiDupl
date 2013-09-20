@@ -44,7 +44,7 @@ namespace ad
         m_pBuffer(NULL),
         m_pMask(NULL) 
     {
-		int thresholdPerPixel = Simd::Square(m_pOptions->check.thresholdDifference*PIXEL_MAX_DIFFERENCE)/
+		int thresholdPerPixel = Simd::Square(m_pOptions->compare.thresholdDifference*PIXEL_MAX_DIFFERENCE)/
 			Simd::Square(DENOMINATOR);
         m_fastThreshold = FAST_DATA_SIZE*thresholdPerPixel;
         m_mainSize = Simd::Square(m_pOptions->advanced.reducedImageSize);
@@ -71,7 +71,7 @@ namespace ad
             m_maxDifference = int(Simd::Square(PIXEL_MAX_DIFFERENCE)*m_mainSize);
         }
 
-        if(m_pOptions->check.transformedImage == TRUE)
+        if(m_pOptions->compare.transformedImage == TRUE)
         {
             m_pTransformedImageData = new TImageData(m_pOptions->advanced.reducedImageSize);
             m_pBuffer = (TUInt8*)Simd::Allocate(m_mainSize + FAST_DATA_SIZE);
@@ -85,7 +85,7 @@ namespace ad
             Simd::Free(m_pMask);
         }
 
-        if(m_pOptions->check.transformedImage == TRUE)
+        if(m_pOptions->compare.transformedImage == TRUE)
         {
             delete m_pTransformedImageData;
             Simd::Free(m_pBuffer); 
@@ -95,7 +95,7 @@ namespace ad
     void TImageComparer::Accept(TImageDataPtr pImageData, bool add)
     {
         Compare(pImageData, pImageData, AD_TRANSFORM_TURN_0);
-        if(m_pOptions->check.transformedImage == TRUE)
+        if(m_pOptions->compare.transformedImage == TRUE)
         {
             *m_pTransformedImageData = *pImageData;
             for(int i_transform = AD_TRANSFORM_TURN_90; i_transform < AD_TRANSFORM_SIZE; i_transform++)
@@ -138,22 +138,22 @@ namespace ad
 
     bool TImageComparer::IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference)
     {
-        if(m_pOptions->check.typeControl == TRUE && 
+        if(m_pOptions->compare.typeControl == TRUE && 
             pFirst->type != pSecond->type)
             return false;
 
-        if(m_pOptions->check.sizeControl == TRUE &&
+        if(m_pOptions->compare.sizeControl == TRUE &&
             (pFirst->height != pSecond->height || 
             pFirst->width != pSecond->width))
             return false;
 
-        if(m_pOptions->check.ratioControl == TRUE)
+        if(m_pOptions->compare.ratioControl == TRUE)
         {
             if(Simd::Square(pFirst->ratio - pSecond->ratio) > Simd::Square(RATIO_THRESHOLD_DIFFERENCE))
                 return false;
         }
 
-        if(m_pOptions->check.compareInsideOneFolder == FALSE && pFirst->index == pSecond->index)
+        if(m_pOptions->compare.compareInsideOneFolder == FALSE && pFirst->index == pSecond->index)
             return false;
 
 		uint64_t fastDifference = 0;
@@ -202,7 +202,7 @@ namespace ad
         :TImageComparer(pEngine)
     {
         m_sets.resize(RANGE);
-        m_halfCompareRange = (int)ceil(0.5 + double(RANGE)*m_pOptions->check.thresholdDifference/DENOMINATOR);
+        m_halfCompareRange = (int)ceil(0.5 + double(RANGE)*m_pOptions->compare.thresholdDifference/DENOMINATOR);
     }
 
     void TImageComparer_1D::Add(TImageDataPtr pImageData)
@@ -229,7 +229,7 @@ namespace ad
         :TImageComparer(pEngine)
     {
         const int MAX_RANGES[] = {48, 48, 48, 48, 48, 48, 40, 32, 28, 24, 24};
-        m_maxRange = MAX_RANGES[m_pOptions->check.thresholdDifference/D3_MAX_RANGES_STEP];
+        m_maxRange = MAX_RANGES[m_pOptions->compare.thresholdDifference/D3_MAX_RANGES_STEP];
 
         m_shift.s = 0;
         m_shift.x = m_maxRange >> 2;
@@ -244,7 +244,7 @@ namespace ad
         m_stride.y = 1;
 
         m_sets.resize(m_range.s*m_range.x*m_range.y);
-        m_halfCompareRange = (int)ceil(0.5 + double(m_maxRange)*m_pOptions->check.thresholdDifference/DENOMINATOR);
+        m_halfCompareRange = (int)ceil(0.5 + double(m_maxRange)*m_pOptions->compare.thresholdDifference/DENOMINATOR);
     }
 
     void TImageComparer_3D::Add(TImageDataPtr pImageData)
@@ -306,7 +306,7 @@ namespace ad
             return new TImageComparer_0D(pEngine);
         }
         else if(statistic.searchedImageNumber < D1_SEARCHED_FILE_NUMBER_MAX || 
-            pEngine->Options()->check.thresholdDifference > D3_THRESHOLD_DIFFERENCE_MAX)
+            pEngine->Options()->compare.thresholdDifference > D3_THRESHOLD_DIFFERENCE_MAX)
         {
             return new TImageComparer_1D(pEngine);
         } 

@@ -128,8 +128,8 @@ namespace ad
 			m_pOptions->check.checkOnBlockinessOnlyNotJpeg == TRUE &&
 			pImageData->blockiness > m_pOptions->check.blockinessThreshold &&
 			pImageData->type != AD_IMAGE_JPEG)*/
-		if(m_pOptions->check.checkOnBlockiness == TRUE && 
-			pImageData->blockiness > m_pOptions->check.blockinessThreshold)
+		if(m_pOptions->defect.checkOnBlockiness == TRUE && 
+			pImageData->blockiness > m_pOptions->defect.blockinessThreshold)
 		{
 			pImageData->defect = AD_DEFECT_BLOCKINESS;
 			return;
@@ -156,12 +156,13 @@ namespace ad
 
 	bool TDataCollector::CanAddDefect(const TImageData * pImageData)
 	{
-		const adCheckOptions & check = m_pOptions->check;
+		const adCompareOptions & compare = m_pOptions->compare;
+		const adDefectOptions & defect = m_pOptions->defect;
 		return 
-			((check.checkOnDefect == TRUE && pImageData->defect > AD_DEFECT_NONE && pImageData->defect < AD_DEFECT_BLOCKINESS) || 
-			(check.checkOnBlockiness == TRUE && pImageData->defect == AD_DEFECT_BLOCKINESS))  &&
-			pImageData->width >= (TUInt32)check.minimalImageSize && pImageData->width <= (TUInt32)check.maximalImageSize &&
-			pImageData->height >= (TUInt32)check.minimalImageSize && pImageData->height <= (TUInt32)check.maximalImageSize;
+			((defect.checkOnDefect == TRUE && pImageData->defect > AD_DEFECT_NONE && pImageData->defect < AD_DEFECT_BLOCKINESS) || 
+			(defect.checkOnBlockiness == TRUE && pImageData->defect == AD_DEFECT_BLOCKINESS))  &&
+			pImageData->width >= (TUInt32)compare.minimalImageSize && pImageData->width <= (TUInt32)compare.maximalImageSize &&
+			pImageData->height >= (TUInt32)compare.minimalImageSize && pImageData->height <= (TUInt32)compare.maximalImageSize;
 	}
 
 	double TDataCollector::GetBlockiness(const TView & gray)

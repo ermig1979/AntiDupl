@@ -339,7 +339,7 @@ namespace AntiDupl.NET
                 total = mainThreadStatus.total;
                 if(mainThreadStatus.current > 0)
                 {
-                    if(m_coreOptions.checkOptions.checkOnEquality)
+                    if(m_coreOptions.compareOptions.checkOnEquality)
                     {
                         for(int i = 0; ; i++)
                         {
