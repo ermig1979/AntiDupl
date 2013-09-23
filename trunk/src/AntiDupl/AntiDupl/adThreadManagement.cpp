@@ -325,8 +325,9 @@ namespace ad
         }
         else
         {
-            if(m_pOptions->defect.checkOnDefect == TRUE && pImageData->defect > AD_DEFECT_NONE)
-                m_pEngine->Result()->AddDefectImage(pImageData, pImageData->defect);
+			TDefectType defect = pImageData->GetDefect(m_pOptions);
+			if(defect > AD_DEFECT_NONE)
+				m_pEngine->Result()->AddDefectImage(pImageData, defect);
             pImageData->FillOther(m_pOptions);
             m_pCompareManager->Add(pImageData);
         }

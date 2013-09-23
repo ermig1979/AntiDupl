@@ -49,10 +49,12 @@ namespace ad
 
 		TImageData& operator = (const TImageData& imageData);
 
-		bool PixelDataFillingNeed(TOptions *pOptions) const;
-		bool DefectCheckingNeed(TOptions *pOptions) const;
+		bool PixelDataFillingNeed(const TOptions *pOptions) const;
+		bool DefectCheckingNeed(const TOptions *pOptions) const;
 
 		void FillOther(TOptions *pOptions);
+
+		TDefectType GetDefect(const TOptions *pOptions) const;
 
 		void Turn(TUInt8 *pBuffer);
 		void Mirror(TUInt8 *pBuffer);

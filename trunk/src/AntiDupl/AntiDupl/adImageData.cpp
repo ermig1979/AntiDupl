@@ -105,7 +105,7 @@ namespace ad
 		return *this;
 	}
 
-	bool TImageData::PixelDataFillingNeed(TOptions * pOptions) const
+	bool TImageData::PixelDataFillingNeed(const TOptions * pOptions) const
 	{
 		return (pOptions->compare.checkOnEquality == TRUE || 
 			pOptions->defect.checkOnDefect == TRUE || 
@@ -114,11 +114,29 @@ namespace ad
 			type != AD_IMAGE_NONE;
 	}
 
-	bool TImageData::DefectCheckingNeed(TOptions * pOptions) const
+	bool TImageData::DefectCheckingNeed(const TOptions * pOptions) const
 	{
 		return (pOptions->defect.checkOnDefect == TRUE && defect == AD_DEFECT_UNDEFINE) ||
 			(pOptions->defect.checkOnBlockiness == TRUE && (defect == AD_DEFECT_UNDEFINE || defect == AD_DEFECT_NONE) &&
 			blockiness > pOptions->defect.blockinessThreshold); 
+	}
+
+	TDefectType TImageData::GetDefect(const TOptions * pOptions) const
+	{
+		TUInt32 maxSize = pOptions->compare.maximalImageSize;
+		TUInt32 minSize = pOptions->compare.minimalImageSize;
+		if(width >= minSize && width <= maxSize && height >= minSize && height <= maxSize)
+		{
+			if(pOptions->defect.checkOnDefect == TRUE && defect > AD_DEFECT_NONE && defect < AD_DEFECT_BLOCKINESS)
+				return defect;
+			
+			if(pOptions->defect.checkOnBlockiness == TRUE && blockiness > pOptions->defect.blockinessThreshold)
+			{
+				if((pOptions->defect.checkOnBlockinessOnlyNotJpeg != TRUE || type != AD_IMAGE_JPEG))
+					return AD_DEFECT_BLOCKINESS;
+			}
+		}
+		return AD_DEFECT_NONE;
 	}
 
 	void TImageData::FillOther(TOptions *pOptions)
