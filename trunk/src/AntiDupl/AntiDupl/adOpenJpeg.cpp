@@ -98,7 +98,7 @@ namespace ad
                             {
                                 if(c0.prec >= 8 && c0.dx == 1 && c1.dx == 1 && c2.dx == 1 && c0.dy == 1 && c1.dy == 1 && c2.dy == 1)
                                 {
-                                    pView = new TView(width, height, width*TView::SizeOf(Simd::View::Bgra32), Simd::View::Bgra32, NULL);
+                                    pView = new TView(width, height, width*TView::PixelSize(TView::Bgra32), TView::Bgra32, NULL);
                                     Simd::InterleaveBgra(pView->data, width*height, 
                                         c2.data, c2.prec, c2.sgnd != 0, c1.data, c1.prec, c1.sgnd != 0, c0.data, c0.prec, c0.sgnd != 0, 0xFF);
                                 }
@@ -108,7 +108,7 @@ namespace ad
                                 if(c0.prec >= 8 && (c1.dx == 1 || c1.dx == 2) && (c1.dy == 1 || c1.dy == 2) 
                                     && (c1.dy != 1 || c1.dx != 2) && width%c1.dx == 0 && height%c1.dy == 0)
                                 {
-                                    pView = new TView(width, height, width*TView::SizeOf(Simd::View::Bgra32), Simd::View::Bgra32, NULL);
+                                    pView = new TView(width, height, width*TView::PixelSize(TView::Bgra32), TView::Bgra32, NULL);
                                     Simd::YuvToBgra(pView->data, width, height, pView->stride,
                                         c0.data, c1.data, c2.data, c1.dx, c1.dy, c0.prec, 0xFF);
                                 }
@@ -120,7 +120,7 @@ namespace ad
                             {
                                 if(c0.prec >= 8 && c0.dx == 1 && c0.dy == 1)
                                 {
-                                    pView = new TView(width, height, width*TView::SizeOf(Simd::View::Bgra32), Simd::View::Bgra32, NULL);
+                                    pView = new TView(width, height, width*TView::PixelSize(TView::Bgra32), TView::Bgra32, NULL);
                                     Simd::InterleaveBgra(pView->data, width*height, c0.data, c0.prec, c0.sgnd != 0, 0xFF);
                                 }
                             }

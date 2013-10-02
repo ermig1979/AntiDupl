@@ -519,7 +519,7 @@ namespace ad
 				{
 					size_t width = image.info.width;
 					size_t height = image.info.height;
-					TView *pView = new TView(width, height, width*TView::SizeOf(Simd::View::Bgra32), Simd::View::Bgra32, NULL); 
+					TView *pView = new TView(width, height, width*TView::PixelSize(TView::Bgra32), TView::Bgra32, NULL); 
 					if(pView)
 					{
 						for(size_t row = 0; row < height; ++row)

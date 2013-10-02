@@ -59,6 +59,7 @@ namespace Simd
     void AveragingBinarization(const View & src, uchar value, size_t neighborhood, uchar threshold, uchar positive, uchar negative, View & dst, CompareType compareType);
 
     void Copy(const View & src, View & dst);
+    void CopyFrame(const View & src, const Rectangle<ptrdiff_t> & frame, View & dst);
 
     void DeinterleaveUv(const View & uv, View & u, View & v);
 
@@ -69,6 +70,9 @@ namespace Simd
     void EdgeBackgroundAdjustRange(View & backgroundCount, View & backgroundValue, uchar threshold, const View & mask);
     void EdgeBackgroundShiftRange(const View & value, View & background);
     void EdgeBackgroundShiftRange(const View & value, View & background, const View & mask);
+
+    void Fill(View & dst, uchar value);
+    void FillBgra(View & dst, uchar blue, uchar green, uchar red, uchar alpha = 0xFF);
 
     void GaussianBlur3x3(const View & src, View & dst);
 
@@ -88,7 +92,7 @@ namespace Simd
 
     void ResizeBilinear(const View & src, View & dst);
 
-    void ShiftBilinear(const View & src, const View & bkg, double shiftX, double shiftY, size_t cropLeft, size_t cropTop, size_t cropRight, size_t cropBottom, View & dst);
+    void ShiftBilinear(const View & src, const View & bkg, const Point<double> & shift, const Rectangle<ptrdiff_t> & crop, View & dst);
 
     void SquaredDifferenceSum(const View & a, const View & b, uint64_t & sum);
     void SquaredDifferenceSum(const View & a, const View & b, const View & mask, uchar index, uint64_t & sum);

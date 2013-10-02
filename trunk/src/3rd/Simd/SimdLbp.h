@@ -21,16 +21,32 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
-#ifndef __SimdCopy_h__
-#define __SimdCopy_h__
+#ifndef __SimdLbp_h__
+#define __SimdLbp_h__
 
 #include "Simd/SimdTypes.h"
 
 namespace Simd
 {
-    void Copy(const uchar * src, size_t srcStride, size_t width, size_t height, size_t pixelSize, uchar * dst, size_t dstStride);
+	namespace Base
+	{
+		void LbpEstimate(const uchar * src, size_t srcStride, size_t width, size_t height, uchar * dst, size_t dstStride);
+	}
 
-    void CopyFrame(const uchar * src, size_t srcStride, size_t width, size_t height, size_t pixelSize, 
-        size_t frameLeft, size_t frameTop, size_t frameRight, size_t frameBottom, uchar * dst, size_t dstStride);
+#ifdef SIMD_SSE2_ENABLE    
+	namespace Sse2
+	{
+		void LbpEstimate(const uchar * src, size_t srcStride, size_t width, size_t height, uchar * dst, size_t dstStride);
+	}
+#endif// SIMD_SSE2_ENABLE
+
+#ifdef SIMD_AVX2_ENABLE    
+    namespace Avx2
+    {
+        void LbpEstimate(const uchar * src, size_t srcStride, size_t width, size_t height, uchar * dst, size_t dstStride);
+    }
+#endif// SIMD_AVX2_ENABLE
+
+	void LbpEstimate(const uchar * src, size_t srcStride, size_t width, size_t height, uchar * dst, size_t dstStride);
 }
-#endif//__SimdCopy_h__
+#endif//__SimdLbp_h__

@@ -327,6 +327,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimdFill.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdFill.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdGaussianBlur3x3.cpp"
 				>
 			</File>
@@ -340,6 +348,14 @@
 			</File>
 			<File
 				RelativePath=".\SimdInterleaveBgra.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdLbp.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdLbp.h"
 				>
 			</File>
 			<File
@@ -510,7 +526,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\SimdFillA.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\SimdGaussianBlur3x3A.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimdLbpA.cpp"
 					>
 				</File>
 				<File
@@ -578,6 +602,14 @@
 		<Filter
 			Name="Utl"
 			>
+			<File
+				RelativePath=".\SimdPoint.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdRectangle.h"
+				>
+			</File>
 			<File
 				RelativePath=".\SimdUtils.cpp"
 				>

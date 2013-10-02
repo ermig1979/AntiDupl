@@ -246,6 +246,14 @@
 			</File>
 		</Filter>
 		<File
+			RelativePath=".\adBlurringDetector.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\adBlurringDetector.h"
+			>
+		</File>
+		<File
 			RelativePath=".\adConfig.h"
 			>
 		</File>

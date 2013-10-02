@@ -1,7 +1,7 @@
 /*
-* Simd Library.
+* AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2011-2013 Yermalayeu Ihar.
+* Copyright (c) 2002-2013 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -21,16 +21,36 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
-#ifndef __SimdCopy_h__
-#define __SimdCopy_h__
+#ifndef __adBlurringDetector_h__
+#define __adBlurringDetector_h__
 
-#include "Simd/SimdTypes.h"
+#include "adConfig.h"
 
-namespace Simd
+namespace ad
 {
-    void Copy(const uchar * src, size_t srcStride, size_t width, size_t height, size_t pixelSize, uchar * dst, size_t dstStride);
+    class TBlurringDetector
+    {
+		struct TLevel
+		{
+			int scale;
+            TView view;
+            TUInt32 histogram[HISTOGRAM_SIZE];
+            double quantile;
+		};
+		typedef std::vector<TLevel> TLevels;
 
-    void CopyFrame(const uchar * src, size_t srcStride, size_t width, size_t height, size_t pixelSize, 
-        size_t frameLeft, size_t frameTop, size_t frameRight, size_t frameBottom, uchar * dst, size_t dstStride);
+    public:
+        TBlurringDetector();
+        ~TBlurringDetector();
+
+        double Radius(const TView & view) const;
+
+    private:
+		void InitLevels(const TView & view, TLevels & levels) const;
+		void EstimateAbsSecondDerivativeHistograms(TLevels & levels) const;
+		double Quantile(const TUInt32 * histogram, double threshold) const;
+		double Threshold(const TLevels & levels) const;
+        double Radius(const TLevels & levels, double threshold) const;
+	};
 }
-#endif//__SimdCopy_h__
+#endif//__adBlurringDetector_h__ 
