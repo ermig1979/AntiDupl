@@ -31,6 +31,7 @@
 #include "adDataCollector.h"
 #include "adImageUtils.h"
 #include "adPixelData.h"
+#include "adBlurringDetector.h"
 
 namespace ad
 {
@@ -78,6 +79,9 @@ namespace ad
 			Simd::BgraToGray(*pImage->View(), gray);
 
 			pImageData->blockiness = GetBlockiness(gray);
+
+			TBlurringDetector blurringDetector;
+			double radius = blurringDetector.Radius(gray);
 
 			Simd::ResizeBilinear(gray, *m_pGrayBuffers.front());
             for(size_t i = 1; i < m_pGrayBuffers.size(); ++i)

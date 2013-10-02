@@ -80,6 +80,7 @@ namespace ad
 	typedef std::basic_stringstream<adChar, std::char_traits<adChar>, std::allocator<adChar> > TStringStream;
 
 	typedef Simd::View TView;
+	typedef Simd::Point<ptrdiff_t> TPoint;
 
     //-------------------------------------------------------------------------
 
@@ -108,6 +109,7 @@ namespace ad
 	const size_t SIZE_CHECK_LIMIT = UINT_MAX;
 
 	const size_t BLOCKINESS_SIZE = 8;
+	const static size_t HISTOGRAM_SIZE = 256;
     //-------------------------------------------------------------------------
 }
 
