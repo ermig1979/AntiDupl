@@ -38,8 +38,10 @@ namespace ad
     {
     }
 
-	double TBlurringDetector::Radius(const TView & view) const
+	double TBlurringDetector::Detect(const TView & view) const
 	{
+		AD_FUNCTION_PERFORMANCE_TEST
+
 		TLevels levels;
 
 		InitLevels(view, levels);

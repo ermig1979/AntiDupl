@@ -35,6 +35,7 @@ namespace ad
         TUInt32 width;
         TUInt32 height;
 		double blockiness;
+		double blurring;
 
         size_t index;
 

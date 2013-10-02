@@ -31,7 +31,8 @@ namespace ad
         type = AD_IMAGE_UNDEFINE;
         width = 0;
         height = 0;
-		blockiness = 0;
+		blockiness = -1.0;
+		blurring = -1.0;
 
         index = AD_UNDEFINED;
         group = AD_UNDEFINED;
@@ -52,6 +53,7 @@ namespace ad
         width = imageInfo.width;
         height = imageInfo.height;
 		blockiness = imageInfo.blockiness;
+		blurring = imageInfo.blurring;
 
         index = imageInfo.index;
         group = imageInfo.group;
@@ -74,6 +76,7 @@ namespace ad
         pImageInfo->width = width;
         pImageInfo->height = height;
 		pImageInfo->blockiness = blockiness;
+		pImageInfo->blurring = blurring;
 
         return true;
     }
@@ -91,6 +94,7 @@ namespace ad
         pImageInfo->width = width;
         pImageInfo->height = height;
 		pImageInfo->blockiness = blockiness;
+		pImageInfo->blurring = blurring;
 
         return true;
     }

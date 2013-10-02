@@ -58,7 +58,7 @@ namespace AntiDupl.NET
 
         private void InitializeComponents()
         {
-            ClientSize = new System.Drawing.Size(450, 210);
+            ClientSize = new System.Drawing.Size(450, 270);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             StartPosition = FormStartPosition.CenterScreen;
             ShowInTaskbar = false;
@@ -70,7 +70,7 @@ namespace AntiDupl.NET
             mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
             Controls.Add(mainTableLayoutPanel);
 
-            TableLayoutPanel columnsTableLayoutPanel = InitFactory.Layout.Create(3, 9, 5); //columns, rows, padding
+            TableLayoutPanel columnsTableLayoutPanel = InitFactory.Layout.Create(3, 8, 5); //columns, rows, padding
             columnsTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33F));
             columnsTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34F));
             columnsTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33F));
@@ -97,12 +97,14 @@ namespace AntiDupl.NET
             columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageSize], 1, 2);
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageType] = InitFactory.CheckBox.Create(OnOptionChanged);
             columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageType], 1, 3);
-            m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageBlockiness] = InitFactory.CheckBox.Create(OnOptionChanged);
-            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageBlockiness], 1, 4);
+            m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstBlockiness] = InitFactory.CheckBox.Create(OnOptionChanged);
+            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstBlockiness], 1, 4);
+            m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstBlurring] = InitFactory.CheckBox.Create(OnOptionChanged);
+            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstBlurring], 1, 5);
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileSize] = InitFactory.CheckBox.Create(OnOptionChanged);
-            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileSize], 1, 5);
+            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileSize], 1, 6);
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileTime] = InitFactory.CheckBox.Create(OnOptionChanged);
-            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileTime], 1, 6);
+            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileTime], 1, 7);
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileName] = InitFactory.CheckBox.Create(OnOptionChanged);
             columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileName], 2, 0);
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileDirectory] = InitFactory.CheckBox.Create(OnOptionChanged);
@@ -111,12 +113,14 @@ namespace AntiDupl.NET
             columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageSize], 2, 2);
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageType] = InitFactory.CheckBox.Create(OnOptionChanged);
             columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageType], 2, 3);
-            m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageBlockiness] = InitFactory.CheckBox.Create(OnOptionChanged);
-            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageBlockiness], 2, 4);
+            m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondBlockiness] = InitFactory.CheckBox.Create(OnOptionChanged);
+            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondBlockiness], 2, 4);
+            m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondBlurring] = InitFactory.CheckBox.Create(OnOptionChanged);
+            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondBlurring], 2, 5);
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileSize] = InitFactory.CheckBox.Create(OnOptionChanged);
-            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileSize], 2, 5);
+            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileSize], 2, 6);
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileTime] = InitFactory.CheckBox.Create(OnOptionChanged);
-            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileTime], 2, 6);
+            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileTime], 2, 7);
 
             TableLayoutPanel buttonsTableLayoutPanel = InitFactory.Layout.Create(3, 1);
             buttonsTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
@@ -152,14 +156,16 @@ namespace AntiDupl.NET
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileDirectory].Text = s.ResultsListView_FirstFileDirectory_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageSize].Text = s.ResultsListView_FirstImageSize_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageType].Text = s.ResultsListView_FirstImageType_Column_Text;
-            m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageBlockiness].Text = s.ResultsListView_FirstImageBlockiness_Column_Text;
+            m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstBlockiness].Text = s.ResultsListView_FirstBlockiness_Column_Text;
+            m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstBlurring].Text = s.ResultsListView_FirstBlurring_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileSize].Text = s.ResultsListView_FirstFileSize_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileTime].Text = s.ResultsListView_FirstFileTime_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileName].Text = s.ResultsListView_SecondFileName_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileDirectory].Text = s.ResultsListView_SecondFileDirectory_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageSize].Text = s.ResultsListView_SecondImageSize_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageType].Text = s.ResultsListView_SecondImageType_Column_Text;
-            m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageBlockiness].Text = s.ResultsListView_SecondImageBlockiness_Column_Text;
+            m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondBlockiness].Text = s.ResultsListView_SecondBlockiness_Column_Text;
+            m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondBlurring].Text = s.ResultsListView_SecondBlurring_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileSize].Text = s.ResultsListView_SecondFileSize_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileTime].Text = s.ResultsListView_SecondFileTime_Column_Text;
         }

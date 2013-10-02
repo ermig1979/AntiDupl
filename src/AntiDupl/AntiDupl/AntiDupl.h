@@ -179,33 +179,36 @@ extern "C"
         AD_SORT_BY_SORTED_AREA = 9,
         AD_SORT_BY_SORTED_RATIO = 10,
 		AD_SORT_BY_SORTED_BLOCKINESS = 11,
-        AD_SORT_BY_FIRST_PATH = 12,
-        AD_SORT_BY_FIRST_NAME = 13,
-        AD_SORT_BY_FIRST_DIRECTORY = 14,
-        AD_SORT_BY_FIRST_SIZE = 15,
-        AD_SORT_BY_FIRST_TIME = 16,
-        AD_SORT_BY_FIRST_TYPE = 17,
-        AD_SORT_BY_FIRST_WIDTH = 18,
-        AD_SORT_BY_FIRST_HEIGHT = 19,
-        AD_SORT_BY_FIRST_AREA = 20,
-        AD_SORT_BY_FIRST_RATIO = 21,
-		AD_SORT_BY_FIRST_BLOCKINESS = 22,
-        AD_SORT_BY_SECOND_PATH = 23,
-        AD_SORT_BY_SECOND_NAME = 24,
-        AD_SORT_BY_SECOND_DIRECTORY = 25,
-        AD_SORT_BY_SECOND_SIZE = 26,
-        AD_SORT_BY_SECOND_TIME = 27,
-        AD_SORT_BY_SECOND_TYPE = 28,
-        AD_SORT_BY_SECOND_WIDTH = 29,
-        AD_SORT_BY_SECOND_HEIGHT = 30,
-        AD_SORT_BY_SECOND_AREA = 31,
-        AD_SORT_BY_SECOND_RATIO = 32,
-		AD_SORT_BY_SECOND_BLOCKINESS = 33,
-        AD_SORT_BY_DEFECT = 34,
-        AD_SORT_BY_DIFFERENCE = 35,
-        AD_SORT_BY_TRANSFORM = 36,
-        AD_SORT_BY_GROUP = 37,
-        AD_SORT_BY_HINT = 38,
+		AD_SORT_BY_SORTED_BLURRING = 12,
+        AD_SORT_BY_FIRST_PATH = 13,
+        AD_SORT_BY_FIRST_NAME = 14,
+        AD_SORT_BY_FIRST_DIRECTORY = 15,
+        AD_SORT_BY_FIRST_SIZE = 16,
+        AD_SORT_BY_FIRST_TIME = 17,
+        AD_SORT_BY_FIRST_TYPE = 18,
+        AD_SORT_BY_FIRST_WIDTH = 19,
+        AD_SORT_BY_FIRST_HEIGHT = 20,
+        AD_SORT_BY_FIRST_AREA = 21,
+        AD_SORT_BY_FIRST_RATIO = 22,
+		AD_SORT_BY_FIRST_BLOCKINESS = 23,
+		AD_SORT_BY_FIRST_BLURRING = 24,
+        AD_SORT_BY_SECOND_PATH = 25,
+        AD_SORT_BY_SECOND_NAME = 26,
+        AD_SORT_BY_SECOND_DIRECTORY = 27,
+        AD_SORT_BY_SECOND_SIZE = 28,
+        AD_SORT_BY_SECOND_TIME = 29,
+        AD_SORT_BY_SECOND_TYPE = 30,
+        AD_SORT_BY_SECOND_WIDTH = 31,
+        AD_SORT_BY_SECOND_HEIGHT = 32,
+        AD_SORT_BY_SECOND_AREA = 33,
+        AD_SORT_BY_SECOND_RATIO = 34,
+		AD_SORT_BY_SECOND_BLOCKINESS = 35,
+		AD_SORT_BY_SECOND_BLURRING = 36,
+        AD_SORT_BY_DEFECT = 37,
+        AD_SORT_BY_DIFFERENCE = 38,
+        AD_SORT_BY_TRANSFORM = 39,
+        AD_SORT_BY_GROUP = 40,
+        AD_SORT_BY_HINT = 41,
         AD_SORT_SIZE
     };
 
@@ -301,6 +304,7 @@ extern "C"
         AD_DEFECT_UNKNOWN = 1,
         AD_DEFECT_JPEG_END_MARKER_IS_ABSENT = 2,
         AD_DEFECT_BLOCKINESS = 3,
+        AD_DEFECT_BLURRING = 4,
         AD_DEFECT_SIZE
     };
 
@@ -403,6 +407,8 @@ extern "C"
         adBool checkOnBlockiness;
         adInt32 blockinessThreshold;
 		adBool checkOnBlockinessOnlyNotJpeg;
+        adBool checkOnBlurring;
+        adInt32 blurringThreshold;
     };
     typedef adDefectOptions* adDefectOptionsPtr;
 
@@ -464,6 +470,7 @@ extern "C"
         adUInt32 width;
         adUInt32 height;
 		double blockiness;
+		double blurring;
     };
     typedef adImageInfoA* adImageInfoPtrA;
 
@@ -477,6 +484,7 @@ extern "C"
         adUInt32 width;
         adUInt32 height;
  		double blockiness;
+		double blurring;
    };
     typedef adImageInfoW* adImageInfoPtrW;
 

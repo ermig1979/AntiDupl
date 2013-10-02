@@ -109,16 +109,18 @@ namespace ad
 	{
 		return (pOptions->compare.checkOnEquality == TRUE || 
 			pOptions->defect.checkOnDefect == TRUE || 
-			pOptions->defect.checkOnBlockiness == TRUE) && 
-			(!data->filled || blockiness < 0) &&
+			pOptions->defect.checkOnBlockiness == TRUE  || 
+			pOptions->defect.checkOnBlurring == TRUE) && 
+			(!data->filled || blockiness < 0 || blurring < 0) &&
 			type != AD_IMAGE_NONE;
 	}
 
 	bool TImageData::DefectCheckingNeed(const TOptions * pOptions) const
 	{
-		return (pOptions->defect.checkOnDefect == TRUE && defect == AD_DEFECT_UNDEFINE) ||
-			(pOptions->defect.checkOnBlockiness == TRUE && (defect == AD_DEFECT_UNDEFINE || defect == AD_DEFECT_NONE) &&
-			blockiness > pOptions->defect.blockinessThreshold); 
+		const adDefectOptions & options = pOptions->defect;
+		return (options.checkOnDefect == TRUE && defect == AD_DEFECT_UNDEFINE) ||
+			(options.checkOnBlockiness == TRUE && (defect == AD_DEFECT_UNDEFINE || defect == AD_DEFECT_NONE) && blockiness > options.blockinessThreshold) || 
+			(options.checkOnBlurring == TRUE && (defect == AD_DEFECT_UNDEFINE || defect == AD_DEFECT_NONE) && blurring > options.blurringThreshold); 
 	}
 
 	TDefectType TImageData::GetDefect(const TOptions * pOptions) const
@@ -135,6 +137,9 @@ namespace ad
 				if((pOptions->defect.checkOnBlockinessOnlyNotJpeg != TRUE || type != AD_IMAGE_JPEG))
 					return AD_DEFECT_BLOCKINESS;
 			}
+
+			if(pOptions->defect.checkOnBlurring == TRUE && blurring > pOptions->defect.blurringThreshold)
+					return AD_DEFECT_BLURRING;
 		}
 		return AD_DEFECT_NONE;
 	}

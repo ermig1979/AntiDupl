@@ -87,7 +87,7 @@ namespace AntiDupl.NET
             Search = 0,
             Ignore = 1,
             Valid = 2,
-            Delete = 3
+            Delete = 3,
         }
 
         public enum OptionsType : int
@@ -96,7 +96,7 @@ namespace AntiDupl.NET
             Search = 0,
             Compare = 1,
             Defect = 2,
-            Advanced = 3
+            Advanced = 3,
         }
 
         public enum FileType : int
@@ -105,7 +105,7 @@ namespace AntiDupl.NET
             Result = 1,
             MistakeDataBase = 2,
             ImageDataBase = 3,
-            Temporary = 4
+            Temporary = 4,
         }
 
         public enum SortType : int
@@ -122,33 +122,36 @@ namespace AntiDupl.NET
             BySortedArea = 9,
             BySortedRatio = 10,
             BySortedBlockiness = 11,
-            ByFirstPath = 12,
-            ByFirstName = 13,
-            ByFirstDirectory = 14,
-            ByFirstSize = 15,
-            ByFirstTime = 16,
-            ByFirstType = 17,
-            ByFirstWidth = 18,
-            ByFirstHeight = 19,
-            ByFirstArea = 20,
-            ByFirstRatio = 21,
-            ByFirstBlockiness = 22,
-            BySecondPath = 23,
-            BySecondName = 24,
-            BySecondDirectory = 25,
-            BySecondSize = 26,
-            BySecondTime = 27,
-            BySecondType = 28,
-            BySecondWidth = 29,
-            BySecondHeight = 30,
-            BySecondArea = 31,
-            BySecondRatio = 32,
-            BySecondBlockiness = 33,
-            ByDefect = 34,
-            ByDifference = 35,
-            ByTransform = 36,
-            ByGroup = 37,
-            ByHint = 38
+            BySortedBlurring = 12,
+            ByFirstPath = 13,
+            ByFirstName = 14,
+            ByFirstDirectory = 15,
+            ByFirstSize = 16,
+            ByFirstTime = 17,
+            ByFirstType = 18,
+            ByFirstWidth = 19,
+            ByFirstHeight = 20,
+            ByFirstArea = 21,
+            ByFirstRatio = 22,
+            ByFirstBlockiness = 23,
+            ByFirstBlurring = 24,
+            BySecondPath = 25,
+            BySecondName = 26,
+            BySecondDirectory = 27,
+            BySecondSize = 28,
+            BySecondTime = 29,
+            BySecondType = 30,
+            BySecondWidth = 31,
+            BySecondHeight = 32,
+            BySecondArea = 33,
+            BySecondRatio = 34,
+            BySecondBlockiness = 35,
+            BySecondBlurring = 36,
+            ByDefect = 37,
+            ByDifference = 38,
+            ByTransform = 39,
+            ByGroup = 40,
+            ByHint = 41,
         }
 
         public enum GlobalActionType : int
@@ -157,7 +160,7 @@ namespace AntiDupl.NET
             SetGroup = 1,
             Refresh = 2,
             Undo = 3,
-            Redo = 4
+            Redo = 4,
         }
 
         public enum LocalActionType : int
@@ -169,7 +172,7 @@ namespace AntiDupl.NET
             RenameFirstToSecond = 4,
             RenameSecondToFirst = 5,
             PerformHint = 6,
-            Mistake = 7
+            Mistake = 7,
         }
 
         public enum ActionEnableType : int
@@ -179,19 +182,19 @@ namespace AntiDupl.NET
             DuplPair = 2,
             PerformHint = 3,
             Undo = 4,
-            Redo = 5
+            Redo = 5,
         }
 
         public enum TargetType : int
         {
             Current = 0,
-            Selected = 1
+            Selected = 1,
         }
 
         public enum RenameCurrentType : int
         {
             First = 0,
-            Second = 1
+            Second = 1,
         }
 
         public enum StateType : int
@@ -199,14 +202,14 @@ namespace AntiDupl.NET
             None = 0,
             Work = 1,
             Wait = 2,
-            Stop = 3
+            Stop = 3,
         }
 
         public enum ResultType : int
         {
             None = 0,
             DefectImage = 1,
-            DuplImagePair = 2
+            DuplImagePair = 2,
         }
 
         public enum ImageType : int
@@ -232,7 +235,8 @@ namespace AntiDupl.NET
             None = 0,
             Unknown = 1,
             JpegEndMarkerIsAbsent = 2,
-            Blockiness = 3
+            Blockiness = 3,
+            Blurring = 4,
         }
 
         public enum TransformType : int
@@ -244,7 +248,7 @@ namespace AntiDupl.NET
             MirrorTurn_0 = 4,
             MirrorTurn_90 = 5,
             MirrorTurn_180 = 6,
-            MirrorTurn_270 = 7
+            MirrorTurn_270 = 7,
         }
 
         public enum HintType : int
@@ -253,20 +257,20 @@ namespace AntiDupl.NET
             DeleteFirst = 1,
             DeleteSecond = 2,
             RenameFirstToSecond = 3,
-            RenameSecondToFirst = 4
+            RenameSecondToFirst = 4,
         }
 
         public enum PixelFormatType : int
         {
             None = 0,
-            Argb32 = 1
+            Argb32 = 1,
         }
 
         public enum ThreadType : int
         {
             Main = 0,
             Collect = 1,
-            Compare = 2
+            Compare = 2,
         }
 
         public enum VersionType : int
@@ -329,6 +333,8 @@ namespace AntiDupl.NET
             public int checkOnBlockiness;
             public int blockinessThreshold;
             public int checkOnBlockinessOnlyNotJpeg;
+            public int checkOnBlurring;
+            public int blurringThreshold;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -383,6 +389,7 @@ namespace AntiDupl.NET
             public uint width;
             public uint height;
             public double blockiness;
+            public double blurring;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
