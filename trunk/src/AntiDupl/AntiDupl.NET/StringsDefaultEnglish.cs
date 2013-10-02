@@ -94,6 +94,8 @@ namespace AntiDupl.NET
             s.CoreOptionsForm_CheckOnBlockinessCheckBox_Text = "Check on blockiness";
             s.CoreOptionsForm_BlockinessThresholdLabeledComboBox_Text = "Blockiness threshold";
             s.CoreOptionsForm_CheckOnBlockinessOnlyNotJpegCheckBox_Text = "Check on blockiness only on not Jpeg";
+            s.CoreOptionsForm_CheckOnBlurringCheckBox_Text = "Check on blurring";
+            s.CoreOptionsForm_BlurringThresholdLabeledComboBox_Text = "Blurring threshold";
 
             s.CoreOptionsForm_AdvancedTabPage_Text = "Advanced";
             s.CoreOptionsForm_DeleteToRecycleBinCheckBox_Text = "Delete to recycle bin";
@@ -160,7 +162,8 @@ namespace AntiDupl.NET
 
             s.ResultRowSetter_UnknownDefectIcon_ToolTip_Text = "Unknown defect";
             s.ResultRowSetter_JpegEndMarkerIsAbsentIcon_ToolTip_Text = "JPEG file end marker is absent";
-            s.ResultRowSetter_blockinessIcon_ToolTip_Text = "Blockiness in not JPEG image";
+            s.ResultRowSetter_blockinessIcon_ToolTip_Text = "Image with blockiness";
+            s.ResultRowSetter_blurringIcon_ToolTip_Text = "Blurred image";
 
             s.ResultRowSetter_DeleteDefectIcon_ToolTip_Text = "Delete picture";
             s.ResultRowSetter_DeleteFirstIcon_ToolTip_Text = "Delete first picture";
@@ -188,7 +191,8 @@ namespace AntiDupl.NET
             s.ResultsListView_FileDirectory_Column_Text = "In folder";
             s.ResultsListView_ImageSize_Column_Text = "Dimensions";
             s.ResultsListView_ImageType_Column_Text = "Image type";
-            s.ResultsListView_ImageBlockiness_Column_Text = "Blockiness";
+            s.ResultsListView_Blockiness_Column_Text = "Blockiness";
+            s.ResultsListView_Blurring_Column_Text = "Blurring";
             s.ResultsListView_FileSize_Column_Text = "Size";
             s.ResultsListView_FileTime_Column_Text = "Date modified";
 
@@ -196,14 +200,16 @@ namespace AntiDupl.NET
             s.ResultsListView_FirstFileDirectory_Column_Text = "1: In folder";
             s.ResultsListView_FirstImageSize_Column_Text = "1: Dimensions";
             s.ResultsListView_FirstImageType_Column_Text = "1: Image type";
-            s.ResultsListView_FirstImageBlockiness_Column_Text = "1: Image blockiness";
+            s.ResultsListView_FirstBlockiness_Column_Text = "1: Blockiness";
+            s.ResultsListView_FirstBlurring_Column_Text = "1: Blurring";
             s.ResultsListView_FirstFileSize_Column_Text = "1: Size";
             s.ResultsListView_FirstFileTime_Column_Text = "1: First Date modified";
             s.ResultsListView_SecondFileName_Column_Text = "2: Name";
             s.ResultsListView_SecondFileDirectory_Column_Text = "2: In folder";
             s.ResultsListView_SecondImageSize_Column_Text = "2: Dimensions";
             s.ResultsListView_SecondImageType_Column_Text = "2: Image type";
-            s.ResultsListView_SecondImageBlockiness_Column_Text = "2: Image blockiness";
+            s.ResultsListView_SecondBlockiness_Column_Text = "2: Blockiness";
+            s.ResultsListView_SecondBlurring_Column_Text = "2: Blurring";
             s.ResultsListView_SecondFileSize_Column_Text = "2: Size";
             s.ResultsListView_SecondFileTime_Column_Text = "2: Date modified";
 

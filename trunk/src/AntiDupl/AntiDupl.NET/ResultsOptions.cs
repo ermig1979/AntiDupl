@@ -251,17 +251,21 @@ namespace AntiDupl.NET
             columnOptionsVertical[(int)ResultsListView.ColumnsTypeVertical.ImageType].width = 40;
             columnOptionsVertical[(int)ResultsListView.ColumnsTypeVertical.ImageType].order = 9;
 
-            columnOptionsVertical[(int)ResultsListView.ColumnsTypeVertical.ImageBlockiness].visible = true;
-            columnOptionsVertical[(int)ResultsListView.ColumnsTypeVertical.ImageBlockiness].width = 55;
-            columnOptionsVertical[(int)ResultsListView.ColumnsTypeVertical.ImageBlockiness].order = 10;
+            columnOptionsVertical[(int)ResultsListView.ColumnsTypeVertical.Blockiness].visible = true;
+            columnOptionsVertical[(int)ResultsListView.ColumnsTypeVertical.Blockiness].width = 55;
+            columnOptionsVertical[(int)ResultsListView.ColumnsTypeVertical.Blockiness].order = 10;
+
+            columnOptionsVertical[(int)ResultsListView.ColumnsTypeVertical.Blurring].visible = true;
+            columnOptionsVertical[(int)ResultsListView.ColumnsTypeVertical.Blurring].width = 55;
+            columnOptionsVertical[(int)ResultsListView.ColumnsTypeVertical.Blurring].order = 11;
 
             columnOptionsVertical[(int)ResultsListView.ColumnsTypeVertical.FileSize].visible = true;
             columnOptionsVertical[(int)ResultsListView.ColumnsTypeVertical.FileSize].width = 55;
-            columnOptionsVertical[(int)ResultsListView.ColumnsTypeVertical.FileSize].order = 11;
+            columnOptionsVertical[(int)ResultsListView.ColumnsTypeVertical.FileSize].order = 12;
 
             columnOptionsVertical[(int)ResultsListView.ColumnsTypeVertical.FileTime].visible = false;
             columnOptionsVertical[(int)ResultsListView.ColumnsTypeVertical.FileTime].width = 115;
-            columnOptionsVertical[(int)ResultsListView.ColumnsTypeVertical.FileTime].order = 12;
+            columnOptionsVertical[(int)ResultsListView.ColumnsTypeVertical.FileTime].order = 13;
         }
 
         private void SetDefaultHorizontalColumns()
@@ -302,41 +306,49 @@ namespace AntiDupl.NET
             columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageType].width = 40;
             columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageType].order = 9;
 
-            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageBlockiness].visible = true;
-            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageBlockiness].width = 55;
-            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageBlockiness].order = 10;
+            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.FirstBlockiness].visible = true;
+            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.FirstBlockiness].width = 55;
+            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.FirstBlockiness].order = 10;
+
+            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.FirstBlurring].visible = true;
+            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.FirstBlurring].width = 55;
+            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.FirstBlurring].order = 11;
 
             columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileSize].visible = true;
             columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileSize].width = 55;
-            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileSize].order = 11;
+            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileSize].order = 12;
 
             columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileTime].visible = false;
             columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileTime].width = 115;
-            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileTime].order = 12;
+            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileTime].order = 13;
 
             columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileDirectory].visible = true;
             columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileDirectory].width = 230;
-            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileDirectory].order = 13;
+            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileDirectory].order = 14;
 
             columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageSize].visible = true;
             columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageSize].width = 70;
-            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageSize].order = 14;
+            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageSize].order = 15;
 
             columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageType].visible = true;
             columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageType].width = 40;
-            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageType].order = 15;
+            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageType].order = 16;
 
-            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageBlockiness].visible = true;
-            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageBlockiness].width = 55;
-            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageBlockiness].order = 16;
+            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondBlockiness].visible = true;
+            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondBlockiness].width = 55;
+            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondBlockiness].order = 17;
+
+            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondBlurring].visible = true;
+            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondBlurring].width = 55;
+            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondBlurring].order = 18;
 
             columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileSize].visible = true;
             columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileSize].width = 55;
-            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileSize].order = 17;
+            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileSize].order = 19;
 
             columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileTime].visible = false;
             columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileTime].width = 115;
-            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileTime].order = 18;
+            columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileTime].order = 20;
         }
     }
 }

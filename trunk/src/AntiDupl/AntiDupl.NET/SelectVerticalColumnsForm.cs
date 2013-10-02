@@ -96,12 +96,14 @@ namespace AntiDupl.NET
             columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.ImageSize], 1, 2);
             m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.ImageType] = InitFactory.CheckBox.Create(OnOptionChanged);
             columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.ImageType], 1, 3);
-            m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.ImageBlockiness] = InitFactory.CheckBox.Create(OnOptionChanged);
-            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.ImageBlockiness], 1, 4);
+            m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.Blockiness] = InitFactory.CheckBox.Create(OnOptionChanged);
+            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.Blockiness], 1, 4);
+            m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.Blurring] = InitFactory.CheckBox.Create(OnOptionChanged);
+            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.Blurring], 1, 5);
             m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.FileSize] = InitFactory.CheckBox.Create(OnOptionChanged);
-            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.FileSize], 1, 5);
+            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.FileSize], 2, 0);
             m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.FileTime] = InitFactory.CheckBox.Create(OnOptionChanged);
-            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.FileTime], 2, 0);
+            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.FileTime], 2, 1);
 
             TableLayoutPanel buttonsTableLayoutPanel = InitFactory.Layout.Create(3, 1);
             buttonsTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
@@ -137,7 +139,8 @@ namespace AntiDupl.NET
             m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.FileDirectory].Text = s.ResultsListView_FileDirectory_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.ImageSize].Text = s.ResultsListView_ImageSize_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.ImageType].Text = s.ResultsListView_ImageType_Column_Text;
-            m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.ImageBlockiness].Text = s.ResultsListView_ImageBlockiness_Column_Text;
+            m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.Blockiness].Text = s.ResultsListView_Blockiness_Column_Text;
+            m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.Blurring].Text = s.ResultsListView_Blurring_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.FileSize].Text = s.ResultsListView_FileSize_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeVertical.FileTime].Text = s.ResultsListView_FileTime_Column_Text;
         }

@@ -37,6 +37,7 @@ namespace AntiDupl.NET
         public uint width;
         public uint height;
         public double blockiness;
+        public double blurring;
 
         public CoreImageInfo(ref CoreDll.adImageInfoW imageInfo)
         {
@@ -48,6 +49,7 @@ namespace AntiDupl.NET
             width = imageInfo.width;
             height = imageInfo.height;
             blockiness = imageInfo.blockiness;
+            blurring = imageInfo.blurring;
         }
 
         public string GetImageSizeString()
@@ -110,6 +112,11 @@ namespace AntiDupl.NET
         public string GetBlockinessString()
         {
             return blockiness.ToString("F2");
+        }
+        
+        public string GetBlurringString()
+        {
+            return blurring.ToString("F2");
         }
 
         public string GetFileTimeString()

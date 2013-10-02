@@ -65,6 +65,7 @@ namespace AntiDupl.NET
         private Label m_imageSizeLabel;
         private Label m_imageTypeLabel;
         private Label m_imageBlocknessLabel;
+        private Label m_imageBlurringLabel;
         private Label m_pathLabel;
 
         public ImagePreviewPanel(CoreLib core, Options options, ResultsListView resultsListView, Position position)
@@ -112,6 +113,14 @@ namespace AntiDupl.NET
             m_imageBlocknessLabel.TextAlign = ContentAlignment.TopCenter;
             m_imageBlocknessLabel.AutoSize = true;
 
+            m_imageBlurringLabel = new Label();
+            m_imageBlurringLabel.Dock = DockStyle.Fill;
+            m_imageBlurringLabel.BorderStyle = BorderStyle.Fixed3D;
+            m_imageBlurringLabel.Padding = new Padding(1, 3, 1, 0);
+            m_imageBlurringLabel.Margin = new Padding(IBW, 0, 0, 0);
+            m_imageBlurringLabel.TextAlign = ContentAlignment.TopCenter;
+            m_imageBlurringLabel.AutoSize = true;
+
             m_imageTypeLabel = new Label();
             m_imageTypeLabel.Dock = DockStyle.Fill;
             m_imageTypeLabel.BorderStyle = BorderStyle.Fixed3D;
@@ -143,6 +152,7 @@ namespace AntiDupl.NET
                 m_fileSizeLabel.Text = m_currentImageInfo.GetFileSizeString();
                 m_imageSizeLabel.Text = m_currentImageInfo.GetImageSizeString();
                 m_imageBlocknessLabel.Text = m_currentImageInfo.GetBlockinessString();
+                m_imageBlurringLabel.Text = m_currentImageInfo.GetBlurringString();
                 m_imageTypeLabel.Text = m_currentImageInfo.type == CoreDll.ImageType.None ? "   " : m_currentImageInfo.GetImageTypeString();
                 m_pathLabel.Text = m_currentImageInfo.path;
                 if (m_neighbourImageInfo != null) //подсветка highlight
@@ -155,6 +165,8 @@ namespace AntiDupl.NET
                     m_fileSizeLabel.ForeColor = m_currentImageInfo.size < m_neighbourImageInfo.size ?
                             Color.Red : TableLayoutPanel.DefaultForeColor;
                     m_imageBlocknessLabel.ForeColor = m_currentImageInfo.blockiness > m_neighbourImageInfo.blockiness ?
+                            Color.Red : TableLayoutPanel.DefaultForeColor;
+                    m_imageBlurringLabel.ForeColor = m_currentImageInfo.blurring > m_neighbourImageInfo.blurring ?
                             Color.Red : TableLayoutPanel.DefaultForeColor;
                 }
             }
@@ -228,7 +240,7 @@ namespace AntiDupl.NET
                     break;
             }
             
-            TableLayoutPanel infoLayout = InitFactory.Layout.Create(5, 1); //number of controls in panel
+            TableLayoutPanel infoLayout = InitFactory.Layout.Create(6, 1); //number of controls in panel
             infoLayout.Height = m_imageSizeLabel.Height;
             if (m_position != Position.Left)
             {
@@ -240,14 +252,16 @@ namespace AntiDupl.NET
                 infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));//fileSizeLabel
                 infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));//imageSizeLabel
                 infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));//imageBlocknessLabel
+                infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));//imageBlurringLabel
                 infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));//imageTypeLabel
                 infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));//pathLabel
 
                 infoLayout.Controls.Add(m_fileSizeLabel, 0, 0);
                 infoLayout.Controls.Add(m_imageSizeLabel, 1, 0);
                 infoLayout.Controls.Add(m_imageBlocknessLabel, 2, 0);
-                infoLayout.Controls.Add(m_imageTypeLabel, 3, 0); 
-                infoLayout.Controls.Add(m_pathLabel, 4, 0);
+                infoLayout.Controls.Add(m_imageBlurringLabel, 3, 0);
+                infoLayout.Controls.Add(m_imageTypeLabel, 4, 0); 
+                infoLayout.Controls.Add(m_pathLabel, 5, 0);
             }
             else
             {
@@ -258,15 +272,17 @@ namespace AntiDupl.NET
 
                 infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));//pathLabel
                 infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));//imageTypeLabel
+                infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));//imageBlurringLabel
                 infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));//imageBlocknessLabel
                 infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));//imageSizeLabel
                 infoLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));//fileSizeLabel
 
                 infoLayout.Controls.Add(m_pathLabel, 0, 0);
                 infoLayout.Controls.Add(m_imageTypeLabel, 1, 0);
-                infoLayout.Controls.Add(m_imageBlocknessLabel, 2, 0); 
-                infoLayout.Controls.Add(m_imageSizeLabel, 3, 0);
-                infoLayout.Controls.Add(m_fileSizeLabel, 4, 0);
+                infoLayout.Controls.Add(m_imageBlurringLabel, 2, 0);
+                infoLayout.Controls.Add(m_imageBlocknessLabel, 3, 0); 
+                infoLayout.Controls.Add(m_imageSizeLabel, 4, 0);
+                infoLayout.Controls.Add(m_fileSizeLabel, 5, 0);
             }
 
             Controls.Clear();

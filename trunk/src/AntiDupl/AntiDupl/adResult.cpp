@@ -104,6 +104,10 @@ namespace ad
 			return (increasing ? 
                 pFirst->blockiness < pSecond->blockiness : 
                 pFirst->blockiness > pSecond->blockiness);
+		case AD_SORT_BY_SORTED_BLURRING:
+			return (increasing ? 
+                pFirst->blurring < pSecond->blurring : 
+                pFirst->blurring > pSecond->blurring);
         }
 
         return false;

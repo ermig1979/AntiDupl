@@ -81,7 +81,7 @@ namespace ad
 			pImageData->blockiness = GetBlockiness(gray);
 
 			TBlurringDetector blurringDetector;
-			double radius = blurringDetector.Radius(gray);
+			pImageData->blurring = blurringDetector.Detect(gray);
 
 			Simd::ResizeBilinear(gray, *m_pGrayBuffers.front());
             for(size_t i = 1; i < m_pGrayBuffers.size(); ++i)
@@ -150,6 +150,8 @@ namespace ad
 
 	double TDataCollector::GetBlockiness(const TView & gray)
 	{
+		AD_FUNCTION_PERFORMANCE_TEST
+
 		if(gray.height < BLOCKINESS_SIZE + 1 || gray.width < BLOCKINESS_SIZE + 1)
 			return 0;
 

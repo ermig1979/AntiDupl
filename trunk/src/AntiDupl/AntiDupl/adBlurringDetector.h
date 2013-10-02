@@ -43,7 +43,7 @@ namespace ad
         TBlurringDetector();
         ~TBlurringDetector();
 
-        double Radius(const TView & view) const;
+        double Detect(const TView & view) const;
 
     private:
 		void InitLevels(const TView & view, TLevels & levels) const;
