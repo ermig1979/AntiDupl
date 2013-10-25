@@ -93,7 +93,8 @@ namespace AntiDupl.NET
             {
                 Items.Add(m_moveImageToNeighbourItem);
             }
-            Items.Add(m_moveImageAndRenameToNeighbourItem);
+            if (m_imagePreviewPanel.NeighbourImageInfo.GetDirectoryString() != m_imagePreviewPanel.CurrentImageInfo.GetDirectoryString())
+                Items.Add(m_moveImageAndRenameToNeighbourItem);
         }
 
         private void UpdateStrings()
