@@ -174,6 +174,10 @@ namespace AntiDupl.NET
             {
                m_imageTypeLabel.ForeColor = m_currentImageInfo.type != m_neighbourImageInfo.type ?
                       Color.Red : TableLayoutPanel.DefaultForeColor;
+               m_imageBlocknessLabel.ForeColor = m_currentImageInfo.blockiness > m_neighbourImageInfo.blockiness ?
+                      Color.Red : TableLayoutPanel.DefaultForeColor;
+               m_imageBlurringLabel.ForeColor = m_currentImageInfo.blurring > m_neighbourImageInfo.blurring ?
+                      Color.Red : TableLayoutPanel.DefaultForeColor;
             }
             if (updateCurrent || updateNeighbour)
             {
@@ -187,8 +191,10 @@ namespace AntiDupl.NET
         
         static private bool UpdateImageInfo(ref CoreImageInfo oldImageInfo, CoreImageInfo newImageInfo)
         {
-            if (oldImageInfo == null || oldImageInfo.path.CompareTo(newImageInfo.path) != 0 ||
-                oldImageInfo.size != newImageInfo.size || oldImageInfo.time != newImageInfo.time)
+            if (oldImageInfo == null || 
+                oldImageInfo.path.CompareTo(newImageInfo.path) != 0 ||
+                oldImageInfo.size != newImageInfo.size || 
+                oldImageInfo.time != newImageInfo.time)
             {
                 oldImageInfo = newImageInfo;
                 return true;
