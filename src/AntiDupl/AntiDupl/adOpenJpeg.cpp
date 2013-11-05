@@ -29,6 +29,185 @@
 
 namespace ad
 {
+    void InterleaveBgra(
+        uint8_t *bgra, size_t size, 
+        const int *blue, int bluePrecision, bool blueSigned, 
+        const int *green, int greenPrecision, bool greenSigned,
+        const int *red, int redPrecision, bool redSigned,
+        uint8_t alpha)
+    {
+        assert(bluePrecision > 0 && greenPrecision > 0 && redPrecision > 0 && 
+            bluePrecision < 32 && greenPrecision < 32 && redPrecision < 32);
+        assert((bluePrecision >= 8 && greenPrecision >= 8 && redPrecision >= 8) || 
+            (bluePrecision <= 8 && greenPrecision <= 8 && redPrecision <= 8)); 
+
+        int blueAdjust = blueSigned ? 1 << (bluePrecision - 1) : 0;
+        int greenAdjust = greenSigned ? 1 << (greenPrecision - 1) : 0;
+        int redAdjust = redSigned ? 1 << (redPrecision - 1) : 0;
+        if(bluePrecision >= 8 && greenPrecision >= 8 && redPrecision >= 8)
+        {
+            int blueShift = bluePrecision - 8;
+            int greenShift = greenPrecision - 8;
+            int redShift = redPrecision - 8;
+            for(size_t i = 0; i < size; ++i, bgra += 4)
+            {
+                bgra[0] = (blue[i] + blueAdjust) >> blueShift;
+                bgra[1] = (green[i] + greenAdjust) >> greenShift;
+                bgra[2] = (red[i] + redAdjust) >> redShift;
+                bgra[3] = alpha;
+            }
+        }
+        else
+        {
+            int blueShift = 8 - bluePrecision;
+            int greenShift = 8 - greenPrecision;
+            int redShift = 8 - redPrecision;
+            for(size_t i = 0; i < size; ++i, bgra += 4)
+            {
+                bgra[0] = (blue[i] + blueAdjust) << blueShift;
+                bgra[1] = (green[i] + greenAdjust) << greenShift;
+                bgra[2] = (red[i] + redAdjust) << redShift;
+                bgra[3] = alpha;
+            }
+        }
+    }
+
+    void InterleaveBgra(uint8_t *bgra, size_t size, 
+        const int *gray, int grayPrecision, bool graySigned, 
+        uint8_t alpha)
+    {
+        assert(grayPrecision > 0 && grayPrecision < 32);
+
+        int grayAdjust = graySigned ? 1 << (grayPrecision - 1) : 0;
+        if(grayPrecision >= 8)
+        {
+            int grayShift = grayPrecision - 8;
+            for(size_t i = 0; i < size; ++i, bgra += 4)
+            {
+                int value = (gray[i] + grayAdjust) >> grayShift;
+                bgra[0] = value;
+                bgra[1] = value;
+                bgra[2] = value;
+                bgra[3] = alpha;
+            }
+        }
+        else
+        {
+            int grayShift = 8 - grayPrecision;
+            for(size_t i = 0; i < size; ++i, bgra += 4)
+            {
+                int value = (gray[i] + grayAdjust) << grayShift;
+                bgra[0] = value;
+                bgra[1] = value;
+                bgra[2] = value;
+                bgra[3] = alpha;
+            }
+        }
+    }
+
+    void RowYuv444ToBgra(unsigned char *bgra, size_t width, const int *y, const int *u, const int *v, int shift, unsigned char alpha)
+    {
+        const int *end = y + width;
+        for(;y < end; y += 1, u += 1, v += 1, bgra += 4)
+        {
+            int y0 = y[0] << shift;
+            int u0 = u[0] << shift;
+            int v0 = v[0] << shift;
+            bgra[0] = Simd::Base::YuvToBlue(y0, u0);
+            bgra[1] = Simd::Base::YuvToGreen(y0, u0, v0);
+            bgra[2] = Simd::Base::YuvToRed(y0, v0);
+            bgra[3] = alpha;
+        }
+    }
+
+    void Yuv444ToBgra(unsigned char *bgra, size_t width, size_t height, size_t stride,
+        const int *y, const int *u, const int *v, int shift, unsigned char alpha)
+    {
+        for(size_t row  = 0; row < height; ++row)
+        {
+            RowYuv444ToBgra(bgra, width, y, u, v, shift, alpha);
+            bgra += stride;
+            y += width;
+            u += width;
+            v += width;
+        }
+    }
+
+    void Yuv422ToBgra(unsigned char *bgra, size_t width, size_t height, size_t stride,
+        const int *y, const int *u, const int *v, int shift, unsigned char alpha)
+    {
+        assert(height%2 == 0);
+
+        size_t uv_height = height/2;
+        for(size_t row  = 0; row < uv_height; ++row)
+        {
+            RowYuv444ToBgra(bgra, width, y, u, v, shift, alpha);
+            bgra += stride;
+            y += width;
+            RowYuv444ToBgra(bgra, width, y, u, v, shift, alpha);
+            bgra += stride;
+            y += width;
+            u += width;
+            v += width;
+        }
+    }
+
+    void RowYuv420ToBgra(unsigned char *bgra, size_t width, const int *y, const int *u, const int *v, int shift, unsigned char alpha)
+    {
+        const int *end = y + width;
+        for(;y < end; y += 2, u += 1, v += 1, bgra += 8)
+        {
+            int y0 = y[0] << shift;
+            int u0 = u[0] << shift;
+            int v0 = v[0] << shift;
+            bgra[0] = Simd::Base::YuvToBlue(y0, u0);
+            bgra[1] = Simd::Base::YuvToGreen(y0, u0, v0);
+            bgra[2] = Simd::Base::YuvToRed(y0, v0);
+            bgra[3] = alpha;
+            int y1 = y[1] << shift;
+            bgra[4] = Simd::Base::YuvToBlue(y1, u0);
+            bgra[5] = Simd::Base::YuvToGreen(y1, u0, v0);
+            bgra[6] = Simd::Base::YuvToRed(y1, v0);
+            bgra[7] = alpha;
+        }
+    }
+
+    void Yuv420ToBgra(unsigned char *bgra, size_t width, size_t height, size_t stride,
+        const int *y, const int *u, const int *v, int shift, unsigned char alpha)
+    {
+        assert(width%2 == 0 && height%2 == 0);
+
+        size_t uv_width = width/2; 
+        size_t uv_height = height/2;
+        for(size_t row = 0; row < uv_height; ++row)
+        {
+            RowYuv420ToBgra(bgra, width, y, u, v, shift, alpha);
+            bgra += stride;
+            y += width;
+            RowYuv420ToBgra(bgra, width, y, u, v, shift, alpha);
+            bgra += stride;
+            y += width;
+            u += uv_width;
+            v += uv_width;
+        }
+    }
+
+    void YuvToBgra(unsigned char *bgra, size_t width, size_t height, size_t stride,
+        const int *y, const int *u, const int *v, int dx, int dy, int precision, unsigned char alpha)
+    {
+        assert(precision >= 8 && (dx == 1 || dx == 2) && (dy == 1 || dy == 2) && (dy != 1 || dx != 2));
+
+        if(dy == 2)
+        {
+            if(dx == 2)
+                Yuv420ToBgra(bgra, width, height, stride, y, u, v, precision - 8, alpha);
+            else
+                Yuv422ToBgra(bgra, width, height, stride, y, u, v, precision - 8, alpha);
+        }
+        else
+            Yuv444ToBgra(bgra, width, height, stride, y, u, v, precision - 8, alpha);
+    }
+
     TOpenJpeg* TOpenJpeg::Load(HGLOBAL hGlobal)
     {
         if(hGlobal)
@@ -99,7 +278,7 @@ namespace ad
                                 if(c0.prec >= 8 && c0.dx == 1 && c1.dx == 1 && c2.dx == 1 && c0.dy == 1 && c1.dy == 1 && c2.dy == 1)
                                 {
                                     pView = new TView(width, height, width*TView::PixelSize(TView::Bgra32), TView::Bgra32, NULL);
-                                    Simd::InterleaveBgra(pView->data, width*height, 
+                                    InterleaveBgra(pView->data, width*height, 
                                         c2.data, c2.prec, c2.sgnd != 0, c1.data, c1.prec, c1.sgnd != 0, c0.data, c0.prec, c0.sgnd != 0, 0xFF);
                                 }
                             }
@@ -109,7 +288,7 @@ namespace ad
                                     && (c1.dy != 1 || c1.dx != 2) && width%c1.dx == 0 && height%c1.dy == 0)
                                 {
                                     pView = new TView(width, height, width*TView::PixelSize(TView::Bgra32), TView::Bgra32, NULL);
-                                    Simd::YuvToBgra(pView->data, width, height, pView->stride,
+                                    YuvToBgra(pView->data, width, height, pView->stride,
                                         c0.data, c1.data, c2.data, c1.dx, c1.dy, c0.prec, 0xFF);
                                 }
                             }
@@ -121,7 +300,7 @@ namespace ad
                                 if(c0.prec >= 8 && c0.dx == 1 && c0.dy == 1)
                                 {
                                     pView = new TView(width, height, width*TView::PixelSize(TView::Bgra32), TView::Bgra32, NULL);
-                                    Simd::InterleaveBgra(pView->data, width*height, c0.data, c0.prec, c0.sgnd != 0, 0xFF);
+                                    InterleaveBgra(pView->data, width*height, c0.data, c0.prec, c0.sgnd != 0, 0xFF);
                                 }
                             }
                         }
