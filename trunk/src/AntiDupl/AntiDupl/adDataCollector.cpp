@@ -139,7 +139,7 @@ namespace ad
         {
             void *data = ::GlobalLock(pImageData->hGlobal);
             size_t size = ::GlobalSize(pImageData->hGlobal);
-            pImageData->crc32 = Simd::Crc32(data, size);
+            pImageData->crc32 = SimdCrc32(data, size);
             ::GlobalUnlock(pImageData->hGlobal);
         }
         else

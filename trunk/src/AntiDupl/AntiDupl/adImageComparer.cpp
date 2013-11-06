@@ -157,7 +157,7 @@ namespace ad
             return false;
 
 		uint64_t fastDifference = 0;
-        Simd::SquaredDifferenceSum(pFirst->data->fast, FAST_DATA_SIZE, pSecond->data->fast, FAST_DATA_SIZE, 
+        SimdSquaredDifferenceSum(pFirst->data->fast, FAST_DATA_SIZE, pSecond->data->fast, FAST_DATA_SIZE, 
 			FAST_DATA_SIZE, 1, &fastDifference);
         if(fastDifference > m_fastThreshold)
             return false;
@@ -165,12 +165,12 @@ namespace ad
         uint64_t mainDifference = 0;
         if(m_pOptions->advanced.ignoreFrameWidth > 0)
         {
-            Simd::SquaredDifferenceSum(pFirst->data->main, m_mainSize, pSecond->data->main, m_mainSize, 
+            SimdSquaredDifferenceSumMasked(pFirst->data->main, m_mainSize, pSecond->data->main, m_mainSize, 
 				m_pMask, m_mainSize, FRAME_MASK_INDEX, m_mainSize, 1, &mainDifference);
         }
         else
         {
-			Simd::SquaredDifferenceSum(pFirst->data->main, m_mainSize, pSecond->data->main, m_mainSize, 
+			SimdSquaredDifferenceSum(pFirst->data->main, m_mainSize, pSecond->data->main, m_mainSize, 
 				m_mainSize, 1, &mainDifference);
         }
         if(mainDifference > m_mainThreshold)

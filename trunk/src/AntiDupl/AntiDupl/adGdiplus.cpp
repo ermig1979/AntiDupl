@@ -114,7 +114,7 @@ namespace ad
         }
         else if(pBitmapData->PixelFormat == PixelFormat24bppRGB)
         {
-            Simd::BgrToBgra(pSrc, width, height, pBitmapData->Stride, pDst, pView->stride);
+            SimdBgrToBgra(pSrc, width, height, pBitmapData->Stride, pDst, pView->stride, 0xFF);
         }
         else
         {
