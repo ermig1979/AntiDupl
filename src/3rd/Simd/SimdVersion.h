@@ -32,7 +32,7 @@
 #ifndef __SimdVersion_h__
 #define __SimdVersion_h__
 
-#define SIMD_VERSION "0.0.10.119"
+#define SIMD_VERSION "1.0.11.158"
 
 #endif//__SimdVersion_h__
 

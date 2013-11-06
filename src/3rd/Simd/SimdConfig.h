@@ -34,4 +34,6 @@
 
 #define SIMD_AVX2_GATHER_DEPRECATE
 
+//#define SIMD_STATIC
+
 #endif//__SimdConfig_h__
