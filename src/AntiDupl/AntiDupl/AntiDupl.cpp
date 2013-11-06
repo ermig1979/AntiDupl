@@ -92,7 +92,7 @@ DLLAPI adError adVersionGet(adVersionType versionType, adCharA * pVersion, adSiz
 		version = AD_VERSION;
 		break;
 	case AD_VERSION_TYPE_SIMD:
-		version = SIMD_VERSION;
+		version = SimdVersion();
 		break;
 	case AD_VERSION_TYPE_OPENJPEG:
 		version = opj_version();

@@ -85,7 +85,7 @@ namespace ad
 
 		inline unsigned __int32 GetCrc32() const 
 		{
-			return Simd::Crc32(m_compare.string.c_str(), m_compare.string.length()*sizeof(TChar));
+			return SimdCrc32(m_compare.string.c_str(), m_compare.string.length()*sizeof(TChar));
 		}
 
 		inline TString GetName(bool withExtension = true) const 
