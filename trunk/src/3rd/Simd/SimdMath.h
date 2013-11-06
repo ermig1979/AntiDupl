@@ -26,8 +26,6 @@
 
 #include "Simd/SimdDefs.h"
 #include "Simd/SimdConst.h"
-#include "Simd/SimdLoad.h"
-#include "Simd/SimdStore.h"
 
 namespace Simd
 {
@@ -65,7 +63,7 @@ namespace Simd
 
     SIMD_INLINE int Round(double value)
     {
-#if (defined _MSC_VER && defined _M_X64) || (defined __GNUC__ && defined __x86_64__)
+#if defined(SIMD_SSE2_ENABLE) && ((defined(_MSC_VER) && defined(_M_X64)) || (defined(__GNUC__) && defined(__x86_64__))) 
         __m128d t = _mm_set_sd(value);
         return _mm_cvtsd_si32(t);
 #else
@@ -150,6 +148,28 @@ namespace Simd
             int m = ~(d >> 8);
             return (d & m);
         }
+
+        SIMD_INLINE int DivideBy255(int value)
+        {
+            return (value + 1 + (value >> 8)) >> 8;
+        }
+
+        template <bool compensation> SIMD_INLINE int DivideBy16(int value);
+
+        template <> SIMD_INLINE int DivideBy16<true>(int value)
+        {
+            return (value + 8) >> 4;
+        }
+
+        template <> SIMD_INLINE int DivideBy16<false>(int value)
+        {
+            return value >> 4;
+        }
+
+        template <bool compensation> SIMD_INLINE int GaussianBlur3x3(const uint8_t *s0, const uint8_t *s1, const uint8_t *s2, size_t x0, size_t x1, size_t x2)
+        {
+            return DivideBy16<compensation>(s0[x0] + 2*s0[x1] + s0[x2] + (s1[x0] + 2*s1[x1] + s1[x2])*2 + s2[x0] + 2*s2[x1] + s2[x2]);
+        }
 	}
 
 #ifdef SIMD_SSE2_ENABLE    
@@ -217,31 +237,16 @@ namespace Simd
 			return _mm_sub_epi8(_mm_max_epu8(a, b), _mm_min_epu8(a, b));
 		}
 
-		SIMD_INLINE __m128i GreaterThenU8(__m128i a, __m128i b)
-		{
-			return _mm_andnot_si128(_mm_cmpeq_epi8(_mm_min_epu8(a, b), a), K_INV_ZERO);
-		}
-
-		SIMD_INLINE __m128i LesserThenU8(__m128i a, __m128i b)
-		{
-			return _mm_andnot_si128(_mm_cmpeq_epi8(_mm_max_epu8(a, b), a), K_INV_ZERO);
-		}
-
-        SIMD_INLINE __m128i GreaterOrEqualThenU8(__m128i & a, __m128i & b)
-        {
-            return _mm_cmpeq_epi8(_mm_max_epu8(a, b), a);
-        }
-
-        SIMD_INLINE __m128i LesserOrEqualThenU8(__m128i & a, __m128i & b)
-        {
-            return _mm_cmpeq_epi8(_mm_min_epu8(a, b), a);
-        }
-
         SIMD_INLINE __m128i MulU8(__m128i a, __m128i b)
         {
             __m128i lo = _mm_mullo_epi16(_mm_unpacklo_epi8(a, K_ZERO), _mm_unpacklo_epi8(b, K_ZERO));
             __m128i hi = _mm_mullo_epi16(_mm_unpackhi_epi8(a, K_ZERO), _mm_unpackhi_epi8(b, K_ZERO));
             return _mm_packus_epi16(lo, hi);
+        }
+
+        SIMD_INLINE __m128i DivideI16By255(__m128i value)
+        {
+            return _mm_srli_epi16(_mm_add_epi16(_mm_add_epi16(value, K16_0001), _mm_srli_epi16(value, 8)), 8);
         }
 	}
 #endif// SIMD_SSE2_ENABLE
@@ -281,31 +286,16 @@ namespace Simd
             return _mm256_sub_epi8(_mm256_max_epu8(a, b), _mm256_min_epu8(a, b));
         }
 
-        SIMD_INLINE __m256i GreaterThenU8(__m256i a, __m256i b)
-        {
-            return _mm256_andnot_si256(_mm256_cmpeq_epi8(_mm256_min_epu8(a, b), a), K_INV_ZERO);
-        }
-
-        SIMD_INLINE __m256i LesserThenU8(__m256i a, __m256i b)
-        {
-            return _mm256_andnot_si256(_mm256_cmpeq_epi8(_mm256_max_epu8(a, b), a), K_INV_ZERO);
-        }
-
-        SIMD_INLINE __m256i GreaterOrEqualThenU8(__m256i & a, __m256i & b)
-        {
-            return _mm256_cmpeq_epi8(_mm256_max_epu8(a, b), a);
-        }
-
-        SIMD_INLINE __m256i LesserOrEqualThenU8(__m256i & a, __m256i & b)
-        {
-            return _mm256_cmpeq_epi8(_mm256_min_epu8(a, b), a);
-        }
-
         SIMD_INLINE __m256i MulU8(__m256i a, __m256i b)
         {
             __m256i lo = _mm256_mullo_epi16(_mm256_unpacklo_epi8(a, K_ZERO), _mm256_unpacklo_epi8(b, K_ZERO));
             __m256i hi = _mm256_mullo_epi16(_mm256_unpackhi_epi8(a, K_ZERO), _mm256_unpackhi_epi8(b, K_ZERO));
             return _mm256_packus_epi16(lo, hi);
+        }
+
+        SIMD_INLINE __m256i DivideI16By255(__m256i value)
+        {
+            return _mm256_srli_epi16(_mm256_add_epi16(_mm256_add_epi16(value, K16_0001), _mm256_srli_epi16(value, 8)), 8);
         }
     }
 #endif// SIMD_AVX2_ENABLE

@@ -24,13 +24,16 @@
 #ifndef __SimdPoint_h__
 #define __SimdPoint_h__
 
-#include "Simd/SimdTypes.h"
+#include "Simd/SimdDefs.h"
+#include "Simd/SimdLib.h"
 
 namespace Simd
 {
 	template <typename T> 
 	struct Point
 	{
+        typedef T Type;
+
 		T x, y;
 
 		Point();
