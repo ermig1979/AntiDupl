@@ -42,7 +42,7 @@ namespace ad
 	{
 		AD_FUNCTION_PERFORMANCE_TEST
 
-		if(view.height >= 2 || view.width >= 2)
+		if(view.height <= 2 || view.width <= 2)
 			return 0;
 
 		TLevels levels;
