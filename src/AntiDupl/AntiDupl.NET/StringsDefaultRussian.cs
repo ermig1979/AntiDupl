@@ -43,7 +43,8 @@ namespace AntiDupl.NET
 
             s.WarningMessage_ChangeFileExtension = "Вы действительно хотите изменить расширение файла?";
 
-            s.AboutProgramPanel_CopyrightLabel0_Text = "Copyright (c) 2002-2013, Ермолаев Игорь.";
+            s.AboutProgramPanel_CopyrightLabel0_Text = "Copyright (c) 2002-2014 Ермолаев Игорь,";
+            s.AboutProgramPanel_CopyrightLabel1_Text = "2013-2014 Борисов Дмитрий.";
             s.AboutProgramPanel_ComponentLabel_Text = "Компонент";
             s.AboutProgramPanel_VersionLabel_Text = "Версия";
 

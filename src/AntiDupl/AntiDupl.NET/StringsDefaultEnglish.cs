@@ -43,7 +43,8 @@ namespace AntiDupl.NET
 
             s.WarningMessage_ChangeFileExtension = "Do you really want to change file extension?";
 
-            s.AboutProgramPanel_CopyrightLabel0_Text = "Copyright (c) 2002-2013, Yermalayeu Ihar.";
+            s.AboutProgramPanel_CopyrightLabel0_Text = "Copyright (c) 2002-2014 Yermalayeu Ihar, ";
+            s.AboutProgramPanel_CopyrightLabel1_Text = "2013-2014 Borisov Dmitry.";
             s.AboutProgramPanel_ComponentLabel_Text = "Component";
             s.AboutProgramPanel_VersionLabel_Text = "Version";
 
