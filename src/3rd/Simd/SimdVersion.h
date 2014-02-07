@@ -1,7 +1,7 @@
 /*
 * Simd Library.
 *
-* Copyright (c) 2011-2013 Yermalayeu Ihar.
+* Copyright (c) 2011-2014 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@
 #ifndef __SimdVersion_h__
 #define __SimdVersion_h__
 
-#define SIMD_VERSION "1.0.11.158"
+#define SIMD_VERSION "1.2.14.203"
 
 #endif//__SimdVersion_h__
 

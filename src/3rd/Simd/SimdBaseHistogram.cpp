@@ -1,7 +1,7 @@
 /*
 * Simd Library.
 *
-* Copyright (c) 2011-2013 Yermalayeu Ihar.
+* Copyright (c) 2011-2014 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ namespace Simd
 		void AbsSecondDerivativeHistogram(const uint8_t *src, size_t width, size_t height, size_t stride,
 			size_t step, size_t indent, uint32_t * histogram)
 		{
-			assert(width > 2*indent && 2*height > indent && indent >= step);
+			assert(width > 2*indent && height > 2*indent && indent >= step);
 
 			memset(histogram, 0, sizeof(uint32_t)*HISTOGRAM_SIZE);
 

@@ -1,22 +1,22 @@
 /*
 * Simd Library.
 *
-* Copyright (c) 2011-2013 Yermalayeu Ihar.
+* Copyright (c) 2011-2014 Yermalayeu Ihar.
 *
-* Permission is hereby granted, free of charge, to any person obtaining a copy 
+* Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
 * in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
 *
-* The above copyright notice and this permission notice shall be included in 
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
 *
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
@@ -34,7 +34,7 @@
 #error Do not know how to detect CPU info
 #endif
 
-#include "Simd/SimdLib.h"
+#include "Simd/SimdTypes.h"
 #include "Simd/SimdDefs.h"
 
 namespace Simd
@@ -62,6 +62,8 @@ namespace Simd
             SSE2 = 1 << 26,
 
             //Ecx:
+            SSSE3 =	1 << 9,
+            SSE41 = 1 << 19,
             SSE42 = 1 << 20,
             OSXSAVE = 1 << 27,
             AVX = 1 << 28,
@@ -77,7 +79,9 @@ namespace Simd
 #if defined(_MSC_VER)
             __cpuid((int*)registers, level);
 #elif (defined __GNUC__)
-            __get_cpuid(level, registers + Eax, registers + Ebx, registers + Ecx, registers + Edx);
+            if (__get_cpuid_max(0, NULL) < level)
+                return false;
+            __cpuid_count(level, 0, registers[Eax], registers[Ebx], registers[Ecx], registers[Edx]);
 #else
 #error Do not know how to detect CPU info!
 #endif
@@ -113,6 +117,64 @@ namespace Simd
         const bool Enable = SupportedByCPU() && SupportedByOS();
     }
 #endif// SIMD_SSE2_ENABLE
+
+#ifdef SIMD_SSSE3_ENABLE
+    namespace Ssse3
+    {
+        SIMD_INLINE bool SupportedByCPU()
+        {
+            return Cpuid::CheckBit(Cpuid::Ordinary, Cpuid::Ecx, Cpuid::SSSE3);
+        }
+
+        SIMD_INLINE bool SupportedByOS()
+        {
+#if defined(_MSC_VER)
+            __try
+            {
+                __m128i value = _mm_abs_epi8(_mm_set1_epi8(-1)); //try to execute of SSSE3 instructions;
+                return true;
+            }
+            __except(EXCEPTION_EXECUTE_HANDLER)
+            {
+                return false;
+            }
+#else
+            return true;
+#endif
+        }
+
+        const bool Enable = SupportedByCPU() && SupportedByOS();
+    }
+#endif// SIMD_SSSE3_ENABLE
+
+#ifdef SIMD_SSE41_ENABLE
+    namespace Sse41
+    {
+        SIMD_INLINE bool SupportedByCPU()
+        {
+            return Cpuid::CheckBit(Cpuid::Ordinary, Cpuid::Ecx, Cpuid::SSE41);
+        }
+
+        SIMD_INLINE bool SupportedByOS()
+        {
+#if defined(_MSC_VER)
+            __try
+            {
+                int value = _mm_testz_si128(_mm_set1_epi8(0), _mm_set1_epi8(-1)); // try to execute of SSE41 instructions;
+                return true;
+            }
+            __except(EXCEPTION_EXECUTE_HANDLER)
+            {
+                return false;
+            }
+#else
+            return true;
+#endif
+        }
+
+        const bool Enable = SupportedByCPU() && SupportedByOS();
+    }
+#endif// SIMD_SSE41_ENABLE
 
 #ifdef SIMD_SSE42_ENABLE
     namespace Sse42

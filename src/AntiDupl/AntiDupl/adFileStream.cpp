@@ -154,7 +154,7 @@ namespace ad
 	{
 		Load((TImageInfo&)imageData);
 		Load(imageData.defect);
-		Load(imageData.crc32);
+		Load(imageData.crc32c);
 		Load(imageData.data->filled);
 		if(imageData.data->filled)
 			Load(*imageData.data);
@@ -246,7 +246,7 @@ namespace ad
 	{
 		Save((const TImageInfo&)imageData);
 		Save(imageData.defect);
-		Save(imageData.crc32);
+		Save(imageData.crc32c);
 		Save(imageData.data->filled);
 		if(imageData.data->filled)
 			Save(*imageData.data);

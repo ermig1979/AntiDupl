@@ -51,7 +51,7 @@ namespace ad
     private:
         void FillPixelData(TImageData* pImageData);
         void CheckOnDefect(TImageData* pImageData);
-        void SetCrc32(TImageData* pImageData);
+        void SetCrc32c(TImageData* pImageData);
 		double GetBlockiness(const TView & gray);
 		double GetBlockiness(const std::vector<unsigned int> & sums);
 	};

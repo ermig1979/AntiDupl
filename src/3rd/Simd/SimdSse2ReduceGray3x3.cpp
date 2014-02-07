@@ -1,7 +1,7 @@
 /*
 * Simd Library.
 *
-* Copyright (c) 2011-2013 Yermalayeu Ihar.
+* Copyright (c) 2011-2014 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -43,11 +43,6 @@ namespace Simd
         template <> SIMD_INLINE __m128i DivideBy16<false>(__m128i value)
         {
             return _mm_srli_epi16(value, 4);
-        }
-
-        SIMD_INLINE __m128i BinomialSum16(const __m128i & a, const __m128i & b, const __m128i & c)
-        {
-            return _mm_add_epi16(_mm_add_epi16(a, c), _mm_add_epi16(b, b));
         }
 
         template<bool align> SIMD_INLINE __m128i ReduceColNose(const uint8_t * p) 

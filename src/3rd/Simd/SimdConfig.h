@@ -1,7 +1,7 @@
 /*
 * Simd Library.
 *
-* Copyright (c) 2011-2013 Yermalayeu Ihar.
+* Copyright (c) 2011-2014 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,10 @@
 #define __SimdConfig_h__
 
 //#define SIMD_SSE2_DEPRECATE
+
+//#define SIMD_SSSE3_DEPRECATE
+
+//#define SIMD_SSE41_DEPRECATE
 
 //#define SIMD_SSE42_DEPRECATE
 

@@ -1,7 +1,7 @@
 /*
 * Simd Library.
 *
-* Copyright (c) 2011-2013 Yermalayeu Ihar.
+* Copyright (c) 2011-2014 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,8 @@ namespace Simd
             SortU8(a[2], a[3]); SortU8(a[1], a[2]);
             SortU8(a[2], a[3]); SortU8(a[1], a[4]); 
             SortU8(a[0], a[3]); SortU8(a[2], a[0]); 
-            SortU8(a[4], a[2]); SortU8(a[2], a[0]);
+            a[2] = MaxU8(a[4], a[2]); 
+            a[2] = MinU8(a[2], a[0]);
         }
 
         void MedianFilterRhomb3x3(const uint8_t * src, size_t srcStride, size_t width, size_t height, 

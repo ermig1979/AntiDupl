@@ -27,8 +27,9 @@
 namespace ad
 {
 	const double AD_EDGE_CROP = 0.1;
-	const double AD_QUANTILE = 0.01;
+	const double AD_QUANTILE = 0.001;
 	const size_t AD_LEVEL_COUNT = 6;
+	const size_t AD_SIZE_MIN = 16;
 
     TBlurringDetector::TBlurringDetector()
     {
@@ -42,8 +43,8 @@ namespace ad
 	{
 		AD_FUNCTION_PERFORMANCE_TEST
 
-		if(view.height <= 2 || view.width <= 2)
-			return 0;
+		if(view.height < AD_SIZE_MIN || view.width < AD_SIZE_MIN)
+			return 0.0;
 
 		TLevels levels;
 
@@ -114,13 +115,7 @@ namespace ad
 		size_t index = levels.size()/2;
 		TView view = levels[index].view;
 		TUInt32 histogram[HISTOGRAM_SIZE];
-		memset(histogram, 0, HISTOGRAM_SIZE*sizeof(TUInt32));
-		for(size_t row = 0; row < view.height; ++row)
-		{
-			const unsigned char * src = view.data + row*view.stride;
-			for(size_t col = 0; col < view.width; ++col)
-				histogram[src[col]]++;
-		}
+		Simd::Histogram(view, histogram);
 		double range = Quantile(histogram, 1.0 - AD_QUANTILE) - Quantile(histogram, AD_QUANTILE);
 		return Simd::Max(range * ::pow(64.0/range, 0.125) / 4.0, 16.0);
 	}

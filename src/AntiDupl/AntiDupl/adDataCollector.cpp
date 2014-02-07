@@ -52,8 +52,8 @@ namespace ad
     void TDataCollector::Fill(TImageData* pImageData)
     {
         AD_FUNCTION_PERFORMANCE_TEST
-        if(!pImageData->crc32)
-            SetCrc32(pImageData);
+        if(!pImageData->crc32c)
+            SetCrc32c(pImageData);
         if(pImageData->PixelDataFillingNeed(m_pOptions))
             FillPixelData(pImageData);
         if(pImageData->DefectCheckingNeed(m_pOptions))
@@ -132,19 +132,19 @@ namespace ad
         pImageData->defect = AD_DEFECT_NONE;
     }
     
-    void TDataCollector::SetCrc32(TImageData* pImageData)
+    void TDataCollector::SetCrc32c(TImageData* pImageData)
     {
         AD_FUNCTION_PERFORMANCE_TEST
         if(pImageData->hGlobal)
         {
             void *data = ::GlobalLock(pImageData->hGlobal);
             size_t size = ::GlobalSize(pImageData->hGlobal);
-            pImageData->crc32 = SimdCrc32(data, size);
+            pImageData->crc32c = SimdCrc32c(data, size);
             ::GlobalUnlock(pImageData->hGlobal);
         }
         else
         {
-            pImageData->crc32 = -1;
+            pImageData->crc32c = -1;
         }
     }
 

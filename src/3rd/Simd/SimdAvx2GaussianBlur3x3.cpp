@@ -1,7 +1,7 @@
 /*
 * Simd Library.
 *
-* Copyright (c) 2011-2013 Yermalayeu Ihar.
+* Copyright (c) 2011-2014 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -60,11 +60,6 @@ namespace Simd
         SIMD_INLINE __m256i DivideBy16(__m256i value)
         {
             return _mm256_srli_epi16(_mm256_add_epi16(value, K16_0008), 4);
-        }
-
-        SIMD_INLINE __m256i BinomialSum16(const __m256i & a, const __m256i & b, const __m256i & c)
-        {
-            return _mm256_add_epi16(_mm256_add_epi16(a, c), _mm256_add_epi16(b, b));
         }
 
         template<bool align> SIMD_INLINE void BlurCol(__m256i a[3], uint16_t * b)

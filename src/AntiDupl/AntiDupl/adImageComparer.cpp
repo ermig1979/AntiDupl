@@ -177,7 +177,7 @@ namespace ad
             return false;
 
         *pDifference = sqrt(double(mainDifference)/m_maxDifference)*100;
-        if(pFirst->crc32 != pSecond->crc32)
+        if(pFirst->crc32c != pSecond->crc32c)
             *pDifference += ADDITIONAL_DIFFERENCE_FOR_DIFFERENT_CRC32;
         return true;
     }

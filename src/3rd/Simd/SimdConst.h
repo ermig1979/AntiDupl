@@ -1,7 +1,7 @@
 /*
 * Simd Library.
 *
-* Copyright (c) 2011-2013 Yermalayeu Ihar.
+* Copyright (c) 2011-2014 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -105,6 +105,20 @@ namespace Simd
         const __m128i K16_UB_0 = SIMD_MM_SET2_EPI16(Base::U_TO_BLUE_WEIGHT, 0);
     }
 #endif// SIMD_SSE2_ENABLE
+
+#ifdef SIMD_SSSE3_ENABLE    
+    namespace Ssse3
+    {
+        using namespace Sse2;
+    }
+#endif// SIMD_SSSE3_ENABLE
+
+#ifdef SIMD_SSE41_ENABLE    
+    namespace Sse41
+    {
+        using namespace Sse2;
+    }
+#endif// SIMD_SSE41_ENABLE
 
 #ifdef SIMD_SSE42_ENABLE    
     namespace Sse42
