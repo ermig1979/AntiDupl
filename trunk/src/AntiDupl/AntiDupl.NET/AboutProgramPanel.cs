@@ -43,7 +43,8 @@ namespace AntiDupl.NET
 
         private void InitializeComponent()
         {
-            TableLayoutPanel layout = InitFactory.Layout.Create(1, 3, 5, 0);
+            TableLayoutPanel layout = InitFactory.Layout.Create(1, 4, 5, 0);
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
@@ -51,14 +52,26 @@ namespace AntiDupl.NET
 
             layout.Controls.Add(CreateLogotype(new Font(this.Font.FontFamily, this.Font.Size * 2.0f)), 0, 0);
 
-            Label label = CreateLabel(Resources.Strings.Current.AboutProgramPanel_CopyrightLabel0_Text, 
-                new Font(this.Font.FontFamily, this.Font.Size * 1.2f));
-            label.Margin = new Padding(0, 10, 0, 10);
-            layout.Controls.Add(label, 0, 1);
+            layout.Controls.Add(GetCoopyrightLabel(0), 0, 1);
 
-            layout.Controls.Add(CreateInfoTable(Font), 0, 2);
+            layout.Controls.Add(GetCoopyrightLabel(1), 0, 2);
+
+            layout.Controls.Add(CreateInfoTable(Font), 0, 3);
 
             Controls.Add(layout);
+        }
+
+        private Label GetCoopyrightLabel(int index)
+        {
+            string text = null;
+            switch(index)
+            {
+                case 0: text = Resources.Strings.Current.AboutProgramPanel_CopyrightLabel0_Text; break;
+                case 1: text = Resources.Strings.Current.AboutProgramPanel_CopyrightLabel1_Text; break;
+            }
+            Label label = CreateLabel(text, new Font(this.Font.FontFamily, this.Font.Size * 1.2f));
+            label.Margin = new Padding(0, (index == 0 ? 10 : 0), 0, (index == 1 ? 10 : 0));
+            return label;
         }
 
         private TableLayoutPanel CreateLogotype(Font font)
