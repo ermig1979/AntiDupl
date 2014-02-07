@@ -1,7 +1,7 @@
 /*
 * Simd Library.
 *
-* Copyright (c) 2011-2013 Yermalayeu Ihar.
+* Copyright (c) 2011-2014 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -83,7 +83,7 @@ namespace Simd
 			*sum = ExtractInt64Sum(fullSum);
 		}
 
-		template <bool align> void SquaredDifferenceSum(
+		template <bool align> void SquaredDifferenceSumMasked(
 			const uint8_t *a, size_t aStride, const uint8_t *b, size_t bStride, 
 			const uint8_t *mask, size_t maskStride, uint8_t index, size_t width, size_t height, uint64_t * sum)
 		{
@@ -132,13 +132,13 @@ namespace Simd
 				SquaredDifferenceSum<false>(a, aStride, b, bStride, width, height, sum);
 		}
 
-		void SquaredDifferenceSum(const uint8_t *a, size_t aStride, const uint8_t *b, size_t bStride, 
+		void SquaredDifferenceSumMasked(const uint8_t *a, size_t aStride, const uint8_t *b, size_t bStride, 
 			const uint8_t *mask, size_t maskStride, uint8_t index, size_t width, size_t height, uint64_t * sum)
 		{
 			if(Aligned(a) && Aligned(aStride) && Aligned(b) && Aligned(bStride) && Aligned(mask) && Aligned(maskStride))
-				SquaredDifferenceSum<true>(a, aStride, b, bStride, mask, maskStride, index, width, height, sum);
+				SquaredDifferenceSumMasked<true>(a, aStride, b, bStride, mask, maskStride, index, width, height, sum);
 			else
-				SquaredDifferenceSum<false>(a, aStride, b, bStride, mask, maskStride, index, width, height, sum);
+				SquaredDifferenceSumMasked<false>(a, aStride, b, bStride, mask, maskStride, index, width, height, sum);
 		}
     }
 #endif// SIMD_SSE2_ENABLE

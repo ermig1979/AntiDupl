@@ -38,7 +38,7 @@ namespace ad
 		bool valid; // The Image lie in 'valid' directory;
 		size_t index; // Index of the path where this image were found;
 		TDefectType defect;
-		TUInt32 crc32;
+		TUInt32 crc32c;
 		TPixelDataPtr data;
 		HGLOBAL hGlobal; 
 

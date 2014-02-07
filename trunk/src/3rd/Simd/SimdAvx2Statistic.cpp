@@ -1,7 +1,7 @@
 /*
 * Simd Library.
 *
-* Copyright (c) 2011-2013 Yermalayeu Ihar.
+* Copyright (c) 2011-2014 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -77,7 +77,7 @@ namespace Simd
                 *min = Base::MinU8(min_buffer[i], *min);
                 *max = Base::MaxU8(max_buffer[i], *max);
             }
-            *average = (uint8_t)((ExtractSum<uint64_t>(sum) + UCHAR_MAX/2)/(width*height));
+            *average = (uint8_t)((ExtractSum<uint64_t>(sum) + width*height/2)/(width*height));
         }
 
         void GetStatistic(const uint8_t * src, size_t stride, size_t width, size_t height, 

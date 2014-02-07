@@ -52,7 +52,7 @@ namespace ad
 		valid = false;
 		index = AD_IS_NOT_EXIST;
 		defect = AD_DEFECT_UNDEFINE;
-		crc32 = 0;
+		crc32c = 0;
 		data = NULL;
 		m_owner = false;
 		hGlobal = NULL;
@@ -87,7 +87,7 @@ namespace ad
 		ratio = imageData.ratio;
 		valid = imageData.valid;
 		defect = imageData.defect;
-		crc32 = imageData.crc32;
+		crc32c = imageData.crc32c;
 		if(m_owner && imageData.data->side != data->side)
 		{
 			delete data;

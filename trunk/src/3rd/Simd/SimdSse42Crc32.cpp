@@ -1,7 +1,7 @@
 /*
 * Simd Library.
 *
-* Copyright (c) 2011-2013 Yermalayeu Ihar.
+* Copyright (c) 2011-2014 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -21,9 +21,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
-#include "Simd/SimdEnable.h"
 #include "Simd/SimdMemory.h"
-#include "Simd/SimdInit.h"
 #include "Simd/SimdSse42.h"
 
 namespace Simd
@@ -31,11 +29,11 @@ namespace Simd
 #ifdef SIMD_SSE42_ENABLE
     namespace Sse42
     {
-        SIMD_INLINE void Crc32(size_t & crc, const size_t * p, const size_t * end)
+        SIMD_INLINE void Crc32c(size_t & crc, const size_t * p, const size_t * end)
         {
             while(p < end)
             {
-#if (defined _MSC_VER && defined _M_X64) || (defined __GNUC__ && defined __x86_64__)
+#ifdef SIMD_X64_ENABLE
                 crc = _mm_crc32_u64(crc, *p++);
 #else
                 crc = _mm_crc32_u32(crc, *p++);
@@ -43,22 +41,22 @@ namespace Simd
             }
         }
 
-        SIMD_INLINE void Crc32(size_t & crc, const uint8_t * p, const uint8_t * end)
+        SIMD_INLINE void Crc32c(size_t & crc, const uint8_t * p, const uint8_t * end)
         {
             while(p < end)
                 crc = _mm_crc32_u8((uint32_t)crc, *p++);
         }
 
-        uint32_t Crc32(const void *src, size_t size)
+        uint32_t Crc32c(const void *src, size_t size)
         {
             uint8_t * nose = (uint8_t*)src;
             size_t * body = (size_t*)AlignHi(nose, sizeof(size_t));
             size_t * tail = (size_t*)AlignLo(nose + size, sizeof(size_t));
 
             size_t crc = 0;
-            Crc32(crc, nose, (uint8_t*)body);
-            Crc32(crc, body, tail);
-            Crc32(crc, (uint8_t*)tail, nose + size);
+            Crc32c(crc, nose, (uint8_t*)body);
+            Crc32c(crc, body, tail);
+            Crc32c(crc, (uint8_t*)tail, nose + size);
             return (uint32_t)crc;
         }
     }

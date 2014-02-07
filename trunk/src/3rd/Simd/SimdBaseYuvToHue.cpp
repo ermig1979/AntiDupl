@@ -1,7 +1,7 @@
 /*
 * Simd Library.
 *
-* Copyright (c) 2011-2013 Yermalayeu Ihar.
+* Copyright (c) 2011-2014 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -54,7 +54,7 @@ namespace Simd
 			return 0;
 		}
 
-		void Yuv420ToHue(const uint8_t * y, size_t yStride, const uint8_t * u, size_t uStride, const uint8_t * v, size_t vStride, 
+		void Yuv420pToHue(const uint8_t * y, size_t yStride, const uint8_t * u, size_t uStride, const uint8_t * v, size_t vStride, 
 			size_t width, size_t height, uint8_t * hue, size_t hueStride)
 		{
 			assert((width%2 == 0) && (height%2 == 0) && (width >= 2) && (height >= 2));
@@ -77,7 +77,7 @@ namespace Simd
 			}
 		}
 
-		void Yuv444ToHue(const uint8_t * y, size_t yStride, const uint8_t * u, size_t uStride, const uint8_t * v, size_t vStride, 
+		void Yuv444pToHue(const uint8_t * y, size_t yStride, const uint8_t * u, size_t uStride, const uint8_t * v, size_t vStride, 
 			size_t width, size_t height, uint8_t * hue, size_t hueStride)
 		{
 			for(size_t row = 0; row < height; ++row)

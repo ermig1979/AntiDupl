@@ -1,7 +1,7 @@
 /*
 * Simd Library.
 *
-* Copyright (c) 2011-2013 Yermalayeu Ihar.
+* Copyright (c) 2011-2014 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -223,7 +223,8 @@ namespace Simd
 
     SIMD_INLINE void CopyFrame(const View & src, const Rectangle<ptrdiff_t> & frame, View & dst)
     {
-        assert(Compatible(src, dst));
+        assert(Compatible(src, dst) && frame.Width() >= 0 && frame.Height() >= 0);
+        assert(frame.left >= 0 && frame.top >= 0 && frame.right <= ptrdiff_t(src.width) && frame.bottom <= ptrdiff_t(src.height));
 
         SimdCopyFrame(src.data, src.stride, src.width, src.height, src.PixelSize(),
             frame.left, frame.top, frame.right, frame.bottom, dst.data, dst.stride);
@@ -307,6 +308,13 @@ namespace Simd
             frame.left, frame.top, frame.right, frame.bottom, value);
     }
 
+    SIMD_INLINE void FillBgr(View & dst, uint8_t blue, uint8_t green, uint8_t red)
+    {
+        assert(dst.format == View::Bgr24);
+
+        SimdFillBgr(dst.data, dst.stride, dst.width, dst.height, blue, green, red);
+    }
+
     SIMD_INLINE void FillBgra(View & dst, uint8_t blue, uint8_t green, uint8_t red, uint8_t alpha = 0xFF)
     {
         assert(dst.format == View::Bgra32);
@@ -330,7 +338,7 @@ namespace Simd
 
     SIMD_INLINE void AbsSecondDerivativeHistogram(const View & src, size_t step, size_t indent, uint32_t * histogram)
     {
-        assert(src.format == View::Gray8);
+        assert(src.format == View::Gray8 && indent >= step && src.width > 2*indent && src.height > 2*indent);
 
         SimdAbsSecondDerivativeHistogram(src.data, src.width, src.height, src.stride, step, indent, histogram);
     }
@@ -340,6 +348,40 @@ namespace Simd
         assert(src.format == View::Gray8);
 
         SimdHistogram(src.data, src.width, src.height, src.stride, histogram);
+    }
+
+    SIMD_INLINE void Integral(const View & src, View & sum)
+    {
+        assert(src.width + 1 == sum.width && src.height + 1 == sum.height);
+        assert(src.format == View::Gray8 && sum.format == View::Int32);
+
+        SimdIntegral(src.data, src.stride, src.width, src.height, sum.data, sum.stride, NULL, 0, NULL, 0, 
+            (SimdPixelFormatType)sum.format, SimdPixelFormatNone);
+    }
+
+    SIMD_INLINE void Integral(const View & src, View & sum, View & sqsum)
+    {
+        assert(src.width + 1 == sum.width && src.height + 1 == sum.height && EqualSize(sum, sqsum));
+        assert(src.format == View::Gray8 && sum.format == View::Int32 && (sqsum.format == View::Int32 || sqsum.format == View::Double));
+
+        SimdIntegral(src.data, src.stride, src.width, src.height, sum.data, sum.stride, sqsum.data, sqsum.stride, NULL, 0, 
+            (SimdPixelFormatType)sum.format, (SimdPixelFormatType)sqsum.format);
+    }
+
+    SIMD_INLINE void Integral(const View & src, View & sum, View & sqsum, View & tilted)
+    {
+        assert(src.width + 1 == sum.width && src.height + 1 == sum.height && EqualSize(sum, sqsum) && Compatible(sum, tilted));
+        assert(src.format == View::Gray8 && sum.format == View::Int32 && (sqsum.format == View::Int32 || sqsum.format == View::Double));
+
+        SimdIntegral(src.data, src.stride, src.width, src.height, sum.data, sum.stride, sqsum.data, sqsum.stride, tilted.data, tilted.stride, 
+            (SimdPixelFormatType)sum.format, (SimdPixelFormatType)sqsum.format);
+    }
+
+    SIMD_INLINE void LbpEstimate(const View & src, View & dst)
+    {
+        assert(Compatible(src, dst) && src.format == View::Gray8);
+
+        SimdLbpEstimate(src.data, src.stride, src.width, src.height, dst.data, dst.stride);
     }
 
     SIMD_INLINE void MedianFilterRhomb3x3(const View & src, View & dst)
@@ -435,6 +477,20 @@ namespace Simd
             shift.x, shift.y, crop.left, crop.top, crop.right, crop.bottom, dst.data, dst.stride);
     }
 
+    SIMD_INLINE void SobelDx(const View & src, View & dst)
+    {
+        assert(EqualSize(src, dst) && src.format == View::Gray8 && dst.format == View::Int16);
+
+        SimdSobelDx(src.data, src.stride, src.width, src.height, dst.data, dst.stride);
+    }
+
+    SIMD_INLINE void SobelDy(const View & src, View & dst)
+    {
+        assert(EqualSize(src, dst) && src.format == View::Gray8 && dst.format == View::Int16);
+
+        SimdSobelDy(src.data, src.stride, src.width, src.height, dst.data, dst.stride);
+    }
+
     SIMD_INLINE void SquaredDifferenceSum(const View & a, const View & b, uint64_t & sum)
     {
         assert(Compatible(a, b) && a.format == View::Gray8);
@@ -514,7 +570,7 @@ namespace Simd
 
     SIMD_INLINE void TextureGetDifferenceSum(const View & src, const View & lo, const View & hi, int64_t & sum)
     {
-        assert(Compatible(src, lo, hi) && src.format == View::Gray8 && sum != NULL);
+        assert(Compatible(src, lo, hi) && src.format == View::Gray8);
 
         SimdTextureGetDifferenceSum(src.data, src.stride, src.width, src.height, lo.data, lo.stride, hi.data, hi.stride, &sum);
     }
@@ -526,54 +582,54 @@ namespace Simd
         SimdTexturePerformCompensation(src.data, src.stride, src.width, src.height, shift, dst.data, dst.stride);
     }
 
-    SIMD_INLINE void Yuv444ToBgr(const View & y, const View & u, const View & v, View & bgr)
+    SIMD_INLINE void Yuv444pToBgr(const View & y, const View & u, const View & v, View & bgr)
     {
         assert(Compatible(y, u, v) && EqualSize(y, bgr) && y.format == View::Gray8 && bgr.format == View::Bgr24);
 
-        SimdYuv444ToBgr(y.data, y.stride, u.data, u.stride, v.data, v.stride, y.width, y.height, bgr.data, bgr.stride);
+        SimdYuv444pToBgr(y.data, y.stride, u.data, u.stride, v.data, v.stride, y.width, y.height, bgr.data, bgr.stride);
     }
 
-    SIMD_INLINE void Yuv420ToBgr(const View & y, const View & u, const View & v, View & bgr)
+    SIMD_INLINE void Yuv420pToBgr(const View & y, const View & u, const View & v, View & bgr)
     {
         assert(y.width == 2*u.width && y.height == 2*u.height && y.format == u.format);
         assert(y.width == 2*v.width && y.height == 2*v.height && y.format == v.format);
         assert(y.width == bgr.width && y.height == bgr.height);
         assert(y.format == View::Gray8 && bgr.format == View::Bgr24);
 
-        SimdYuv420ToBgr(y.data, y.stride, u.data, u.stride, v.data, v.stride, y.width, y.height, bgr.data, bgr.stride);
+        SimdYuv420pToBgr(y.data, y.stride, u.data, u.stride, v.data, v.stride, y.width, y.height, bgr.data, bgr.stride);
     }
 
-    SIMD_INLINE void Yuv444ToBgra(const View & y, const View & u, const View & v, View & bgra, uint8_t alpha = 0xFF)
+    SIMD_INLINE void Yuv444pToBgra(const View & y, const View & u, const View & v, View & bgra, uint8_t alpha = 0xFF)
     {
         assert(Compatible(y, u, v) && EqualSize(y, bgra) && y.format == View::Gray8 && bgra.format == View::Bgra32);
 
-        SimdYuv444ToBgra(y.data, y.stride, u.data, u.stride, v.data, v.stride, y.width, y.height, bgra.data, bgra.stride, alpha);
+        SimdYuv444pToBgra(y.data, y.stride, u.data, u.stride, v.data, v.stride, y.width, y.height, bgra.data, bgra.stride, alpha);
     }
 
-    SIMD_INLINE void Yuv420ToBgra(const View & y, const View & u, const View & v, View & bgra, uint8_t alpha = 0xFF)
+    SIMD_INLINE void Yuv420pToBgra(const View & y, const View & u, const View & v, View & bgra, uint8_t alpha = 0xFF)
     {
         assert(y.width == 2*u.width && y.height == 2*u.height && y.format == u.format);
         assert(y.width == 2*v.width && y.height == 2*v.height && y.format == v.format);
         assert(y.width == bgra.width && y.height == bgra.height);
         assert(y.format == View::Gray8 && bgra.format == View::Bgra32);
 
-        SimdYuv420ToBgra(y.data, y.stride, u.data, u.stride, v.data, v.stride, y.width, y.height, bgra.data, bgra.stride, alpha);
+        SimdYuv420pToBgra(y.data, y.stride, u.data, u.stride, v.data, v.stride, y.width, y.height, bgra.data, bgra.stride, alpha);
     }
 
-    SIMD_INLINE void Yuv444ToHue(const View & y, const View & u, const View & v, View & hue)
+    SIMD_INLINE void Yuv444pToHue(const View & y, const View & u, const View & v, View & hue)
     {
         assert(Compatible(y, u, v, hue) && y.format == View::Gray8);
 
-        SimdYuv444ToHue(y.data, y.stride, u.data, u.stride, v.data, v.stride, y.width, y.height, hue.data, hue.stride);
+        SimdYuv444pToHue(y.data, y.stride, u.data, u.stride, v.data, v.stride, y.width, y.height, hue.data, hue.stride);
     }
 
-    SIMD_INLINE void Yuv420ToHue(const View & y, const View & u, const View & v, View & hue)
+    SIMD_INLINE void Yuv420pToHue(const View & y, const View & u, const View & v, View & hue)
     {
         assert(y.width == 2*u.width && y.height == 2*u.height && y.format == u.format);
         assert(y.width == 2*v.width && y.height == 2*v.height && y.format == v.format);
         assert(Compatible(y, hue) && y.format == View::Gray8);
 
-        SimdYuv420ToHue(y.data, y.stride, u.data, u.stride, v.data, v.stride, y.width, y.height, hue.data, hue.stride);
+        SimdYuv420pToHue(y.data, y.stride, u.data, u.stride, v.data, v.stride, y.width, y.height, hue.data, hue.stride);
     }
 }
 

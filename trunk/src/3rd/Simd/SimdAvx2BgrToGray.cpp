@@ -1,7 +1,7 @@
 /*
 * Simd Library.
 *
-* Copyright (c) 2011-2013 Yermalayeu Ihar.
+* Copyright (c) 2011-2014 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -61,12 +61,12 @@ namespace Simd
 
             for(size_t row = 1; row < height; ++row)
             {
-                Base::BgrToBgra(bgr, width, buffer.bgra, false, false);
+                Base::BgrToBgra(bgr, width, buffer.bgra, false, false, 0xFF);
                 Avx2::BgraToGray(buffer.bgra, width, 1, 4*width, gray, width);
                 bgr += bgrStride;
                 gray += grayStride;
             }
-            Base::BgrToBgra(bgr, width, buffer.bgra, false, true);
+            Base::BgrToBgra(bgr, width, buffer.bgra, false, true, 0xFF);
             Avx2::BgraToGray(buffer.bgra, width, 1, 4*width, gray, width);
         }
     }

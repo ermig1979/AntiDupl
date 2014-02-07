@@ -316,7 +316,7 @@ namespace ad
 
     void TCollectManager::Add(TImageData *pImageData)
     {
-        if(pImageData->DefectCheckingNeed(m_pOptions) || pImageData->PixelDataFillingNeed(m_pOptions) || pImageData->crc32 == 0)
+        if(pImageData->DefectCheckingNeed(m_pOptions) || pImageData->PixelDataFillingNeed(m_pOptions) || pImageData->crc32c == 0)
         {
             pImageData->hGlobal = LoadFileToMemory(pImageData->path.Original().c_str());
             size_t threadId = GetThreadId();

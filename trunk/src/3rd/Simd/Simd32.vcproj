@@ -255,6 +255,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimdAvx2Sobel.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdAvx2SquaredDifferenceSum.cpp"
 				>
 			</File>
@@ -363,6 +367,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimdBaseIntegral.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdBaseLbp.cpp"
 				>
 			</File>
@@ -396,6 +404,10 @@
 			</File>
 			<File
 				RelativePath=".\SimdBaseShiftBilinear.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdBaseSobel.cpp"
 				>
 			</File>
 			<File
@@ -935,6 +947,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\SimdSse2Sobel.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdSse2SquaredDifferenceSum.cpp"
 				>
 				<FileConfiguration
@@ -1078,6 +1094,10 @@
 				RelativePath=".\SimdLib.h"
 				>
 			</File>
+			<File
+				RelativePath=".\SimdTypes.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Sys"
@@ -1156,6 +1176,38 @@
 			</File>
 			<File
 				RelativePath=".\SimdView.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Sse41"
+			>
+			<File
+				RelativePath=".\SimdSse41.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdSse41Empty.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Ssse3"
+			>
+			<File
+				RelativePath=".\SimdSsse3.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdSsse3BgraToBgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdSsse3BgrToBgra.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdSsse3ReduceGray2x2.cpp"
 				>
 			</File>
 		</Filter>
