@@ -1,7 +1,7 @@
 /*
 * AntiDupl.NET Program.
 *
-* Copyright (c) 2002-2014 Yermalayeu Ihar.
+* Copyright (c) 2002-2014 Yermalayeu Ihar, 2014 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -38,10 +38,10 @@ namespace AntiDupl.NET
         public CoreDefectOptions defectOptions;
         public CoreAdvancedOptions advancedOptions;
 
-        public string[] searchPath;
-        public string[] ignorePath;
-        public string[] validPath;
-        public string[] deletePath;
+        public CorePathWithSubFolder[] searchPath;
+        public CorePathWithSubFolder[] ignorePath;
+        public CorePathWithSubFolder[] validPath;
+        public CorePathWithSubFolder[] deletePath;
 
         public CoreOptions()
         {
@@ -49,10 +49,10 @@ namespace AntiDupl.NET
             compareOptions = new CoreCompareOptions();
             defectOptions = new CoreDefectOptions();
             advancedOptions = new CoreAdvancedOptions();
-            searchPath = new string[1];
-            ignorePath = new string[0];
-            validPath = new string[0];
-            deletePath = new string[0];
+            searchPath = new CorePathWithSubFolder[1];
+            ignorePath = new CorePathWithSubFolder[0];
+            validPath = new CorePathWithSubFolder[0];
+            deletePath = new CorePathWithSubFolder[0];
         }
 
         public CoreOptions(CoreLib core, bool onePath)
@@ -86,8 +86,9 @@ namespace AntiDupl.NET
             Get(core, onePath);
             old.Set(core, onePath);
 
-            ignorePath = new string[1];
-            ignorePath[0] = Resources.DataPath;
+            ignorePath = new CorePathWithSubFolder[1];
+            ignorePath[0] = new CorePathWithSubFolder();
+            ignorePath[0].path = Resources.DataPath;
         }
 
         public void Get(CoreLib core, bool onePath)
@@ -117,12 +118,12 @@ namespace AntiDupl.NET
             core.advancedOptions = advancedOptions.Clone();
             if (onePath)
             {
-                string[] tmpSearch = new string[1];
-                string[] tmpOther = new string[0];
-                if (searchPath.Length > 0 && Directory.Exists(searchPath[0]))
+                CorePathWithSubFolder[] tmpSearch = new CorePathWithSubFolder[1];
+                CorePathWithSubFolder[] tmpOther = new CorePathWithSubFolder[0];
+                if (searchPath.Length > 0 && Directory.Exists(searchPath[0].path))
                     tmpSearch[0] = searchPath[0];
                 else
-                    tmpSearch[0] = Application.StartupPath;
+                    tmpSearch[0].path = Application.StartupPath;
                 core.searchPath = tmpSearch;
                 core.ignorePath = tmpOther;
                 core.validPath = tmpOther;
@@ -167,9 +168,23 @@ namespace AntiDupl.NET
                 destination[i] = (string)source[i].Clone();
         }
 
+        public static void PathCopy(CorePathWithSubFolder[] source, ref CorePathWithSubFolder[] destination)
+        {
+            destination = new CorePathWithSubFolder[source.GetLength(0)];
+            for (int i = 0; i < source.GetLength(0); ++i)
+                destination[i] = source[i];
+        }
+
         public static string[] PathClone(string[] path)
         {
             string[] clone = new string[0];
+            PathCopy(path, ref clone);
+            return clone;
+        }
+
+        public static CorePathWithSubFolder[] PathClone(CorePathWithSubFolder[] path)
+        {
+            CorePathWithSubFolder[] clone = new CorePathWithSubFolder[0];
             PathCopy(path, ref clone);
             return clone;
         }

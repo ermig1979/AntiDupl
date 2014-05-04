@@ -92,9 +92,11 @@ extern "C"
     typedef wchar_t adCharW;
     typedef char adCharA;
     typedef adCharW adPathW[MAX_PATH_EX];
+	typedef adCharW adPathWSF[MAX_PATH_EX + 1];
     typedef adCharA adPathA[MAX_PATH];
     typedef adPathW* adPathPtrW;
     typedef adPathA* adPathPtrA;
+	typedef adPathWSF* adPathWSFPtr;
 
     /*------------Enumerations-----------------------------------------------*/
 
@@ -387,6 +389,20 @@ extern "C"
     };
     typedef adSearchOptions* adSearchOptionsPtr;
 
+	struct adPathWithSubFolderA
+    {
+        adPathA path;
+        adBool enableSubFolder;
+    };
+	typedef adPathWithSubFolderA* adPathWithSubFolderPtrA;
+
+	struct adPathWithSubFolderW
+    {
+        adPathW path;
+        adBool enableSubFolder;
+    };
+	typedef adPathWithSubFolderW* adPathWithSubFolderPtrW;
+
     struct adCompareOptions
     {
         adBool checkOnEquality;    
@@ -549,6 +565,8 @@ extern "C"
 
     DLLAPI adError adOptionsGet(adHandle handle, adOptionsType optionsType, void* pOptions);
     DLLAPI adError adOptionsSet(adHandle handle, adOptionsType optionsType, void* pOptions);
+
+	DLLAPI adError adPathWithSubFolderSetW(adHandle handle, adPathType pathType, adPathWSFPtr pPaths, adSize pathSize);
 
     DLLAPI adError adPathGetA(adHandle handle, adPathType pathType, adPathPtrA pPath, adSizePtr pPathSize);
     DLLAPI adError adPathGetW(adHandle handle, adPathType pathType, adPathPtrW pPath, adSizePtr pPathSize);

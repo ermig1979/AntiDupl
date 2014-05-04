@@ -1,7 +1,7 @@
 /*
 * AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2014 Yermalayeu Ihar.
+* Copyright (c) 2002-2014 Yermalayeu Ihar, 2014 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -90,6 +90,28 @@ namespace ad
 		extension.second = path.extension.second + difference;
 	}
 
+	void TPath::Update(const TPath& path, const adBool& enableSubFolder)
+	{
+		m_original.string = path.m_original.string;;
+		m_original.UpdateFrom(path.m_original);
+
+		m_compare.string = path.m_compare.string;
+		m_compare.UpdateFrom(path.m_compare);
+
+		m_enableSubFolder = enableSubFolder ? TRUE : FALSE;
+	}
+
+	void TPath::Update(const TString& path, const adBool& enableSubFolder)
+	{
+		m_original.string = path;
+		m_original.Parse();
+
+		m_compare.string = m_original.string.GetUpper();
+		m_compare.UpdateFrom(m_original);
+
+		m_enableSubFolder = enableSubFolder ? TRUE : FALSE;		
+	}
+
 	void TPath::Update(const TString& path)
 	{
 		m_original.string = path;
@@ -102,8 +124,11 @@ namespace ad
 	{
 		m_original.string = path.m_original.string;
 		m_original.UpdateFrom(path.m_original);
+
 		m_compare.string = path.m_compare.string;
 		m_compare.UpdateFrom(path.m_compare);
+
+		m_enableSubFolder = path.EnableSubFolder();
 	}
 
 	int TPath::Compare(const TChar* begin1, const TChar* end1, const TChar* begin2, const TChar* end2)
@@ -184,7 +209,8 @@ namespace ad
             for(size_t i = 0; i < size; i++)
             {
                 _stprintf_s(key, MAX_PATH, KEY_pathTemplate, i);
-                tmp[i] = iniFile.ReadString(key, NULL);
+				TPath tmpPath(iniFile.ReadString(key, NULL), iniFile.ReadBool(key, NULL));
+				tmp[i] = tmpPath;
             }
             Set(tmp);
         }
@@ -201,10 +227,11 @@ namespace ad
         if(m_paths.size() > 0)
         {
             TChar key[MAX_PATH];
-            for(size_t i = 0; i < m_paths.size(); i++)
+	            for(size_t i = 0; i < m_paths.size(); i++)
             {
                 _stprintf_s(key, MAX_PATH, KEY_pathTemplate, i);
                 result = result && iniFile.WriteString(key, m_paths[i].Original().c_str());
+				result = result && iniFile.WriteBool(key, m_paths[i].EnableSubFolder());
             }
         }
 
@@ -234,7 +261,7 @@ namespace ad
         }
     }
 
-    adError TPathContainer::Import(adPathPtrW pPath, adSize pathCount)
+	adError TPathContainer::Import(adPathPtrW pPath, adSize pathCount)
     {
         if(pathCount == 0)
         {
@@ -251,6 +278,41 @@ namespace ad
             TPathVector tmp(pathCount);
             for(size_t i = 0; i < pathCount; i++)
                 tmp[i] = pPath[i];
+            Set(tmp);
+
+            return AD_OK;
+        }
+    }
+
+
+    adError TPathContainer::Import(adPathWSFPtr pPath, adSize pathCount)
+    {
+        if(pathCount == 0)
+        {
+            m_paths.clear();
+            if(m_defaultPathEnabled)
+                m_paths.push_back(GetApplicationDirectory());
+            return AD_OK;
+        }
+        else
+        {
+            if(pPath == NULL)
+                return AD_ERROR_INVALID_POINTER;
+
+            TPathVector tmp(pathCount);
+            for(size_t i = 0; i < pathCount; i++)
+			{
+				adPathW sPath;
+				for(size_t j = 0; j < MAX_PATH_EX; j++)
+				{
+					sPath[j] = pPath[i][j];
+				}
+
+				if ((pPath[i][MAX_PATH_EX] != TRUE) && (pPath[i][MAX_PATH_EX] != FALSE))
+					return AD_ERROR_INVALID_PARAMETER_COMBINATION;
+				TPath pat(sPath, pPath[i][MAX_PATH_EX]);
+				tmp[i] = pat;
+			}
             Set(tmp);
 
             return AD_OK;
@@ -300,13 +362,16 @@ namespace ad
                 path.CopyTo(p, MAX_PATH_EX);
             else
                 return AD_ERROR_PATH_TO_LONG;
-            p += MAX_PATH_EX;
+			p = p + MAX_PATH_EX;
+			*p = m_paths[i].EnableSubFolder() ? TRUE : FALSE;
+			p += 1;
         }
         *pPathCount = m_paths.size();
 
         return AD_OK;
     }
 
+	//проверяет содержится ли в наших путях m_paths переданный path
     size_t TPathContainer::IsHasPath(const TPath& path) const
     {
         const_iterator i = std::lower_bound(m_paths.begin(), m_paths.end(), path, TPath::LesserByPath);

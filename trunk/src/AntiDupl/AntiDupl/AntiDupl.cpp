@@ -1,7 +1,7 @@
 /*
 * AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2014 Yermalayeu Ihar.
+* Copyright (c) 2002-2014 Yermalayeu Ihar, 2014 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -325,6 +325,27 @@ DLLAPI adError adPathSetA(adHandle handle, adPathType pathType, adPathPtrA pPath
 DLLAPI adError adPathSetW(adHandle handle, adPathType pathType, adPathPtrW pPath, adSize pathSize)
 {
 	return PathSet(handle, pathType, pPath, pathSize);
+}
+
+// pathType - тип пути, pPaths - указатель на переменную пути, pathSize - количество путей
+DLLAPI adError adPathWithSubFolderSetW(adHandle handle, adPathType pathType, adPathWSFPtr pPaths, adSize pathSize)
+{
+	CHECK_HANDLE CHECK_ACCESS LOCK
+
+	ad::TOptions *pOptions = handle->Options();
+	switch(pathType)
+	{
+		case AD_PATH_SEARCH:
+			return pOptions->searchPaths.Import(pPaths, pathSize);
+		case AD_PATH_IGNORE:
+			return pOptions->ignorePaths.Import(pPaths, pathSize);
+		case AD_PATH_VALID:
+			return pOptions->validPaths.Import(pPaths, pathSize);
+		case AD_PATH_DELETE:
+			return pOptions->deletePaths.Import(pPaths, pathSize);
+		default:
+			return AD_ERROR_INVALID_PATH_TYPE;
+	}
 }
 
 DLLAPI adError adStatisticGet(adHandle handle, adStatisticPtr pStatistic)

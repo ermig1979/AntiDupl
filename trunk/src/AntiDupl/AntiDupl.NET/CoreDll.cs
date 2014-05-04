@@ -423,6 +423,14 @@ namespace AntiDupl.NET
             public PixelFormatType format;
             public IntPtr data;
         }
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        public struct adPathWithSubFolderW
+        {
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = CoreDll.MAX_PATH_EX)]
+            public string path;
+            public int enableSubFolder;
+        }
     
         //-------------------API functions:------------------------------------
 
@@ -475,6 +483,11 @@ namespace AntiDupl.NET
         public delegate Error adOptionsSet_fn(IntPtr handle, OptionsType optionsType, IntPtr pOptions);
         [DynamicModuleApi]
         public adOptionsSet_fn adOptionsSet = null;
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+        public delegate Error adPathWithSubFolderSetW_fn(IntPtr handle, PathType pathType, IntPtr pPaths, IntPtr pathSize);
+        [DynamicModuleApi]
+        public adPathWithSubFolderSetW_fn adPathWithSubFolderSetW = null;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
         public delegate Error adPathGetW_fn(IntPtr handle, PathType pathType, IntPtr pPath, IntPtr pPathSize);

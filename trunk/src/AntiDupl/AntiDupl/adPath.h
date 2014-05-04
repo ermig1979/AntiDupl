@@ -1,7 +1,7 @@
 /*
 * AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2014 Yermalayeu Ihar.
+* Copyright (c) 2002-2014 Yermalayeu Ihar, 2014 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@ namespace ad
 {
 	class TPath
 	{
+	private:
 		typedef std::pair<TChar*, TChar*> TInterval;
 
 		struct TParsedPath
@@ -46,7 +47,10 @@ namespace ad
 
 		TParsedPath m_original;
 		TParsedPath m_compare;
+		bool m_enableSubFolder;
 
+		void Update(const TPath& path, const adBool& enableSubFolder);
+		void Update(const TString& path, const adBool& enableSubFolder);
 		void Update(const TString& path);
 		void Update(const TPath& path);
 
@@ -56,8 +60,9 @@ namespace ad
 			return Compare(int1.first, int1.second, int2.first, int2.second);
 		}
 	public:
-		TPath(const TString& path = TString()) { Update(path);}
+		TPath(const TString& path = TString()) 	{	Update(path);	}
 		TPath(const TPath& path) { Update(path);}
+		TPath(const TString& path, const adBool& enableSubFolder) 	{	Update(path, enableSubFolder);	}
 
 		TPath& operator = (const TString& path) 
 		{
@@ -73,6 +78,11 @@ namespace ad
 
 		const TString& Original() const {return m_original.string;}
 
+		const bool EnableSubFolder() const 
+		{
+			return m_enableSubFolder;
+		}
+
 		enum TIsSubPath
 		{
 			NONE = 0,
@@ -85,7 +95,7 @@ namespace ad
 
 		inline unsigned __int32 GetCrc32() const 
 		{
-			return SimdCrc32c(m_compare.string.c_str(), m_compare.string.length()*sizeof(TChar));
+			return SimdCrc32(m_compare.string.c_str(), m_compare.string.length()*sizeof(TChar));
 		}
 
 		inline TString GetName(bool withExtension = true) const 
@@ -164,6 +174,7 @@ namespace ad
 
         adError Import(adPathPtrA pPath, adSize pathCount);
         adError Import(adPathPtrW pPath, adSize pathCount);
+		adError Import(adPathWSFPtr pPath, adSize pathCount);
         adError Export(adPathPtrA pPath, adSizePtr pPathCount) const;
         adError Export(adPathPtrW pPath, adSizePtr pPathCount) const;
 
