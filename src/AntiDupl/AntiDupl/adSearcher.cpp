@@ -54,7 +54,7 @@ namespace ad
                     continue;
                 if(IsDirectoryExists(path.c_str()))
                 {
-                    SearchImages(path);
+					SearchImages(path, m_pOptions->searchPaths[i].EnableSubFolder());
                 }
                 else if(IsWanted(path))
                 {
@@ -65,7 +65,7 @@ namespace ad
         }
     }
 
-    void TSearcher::SearchImages(const TString& directory)
+    void TSearcher::SearchImages(const TString& directory, bool enableSubFolder)
     {
         TString path;
         HANDLE hFind;
@@ -92,10 +92,9 @@ namespace ad
                     continue;
 
                 TString path = CreatePath(directory, name);
-                if((findData.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY) != 0 && 
-                    m_pOptions->search.subFolders == TRUE)
+                if((findData.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY) != 0 && enableSubFolder)
                 {
-                    SearchImages(path);
+                    SearchImages(path, true);
                 }
                 else if(IsWanted(path.c_str()) && m_pOptions->ignorePaths.IsHasPath(path) == AD_IS_NOT_EXIST)
                 {

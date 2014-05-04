@@ -46,7 +46,7 @@ namespace ad
         void SearchImages();
 
     private:
-        void SearchImages(const TString& directory);
+        void SearchImages(const TString& directory, bool enableSubFolder);
         bool IsWanted(const TString& path);
         bool IsForbidden(const TString& path);
 

@@ -522,13 +522,13 @@ namespace AntiDupl.NET
             }
             set
             {
-                CoreDll.adAdvancedOptions[] options = new CoreDll.adAdvancedOptions[1];
-                value.ConvertTo(ref options[0]);
+                CoreDll.adAdvancedOptions[] options = new CoreDll.adAdvancedOptions[1]; //создаем массив из одного значения
+                value.ConvertTo(ref options[0]); //конвертируем переданный класс
                 m_dll.adOptionsSet(m_handle, CoreDll.OptionsType.Advanced, Marshal.UnsafeAddrOfPinnedArrayElement(options, 0));
             }
         }
 
-        public string[] searchPath
+        public CorePathWithSubFolder[] searchPath
         {
             get
             {
@@ -540,7 +540,7 @@ namespace AntiDupl.NET
             }
         }
 
-        public string[] ignorePath
+        public CorePathWithSubFolder[] ignorePath
         {
             get
             {
@@ -551,8 +551,8 @@ namespace AntiDupl.NET
                 SetPath(CoreDll.PathType.Ignore, value);
             }
         }
-
-        public string[] validPath
+        
+        public CorePathWithSubFolder[] validPath
         {
             get
             {
@@ -564,7 +564,7 @@ namespace AntiDupl.NET
             }
         }
 
-        public string[] deletePath
+        public CorePathWithSubFolder[] deletePath
         {
             get
             {
@@ -575,6 +575,7 @@ namespace AntiDupl.NET
                 SetPath(CoreDll.PathType.Delete, value);
             }
         }
+       
 
         //-----------Private functions:--------------------------------------------
 
@@ -591,36 +592,45 @@ namespace AntiDupl.NET
             return new string(buffer, startIndex, i);
         }
 
-        private string[] GetPath(CoreDll.PathType pathType)
+        private CorePathWithSubFolder[] GetPath(CoreDll.PathType pathType)
         {
+            CorePathWithSubFolder[] pathWSF = new CorePathWithSubFolder[0];
             IntPtr[] size = new IntPtr[1];
             string[] path = new string[0];
             if (m_dll.adPathGetW(m_handle, pathType, new IntPtr(1), Marshal.UnsafeAddrOfPinnedArrayElement(size, 0)) ==
-                CoreDll.Error.OutputBufferIsTooSmall)
+                            CoreDll.Error.OutputBufferIsTooSmall)
             {
-                char[] buffer = new char[CoreDll.MAX_PATH_EX*size[0].ToInt32()];
-                if (m_dll.adPathGetW(m_handle, pathType, Marshal.UnsafeAddrOfPinnedArrayElement(buffer, 0), 
+                char[] buffer = new char[(CoreDll.MAX_PATH_EX + 1) * size[0].ToInt32()];
+                if (m_dll.adPathGetW(m_handle, pathType, Marshal.UnsafeAddrOfPinnedArrayElement(buffer, 0),
                     Marshal.UnsafeAddrOfPinnedArrayElement(size, 0)) == CoreDll.Error.Ok)
                 {
-                    path = new string[size[0].ToInt32()];
+                    pathWSF = new CorePathWithSubFolder[size[0].ToInt32()];
                     for (int i = 0; i < size[0].ToInt32(); ++i)
                     {
-                        path[i] = BufferToString(buffer, i * CoreDll.MAX_PATH_EX, CoreDll.MAX_PATH_EX);
+                        pathWSF[i] = new CorePathWithSubFolder();
+                        pathWSF[i].path = BufferToString(buffer, i * (CoreDll.MAX_PATH_EX + 1), CoreDll.MAX_PATH_EX);
+                        if (buffer[(CoreDll.MAX_PATH_EX + 1) * i + CoreDll.MAX_PATH_EX] == (char)1)
+                            pathWSF[i].enableSubFolder = true;
+                        else
+                            pathWSF[i].enableSubFolder = false;
                     }
                 }
             }
-            return path;
+            return pathWSF;
         }
 
-        private bool SetPath(CoreDll.PathType pathType, string[] path)
+        private bool SetPath(CoreDll.PathType pathType, CorePathWithSubFolder[] path)
         {
-            char[] buffer = new char[path.Length * CoreDll.MAX_PATH_EX];
+            char[] buffer = new char[path.Length * (CoreDll.MAX_PATH_EX + 1)];
             for (int i = 0; i < path.Length; i++)
             {
-                path[i].CopyTo(0, buffer, CoreDll.MAX_PATH_EX*i, path[i].Length);
-                buffer[CoreDll.MAX_PATH_EX*i + path[i].Length] = (char)0;
+                path[i].path.CopyTo(0, buffer, i * (CoreDll.MAX_PATH_EX + 1), path[i].path.Length);
+                buffer[(CoreDll.MAX_PATH_EX + 1) * i + CoreDll.MAX_PATH_EX] = path[i].enableSubFolder ? (char)1 : (char)0;
             }
-            return m_dll.adPathSetW(m_handle, pathType, Marshal.UnsafeAddrOfPinnedArrayElement(buffer, 0), 
+            
+            return m_dll.adPathWithSubFolderSetW(m_handle, 
+                pathType, 
+                Marshal.UnsafeAddrOfPinnedArrayElement(buffer, 0),
                 new IntPtr(path.Length)) == CoreDll.Error.Ok;
         }
     };

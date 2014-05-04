@@ -1,7 +1,7 @@
 /*
 * AntiDupl.NET Program.
 *
-* Copyright (c) 2002-2014 Yermalayeu Ihar.
+* Copyright (c) 2002-2014 Yermalayeu Ihar, 2014 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -376,12 +376,12 @@ namespace AntiDupl.NET
             {
                 FolderBrowserDialog dialog = new FolderBrowserDialog();
                 dialog.ShowNewFolderButton = false;
-                if (Directory.Exists(m_coreOptions.searchPath[0]))
-                    dialog.SelectedPath = m_coreOptions.searchPath[0];
+                if (Directory.Exists(m_coreOptions.searchPath[0].path))
+                    dialog.SelectedPath = m_coreOptions.searchPath[0].path;
                 else
                     dialog.SelectedPath = Application.StartupPath;
                 dialog.ShowDialog();
-                m_coreOptions.searchPath[0] = dialog.SelectedPath;
+                m_coreOptions.searchPath[0].path = dialog.SelectedPath;
             }
             else
             {

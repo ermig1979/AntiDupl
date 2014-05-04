@@ -1,7 +1,7 @@
 /*
 * AntiDupl.NET Program.
 *
-* Copyright (c) 2002-2014 Yermalayeu Ihar.
+* Copyright (c) 2002-2014 Yermalayeu Ihar, 2014 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -155,6 +155,20 @@ namespace AntiDupl.NET
                 listBox.SelectedIndexChanged += new EventHandler(selectedIndexChanged);
                 listBox.DoubleClick += new EventHandler(doubleClick);
                 return listBox;
+            }
+        };
+
+        public static class CheckedListBox
+        {
+            public static System.Windows.Forms.CheckedListBox Create(EventHandler selectedIndexChanged, EventHandler doubleClick, ItemCheckEventHandler itemCheck)
+            {
+                System.Windows.Forms.CheckedListBox checkBox = new System.Windows.Forms.CheckedListBox();
+                checkBox.Location = new System.Drawing.Point(0, 0);
+                checkBox.Dock = DockStyle.Fill;
+                checkBox.SelectedIndexChanged += new EventHandler(selectedIndexChanged);
+                checkBox.DoubleClick += new EventHandler(doubleClick);
+                checkBox.ItemCheck += new ItemCheckEventHandler(itemCheck);
+                return checkBox;
             }
         };
 
