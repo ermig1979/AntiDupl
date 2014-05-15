@@ -67,6 +67,7 @@ namespace AntiDupl.NET
         private Label m_imageBlocknessLabel;
         private Label m_imageBlurringLabel;
         private Label m_pathLabel;
+        private ToolTip m_toolTip;
 
         public ImagePreviewPanel(CoreLib core, Options options, ResultsListView resultsListView, Position position)
         {
@@ -79,6 +80,8 @@ namespace AntiDupl.NET
         
         private void InitializeComponents()
         {
+            Strings s = Resources.Strings.Current;
+
             Location = new System.Drawing.Point(0, 0);
             Margin = new Padding(0);
             Padding = new Padding(0);
@@ -136,6 +139,11 @@ namespace AntiDupl.NET
             m_pathLabel.Padding = new Padding(1, 3, 1, 0);
             m_pathLabel.AutoEllipsis = true;
             m_pathLabel.DoubleClick += new EventHandler(RenameImage);
+
+            m_toolTip = new ToolTip();
+            m_toolTip.ShowAlways = true;
+            m_toolTip.SetToolTip(m_imageBlocknessLabel, s.ResultsListView_Blockiness_Column_Text);
+            m_toolTip.SetToolTip(m_imageBlurringLabel, s.ResultsListView_Blurring_Column_Text);
         }
 
         /// <summary>

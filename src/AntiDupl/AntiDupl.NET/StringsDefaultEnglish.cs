@@ -120,6 +120,7 @@ namespace AntiDupl.NET
             s.CorePathsForm_AddFilesButton_Text = "Add Files";
             s.CorePathsForm_ChangeButton_Text = "Change";
             s.CorePathsForm_RemoveButton_Text = "Remove";
+            s.CorePathsForm_SearchCheckedListBox_ToolTip_Text = "Checked box mean search inside subdirectories this directories.";
 
             s.ProgressUtils_Completed = "{0}% completed";
             s.ProgressUtils_5HoursRemaining = "{0} hours remaining";

@@ -123,6 +123,7 @@ namespace AntiDupl.NET
         public string CorePathsForm_AddFilesButton_Text;
         public string CorePathsForm_ChangeButton_Text;
         public string CorePathsForm_RemoveButton_Text;
+        public string CorePathsForm_SearchCheckedListBox_ToolTip_Text;
 
         public string ProgressUtils_Completed;
         public string ProgressUtils_5HoursRemaining;
