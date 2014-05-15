@@ -55,6 +55,7 @@ namespace AntiDupl.NET
         private ListBox m_validListBox;
         private TabPage m_deleteTabPage;
         private ListBox m_deleteListBox;
+        private ToolTip m_toolTip;
 
         public CorePathsForm(CoreLib core, Options options, CoreOptions coreOptions)
         {
@@ -101,6 +102,9 @@ namespace AntiDupl.NET
             m_searchTabPage = new TabPage();
             m_searchTabPage.Tag = CoreDll.PathType.Search;
             m_tabControl.Controls.Add(m_searchTabPage);
+
+            m_toolTip = new ToolTip();
+            m_toolTip.ShowAlways = true;
 
             m_searchCheckedList = InitFactory.CheckedListBox.Create(OnSelectedIndexChanged, OnListBoxDoubleClick, OnItemCheck);
             m_searchTabPage.Controls.Add(m_searchCheckedList);
@@ -178,6 +182,8 @@ namespace AntiDupl.NET
             Strings s = Resources.Strings.Current;
 
             Text = s.CorePathsForm_Text;
+
+            m_toolTip.SetToolTip(m_searchCheckedList, s.CorePathsForm_SearchCheckedListBox_ToolTip_Text);
 
             m_searchTabPage.Text = s.CorePathsForm_SearchTabPage_Text;
             m_ignoreTabPage.Text = s.CorePathsForm_IgnoreTabPage_Text;
