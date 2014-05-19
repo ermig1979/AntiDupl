@@ -422,8 +422,10 @@ namespace AntiDupl.NET
                 Array.Resize(ref path, path.Length + dialog.FileNames.Length);
                 for (int i = 0; i < dialog.FileNames.Length; ++i)
                 {
+                    if (path[path.Length - 1 - i] == null)
+                        path[path.Length - 1 - i] = new CorePathWithSubFolder();
                     path[path.Length - 1 - i].path = dialog.FileNames[dialog.FileNames.Length - 1 - i];
-                    path[path.Length - 1 - i].enableSubFolder = true;
+                    path[path.Length - 1 - i].enableSubFolder = false;
                 }
                 SetCurrentPath(path);
                 m_newCoreOptions.Validate(m_core, m_options.onePath);
@@ -552,13 +554,16 @@ namespace AntiDupl.NET
 
         private CorePathWithSubFolder[] GetActualPath(string[] path)
         {
-            ArrayList actualPath = new ArrayList();
-            string[] actualExtensions = m_oldCoreOptions.searchOptions.GetActualExtensions();
+            List<CorePathWithSubFolder> actualPath = new List<CorePathWithSubFolder>();
+            string[] actualExtensions = m_oldCoreOptions.searchOptions.GetActualExtensions(); //список поддерживаемых расширений
             for (int i = 0; i < path.Length; ++i)
             {
                 if (Directory.Exists(path[i]))
                 {
-                    actualPath.Add(path[i]);
+                    CorePathWithSubFolder sfPath = new CorePathWithSubFolder();
+                    sfPath.path = path[i];
+                    sfPath.enableSubFolder = true;
+                    actualPath.Add(sfPath);
                 }
                 else
                 {
@@ -568,23 +573,26 @@ namespace AntiDupl.NET
                         string extension = fileInfo.Extension.ToUpper().Substring(1);
                         for (int j = 0; j < actualExtensions.Length; ++j)
                         {
-                            if (extension == actualExtensions[j])
+                            if (extension == actualExtensions[j]) //если расширение из списка поддерживаемых
                             {
-                                actualPath.Add(path[i]);
+                                CorePathWithSubFolder sfPath = new CorePathWithSubFolder();
+                                sfPath.path = path[i];
+                                sfPath.enableSubFolder = false;
+                                actualPath.Add(sfPath);
                                 break;
                             }
                         }
                     }
                 }
             }
-            return (CorePathWithSubFolder[])actualPath.ToArray(typeof(string));
+            return (CorePathWithSubFolder[])actualPath.ToArray();
         }
 
         private void AddPath(string[] additional)
         {
             if (additional.Length > 0)
             {
-                ArrayList path = new ArrayList(GetCurrentPath());
+                List<CorePathWithSubFolder> path = new List<CorePathWithSubFolder>(GetCurrentPath());
                 CorePathWithSubFolder[] current = GetCurrentPath();
                 CorePathWithSubFolder[] actual = GetActualPath(additional);
 
@@ -592,7 +600,7 @@ namespace AntiDupl.NET
                 {
                     path.AddRange(current);
                     path.AddRange(actual);
-                    SetCurrentPath((CorePathWithSubFolder[])path.ToArray(typeof(CorePathWithSubFolder[])));
+                    SetCurrentPath((CorePathWithSubFolder[])path.ToArray());
                     m_newCoreOptions.Validate(m_core, m_options.onePath);
                     UpdatePath();
                     UpdateButtonEnabling();
