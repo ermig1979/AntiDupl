@@ -67,7 +67,6 @@ namespace AntiDupl.NET
 
         public CoreSearchOptions(CoreSearchOptions searchOptions)
         {
-            subFolders = searchOptions.subFolders;
             system = searchOptions.system;
             hidden = searchOptions.hidden;
             JPEG = searchOptions.JPEG;
@@ -87,7 +86,6 @@ namespace AntiDupl.NET
 
         public CoreSearchOptions(CoreDll.adSearchOptions searchOptions)
         {
-            subFolders = searchOptions.subFolders != CoreDll.FALSE;
             system = searchOptions.system != CoreDll.FALSE;
             hidden = searchOptions.hidden != CoreDll.FALSE;
             JPEG = searchOptions.JPEG != CoreDll.FALSE;
@@ -107,7 +105,6 @@ namespace AntiDupl.NET
 
         public void ConvertTo(ref CoreDll.adSearchOptions searchOptions)
         {
-            searchOptions.subFolders = subFolders ? CoreDll.TRUE : CoreDll.FALSE;
             searchOptions.system = system ? CoreDll.TRUE : CoreDll.FALSE;
             searchOptions.hidden = hidden ? CoreDll.TRUE : CoreDll.FALSE;
             searchOptions.JPEG = JPEG ? CoreDll.TRUE : CoreDll.FALSE;
@@ -133,7 +130,6 @@ namespace AntiDupl.NET
         public bool Equals(CoreSearchOptions searchOptions)
         {
             return
-                subFolders == searchOptions.subFolders &&
                 system == searchOptions.system &&
                 hidden == searchOptions.hidden &&
                 JPEG == searchOptions.JPEG &&

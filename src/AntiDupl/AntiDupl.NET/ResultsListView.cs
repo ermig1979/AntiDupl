@@ -171,16 +171,16 @@ namespace AntiDupl.NET
                 Columns[(int)ColumnsTypeHorizontal.FirstFileDirectory].Name = s.ResultsListView_FirstFileDirectory_Column_Text;
                 Columns[(int)ColumnsTypeHorizontal.FirstImageSize].Name = s.ResultsListView_FirstImageSize_Column_Text;
                 Columns[(int)ColumnsTypeHorizontal.FirstImageType].Name = s.ResultsListView_FirstImageType_Column_Text;
-                Columns[(int)ColumnsTypeHorizontal.FirstBlockiness].Name = s.ResultsListView_Blockiness_Column_Text;
-                Columns[(int)ColumnsTypeHorizontal.FirstBlurring].Name = s.ResultsListView_Blurring_Column_Text;
+                Columns[(int)ColumnsTypeHorizontal.FirstBlockiness].Name = s.ResultsListView_FirstBlockiness_Column_Text;
+                Columns[(int)ColumnsTypeHorizontal.FirstBlurring].Name = s.ResultsListView_FirstBlurring_Column_Text;
                 Columns[(int)ColumnsTypeHorizontal.FirstFileSize].Name = s.ResultsListView_FirstFileSize_Column_Text;
                 Columns[(int)ColumnsTypeHorizontal.FirstFileTime].Name = s.ResultsListView_FirstFileTime_Column_Text;
                 Columns[(int)ColumnsTypeHorizontal.SecondFileName].Name = s.ResultsListView_SecondFileName_Column_Text;
                 Columns[(int)ColumnsTypeHorizontal.SecondFileDirectory].Name = s.ResultsListView_SecondFileDirectory_Column_Text;
                 Columns[(int)ColumnsTypeHorizontal.SecondImageSize].Name = s.ResultsListView_SecondImageSize_Column_Text;
                 Columns[(int)ColumnsTypeHorizontal.SecondImageType].Name = s.ResultsListView_SecondImageType_Column_Text;
-                Columns[(int)ColumnsTypeHorizontal.SecondBlockiness].Name = s.ResultsListView_Blockiness_Column_Text;
-                Columns[(int)ColumnsTypeHorizontal.SecondBlurring].Name = s.ResultsListView_Blurring_Column_Text;
+                Columns[(int)ColumnsTypeHorizontal.SecondBlockiness].Name = s.ResultsListView_SecondBlockiness_Column_Text;
+                Columns[(int)ColumnsTypeHorizontal.SecondBlurring].Name = s.ResultsListView_SecondBlurring_Column_Text;
                 Columns[(int)ColumnsTypeHorizontal.SecondFileSize].Name = s.ResultsListView_SecondFileSize_Column_Text;
                 Columns[(int)ColumnsTypeHorizontal.SecondFileTime].Name = s.ResultsListView_SecondFileTime_Column_Text;
             }

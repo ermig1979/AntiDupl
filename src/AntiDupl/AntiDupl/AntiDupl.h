@@ -370,7 +370,6 @@ extern "C"
 
     struct adSearchOptions
     {
-        adBool subFolders;
         adBool system;
         adBool hidden;
         adBool JPEG;

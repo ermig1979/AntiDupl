@@ -89,7 +89,6 @@ namespace AntiDupl.NET
         private CheckBox m_tgaCheckBox;
         private CheckBox m_searchSystemCheckBox;
         private CheckBox m_searchHiddenCheckBox;
-        private CheckBox m_searchSubFoldersCheckBox;
 
         private TabPage m_advancedTabPage;
         private CheckBox m_deleteToRecycleBinCheckBox;
@@ -300,9 +299,6 @@ namespace AntiDupl.NET
 
             m_searchHiddenCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
             searchTableLayoutPanel.Controls.Add(m_searchHiddenCheckBox, 0, 2);
-
-            m_searchSubFoldersCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            searchTableLayoutPanel.Controls.Add(m_searchSubFoldersCheckBox, 0, 3);
         }
 
         private void InitilizeAdvancedTabPage()
@@ -394,7 +390,6 @@ namespace AntiDupl.NET
             m_tgaCheckBox.Checked = m_newCoreOptions.searchOptions.TGA;
             m_searchSystemCheckBox.Checked = m_newCoreOptions.searchOptions.system;
             m_searchHiddenCheckBox.Checked = m_newCoreOptions.searchOptions.hidden;
-            m_searchSubFoldersCheckBox.Checked = m_newCoreOptions.searchOptions.subFolders;
 
             m_deleteToRecycleBinCheckBox.Checked = m_newCoreOptions.advancedOptions.deleteToRecycleBin;
             m_mistakeDataBaseCheckBox.Checked = m_newCoreOptions.advancedOptions.mistakeDataBase;
@@ -441,7 +436,6 @@ namespace AntiDupl.NET
             m_newCoreOptions.searchOptions.TGA = m_tgaCheckBox.Checked;
             m_newCoreOptions.searchOptions.system = m_searchSystemCheckBox.Checked;
             m_newCoreOptions.searchOptions.hidden = m_searchHiddenCheckBox.Checked;
-            m_newCoreOptions.searchOptions.subFolders = m_searchSubFoldersCheckBox.Checked;
 
             m_newCoreOptions.advancedOptions.deleteToRecycleBin = m_deleteToRecycleBinCheckBox.Checked;
             m_newCoreOptions.advancedOptions.mistakeDataBase = m_mistakeDataBaseCheckBox.Checked;
@@ -499,7 +493,6 @@ namespace AntiDupl.NET
             m_tgaCheckBox.Text = s.CoreOptionsForm_TgaCheckBox_Text;
             m_searchSystemCheckBox.Text = s.CoreOptionsForm_SearchSystemCheckBox_Text;
             m_searchHiddenCheckBox.Text = s.CoreOptionsForm_SearchHiddenCheckBox_Text;
-            m_searchSubFoldersCheckBox.Text = s.CoreOptionsForm_SearchSubFoldersCheckBox_Text;
 
             m_advancedTabPage.Text = s.CoreOptionsForm_AdvancedTabPage_Text;
             m_deleteToRecycleBinCheckBox.Text = s.CoreOptionsForm_DeleteToRecycleBinCheckBox_Text;

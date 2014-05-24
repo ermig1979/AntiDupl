@@ -77,7 +77,6 @@ namespace AntiDupl.NET
             s.CoreOptionsForm_TgaCheckBox_Text = "TGA";
             s.CoreOptionsForm_SearchSystemCheckBox_Text = "Search system folders/files";
             s.CoreOptionsForm_SearchHiddenCheckBox_Text = "Search hidden folders/files";
-            s.CoreOptionsForm_SearchSubFoldersCheckBox_Text = "Search in subdirectories";
 
             s.CoreOptionsForm_CompareTabPage_Text = "Compare";
             s.CoreOptionsForm_CheckOnEqualityCheckBox_Text = "Search image dupls";
