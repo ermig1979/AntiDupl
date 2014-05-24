@@ -71,7 +71,6 @@ namespace ad
         validPaths(TEXT("ValidPaths")),
         deletePaths(TEXT("DeletePaths"))
     {
-        m_options.push_back(TOption(&search.subFolders, TEXT("SearchOptions"), TEXT("SubFolders"), TRUE, FALSE, TRUE));
         m_options.push_back(TOption(&search.system, TEXT("SearchOptions"), TEXT("System"), FALSE, FALSE, TRUE));
         m_options.push_back(TOption(&search.hidden, TEXT("SearchOptions"), TEXT("Hidden"), FALSE, FALSE, TRUE));
         m_options.push_back(TOption(&search.JPEG, TEXT("SearchOptions"), TEXT("JPEG"), TRUE, FALSE, TRUE));
@@ -100,7 +99,7 @@ namespace ad
         m_options.push_back(TOption(&defect.checkOnBlockiness, TEXT("DefectOptions"), TEXT("CheckOnBlockiness"), TRUE, FALSE, TRUE));
         m_options.push_back(TOption(&defect.blockinessThreshold, TEXT("DefectOptions"), TEXT("BlockinessThreshold"), 10, 0, 100));
 		m_options.push_back(TOption(&defect.checkOnBlockinessOnlyNotJpeg, TEXT("DefectOptions"), TEXT("CheckOnBlockinessOnlyNotJpeg"), FALSE, FALSE, TRUE));
-        m_options.push_back(TOption(&defect.checkOnBlurring, TEXT("DefectOptions"), TEXT("CheckOnBlurring"), TRUE, FALSE, TRUE));
+        m_options.push_back(TOption(&defect.checkOnBlurring, TEXT("DefectOptions"), TEXT("CheckOnBlurring"), FALSE, FALSE, TRUE));
         m_options.push_back(TOption(&defect.blurringThreshold, TEXT("DefectOptions"), TEXT("BlurringThreshold"), 4, 0, 32));
 
         m_options.push_back(TOption(&advanced.deleteToRecycleBin, TEXT("AdvancedOptions"), TEXT("DeleteToRecycleBin"), TRUE, FALSE, TRUE));
