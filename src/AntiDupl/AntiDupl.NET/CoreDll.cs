@@ -294,7 +294,6 @@ namespace AntiDupl.NET
         [StructLayout(LayoutKind.Sequential)]
         public struct adSearchOptions
         {
-            public int subFolders;
             public int system;
             public int hidden;
             public int JPEG;
