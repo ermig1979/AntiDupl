@@ -158,10 +158,10 @@ namespace ad
 		}
 		if(*p1 == 0 && *p2 == 0)
 			return EQUAL; 
-		if(*p1 == 0 && *p2 == DELIMETER)
+		if(*p1 == 0 && *p2 == DELIMETER && path1.m_enableSubFolder == true)
 			return SECOND; 
-		if(*p2 == 0 && *p1 == DELIMETER)
-			return FIRST; 
+		if(*p2 == 0 && *p1 == DELIMETER && path2.m_enableSubFolder == true)
+			return FIRST;  //перва€ входит во вторую
 		return NONE;
 	}
 
@@ -299,6 +299,7 @@ namespace ad
             if(pPath == NULL)
                 return AD_ERROR_INVALID_POINTER;
 
+			//разбиваем путь на папки
             TPathVector tmp(pathCount);
             for(size_t i = 0; i < pathCount; i++)
 			{
@@ -399,6 +400,7 @@ namespace ad
         return AD_IS_NOT_EXIST;
     }
 
+	//ѕроверка на вхождение путей друг в друга
     void TPathContainer::Set(const TPathContainer::TPathVector& tmp)
     {
         m_paths.clear();
@@ -420,9 +422,9 @@ namespace ad
                 case TPath::NONE:
                     m_paths.push_back(*i_tmp);
                     break;
-                case TPath::FIRST:
+                case TPath::FIRST: //уже есть в списке, не добавл€ем
                     break;
-                case TPath::SECOND:
+                case TPath::SECOND: //добавл€ем директорию котора€ включает ту что уже в списке, оставл€ем эту, ту стираем
                     *i_main = i_tmp->Original();
                     break;
                 case TPath::EQUAL:
