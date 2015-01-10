@@ -62,12 +62,20 @@ The program can find defects in the following types:
   <li><p align="justify">
 <img src="../../resources/images/UnknownDefectIcon.img" /> - <b>Unknown Defect</b>. 
 This means that the program failed to correctly open the file.
-  </p></li>
-  <li><p align="justify">
-<img src="../../resources/images/JpegEndMarkerIsAbsentIcon.img" /> - <b>There is no marker of the end of JPEG file</b>.
-How understandable from the names given type defect arises, if JPEG file not finish till end.
-This may happen, for example, when downloading from the internet with poor quality communication.
-  </p></li>
+	</p></li>
+	<li><p align="justify">
+	<img src="../../resources/images/JpegEndMarkerIsAbsentIcon.img" /> - <b>There is no marker of the end of JPEG file</b>.
+	How understandable from the names given type defect arises, if JPEG file not finish till end.
+	This may happen, for example, when downloading from the internet with poor quality communication.
+	</p></li>
+	<li><p align="justify">
+	<img src="../../resources/images/BlockinessIcon.img" /> - <b>Blockiness in file</b>.
+	The effect of a blockiness (compression artifacts) which are shown in case of the strong compression ratio in the JPEG format is found in the picture.
+	</p></li>
+	<li><p align="justify">
+	<img src="../../resources/images/BlurringIcon.img" /> - <b>Blurring image</b>.
+	High blur of the image is found in the picture.
+	</p></li>
  </ul>
  </p></li>
  <li><p align="justify">
@@ -141,23 +149,29 @@ Next columns are enabled only for table of vertical pairs (the cells of the colu
 
 <ul>
  <li><p align="justify">
-<b>Name</b> - it contains the file name of the picture. 
- </p></li>
- <li><p align="justify">
-<b>In folder</b> - it displays the directory in which the image is located.  
- </p></li>
- <li><p align="justify">
-<b>Dimmensions</b> - it contains picture size (width and height).
- </p></li>
- <li><p align="justify">
-<b>Image Type</b> - it displays image file format (<b>BMP</b>, <b>GIF</b>, <b>JPEG</b>, <b>PNG</b>, <b>TIFF</b>, <b>EMF</b>, <b>WMF</b>, <b>EXIF</b>, <b>ICON</b>, <b>JP2</b> or <b>PSD</b>).
- </p></li>
- <li><p align="justify">
-<b>Size</b> - it contains size of the picture file.
- </p></li>
- <li><p align="justify">
-<b>Date modified</b> - it contains date of last change the image file.
- </p></li>
+	<b>Name</b> - it contains the file name of the picture. 
+	 </p></li>
+	 <li><p align="justify">
+	<b>In folder</b> - it displays the directory in which the image is located.  
+	 </p></li>
+	 <li><p align="justify">
+	<b>Dimmensions</b> - it contains picture size (width and height).
+	 </p></li>
+	 <li><p align="justify">
+	<b>Image Type</b> - it displays image file format (<b>BMP</b>, <b>GIF</b>, <b>JPEG</b>, <b>PNG</b>, <b>TIFF</b>, <b>EMF</b>, <b>WMF</b>, <b>EXIF</b>, <b>ICON</b>, <b>JP2</b> or <b>PSD</b>).
+	</p></li>
+ 	<li><p align="justify">
+	<b>Blockiness</b> - shows the picture blockiness (appearance of characteristic small squares of 8x8 in size) expressed as a percentage.
+	</p></li>
+	<li><p align="justify">
+	<b>Bluring</b> - shows the radius of blur of the picture expressed in pixels.
+	</p></li>
+	<li><p align="justify">
+	<b>Size</b> - it contains size of the picture file.
+	 </p></li>
+	 <li><p align="justify">
+	<b>Date modified</b> - it contains date of last change the image file.
+	 </p></li>
 </ul>
 
 <p align="justify">
@@ -165,42 +179,54 @@ And these columns are enabled only for table of horizontal pairs:
 </p>
 
 <ul>
- <li><p align="justify">
-<b>1: Name</b> - it contains the file name of the first picture. 
- </p></li>
- <li><p align="justify">
-<b>1: In folder</b> - it displays the directory in which the first image is located.  
- </p></li>
- <li><p align="justify">
-<b>1: Dimmensions</b> - it contains first picture size (width and height).
- </p></li>
- <li><p align="justify">
-<b>1: Image Type</b> - it displays first image file format (<b>BMP</b>, <b>GIF</b>, <b>JPEG</b>, <b>PNG</b>, <b>TIFF</b>, <b>EMF</b>, <b>WMF</b>, <b>EXIF</b>, <b>ICON</b>, <b>JP2</b> or <b>PSD</b>).
- </p></li>
- <li><p align="justify">
-<b>1: Size</b> - it contains size of the first picture file.
- </p></li>
- <li><p align="justify">
-<b>1: Date modified</b> - it contains date of last change the first image file.
- </p></li>
- <li><p align="justify">
-<b>2: Name</b> - it contains the file name of the second picture. 
- </p></li>
- <li><p align="justify">
-<b>2: In folder</b> - it displays the directory in which the second image is located.  
- </p></li>
- <li><p align="justify">
-<b>2: Dimmensions</b> - it contains second picture size (width and height).
- </p></li>
- <li><p align="justify">
-<b>2: Image Type</b> - it displays the second image file format (<b>BMP</b>, <b>GIF</b>, <b>JPEG</b>, <b>PNG</b>, <b>TIFF</b>, <b>EMF</b>, <b>WMF</b>, <b>EXIF</b>, <b>ICON</b>, <b>JP2</b> or <b>PSD</b>).
- </p></li>
- <li><p align="justify">
-<b>2: Size</b> - it contains size of the second picture file.
- </p></li>
- <li><p align="justify">
-<b>2: Date modified</b> - it contains date of last change the second image file.
- </p></li>
+	 <li><p align="justify">
+	<b>1: Name</b> - it contains the file name of the first picture. 
+	 </p></li>
+	 <li><p align="justify">
+	<b>1: In folder</b> - it displays the directory in which the first image is located.  
+	 </p></li>
+	 <li><p align="justify">
+	<b>1: Dimmensions</b> - it contains first picture size (width and height).
+	 </p></li>
+	 <li><p align="justify">
+	<b>1: Image Type</b> - it displays first image file format (<b>BMP</b>, <b>GIF</b>, <b>JPEG</b>, <b>PNG</b>, <b>TIFF</b>, <b>EMF</b>, <b>WMF</b>, <b>EXIF</b>, <b>ICON</b>, <b>JP2</b> or <b>PSD</b>).
+	 </p></li>
+ 	 <li><p align="justify">
+		<b>1: Blockiness</b> - shows the picture blockiness (appearance of characteristic small squares of 8x8 in size) expressed as a percentage.
+	 </p></li>
+	 <li><p align="justify">
+		<b>1: Bluring</b> - shows the radius of blur of the picture expressed in pixels.
+	 </p></li>
+	 <li><p align="justify">
+	<b>1: Size</b> - it contains size of the first picture file.
+	 </p></li>
+	 <li><p align="justify">
+	<b>1: Date modified</b> - it contains date of last change the first image file.
+	 </p></li>
+	 <li><p align="justify">
+	<b>2: Name</b> - it contains the file name of the second picture. 
+	 </p></li>
+	 <li><p align="justify">
+	<b>2: In folder</b> - it displays the directory in which the second image is located.  
+	 </p></li>
+	 <li><p align="justify">
+	<b>2: Dimmensions</b> - it contains second picture size (width and height).
+	 </p></li>
+	 <li><p align="justify">
+	<b>2: Image Type</b> - it displays the second image file format (<b>BMP</b>, <b>GIF</b>, <b>JPEG</b>, <b>PNG</b>, <b>TIFF</b>, <b>EMF</b>, <b>WMF</b>, <b>EXIF</b>, <b>ICON</b>, <b>JP2</b> or <b>PSD</b>).
+	 </p></li>
+	<li><p align="justify">
+	<b>2: Blockiness</b> - shows the picture blockiness (appearance of characteristic small squares of 8x8 in size) expressed as a percentage.
+	</p></li>
+	<li><p align="justify">
+	<b>2: Bluring</b> - shows the radius of blur of the picture expressed in pixels.
+	</p></li>
+	<li><p align="justify">
+	<b>2: Size</b> - it contains size of the second picture file.
+	 </p></li>
+	 <li><p align="justify">
+	<b>2: Date modified</b> - it contains date of last change the second image file.
+	 </p></li>
 </ul>
 
 <p align="justify">
