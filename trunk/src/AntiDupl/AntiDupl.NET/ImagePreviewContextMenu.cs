@@ -176,89 +176,107 @@ namespace AntiDupl.NET
         #region Rename image
         private string GetNewNameToMove()
         {
-            StringBuilder builder = new StringBuilder(m_imagePreviewPanel.NeighbourImageInfo.GetDirectoryString());
-            builder.Append(@"\");
-            builder.Append(Path.GetFileNameWithoutExtension(m_imagePreviewPanel.NeighbourImageInfo.path));
-            builder.Append(Path.GetExtension(m_imagePreviewPanel.CurrentImageInfo.path));
-            if (!System.IO.File.Exists(builder.ToString()))
+            StringBuilder targetPath = new StringBuilder(m_imagePreviewPanel.NeighbourImageInfo.GetDirectoryString());
+            targetPath.Append(@"\");
+            targetPath.Append(Path.GetFileNameWithoutExtension(m_imagePreviewPanel.NeighbourImageInfo.path));
+            targetPath.Append(Path.GetExtension(m_imagePreviewPanel.CurrentImageInfo.path));
+            if (!System.IO.File.Exists(targetPath.ToString()))
             {
-                return builder.ToString();
+                return targetPath.ToString();
             }
             else
             {
-                return SimilarRename(builder.ToString());
+                return SimilarRename(targetPath.ToString(), "");
             }
         }
 
         private string GetNewNameLikeNeighbour()
         {
-            StringBuilder builder = new StringBuilder(m_imagePreviewPanel.CurrentImageInfo.GetDirectoryString());
-            builder.Append(@"\");
-            builder.Append(Path.GetFileNameWithoutExtension(m_imagePreviewPanel.NeighbourImageInfo.path));
-            builder.Append(Path.GetExtension(m_imagePreviewPanel.CurrentImageInfo.path));
-            if (!System.IO.File.Exists(builder.ToString()))
+            StringBuilder targetPath = new StringBuilder(m_imagePreviewPanel.CurrentImageInfo.GetDirectoryString());
+            targetPath.Append(@"\");
+            targetPath.Append(Path.GetFileNameWithoutExtension(m_imagePreviewPanel.NeighbourImageInfo.path));
+            targetPath.Append(Path.GetExtension(m_imagePreviewPanel.CurrentImageInfo.path));
+            if (!System.IO.File.Exists(targetPath.ToString()))
             {
-                return builder.ToString();
+                return targetPath.ToString();
             }
             else
             {
-                return SimilarRename(builder.ToString());
+                return SimilarRename(targetPath.ToString(), m_imagePreviewPanel.CurrentImageInfo.path);
             }
         }
 
-        private string SimilarRename(String targetPath)
+        /// <summary>
+        /// Возврашает похожее имя, чтобы в списке файлов файлы лежали рядом.
+        /// </summary>
+        /// <param name="targetPath">Путь на который должен быть похоже результирующее имя</param>
+        /// <param name="currentName">Текущее имя файла</param>
+        /// <returns></returns>
+        private string SimilarRename(string targetPath, string currentName)
         {
             ulong digit = 0;
-            string digitName = String.Empty;
+            string nameWithoutNumber = String.Empty;
             int leadingZero = 0;
 
-            digit = GetDigit(Path.GetFileNameWithoutExtension(targetPath), out digitName, out leadingZero);
+            digit = GetDigit(Path.GetFileNameWithoutExtension(targetPath), out nameWithoutNumber, out leadingZero);
 
             if (digit == 0)
                 targetPath = GetNewNameForFileAdd(targetPath, 2);
             else
-                targetPath = GetNewNameForFileDig(Path.Combine(Directory.GetParent(targetPath).ToString() + "\\", digitName),
+                targetPath = GetNewNameForFileDig(Path.Combine(Directory.GetParent(targetPath).ToString() + "\\", nameWithoutNumber),
                                                 leadingZero,
                                                 digit + 1,
                                                 Path.GetExtension(targetPath),
-                                                targetPath);
+                                                targetPath,
+                                                currentName);
             return targetPath;
         }
 
         /// <summary>
-        /// Check is in file name number separated by the character "_" from remaining part of file name. Returns number or 0 in case of failure.
+        /// Check is in file name number separated by the non digit character from remaining part of file name. Returns number or 0 in case of failure.
         /// </summary>
         /// <param name="name">file name</param>
-        /// <param name="digitName">Output file name without number and "_"</param>
-        /// <param name="zero">Number of leading zero</param>
+        /// <param name="pathWithoutNumber">Output file name without number and "_"</param>
+        /// <param name="numOfZero">Number of leading numOfZero</param>
         /// <returns>0 or the received number</returns>
-        private ulong GetDigit(string name, out string digitName, out int zero)
+        private ulong GetDigit(string name, out string nameWithoutDigit, out int numOfZero)
         {
             int length = name.Length;
-            int sym = name.LastIndexOf('_');
-            bool ren = true;
-            for (int u = sym + 1; u < length; u++)
+            //Находим первый не числовой символ с конца
+            bool canRename;
+            int digitPos = length;
+            for (int u = length - 1; u >= 0; u--)
                 if (!char.IsDigit(name[u]))
-                    ren = false;
+                {
+                    digitPos = u;
+                    break;
+                }
+            if (digitPos < length) //если цифра найдена
+                canRename = true;
+            else
+                canRename = false;
 
-            zero = 0;
             ulong result = 0;
-            if (ren)
+            numOfZero = 0;
+            if (canRename)
             {
-                string intPar = name.Substring(sym + 1);
-                ulong.TryParse(intPar, out result);
-                zero = intPar.Length - result.ToString().Length;
+                string forParsing = name.Substring(digitPos + 1);
+                ulong.TryParse(forParsing, out result);
+                numOfZero = forParsing.Length - result.ToString().Length;
             }
 
-            digitName = name.Substring(0, sym + 1);
+            if (digitPos < length)
+                nameWithoutDigit = name.Substring(0, digitPos + 1);
+            else
+                nameWithoutDigit = string.Empty;
             return result;
         }
 
         /// <summary>
         /// Adding to number file name in a case when in it it wasn't.
         /// </summary>
-        /// <param name="oldName">Old name</param>
-        /// <param name="i">Number</param>
+        /// <param name="pathWithoutNumber">Old name</param>
+        /// <param name="digit">Number</param>
         /// <returns>New name</returns>
         private string GetNewNameForFileAdd(string oldName, ulong i)
         {
@@ -274,25 +292,27 @@ namespace AntiDupl.NET
         /// <summary>
         /// Adding to number file name in a case when in it was number.
         /// </summary>
-        /// <param name="oldName">Old name</param>
-        /// <param name="i">Number</param>
+        /// <param name="pathWithoutNumber">Old name</param>
+        /// <param name="digit">Number</param>
         /// <param name="extension">Filename extension</param>
         /// <returns>New name</returns>
-        private string GetNewNameForFileDig(string oldName, int zero, ulong i, string extension, string sourceName)
+        private string GetNewNameForFileDig(string pathWithoutNumber, int zero, ulong digit, string extension, string sourceName, string currentName)
         {
             string newName = String.Empty;
-            if (i.ToString().Length > (i - 1).ToString().Length)
+            if (digit.ToString().Length > (digit - 1).ToString().Length) //не добавлять один ноль если цифра удленилась
                 zero--;
-            StringBuilder builder = new StringBuilder(oldName);
+
+            StringBuilder builder = new StringBuilder(pathWithoutNumber);
             for (int j = 0; j < zero; j++)
                 builder.Append("0");
-            builder.Append(i);
+            builder.Append(digit); //incresed number
             builder.Append(extension);
             newName = builder.ToString();
 
             if (File.Exists(newName))
             {
-                newName = GetNewNameForFileAdd(sourceName, 2);
+                if (string.Compare(newName, currentName, true) != 0)
+                    newName = GetNewNameForFileAdd(sourceName, 2);
             }
             return newName;
         }
