@@ -8,8 +8,8 @@
   <SetDefaultButton_Text>Па змаўчанні</SetDefaultButton_Text>
   <ErrorMessage_FileAlreadyExists>Немагчыма перайменаваць файл, так як файл з такой назвай ужо існуе!</ErrorMessage_FileAlreadyExists>
   <WarningMessage_ChangeFileExtension>Вы сапраўды жадаеце змяніць пашырэнне файла?</WarningMessage_ChangeFileExtension>
-  <AboutProgramPanel_CopyrightLabel0_Text>Copyright (c) 2002-2014 Ермалаеў Ігар,</AboutProgramPanel_CopyrightLabel0_Text>
-  <AboutProgramPanel_CopyrightLabel1_Text>2013-2014 Барысаў Дзмітрый.</AboutProgramPanel_CopyrightLabel1_Text>
+  <AboutProgramPanel_CopyrightLabel0_Text>Copyright (c) 2002-2015 Ермалаеў Ігар,</AboutProgramPanel_CopyrightLabel0_Text>
+  <AboutProgramPanel_CopyrightLabel1_Text>2013-2015 Барысаў Дзмітрый.</AboutProgramPanel_CopyrightLabel1_Text>
   <AboutProgramPanel_ComponentLabel_Text>Кампанент</AboutProgramPanel_ComponentLabel_Text>
   <AboutProgramPanel_VersionLabel_Text>Версія</AboutProgramPanel_VersionLabel_Text>
   <AboutProgramForm_Text>Аб праграме...</AboutProgramForm_Text>
