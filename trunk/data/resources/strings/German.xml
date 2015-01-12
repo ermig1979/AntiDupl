@@ -8,8 +8,8 @@
   <SetDefaultButton_Text>Standard</SetDefaultButton_Text>
   <ErrorMessage_FileAlreadyExists>Datei kann nicht umbenannt werden, da eine andere mit gleichem Namen bereits exisitiert!</ErrorMessage_FileAlreadyExists>
   <WarningMessage_ChangeFileExtension>Soll der Dateityp geändert werden?</WarningMessage_ChangeFileExtension>
-  <AboutProgramPanel_CopyrightLabel0_Text>Copyright (c) 2002-2014 Yermalayeu Ihar,</AboutProgramPanel_CopyrightLabel0_Text>
-  <AboutProgramPanel_CopyrightLabel1_Text>2013-2014 Borisov Dmitry.</AboutProgramPanel_CopyrightLabel1_Text>
+  <AboutProgramPanel_CopyrightLabel0_Text>Copyright (c) 2002-2015 Yermalayeu Ihar,</AboutProgramPanel_CopyrightLabel0_Text>
+  <AboutProgramPanel_CopyrightLabel1_Text>2013-2015 Borisov Dmitry.</AboutProgramPanel_CopyrightLabel1_Text>
   <AboutProgramPanel_ComponentLabel_Text>Anmerkung</AboutProgramPanel_ComponentLabel_Text>
   <AboutProgramPanel_VersionLabel_Text>Version</AboutProgramPanel_VersionLabel_Text>
   <AboutProgramForm_Text>Über...</AboutProgramForm_Text>
