@@ -1,7 +1,7 @@
 ﻿/*
 * AntiDupl.NET Program.
 *
-* Copyright (c) 2002-2014 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ErmIg")]
 [assembly: AssemblyProduct("AntiDupl.NET")]
-[assembly: AssemblyCopyright("ErmIg © 2002-2013")]
+[assembly: AssemblyCopyright("ErmIg © 2002-2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyVersion(AntiDupl.NET.External.Version)]

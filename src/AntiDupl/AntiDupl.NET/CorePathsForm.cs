@@ -1,7 +1,7 @@
 /*
 * AntiDupl.NET Program.
 *
-* Copyright (c) 2002-2014 Yermalayeu Ihar, 2014 Borisov Dmitry.
+* Copyright (c) 2002-2015 Yermalayeu Ihar, 2014 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
