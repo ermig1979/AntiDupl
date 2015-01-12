@@ -1,7 +1,7 @@
 /*
 * AntiDupl.NET Program.
 *
-* Copyright (c) 2002-2014 Yermalayeu Ihar, 2013-2014 Borisov Dmitry.
+* Copyright (c) 2002-2015 Yermalayeu Ihar, 2013-2015 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -43,8 +43,8 @@ namespace AntiDupl.NET
 
             s.WarningMessage_ChangeFileExtension = "Do you really want to change file extension?";
 
-            s.AboutProgramPanel_CopyrightLabel0_Text = "Copyright (c) 2002-2014 Yermalayeu Ihar, ";
-            s.AboutProgramPanel_CopyrightLabel1_Text = "2013-2014 Borisov Dmitry.";
+            s.AboutProgramPanel_CopyrightLabel0_Text = "Copyright (c) 2002-2015 Yermalayeu Ihar, ";
+            s.AboutProgramPanel_CopyrightLabel1_Text = "2013-2015 Borisov Dmitry.";
             s.AboutProgramPanel_ComponentLabel_Text = "Component";
             s.AboutProgramPanel_VersionLabel_Text = "Version";
 

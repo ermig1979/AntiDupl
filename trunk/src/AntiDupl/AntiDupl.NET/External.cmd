@@ -27,7 +27,7 @@ for /f "delims=" %%i in ('type %VERSION_FILE%') do set VERSION=%%i
 echo /*>%EXTERNAL_FILE%
 echo * AntiDupl.NET Program.>>%EXTERNAL_FILE%
 echo *>>%EXTERNAL_FILE%
-echo * Copyright (c) 2002-2013 Yermalayeu Ihar.>>%EXTERNAL_FILE%
+echo * Copyright (c) 2002-2015 Yermalayeu Ihar.>>%EXTERNAL_FILE%
 echo *>>%EXTERNAL_FILE%
 echo * Permission is hereby granted, free of charge, to any person obtaining a copy>>%EXTERNAL_FILE% 
 echo * of this software and associated documentation files (the "Software"), to deal>>%EXTERNAL_FILE%
