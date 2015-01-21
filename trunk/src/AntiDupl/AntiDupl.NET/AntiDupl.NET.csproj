@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{394E0C8E-33D5-44B5-8056-5AD2B1C3C56A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -107,6 +107,7 @@
     <Compile Include="DynamicModule.cs" />
     <Compile Include="External.cs" />
     <Compile Include="FolderOpener.cs" />
+    <Compile Include="Rename.cs" />
     <Compile Include="ThumbnailGroupTable.cs">
       <SubType>Component</SubType>
     </Compile>

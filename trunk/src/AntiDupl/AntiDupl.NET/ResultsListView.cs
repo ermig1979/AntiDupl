@@ -240,6 +240,11 @@ namespace AntiDupl.NET
             m_makeAction = false;
         }
 
+        /// <summary>
+        /// Меняет путь у текущей картинки на заданный.
+        /// </summary>
+        /// <param name="renameCurrentType"></param>
+        /// <param name="newFileName">Новый путь</param>
         public void RenameCurrent(CoreDll.RenameCurrentType renameCurrentType, string newFileName)
         {
             m_makeAction = true;
