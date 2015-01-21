@@ -134,6 +134,9 @@ namespace AntiDupl.NET
         static public class Strings
         {
             public delegate void CurrentChangeHandler();
+            /// <summary>
+            /// Событие вызываемое при смене языка
+            /// </summary>
             public static event CurrentChangeHandler OnCurrentChange;
 
             static public void Initialize()
