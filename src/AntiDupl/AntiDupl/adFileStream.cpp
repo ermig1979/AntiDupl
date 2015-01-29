@@ -1,7 +1,7 @@
 /*
 * AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2015 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar, 2015 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -129,6 +129,7 @@ namespace ad
 			throw TException(AD_ERROR_INVALID_FILE_FORMAT);
 	}
 
+	// Загружаем данные изображения
 	void TInputFileStream::Load(TImageInfo & imageInfo) const
 	{
 		imageInfo = TImageInfo();
@@ -140,6 +141,8 @@ namespace ad
 			Load(imageInfo.blockiness); 
 		if(m_version > 2)
 			Load(imageInfo.blurring); 
+		if(m_version > 3)
+			LoadExif(imageInfo.imageExif);
 	}
 
 	void TInputFileStream::Load(TPixelData & pixelData) const
@@ -172,6 +175,19 @@ namespace ad
 		Load(result.hint);
 	}
 
+	// Загружаем Exif
+	void TInputFileStream::LoadExif(TImageExif * imageExif) const
+	{
+		Load(imageExif->isEmpty);
+		Load(imageExif->imageDescription);
+		Load(imageExif->equipMake);
+		Load(imageExif->equipModel);
+		Load(imageExif->softwareUsed);
+		Load(imageExif->dateTime);
+		Load(imageExif->artist);
+		Load(imageExif->userComment);
+	}
+
 	//-------------------------------------------------------------------------
 
 	TOutputFileStream::TOutputFileStream(const TChar * fileName, const char * format)
@@ -199,6 +215,20 @@ namespace ad
 		Save<TUInt64>(size); 
 	}
 
+	// Сохраняем Exif
+	void TOutputFileStream::SaveExif(const TImageExif * imageExif) const
+	{
+		Save(imageExif->isEmpty);
+		Save(imageExif->imageDescription);
+		Save(imageExif->equipMake);
+		Save(imageExif->equipModel);
+		Save(imageExif->softwareUsed);
+		Save(imageExif->dateTime);
+		Save(imageExif->artist);
+		Save(imageExif->userComment);
+	}
+
+	// Записываем данные любого типа заданого размера
 	void TOutputFileStream::Save(const void * buffer, size_t size) const
 	{
 		DWORD byte_was_write; 
@@ -226,6 +256,7 @@ namespace ad
 		Save(fileInfo.hash);
 	}
 
+	// Сохраняем данные изображения
 	void TOutputFileStream::Save(const TImageInfo & imageInfo) const
 	{
 		Save((const TFileInfo&)imageInfo);
@@ -234,14 +265,17 @@ namespace ad
 		Save(imageInfo.height);
 		Save(imageInfo.blockiness); 
 		Save(imageInfo.blurring); 
+		SaveExif(imageInfo.imageExif);
 	}
 
+	// Сохраняем пиксели изображения
 	void TOutputFileStream::Save(const TPixelData & pixelData) const
 	{
 		SaveSize(pixelData.side);
 		Save(pixelData.main, pixelData.size);
 	}
 
+	// Сохранение в потоке изображения
 	void TOutputFileStream::Save(const TImageData & imageData) const
 	{
 		Save((const TImageInfo&)imageData);

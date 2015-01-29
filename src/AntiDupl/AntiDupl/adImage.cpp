@@ -81,6 +81,7 @@ namespace ad
         return extensions;
     }
 
+	// Вызывается из adDataCollector.cpp
     TImage* TImage::Load(HGLOBAL hGlobal)
     {
         if(TOpenJpeg::Supported(hGlobal))

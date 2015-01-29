@@ -107,7 +107,7 @@ namespace ad
     const TUInt32 LARGE_IMAGE_COLLECTION_SIZE_MIN = 100000;
 
 	const size_t IMAGE_DATA_FILE_SIZE_MAX = 0x10000;
-	const TUInt32 FILE_VERSION = 3;
+	const TUInt32 FILE_VERSION = 4;
 	const size_t SIZE_CHECK_LIMIT = UINT_MAX;
 
 	const size_t BLOCKINESS_SIZE = 8;

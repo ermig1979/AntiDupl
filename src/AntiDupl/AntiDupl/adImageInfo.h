@@ -1,7 +1,7 @@
 /*
 * AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2015 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar, 2015 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -26,9 +26,11 @@
 
 #include "adConfig.h"
 #include "adFileInfo.h"
+#include "adImageExif.h"
 
 namespace ad
 {
+	// Структура информации о изображение
     struct TImageInfo : public TFileInfo
     {
         TImageType type;
@@ -36,6 +38,7 @@ namespace ad
         TUInt32 height;
 		double blockiness;
 		double blurring;
+		TImageExif* imageExif;
 
         size_t index;
 

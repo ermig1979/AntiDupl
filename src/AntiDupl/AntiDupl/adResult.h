@@ -28,6 +28,7 @@
 
 namespace ad
 {
+	// Структура хранит пары дубликатов
     struct TResult
     {
         size_t id;

@@ -30,6 +30,7 @@ namespace ad
 {
     class TEngine;
     //-------------------------------------------------------------------------
+	// Хранение информации об изображениях
 	class TImageDataStorage
 	{
 	public:
@@ -51,6 +52,7 @@ namespace ad
 		TStorage::iterator Find(const TFileInfo& fileInfo);
 		TStorage::iterator Insert(TImageData* pImageData);
 
+		// Информация которую будем записывать. Словарь TImageData
 		TStorage m_storage;
 		TStatus *m_pStatus;
 		TOptions *m_pOptions;

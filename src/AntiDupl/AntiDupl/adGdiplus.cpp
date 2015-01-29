@@ -1,7 +1,7 @@
 /*
 * AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2015 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar, 2015 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@
 
 #include "adPerformance.h"
 #include "adGdiplus.h"
+#include "adImageExif.h"
 
 namespace ad
 {
@@ -160,12 +161,74 @@ namespace ad
         return pView;
     }
 
+	void FullExifStruct(TString *structProperty, Gdiplus::PropertyItem *gdiProp, TImageExif *imageExif)
+	{
+		structProperty->assign(TString((char*)gdiProp->value).Trim().ToWString().c_str(), gdiProp->length);
+		imageExif->isEmpty = false;
+	}
+
+	static TImageExif* GetExifProperty(Gdiplus::Bitmap * pBitmap)
+	{
+		// инициализируем указатель
+		TImageExif *pImageExif = new TImageExif();
+
+		//Exif data
+		UINT  size = 0;
+		UINT  count = 0;
+
+		pBitmap->GetPropertySize(&size, &count);
+		// GetAllPropertyItems returns an array of PropertyItem objects.
+		// Allocate a buffer large enough to receive that array.
+		Gdiplus::PropertyItem* pPropBuffer =(Gdiplus::PropertyItem*)malloc(size);
+		// Get the array of PropertyItem objects.
+		if (pBitmap->GetAllPropertyItems(size, count, pPropBuffer) == Gdiplus::Ok)
+		{
+			// For each PropertyItem in the array, display the id, type, and length.
+			for(UINT j = 0; j < count; ++j)
+			{
+				Gdiplus::PropertyItem  &it = pPropBuffer[j] ;
+				if (!it.length || !it.value)
+					continue;
+
+				switch(it.id)
+				{
+				case PropertyTagImageDescription:
+					FullExifStruct(&pImageExif->imageDescription, &it, pImageExif);
+					break;
+				case PropertyTagEquipMake:
+					FullExifStruct(&pImageExif->equipMake, &it, pImageExif);
+					break;
+				case PropertyTagEquipModel:
+					FullExifStruct(&pImageExif->equipModel, &it, pImageExif);
+					break;
+				case PropertyTagSoftwareUsed:
+					FullExifStruct(&pImageExif->softwareUsed, &it, pImageExif);
+					break;
+				case PropertyTagDateTime:
+					FullExifStruct(&pImageExif->dateTime, &it, pImageExif);
+					break;
+				case PropertyTagArtist:
+					FullExifStruct(&pImageExif->artist, &it, pImageExif);
+					break;
+				case PropertyTagExifUserComment:
+					FullExifStruct(&pImageExif->userComment, &it, pImageExif);
+					break;
+				}
+			}
+		}
+
+		free(pPropBuffer);
+		return pImageExif;
+	}
+
+	// Загрузка изображения с помощью GDI.
     TGdiplus* TGdiplus::Load(HGLOBAL hGlobal)
     {
         AD_FUNCTION_PERFORMANCE_TEST
 
-            TView *pView = NULL;
+        TView *pView = NULL;
         TImage::TFormat format = TImage::None;
+		TImageExif *imageExif = NULL; //указатель
 
         if(hGlobal)
         {
@@ -173,8 +236,11 @@ namespace ad
             if(::CreateStreamOnHGlobal(hGlobal, FALSE, &pStream) == S_OK)
             {
                 try
-                {
-                    Gdiplus::Bitmap *pBitmap = Gdiplus::Bitmap::FromStream(pStream);
+				{
+					Gdiplus::Bitmap *pBitmap = Gdiplus::Bitmap::FromStream(pStream);
+
+					imageExif = GetExifProperty(pBitmap);
+
                     if(pBitmap && pBitmap->GetWidth() && pBitmap->GetHeight())
                     {
                         pView = GetView(pBitmap);
@@ -191,9 +257,11 @@ namespace ad
             }
         }
 
+		// Если получен вид SIMD
         if(pView)
         {
             TGdiplus* pGdiplus = new TGdiplus();
+			pGdiplus->m_exifInfo = imageExif;
             pGdiplus->m_pView = pView;
             pGdiplus->m_format = format;
             return pGdiplus;

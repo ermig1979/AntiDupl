@@ -1,7 +1,7 @@
 /*
 * AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2015 Yermalayeu Ihar.
+* Copyright (c) 2015 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -21,40 +21,45 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
-#ifndef __adFileInfo_h__
-#define __adFileInfo_h__
 
-#include "adPath.h"
+#include "adImageExif.h"
 
+/**
+Property of image.
+*/
 namespace ad
 {
-	// Структура информации о файле
-    struct TFileInfo
+	TImageExif::TImageExif()
+		: isEmpty(true)
+	{
+	}
+
+	/*TImageExif::~TImageExif()
+	{
+	}*/
+
+	// Экспортируем в структуры для передачи из dll
+	bool TImageExif::Export(adExifInfoA * pExifInfo) const
     {
-        TPath path;
-        TUInt64 size;
-        TUInt64 time;
-        TUInt32 hash;
+        if(pExifInfo == NULL)
+            return false;
 
-		TFileInfo();
-        TFileInfo(const TString& path_);
-        TFileInfo(const TString& path_, TUInt64 size_, TUInt64 time_);
-        TFileInfo(const TFileInfo& fileInfo) {*this = fileInfo;};
-  
-        TFileInfo& operator = (const TFileInfo& fileInfo);
+		return equipMake.CopyTo(pExifInfo->equipMake, MAX_EXIF_SIZE);
+    }
 
-        bool operator==(const TFileInfo &fileInfo) const;
-        inline bool operator!=(const TFileInfo &fileInfo) const {return !(*this == fileInfo);}
-        inline bool operator>(const TFileInfo &fileInfo) const {return TPath::BiggerByPath(path, fileInfo.path);}
-        inline bool operator<(const TFileInfo &fileInfo) const {return TPath::LesserByPath(path, fileInfo.path);}
+	bool TImageExif::Export(adExifInfoW * pExifInfo) const
+    {
+        if(pExifInfo == NULL)
+            return false;
 
-        bool Actual(bool update = false);
-
-        void Rename(const TString& newPath);
-
-    private:
-        int m_actual;
-    };
+		pExifInfo->isEmpty = this->isEmpty ? TRUE : FALSE;
+		imageDescription.CopyTo(pExifInfo->imageDescription, MAX_EXIF_SIZE);
+		equipMake.CopyTo(pExifInfo->equipMake, MAX_EXIF_SIZE);
+		equipModel.CopyTo(pExifInfo->equipModel, MAX_EXIF_SIZE);
+		softwareUsed.CopyTo(pExifInfo->softwareUsed, MAX_EXIF_SIZE);
+		dateTime.CopyTo(pExifInfo->dateTime, MAX_EXIF_SIZE);
+		artist.CopyTo(pExifInfo->artist, MAX_EXIF_SIZE);
+		userComment.CopyTo(pExifInfo->userComment, MAX_EXIF_SIZE);
+		return true;
+    }
 }
-
-#endif/*__adFileInfo_h__*/

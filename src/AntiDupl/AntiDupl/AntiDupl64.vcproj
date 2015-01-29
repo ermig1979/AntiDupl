@@ -345,6 +345,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\adImageExif.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\adImageExif.h"
+			>
+		</File>
+		<File
 			RelativePath=".\adImageGroup.cpp"
 			>
 		</File>

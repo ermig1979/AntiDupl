@@ -73,6 +73,7 @@ namespace ad
 		Clear();
 	}
 
+	// Очищаем карту
 	void TImageGroupStorage::Clear()
 	{
 		for(TMap::iterator it = m_map.begin(); it != m_map.end(); ++it)
@@ -80,9 +81,11 @@ namespace ad
 		m_map.clear();
 	}
 
+	// Получаем или создаем группу с переданным ID
 	TImageGroupPtr TImageGroupStorage::Get(size_t id, bool create)
 	{
 		TMap::iterator it = m_map.find(id);
+		// Если не находим в карте группы с данным ID
 		if(it == m_map.end())
 		{
 			TImageGroupPtr pImageGroup = NULL;
@@ -97,6 +100,7 @@ namespace ad
 			return it->second;
 	}
 
+	// Удаляем группу с данным ID из карты.
 	void TImageGroupStorage::Erase(size_t id)
 	{
 		TMap::iterator it = m_map.find(id);
@@ -107,6 +111,7 @@ namespace ad
 		}
 	}
 
+	// Копируем содержимое карты в вектор.
 	void TImageGroupStorage::UpdateVector()
 	{
 		m_vector.clear();
@@ -118,6 +123,7 @@ namespace ad
 		}
 	}
 
+	// Копируем из переданного хранилиша в карту
 	void TImageGroupStorage::Assign(const TImageGroupStorage & storage)
 	{
 		Clear();

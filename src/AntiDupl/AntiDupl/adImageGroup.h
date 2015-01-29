@@ -88,7 +88,9 @@ namespace ad
 		typedef std::map<size_t, TImageGroupPtr> TMap;
 		typedef std::vector<TImageGroupPtr> TVector;
 		
+		// Хранилище групп в виде структур в карте. (ID, Группа)
 		TMap m_map;
+		// Хранилище групп в виде структур в векторе.
 		TVector m_vector;
 	};
 }

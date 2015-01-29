@@ -49,6 +49,7 @@ namespace ad
             delete m_pGrayBuffers[i];
     }
     
+	// Собирание информации об изображение из переданной TImageData
     void TDataCollector::Fill(TImageData* pImageData)
     {
         AD_FUNCTION_PERFORMANCE_TEST
@@ -65,6 +66,7 @@ namespace ad
         pImageData->FreeGlobal();
     }
 
+	// Заполняем переданный TImageData из TImage хранящейся в глобальном хуке pImageData
     void TDataCollector::FillPixelData(TImageData* pImageData)
     {
         AD_FUNCTION_PERFORMANCE_TEST
@@ -82,6 +84,8 @@ namespace ad
 
 			TBlurringDetector blurringDetector;
 			pImageData->blurring = blurringDetector.Detect(gray);
+
+			pImageData->imageExif = pImage->ImageExif();
 
 			Simd::ResizeBilinear(gray, *m_pGrayBuffers.front());
             for(size_t i = 1; i < m_pGrayBuffers.size(); ++i)
