@@ -1,7 +1,7 @@
 /*
 * AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2015 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar, 2015 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -55,6 +55,7 @@ namespace ad
 	}
 	//-------------------------------------------------------------------------
 #ifdef UNICODE
+	// Создает TString из char * и размера
 	TString::TString(const char *str, size_t size)
 	{
 		this->resize(size);
@@ -67,6 +68,7 @@ namespace ad
 	{
 	}
 
+	// Создает TString из фрагмента char * от first до last
 	TString::TString(const char *first, const char *last)
 	{
 		size_t size = last - first;
@@ -80,6 +82,7 @@ namespace ad
 	{
 	}
 
+	// Создает TString из char * и размера
 	TString::TString(const char *str)
 	{
 		size_t size = strlen(str);
@@ -113,6 +116,20 @@ namespace ad
 		return result;
 	}
 
+	// Обрезает начальные и концевые пробелы.
+	TString TString::Trim()
+	{
+		TString::const_iterator it = this->begin();
+		while (it != this->end() && isspace(*it))
+			it++;
+
+		TString::const_reverse_iterator rit = this->rbegin();
+		while (rit.base() != it && isspace(*rit))
+			rit++;
+
+		return std::string(it, rit.base());
+	}
+
 	std::wstring TString::ToWString() const
 	{
 		return TString(*this);
@@ -131,6 +148,7 @@ namespace ad
 		return false;
 	}
 
+	// Копировать в буфер. Передается буфер и размер буфера.
 	bool TString::CopyTo(wchar_t *buffer, size_t size) const
 	{
 		if(length() >= size)

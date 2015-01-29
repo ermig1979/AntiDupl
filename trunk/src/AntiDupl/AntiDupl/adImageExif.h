@@ -1,7 +1,7 @@
 /*
 * AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2015 Yermalayeu Ihar.
+* Copyright (c) 2015 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -21,40 +21,44 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
-#ifndef __adFileInfo_h__
-#define __adFileInfo_h__
 
-#include "adPath.h"
+#ifndef __adImageExif_h__
+#define __adImageExif_h__
+
+#include "AntiDupl.h"
+#include "adStrings.h"
 
 namespace ad
 {
-	// Структура информации о файле
-    struct TFileInfo
+	/*
+	Property of image.
+	*/
+	struct TImageExif
     {
-        TPath path;
-        TUInt64 size;
-        TUInt64 time;
-        TUInt32 hash;
+		// False, если заполнено хоть одно значение.
+		bool isEmpty;
 
-		TFileInfo();
-        TFileInfo(const TString& path_);
-        TFileInfo(const TString& path_, TUInt64 size_, TUInt64 time_);
-        TFileInfo(const TFileInfo& fileInfo) {*this = fileInfo;};
-  
-        TFileInfo& operator = (const TFileInfo& fileInfo);
+		TString imageDescription;
 
-        bool operator==(const TFileInfo &fileInfo) const;
-        inline bool operator!=(const TFileInfo &fileInfo) const {return !(*this == fileInfo);}
-        inline bool operator>(const TFileInfo &fileInfo) const {return TPath::BiggerByPath(path, fileInfo.path);}
-        inline bool operator<(const TFileInfo &fileInfo) const {return TPath::LesserByPath(path, fileInfo.path);}
+		// Камера, изготовитель
+		// manufacturer of the equipment.
+		TString equipMake;
 
-        bool Actual(bool update = false);
+		/// model name or model number of the equipment.
+		// Камера, модель
+		TString equipModel;
 
-        void Rename(const TString& newPath);
+		TString softwareUsed;
+		TString dateTime;
+		TString artist;
+		TString userComment;
+		
+		TImageExif();
+		bool Export(adExifInfoA *) const;
+		bool Export(adExifInfoW *) const;
+	};
 
-    private:
-        int m_actual;
-    };
+	typedef TImageExif* TImageExifPtr;
 }
 
-#endif/*__adFileInfo_h__*/
+#endif//__adImageExif_h__ 

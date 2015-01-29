@@ -38,6 +38,7 @@ namespace AntiDupl.NET
         public uint height;
         public double blockiness;
         public double blurring;
+        public CoreDll.adImageExifW exifInfo;
 
         public CoreImageInfo(ref CoreDll.adImageInfoW imageInfo)
         {
@@ -50,6 +51,7 @@ namespace AntiDupl.NET
             height = imageInfo.height;
             blockiness = imageInfo.blockiness;
             blurring = imageInfo.blurring;
+            exifInfo = imageInfo.exifInfo;
         }
 
         public string GetImageSizeString()

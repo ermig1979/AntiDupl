@@ -92,7 +92,7 @@ extern "C"
     typedef wchar_t adCharW;
     typedef char adCharA;
     typedef adCharW adPathW[MAX_PATH_EX];
-	typedef adCharW adPathWSF[MAX_PATH_EX + 1];
+	typedef adCharW adPathWSF[MAX_PATH_EX + 1]; // 1 - для хранения bool subfolder
     typedef adCharA adPathA[MAX_PATH];
     typedef adPathW* adPathPtrW;
     typedef adPathA* adPathPtrA;
@@ -388,20 +388,6 @@ extern "C"
     };
     typedef adSearchOptions* adSearchOptionsPtr;
 
-	struct adPathWithSubFolderA
-    {
-        adPathA path;
-        adBool enableSubFolder;
-    };
-	typedef adPathWithSubFolderA* adPathWithSubFolderPtrA;
-
-	struct adPathWithSubFolderW
-    {
-        adPathW path;
-        adBool enableSubFolder;
-    };
-	typedef adPathWithSubFolderW* adPathWithSubFolderPtrW;
-
     struct adCompareOptions
     {
         adBool checkOnEquality;    
@@ -475,6 +461,33 @@ extern "C"
     };
     typedef adStatusW* adStatusPtrW;
 
+	#ifndef MAX_EXIF_SIZE
+	#define MAX_EXIF_SIZE 260
+	#endif
+	struct adExifInfoA
+	{
+		adBool isEmpty;
+		adCharA imageDescription[MAX_EXIF_SIZE];
+		adCharA equipMake[MAX_EXIF_SIZE];
+		adCharA equipModel[MAX_EXIF_SIZE];
+		adCharA softwareUsed[MAX_EXIF_SIZE];
+		adCharA dateTime[MAX_EXIF_SIZE];
+		adCharA artist[MAX_EXIF_SIZE];
+		adCharA userComment[MAX_EXIF_SIZE];
+	};
+
+	struct adExifInfoW
+	{
+		adBool isEmpty;
+		adCharW imageDescription[MAX_EXIF_SIZE];
+		adCharW equipMake[MAX_EXIF_SIZE];
+		adCharW equipModel[MAX_EXIF_SIZE];
+		adCharW softwareUsed[MAX_EXIF_SIZE];
+		adCharW dateTime[MAX_EXIF_SIZE];
+		adCharW artist[MAX_EXIF_SIZE];
+		adCharW userComment[MAX_EXIF_SIZE];
+	};
+
     struct adImageInfoA
     {
         adSize id;
@@ -486,9 +499,11 @@ extern "C"
         adUInt32 height;
 		double blockiness;
 		double blurring;
+		adExifInfoA exifInfo;
     };
     typedef adImageInfoA* adImageInfoPtrA;
 
+	// Структура для взаимодействия dll, передает нужные параметры из структуры TImageInfo
     struct adImageInfoW
     {
         adSize id;
@@ -500,6 +515,7 @@ extern "C"
         adUInt32 height;
  		double blockiness;
 		double blurring;
+		adExifInfoW exifInfo;
    };
     typedef adImageInfoW* adImageInfoPtrW;
 

@@ -92,6 +92,7 @@ namespace ad
 		m_pStatus->Reset();
 	}
 
+	// Загружает в хранилише m_storage переданный файл
 	TImageDataPtr TImageDataStorage::Get(const TFileInfo& fileInfo)
 	{
 		TStorage::iterator it = Find(fileInfo);
@@ -222,6 +223,7 @@ namespace ad
 		}
 	}
 
+	// Заполняем TData данные для хранения
 	void TImageDataStorage::UpdateIndex(TIndex & index) const
 	{
 		const size_t dataSizeMax = IMAGE_DATA_FILE_SIZE_MAX/
@@ -256,6 +258,7 @@ namespace ad
 		return ss.str();
 	}
 
+	// Сохранение данных в файл
 	bool TImageDataStorage::SaveIndex(const TIndex & index, const TChar *path) const
 	{
 		size_t size = 0, dataSize = 0;
@@ -274,6 +277,7 @@ namespace ad
 		try
 		{
 			TString fileName = CreatePath(path, TString(INDEX_FILE_NAME) + FILE_EXTENSION);
+			// Файл индекса
 			TOutputFileStream outputFile(fileName.c_str(), INDEX_CONTROL_BYTES);
 
 			outputFile.Save(m_pOptions->advanced.reducedImageSize);
@@ -306,6 +310,7 @@ namespace ad
 		return dataSaveResult;
 	}
 
+	// Сохранение данных о картинках
 	bool TImageDataStorage::SaveData(const TData & data, const TChar *path) const
 	{
 		try
@@ -317,7 +322,8 @@ namespace ad
 			outputFile.Save(data.key);
 			outputFile.Save(data.first);
 			outputFile.Save(data.last);
-			outputFile.SaveSize(data.size);
+			// Сохраняем количество изображений
+			outputFile.SaveSize(data.size); 
 			for(size_t i = 0; i < data.data.size(); ++i)
 				outputFile.Save(*data.data[i]);
 		}

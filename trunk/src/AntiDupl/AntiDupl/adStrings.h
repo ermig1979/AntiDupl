@@ -46,6 +46,8 @@ namespace ad
 		TString(const wchar_t *wstr); 
 		TString(const std::string &str);
 		TString(const std::wstring &wstr);
+		
+		TString TString::Trim();
 
 		std::string ToString() const; // Convert TString to ANSI string 
 		std::wstring ToWString() const; // Convert TString to UNICODE string

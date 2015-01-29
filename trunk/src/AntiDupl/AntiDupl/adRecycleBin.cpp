@@ -51,6 +51,7 @@ namespace ad
         if(m_pOptions->advanced.undoQueueSize)
         {
             TMap::iterator it = m_map.find(pImageInfo);
+			// ≈сли в карте не найдено переданное изображение, то созлаем запись и удал€ем файл
             if(it == m_map.end())
             {
                 TRecord *pRecord = new TRecord();

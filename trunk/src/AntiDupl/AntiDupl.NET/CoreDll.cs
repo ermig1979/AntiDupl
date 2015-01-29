@@ -376,6 +376,29 @@ namespace AntiDupl.NET
             public UIntPtr total;
         }
 
+        public const int MAX_EXIF_SIZE = 260;
+        // Она же class TImageExif decimal в dll
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        public struct adImageExifW
+        {
+            public int isEmpty;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_EXIF_SIZE)]
+            public string imageDescription;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_EXIF_SIZE)]
+		    public string equipMake;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_EXIF_SIZE)]
+		    public string equipModel;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_EXIF_SIZE)]
+		    public string softwareUsed;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_EXIF_SIZE)]
+		    public string dateTime;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_EXIF_SIZE)]
+		    public string artist;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_EXIF_SIZE)]
+		    public string userComment;
+        }
+
+        // Она же структура TImageInfo в dll.
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct adImageInfoW
         {
@@ -389,6 +412,7 @@ namespace AntiDupl.NET
             public uint height;
             public double blockiness;
             public double blurring;
+            public adImageExifW exifInfo;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]

@@ -1,7 +1,7 @@
 /*
 * AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2015 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar, 2015 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@ namespace ad
         height = 0;
 		blockiness = -1.0;
 		blurring = -1.0;
+		imageExif = new TImageExif();
 
         index = AD_UNDEFINED;
         group = AD_UNDEFINED;
@@ -54,6 +55,7 @@ namespace ad
         height = imageInfo.height;
 		blockiness = imageInfo.blockiness;
 		blurring = imageInfo.blurring;
+		imageExif = imageInfo.imageExif;
 
         index = imageInfo.index;
         group = imageInfo.group;
@@ -63,6 +65,7 @@ namespace ad
         return *this;
     }
 
+	// Экспортируем информацию об изображение в переданный указатель.
     bool TImageInfo::Export(adImageInfoPtrA pImageInfo) const
     {
         if(pImageInfo == NULL)
@@ -77,6 +80,7 @@ namespace ad
         pImageInfo->height = height;
 		pImageInfo->blockiness = blockiness;
 		pImageInfo->blurring = blurring;
+		imageExif->Export(&pImageInfo->exifInfo);
 
         return true;
     }
@@ -95,6 +99,7 @@ namespace ad
         pImageInfo->height = height;
 		pImageInfo->blockiness = blockiness;
 		pImageInfo->blurring = blurring;
+		imageExif->Export(&pImageInfo->exifInfo);
 
         return true;
     }

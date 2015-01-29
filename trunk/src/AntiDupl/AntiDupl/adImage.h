@@ -25,6 +25,7 @@
 #define __adImage_h__
 
 #include "adStrings.h"
+#include "adImageExif.h"
 
 namespace ad
 {
@@ -52,6 +53,12 @@ namespace ad
 
         virtual ~TImage();
 
+		TImageExif* ImageExif() 
+		{
+			// возвращает указатель
+			return m_exifInfo; 
+		}
+
         TFormat Format() const {return m_format;}
         TView* View() const {return m_pView;}
         
@@ -66,6 +73,7 @@ namespace ad
 
         TView *m_pView;
         TFormat m_format;
+		TImageExif *m_exifInfo;
     };
 }
 
