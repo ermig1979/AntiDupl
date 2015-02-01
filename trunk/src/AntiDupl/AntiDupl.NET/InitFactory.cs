@@ -29,6 +29,9 @@ using System.Drawing;
 
 namespace AntiDupl.NET
 {
+    /// <summary>
+    /// Фабрика создает элементы GUI
+    /// </summary>
     public static class InitFactory
     {
         public static class Layout

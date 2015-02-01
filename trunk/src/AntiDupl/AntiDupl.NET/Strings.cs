@@ -282,5 +282,14 @@ namespace AntiDupl.NET
         public string ImagePreviewContextMenu_RenameLikeNeighbour_Text;
         public string ImagePreviewContextMenu_MoveImageToNeighbourItem_Text;
         public string ImagePreviewContextMenu_MoveAndRenameImageToNeighbourItem_Text;
+
+        public string ImagePreviewPanel_EXIF_Text;
+        public string ImagePreviewPanel_EXIF_Tooltip_ImageDescription;
+        public string ImagePreviewPanel_EXIF_Tooltip_EquipMake;
+        public string ImagePreviewPanel_EXIF_Tooltip_EquipModel;
+        public string ImagePreviewPanel_EXIF_Tooltip_SoftwareUsed;
+        public string ImagePreviewPanel_EXIF_Tooltip_DateTime;
+        public string ImagePreviewPanel_EXIF_Tooltip_Artist;
+        public string ImagePreviewPanel_EXIF_Tooltip_UserComment;
     }
 }
