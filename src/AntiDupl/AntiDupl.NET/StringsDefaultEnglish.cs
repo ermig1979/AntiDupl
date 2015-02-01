@@ -279,6 +279,15 @@ namespace AntiDupl.NET
             s.ImagePreviewContextMenu_RenameLikeNeighbour_Text = "Rename like neighbour";
             s.ImagePreviewContextMenu_MoveImageToNeighbourItem_Text = "Move image to neighbour";
             s.ImagePreviewContextMenu_MoveAndRenameImageToNeighbourItem_Text = "Move and rename image to neighbour";
+
+            s.ImagePreviewPanel_EXIF_Text = "EXIF";
+            s.ImagePreviewPanel_EXIF_Tooltip_ImageDescription = "Description: ";
+            s.ImagePreviewPanel_EXIF_Tooltip_EquipMake = "Equipment Make: ";
+            s.ImagePreviewPanel_EXIF_Tooltip_EquipModel = "Equipment Model: ";
+            s.ImagePreviewPanel_EXIF_Tooltip_SoftwareUsed = "Software: ";
+            s.ImagePreviewPanel_EXIF_Tooltip_DateTime = "Date/Time: ";
+            s.ImagePreviewPanel_EXIF_Tooltip_Artist = "Artist: ";
+            s.ImagePreviewPanel_EXIF_Tooltip_UserComment = "Comment: ";
         }
 
         static private Strings Create()

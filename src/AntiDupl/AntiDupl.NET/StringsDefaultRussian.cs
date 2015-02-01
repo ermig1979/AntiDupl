@@ -279,6 +279,15 @@ namespace AntiDupl.NET
             s.ImagePreviewContextMenu_RenameLikeNeighbour_Text = "Переименовать как соседнею";
             s.ImagePreviewContextMenu_MoveImageToNeighbourItem_Text = "Переместить картинку к соседней";
             s.ImagePreviewContextMenu_MoveAndRenameImageToNeighbourItem_Text = "Переместить и переименовать к соседней";
+
+            s.ImagePreviewPanel_EXIF_Text = "EXIF";
+            s.ImagePreviewPanel_EXIF_Tooltip_ImageDescription = "Описание: ";
+            s.ImagePreviewPanel_EXIF_Tooltip_EquipMake = "Изготовитель камеры: ";
+            s.ImagePreviewPanel_EXIF_Tooltip_EquipModel = "Модель камеры: ";
+            s.ImagePreviewPanel_EXIF_Tooltip_SoftwareUsed = "Программное обеспечение: ";
+            s.ImagePreviewPanel_EXIF_Tooltip_DateTime = "Дата/Время: ";
+            s.ImagePreviewPanel_EXIF_Tooltip_Artist = "Автор: ";
+            s.ImagePreviewPanel_EXIF_Tooltip_UserComment = "Комментарий: ";
         }
 
         static private Strings Create()

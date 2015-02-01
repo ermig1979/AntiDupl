@@ -140,7 +140,7 @@ namespace AntiDupl.NET
             m_imageExifLabel.Margin = new Padding(IBW, 0, 0, 0);
             m_imageExifLabel.TextAlign = ContentAlignment.TopCenter;
             m_imageExifLabel.AutoSize = true;
-            m_imageExifLabel.Text = "EXIF";
+            m_imageExifLabel.Text = s.ImagePreviewPanel_EXIF_Text;
             m_imageExifLabel.Visible = false;
 
             m_pathLabel = new Label();
@@ -155,27 +155,43 @@ namespace AntiDupl.NET
             m_toolTip.ShowAlways = true;
             m_toolTip.SetToolTip(m_imageBlocknessLabel, s.ResultsListView_Blockiness_Column_Text);
             m_toolTip.SetToolTip(m_imageBlurringLabel, s.ResultsListView_Blurring_Column_Text);
+            // Свойство AutomaticDelay позволяет установить одно значение задержки, которое затем используется для установки значений свойствAutoPopDelay, InitialDelay и ReshowDelay. Каждый раз при установке свойства AutomaticDelay устанавливаются следующие значения по умолчанию.
+            //m_toolTip.AutomaticDelay = 500;
+            // Интервал времени, в миллисекундах, в течение которого указатель мыши должен оставаться в границах элемента управления, прежде чем появится окно всплывающей подсказки.
+            // Равно значению свойства AutomaticDelay. 
+            m_toolTip.InitialDelay = 500;
+            // Получает или задает интервал времени, который должен пройти перед появлением окна очередной всплывающей подсказки при перемещении указателя мыши с одного элемента управления на другой.
+            // Одна пятая значения свойства AutomaticDelay. 
+            m_toolTip.ReshowDelay = 1;
+            // Период времени, в миллисекундах, ToolTip остается видимыми, когда указатель неподвижн на элементе управления. Значение по умолчанию - 5000. 
+            // В десять раз больше, чем значение свойства AutomaticDelay. 
+            // you cannot set the AutoPopDelay time higher than an Int16.MaxValue (i.e. 32767) and have it working. Using the tooltip Show() method leads to the same result. Any value higher than 32767 leads the timer to be reset to 5000ms.
+            m_toolTip.AutoPopDelay = Int16.MaxValue;
         }
 
+        /// <summary>
+        /// Устанавливает значение подсказки tooltip для надписи EXIF.
+        /// </summary>
         private void SetExifTooltip(CoreImageInfo currentImageInfo)
         {
+            Strings s = Resources.Strings.Current;
             List<string> exifList = new List<string>();
             string exifSting = String.Empty;
 
             if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.imageDescription))
-                exifList.Add(currentImageInfo.exifInfo.imageDescription);
+                exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_ImageDescription + currentImageInfo.exifInfo.imageDescription);
             if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.equipMake))
-                exifList.Add(currentImageInfo.exifInfo.equipMake);
+                exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_EquipMake + currentImageInfo.exifInfo.equipMake);
             if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.equipModel))
-                exifList.Add(currentImageInfo.exifInfo.equipModel);
+                exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_EquipModel + currentImageInfo.exifInfo.equipModel);
             if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.softwareUsed))
-                exifList.Add(currentImageInfo.exifInfo.softwareUsed);
+                exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_SoftwareUsed + currentImageInfo.exifInfo.softwareUsed);
             if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.dateTime))
-                exifList.Add(currentImageInfo.exifInfo.dateTime);
+                exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_DateTime + currentImageInfo.exifInfo.dateTime);
             if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.artist))
-                exifList.Add(currentImageInfo.exifInfo.artist);
+                exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_Artist + currentImageInfo.exifInfo.artist);
             if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.userComment))
-                exifList.Add(currentImageInfo.exifInfo.userComment);
+                exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_UserComment + currentImageInfo.exifInfo.userComment);
 
             if (exifList.Count > 0)
             {
