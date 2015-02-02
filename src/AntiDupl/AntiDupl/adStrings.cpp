@@ -127,7 +127,7 @@ namespace ad
 		while (rit.base() != it && iswspace(*rit))
 			rit++;
 
-		return std::string(it, rit.base());
+		return std::wstring(it, rit.base());
 	}
 
 	std::wstring TString::ToWString() const
