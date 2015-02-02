@@ -249,12 +249,18 @@ namespace AntiDupl.NET
             }
             else if (m_neighbourImageInfo != null)
             {
-               m_imageTypeLabel.ForeColor = m_currentImageInfo.type != m_neighbourImageInfo.type ?
-                      Color.Red : TableLayoutPanel.DefaultForeColor;
-               m_imageBlocknessLabel.ForeColor = m_currentImageInfo.blockiness > m_neighbourImageInfo.blockiness ?
-                      Color.Red : TableLayoutPanel.DefaultForeColor;
-               m_imageBlurringLabel.ForeColor = m_currentImageInfo.blurring > m_neighbourImageInfo.blurring ?
-                      Color.Red : TableLayoutPanel.DefaultForeColor;
+                m_imageSizeLabel.ForeColor = m_currentImageInfo.height * m_currentImageInfo.width < m_neighbourImageInfo.height * m_neighbourImageInfo.width ?
+                        Color.Red : TableLayoutPanel.DefaultForeColor;
+                m_imageTypeLabel.ForeColor = m_currentImageInfo.type != m_neighbourImageInfo.type ?
+                        Color.Red : TableLayoutPanel.DefaultForeColor;
+                m_fileSizeLabel.ForeColor = m_currentImageInfo.size < m_neighbourImageInfo.size ?
+                        Color.Red : TableLayoutPanel.DefaultForeColor;
+                m_imageBlocknessLabel.ForeColor = m_currentImageInfo.blockiness > m_neighbourImageInfo.blockiness ?
+                        Color.Red : TableLayoutPanel.DefaultForeColor;
+                m_imageBlurringLabel.ForeColor = m_currentImageInfo.blurring > m_neighbourImageInfo.blurring ?
+                        Color.Red : TableLayoutPanel.DefaultForeColor;
+                m_imageExifLabel.ForeColor = ExifEqual(m_currentImageInfo.exifInfo, m_neighbourImageInfo.exifInfo) ?
+                    TableLayoutPanel.DefaultForeColor : Color.Red;
             }
             if (updateCurrent || updateNeighbour)
             {
