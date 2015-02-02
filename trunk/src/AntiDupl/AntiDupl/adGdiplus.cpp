@@ -126,7 +126,7 @@ namespace ad
 
     static TView* GetView(Gdiplus::Bitmap *pBitmap)
     {
-        TView *pView = NULL;
+        TView * pView = NULL;
         UINT width = pBitmap->GetWidth();
         UINT height = pBitmap->GetHeight();
         if(EnableCustomConversion(pBitmap))
@@ -138,7 +138,7 @@ namespace ad
 				pView = new TView(width, height, Simd::View::Bgra32, NULL);
                 if(pView)
                 {
-                    if(!CustomConversion(&bitmapData, pView))
+                    if(pView->data == NULL || !CustomConversion(&bitmapData, pView))
                     {
                         delete pView;
                         pView = NULL;
@@ -150,12 +150,15 @@ namespace ad
         else
         {
             pView = new TView(width, height, Simd::View::Bgra32, NULL);
-            Gdiplus::Bitmap dst(width, height, (int)pView->stride, PixelFormat32bppARGB, pView->data);
-            Gdiplus::Graphics graphics(&dst); 
-            if(graphics.DrawImage(pBitmap, 0, 0, width, height) != Gdiplus::Ok)
+            if(pView)
             {
-                delete pView;
-                pView = NULL;
+                Gdiplus::Bitmap dst(width, height, (int)pView->stride, PixelFormat32bppARGB, pView->data);
+                Gdiplus::Graphics graphics(&dst); 
+                if(pView->data == NULL || graphics.DrawImage(pBitmap, 0, 0, width, height) != Gdiplus::Ok)
+                {
+                    delete pView;
+                    pView = NULL;
+                }
             }
         }
         return pView;
