@@ -120,11 +120,11 @@ namespace ad
 	TString TString::Trim()
 	{
 		TString::const_iterator it = this->begin();
-		while (it != this->end() && isspace(*it))
+		while (it != this->end() && iswspace(*it))
 			it++;
 
 		TString::const_reverse_iterator rit = this->rbegin();
-		while (rit.base() != it && isspace(*rit))
+		while (rit.base() != it && iswspace(*rit))
 			rit++;
 
 		return std::string(it, rit.base());
