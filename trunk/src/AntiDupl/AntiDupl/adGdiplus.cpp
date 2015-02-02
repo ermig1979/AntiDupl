@@ -135,7 +135,7 @@ namespace ad
             Gdiplus::BitmapData bitmapData;
             if(pBitmap->LockBits(&rect, 0, pBitmap->GetPixelFormat(), &bitmapData) == Gdiplus::Ok)
             {
-				pView = new TView(width, height, Simd::View::Bgra32, NULL);
+				pView = new TView(width, height, TView::Bgra32, NULL);
                 if(pView)
                 {
                     if(pView->data == NULL || !CustomConversion(&bitmapData, pView))
@@ -149,7 +149,7 @@ namespace ad
         }
         else
         {
-            pView = new TView(width, height, Simd::View::Bgra32, NULL);
+            pView = new TView(width, height, TView::Bgra32, NULL);
             if(pView)
             {
                 Gdiplus::Bitmap dst(width, height, (int)pView->stride, PixelFormat32bppARGB, pView->data);
@@ -278,7 +278,7 @@ namespace ad
         Gdiplus::PixelFormat pixelFormat;
         switch(pView->format)
         {
-        case Simd::View::Bgra32:
+        case TView::Bgra32:
             pixelFormat = PixelFormat32bppARGB;
             break;
         default:

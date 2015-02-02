@@ -40,7 +40,7 @@ namespace ad
         m_pResult(pEngine->Result())
     {
         for(int size = INITIAL_REDUCED_IMAGE_SIZE; size > m_pOptions->advanced.reducedImageSize; size >>= 1)
-			m_pGrayBuffers.push_back(new TView(size, size, size, Simd::View::Gray8, NULL));
+			m_pGrayBuffers.push_back(new TView(size, size, size, TView::Gray8, NULL));
     }
 
     TDataCollector::~TDataCollector() 
@@ -77,7 +77,7 @@ namespace ad
             pImageData->width = (TUInt32)pImage->View()->width;
             pImageData->type = (TImageType)pImage->Format();
 
-			TView gray(pImage->View()->width, pImage->View()->height, Simd::View::Gray8, NULL);
+			TView gray(pImage->View()->width, pImage->View()->height, TView::Gray8, NULL);
 			Simd::BgraToGray(*pImage->View(), gray);
 
 			pImageData->blockiness = GetBlockiness(gray);
@@ -91,7 +91,7 @@ namespace ad
             for(size_t i = 1; i < m_pGrayBuffers.size(); ++i)
 				Simd::ReduceGray2x2(*m_pGrayBuffers[i - 1], *m_pGrayBuffers[i]);
 			TPixelData & data = *pImageData->data;
-            ReduceGray2x2(*m_pGrayBuffers.back(), TView(data.side, data.side, data.side, Simd::View::Gray8, data.main));
+            ReduceGray2x2(*m_pGrayBuffers.back(), TView(data.side, data.side, data.side, TView::Gray8, data.main));
             data.filled = true;
 
 			delete pImage;

@@ -1,22 +1,22 @@
 /*
-* Simd Library.
+* Simd Library (http://simd.sourceforge.net).
 *
-* Copyright (c) 2011-2014 Yermalayeu Ihar.
+* Copyright (c) 2011-2015 Yermalayeu Ihar.
 *
-* Permission is hereby granted, free of charge, to any person obtaining a copy 
+* Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
 * in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
 *
-* The above copyright notice and this permission notice shall be included in 
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
 *
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
@@ -56,14 +56,14 @@ namespace Simd
 		return Max(min, Min(max, value));
 	}
 
-	template <class T> SIMD_INLINE T Square(T a) 
+	template <class T> SIMD_INLINE T Square(T a)
 	{
 		return a*a;
 	}
 
     SIMD_INLINE int Round(double value)
     {
-#if defined(SIMD_SSE2_ENABLE) && ((defined(_MSC_VER) && defined(_M_X64)) || (defined(__GNUC__) && defined(__x86_64__))) 
+#if defined(SIMD_SSE2_ENABLE) && ((defined(_MSC_VER) && defined(_M_X64)) || (defined(__GNUC__) && defined(__x86_64__)))
         __m128d t = _mm_set_sd(value);
         return _mm_cvtsd_si32(t);
 #else
@@ -170,9 +170,43 @@ namespace Simd
         {
             return DivideBy16<compensation>(s0[x0] + 2*s0[x1] + s0[x2] + (s1[x0] + 2*s1[x1] + s1[x2])*2 + s2[x0] + 2*s2[x1] + s2[x2]);
         }
+
+        SIMD_INLINE void Reorder16bit(const uint8_t * src, uint8_t * dst)
+        {
+            uint16_t value = *(uint16_t*)src;
+            *(uint16_t*)dst = value >> 8 | value << 8;
+        }
+
+        SIMD_INLINE void Reorder32bit(const uint8_t * src, uint8_t * dst)
+        {
+            uint32_t value = *(uint32_t*)src;
+            *(uint32_t*)dst = 
+                (value & 0x000000FF) << 24 | (value & 0x0000FF00) << 8 | 
+                (value & 0x00FF0000) >> 8 | (value & 0xFF000000) >> 24;
+        }
+
+        SIMD_INLINE void Reorder64bit(const uint8_t * src, uint8_t * dst)
+        {
+            uint64_t value = *(uint64_t*)src;
+            *(uint64_t*)dst = 
+                (value & 0x00000000000000FF) << 56 | (value & 0x000000000000FF00) << 40 | 
+                (value & 0x0000000000FF0000) << 24 | (value & 0x00000000FF000000) << 8 | 
+                (value & 0x000000FF00000000) >> 8  | (value & 0x0000FF0000000000) >> 24 | 
+                (value & 0x00FF000000000000) >> 40 | (value & 0xFF00000000000000) >> 56;
+        }
 	}
 
-#ifdef SIMD_SSE2_ENABLE    
+#ifdef SIMD_SSE_ENABLE
+    namespace Sse
+    {
+        SIMD_INLINE __m128 Square(__m128 value)
+        {
+            return _mm_mul_ps(value, value);
+        }
+    }
+#endif//SIMD_SSE_ENABLE
+
+#ifdef SIMD_SSE2_ENABLE
 	namespace Sse2
 	{
 		SIMD_INLINE __m128i SaturateI16ToU8(__m128i value)
@@ -228,7 +262,7 @@ namespace Simd
 		SIMD_INLINE __m128i HorizontalSum32(__m128i a)
 		{
 			return _mm_add_epi64(
-				_mm_and_si128(a, K64_00000000FFFFFFFF), 
+				_mm_and_si128(a, K64_00000000FFFFFFFF),
 				_mm_and_si128(_mm_srli_si128(a, 4), K64_00000000FFFFFFFF));
 		}
 
@@ -253,10 +287,20 @@ namespace Simd
         {
             return _mm_add_epi16(_mm_add_epi16(a, c), _mm_add_epi16(b, b));
         }
+
+        SIMD_INLINE __m128i Combine(__m128i mask, __m128i positive, __m128i negative)
+        {
+            return _mm_or_si128(_mm_and_si128(mask, positive), _mm_andnot_si128(mask, negative));
+        }
+
+        SIMD_INLINE __m128i AlphaBlendingI16(__m128i src, __m128i dst, __m128i alpha)
+        {
+            return DivideI16By255(_mm_add_epi16(_mm_mullo_epi16(src, alpha), _mm_mullo_epi16(dst, _mm_sub_epi16(K16_00FF, alpha))));
+        }
 	}
 #endif// SIMD_SSE2_ENABLE
 
-#ifdef SIMD_AVX2_ENABLE    
+#ifdef SIMD_AVX2_ENABLE
     namespace Avx2
     {
         SIMD_INLINE __m256i SaturateI16ToU8(__m256i value)
@@ -307,7 +351,74 @@ namespace Simd
         {
             return _mm256_add_epi16(_mm256_add_epi16(a, c), _mm256_add_epi16(b, b));
         }
+
+        SIMD_INLINE __m256i Combine(__m256i mask, __m256i positive, __m256i negative)
+        {
+            return _mm256_or_si256(_mm256_and_si256(mask, positive), _mm256_andnot_si256(mask, negative));
+        }
     }
 #endif// SIMD_AVX2_ENABLE
+
+#ifdef SIMD_VSX_ENABLE
+    namespace Vsx
+    {
+        SIMD_INLINE v128_u8 ShiftLeft(v128_u8 value, size_t shift)
+        {
+            return vec_perm(K8_00, value, vec_lvsr(shift, (uint8_t*)0));        
+        }
+
+        SIMD_INLINE v128_u16 ShiftLeft(v128_u16 value, size_t shift)
+        {
+            return (v128_u16)ShiftLeft((v128_u8)value, 2*shift);      
+        }
+
+        SIMD_INLINE v128_u8 ShiftRight(v128_u8 value, size_t shift)
+        {
+            return vec_perm(value, K8_00, vec_lvsl(shift, (uint8_t*)0));        
+        }
+
+        SIMD_INLINE v128_u16 MulHiU16(v128_u16 a, v128_u16 b)
+        {
+            return (v128_u16)vec_perm(vec_mule(a, b), vec_mulo(a, b), K8_PERM_MUL_HI_U16);        
+        }
+
+        SIMD_INLINE v128_u8 AbsDifferenceU8(v128_u8 a, v128_u8 b)
+        {
+            return vec_sub(vec_max(a, b), vec_min(a, b));
+        }
+
+        SIMD_INLINE v128_u16 SaturateI16ToU8(v128_s16 value)
+        {
+            return (v128_u16)vec_min((v128_s16)K16_00FF, vec_max(value, (v128_s16)K16_0000));
+        }
+
+        SIMD_INLINE void SortU8(v128_u8 & a, v128_u8 & b)
+        {
+            v128_u8 t = a;
+            a = vec_min(t, b);
+            b = vec_max(t, b);
+        }
+
+        SIMD_INLINE v128_u16 DivideBy255(v128_u16 value)
+        {
+            return vec_sr(vec_add(vec_add(value, K16_0001), vec_sr(value, K16_0008)), K16_0008);
+        }
+
+        SIMD_INLINE v128_u16 BinomialSum(const v128_u16 & a, const v128_u16 & b, const v128_u16 & c)
+        {
+            return vec_add(vec_add(a, c), vec_add(b, b));
+        }
+
+        template<class T> SIMD_INLINE T Max(const T & a, const T & b, const T & c)
+        {
+            return vec_max(a, vec_max(b, c));
+        }
+
+        template<class T> SIMD_INLINE T Min(const T & a, const T & b, const T & c)
+        {
+            return vec_min(a, vec_min(b, c));
+        }
+    }
+#endif//SIMD_VSX_ENABLE
 }
 #endif//__SimdMath_h__

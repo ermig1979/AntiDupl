@@ -1,7 +1,7 @@
 /*
-* Simd Library.
+* Simd Library (http://simd.sourceforge.net).
 *
-* Copyright (c) 2011-2014 Yermalayeu Ihar.
+* Copyright (c) 2011-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,11 @@ namespace Simd
         {
             if(fillAlpha)
             {
-				const int32_t alphaMask = alpha << 24;
+#ifdef SIMD_BIG_ENDIAN
+                const int32_t alphaMask = alpha;
+#else
+                const int32_t alphaMask = alpha << 24;
+#endif
                 for(size_t i = (lastRow ? 1 : 0); i < size; ++i, bgr += 3, bgra += 4)
                 {
                     *(int32_t*)bgra = (*(int32_t*)bgr) | alphaMask;
@@ -81,9 +85,15 @@ namespace Simd
                 uint8_t * pBgra = bgra;
                 for(size_t col = 0; col < width; ++col)
                 {
-                    pBgra[0] = *pBlue;
-                    pBgra[1] = *pGreen;
-                    pBgra[2] = *pRed;
+#ifdef SIMD_BIG_ENDIAN
+                    pBgra[0] = pBlue[1];
+                    pBgra[1] = pGreen[1];
+                    pBgra[2] = pRed[1];
+#else
+                    pBgra[0] = pBlue[0];
+                    pBgra[1] = pGreen[0];
+                    pBgra[2] = pRed[0];
+#endif
                     pBgra[3] = alpha;
                     pBlue += 2;
                     pGreen += 2;

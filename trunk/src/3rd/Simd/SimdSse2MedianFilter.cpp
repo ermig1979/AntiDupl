@@ -1,7 +1,7 @@
 /*
-* Simd Library.
+* Simd Library (http://simd.sourceforge.net).
 *
-* Copyright (c) 2011-2014 Yermalayeu Ihar.
+* Copyright (c) 2011-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -55,9 +55,12 @@ namespace Simd
 
         SIMD_INLINE void PartialSort5(__m128i a[5])
         {
-            SortU8(a[2], a[3]); SortU8(a[1], a[2]);
-            SortU8(a[2], a[3]); SortU8(a[1], a[4]); 
-            SortU8(a[0], a[3]); SortU8(a[2], a[0]); 
+            SortU8(a[2], a[3]); 
+            SortU8(a[1], a[2]);
+            SortU8(a[2], a[3]); 
+            a[4] = _mm_max_epu8(a[1], a[4]); 
+            a[0] = _mm_min_epu8(a[0], a[3]); 
+            SortU8(a[2], a[0]); 
             a[2] = _mm_max_epu8(a[4], a[2]); 
             a[2] = _mm_min_epu8(a[2], a[0]);
         }
@@ -150,10 +153,16 @@ namespace Simd
 			SortU8(a[1], a[2]); SortU8(a[4], a[5]); SortU8(a[7], a[8]); 
 			SortU8(a[0], a[1]); SortU8(a[3], a[4]); SortU8(a[6], a[7]);
 			SortU8(a[1], a[2]); SortU8(a[4], a[5]); SortU8(a[7], a[8]); 
-			SortU8(a[0], a[3]); SortU8(a[5], a[8]); SortU8(a[4], a[7]);
-			SortU8(a[3], a[6]); SortU8(a[1], a[4]); SortU8(a[2], a[5]); 
-			SortU8(a[4], a[7]); SortU8(a[4], a[2]); SortU8(a[6], a[4]);
-			SortU8(a[4], a[2]);
+            a[3] = _mm_max_epu8(a[0], a[3]); 
+            a[5] = _mm_min_epu8(a[5], a[8]); 
+            SortU8(a[4], a[7]);
+            a[6] = _mm_max_epu8(a[3], a[6]); 
+            a[4] = _mm_max_epu8(a[1], a[4]); 
+            a[2] = _mm_min_epu8(a[2], a[5]); 
+            a[4] = _mm_min_epu8(a[4], a[7]); 
+            SortU8(a[4], a[2]); 
+            a[4] = _mm_max_epu8(a[6], a[4]);
+            a[4] = _mm_min_epu8(a[4], a[2]);
 		}
 
 		template <bool align, size_t step> void MedianFilterSquare3x3(
@@ -253,15 +262,24 @@ namespace Simd
             SortU8(a[8] , a[9] ); SortU8(a[11], a[12]); SortU8(a[5] , a[8] ); 
             SortU8(a[2] , a[8] ); SortU8(a[2] , a[5] ); SortU8(a[6] , a[9] ); 
             SortU8(a[3] , a[9] ); SortU8(a[3] , a[6] ); SortU8(a[7] , a[10]); 
-            SortU8(a[4] , a[10]); SortU8(a[4] , a[7] ); SortU8(a[2] , a[11]); 
-            SortU8(a[3] , a[12]); SortU8(a[0] , a[9] ); SortU8(a[1] , a[10]);
-            SortU8(a[1] , a[7] ); SortU8(a[1] , a[9] ); SortU8(a[5] , a[11]);
-            SortU8(a[3] , a[11]); SortU8(a[0] , a[6] ); SortU8(a[1] , a[8] ); 
-            SortU8(a[6] , a[8] ); SortU8(a[4] , a[8] ); SortU8(a[0] , a[1] );
-            SortU8(a[4] , a[6] ); SortU8(a[0] , a[4] ); SortU8(a[0] , a[11]);
-            SortU8(a[6] , a[11]); SortU8(a[1] , a[11]); SortU8(a[1] , a[4] );
-            SortU8(a[6] , a[12]); SortU8(a[1] , a[6] ); SortU8(a[4] , a[12]);
-            SortU8(a[4] , a[6] );
+            SortU8(a[4] , a[10]); SortU8(a[4] , a[7] ); SortU8(a[3] , a[12]); 
+            SortU8(a[0] , a[9] ); 
+            a[1] = _mm_min_epu8(a[1], a[10]);
+            a[1] = _mm_min_epu8(a[1], a[7]); 
+            a[1] = _mm_min_epu8(a[1], a[9]); 
+            a[11] = _mm_max_epu8(a[5], a[11]);
+            a[11] = _mm_max_epu8(a[3], a[11]); 
+            a[11] = _mm_max_epu8(a[2], a[11]); 
+            SortU8(a[0] , a[6] ); SortU8(a[1] , a[8] ); SortU8(a[6] , a[8] ); 
+            a[4] = _mm_min_epu8(a[4], a[8]); 
+            SortU8(a[0] , a[1] ); SortU8(a[4] , a[6] ); SortU8(a[0] , a[4] ); 
+            a[11] = _mm_max_epu8(a[0], a[11]);
+            SortU8(a[6] , a[11]); 
+            a[1] = _mm_min_epu8(a[1], a[11]); 
+            SortU8(a[1] , a[4] ); SortU8(a[6] , a[12]); 
+            a[6] = _mm_max_epu8(a[1], a[6]); 
+            a[4] = _mm_min_epu8(a[4], a[12]);
+            a[6] = _mm_max_epu8(a[4], a[6]);
         }
 
         template <bool align, size_t step> void MedianFilterRhomb5x5(
@@ -380,24 +398,44 @@ namespace Simd
             SortU8(a[13], a[16]); SortU8(a[10], a[16]); SortU8(a[10], a[13]);
             SortU8(a[20], a[23]); SortU8(a[17], a[23]); SortU8(a[17], a[20]);
             SortU8(a[21], a[24]); SortU8(a[18], a[24]); SortU8(a[18], a[21]);
-            SortU8(a[19], a[22]); SortU8(a[8] , a[17]); SortU8(a[9] , a[18]);
-            SortU8(a[0] , a[18]); SortU8(a[0] , a[9] ); SortU8(a[10], a[19]);
-            SortU8(a[1] , a[19]); SortU8(a[1] , a[10]); SortU8(a[11], a[20]);
-            SortU8(a[2] , a[20]); SortU8(a[2] , a[11]); SortU8(a[12], a[21]);
+            SortU8(a[19], a[22]); SortU8(a[9] , a[18]); SortU8(a[0] , a[18]); 
+            a[17] = _mm_max_epu8(a[8], a[17]); 
+            a[9] = _mm_max_epu8(a[0], a[9]); 
+            SortU8(a[10], a[19]); SortU8(a[1] , a[19]); SortU8(a[1] , a[10]); 
+            SortU8(a[11], a[20]); SortU8(a[2] , a[20]); SortU8(a[12], a[21]);
+            a[11] = _mm_max_epu8(a[2], a[11]); 
             SortU8(a[3] , a[21]); SortU8(a[3] , a[12]); SortU8(a[13], a[22]);
-            SortU8(a[4] , a[22]); SortU8(a[4] , a[13]); SortU8(a[14], a[23]);
+            a[4] = _mm_min_epu8(a[4] , a[22]); 
+            SortU8(a[4] , a[13]); SortU8(a[14], a[23]);
             SortU8(a[5] , a[23]); SortU8(a[5] , a[14]); SortU8(a[15], a[24]);
-            SortU8(a[6] , a[24]); SortU8(a[6] , a[15]); SortU8(a[7] , a[16]);
-            SortU8(a[7] , a[19]); SortU8(a[13], a[21]); SortU8(a[15], a[23]);
-            SortU8(a[7] , a[13]); SortU8(a[7] , a[15]); SortU8(a[1] , a[9] );
-            SortU8(a[3] , a[11]); SortU8(a[5] , a[17]); SortU8(a[11], a[17]);
-            SortU8(a[9] , a[17]); SortU8(a[4] , a[10]); SortU8(a[6] , a[12]);
-            SortU8(a[7] , a[14]); SortU8(a[4] , a[6] ); SortU8(a[4] , a[7] );
-            SortU8(a[12], a[14]); SortU8(a[10], a[14]); SortU8(a[6] , a[7] );
-            SortU8(a[10], a[12]); SortU8(a[6] , a[10]); SortU8(a[6] , a[17]);
-            SortU8(a[12], a[17]); SortU8(a[7] , a[17]); SortU8(a[7] , a[10]);
-            SortU8(a[12], a[18]); SortU8(a[7] , a[12]); SortU8(a[10], a[18]);
-            SortU8(a[12], a[20]); SortU8(a[10], a[20]); SortU8(a[10], a[12]);
+            a[6] = _mm_min_epu8(a[6], a[24]); 
+            SortU8(a[6] , a[15]); 
+            a[7] = _mm_min_epu8(a[7], a[16]);
+            a[7] = _mm_min_epu8(a[7], a[19]); 
+            a[13] = _mm_min_epu8(a[13], a[21]); 
+            a[15] = _mm_min_epu8(a[15], a[23]);
+            a[7] = _mm_min_epu8(a[7], a[13]); 
+            a[7] = _mm_min_epu8(a[7], a[15]); 
+            a[9] = _mm_max_epu8(a[1], a[9]);
+            a[11] = _mm_max_epu8(a[3], a[11]); 
+            a[17] = _mm_max_epu8(a[5], a[17]); 
+            a[17] = _mm_max_epu8(a[11], a[17]);
+            a[17] = _mm_max_epu8(a[9], a[17]); 
+            SortU8(a[4] , a[10]); 
+            SortU8(a[6] , a[12]); SortU8(a[7] , a[14]); SortU8(a[4] , a[6] ); 
+            a[7] = _mm_max_epu8(a[4], a[7]);
+            SortU8(a[12], a[14]); 
+            a[10] = _mm_min_epu8(a[10], a[14]); 
+            SortU8(a[6] , a[7] ); SortU8(a[10], a[12]); SortU8(a[6] , a[10]); 
+            a[17] = _mm_max_epu8(a[6], a[17]);
+            SortU8(a[12], a[17]); 
+            a[7] = _mm_min_epu8(a[7], a[17]); 
+            SortU8(a[7] , a[10]); SortU8(a[12], a[18]); 
+            a[12] = _mm_max_epu8(a[7], a[12]); 
+            a[10] = _mm_min_epu8(a[10], a[18]);
+            SortU8(a[12], a[20]); 
+            a[10] = _mm_min_epu8(a[10], a[20]); 
+            a[12] = _mm_max_epu8(a[10], a[12]);
         }
 
         template <bool align, size_t step> void MedianFilterSquare5x5(

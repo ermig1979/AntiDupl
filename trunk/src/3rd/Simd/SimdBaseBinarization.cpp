@@ -1,7 +1,7 @@
 /*
-* Simd Library.
+* Simd Library (http://simd.sourceforge.net).
 *
-* Copyright (c) 2011-2014 Yermalayeu Ihar.
+* Copyright (c) 2011-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ namespace Simd
             for(size_t row = 0; row < height; ++row)
             {
                 for(size_t col = 0; col < width; ++col)
-                    dst[col] = Compare<compareType>(src[col], value) ? positive : negative;
+                    dst[col] = Compare8u<compareType>(src[col], value) ? positive : negative;
                 src += srcStride;
                 dst += dstStride;
             }
@@ -87,6 +87,15 @@ namespace Simd
             };
         }
 
+        template<SimdCompareType compareType> SIMD_INLINE uint32_t GetSa(uint8_t src, uint8_t value)
+        {
+#ifdef SIMD_BIG_ENDIAN
+            return Compare8u<compareType>(src, value) ? 0x00010001 : 0x00000001;
+#else
+            return Compare8u<compareType>(src, value) ? 0x00010001 : 0x00010000;
+#endif
+        }
+
         template <SimdCompareType compareType>
         void AveragingBinarization(const uint8_t * src, size_t srcStride, size_t width, size_t height,
             uint8_t value, size_t neighborhood, uint8_t threshold, uint8_t positive, uint8_t negative, uint8_t * dst, size_t dstStride)
@@ -106,7 +115,7 @@ namespace Simd
                 const uint8_t * s = src + row*srcStride;
                 for(size_t col = 0; col < width; ++col)
                 { 
-                    buffer.sa[col] += Compare<compareType>(s[col], value) ? 0x10001 : 0x10000;
+                    buffer.sa[col] += GetSa<compareType>(s[col], value);
                 }
             }
 
@@ -117,7 +126,7 @@ namespace Simd
                     const uint8_t * s = src + (row + neighborhood)*srcStride;
                     for(size_t col = 0; col < width; ++col)
                     {
-                        buffer.sa[col] += Compare<compareType>(s[col], value) ? 0x10001 : 0x10000;
+                        buffer.sa[col] += GetSa<compareType>(s[col], value);
                     }
                 }
 
@@ -126,7 +135,7 @@ namespace Simd
                     const uint8_t * s = src + (row - neighborhood - 1)*srcStride;
                     for(size_t col = 0; col < width; ++col)
                     {
-                        buffer.sa[col] -= Compare<compareType>(s[col], value) ? 0x10001 : 0x10000;
+                        buffer.sa[col] -= GetSa<compareType>(s[col], value);
                     }
                 }
 

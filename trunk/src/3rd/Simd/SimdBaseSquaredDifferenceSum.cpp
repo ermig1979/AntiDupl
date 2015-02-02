@@ -1,7 +1,7 @@
 /*
-* Simd Library.
+* Simd Library (http://simd.sourceforge.net).
 *
-* Copyright (c) 2011-2014 Yermalayeu Ihar.
+* Copyright (c) 2011-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -67,5 +67,13 @@ namespace Simd
 				mask += maskStride;
 			}
 		}
+
+        float SquaredDifferenceSum32f(const float * a, const float * b, size_t size)
+        {
+            float sum = 0;
+            for(size_t i = 0; i < size; ++i)
+                sum += Simd::Square(a[i] - b[i]);
+            return sum;
+        }
     }
 }

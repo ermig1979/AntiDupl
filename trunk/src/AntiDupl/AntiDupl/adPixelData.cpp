@@ -34,7 +34,7 @@ namespace ad
         main(NULL),
         filled(false)
     {
-        (TUInt8*)fast = (TUInt8*)Simd::Allocate(full);
+        (TUInt8*)fast = (TUInt8*)SimdAllocate(full, SimdAlignment());
         (TUInt8*)main = fast + FAST_DATA_SIZE;
     }
 
@@ -46,7 +46,7 @@ namespace ad
         main(NULL),
         filled(false)
     {
-        (TUInt8*)fast = (TUInt8*)Simd::Allocate(full);
+        (TUInt8*)fast = (TUInt8*)SimdAllocate(full, SimdAlignment());
         (TUInt8*)main = fast + FAST_DATA_SIZE;
         if(pixelData.filled)
         {
@@ -57,7 +57,7 @@ namespace ad
 
     TPixelData::~TPixelData()
     {
-        Simd::Free((void*)fast);
+        SimdFree((void*)fast);
     }
 
 
@@ -89,7 +89,7 @@ namespace ad
         bool inner = false;
         if(buffer == NULL)
         {
-            buffer = (TUInt8*)Simd::Allocate(full);
+            buffer = (TUInt8*)SimdAllocate(full, SimdAlignment());
             inner = true;
         }
 
@@ -116,7 +116,7 @@ namespace ad
         memcpy(fast, buffer, full);
 
         if(inner)
-            Simd::Free(buffer);
+            SimdFree(buffer);
     }
 
     void TPixelData::Mirror(TUInt8* buffer)
@@ -124,7 +124,7 @@ namespace ad
         bool inner = false;
         if(buffer == NULL)
         {
-            buffer = (TUInt8*)Simd::Allocate(full);
+            buffer = (TUInt8*)SimdAllocate(full, SimdAlignment());
             inner = true;
         }
 
@@ -151,7 +151,7 @@ namespace ad
         memcpy(fast, buffer, full);
 
         if(inner)
-            Simd::Free(buffer);
+            SimdFree(buffer);
     }
 }
 
