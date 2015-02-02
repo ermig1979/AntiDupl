@@ -1,7 +1,7 @@
 /*
-* Simd Library.
+* Simd Library (http://simd.sourceforge.net).
 *
-* Copyright (c) 2011-2014 Yermalayeu Ihar.
+* Copyright (c) 2011-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -57,7 +57,7 @@ namespace Simd
         }
 
         void ReduceGray3x3(const uint8_t *src, size_t srcWidth, size_t srcHeight, size_t srcStride, 
-            uint8_t *dst, size_t dstWidth, size_t dstHeight, size_t dstStride, bool compensation)
+            uint8_t *dst, size_t dstWidth, size_t dstHeight, size_t dstStride, int compensation)
         {
             if(compensation)
                 ReduceGray3x3<true>(src, srcWidth, srcHeight, srcStride, dst, dstWidth, dstHeight, dstStride);

@@ -1,7 +1,7 @@
 /*
-* Simd Library.
+* Simd Library (http://simd.sourceforge.net).
 *
-* Copyright (c) 2011-2014 Yermalayeu Ihar.
+* Copyright (c) 2011-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -88,50 +88,52 @@ namespace Simd
                 GetStatistic<false>(src, stride, width, height, min, max, average);
         }
 
-        SIMD_INLINE void GetMoments16(__m128i row, __m128i col, 
+        template <bool small> void GetMoments16(__m128i row, __m128i col, 
+            __m128i & x, __m128i & y, __m128i & xx, __m128i & xy, __m128i & yy);
+
+        template<> SIMD_INLINE void GetMoments16<true>(__m128i row, __m128i col, 
             __m128i & x, __m128i & y, __m128i & xx, __m128i & xy, __m128i & yy)
         {
             x = _mm_add_epi32(x, _mm_madd_epi16(col, K16_0001));
             y = _mm_add_epi32(y, _mm_madd_epi16(row, K16_0001));
             xx = _mm_add_epi32(xx, _mm_madd_epi16(col, col));
             xy = _mm_add_epi32(xy, _mm_madd_epi16(col, row));
-            yy = _mm_add_epi32(yy, _mm_madd_epi16(row,row));
+            yy = _mm_add_epi32(yy, _mm_madd_epi16(row, row));
         }
 
-        SIMD_INLINE void GetMoments8(__m128i mask, __m128i & row, __m128i & col, 
+        template<> SIMD_INLINE void GetMoments16<false>(__m128i row, __m128i col, 
+            __m128i & x, __m128i & y, __m128i & xx, __m128i & xy, __m128i & yy)
+        {
+            x = _mm_add_epi32(x, _mm_madd_epi16(col, K16_0001));
+            y = _mm_add_epi32(y, _mm_madd_epi16(row, K16_0001));
+            xx = _mm_add_epi64(xx, HorizontalSum32(_mm_madd_epi16(col, col)));
+            xy = _mm_add_epi64(xy, HorizontalSum32(_mm_madd_epi16(col, row)));
+            yy = _mm_add_epi64(yy, HorizontalSum32(_mm_madd_epi16(row, row)));
+        }
+
+        template <bool small> SIMD_INLINE void GetMoments8(__m128i mask, __m128i & row, __m128i & col, 
             __m128i & area, __m128i & x, __m128i & y, __m128i & xx, __m128i & xy, __m128i & yy)
         {
             area = _mm_add_epi64(area, _mm_sad_epu8(_mm_and_si128(K8_01, mask), K_ZERO));
 
             const __m128i lo = _mm_cmpeq_epi16(_mm_unpacklo_epi8(mask, K_ZERO), K16_00FF);
-            GetMoments16(_mm_and_si128(lo, row), _mm_and_si128(lo, col), x, y, xx, xy, yy);
+            GetMoments16<small>(_mm_and_si128(lo, row), _mm_and_si128(lo, col), x, y, xx, xy, yy);
             col = _mm_add_epi16(col, K16_0008);
 
             const __m128i hi = _mm_cmpeq_epi16(_mm_unpackhi_epi8(mask, K_ZERO), K16_00FF);
-            GetMoments16(_mm_and_si128(hi, row), _mm_and_si128(hi, col), x, y, xx, xy, yy);
+            GetMoments16<small>(_mm_and_si128(hi, row), _mm_and_si128(hi, col), x, y, xx, xy, yy);
             col = _mm_add_epi16(col, K16_0008);
         }
 
-        template <bool align> void GetMoments(const uint8_t * mask, size_t stride, size_t width, size_t height, uint8_t index, 
-            uint64_t * area, uint64_t * x, uint64_t * y, uint64_t * xx, uint64_t * xy, uint64_t * yy)
+        template <bool align> void GetMomentsSmall(const uint8_t * mask, size_t stride, size_t width, size_t height, uint8_t index, 
+            __m128i & area, __m128i & x, __m128i & y, __m128i & xx, __m128i & xy, __m128i & yy)
         {
-            assert(width >= A && width < SHRT_MAX && height < SHRT_MAX);
-            if(align)
-                assert(Aligned(mask) && Aligned(stride));
-
             size_t alignedWidth = AlignLo(width, A);
             __m128i tailMask = ShiftLeft(K_INV_ZERO, A - width + alignedWidth);
 
             const __m128i K16_I = _mm_setr_epi16(0, 1, 2, 3, 4, 5, 6, 7);
             const __m128i _index = _mm_set1_epi8(index);
             const __m128i tailCol = _mm_add_epi16(K16_I, _mm_set1_epi16((uint16_t)(width - A)));
-
-            __m128i _area = _mm_setzero_si128();
-            __m128i _x = _mm_setzero_si128();
-            __m128i _y = _mm_setzero_si128();
-            __m128i _xx = _mm_setzero_si128();
-            __m128i _xy = _mm_setzero_si128();
-            __m128i _yy = _mm_setzero_si128();
 
             for(size_t row = 0; row < height; ++row)
             {
@@ -146,22 +148,86 @@ namespace Simd
                 for(size_t col = 0; col < alignedWidth; col += A)
                 {
                     __m128i _mask = _mm_cmpeq_epi8(Load<align>((__m128i*)(mask + col)), _index);
-                    GetMoments8(_mask, _row, _col, _area, _rowX, _rowY, _rowXX, _rowXY, _rowYY);
+                    GetMoments8<true>(_mask, _row, _col, area, _rowX, _rowY, _rowXX, _rowXY, _rowYY);
                 }
                 if(alignedWidth != width)
                 {
                     __m128i _mask = _mm_and_si128(_mm_cmpeq_epi8(Load<false>((__m128i*)(mask + width - A)), _index), tailMask);
                     _col = tailCol;
-                    GetMoments8(_mask, _row, _col, _area, _rowX, _rowY, _rowXX, _rowXY, _rowYY);
+                    GetMoments8<true>(_mask, _row, _col, area, _rowX, _rowY, _rowXX, _rowXY, _rowYY);
                 }
-                _x = _mm_add_epi64(_x, HorizontalSum32(_rowX));
-                _y = _mm_add_epi64(_y, HorizontalSum32(_rowY));
-                _xx = _mm_add_epi64(_xx, HorizontalSum32(_rowXX));
-                _xy = _mm_add_epi64(_xy, HorizontalSum32(_rowXY));
-                _yy = _mm_add_epi64(_yy, HorizontalSum32(_rowYY));
+                x = _mm_add_epi64(x, HorizontalSum32(_rowX));
+                y = _mm_add_epi64(y, HorizontalSum32(_rowY));
+                xx = _mm_add_epi64(xx, HorizontalSum32(_rowXX));
+                xy = _mm_add_epi64(xy, HorizontalSum32(_rowXY));
+                yy = _mm_add_epi64(yy, HorizontalSum32(_rowYY));
 
                 mask += stride;
             }
+        }
+
+        template <bool align> void GetMomentsLarge(const uint8_t * mask, size_t stride, size_t width, size_t height, uint8_t index, 
+            __m128i & area, __m128i & x, __m128i & y, __m128i & xx, __m128i & xy, __m128i & yy)
+        {
+            size_t alignedWidth = AlignLo(width, A);
+            __m128i tailMask = ShiftLeft(K_INV_ZERO, A - width + alignedWidth);
+
+            const __m128i K16_I = _mm_setr_epi16(0, 1, 2, 3, 4, 5, 6, 7);
+            const __m128i _index = _mm_set1_epi8(index);
+            const __m128i tailCol = _mm_add_epi16(K16_I, _mm_set1_epi16((uint16_t)(width - A)));
+
+            for(size_t row = 0; row < height; ++row)
+            {
+                __m128i _col = K16_I;
+                __m128i _row = _mm_set1_epi16((short)row);
+
+                __m128i _rowX = _mm_setzero_si128();
+                __m128i _rowY = _mm_setzero_si128();
+                for(size_t col = 0; col < alignedWidth; col += A)
+                {
+                    __m128i _mask = _mm_cmpeq_epi8(Load<align>((__m128i*)(mask + col)), _index);
+                    GetMoments8<false>(_mask, _row, _col, area, _rowX, _rowY, xx, xy, yy);
+                }
+                if(alignedWidth != width)
+                {
+                    __m128i _mask = _mm_and_si128(_mm_cmpeq_epi8(Load<false>((__m128i*)(mask + width - A)), _index), tailMask);
+                    _col = tailCol;
+                    GetMoments8<false>(_mask, _row, _col, area, _rowX, _rowY, xx, xy, yy);
+                }
+                x = _mm_add_epi64(x, HorizontalSum32(_rowX));
+                y = _mm_add_epi64(y, HorizontalSum32(_rowY));
+
+                mask += stride;
+            }
+        }
+
+        SIMD_INLINE bool IsSmall(uint64_t width, uint64_t height)
+        {
+            return 
+                width*width*width < 0x300000000ULL && 
+                width*width*height < 0x200000000ULL && 
+                width*height*height < 0x100000000ULL;
+        }
+
+        template <bool align> void GetMoments(const uint8_t * mask, size_t stride, size_t width, size_t height, uint8_t index, 
+            uint64_t * area, uint64_t * x, uint64_t * y, uint64_t * xx, uint64_t * xy, uint64_t * yy)
+        {
+            assert(width >= A && width < SHRT_MAX && height < SHRT_MAX);
+            if(align)
+                assert(Aligned(mask) && Aligned(stride));
+
+            __m128i _area = _mm_setzero_si128();
+            __m128i _x = _mm_setzero_si128();
+            __m128i _y = _mm_setzero_si128();
+            __m128i _xx = _mm_setzero_si128();
+            __m128i _xy = _mm_setzero_si128();
+            __m128i _yy = _mm_setzero_si128();
+
+            if(IsSmall(width, height))
+                GetMomentsSmall<align>(mask, stride, width, height, index, _area, _x, _y, _xx, _xy, _yy);
+            else
+                GetMomentsLarge<align>(mask, stride, width, height, index, _area, _x, _y, _xx, _xy, _yy);
+
             *area = ExtractInt64Sum(_area);
             *x = ExtractInt64Sum(_x);
             *y = ExtractInt64Sum(_y);
@@ -382,6 +448,83 @@ namespace Simd
                 GetAbsDxColSums<true>(src, stride, width, height, sums);
             else
                 GetAbsDxColSums<false>(src, stride, width, height, sums);
+        }
+
+        template <bool align> void ValueSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum)
+        {
+            assert(width >= A);
+            if(align)
+                assert(Aligned(src) && Aligned(stride));
+
+            size_t bodyWidth = AlignLo(width, A);
+            __m128i tailMask = ShiftLeft(K_INV_ZERO, A - width + bodyWidth);
+            __m128i fullSum = _mm_setzero_si128();
+            for(size_t row = 0; row < height; ++row)
+            {
+                for(size_t col = 0; col < bodyWidth; col += A)
+                {
+                    const __m128i src_ = Load<align>((__m128i*)(src + col));
+                    fullSum = _mm_add_epi64(_mm_sad_epu8(src_, K_ZERO), fullSum);
+                }
+                if(width - bodyWidth)
+                {
+                    const __m128i src_ = _mm_and_si128(tailMask, Load<false>((__m128i*)(src + width - A)));
+                    fullSum = _mm_add_epi64(_mm_sad_epu8(src_, K_ZERO), fullSum);
+                }
+                src += stride;
+            }
+            *sum = ExtractInt64Sum(fullSum);
+        }
+
+        void ValueSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum)
+        {
+            if(Aligned(src) && Aligned(stride))
+                ValueSum<true>(src, stride, width, height, sum);
+            else
+                ValueSum<false>(src, stride, width, height, sum);
+        }
+
+        SIMD_INLINE __m128i Square(__m128i src)
+        {
+            const __m128i lo = _mm_unpacklo_epi8(src, _mm_setzero_si128());
+            const __m128i hi = _mm_unpackhi_epi8(src, _mm_setzero_si128());
+            return _mm_add_epi32(_mm_madd_epi16(lo, lo), _mm_madd_epi16(hi, hi));
+        }
+
+        template <bool align> void SquareSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum)
+        {
+            assert(width >= A);
+            if(align)
+                assert(Aligned(src) && Aligned(stride));
+
+            size_t bodyWidth = AlignLo(width, A);
+            __m128i tailMask = ShiftLeft(K_INV_ZERO, A - width + bodyWidth);
+            __m128i fullSum = _mm_setzero_si128();
+            for(size_t row = 0; row < height; ++row)
+            {
+                __m128i rowSum = _mm_setzero_si128();
+                for(size_t col = 0; col < bodyWidth; col += A)
+                {
+                    const __m128i src_ = Load<align>((__m128i*)(src + col));
+                    rowSum = _mm_add_epi32(rowSum, Square(src_));
+                }
+                if(width - bodyWidth)
+                {
+                    const __m128i src_ = _mm_and_si128(tailMask, Load<false>((__m128i*)(src + width - A)));
+                    rowSum = _mm_add_epi32(rowSum, Square(src_));
+                }
+                fullSum = _mm_add_epi64(fullSum, HorizontalSum32(rowSum));
+                src += stride;
+            }
+            *sum = ExtractInt64Sum(fullSum);
+        }
+
+        void SquareSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum)
+        {
+            if(Aligned(src) && Aligned(stride))
+                SquareSum<true>(src, stride, width, height, sum);
+            else
+                SquareSum<false>(src, stride, width, height, sum);
         }
     }
 #endif// SIMD_SSE2_ENABLE

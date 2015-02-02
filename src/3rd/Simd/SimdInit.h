@@ -1,7 +1,7 @@
 /*
-* Simd Library.
+* Simd Library (http://simd.sourceforge.net).
 *
-* Copyright (c) 2011-2014 Yermalayeu Ihar.
+* Copyright (c) 2011-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@
 #ifndef __SimdInit_h__
 #define __SimdInit_h__
 
-#include "Simd/SimdTypes.h"
 #include "Simd/SimdDefs.h"
 
 namespace Simd
@@ -272,6 +271,46 @@ namespace Simd
 #endif// defined(_MSC_VER) || defined(__GNUC__)
 
 #endif// SIMD_AVX2_ENABLE
+
+#ifdef SIMD_VSX_ENABLE
+
+#define SIMD_VEC_SET1_EPI8(a) \
+    {a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a}
+
+#define SIMD_VEC_SET2_EPI8(a0, a1) \
+    {a0, a1, a0, a1, a0, a1, a0, a1, a0, a1, a0, a1, a0, a1, a0, a1}
+
+#define SIMD_VEC_SETR_EPI8(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, aa, ab, ac, ad, ae, af) \
+    {a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, aa, ab, ac, ad, ae, af}
+
+#define SIMD_VEC_SET1_EPI16(a) \
+    {a, a, a, a, a, a, a, a}
+
+#define SIMD_VEC_SET2_EPI16(a0, a1) \
+    {a0, a1, a0, a1, a0, a1, a0, a1}
+
+#define SIMD_VEC_SETR_EPI16(a0, a1, a2, a3, a4, a5, a6, a7) \
+    {a0, a1, a2, a3, a4, a5, a6, a7}
+
+#define SIMD_VEC_SET1_EPI32(a) \
+    {a, a, a, a}
+
+#define SIMD_VEC_SET2_EPI32(a0, a1) \
+    {a0, a1, a0, a1}
+
+#define SIMD_VEC_SETR_EPI32(a0, a1, a2, a3) \
+    {a0, a1, a2, a3}
+
+#define SIMD_VEC_SET1_PS(a) \
+    {a, a, a, a}
+
+#define SIMD_VEC_SET2_PS(a0, a1) \
+    {a0, a1, a0, a1}
+
+#define SIMD_VEC_SETR_PS(a0, a1, a2, a3) \
+    {a0, a1, a2, a3}
+
+#endif//SIMD_VSX_ENABLE
 }
 
 #endif//__SimdInit_h__

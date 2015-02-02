@@ -55,7 +55,7 @@ namespace ad
             size_t effectiveMainSize = Simd::Square(m_pOptions->advanced.reducedImageSize - 2*ignoreFrameWidth);
             m_mainThreshold = int(effectiveMainSize*thresholdPerPixel);
             m_maxDifference = int(Simd::Square(PIXEL_MAX_DIFFERENCE)*effectiveMainSize);
-            m_pMask = (TUInt8*)Simd::Allocate(m_mainSize);
+            m_pMask = (TUInt8*)SimdAllocate(m_mainSize, SimdAlignment());
             memset(m_pMask, 0, m_mainSize);
             for(int row = ignoreFrameWidth; row < m_pOptions->advanced.reducedImageSize - ignoreFrameWidth; ++row)
             {
@@ -74,7 +74,7 @@ namespace ad
         if(m_pOptions->compare.transformedImage == TRUE)
         {
             m_pTransformedImageData = new TImageData(m_pOptions->advanced.reducedImageSize);
-            m_pBuffer = (TUInt8*)Simd::Allocate(m_mainSize + FAST_DATA_SIZE);
+            m_pBuffer = (TUInt8*)SimdAllocate(m_mainSize + FAST_DATA_SIZE, SimdAlignment());
         }
     }
 
@@ -82,13 +82,13 @@ namespace ad
     {
         if(m_pOptions->advanced.ignoreFrameWidth > 0)
         {
-            Simd::Free(m_pMask);
+            SimdFree(m_pMask);
         }
 
         if(m_pOptions->compare.transformedImage == TRUE)
         {
             delete m_pTransformedImageData;
-            Simd::Free(m_pBuffer); 
+            SimdFree(m_pBuffer); 
         }
     }
 

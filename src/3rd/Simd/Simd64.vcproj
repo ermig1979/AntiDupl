@@ -175,11 +175,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimdAvx2BgraToYuv.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdAvx2BgrToBgra.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\SimdAvx2BgrToGray.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdAvx2BgrToYuv.cpp"
 				>
 			</File>
 			<File
@@ -207,11 +215,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimdAvx2GrayToBgr.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdAvx2GrayToBgra.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\SimdAvx2Histogram.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdAvx2Interference.cpp"
 				>
 			</File>
 			<File
@@ -243,7 +259,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimdAvx2Reorder.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdAvx2ResizeBilinear.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdAvx2Segmentation.cpp"
 				>
 			</File>
 			<File
@@ -268,6 +292,10 @@
 			</File>
 			<File
 				RelativePath=".\SimdAvx2Texture.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdAvx2YuvToBgr.cpp"
 				>
 			</File>
 			<File
@@ -307,6 +335,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimdBaseBayerToBgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdBaseBayerToBgra.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdBaseBgraToBayer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdBaseBgraToBgr.cpp"
 				>
 			</File>
@@ -315,11 +355,31 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimdBaseBgraToYuv.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdBaseBgrToBayer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdBaseBgrToBgra.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\SimdBaseBgrToGray.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdBaseBgrToHsl.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdBaseBgrToHsv.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdBaseBgrToYuv.cpp"
 				>
 			</File>
 			<File
@@ -355,6 +415,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimdBaseGrayToBgr.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdBaseGrayToBgra.cpp"
 				>
 			</File>
@@ -364,6 +428,10 @@
 			</File>
 			<File
 				RelativePath=".\SimdBaseIntegral.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdBaseInterference.cpp"
 				>
 			</File>
 			<File
@@ -395,7 +463,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimdBaseReorder.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdBaseResizeBilinear.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdBaseSegmentation.cpp"
 				>
 			</File>
 			<File
@@ -428,6 +504,14 @@
 			</File>
 			<File
 				RelativePath=".\SimdBaseYuvToBgra.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdBaseYuvToHsl.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdBaseYuvToHsv.cpp"
 				>
 			</File>
 			<File
@@ -464,6 +548,10 @@
 			</File>
 			<File
 				RelativePath=".\SimdSse2BgraToGray.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdSse2BgraToYuv.cpp"
 				>
 			</File>
 			<File
@@ -507,6 +595,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimdSse2Interference.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdSse2Lbp.cpp"
 				>
 			</File>
@@ -535,7 +627,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimdSse2Reorder.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdSse2ResizeBilinear.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdSse2Segmentation.cpp"
 				>
 			</File>
 			<File
@@ -594,10 +694,6 @@
 				RelativePath=".\SimdLib.h"
 				>
 			</File>
-			<File
-				RelativePath=".\SimdTypes.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Sys"
@@ -631,11 +727,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimdHelp.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdInit.h"
 				>
 			</File>
 			<File
 				RelativePath=".\SimdLoad.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdLog.h"
 				>
 			</File>
 			<File
@@ -660,22 +764,30 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Utils"
+			Name="Hpp"
 			>
 			<File
-				RelativePath=".\SimdPoint.h"
+				RelativePath=".\SimdAllocator.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\SimdRectangle.h"
+				RelativePath=".\SimdLib.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\SimdUtils.h"
+				RelativePath=".\SimdPixel.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\SimdView.h"
+				RelativePath=".\SimdPoint.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdRectangle.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdView.hpp"
 				>
 			</File>
 		</Filter>
@@ -687,7 +799,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SimdSse41Empty.cpp"
+				RelativePath=".\SimdSse41Segmentation.cpp"
 				>
 			</File>
 		</Filter>
@@ -699,7 +811,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimdSsse3AlphaBlending.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdSsse3BgraToBayer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdSsse3BgraToBgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdSsse3BgraToYuv.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdSsse3BgrToBayer.cpp"
 				>
 			</File>
 			<File
@@ -707,7 +835,231 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimdSsse3BgrToGray.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdSsse3BgrToYuv.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdSsse3GrayToBgr.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdSsse3ReduceGray2x2.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdSsse3Reorder.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdSsse3Sobel.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdSsse3YuvToBgr.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Avx"
+			>
+			<File
+				RelativePath=".\SimdAvx1.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdAvx1SquaredDifferenceSum.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Sse"
+			>
+			<File
+				RelativePath=".\SimdSse1.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdSse1SquaredDifferenceSum.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Vsx"
+			>
+			<File
+				RelativePath=".\SimdVsx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxAbsDifferenceSum.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxAbsGradientSaturatedSum.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxAddFeatureDifference.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxAlphaBlending.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxBackground.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxBgraToBayer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxBgraToBgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxBgraToGray.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxBgraToYuv.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxBgrToBayer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxBgrToBgra.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxBgrToGray.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxBgrToYuv.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxBinarization.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxConditional.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxDeinterleaveUv.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxEdgeBackground.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxFill.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxGaussianBlur3x3.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxGrayToBgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxGrayToBgra.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxHistogram.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxInterference.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxLbp.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxMedianFilter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxOperation.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxReduceGray2x2.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxReduceGray3x3.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxReduceGray4x4.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxReduceGray5x5.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxReorder.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxResizeBilinear.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxSegmentation.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxShiftBilinear.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxSobel.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxSquaredDifferenceSum.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxStatistic.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxStretchGray2x2.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxTexture.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxYuvToBgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxYuvToBgra.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxYuvToHue.cpp"
 				>
 			</File>
 		</Filter>

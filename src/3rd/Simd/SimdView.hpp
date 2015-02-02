@@ -1,7 +1,7 @@
 /*
-* Simd Library.
+* Simd Library (http://simd.sourceforge.net).
 *
-* Copyright (c) 2011-2014 Yermalayeu Ihar.
+* Copyright (c) 2011-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -21,16 +21,22 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
-#ifndef __SimdView_h__
-#define __SimdView_h__
+#ifndef __SimdView_hpp__
+#define __SimdView_hpp__
 
-#include "Simd/SimdRectangle.h"
-#include "Simd/SimdMemory.h"
+#include "Simd/SimdRectangle.hpp"
+#include "Simd/SimdAllocator.hpp"
+
+#include <memory.h>
+#include <assert.h>
 
 namespace Simd
 {
+    template <class A>
     struct View
     {
+        typedef A Allocator;
+
         enum Format
         {
             None = 0,
@@ -43,6 +49,12 @@ namespace Simd
             Int64,
             Float,
             Double,
+            BayerGrbg,
+            BayerGbrg,
+            BayerRggb,
+            BayerBggr,
+            Hsv24,
+            Hsl24,
         };
 
         enum Position
@@ -67,8 +79,8 @@ namespace Simd
         View();
         View(const View & view);
         View(size_t w, size_t h, ptrdiff_t s, Format f, void * d);
-        View(size_t w, size_t h, Format f, void * d = NULL, size_t align = SIMD_ALIGN);
-        View(const Point<ptrdiff_t> size, Format f);
+        View(size_t w, size_t h, Format f, void * d = NULL, size_t align = Allocator::Alignment());
+        View(const Point<ptrdiff_t> & size, Format f);
 
         ~View();
 
@@ -78,8 +90,8 @@ namespace Simd
 
         View & Ref();
 
-        void Recreate(size_t w, size_t h, Format f, void * d = NULL, size_t align = SIMD_ALIGN);
-        void Recreate(Point<ptrdiff_t> size, Format f);
+        void Recreate(size_t w, size_t h, Format f, void * d = NULL, size_t align = Allocator::Alignment());
+        void Recreate(const Point<ptrdiff_t> & size, Format f);
 
         View Region(ptrdiff_t left, ptrdiff_t top, ptrdiff_t right, ptrdiff_t bottom) const;
         View Region(const Point<ptrdiff_t> & topLeft, const Point<ptrdiff_t> & bottomRight) const;
@@ -111,19 +123,19 @@ namespace Simd
         bool _owner;
     };
 
-    bool EqualSize(const View & a, const View & b);
-    bool EqualSize(const View & a, const View & b, const View & c);
+    template <class A, class B> bool EqualSize(const View<A> & a, const View<B> & b);
+    template <class A> bool EqualSize(const View<A> & a, const View<A> & b, const View<A> & c);
 
-    bool Compatible(const View & a, const View & b);
-    bool Compatible(const View & a, const View & b, const View & c);
-    bool Compatible(const View & a, const View & b, const View & c, const View & d);
-    bool Compatible(const View & a, const View & b, const View & c, const View & d, const View & e);
+    template <class A, class B> bool Compatible(const View<A> & a, const View<B> & b);
+    template <class A> bool Compatible(const View<A> & a, const View<A> & b, const View<A> & c);
+    template <class A> bool Compatible(const View<A> & a, const View<A> & b, const View<A> & c, const View<A> & d);
+    template <class A> bool Compatible(const View<A> & a, const View<A> & b, const View<A> & c, const View<A> & d, const View<A> & e);
 
     //-------------------------------------------------------------------------
 
     // struct View implementation:
 
-    SIMD_INLINE View::View()
+    template <class A> SIMD_INLINE View<A>::View()
         : width(0)
         , height(0)
         , stride(0)
@@ -133,7 +145,7 @@ namespace Simd
     {
     }
 
-    SIMD_INLINE View::View(const View & view)
+    template <class A> SIMD_INLINE View<A>::View(const View<A> & view)
         : width(view.width)
         , height(view.height)
         , stride(view.stride)
@@ -143,7 +155,7 @@ namespace Simd
     {
     }
 
-    SIMD_INLINE View::View(size_t w, size_t h, ptrdiff_t s, Format f, void * d)
+    template <class A> SIMD_INLINE View<A>::View(size_t w, size_t h, ptrdiff_t s, Format f, void * d)
         : width(w)
         , height(h)
         , stride(s)
@@ -153,12 +165,12 @@ namespace Simd
     {
         if(data == NULL && height && width && stride && format != None)
         {
-            *(void**)&data = Simd::Allocate(height*stride);
+            *(void**)&data = Allocator::Allocate(height*stride, Allocator::Alignment());
             _owner = true;
         }
     }
 
-    SIMD_INLINE View::View(size_t w, size_t h, Format f, void * d, size_t align)
+    template <class A> SIMD_INLINE View<A>::View(size_t w, size_t h, Format f, void * d, size_t align)
         : width(0)
         , height(0)
         , stride(0)
@@ -169,7 +181,7 @@ namespace Simd
         Recreate(w, h, f, d, align);
     }
 
-    SIMD_INLINE View::View(const Point<ptrdiff_t> size, Format f)
+    template <class A> SIMD_INLINE View<A>::View(const Point<ptrdiff_t> & size, Format f)
         : width(0)
         , height(0)
         , stride(0)
@@ -180,30 +192,30 @@ namespace Simd
         Recreate(size.x, size.y, f);
     }
 
-    SIMD_INLINE View::~View()
+    template <class A> SIMD_INLINE View<A>::~View()
     {
         if(_owner && data)
         {
-            Simd::Free(data);
+            Allocator::Free(data);
         }
     }
 
-    SIMD_INLINE View * View::Clone() const
+    template <class A> SIMD_INLINE View<A> * View<A>::Clone() const
     {
-        View * view = new View(width, height, format);
+        View<A> * view = new View<A>(width, height, format);
         size_t size = width*PixelSize();
         for(size_t row = 0; row < height; ++row)
             memcpy(view->data + view->stride*row, data + stride*row, size);
         return view;
     }
 
-    SIMD_INLINE View & View::operator = (const View & view)
+    template <class A> SIMD_INLINE View<A> & View<A>::operator = (const View<A> & view)
     {
         if(this != &view)
         {
             if(_owner && data)
             {
-                Simd::Free(data);
+                Allocator::Free(data);
                 assert(0);
             }
             *(size_t*)&width = view.width;
@@ -216,65 +228,65 @@ namespace Simd
         return *this;
     }
 
-    SIMD_INLINE View & View::Ref()
+    template <class A> SIMD_INLINE View<A> & View<A>::Ref()
     {
         return *this;
     }
 
-    SIMD_INLINE void View::Recreate(size_t w, size_t h, Format f, void * d, size_t align)
+    template <class A> SIMD_INLINE void View<A>::Recreate(size_t w, size_t h, Format f, void * d, size_t align)
     {
         if(_owner && data)
         {
-            Simd::Free(data);
+            Allocator::Free(data);
             *(void**)&data = NULL;
             _owner = false;
         }
         *(size_t*)&width = w;
         *(size_t*)&height = h;
         *(Format*)&format = f;
-        *(ptrdiff_t*)&stride = Simd::AlignHi(width*PixelSize(format), align);
+        *(ptrdiff_t*)&stride = Allocator::Align(width*PixelSize(format), align);
         if(d)
         {
-            *(void**)&data = Simd::AlignHi(d, align);
+            *(void**)&data = Allocator::Align(d, align);
             _owner = false;
         }
         else
         {
-            *(void**)&data = Simd::Allocate(height*stride, align);
+            *(void**)&data = Allocator::Allocate(height*stride, align);
             _owner = true;
         }
     }
 
-    SIMD_INLINE void View::Recreate(Point<ptrdiff_t> size, Format f)
+    template <class A> SIMD_INLINE void View<A>::Recreate(const Point<ptrdiff_t> & size, Format f)
     {
         Recreate(size.x, size.y, f);
     }
 
-    SIMD_INLINE View View::Region(ptrdiff_t left, ptrdiff_t top, ptrdiff_t right, ptrdiff_t bottom) const
+    template <class A> SIMD_INLINE View<A> View<A>::Region(ptrdiff_t left, ptrdiff_t top, ptrdiff_t right, ptrdiff_t bottom) const
     {
         if(data != NULL && right >= left && bottom >= top)
         {
-            left = RestrictRange<ptrdiff_t>(left, 0, width);
-            top = RestrictRange<ptrdiff_t>(top, 0, height);
-            right = RestrictRange<ptrdiff_t>(right, 0, width);
-            bottom = RestrictRange<ptrdiff_t>(bottom, 0, height);
-            return View(right - left, bottom - top, stride, format, data + top*stride + left*PixelSize(format));
+            left = std::min<ptrdiff_t>(std::max<ptrdiff_t>(left, 0), width);
+            top = std::min<ptrdiff_t>(std::max<ptrdiff_t>(top, 0), height);
+            right = std::min<ptrdiff_t>(std::max<ptrdiff_t>(right, 0), width);
+            bottom = std::min<ptrdiff_t>(std::max<ptrdiff_t>(bottom, 0), height);
+            return View<A>(right - left, bottom - top, stride, format, data + top*stride + left*PixelSize(format));
         }
         else
-            return View();
+            return View<A>();
     }
 
-    SIMD_INLINE View View::Region(const Point<ptrdiff_t> & topLeft, const Point<ptrdiff_t> & bottomRight) const
+    template <class A> SIMD_INLINE View<A> View<A>::Region(const Point<ptrdiff_t> & topLeft, const Point<ptrdiff_t> & bottomRight) const
     {
         return Region(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y);
     }
 
-    SIMD_INLINE View View::Region(const Rectangle<ptrdiff_t> & rect) const
+    template <class A> SIMD_INLINE View<A> View<A>::Region(const Rectangle<ptrdiff_t> & rect) const
     {
         return Region(rect.Left(), rect.Top(), rect.Right(), rect.Bottom());
     }
 
-    SIMD_INLINE View View::Region(const Point<ptrdiff_t> & size, Position position) const
+    template <class A> SIMD_INLINE View<A> View<A>::Region(const Point<ptrdiff_t> & size, Position position) const
     {
         switch(position)
         {
@@ -299,151 +311,169 @@ namespace Simd
         default:
             assert(0);
         }
-        return View();
+        return View<A>();
     }
 
-    SIMD_INLINE View View::Flipped() const
+    template <class A> SIMD_INLINE View<A> View<A>::Flipped() const
     {
-        return View(width, height, -stride, format, data + (height - 1)*stride);
+        return View<A>(width, height, -stride, format, data + (height - 1)*stride);
     }
 
-    SIMD_INLINE Point<ptrdiff_t> View::Size() const
+    template <class A> SIMD_INLINE Point<ptrdiff_t> View<A>::Size() const
     {
         return Point<ptrdiff_t>(width, height);
     }
 
-    SIMD_INLINE size_t View::DataSize() const
+    template <class A> SIMD_INLINE size_t View<A>::DataSize() const
     {
         return stride*height;
     }
 
-    SIMD_INLINE size_t View::Area() const
+    template <class A> SIMD_INLINE size_t View<A>::Area() const
     {
         return width*height;
     }
 
-    template <class T>
-    SIMD_INLINE const T & View::At(size_t x, size_t y) const
+    template <class A> template<class T> SIMD_INLINE const T & View<A>::At(size_t x, size_t y) const
     {
+        assert(x < width && y < height);
         return ((const T*)(data + y*stride))[x];
     }
 
-    template <class T>
-    SIMD_INLINE T & View::At(size_t x, size_t y)
+    template <class A> template<class T> SIMD_INLINE T & View<A>::At(size_t x, size_t y)
     {
+        assert(x < width && y < height);
         return ((T*)(data + y*stride))[x];
     }
 
-    template <class T>
-    SIMD_INLINE const T & View::At(const Point<ptrdiff_t> & p) const
+    template <class A> template<class T> SIMD_INLINE const T & View<A>::At(const Point<ptrdiff_t> & p) const
     {
         return At<T>(p.x, p.y);
     }
 
-    template <class T>
-    SIMD_INLINE T & View::At(const Point<ptrdiff_t> & p)
+    template <class A> template<class T> SIMD_INLINE T & View<A>::At(const Point<ptrdiff_t> & p)
     {
         return At<T>(p.x, p.y);
     }
 
-    SIMD_INLINE size_t View::PixelSize(Format format)
+    template <class A> SIMD_INLINE size_t View<A>::PixelSize(Format format)
     {
         switch(format)
         {
-        case None:   return 0;
-        case Gray8:  return 1;
-        case Uv16:   return 2;
-        case Bgr24:  return 3;
-        case Bgra32: return 4;
-        case Int16:  return 2;
-        case Int32:  return 4;
-        case Int64:  return 8;
-        case Float:  return 4;
-        case Double: return 8;
+        case None:      return 0;
+        case Gray8:     return 1;
+        case Uv16:      return 2;
+        case Bgr24:     return 3;
+        case Bgra32:    return 4;
+        case Int16:     return 2;
+        case Int32:     return 4;
+        case Int64:     return 8;
+        case Float:     return 4;
+        case Double:    return 8;
+        case BayerGrbg: return 1;
+        case BayerGbrg: return 1;
+        case BayerRggb: return 1;
+        case BayerBggr: return 1;
+        case Hsv24:     return 3;
+        case Hsl24:     return 3;
         default: assert(0); return 0;
         }
     }
 
-    SIMD_INLINE size_t View::PixelSize() const
+    template <class A> SIMD_INLINE size_t View<A>::PixelSize() const
     {
         return PixelSize(format);
     }
 
-    SIMD_INLINE size_t View::ChannelSize(Format format)
+    template <class A> SIMD_INLINE size_t View<A>::ChannelSize(Format format)
     {
         switch(format)
         {
-        case None:   return 0;
-        case Gray8:  return 1;
-        case Uv16:   return 1;
-        case Bgr24:  return 1;
-        case Bgra32: return 1;
-        case Int16:  return 2;
-        case Int32:  return 4;
-        case Int64:  return 8;
-        case Float:  return 4;
-        case Double: return 8;
+        case None:      return 0;
+        case Gray8:     return 1;
+        case Uv16:      return 1;
+        case Bgr24:     return 1;
+        case Bgra32:    return 1;
+        case Int16:     return 2;
+        case Int32:     return 4;
+        case Int64:     return 8;
+        case Float:     return 4;
+        case Double:    return 8;
+        case BayerGrbg: return 1;
+        case BayerGbrg: return 1;
+        case BayerRggb: return 1;
+        case BayerBggr: return 1;
+        case Hsv24:     return 1;
+        case Hsl24:     return 1;
         default: assert(0); return 0;
         }
     }
 
-    SIMD_INLINE size_t View::ChannelSize() const
+    template <class A> SIMD_INLINE size_t View<A>::ChannelSize() const
     {
         return ChannelSize(format);
     }
 
-    SIMD_INLINE size_t View::ChannelCount(Format format)
+    template <class A> SIMD_INLINE size_t View<A>::ChannelCount(Format format)
     {
         switch(format)
         {
-        case None:   return 0;
-        case Gray8:  return 1;
-        case Uv16:   return 2;
-        case Bgr24:  return 3;
-        case Bgra32: return 4;
-        case Int16:  return 1;
-        case Int32:  return 1;
-        case Int64:  return 1;
-        case Float:  return 1;
-        case Double: return 1;
+        case None:      return 0;
+        case Gray8:     return 1;
+        case Uv16:      return 2;
+        case Bgr24:     return 3;
+        case Bgra32:    return 4;
+        case Int16:     return 1;
+        case Int32:     return 1;
+        case Int64:     return 1;
+        case Float:     return 1;
+        case Double:    return 1;
+        case BayerGrbg: return 1;
+        case BayerGbrg: return 1;
+        case BayerRggb: return 1;
+        case BayerBggr: return 1;
+        case Hsv24:     return 3;
+        case Hsl24:     return 3;
         default: assert(0); return 0;
         }
     }
 
-    SIMD_INLINE size_t View::ChannelCount() const
+    template <class A> SIMD_INLINE size_t View<A>::ChannelCount() const
     {
         return ChannelCount(format);
     }
 
     // View utilities implementation:
 
-    SIMD_INLINE bool EqualSize(const View & a, const View & b)
+    template <class A, class B> SIMD_INLINE bool EqualSize(const View<A> & a, const View<B> & b)
     {
         return
             (a.width == b.width && a.height == b.height);
     }
 
-    SIMD_INLINE bool EqualSize(const View & a, const View & b, const View & c)
+    template <class A> SIMD_INLINE bool EqualSize(const View<A> & a, const View<A> & b, const View<A> & c)
     {
         return
             (a.width == b.width && a.height == b.height) &&
             (a.width == c.width && a.height == c.height);
     }
 
-    SIMD_INLINE bool Compatible(const View & a, const View & b)
+    template <class A, class B> SIMD_INLINE bool Compatible(const View<A> & a, const View<B> & b)
     {
+        typedef typename View<A>::Format Format;
+
         return
-            (a.width == b.width && a.height == b.height && a.format == b.format);
+            (a.width == b.width && a.height == b.height && a.format == (Format)b.format);
     }
 
-    SIMD_INLINE bool Compatible(const View & a, const View & b, const View & c)
+    template <class A> SIMD_INLINE bool Compatible(const View<A> & a, const View<A> & b, const View<A> & c)
     {
         return
             (a.width == b.width && a.height == b.height && a.format == b.format) &&
             (a.width == c.width && a.height == c.height && a.format == c.format);
     }
 
-    SIMD_INLINE bool Compatible(const View & a, const View & b, const View & c, const View & d)
+    template <class A> SIMD_INLINE bool Compatible(const View<A> & a, const View<A> & b, const View<A> & c, const View<A> & d)
     {
         return
             (a.width == b.width && a.height == b.height && a.format == b.format) &&
@@ -451,7 +481,7 @@ namespace Simd
             (a.width == d.width && a.height == d.height && a.format == d.format);
     }
 
-    SIMD_INLINE bool Compatible(const View & a, const View & b, const View & c, const View & d, const View & e)
+    template <class A> SIMD_INLINE bool Compatible(const View<A> & a, const View<A> & b, const View<A> & c, const View<A> & d, const View<A> & e)
     {
         return
             (a.width == b.width && a.height == b.height && a.format == b.format) &&
@@ -461,4 +491,4 @@ namespace Simd
     }
 }
 
-#endif//__SimdView_h__
+#endif//__SimdView_hpp__

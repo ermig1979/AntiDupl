@@ -1,7 +1,7 @@
 /*
-* Simd Library.
+* Simd Library (http://simd.sourceforge.net).
 *
-* Copyright (c) 2011-2014 Yermalayeu Ihar.
+* Copyright (c) 2011-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@
 #ifndef __SimdAvx2_h__
 #define __SimdAvx2_h__
 
-#include "Simd/SimdTypes.h"
 #include "Simd/SimdDefs.h"
 
 namespace Simd
@@ -82,10 +81,20 @@ namespace Simd
 
         void BgraToGray(const uint8_t * bgra, size_t width, size_t height, size_t bgraStride, uint8_t * gray, size_t grayStride);
 
+        void BgraToYuv420p(const uint8_t * bgra, size_t width, size_t height, size_t bgraStride, uint8_t * y, size_t yStride, uint8_t * u, size_t uStride, uint8_t * v, size_t vStride);
+
+        void BgraToYuv444p(const uint8_t * bgra, size_t width, size_t height, size_t bgraStride, uint8_t * y, size_t yStride, uint8_t * u, size_t uStride, uint8_t * v, size_t vStride);
+
         void Bgr48pToBgra32(const uint8_t * blue, size_t blueStride, size_t width, size_t height,
             const uint8_t * green, size_t greenStride, const uint8_t * red, size_t redStride, uint8_t * bgra, size_t bgraStride, uint8_t alpha);
 
-        void BgrToGray(const uint8_t *bgr, size_t width, size_t height, size_t bgrStride, uint8_t *gray, size_t grayStride);
+        void BgrToBgra(const uint8_t * bgr, size_t width, size_t height, size_t bgrStride, uint8_t * bgra, size_t bgraStride, uint8_t alpha);
+
+        void BgrToGray(const uint8_t * bgr, size_t width, size_t height, size_t bgrStride, uint8_t * gray, size_t grayStride);
+
+        void BgrToYuv420p(const uint8_t * bgr, size_t width, size_t height, size_t bgrStride, uint8_t * y, size_t yStride, uint8_t * u, size_t uStride, uint8_t * v, size_t vStride);
+
+        void BgrToYuv444p(const uint8_t * bgr, size_t width, size_t height, size_t bgrStride, uint8_t * y, size_t yStride, uint8_t * u, size_t uStride, uint8_t * v, size_t vStride);
 
         void Binarization(const uint8_t * src, size_t srcStride, size_t width, size_t height, 
             uint8_t value, uint8_t positive, uint8_t negative, uint8_t * dst, size_t dstStride, SimdCompareType compareType);
@@ -94,8 +103,11 @@ namespace Simd
             uint8_t value, size_t neighborhood, uint8_t threshold, uint8_t positive, uint8_t negative, 
             uint8_t * dst, size_t dstStride, SimdCompareType compareType);
 
-        void ConditionalCount(const uint8_t * src, size_t stride, size_t width, size_t height, 
+        void ConditionalCount8u(const uint8_t * src, size_t stride, size_t width, size_t height, 
             uint8_t value, SimdCompareType compareType, uint32_t * count);
+
+        void ConditionalCount16i(const uint8_t * src, size_t stride, size_t width, size_t height, 
+            int16_t value, SimdCompareType compareType, uint32_t * count);
 
         void ConditionalSum(const uint8_t * src, size_t srcStride, size_t width, size_t height, 
             const uint8_t * mask, size_t maskStride, uint8_t value, SimdCompareType compareType, uint64_t * sum);
@@ -136,10 +148,22 @@ namespace Simd
         void GaussianBlur3x3(const uint8_t * src, size_t srcStride, size_t width, size_t height, 
             size_t channelCount, uint8_t * dst, size_t dstStride);
 
+        void GrayToBgr(const uint8_t *gray, size_t width, size_t height, size_t grayStride, uint8_t *bgr, size_t bgrStride);
+
         void GrayToBgra(const uint8_t *gray, size_t width, size_t height, size_t grayStride, uint8_t *bgra, size_t bgraStride, uint8_t alpha);
 
         void AbsSecondDerivativeHistogram(const uint8_t *src, size_t width, size_t height, size_t stride,
             size_t step, size_t indent, uint32_t * histogram);
+
+        void InterferenceIncrement(uint8_t * statistic, size_t stride, size_t width, size_t height, uint8_t increment, int16_t saturation);
+
+        void InterferenceIncrementMasked(uint8_t * statistic, size_t statisticStride, size_t width, size_t height, 
+            uint8_t increment, int16_t saturation, const uint8_t * mask, size_t maskStride, uint8_t index);
+
+        void InterferenceDecrement(uint8_t * statistic, size_t stride, size_t width, size_t height, uint8_t decrement, int16_t saturation);
+
+        void InterferenceDecrementMasked(uint8_t * statistic, size_t statisticStride, size_t width, size_t height, 
+            uint8_t decrement, int16_t saturation, const uint8_t * mask, size_t maskStride, uint8_t index);
 
         void LbpEstimate(const uint8_t * src, size_t srcStride, size_t width, size_t height, uint8_t * dst, size_t dstStride);
 
@@ -155,8 +179,11 @@ namespace Simd
         void MedianFilterSquare5x5(const uint8_t * src, size_t srcStride, size_t width, size_t height, 
             size_t channelCount, uint8_t * dst, size_t dstStride);
 
-        void Operation(const uint8_t * a, size_t aStride, const uint8_t * b, size_t bStride, 
-            size_t width, size_t height, size_t channelCount, uint8_t * dst, size_t dstStride, SimdOperationType type);
+        void OperationBinary8u(const uint8_t * a, size_t aStride, const uint8_t * b, size_t bStride, 
+            size_t width, size_t height, size_t channelCount, uint8_t * dst, size_t dstStride, SimdOperationBinary8uType type);
+
+        void OperationBinary16i(const uint8_t * a, size_t aStride, const uint8_t * b, size_t bStride, 
+            size_t width, size_t height, uint8_t * dst, size_t dstStride, SimdOperationBinary16iType type);
 
         void VectorProduct(const uint8_t * vertical, const uint8_t * horizontal, uint8_t * dst, size_t stride, size_t width, size_t height);
 
@@ -164,16 +191,33 @@ namespace Simd
             uint8_t *dst, size_t dstWidth, size_t dstHeight, size_t dstStride);
 
         void ReduceGray3x3(const uint8_t *src, size_t srcWidth, size_t srcHeight, size_t srcStride, 
-            uint8_t *dst, size_t dstWidth, size_t dstHeight, size_t dstStride, bool compensation = true);
+            uint8_t *dst, size_t dstWidth, size_t dstHeight, size_t dstStride, int compensation);
 
         void ReduceGray4x4(const uint8_t *src, size_t srcWidth, size_t srcHeight, size_t srcStride, 
             uint8_t *dst, size_t dstWidth, size_t dstHeight, size_t dstStride);
 
         void ReduceGray5x5(const uint8_t *src, size_t srcWidth, size_t srcHeight, size_t srcStride, 
-            uint8_t *dst, size_t dstWidth, size_t dstHeight, size_t dstStride, bool compensation = true);
+            uint8_t *dst, size_t dstWidth, size_t dstHeight, size_t dstStride, int compensation);
+
+        void Reorder16bit(const uint8_t * src, size_t size, uint8_t * dst);
+
+        void Reorder32bit(const uint8_t * src, size_t size, uint8_t * dst);
+
+        void Reorder64bit(const uint8_t * src, size_t size, uint8_t * dst);
 
         void ResizeBilinear(const uint8_t *src, size_t srcWidth, size_t srcHeight, size_t srcStride,
             uint8_t *dst, size_t dstWidth, size_t dstHeight, size_t dstStride, size_t channelCount);
+
+        void SegmentationChangeIndex(uint8_t * mask, size_t stride, size_t width, size_t height, uint8_t oldIndex, uint8_t newIndex);
+
+        void SegmentationFillSingleHoles(uint8_t * mask, size_t stride, size_t width, size_t height, uint8_t index);
+
+        void SegmentationPropagate2x2(const uint8_t * parent, size_t parentStride, size_t width, size_t height, 
+            uint8_t * child, size_t childStride, const uint8_t * difference, size_t differenceStride, 
+            uint8_t currentIndex, uint8_t invalidIndex, uint8_t emptyIndex, uint8_t differenceThreshold);
+
+        void SegmentationShrinkRegion(const uint8_t * mask, size_t stride, size_t width, size_t height, uint8_t index,
+            ptrdiff_t * left, ptrdiff_t * top, ptrdiff_t * right, ptrdiff_t * bottom);
 
         void ShiftBilinear(const uint8_t * src, size_t srcStride, size_t width, size_t height, size_t channelCount, 
             const uint8_t * bkg, size_t bkgStride, double shiftX, double shiftY, 
@@ -181,7 +225,19 @@ namespace Simd
 
         void SobelDx(const uint8_t * src, size_t srcStride, size_t width, size_t height, uint8_t * dst, size_t dstStride);
 
+        void SobelDxAbs(const uint8_t * src, size_t srcStride, size_t width, size_t height, uint8_t * dst, size_t dstStride);
+
         void SobelDy(const uint8_t * src, size_t srcStride, size_t width, size_t height, uint8_t * dst, size_t dstStride);
+
+        void SobelDyAbs(const uint8_t * src, size_t srcStride, size_t width, size_t height, uint8_t * dst, size_t dstStride);
+
+        void ContourMetrics(const uint8_t * src, size_t srcStride, size_t width, size_t height, uint8_t * dst, size_t dstStride);
+
+        void ContourMetricsMasked(const uint8_t * src, size_t srcStride, size_t width, size_t height, 
+            const uint8_t * mask, size_t maskStride, uint8_t indexMin, uint8_t * dst, size_t dstStride);
+
+        void ContourAnchors(const uint8_t * src, size_t srcStride, size_t width, size_t height, 
+            size_t step, int16_t threshold, uint8_t * dst, size_t dstStride);
 
         void SquaredDifferenceSum(const uint8_t *a, size_t aStride, const uint8_t *b, size_t bStride, 
             size_t width, size_t height, uint64_t * sum);
@@ -203,6 +259,10 @@ namespace Simd
 
         void GetAbsDxColSums(const uint8_t * src, size_t stride, size_t width, size_t height, uint32_t * sums);
 
+        void ValueSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum);
+
+        void SquareSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum);
+
         void StretchGray2x2(const uint8_t *src, size_t srcWidth, size_t srcHeight, size_t srcStride, 
             uint8_t *dst, size_t dstWidth, size_t dstHeight, size_t dstStride);
 
@@ -217,6 +277,12 @@ namespace Simd
 
         void TexturePerformCompensation(const uint8_t * src, size_t srcStride, size_t width, size_t height, 
             int shift, uint8_t * dst, size_t dstStride);
+
+        void Yuv420pToBgr(const uint8_t * y, size_t yStride, const uint8_t * u, size_t uStride, const uint8_t * v, size_t vStride, 
+            size_t width, size_t height, uint8_t * bgr, size_t bgrStride);
+
+        void Yuv444pToBgr(const uint8_t * y, size_t yStride, const uint8_t * u, size_t uStride, const uint8_t * v, size_t vStride, 
+            size_t width, size_t height, uint8_t * bgr, size_t bgrStride);
 
         void Yuv420pToBgra(const uint8_t * y, size_t yStride, const uint8_t * u, size_t uStride, const uint8_t * v, size_t vStride, 
             size_t width, size_t height, uint8_t * bgra, size_t bgraStride, uint8_t alpha);

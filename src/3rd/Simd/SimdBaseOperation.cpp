@@ -1,7 +1,7 @@
 /*
-* Simd Library.
+* Simd Library (http://simd.sourceforge.net).
 *
-* Copyright (c) 2011-2014 Yermalayeu Ihar.
+* Copyright (c) 2011-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -28,59 +28,101 @@ namespace Simd
 {
 	namespace Base
 	{
-		template <SimdOperationType type> SIMD_INLINE uint8_t Operation(const uint8_t & a, const uint8_t & b);
+		template <SimdOperationBinary8uType type> SIMD_INLINE uint8_t OperationBinary8u(const uint8_t & a, const uint8_t & b);
 
-		template <> SIMD_INLINE uint8_t Operation<SimdOperationAverage>(const uint8_t & a, const uint8_t & b)
+		template <> SIMD_INLINE uint8_t OperationBinary8u<SimdOperationBinary8uAverage>(const uint8_t & a, const uint8_t & b)
 		{
 			return Average(a, b);
 		}
 
-		template <> SIMD_INLINE uint8_t Operation<SimdOperationAnd>(const uint8_t & a, const uint8_t & b)
+		template <> SIMD_INLINE uint8_t OperationBinary8u<SimdOperationBinary8uAnd>(const uint8_t & a, const uint8_t & b)
 		{
-			return  a & b;
+			return a & b;
 		}
 
-		template <> SIMD_INLINE uint8_t Operation<SimdOperationMaximum>(const uint8_t & a, const uint8_t & b)
+		template <> SIMD_INLINE uint8_t OperationBinary8u<SimdOperationBinary8uMaximum>(const uint8_t & a, const uint8_t & b)
 		{
-			return  MaxU8(a, b);
+			return MaxU8(a, b);
 		}
 
-        template <> SIMD_INLINE uint8_t Operation<SimdOperationSaturatedSubtraction>(const uint8_t & a, const uint8_t & b)
+        template <> SIMD_INLINE uint8_t OperationBinary8u<SimdOperationBinary8uSaturatedSubtraction>(const uint8_t & a, const uint8_t & b)
         {
-            return  SaturatedSubtractionU8(a, b);
+            return SaturatedSubtractionU8(a, b);
         }
 
-		template <SimdOperationType type> void Operation(const uint8_t * a, size_t aStride, const uint8_t * b, size_t bStride, 
+        template <> SIMD_INLINE uint8_t OperationBinary8u<SimdOperationBinary8uSaturatedAddition>(const uint8_t & a, const uint8_t & b)
+        {
+            return MinU8((int)a + (int)b, 255);
+        }
+
+		template <SimdOperationBinary8uType type> void OperationBinary8u(const uint8_t * a, size_t aStride, const uint8_t * b, size_t bStride, 
 			size_t width, size_t height, size_t channelCount, uint8_t * dst, size_t dstStride)
 		{
 			size_t size = width*channelCount;
 			for(size_t row = 0; row < height; ++row)
 			{
 				for(size_t offset = 0; offset < size; ++offset)
-					dst[offset] = Operation<type>(a[offset], b[offset]);
+					dst[offset] = OperationBinary8u<type>(a[offset], b[offset]);
 				a += aStride;
 				b += bStride;
 				dst += dstStride;
 			}
 		}
 
-		void Operation(const uint8_t * a, size_t aStride, const uint8_t * b, size_t bStride, 
-			size_t width, size_t height, size_t channelCount, uint8_t * dst, size_t dstStride, SimdOperationType type)
+		void OperationBinary8u(const uint8_t * a, size_t aStride, const uint8_t * b, size_t bStride, 
+			size_t width, size_t height, size_t channelCount, uint8_t * dst, size_t dstStride, SimdOperationBinary8uType type)
 		{
 			switch(type)
 			{
-			case SimdOperationAverage:
-				return Operation<SimdOperationAverage>(a, aStride, b, bStride, width, height, channelCount, dst, dstStride);
-			case SimdOperationAnd:
-				return Operation<SimdOperationAnd>(a, aStride, b, bStride, width, height, channelCount, dst, dstStride);
-			case SimdOperationMaximum:
-				return Operation<SimdOperationMaximum>(a, aStride, b, bStride, width, height, channelCount, dst, dstStride);
-            case SimdOperationSaturatedSubtraction:
-                return Operation<SimdOperationSaturatedSubtraction>(a, aStride, b, bStride, width, height, channelCount, dst, dstStride);
+			case SimdOperationBinary8uAverage:
+				return OperationBinary8u<SimdOperationBinary8uAverage>(a, aStride, b, bStride, width, height, channelCount, dst, dstStride);
+			case SimdOperationBinary8uAnd:
+				return OperationBinary8u<SimdOperationBinary8uAnd>(a, aStride, b, bStride, width, height, channelCount, dst, dstStride);
+			case SimdOperationBinary8uMaximum:
+				return OperationBinary8u<SimdOperationBinary8uMaximum>(a, aStride, b, bStride, width, height, channelCount, dst, dstStride);
+            case SimdOperationBinary8uSaturatedSubtraction:
+                return OperationBinary8u<SimdOperationBinary8uSaturatedSubtraction>(a, aStride, b, bStride, width, height, channelCount, dst, dstStride);
+            case SimdOperationBinary8uSaturatedAddition:
+                return OperationBinary8u<SimdOperationBinary8uSaturatedAddition>(a, aStride, b, bStride, width, height, channelCount, dst, dstStride);
 			default:
 				assert(0);
 			}
 		}
+
+        template <SimdOperationBinary16iType type> SIMD_INLINE int16_t OperationBinary16i(const int16_t & a, const int16_t & b);
+
+        template <> SIMD_INLINE int16_t OperationBinary16i<SimdOperationBinary16iAddition>(const int16_t & a, const int16_t & b)
+        {
+            return a + b;
+        }
+
+        template <SimdOperationBinary16iType type> void OperationBinary16i(const int16_t * a, size_t aStride, const int16_t * b, size_t bStride, 
+            size_t width, size_t height, int16_t * dst, size_t dstStride)
+        {
+            for(size_t row = 0; row < height; ++row)
+            {
+                for(size_t col = 0; col < width; ++col)
+                    dst[col] = OperationBinary16i<type>(a[col], b[col]);
+                a += aStride;
+                b += bStride;
+                dst += dstStride;
+            }
+        }
+
+        void OperationBinary16i(const uint8_t * a, size_t aStride, const uint8_t * b, size_t bStride, 
+            size_t width, size_t height, uint8_t * dst, size_t dstStride, SimdOperationBinary16iType type)
+        {
+            assert(aStride%sizeof(int16_t) == 0 && bStride%sizeof(int16_t) == 0 && dstStride%sizeof(int16_t) == 0);
+
+            switch(type)
+            {
+            case SimdOperationBinary16iAddition:
+                return OperationBinary16i<SimdOperationBinary16iAddition>(
+                    (const int16_t*)a, aStride/sizeof(int16_t), (const int16_t*)b, bStride/sizeof(int16_t), width, height, (int16_t*)dst, dstStride/sizeof(int16_t));
+            default:
+                assert(0);
+            }
+        }
 
         void VectorProduct(const uint8_t * vertical, const uint8_t * horizontal, uint8_t * dst, size_t stride, size_t width, size_t height)
         {

@@ -45,7 +45,7 @@
 #include <limits>
 
 #define SIMD_STATIC
-#include "Simd/SimdUtils.h"
+#include "Simd/SimdLib.hpp"
 #include "Simd/SimdConversion.h"
 
 //#define AD_PERFORMANCE_TEST_ENABLE
@@ -81,7 +81,7 @@ namespace ad
 
 	typedef std::basic_stringstream<adChar, std::char_traits<adChar>, std::allocator<adChar> > TStringStream;
 
-	typedef Simd::View TView;
+    typedef Simd::View<Simd::Allocator> TView;
 	typedef Simd::Point<ptrdiff_t> TPoint;
 
     //-------------------------------------------------------------------------

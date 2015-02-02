@@ -49,11 +49,11 @@ namespace ad
             TImage *pImage = TImage::Load(hGlobal);
             if(pImage)
             {
-                TView::Format format = Simd::View::None;
+                TView::Format format = TView::None;
                 switch(pBitmap->format)
                 {
                 case AD_PIXEL_FORMAT_ARGB32:
-                    format = Simd::View::Bgra32;
+                    format = TView::Bgra32;
                     break;
                 }
                 if(format)

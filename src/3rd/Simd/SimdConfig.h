@@ -1,7 +1,7 @@
 /*
-* Simd Library.
+* Simd Library (http://simd.sourceforge.net).
 *
-* Copyright (c) 2011-2014 Yermalayeu Ihar.
+* Copyright (c) 2011-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -24,20 +24,26 @@
 #ifndef __SimdConfig_h__
 #define __SimdConfig_h__
 
-//#define SIMD_SSE2_DEPRECATE
+//#define SIMD_SSE_DISABLE
 
-//#define SIMD_SSSE3_DEPRECATE
+//#define SIMD_SSE2_DISABLE
 
-//#define SIMD_SSE41_DEPRECATE
+//#define SIMD_SSSE3_DISABLE
 
-//#define SIMD_SSE42_DEPRECATE
+//#define SIMD_SSE41_DISABLE
 
-//#define SIMD_AVX_DEPRECATE
+//#define SIMD_SSE42_DISABLE
 
-//#define SIMD_AVX2_DEPRECATE
+//#define SIMD_AVX_DISABLE
 
-#define SIMD_AVX2_GATHER_DEPRECATE
+//#define SIMD_AVX2_DISABLE
+
+#define SIMD_AVX2_GATHER_DISABLE
+
+//#define SIMD_VSX_DISABLE
 
 //#define SIMD_STATIC
+
+#define SIMD_LOG_ENABLE
 
 #endif//__SimdConfig_h__

@@ -1,7 +1,7 @@
 /*
-* Simd Library.
+* Simd Library (http://simd.sourceforge.net).
 *
-* Copyright (c) 2011-2014 Yermalayeu Ihar.
+* Copyright (c) 2011-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -35,11 +35,6 @@ namespace Simd
 #ifdef SIMD_SSE2_ENABLE    
 	namespace Sse2
 	{
-        SIMD_INLINE __m128i Combine(__m128i mask, __m128i positive, __m128i negative)
-        {
-            return _mm_or_si128(_mm_and_si128(mask, positive), _mm_andnot_si128(mask, negative));
-        }
-
         template <bool align, SimdCompareType compareType> 
         void Binarization(const uint8_t * src, size_t srcStride, size_t width, size_t height, 
             uint8_t value, uint8_t positive, uint8_t negative, uint8_t * dst, size_t dstStride)
@@ -57,12 +52,12 @@ namespace Simd
             {
                 for(size_t col = 0; col < alignedWidth; col += A)
                 {
-                    const __m128i mask = Compare<compareType>(Load<align>((__m128i*)(src + col)), value_);
+                    const __m128i mask = Compare8u<compareType>(Load<align>((__m128i*)(src + col)), value_);
                     Store<align>((__m128i*)(dst + col), Combine(mask, positive_, negative_));
                 }
                 if(alignedWidth != width)
                 {
-                    const __m128i mask = Compare<compareType>(Load<false>((__m128i*)(src + width - A)), value_);
+                    const __m128i mask = Compare8u<compareType>(Load<false>((__m128i*)(src + width - A)), value_);
                     Store<false>((__m128i*)(dst + width - A), Combine(mask, positive_, negative_));
                 }
                 src += srcStride;
@@ -132,7 +127,7 @@ namespace Simd
         template <bool srcAlign, bool dstAlign, SimdCompareType compareType>
         SIMD_INLINE void AddRows(const uint8_t * src, uint16_t * sa, const __m128i & value, const __m128i & mask)
         {
-            const __m128i inc = _mm_and_si128(Compare<compareType>(Load<srcAlign>((__m128i*)src), value), mask);
+            const __m128i inc = _mm_and_si128(Compare8u<compareType>(Load<srcAlign>((__m128i*)src), value), mask);
             Store<dstAlign>((__m128i*)sa + 0, _mm_add_epi8(Load<dstAlign>((__m128i*)sa + 0), _mm_unpacklo_epi8(inc, mask)));
             Store<dstAlign>((__m128i*)sa + 1, _mm_add_epi8(Load<dstAlign>((__m128i*)sa + 1), _mm_unpackhi_epi8(inc, mask)));
         }
@@ -140,7 +135,7 @@ namespace Simd
         template <bool srcAlign, bool dstAlign, SimdCompareType compareType>
         SIMD_INLINE void SubRows(const uint8_t * src, uint16_t * sa, const __m128i & value, const __m128i & mask)
         {
-            const __m128i dec = _mm_and_si128(Compare<compareType>(Load<srcAlign>((__m128i*)src), value), mask);
+            const __m128i dec = _mm_and_si128(Compare8u<compareType>(Load<srcAlign>((__m128i*)src), value), mask);
             Store<dstAlign>((__m128i*)sa + 0, _mm_sub_epi8(Load<dstAlign>((__m128i*)sa + 0), _mm_unpacklo_epi8(dec, mask)));
             Store<dstAlign>((__m128i*)sa + 1, _mm_sub_epi8(Load<dstAlign>((__m128i*)sa + 1), _mm_unpackhi_epi8(dec, mask)));
         }

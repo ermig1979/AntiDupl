@@ -1,7 +1,7 @@
 /*
-* Simd Library.
+* Simd Library (http://simd.sourceforge.net).
 *
-* Copyright (c) 2011-2014 Yermalayeu Ihar.
+* Copyright (c) 2011-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -21,8 +21,8 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
-#include "Simd/SimdMath.h"
 #include "Simd/SimdMemory.h"
+#include "Simd/SimdMath.h"
 #include "Simd/SimdConst.h"
 #include "Simd/SimdLoad.h"
 #include "Simd/SimdStore.h"
@@ -130,7 +130,7 @@ namespace Simd
         {
             assert((srcWidth + 1)/2 == dstWidth && (srcHeight + 1)/2 == dstHeight && srcWidth > A);
 
-            size_t alignedDstWidth = Simd::AlignLo(dstWidth, A);
+            size_t alignedDstWidth = Simd::AlignLo(dstWidth, HA);
             size_t srcTail = Simd::AlignHi(srcWidth - A, 2);
 
             Buffer buffer(Simd::AlignHi(dstWidth, A));
@@ -170,9 +170,7 @@ namespace Simd
                 Store<false>((__m128i*)(buffer.src2 + dstWidth - HA), ReduceColTail<even>(src2 + srcTail));
                 Store<false>((__m128i*)(buffer.src3 + dstWidth - HA), ReduceColTail<even>(src3 + srcTail));
 
-                _mm_storel_epi64((__m128i*)dst, ReduceRow<true>(buffer, 0));
-
-                for(size_t col = HA; col < alignedDstWidth; col += HA)
+                for(size_t col = 0; col < alignedDstWidth; col += HA)
                     _mm_storel_epi64((__m128i*)(dst + col), ReduceRow<true>(buffer, col));
 
                 if(alignedDstWidth != dstWidth)
