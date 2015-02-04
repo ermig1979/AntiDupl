@@ -405,7 +405,6 @@ namespace ad
 	// covariance of x and y - ковариация  x и y
 	void TImageComparer_SSIM::SigmaDouble(const uint8_t * src1, const uint8_t * src2, size_t width, size_t height, float averageFirst, float averageSecond, float * sigmaOfBoth)
     {
-		//uint64_t sum = 0;
 		double sum = 0;
 		for(size_t row = 0; row < height; ++row)
 		{
