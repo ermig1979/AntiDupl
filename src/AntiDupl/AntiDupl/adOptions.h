@@ -51,9 +51,9 @@ namespace ad
         int *m_pValue;
         TString m_key;
         TString m_section;
-        int m_default;
+        int m_default; //значение по умолчанию
         int m_min;
-        int m_max;
+        int m_max;	//максимальное
     };
     //-------------------------------------------------------------------------
     struct TOptions

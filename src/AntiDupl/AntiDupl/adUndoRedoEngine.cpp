@@ -159,6 +159,7 @@ namespace ad
         return Rename(pImageInfo, newFileName);
     }
     
+	// Переименовывает файл с заданной группой и индексом.
     bool TUndoRedoEngine::Rename(adSize groupId, adSize index, const TString & newFileName)
     {
         TImageGroupPtr pImageGroup = m_pCurrent->groups.Get(groupId, false);

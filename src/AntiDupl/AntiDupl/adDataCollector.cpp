@@ -66,7 +66,7 @@ namespace ad
         pImageData->FreeGlobal();
     }
 
-	// «аполн€ем переданный TImageData из TImage хран€щейс€ в глобальном хуке pImageData
+	// «аполн€ем переданный TImageData из TImage хран€щейс€ в глобальном хуке pImageData, создание уменьшенного изображени€
     void TDataCollector::FillPixelData(TImageData* pImageData)
     {
         AD_FUNCTION_PERFORMANCE_TEST

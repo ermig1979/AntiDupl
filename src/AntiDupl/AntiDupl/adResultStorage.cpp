@@ -264,6 +264,7 @@ namespace ad
 		return m_pUndoRedoEngine->Current()->groups.GetSelection(groupId, pStartFrom, pSelection, pSelectionSize);
 	}
 	
+	// Переименовывает файл с заданной группой и индексом в списке результатов.
     adError TResultStorage::Rename(adSize groupId, adSize index, const TString & newFileName)
     {
         TImageGroupPtr pImageGroup = m_pUndoRedoEngine->Current()->groups.Get(groupId, false);

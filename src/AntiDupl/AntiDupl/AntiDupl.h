@@ -366,6 +366,13 @@ extern "C"
 		AD_SELECTION_SIZE
 	};
 
+	enum adAlgorithmComparing : adInt32
+	{
+		AD_COMPARING_SQUARED_SUM = 0,
+		AD_COMPARING_SSIM = 1,
+		AD_COMPARING_SIZE
+	};
+
     /*------------Structures-----------------------------------------------------*/
 
     struct adSearchOptions
@@ -388,7 +395,7 @@ extern "C"
     };
     typedef adSearchOptions* adSearchOptionsPtr;
 
-    struct adCompareOptions
+    struct adCompareOptions //так же должен быть определен в CoreDll.cs и похоже в CoreCompareOptions.cs
     {
         adBool checkOnEquality;    
         adBool transformedImage;    
@@ -399,6 +406,7 @@ extern "C"
         adInt32 minimalImageSize;
 		adInt32 maximalImageSize;
         adBool compareInsideOneFolder;
+		adAlgorithmComparing algorithmComparing;
     };
     typedef adCompareOptions* adCompareOptionsPtr;
 	

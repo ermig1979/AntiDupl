@@ -81,6 +81,7 @@ namespace ad
 		FreeGlobal();
 	}
 
+	// Копируем TImageData
 	TImageData& TImageData::operator = (const TImageData& imageData)
 	{
 		*(static_cast<TImageInfo*>(this)) = imageData;
@@ -101,6 +102,8 @@ namespace ad
 		else
 		{
 			memcpy(data->fast, imageData.data->fast, data->full);
+			data->average = imageData.data->average;
+			data->varianceSquare = imageData.data->varianceSquare;
 		}
 		return *this;
 	}
@@ -144,6 +147,7 @@ namespace ad
 		return AD_DEFECT_NONE;
 	}
 
+	// Создание сильно уменьшенного изображения
 	void TImageData::FillOther(TOptions *pOptions)
 	{
 		if(type > AD_IMAGE_NONE)

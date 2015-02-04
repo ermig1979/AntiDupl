@@ -30,12 +30,14 @@ namespace ad
 {
     struct TPixelData
     {
-        TUInt8* const fast;
+        TUInt8* const fast; //уменьшенное изображение (4x4) для быстрого сравнения
         TUInt8* const main;
-        const size_t side;
-        const size_t size;
-        const size_t full;
-        bool filled;
+        const size_t side; //сторона квадрата
+        const size_t size; //width * height
+        const size_t full; //width * height + FAST_DATA_SIZE
+        bool filled; //true, если создано уменьшенное изображение в main
+		float average; //average of image - среднее
+		float varianceSquare; //variance of image - Дисперсия случайной величины
 
         TPixelData(size_t side_);
         TPixelData(const TPixelData& pixelData);

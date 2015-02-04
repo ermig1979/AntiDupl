@@ -47,6 +47,7 @@ namespace ad
         *m_pValue = m_default;
     }
 
+	// Если значение опции меньше минимальной или больше макимальной, то устанавливаем ее дефолтной
     void TOption::Validate()
     {
         if(*m_pValue < m_min || *m_pValue > m_max)
@@ -65,6 +66,7 @@ namespace ad
         return iniFile.WriteInteger(m_key.c_str(), *m_pValue);
     }
     //---------------------------------------------------------------------------
+	// Класс опций
     TOptions::TOptions()
         :searchPaths(TEXT("SearchPaths"), true),
         ignorePaths(TEXT("IgnorePaths")),
@@ -90,10 +92,11 @@ namespace ad
         m_options.push_back(TOption(&compare.sizeControl, TEXT("CompareOptions"), TEXT("SizeControl"), FALSE, FALSE, TRUE));
         m_options.push_back(TOption(&compare.typeControl, TEXT("CompareOptions"), TEXT("TypeControl"), FALSE, FALSE, TRUE));
         m_options.push_back(TOption(&compare.ratioControl, TEXT("CompareOptions"), TEXT("RatioControl"), TRUE, FALSE, TRUE));
-        m_options.push_back(TOption(&compare.thresholdDifference, TEXT("CompareOptions"), TEXT("ThresholdDifference"), 5, 0, 15));
+        m_options.push_back(TOption(&compare.thresholdDifference, TEXT("CompareOptions"), TEXT("ThresholdDifference"), 5, 0, 50));
         m_options.push_back(TOption(&compare.minimalImageSize, TEXT("CompareOptions"), TEXT("MinimalImageSize"), 64, 0, INT_MAX));
 		m_options.push_back(TOption(&compare.maximalImageSize, TEXT("CompareOptions"), TEXT("MaximalImageSize"), 8196, 0, INT_MAX));
         m_options.push_back(TOption(&compare.compareInsideOneFolder, TEXT("CompareOptions"), TEXT("CompareInsideOneFolder"), TRUE, FALSE, TRUE));
+		m_options.push_back(TOption((int*)&compare.algorithmComparing, TEXT("CompareOptions"), TEXT("AlgorithmOfComparing"), adAlgorithmComparing::AD_COMPARING_SQUARED_SUM, 0, adAlgorithmComparing::AD_COMPARING_SIZE));
 
         m_options.push_back(TOption(&defect.checkOnDefect, TEXT("DefectOptions"), TEXT("CheckOnDefect"), TRUE, FALSE, TRUE));
         m_options.push_back(TOption(&defect.checkOnBlockiness, TEXT("DefectOptions"), TEXT("CheckOnBlockiness"), TRUE, FALSE, TRUE));
@@ -135,6 +138,10 @@ namespace ad
                 break;
             }
         }
+
+		// некрасиво сделано, можно вообще убрать эту проверку
+		if (compare.algorithmComparing == adAlgorithmComparing::AD_COMPARING_SQUARED_SUM && compare.thresholdDifference > 15)
+			compare.thresholdDifference = 5;
     }
 
     adError TOptions::Import(adOptionsType optionsType, void * pOptions)

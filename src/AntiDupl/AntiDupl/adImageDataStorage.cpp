@@ -96,6 +96,7 @@ namespace ad
 	TImageDataPtr TImageDataStorage::Get(const TFileInfo& fileInfo)
 	{
 		TStorage::iterator it = Find(fileInfo);
+		// Если файл найден в хранилише
 		if(it != m_storage.end())
 		{
 			if(it->second->size != fileInfo.size || it->second->time != fileInfo.time)

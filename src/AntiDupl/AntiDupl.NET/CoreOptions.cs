@@ -110,6 +110,11 @@ namespace AntiDupl.NET
             }
         }
 
+        /// <summary>
+        /// Устанавливает опции в ядре из текущих, для передачи в dll.
+        /// </summary>
+        /// <param name="core"></param>
+        /// <param name="onePath"></param>
         public void Set(CoreLib core, bool onePath)
         {
             core.searchOptions = searchOptions.Clone();

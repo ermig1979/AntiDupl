@@ -288,6 +288,12 @@ namespace AntiDupl.NET
             UnselectAll = 3,
             SelectAllButThis = 4,
         }
+
+        public enum AlgorithmComparing : int
+	    {
+		    SquaredSum = 0,
+		    SSIM = 1,
+	    };
         
         //-----------API structures--------------------------------------------
 
@@ -323,6 +329,7 @@ namespace AntiDupl.NET
             public int minimalImageSize;
             public int maximalImageSize;
             public int compareInsideOneFolder;
+            public AlgorithmComparing algorithmComparing;
         }
 
         [StructLayout(LayoutKind.Sequential)]

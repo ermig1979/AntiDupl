@@ -29,6 +29,9 @@ using System.Drawing;
 
 namespace AntiDupl.NET
 {
+    /// <summary>
+    /// Панель инструментов.
+    /// </summary>
     public class MainToolStrip : ToolStrip
     {
         private CoreLib m_core;
@@ -46,6 +49,7 @@ namespace AntiDupl.NET
         private ToolStripButton m_pathsButton;
         private ToolStripButton m_optionsButton;
         private ToolStripComboBox m_thresholdDifferenceComboBox;
+        private ToolStripComboBox m_algorithmComparingComboBox;
 
         private ToolStripButton m_undoButton;
         private ToolStripButton m_redoButton;
@@ -95,8 +99,21 @@ namespace AntiDupl.NET
             m_thresholdDifferenceComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             m_thresholdDifferenceComboBox.FlatStyle = FlatStyle.Popup;
             m_thresholdDifferenceComboBox.SelectedIndexChanged += new EventHandler(OnThresholdDifferenceChanged);
-            for (int i = 0; i <= CoreOptionsForm.THRESHOLD_DIFFERENCE_MAX; i++)
-                m_thresholdDifferenceComboBox.Items.Add(string.Format("{0} %", i));
+            if (m_coreOptions.compareOptions.algorithmComparing == CoreDll.AlgorithmComparing.SquaredSum)
+                for (int i = 0; i <= CoreOptionsForm.THRESHOLD_DIFFERENCE_MAX_SQUARED_SUM; i++)
+                    m_thresholdDifferenceComboBox.Items.Add(string.Format("{0} %", i));
+            else
+                for (int i = 0; i <= CoreOptionsForm.THRESHOLD_DIFFERENCE_MAX_SSIM; i++)
+                    m_thresholdDifferenceComboBox.Items.Add(string.Format("{0} %", i));
+
+            m_algorithmComparingComboBox = new ToolStripComboBox();
+            m_algorithmComparingComboBox.AutoSize = false;
+            m_algorithmComparingComboBox.Size = new System.Drawing.Size(70, 20);
+            m_algorithmComparingComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            m_algorithmComparingComboBox.FlatStyle = FlatStyle.Popup;
+            m_algorithmComparingComboBox.SelectedIndexChanged += new EventHandler(OnAlgorithmComparingChanged);
+            m_algorithmComparingComboBox.Items.Add(Resources.Strings.Current.CoreOptionsForm_AlgorithmComparingLabeledComboBox_SquaredSum);
+            m_algorithmComparingComboBox.Items.Add("SSIM");
 
             m_undoButton = InitFactory.ToolButton.Create("UndoButton", null, m_mainMenu.UndoAction);
             m_redoButton = InitFactory.ToolButton.Create("RedoButton", null, m_mainMenu.RedoAction);
@@ -132,6 +149,7 @@ namespace AntiDupl.NET
             m_pathsButton.ToolTipText = s.MainMenu_Search_PathsMenuItem_Text;
             m_optionsButton.ToolTipText = s.MainMenu_Search_OptionsMenuItem_Text;
             m_thresholdDifferenceComboBox.ToolTipText = s.CoreOptionsForm_ThresholdDifferenceLabeledComboBox_Text;
+            m_algorithmComparingComboBox.ToolTipText = s.CoreOptionsForm_AlgorithmComparingLabeledComboBox_Text;
 
             m_undoButton.ToolTipText = s.MainMenu_Edit_UndoMenuItem_Text;
             m_redoButton.ToolTipText = s.MainMenu_Edit_RedoMenuItem_Text;
@@ -182,10 +200,29 @@ namespace AntiDupl.NET
             m_redoButton.Enabled = m_core.CanApply(CoreDll.ActionEnableType.Redo);
         }
 
+        /// <summary>
+        /// Вызывается при изменение опций CoreOptions.
+        /// </summary>
         private void OnOptionsChanged()
         {
             m_mistakeButton.Enabled = m_coreOptions.advancedOptions.mistakeDataBase &&
                  m_core.CanApply(CoreDll.ActionEnableType.Any);
+
+            m_algorithmComparingComboBox.SelectedIndex = (int)m_coreOptions.compareOptions.algorithmComparing;
+            if (m_coreOptions.compareOptions.algorithmComparing == CoreDll.AlgorithmComparing.SquaredSum &&
+                m_thresholdDifferenceComboBox.Items.Count > CoreOptionsForm.THRESHOLD_DIFFERENCE_MAX_SQUARED_SUM + 1)
+            {
+                m_thresholdDifferenceComboBox.Items.Clear();
+                for (int i = 0; i <= CoreOptionsForm.THRESHOLD_DIFFERENCE_MAX_SQUARED_SUM; i++)
+                    m_thresholdDifferenceComboBox.Items.Add(new LabeledComboBox.Value(i, string.Format("{0} %", i)));
+            }
+            if (m_coreOptions.compareOptions.algorithmComparing == CoreDll.AlgorithmComparing.SSIM &&
+                 m_thresholdDifferenceComboBox.Items.Count < CoreOptionsForm.THRESHOLD_DIFFERENCE_MAX_SSIM + 1)
+            {
+                m_thresholdDifferenceComboBox.Items.Clear();
+                for (int i = 0; i <= CoreOptionsForm.THRESHOLD_DIFFERENCE_MAX_SSIM; i++)
+                    m_thresholdDifferenceComboBox.Items.Add(new LabeledComboBox.Value(i, string.Format("{0} %", i)));
+            }
             m_thresholdDifferenceComboBox.SelectedIndex = m_coreOptions.compareOptions.thresholdDifference;
         }
 
@@ -201,6 +238,7 @@ namespace AntiDupl.NET
             Items.Add(m_pathsButton);
             Items.Add(m_optionsButton);
             Items.Add(m_thresholdDifferenceComboBox);
+            Items.Add(m_algorithmComparingComboBox);
             Items.Add(new ToolStripSeparator());
             Items.Add(m_undoButton);
             Items.Add(m_redoButton);
@@ -238,6 +276,11 @@ namespace AntiDupl.NET
         private void OnThresholdDifferenceChanged(object sender, EventArgs e)
         {
             m_coreOptions.compareOptions.thresholdDifference = m_thresholdDifferenceComboBox.SelectedIndex;
+        }
+
+        private void OnAlgorithmComparingChanged(object sender, EventArgs e)
+        {
+            m_coreOptions.compareOptions.algorithmComparing = (CoreDll.AlgorithmComparing)m_algorithmComparingComboBox.SelectedIndex;
         }
     }
 }
