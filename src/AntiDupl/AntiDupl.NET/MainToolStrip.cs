@@ -30,7 +30,7 @@ using System.Drawing;
 namespace AntiDupl.NET
 {
     /// <summary>
-    /// Панель инструментов.
+    /// Главная панель инструментов.
     /// </summary>
     public class MainToolStrip : ToolStrip
     {
