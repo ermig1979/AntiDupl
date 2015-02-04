@@ -59,13 +59,12 @@ namespace ad
     protected:
         virtual void Add(TImageDataPtr pImageData) = 0; // pure virtual or abstract function and requires to be overwritten in an derived class
         virtual void Compare(TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform) = 0;
+		virtual bool IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference); //виртуальная функция, но не обязательно ее переопределять
 
         void AddToSet(Set &set, TImageDataPtr pImageData);
         void CompareWithSet(const Set &set, TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform);
 
     private:
-        bool IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference);
-
         TResultStorage *m_pResult;
         TImageData *m_pTransformedImageData;
         TUInt8* m_pBuffer;
@@ -136,7 +135,7 @@ namespace ad
     protected:
         virtual void Add(TImageDataPtr pImageData);
         virtual void Compare(TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform);
-		bool IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference);
+		virtual bool IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference);
 
     private:
 		void SigmaDouble(const uint8_t * src1, const uint8_t * src2, size_t width, size_t height, float averageFirst, float averageSecond, float * sigmaOfBoth);

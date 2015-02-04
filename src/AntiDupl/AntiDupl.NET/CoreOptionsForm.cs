@@ -33,6 +33,8 @@ namespace AntiDupl.NET
     {
         static public int THRESHOLD_DIFFERENCE_MAX_SQUARED_SUM = 15;
         static public int THRESHOLD_DIFFERENCE_MAX_SSIM = 50;
+        static public int THRESHOLD_DIFFERENCE_DEFAULT_SQUARED_SUM = 5;
+        static public int THRESHOLD_DIFFERENCE_DEFAULT_SSIM = 30;
         static public int THRESHOLD_BLOCKINESS_MAX = 60;
         static public int THRESHOLD_BLURRING_MAX = 32;
         static public int IGNORE_FRAME_WIDTH_MAX = 12;
@@ -600,7 +602,7 @@ namespace AntiDupl.NET
                 m_thresholdDifferenceLabeledComboBox.comboBox.Items.Clear();
                 for (int i = 0; i <= THRESHOLD_DIFFERENCE_MAX_SQUARED_SUM; i++)
                     m_thresholdDifferenceLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value(i, string.Format("{0} %", i)));
-                m_thresholdDifferenceLabeledComboBox.SelectedValue = 5;
+                m_thresholdDifferenceLabeledComboBox.SelectedValue = THRESHOLD_DIFFERENCE_DEFAULT_SQUARED_SUM;
             }
             if (m_algorithmComparingLabeledComboBox.SelectedValue == (int)CoreDll.AlgorithmComparing.SSIM &&
                 m_thresholdDifferenceLabeledComboBox.comboBox.Items.Count < THRESHOLD_DIFFERENCE_MAX_SSIM + 1)
@@ -608,7 +610,7 @@ namespace AntiDupl.NET
                 m_thresholdDifferenceLabeledComboBox.comboBox.Items.Clear();
                 for (int i = 0; i <= THRESHOLD_DIFFERENCE_MAX_SSIM; i++)
                     m_thresholdDifferenceLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value(i, string.Format("{0} %", i)));
-                m_thresholdDifferenceLabeledComboBox.SelectedValue = 30;
+                m_thresholdDifferenceLabeledComboBox.SelectedValue = THRESHOLD_DIFFERENCE_DEFAULT_SSIM;
             }
         }
 
