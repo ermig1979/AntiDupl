@@ -61,7 +61,7 @@ located on the Advanced tab options (see below).
 By default, this option is enabled.
  </p></li>
   <li><p align="justify">
-<b>Algorithm of comparing of images</b> - algorithm by means of which pictures are compared. In standard fast algorithm - <b>'Mean square difference'</b> calculate a mean square deviation of brightness for each couple of images. He fast, but has big percent of false positives for pictures with a big uniform background and can not find strongly changed images. When comparing pictures by means of an index of structural similarity (<b>'SSIM'</b>) can find duplicates among strongly changed pictures, and also images are better compared to a big uniform background, but calculation more slowly. Also <b>'SSIM'</b> is very sensitive to the normalized size of image. It is better not to use him at the sizes less than 128x128.
+<b>Algorithm of comparing of images</b> - algorithm by means of which pictures are compared. In standard fast algorithm - <b>'Mean square difference'</b> calculate a mean square deviation of brightness for each couple of images. He fast, but has big percent of false positives for pictures with a big uniform background and can not find strongly changed images. When comparing pictures by means of an index of structural similarity (<b>'SSIM'</b>) can find duplicates among strongly changed pictures, and also images with a big uniform background are better compared, but calculation more slowly. Also <b>'SSIM'</b> is very sensitive to the normalized size of image. It is better not to use him at the sizes less than 128x128.
 The default setting is <b>'Mean square difference'</b>.
 This parameter is duplicated on the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>.
  </p></li>
