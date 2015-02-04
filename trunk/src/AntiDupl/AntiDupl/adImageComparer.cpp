@@ -110,17 +110,23 @@ namespace ad
             Add(pImageData);
     }
 
+	// ѕереданное изображение свравниваетс€ с набором проверенных и остальных.
+	// pOriginal - оригинальное изображение.
+	// pTransformed - трансформированное, если примен€етс€ трансформаци€ или то же что и оригинальное.
     void TImageComparer::CompareWithSet(const Set &set, TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform)
     {
         double difference;
+		// ≈сли картинка не в проверенных
         if(!pTransformed->valid)
         {
+			// —равниваем с набором проверенных
             for(TImageDataPtrList::const_iterator i = set.valid.begin(); i != set.valid.end(); ++i)
             {
                 if(IsDuplPair(pTransformed, *i, &difference))
                     m_pResult->AddDuplImagePair(pOriginal, *i, difference, transform);
             }
         }
+		// —равниваем с набором остальных
         for(TImageDataPtrList::const_iterator i = set.other.begin(); i != set.other.end(); ++i)
         {
             if(IsDuplPair(pTransformed, *i, &difference))
@@ -136,6 +142,7 @@ namespace ad
             set.other.push_back(pImageData);
     }
 
+	// —равнение двух картинок
     bool TImageComparer::IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference)
     {
         if(m_pOptions->compare.typeControl == TRUE && 
@@ -296,24 +303,150 @@ namespace ad
         index.x = std::max(0, std::min(m_range.x - 1, index.x - m_shift.x));
         index.y = std::max(0, std::min(m_range.y - 1, index.y - m_shift.y));
     }
+	//-------------------------------------------------------------------------
+    TImageComparer_SSIM::TImageComparer_SSIM(TEngine *pEngine)
+        :TImageComparer(pEngine)
+    {
+		//константы
+		C1 = pow(0.01 * PIXEL_MAX_DIFFERENCE, 2);
+        C2 = pow(0.03 * PIXEL_MAX_DIFFERENCE, 2);
+        m_sets.resize(1);
+    }
+
+    void TImageComparer_SSIM::Add(TImageDataPtr pImageData)
+    {
+        AddToSet(m_sets[0], pImageData);
+    }
+
+    void TImageComparer_SSIM::Compare(TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform)
+    {
+        CompareWithSet(m_sets[0], pOriginal, pTransformed, transform);
+    }
+
+	// —равнение двух картинок SSIM методом
+    bool TImageComparer_SSIM::IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference)
+    {
+        if(m_pOptions->compare.typeControl == TRUE && 
+            pFirst->type != pSecond->type)
+            return false;
+
+        if(m_pOptions->compare.sizeControl == TRUE &&
+            (pFirst->height != pSecond->height || 
+            pFirst->width != pSecond->width))
+            return false;
+
+        if(m_pOptions->compare.ratioControl == TRUE)
+        {
+            if(Simd::Square(pFirst->ratio - pSecond->ratio) > Simd::Square(RATIO_THRESHOLD_DIFFERENCE))
+                return false;
+        }
+
+        if(m_pOptions->compare.compareInsideOneFolder == FALSE && pFirst->index == pSecond->index)
+            return false;
+
+		if (pFirst->data->average == 0)
+		{
+			uint64_t sum = 0;
+			SimdValueSum(pFirst->data->main,  m_pOptions->advanced.reducedImageSize, 
+					m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize, &sum);
+			pFirst->data->average = (double)sum / (m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize - 1);
+		}
+		if (pSecond->data->average == 0)
+		{
+			uint64_t sum = 0;
+			SimdValueSum(pSecond->data->main,  m_pOptions->advanced.reducedImageSize, 
+					m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize, &sum);
+			pSecond->data->average = (double)sum / (m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize - 1);
+		}
+
+		if (pFirst->data->varianceSquare == 0)
+		{
+			uint64_t sumSquare = 0;
+			SimdSquareSum(pFirst->data->main,  m_pOptions->advanced.reducedImageSize, 
+						m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize, &sumSquare);
+			double averageSquare = (double)sumSquare / (m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize - 1);
+			pFirst->data->varianceSquare = fabs(averageSquare - (pFirst->data->average * pFirst->data->average));
+		}
+
+		if (pSecond->data->varianceSquare == 0)
+		{
+			uint64_t sumSquare = 0;
+			SimdSquareSum(pSecond->data->main,  m_pOptions->advanced.reducedImageSize, 
+						m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize, &sumSquare);
+			double averageSquareSecond = (double)sumSquare / (m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize - 1);
+			pSecond->data->varianceSquare = fabs(averageSquareSecond - (pSecond->data->average * pSecond->data->average));
+		}
+
+		float sigmaOfBoth = 0;
+		SigmaDouble(pFirst->data->main, pSecond->data->main, 
+			m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize, 
+			pFirst->data->average, pSecond->data->average, &sigmaOfBoth);
+
+		float res = (2 * pFirst->data->average * pSecond->data->average + C1) * (2 * sigmaOfBoth + C2) / 
+			((pow(pFirst->data->average, 2) + pow(pSecond->data->average, 2) + C1) * 
+			(pFirst->data->varianceSquare + pSecond->data->varianceSquare + C2));  
+
+		if (res > 2 || res < 0) // может быть равным 1.0000000594991703 и должно быть от 0 до 1
+			return false;
+
+		double difference = 100 - (res * 100);
+		if (difference < 0)
+			difference = 0;
+		// если различие больше заданного, то не дубликаты
+		if (difference > m_pOptions->compare.thresholdDifference)
+			return false;
+
+		*pDifference = difference;
+        if(pFirst->crc32c != pSecond->crc32c)
+            *pDifference += ADDITIONAL_DIFFERENCE_FOR_DIFFERENT_CRC32;
+        return true;
+    }
+
+	// covariance of x and y - ковариаци€  x и y
+	void TImageComparer_SSIM::SigmaDouble(const uint8_t * src1, const uint8_t * src2, size_t width, size_t height, float averageFirst, float averageSecond, float * sigmaOfBoth)
+    {
+		//uint64_t sum = 0;
+		double sum = 0;
+		for(size_t row = 0; row < height; ++row)
+		{
+			double rowSum = 0;
+			for(size_t col = 0; col < width; ++col)
+			{
+				int value1 = src1[col];
+				int value2 = src2[col];
+				rowSum += ((value1 - averageFirst) * (value2 - averageSecond));
+			}
+			sum += rowSum;
+			src1 += width;
+			src2 += width;
+		}
+
+		*sigmaOfBoth = sum / (width * height - 1);
+    }
     //-------------------------------------------------------------------------
+	// ‘абрика возврашает движок
     TImageComparer* CreateImageComparer(TEngine *pEngine)
     {
-        adStatistic statistic;
-        pEngine->Status()->Export(&statistic);
-        if(statistic.searchedImageNumber < D0_SEARCHED_FILE_NUMBER_MAX)
-        {
-            return new TImageComparer_0D(pEngine);
-        }
-        else if(statistic.searchedImageNumber < D1_SEARCHED_FILE_NUMBER_MAX || 
-            pEngine->Options()->compare.thresholdDifference > D3_THRESHOLD_DIFFERENCE_MAX)
-        {
-            return new TImageComparer_1D(pEngine);
-        } 
-        else
-        {
-            return new TImageComparer_3D(pEngine);
-        }
+		if (pEngine->Options()->compare.algorithmComparing == adAlgorithmComparing::AD_COMPARING_SQUARED_SUM)
+		{
+			adStatistic statistic;
+			pEngine->Status()->Export(&statistic);
+			if(statistic.searchedImageNumber < D0_SEARCHED_FILE_NUMBER_MAX)
+			{
+				return new TImageComparer_0D(pEngine);
+			}
+			else if(statistic.searchedImageNumber < D1_SEARCHED_FILE_NUMBER_MAX || 
+				pEngine->Options()->compare.thresholdDifference > D3_THRESHOLD_DIFFERENCE_MAX)
+			{
+				return new TImageComparer_1D(pEngine);
+			} 
+			else
+			{
+				return new TImageComparer_3D(pEngine);
+			}
+		}
+		else
+			return new TImageComparer_SSIM(pEngine);
     }
     //-------------------------------------------------------------------------
 }

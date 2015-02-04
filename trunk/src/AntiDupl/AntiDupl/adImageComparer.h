@@ -36,13 +36,14 @@ namespace ad
     class TResultStorage;
     typedef TImageData* TImageDataPtr;
     //-------------------------------------------------------------------------
+	// Общий класс движка
     class TImageComparer
     {
     protected:
         typedef std::list<TImageDataPtr> TImageDataPtrList;
         struct Set
         {
-            TImageDataPtrList valid;
+            TImageDataPtrList valid; //проверенные
             TImageDataPtrList other;
         };
         typedef std::vector<Set> Sets;
@@ -56,7 +57,7 @@ namespace ad
         void Accept(TImageDataPtr pImageData, bool add);
 
     protected:
-        virtual void Add(TImageDataPtr pImageData) = 0;
+        virtual void Add(TImageDataPtr pImageData) = 0; // pure virtual or abstract function and requires to be overwritten in an derived class
         virtual void Compare(TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform) = 0;
 
         void AddToSet(Set &set, TImageDataPtr pImageData);
@@ -79,7 +80,7 @@ namespace ad
     class TImageComparer_0D : public TImageComparer 
     {
     public:
-        TImageComparer_0D(TEngine *pEngine);
+        TImageComparer_0D(TEngine *pEngine); //конструктор
 
     protected:
         virtual void Add(TImageDataPtr pImageData);
@@ -105,6 +106,7 @@ namespace ad
     //-------------------------------------------------------------------------
     class TImageComparer_3D : public TImageComparer
     {
+		// Многомерные индексы
         struct TIndex
         {
             int s;//total sum of fast data pixels;
@@ -124,6 +126,22 @@ namespace ad
         int m_maxRange;
         int m_halfCompareRange;
         TIndex m_shift, m_range, m_stride;
+    };
+	//-------------------------------------------------------------------------
+    class TImageComparer_SSIM : public TImageComparer 
+    {
+    public:
+        TImageComparer_SSIM(TEngine *pEngine); //конструктор
+
+    protected:
+        virtual void Add(TImageDataPtr pImageData);
+        virtual void Compare(TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform);
+		bool IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference);
+
+    private:
+		void SigmaDouble(const uint8_t * src1, const uint8_t * src2, size_t width, size_t height, float averageFirst, float averageSecond, float * sigmaOfBoth);
+		float C1;
+		float C2;
     };
     //-------------------------------------------------------------------------
     TImageComparer* CreateImageComparer(TEngine *pEngine);

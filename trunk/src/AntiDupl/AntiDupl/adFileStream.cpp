@@ -145,12 +145,18 @@ namespace ad
 			LoadExif(imageInfo.imageExif);
 	}
 
+	// Считываем эскиз изображения
 	void TInputFileStream::Load(TPixelData & pixelData) const
 	{
 		size_t side = LoadSize();
 		if(side != pixelData.side)
 			throw TException(AD_ERROR_INVALID_FILE_FORMAT);
 		Load(pixelData.main, pixelData.size);
+		if(m_version > 3)
+		{
+			Load(pixelData.average);
+			Load(pixelData.varianceSquare);
+		}
 	}
 
 	void TInputFileStream::Load(TImageData & imageData) const
@@ -271,8 +277,12 @@ namespace ad
 	// Сохраняем пиксели изображения
 	void TOutputFileStream::Save(const TPixelData & pixelData) const
 	{
+		// сначала сохраняем размер сторны квадрата эскиза
 		SaveSize(pixelData.side);
+		// записываем эскиз
 		Save(pixelData.main, pixelData.size);
+		Save(pixelData.average);
+		Save(pixelData.varianceSquare);
 	}
 
 	// Сохранение в потоке изображения

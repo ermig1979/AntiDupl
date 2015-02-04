@@ -67,7 +67,7 @@ namespace ad
 		void Init();
 		void SetData(size_t reducedImageSize);
 
-		bool m_owner;
+		bool m_owner; // если владеет данными TPixelDataPtr data (заполнены)
 	};
 	typedef TImageData* TImageDataPtr;
 	typedef std::list<TImageDataPtr> TImageDataPtrs;

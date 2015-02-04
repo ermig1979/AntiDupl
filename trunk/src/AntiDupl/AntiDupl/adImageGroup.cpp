@@ -40,6 +40,7 @@ namespace ad
 	{
 	}
 
+	// Копируем из списка результатов информацию об изображениях в наш контейнер.
 	void TImageGroup::UpdateImages()
 	{
 		TImageInfoPtrSet buffer;
@@ -53,6 +54,7 @@ namespace ad
 		images.assign(buffer.begin(), buffer.end());
 	}
 
+	// Экспортируем в группу для экспорта из dll.
 	bool TImageGroup::Export(adGroupPtr pGroup) const
 	{
 		if(pGroup == NULL)

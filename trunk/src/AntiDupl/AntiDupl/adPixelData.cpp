@@ -32,7 +32,9 @@ namespace ad
         full(Simd::Square(side_) + FAST_DATA_SIZE),
         fast(NULL),
         main(NULL),
-        filled(false)
+        filled(false),
+		average(0),
+		varianceSquare(0)
     {
         (TUInt8*)fast = (TUInt8*)SimdAllocate(full, SimdAlignment());
         (TUInt8*)main = fast + FAST_DATA_SIZE;
@@ -44,7 +46,9 @@ namespace ad
         full(Simd::Square(pixelData.side) + FAST_DATA_SIZE),
         fast(NULL),
         main(NULL),
-        filled(false)
+        filled(false),
+		average(pixelData.average),
+		varianceSquare(pixelData.varianceSquare)
     {
         (TUInt8*)fast = (TUInt8*)SimdAllocate(full, SimdAlignment());
         (TUInt8*)main = fast + FAST_DATA_SIZE;
@@ -60,7 +64,7 @@ namespace ad
         SimdFree((void*)fast);
     }
 
-
+	// Делаем очень уменьшенное изображение (4x4) для быстрого сравнения.
     void TPixelData::FillFast(int ignoreFrameWidth)
     {
         size_t step = (side - 2*ignoreFrameWidth)/FAST_IMAGE_SIZE;

@@ -38,6 +38,7 @@ namespace AntiDupl.NET
         public int minimalImageSize;
         public int maximalImageSize;
         public bool compareInsideOneFolder;
+        public CoreDll.AlgorithmComparing algorithmComparing;
 
         public CoreCompareOptions()
         {
@@ -50,6 +51,7 @@ namespace AntiDupl.NET
             sizeControl = compareOptions.sizeControl;
             typeControl = compareOptions.typeControl;
             ratioControl = compareOptions.ratioControl;
+			algorithmComparing = compareOptions.algorithmComparing;
             thresholdDifference = compareOptions.thresholdDifference;
             minimalImageSize = compareOptions.minimalImageSize;
             maximalImageSize = compareOptions.maximalImageSize;
@@ -63,6 +65,7 @@ namespace AntiDupl.NET
             sizeControl = compareOptions.sizeControl != CoreDll.FALSE;
             typeControl = compareOptions.typeControl != CoreDll.FALSE;
             ratioControl = compareOptions.ratioControl != CoreDll.FALSE;
+			algorithmComparing = compareOptions.algorithmComparing;
             thresholdDifference = compareOptions.thresholdDifference;
             minimalImageSize = compareOptions.minimalImageSize;
             maximalImageSize = compareOptions.maximalImageSize;
@@ -76,6 +79,7 @@ namespace AntiDupl.NET
             compareOptions.sizeControl = sizeControl ? CoreDll.TRUE : CoreDll.FALSE;
             compareOptions.typeControl = typeControl ? CoreDll.TRUE : CoreDll.FALSE;
             compareOptions.ratioControl = ratioControl ? CoreDll.TRUE : CoreDll.FALSE;
+			compareOptions.algorithmComparing = algorithmComparing;
             compareOptions.thresholdDifference = thresholdDifference;
             compareOptions.minimalImageSize = minimalImageSize;
             compareOptions.maximalImageSize = maximalImageSize;
@@ -95,6 +99,7 @@ namespace AntiDupl.NET
                 sizeControl == compareOptions.sizeControl &&
                 typeControl == compareOptions.typeControl &&
                 ratioControl == compareOptions.ratioControl &&
+				algorithmComparing == compareOptions.algorithmComparing &&
                 thresholdDifference == compareOptions.thresholdDifference &&
                 minimalImageSize == compareOptions.minimalImageSize &&
                 maximalImageSize == compareOptions.maximalImageSize &&

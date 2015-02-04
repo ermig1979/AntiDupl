@@ -40,6 +40,7 @@ namespace ad
 
 	typedef TImageInfo * TImageInfoPtr;
 	typedef std::vector<TImageInfoPtr> TImageInfoPtrVector;
+	// Контейнер указателей на информацию об изображение.
 	typedef std::set<TImageInfoPtr> TImageInfoPtrSet;
 	//-------------------------------------------------------------------------
 	struct TImageGroup

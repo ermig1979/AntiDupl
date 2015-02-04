@@ -87,6 +87,8 @@ namespace AntiDupl.NET
         public string CoreOptionsForm_SizeControlCheckBox_Text;
         public string CoreOptionsForm_TypeControlCheckBox_Text;
         public string CoreOptionsForm_RatioControlCheckBox_Text;
+        public string CoreOptionsForm_AlgorithmComparingLabeledComboBox_Text;
+        public string CoreOptionsForm_AlgorithmComparingLabeledComboBox_SquaredSum;
         public string CoreOptionsForm_ThresholdDifferenceLabeledComboBox_Text;
         public string CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text;
         public string CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text;

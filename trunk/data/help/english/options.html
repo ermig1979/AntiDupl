@@ -26,7 +26,7 @@ Each of these groups is located on the corresponding tab.
 On the <b>Compare</b> tag
 </p>
 
-<img src="files/CheckOptionsForm.png" />
+<img src="files/CompareOptionsForm.png" />
 
 <p align="justify">
 there are following settings:
@@ -60,15 +60,19 @@ The degree of difference ratio of the width and height of images is governed by 
 located on the Advanced tab options (see below).
 By default, this option is enabled.
  </p></li>
+  <li><p align="justify">
+<b>Algorithm of comparing of images</b> - algorithm by means of which pictures are compared. In standard fast algorithm - <b>'Mean square difference'</b> calculate a mean square deviation of brightness for each couple of images. He fast, but has big percent of false positives for pictures with a big uniform background and can not find strongly changed images. When comparing pictures by means of an index of structural similarity (<b>'SSIM'</b>) can find duplicates among strongly changed pictures, and also images are better compared to a big uniform background, but calculation more slowly. Also <b>'SSIM'</b> is very sensitive to the normalized size of image. It is better not to use him at the sizes less than 128x128.
+The default setting is <b>'Mean square difference'</b>.
+This parameter is duplicated on the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>.
+ </p></li>
  <li><p align="justify">
-<b>Threshold difference</b> -  when images are compared between each other, the standard deviation of brightness for each pair of images is calculated.
-If this difference is below the value determined by this parameter, then the pictures are duplicates.
+<b>Threshold difference</b> - or value mean square deviations of brightness of pictures or value of an index of structural similarity in case of which value below value determined by this parameter, they are considered as duplicates. value determined by this parameter, then the pictures are duplicates.
 When setting this option at a low level, the program can not detect some of the duplicates.
 If it is equal to zero then program will be able to find only fully identical images.
 If he set too high, then increase the likelihood of false positives.
 Also worth noting that the increase in this parameter leads to a slower speed of the algorithm and vice versa.
-It can vary in the range from 0 to 15%.
-By default, this parameter is equal to 5%.
+It can vary in the range from 0 to 15% for algorithm <b>'Mean square difference'</b> and from 0 to 50% for algorithm <b>'SSIM'</b>.
+By default, this parameter is equal to 5% for algorithm <b>'Mean square difference'</b> and 30% for algorithm <b>'SSIM'</b>.
 This parameter is duplicated on the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>.
  </p></li>
  <li><p align="justify">
