@@ -31,6 +31,9 @@ namespace AntiDupl.NET
 {
     public class RaisedPanel : Panel
     {
+        /// <summary>
+        /// Создает окно с двойной рамкой.
+        /// </summary>
         private const int WS_EX_DLGMODALFRAME = 0x00000001;
 
         protected override CreateParams CreateParams

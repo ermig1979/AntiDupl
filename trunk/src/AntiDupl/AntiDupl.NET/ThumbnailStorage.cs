@@ -29,6 +29,9 @@ using System.Threading;
 
 namespace AntiDupl.NET
 {
+    /// <summary>
+    /// Хранилище эскизов изображений.
+    /// </summary>
     public class ThumbnailStorage
     {
         private CoreLib m_core;
@@ -49,6 +52,11 @@ namespace AntiDupl.NET
             m_mutex.ReleaseMutex();
         }
         
+        /// <summary>
+        /// Существует ли в хранилише изображение по переданному изображению.
+        /// </summary>
+        /// <param name="imageInfo"></param>
+        /// <returns></returns>
         public bool Exists(CoreImageInfo imageInfo)
         {
             bool result = false;
@@ -66,6 +74,11 @@ namespace AntiDupl.NET
             return result;
         }
 
+        /// <summary>
+        /// Загружаем в хранилише уменьшенное изображение по переданному пути.
+        /// </summary>
+        /// <param name="imageInfo"></param>
+        /// <returns></returns>
         public Bitmap Get(CoreImageInfo imageInfo)
         {
             Bitmap bitmap = null;
@@ -74,7 +87,7 @@ namespace AntiDupl.NET
             m_storage.TryGetValue(imageInfo.id, out bitmap);
             if (bitmap == null || bitmap.Height != size.Height || bitmap.Width != size.Width)
             {
-                m_mutex.ReleaseMutex();
+                m_mutex.ReleaseMutex(); // поток может работать дальше
                 bitmap = m_core.LoadBitmap(size, imageInfo.path);
                 m_mutex.WaitOne();
                 m_storage[imageInfo.id] = bitmap;

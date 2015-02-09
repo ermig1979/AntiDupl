@@ -29,6 +29,9 @@ using System.Drawing;
 
 namespace AntiDupl.NET
 {
+    /// <summary>
+    /// Панель содеражшая или превью дефекта или дубликатов.
+    /// </summary>
     public class ResultsPreviewContainer : Panel
     {
         private enum State
@@ -95,7 +98,7 @@ namespace AntiDupl.NET
                 m_state = state;
 
                 m_mainSplitContainer.OnCurrentResultChanged -= new MainSplitContainer.CurrentResultChangedHandler(CurrentResultChanged);
-                Controls.Clear();
+                Controls.Clear(); //Очишаем панель
                 m_mainSplitContainer.OnCurrentResultChanged += new MainSplitContainer.CurrentResultChangedHandler(CurrentResultChanged);
 
                 switch (m_state)

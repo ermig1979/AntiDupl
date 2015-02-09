@@ -458,6 +458,20 @@ DLLAPI adError adRenameCurrentW(adHandle handle, adRenameCurrentType renameCurre
     return handle->Result()->RenameCurrent(renameCurrentType, newFileName);
 }
 
+DLLAPI adError adMoveCurrentGroupW(adHandle handle, const adCharW* directory)
+{
+    CHECK_HANDLE CHECK_ACCESS LOCK CHECK_POINTER(directory) 
+
+    return handle->Result()->MoveCurrentGroup(directory);
+}
+
+DLLAPI adError adRenameCurrentGroupAsW(adHandle handle, const adCharW* fileName)
+{
+    CHECK_HANDLE CHECK_ACCESS LOCK CHECK_POINTER(fileName) 
+
+    return handle->Result()->RenameCurrentGroupAs(fileName);
+}
+
 DLLAPI adError adSelectionSet(adHandle handle, adSizePtr pStartFrom, adSize size, adBool value)
 {
     CHECK_HANDLE CHECK_ACCESS LOCK

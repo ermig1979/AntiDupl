@@ -27,9 +27,13 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Diagnostics;
+using System.IO;
 
 namespace AntiDupl.NET
 {
+    /// <summary>
+    /// ѕанель котора€ включает в себ€ две панели с просмотра изображений и панель инструментов дл€ работы с дубликатами изображений.
+    /// </summary>
     public class ResultsPreviewDuplPair : ResultsPreviewBase
     {
         private ImagePreviewPanel m_firstImagePreviewPanel;
@@ -38,6 +42,10 @@ namespace AntiDupl.NET
         private ToolStripButton m_deleteSecondButton;
         private ToolStripButton m_renameFirstToSecondButton;
         private ToolStripButton m_renameSecondToFirstButton;
+        private ToolStripButton m_renameFirstLikeSecondButton;
+        private ToolStripButton m_renameSecondLikeFirstButton;
+        private ToolStripButton m_moveFirstToSecondButton;
+        private ToolStripButton m_moveSecondToFirstButton;
         private ToolStripButton m_deleteBothButton;
         private ToolStripButton m_mistakeButton;
 
@@ -62,6 +70,10 @@ namespace AntiDupl.NET
             m_renameFirstToSecondButton = InitFactory.ToolButton.Create("RenameFirstToSecondVerticalButton", CoreDll.LocalActionType.RenameFirstToSecond, OnButtonClicked);
             m_renameSecondToFirstButton = InitFactory.ToolButton.Create("RenameSecondToFirstVerticalButton", CoreDll.LocalActionType.RenameSecondToFirst, OnButtonClicked);
             m_mistakeButton = InitFactory.ToolButton.Create("MistakeButton", CoreDll.LocalActionType.Mistake, OnButtonClicked);
+            m_renameFirstLikeSecondButton = InitFactory.ToolButton.Create("RenameFirstLikeSecondButton", CoreDll.LocalActionType.RenameFirstLikeSecond, OnButtonClicked);
+            m_renameSecondLikeFirstButton = InitFactory.ToolButton.Create("RenameSecondLikeFirstButton", CoreDll.LocalActionType.RenameSecondLikeFirst, OnButtonClicked);
+            m_moveFirstToSecondButton = InitFactory.ToolButton.Create("MoveFirstToSecondButton", CoreDll.LocalActionType.MoveFirstToSecond, OnButtonClicked);
+            m_moveSecondToFirstButton = InitFactory.ToolButton.Create("MoveSecondToFirstButton", CoreDll.LocalActionType.MoveSecondToFirst, OnButtonClicked);
         }
 
         public void UpdateStrings()
@@ -73,7 +85,18 @@ namespace AntiDupl.NET
             m_deleteBothButton.ToolTipText = GetToolTip(s.ResultsPreviewDuplPair_DeleteBothButton_ToolTip_Text, HotKeyOptions.Action.CurrentDuplPairDeleteBoth);
             m_renameFirstToSecondButton.ToolTipText = GetToolTip(s.ResultsPreviewDuplPair_RenameFirstToSecondButton_ToolTip_Text, HotKeyOptions.Action.CurrentDuplPairRenameFirstToSecond);
             m_renameSecondToFirstButton.ToolTipText = GetToolTip(s.ResultsPreviewDuplPair_RenameSecondToFirstButton_ToolTip_Text, HotKeyOptions.Action.CurrentDuplPairRenameSecondToFirst);
+            m_renameFirstLikeSecondButton.ToolTipText = GetToolTip(s.ResultsPreviewDuplPair_RenameFirstLikeSecondButton_ToolTip_Text, HotKeyOptions.Action.CurrentDuplPairRenameFirstLikeSecond);
+            m_renameSecondLikeFirstButton.ToolTipText = GetToolTip(s.ResultsPreviewDuplPair_RenameSecondLikeFirstButton_ToolTipText, HotKeyOptions.Action.CurrentDuplPairRenameSecondLikeFirst);
+            m_moveFirstToSecondButton.ToolTipText = GetToolTip(s.ResultsPreviewDuplPair_MoveFirstToSecondButton_ToolTipText, HotKeyOptions.Action.CurrentDuplPairMoveFirstToSecond);
+            m_moveSecondToFirstButton.ToolTipText = GetToolTip(s.ResultsPreviewDuplPair_MoveSecondToFirstButton_ToolTipText, HotKeyOptions.Action.CurrentDuplPairMoveSecondToFirst);
             m_mistakeButton.ToolTipText = GetToolTip(s.ResultsPreviewDefect_MistakeButton_ToolTip_Text, HotKeyOptions.Action.CurrentMistake);
+
+            // ƒл€ обновлени€ EXIF.
+            if (m_currentSearchResult != null)
+            {
+                m_firstImagePreviewPanel.UpdateExifTooltip(m_currentSearchResult);
+                m_secondImagePreviewPanel.UpdateExifTooltip(m_currentSearchResult);
+            }
         }
 
         public void SetCurrentSearchResult(CoreResult currentSearchResult)
@@ -83,6 +106,21 @@ namespace AntiDupl.NET
             m_secondImagePreviewPanel.SetResult(m_currentSearchResult);
             SetHint(m_currentSearchResult.hint);
             UpdateNextAndPreviousButtonEnabling();
+            UpdateMoveButtonEnabling();
+        }
+
+        protected void UpdateMoveButtonEnabling()
+        {
+            if (Path.GetDirectoryName(m_currentSearchResult.first.path).Equals(Path.GetDirectoryName(m_currentSearchResult.second.path)))
+            {
+                m_moveFirstToSecondButton.Enabled = false;
+                m_moveSecondToFirstButton.Enabled = false;
+            }
+            else
+            {
+                m_moveFirstToSecondButton.Enabled = true;
+                m_moveSecondToFirstButton.Enabled = true;
+            }
         }
 
         static private Color MixColors(Color firstColor, int firstWeight, Color secondColor, int secondWeight)
@@ -158,6 +196,10 @@ namespace AntiDupl.NET
                 m_deleteBothButton.Image = Resources.Images.Get("DeleteBothVerticalButton");
                 m_renameFirstToSecondButton.Image = Resources.Images.Get("RenameFirstToSecondVerticalButton");
                 m_renameSecondToFirstButton.Image = Resources.Images.Get("RenameSecondToFirstVerticalButton");
+                m_renameFirstLikeSecondButton.Image = Resources.Images.Get("RenameFirstLikeSecondVerticalButton");
+                m_renameSecondLikeFirstButton.Image = Resources.Images.Get("RenameSecondLikeFirstVerticalButton");
+                m_moveFirstToSecondButton.Image = Resources.Images.Get("MoveFirstToSecondVerticalButton");
+                m_moveSecondToFirstButton.Image = Resources.Images.Get("MoveSecondToFirstVerticalButton");
             }
             if (viewMode == ResultsOptions.ViewMode.HorizontalPairTable)
             {
@@ -172,9 +214,16 @@ namespace AntiDupl.NET
                 m_deleteBothButton.Image = Resources.Images.Get("DeleteBothHorizontalButton");
                 m_renameFirstToSecondButton.Image = Resources.Images.Get("RenameFirstToSecondHorizontalButton");
                 m_renameSecondToFirstButton.Image = Resources.Images.Get("RenameSecondToFirstHorizontalButton");
+                m_renameFirstLikeSecondButton.Image = Resources.Images.Get("RenameFirstLikeSecondHorizontalButton");
+                m_renameSecondLikeFirstButton.Image = Resources.Images.Get("RenameSecondLikeFirstHorizontalButton");
+                m_moveFirstToSecondButton.Image = Resources.Images.Get("MoveFirstToSecondHorizontalButton");
+                m_moveSecondToFirstButton.Image = Resources.Images.Get("MoveSecondToFirstHorizontalButton");
             }
 
             m_toolStrip.Items.Add(m_deleteBothButton);
+            m_toolStrip.Items.Add(m_moveFirstToSecondButton);
+            m_toolStrip.Items.Add(m_renameFirstLikeSecondButton);
+            m_toolStrip.Items.Add(new ToolStripSeparator());
             m_toolStrip.Items.Add(m_renameFirstToSecondButton);
             m_toolStrip.Items.Add(m_deleteFirstButton);
             m_toolStrip.Items.Add(new ToolStripSeparator());
@@ -183,6 +232,9 @@ namespace AntiDupl.NET
             m_toolStrip.Items.Add(new ToolStripSeparator());
             m_toolStrip.Items.Add(m_deleteSecondButton);
             m_toolStrip.Items.Add(m_renameSecondToFirstButton);
+            m_toolStrip.Items.Add(new ToolStripSeparator());
+            m_toolStrip.Items.Add(m_renameSecondLikeFirstButton);
+            m_toolStrip.Items.Add(m_moveSecondToFirstButton);
             m_toolStrip.Items.Add(m_mistakeButton);
         }
     }

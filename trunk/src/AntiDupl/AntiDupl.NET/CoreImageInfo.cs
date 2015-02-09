@@ -187,5 +187,10 @@ namespace AntiDupl.NET
             else
                 return path.Substring(0, i);
         }
+
+        public string GetFileNameWithoutExtensionString()
+        {
+            return System.IO.Path.GetFileNameWithoutExtension(path);
+        }
     }
 }

@@ -47,6 +47,9 @@ namespace AntiDupl.NET
         private ToolStripMenuItem m_renameImageLikeNeighbourItem;
         private ToolStripMenuItem m_moveImageToNeighbourItem;
         private ToolStripMenuItem m_moveImageAndRenameToNeighbourItem;
+        private ToolStripMenuItem m_moveGroupToNeighbourItem;
+        private ToolStripMenuItem m_renameGroupAsNeighbourItem;
+
 
         
         public ImagePreviewContextMenu(CoreLib core, Options options, ImagePreviewPanel imagePreviewPanel, ResultsListView resultsListView)
@@ -70,9 +73,9 @@ namespace AntiDupl.NET
             m_openImageItem = InitFactory.MenuItem.Create(null, null, OpenImage);
             m_openFolderItem = InitFactory.MenuItem.Create(null, null, OpenFolder);
             m_renameImageItem = InitFactory.MenuItem.Create(null, null, m_imagePreviewPanel.RenameImage);
-            m_renameImageLikeNeighbourItem = InitFactory.MenuItem.Create(null, null, new EventHandler(this.RenameLikeNeighbour));
-            m_moveImageToNeighbourItem = InitFactory.MenuItem.Create(null, null, MoveImageToNeighbour);
             m_moveImageAndRenameToNeighbourItem = InitFactory.MenuItem.Create(null, null, new EventHandler(this.MoveAndRenameToNeighbour));
+            m_moveGroupToNeighbourItem = InitFactory.MenuItem.Create(null, null, MoveGroupToNeighbour);
+            m_renameGroupAsNeighbourItem = InitFactory.MenuItem.Create(null, null, RenameCurrentGroupAsNeighbour);
             
             Items.Add(new ToolStripSeparator());
         }
@@ -88,14 +91,15 @@ namespace AntiDupl.NET
             Items.Add(m_openFolderItem);
             Items.Add(new ToolStripSeparator());
             Items.Add(m_renameImageItem);
-            Items.Add(m_renameImageLikeNeighbourItem);
-            if (MoveImageToNeighbourEnable())
-            {
-                Items.Add(m_moveImageToNeighbourItem);
-            }
             if (MoveAndRenameToNeighbourEnable())
             {
                 Items.Add(m_moveImageAndRenameToNeighbourItem);
+            }
+            if (MoveGroupEnable())
+            {
+                Items.Add(new ToolStripSeparator());
+                Items.Add(m_moveGroupToNeighbourItem);
+                Items.Add(m_renameGroupAsNeighbourItem);
             }
         }
 
@@ -108,9 +112,9 @@ namespace AntiDupl.NET
             m_openImageItem.Text = s.ImagePreviewContextMenu_OpenImageItem_Text;
             m_openFolderItem.Text = s.ImagePreviewContextMenu_OpenFolderItem_Text;
             m_renameImageItem.Text = s.ImagePreviewContextMenu_RenameImageItem_Text;
-            m_renameImageLikeNeighbourItem.Text = s.ImagePreviewContextMenu_RenameLikeNeighbour_Text;
-            m_moveImageToNeighbourItem.Text = s.ImagePreviewContextMenu_MoveImageToNeighbourItem_Text;
             m_moveImageAndRenameToNeighbourItem.Text = s.ImagePreviewContextMenu_MoveAndRenameImageToNeighbourItem_Text;
+            m_moveGroupToNeighbourItem.Text = s.ImagePreviewContextMenu_MoveGroupToNeighbourItem_Text;
+            m_renameGroupAsNeighbourItem.Text = s.ImagePreviewContextMenu_RenameGroupAsNeighbourItem_Text;
         }
 
         private void OpenImage(object sender, EventArgs e)
@@ -142,44 +146,9 @@ namespace AntiDupl.NET
             Clipboard.SetText(Path.GetFileNameWithoutExtension(m_imagePreviewPanel.CurrentImageInfo.path));
         }
 
-        /// <summary>
-        /// Перенести к соседней
-        /// </summary>
-        private void MoveImageToNeighbour(object sender, EventArgs e)
-        {
-            m_resultsListView.RenameCurrent(m_imagePreviewPanel.RenameCurrentType, GetNewImagePath());
-        }
-        
-        /// <summary>
-        /// Проверка на существование файла в папке соседней картинки с именем текущей картинки.
-        /// </summary>
-        /// <returns></returns>
-        private bool MoveImageToNeighbourEnable()
-        {
-            if (m_imagePreviewPanel.NeighbourImageInfo != null)
-            {
-                FileInfo fileInfo = new FileInfo(GetNewImagePath());
-                return !fileInfo.Exists;
-            }
-            return false;
-        }
-        
-        private string GetNewImagePath()
-        {
-            StringBuilder path = new StringBuilder(m_imagePreviewPanel.NeighbourImageInfo.GetDirectoryString());
-            path.Append("\\");
-            path.Append(Path.GetFileName(m_imagePreviewPanel.CurrentImageInfo.path));
-            return path.ToString();
-        }
-
-        private void RenameLikeNeighbour(object sender, EventArgs e)
-        {
-            m_resultsListView.RenameCurrent(this.m_imagePreviewPanel.RenameCurrentType, GetNewNameLikeNeighbour());
-        }
-
         private void MoveAndRenameToNeighbour(object sender, EventArgs e)
         {
-            m_resultsListView.RenameCurrent(this.m_imagePreviewPanel.RenameCurrentType, GetNewNeighbourNameToMove());
+            m_resultsListView.MoveAndRenameToNeighbour(m_imagePreviewPanel.RenameCurrentType);
         }
 
         /// <summary>
@@ -194,46 +163,29 @@ namespace AntiDupl.NET
             return false;
         }
 
-        #region Rename image
         /// <summary>
-        /// Возврашает имя картинки в директории соседа или новое если файл с таким именем существует в директории соседа.
+        /// Возврашает истину, если в групе больше 2 файлов, тоесть есть смысл перемащать группами.
         /// </summary>
         /// <returns></returns>
-        private string GetNewNeighbourNameToMove()
+        private bool MoveGroupEnable()
         {
-            StringBuilder targetPath = new StringBuilder(m_imagePreviewPanel.NeighbourImageInfo.GetDirectoryString());
-            targetPath.Append(@"\");
-            targetPath.Append(Path.GetFileNameWithoutExtension(m_imagePreviewPanel.NeighbourImageInfo.path));
-            targetPath.Append(Path.GetExtension(m_imagePreviewPanel.CurrentImageInfo.path));
-            if (!System.IO.File.Exists(targetPath.ToString()))
-            {
-                return targetPath.ToString();
-            }
+            if (m_core.GetImageInfoSize(m_imagePreviewPanel.Group) > 2)
+                return true;
             else
-            {
-                return Rename.SimilarRename(targetPath.ToString(), "");
-            }
+                return false;
         }
 
         /// <summary>
-        /// Возврашает переименованное имя картинки соседа.
+        /// Перенести группу в папку к соседней.
         /// </summary>
-        /// <returns></returns>
-        private string GetNewNameLikeNeighbour()
+        private void MoveGroupToNeighbour(object sender, EventArgs e)
         {
-            StringBuilder targetPath = new StringBuilder(m_imagePreviewPanel.CurrentImageInfo.GetDirectoryString());
-            targetPath.Append(@"\");
-            targetPath.Append(Path.GetFileNameWithoutExtension(m_imagePreviewPanel.NeighbourImageInfo.path));
-            targetPath.Append(Path.GetExtension(m_imagePreviewPanel.CurrentImageInfo.path));
-            if (!System.IO.File.Exists(targetPath.ToString()))
-            {
-                return targetPath.ToString();
-            }
-            else
-            {
-                return Rename.SimilarRename(targetPath.ToString(), m_imagePreviewPanel.CurrentImageInfo.path);
-            }
+            m_resultsListView.MoveCurrentGroupToDirectory(m_imagePreviewPanel.NeighbourImageInfo.GetDirectoryString());
         }
-        #endregion
+
+        private void RenameCurrentGroupAsNeighbour(object sender, EventArgs e)
+        {
+            m_resultsListView.RenameCurrentGroupAs(m_imagePreviewPanel.NeighbourImageInfo.GetFileNameWithoutExtensionString());
+        }
     }
 }

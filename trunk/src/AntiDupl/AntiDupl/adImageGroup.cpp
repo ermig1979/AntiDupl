@@ -40,7 +40,7 @@ namespace ad
 	{
 	}
 
-	// Копируем из списка результатов информацию об изображениях в наш контейнер.
+	// Копируем из списка результатов информацию об изображениях в наш контейнер images.
 	void TImageGroup::UpdateImages()
 	{
 		TImageInfoPtrSet buffer;
@@ -133,11 +133,13 @@ namespace ad
 			m_map[it->first] = new TImageGroup(*it->second);
 	}
 
+	// Устанавливает в переданном списке результатов группы из внутреннего хранилища групп и очищает его.
 	void TImageGroupStorage::Set(TResultPtrVector & results, TStatus * pStatus)
 	{
 		pStatus->SetProgress(0, 0);
 		size_t current = 0, total = results.size(), groupId = 0;
 		Clear();
+		// Идем по списку результатов
 		for(TResultPtrVector::iterator it = results.begin(); it != results.end(); ++it)
 		{
 			pStatus->SetProgress(current++, total);
@@ -146,6 +148,7 @@ namespace ad
 			{
 				if(pResult->type == AD_RESULT_DUPL_IMAGE_PAIR)
 				{
+					// Если обе группы не определены, находим ее с хранилише и заполняем значения.
 					if(pResult->first->group == AD_UNDEFINED && pResult->second->group == AD_UNDEFINED)
 					{
 						TImageGroup * pGroup = Get(groupId++);
@@ -155,6 +158,7 @@ namespace ad
 					}
 					else
 					{
+						// Если первая группа не определена, копируем значения из второй
 						if(pResult->first->group == AD_UNDEFINED)
 						{
 							pResult->group = pResult->second->group;
@@ -214,8 +218,10 @@ namespace ad
 		pStatus->Reset();
 	}
 
+	// Обновляем содержимое хранилиша групп в соответсвие с переданными результатами.
 	void TImageGroupStorage::Update(TResultPtrVector & results)
 	{
+		// Очишаем результаты для групп в хранилише
 		for(TMap::iterator groupIt = m_map.begin(); groupIt != m_map.end(); ++groupIt)
 		{
 			TImageGroupPtr pImageGroup = groupIt->second;

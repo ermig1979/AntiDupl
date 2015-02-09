@@ -52,9 +52,6 @@ namespace ad
 
         bool ApplyTo(adLocalActionType localActionType, adTargetType targetType);
 
-        bool RenameCurrent(adRenameCurrentType renameCurrentType, const TString & newFileName);
-        bool Rename(adSize groupId, adSize index, const TString & newFileName);
-
         bool Undo();
         bool Redo();
 
@@ -62,6 +59,11 @@ namespace ad
         bool RedoEnable() const {return !m_pRedoDeque->empty();}
 
         void Clear();
+
+		bool RenameCurrent(adRenameCurrentType renameCurrentType, const TString & newFileName);
+        bool Rename(adSize groupId, adSize index, const TString & newFileName);
+		bool MoveCurrentGroup(const TString& directory);
+		bool RenameCurrentGroupAs(const TString & fileName);
 
         TUndoRedoStagePtr Current() const {return m_pCurrent;}
 
@@ -75,6 +77,9 @@ namespace ad
 
         bool Delete(TImageInfo *pImageInfo);
         bool Rename(TImageInfo *pOldImageInfo, TImageInfo *pNewImageInfo);
+		bool RenameLike(TImageInfo *pOldImageInfo, TImageInfo *pNewImageInfo);
+		bool Move(TImageInfo *pOldImageInfo, TImageInfo *pNewImageInfo);
+		bool MoveAndRenameLike(TImageInfo *pOldImageInfo, TImageInfo *pNewImageInfo);
 
         TOptions *m_pOptions;
         TRecycleBin *m_pRecycleBin;
@@ -84,6 +89,7 @@ namespace ad
 
         TUndoRedoStagePtrDeque *m_pUndoDeque;
         TUndoRedoStagePtrDeque *m_pRedoDeque;
+		// Текущее состояние результатов вектор структур TResult
         TUndoRedoStagePtr m_pCurrent;
     };
 }

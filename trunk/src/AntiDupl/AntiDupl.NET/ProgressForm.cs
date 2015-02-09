@@ -29,12 +29,17 @@ using System.Threading;
 
 namespace AntiDupl.NET
 {
+    /// <summary>
+    /// Форма отображает прогресс длительных операций.
+    /// </summary>
     public class ProgressForm : Form
     {
         public enum Type
         {
             ApplyAction,
             RenameCurrent,
+            MoveCurrentGroup,
+            RenameCurrentGroupAs,
 
             RefreshResults,
             Undo,
@@ -57,6 +62,7 @@ namespace AntiDupl.NET
 
         private CoreDll.RenameCurrentType m_renameCurrentType;
         private string m_newFileName;
+        private string m_directoryForMove;
 
         private enum State
         {
@@ -73,6 +79,9 @@ namespace AntiDupl.NET
         private MainSplitContainer m_mainSplitContainer;
         private System.Windows.Forms.Timer m_timer;
         private DateTime m_startDateTime;
+        /// <summary>
+        /// Надо ли обновлять результаты.
+        /// </summary>
         private bool m_updateResults = true;
 
         private Button m_cancelButton;
@@ -102,6 +111,25 @@ namespace AntiDupl.NET
             Initialize(core, options, coreOptions, mainSplitContainer);
         }
 
+        public ProgressForm(Type type, string path, CoreLib core, Options options, CoreOptions coreOptions, MainSplitContainer mainSplitContainer)
+        {
+            m_type = type;
+            if (m_type == Type.MoveCurrentGroup)
+                m_directoryForMove = path;
+            else if (m_type == Type.RenameCurrentGroupAs)
+                m_newFileName = path;
+            else
+                throw new Exception("Unknown Type for action!");
+            Initialize(core, options, coreOptions, mainSplitContainer);
+        }
+
+        /// <summary>
+        /// Инициализируем форму.
+        /// </summary>
+        /// <param name="core"></param>
+        /// <param name="options"></param>
+        /// <param name="coreOptions"></param>
+        /// <param name="mainSplitContainer"></param>
         private void Initialize(CoreLib core, Options options, CoreOptions coreOptions, MainSplitContainer mainSplitContainer)
         {
             m_core = core;
@@ -156,6 +184,9 @@ namespace AntiDupl.NET
             KeyDown += new KeyEventHandler(OnKeyDown);
         }
 
+        /// <summary>
+        /// Выполняем действие.
+        /// </summary>
         public void Execute()
         {
             m_state = State.Start;
@@ -163,7 +194,7 @@ namespace AntiDupl.NET
             coreThread.Start();
             if (m_type >= Type.ApplyAction && m_type <= Type.RefreshResults)
             {
-                m_cancelButton.Enabled = true;
+                m_cancelButton.Enabled = true;  //можем отменить
             }
             else
             {
@@ -182,6 +213,9 @@ namespace AntiDupl.NET
             }
         }
 
+        /// <summary>
+        /// Функция которая будет выполнять основные действия.
+        /// </summary>
         private void CoreThreadTask()
         {
             m_startDateTime = DateTime.Now;
@@ -199,6 +233,20 @@ namespace AntiDupl.NET
                 case Type.RenameCurrent:
                     {
                         m_updateResults = m_core.RenameCurrent(m_renameCurrentType, m_newFileName);
+                        m_type = Type.ClearTemporary;
+                        m_core.Clear(CoreDll.FileType.Temporary);
+                        break;
+                    }
+                case Type.MoveCurrentGroup:
+                    {
+                        m_updateResults = m_core.MoveCurrentGroup(m_directoryForMove);
+                        m_type = Type.ClearTemporary;
+                        m_core.Clear(CoreDll.FileType.Temporary);
+                        break;
+                    }
+                case Type.RenameCurrentGroupAs:
+                    {
+                        m_updateResults = m_core.RenameCurrentGroupAs(m_newFileName);
                         m_type = Type.ClearTemporary;
                         m_core.Clear(CoreDll.FileType.Temporary);
                         break;

@@ -163,7 +163,7 @@ namespace AntiDupl.NET
             Redo = 4,
         }
 
-        public enum LocalActionType : int
+        public enum LocalActionType : int //то же что и  enum adLocalActionType : adInt32, также еще в class HotKeyOptions enum Action
         {
             DeleteDefect = 0,
             DeleteFirst = 1,
@@ -171,8 +171,14 @@ namespace AntiDupl.NET
             DeleteBoth = 3,
             RenameFirstToSecond = 4,
             RenameSecondToFirst = 5,
-            PerformHint = 6,
-            Mistake = 7,
+            RenameFirstLikeSecond = 6,
+            RenameSecondLikeFirst = 7,
+            MoveFirstToSecond = 8,
+            MoveSecondToFirst = 9,
+            MoveAndRenameFirstToSecond = 10,
+            MoveAndRenameSecondToFirst = 11,
+            PerformHint = 12,
+            Mistake = 13,
         }
 
         public enum ActionEnableType : int
@@ -563,6 +569,16 @@ namespace AntiDupl.NET
         public delegate Error adRenameCurrentW_fn(IntPtr handle, RenameCurrentType renameCurrentType, string newFileName);
         [DynamicModuleApi]
         public adRenameCurrentW_fn adRenameCurrentW = null;
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+        public delegate Error adMoveCurrentGroupW_fn(IntPtr handle, string directory);
+        [DynamicModuleApi]
+        public adMoveCurrentGroupW_fn adMoveCurrentGroupW = null;
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+        public delegate Error adRenameCurrentGroupAsW_fn(IntPtr handle, string fileName);
+        [DynamicModuleApi]
+        public adRenameCurrentGroupAsW_fn adRenameCurrentGroupAsW = null;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
         public delegate Error adResultGetW_fn(IntPtr handle, IntPtr pStartFrom, IntPtr pResult, IntPtr pResultSize);

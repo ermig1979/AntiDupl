@@ -46,6 +46,9 @@ namespace AntiDupl.NET
         private Position m_position;
 
         private CoreDll.RenameCurrentType m_renameCurrentType;
+        /// <summary>
+        /// Переименовывать первую или вторую картинку.
+        /// </summary>
         public CoreDll.RenameCurrentType RenameCurrentType {get{return m_renameCurrentType;}}
         
         private const int IBW = 1;//Internal border width
@@ -54,6 +57,12 @@ namespace AntiDupl.NET
         private CoreLib m_core;
         private Options m_options;
         private ResultsListView m_resultsListView;
+
+        private int m_group;
+        /// <summary>
+        /// Группа дубликатов.
+        /// </summary>
+        public int Group { get { return m_group; } }
         
         private CoreImageInfo m_currentImageInfo;
         public CoreImageInfo CurrentImageInfo { get { return m_currentImageInfo; } }
@@ -79,6 +88,7 @@ namespace AntiDupl.NET
             SetPosition(position);
         }
         
+        // Запускается инициализация один раз при создание формы.
         private void InitializeComponents()
         {
             Strings s = Resources.Strings.Current;
@@ -169,15 +179,9 @@ namespace AntiDupl.NET
             m_toolTip.AutoPopDelay = Int16.MaxValue;
         }
 
-        /// <summary>
-        /// Устанавливает значение подсказки tooltip для надписи EXIF.
-        /// </summary>
-        private void SetExifTooltip(CoreImageInfo currentImageInfo)
+        private List<string> GetExifList(CoreImageInfo currentImageInfo, Strings s)
         {
-            Strings s = Resources.Strings.Current;
             List<string> exifList = new List<string>();
-            string exifSting = String.Empty;
-
             if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.imageDescription))
                 exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_ImageDescription + currentImageInfo.exifInfo.imageDescription);
             if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.equipMake))
@@ -192,6 +196,18 @@ namespace AntiDupl.NET
                 exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_Artist + currentImageInfo.exifInfo.artist);
             if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.userComment))
                 exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_UserComment + currentImageInfo.exifInfo.userComment);
+            return exifList;
+        }
+
+        /// <summary>
+        /// Устанавливает значение подсказки tooltip для надписи EXIF.
+        /// </summary>
+        private void SetExifTooltip(CoreImageInfo currentImageInfo)
+        {
+            Strings s = Resources.Strings.Current;
+            string exifSting = String.Empty;
+
+            List<string> exifList = GetExifList(currentImageInfo, s);
 
             if (exifList.Count > 0)
             {
@@ -203,6 +219,30 @@ namespace AntiDupl.NET
                 exifSting = exifSting + exifList[exifList.Count - 1];
 
                 m_toolTip.SetToolTip(m_imageExifLabel, exifSting);
+            }
+        }
+
+        /// <summary>
+        /// Изменение подсказки EXIF при смене языка.
+        /// </summary>
+        /// <param name="result"></param>
+        public void UpdateExifTooltip(CoreResult result)
+        {
+            if (result.type == CoreDll.ResultType.None)
+                throw new Exception("Bad result type!");
+
+            switch(m_position)
+            {
+            case Position.Left:
+            case Position.Top:
+                if (result.first.exifInfo.isEmpty == CoreDll.FALSE)
+                    SetExifTooltip(result.first);
+                break;
+            case Position.Right:
+            case Position.Bottom:
+                if (result.second.exifInfo.isEmpty == CoreDll.FALSE)
+                    SetExifTooltip(result.second);
+                break;
             }
         }
 
@@ -310,6 +350,8 @@ namespace AntiDupl.NET
         {
             if(result.type == CoreDll.ResultType.None)
                 throw new Exception("Bad result type!");
+
+            m_group = result.group;
 
             switch(m_position)
             {

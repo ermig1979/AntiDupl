@@ -25,6 +25,7 @@
 #define __adFileUtils_h__
 
 #include "adStrings.h"
+#include "adPath.h"
 
 #define EXTENDED_PATH_PREFIX L"\\\\?\\"
 #define EXTENDED_PATH_PREFIX_SIZE 4
@@ -65,6 +66,9 @@ namespace ad
     HGLOBAL LoadFileToMemory(const TChar* path);
 
 	bool SearchFiles(const TString& directory, TStrings & files, bool subFolders = true, const TString & mask = TString("*"));
+
+	size_t LengthOfLong(const __int64 digit);
+	TString GetSimilarPath(const TPath &path);
 }
 
 #endif//__adFileUtils_h__

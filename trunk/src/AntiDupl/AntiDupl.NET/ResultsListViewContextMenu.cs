@@ -30,6 +30,9 @@ using System.ComponentModel;
 
 namespace AntiDupl.NET
 {
+    /// <summary>
+    /// Контекстное меню для списка дубликатов.
+    /// </summary>
     public class ResultsListViewContextMenu : ContextMenuStrip
     {
         private CoreLib m_core;
@@ -41,6 +44,12 @@ namespace AntiDupl.NET
         private ToolStripMenuItem m_deleteFirstItem;
         private ToolStripMenuItem m_deleteSecondItem;
         private ToolStripMenuItem m_deleteBothItem;
+        private ToolStripMenuItem m_renameFirstToSecond;
+        private ToolStripMenuItem m_renameSecondToFirst;
+        private ToolStripMenuItem m_renameFirstLikeSecond;
+        private ToolStripMenuItem m_renameSecondLikeFirst;
+        private ToolStripMenuItem m_moveFirstToSecond;
+        private ToolStripMenuItem m_moveSecondToFirst;
         private ToolStripMenuItem m_performHintItem;
         private ToolStripMenuItem m_mistakeItem;
 
@@ -63,6 +72,14 @@ namespace AntiDupl.NET
             m_deleteFirstItem = InitFactory.MenuItem.Create("DeleteFirstsVerticalMenu", CoreDll.LocalActionType.DeleteFirst, MakeAction);
             m_deleteSecondItem = InitFactory.MenuItem.Create("DeleteSecondsVerticalMenu", CoreDll.LocalActionType.DeleteSecond, MakeAction);
             m_deleteBothItem = InitFactory.MenuItem.Create("DeleteBothesVerticalMenu", CoreDll.LocalActionType.DeleteBoth, MakeAction);
+
+            m_renameFirstToSecond = InitFactory.MenuItem.Create("RenameFirstToSecondVerticalMenu", CoreDll.LocalActionType.RenameFirstToSecond, MakeAction);
+            m_renameSecondToFirst = InitFactory.MenuItem.Create("RenameSecondToFirstVerticalMenu", CoreDll.LocalActionType.RenameSecondToFirst, MakeAction);
+            m_renameFirstLikeSecond = InitFactory.MenuItem.Create("RenameFirstLikeSecondVerticalMenu", CoreDll.LocalActionType.RenameFirstLikeSecond, MakeAction);
+            m_renameSecondLikeFirst = InitFactory.MenuItem.Create("RenameSecondLikeFirstVerticalMenu", CoreDll.LocalActionType.RenameSecondLikeFirst, MakeAction);
+            m_moveFirstToSecond = InitFactory.MenuItem.Create("MoveFirstToSecondVerticalMenu", CoreDll.LocalActionType.MoveFirstToSecond, MakeAction);
+            m_moveSecondToFirst = InitFactory.MenuItem.Create("MoveSecondToFirstVerticalMenu", CoreDll.LocalActionType.MoveSecondToFirst, MakeAction);
+
             m_performHintItem = InitFactory.MenuItem.Create("PerformHintMenu", CoreDll.LocalActionType.PerformHint, MakeAction);
             m_mistakeItem = InitFactory.MenuItem.Create("MistakesMenu", CoreDll.LocalActionType.Mistake, MakeAction);
 
@@ -80,6 +97,14 @@ namespace AntiDupl.NET
             m_deleteFirstItem.Text = s.ResultsListViewContextMenu_DeleteFirstItem_Text;
             m_deleteSecondItem.Text = s.ResultsListViewContextMenu_DeleteSecondItem_Text;
             m_deleteBothItem.Text = s.ResultsListViewContextMenu_DeleteBothItem_Text;
+
+            m_renameFirstToSecond.Text = s.ResultsListViewContextMenu_RenameFirstToSecondIcon_ToolTip_Text;
+            m_renameSecondToFirst.Text = s.ResultsListViewContextMenu_RenameSecondToFirstIcon_ToolTip_Text;
+            m_renameFirstLikeSecond.Text = s.ResultsListViewContextMenu_RenameFirstLikeSecondButton_ToolTip_Text;
+            m_renameSecondLikeFirst.Text = s.ResultsListViewContextMenu_RenameSecondLikeFirstButton_ToolTipText;
+            m_moveFirstToSecond.Text = s.ResultsListViewContextMenu_MoveFirstToSecondButton_ToolTipText;
+            m_moveSecondToFirst.Text = s.ResultsListViewContextMenu_MoveSecondToFirstButton_ToolTipText;
+
             m_mistakeItem.Text = s.ResultsListViewContextMenu_MistakeItem_Text;
             m_performHintItem.Text = s.ResultsListViewContextMenu_PerformHintItem_Text;
         }
@@ -95,11 +120,21 @@ namespace AntiDupl.NET
                     Items.Add(m_deleteDefectItem);
                     Items.Add(new ToolStripSeparator());
                 }
-                if (m_core.CanApply(CoreDll.ActionEnableType.DuplPair))
+                if (m_core.CanApply(CoreDll.ActionEnableType.DuplPair)) //проверяется тип результата в выделенных
                 {
                     Items.Add(m_deleteFirstItem);
                     Items.Add(m_deleteSecondItem);
+                    Items.Add(m_renameFirstToSecond);
+                    Items.Add(m_renameSecondToFirst);
                     Items.Add(m_deleteBothItem);
+                    Items.Add(new ToolStripSeparator());
+                    Items.Add(m_renameFirstLikeSecond);
+                    Items.Add(m_renameSecondLikeFirst);
+                    if (m_mainSplitContainer.resultsListView.MoveEnable())
+                    {
+                        Items.Add(m_moveFirstToSecond);
+                        Items.Add(m_moveSecondToFirst);
+                    }
                     Items.Add(new ToolStripSeparator());
                 }
                 if (m_core.CanApply(CoreDll.ActionEnableType.PerformHint))
@@ -146,6 +181,12 @@ namespace AntiDupl.NET
                 m_deleteDefectItem.Image = Resources.Images.Get("DeleteDefectsVerticalMenu");
                 m_deleteFirstItem.Image = Resources.Images.Get("DeleteFirstsVerticalMenu");
                 m_deleteSecondItem.Image = Resources.Images.Get("DeleteSecondsVerticalMenu");
+                m_renameFirstToSecond.Image = Resources.Images.Get("RenameFirstToSecondVerticalMenu");
+                m_renameSecondToFirst.Image = Resources.Images.Get("RenameSecondToFirstVerticalMenu");
+                m_renameFirstLikeSecond.Image = Resources.Images.Get("RenameFirstLikeSecondVerticalMenu");
+                m_renameSecondLikeFirst.Image = Resources.Images.Get("RenameSecondLikeFirstVerticalMenu");
+                m_moveFirstToSecond.Image = Resources.Images.Get("MoveFirstToSecondVerticalMenu");
+                m_moveSecondToFirst.Image = Resources.Images.Get("MoveSecondToFirstVerticalMenu");
                 m_deleteBothItem.Image = Resources.Images.Get("DeleteBothesVerticalMenu");
             }
             if (viewMode == ResultsOptions.ViewMode.HorizontalPairTable)
@@ -153,6 +194,12 @@ namespace AntiDupl.NET
                 m_deleteDefectItem.Image = Resources.Images.Get("DeleteDefectsHorizontalMenu");
                 m_deleteFirstItem.Image = Resources.Images.Get("DeleteFirstsHorizontalMenu");
                 m_deleteSecondItem.Image = Resources.Images.Get("DeleteSecondsHorizontalMenu");
+                m_renameFirstToSecond.Image = Resources.Images.Get("RenameFirstToSecondHorizontalMenu");
+                m_renameSecondToFirst.Image = Resources.Images.Get("RenameSecondToFirstHorizontalMenu");
+                m_renameFirstLikeSecond.Image = Resources.Images.Get("RenameFirstLikeSecondHorizontalMenu");
+                m_renameSecondLikeFirst.Image = Resources.Images.Get("RenameSecondLikeFirstHorizontalMenu");
+                m_moveFirstToSecond.Image = Resources.Images.Get("MoveFirstToSecondHorizontalMenu");
+                m_moveSecondToFirst.Image = Resources.Images.Get("MoveSecondToFirstHorizontalMenu");
                 m_deleteBothItem.Image = Resources.Images.Get("DeleteBothesHorizontalMenu");
             }
         }

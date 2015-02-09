@@ -253,6 +253,42 @@ namespace AntiDupl.NET
             m_makeAction = false;
         }
 
+        public void MoveAndRenameToNeighbour(CoreDll.RenameCurrentType renameCurrentType)
+        {
+            m_makeAction = true;
+            ProgressForm progressForm;
+            if (renameCurrentType == CoreDll.RenameCurrentType.First)
+                progressForm = new ProgressForm(CoreDll.LocalActionType.MoveAndRenameFirstToSecond, CoreDll.TargetType.Current, m_core, m_options, m_coreOptions, m_mainSplitContainer);
+            else
+                progressForm = new ProgressForm(CoreDll.LocalActionType.MoveAndRenameSecondToFirst, CoreDll.TargetType.Current, m_core, m_options, m_coreOptions, m_mainSplitContainer);
+            progressForm.Execute();
+            m_makeAction = false;
+        }
+
+        /// <summary>
+        /// Перенести текущую группу в папку.
+        /// </summary>
+        /// <param name="directory"></param>
+        public void MoveCurrentGroupToDirectory(string directory)
+        {
+            m_makeAction = true;
+            ProgressForm progressForm = new ProgressForm(ProgressForm.Type.MoveCurrentGroup, directory, m_core, m_options, m_coreOptions, m_mainSplitContainer);
+            progressForm.Execute();
+            m_makeAction = false;
+        }
+
+        public void RenameCurrentGroupAs(string filename)
+        {
+            m_makeAction = true;
+            ProgressForm progressForm = new ProgressForm(ProgressForm.Type.RenameCurrentGroupAs, filename, m_core, m_options, m_coreOptions, m_mainSplitContainer);
+            progressForm.Execute();
+            m_makeAction = false;
+        }
+
+        /// <summary>
+        /// MakeAction by hotkey.
+        /// </summary>
+        /// <param name="hotKey"></param>
         private void MakeAction(Keys hotKey)
         {
             if (hotKey == (Keys.Z | Keys.Control) && m_core.CanApply(CoreDll.ActionEnableType.Undo))
@@ -837,6 +873,25 @@ namespace AntiDupl.NET
             if (m_currentRowIndex < m_results.Length && m_currentRowIndex >= 0)
                 return m_results[m_currentRowIndex];
             return null;
+        }
+
+        public bool MoveEnable()
+        {
+            bool moveEnable = false;
+            if (m_results.Length > 0)
+            {
+                for (int i = 0; i < Rows.Count; i++)
+                {
+                    DataGridViewCustomRow row = (DataGridViewCustomRow)Rows[i];
+                    if (row.selected)
+                        if (!Path.GetDirectoryName(m_results[i].first.path).Equals(Path.GetDirectoryName(m_results[i].second.path)))
+                        {
+                            moveEnable = true;
+                            break;
+                        }
+                }
+            }
+            return moveEnable;
         }
     }
 }

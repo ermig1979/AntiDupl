@@ -30,6 +30,9 @@ using System.IO;
 
 namespace AntiDupl.NET
 {
+    /// <summary>
+    /// Панель одного изображения и информации о нем, checkbox.
+    /// </summary>
     public class ThumbnailPanel :  RaisedPanel
     {
         private const int IBW = 1;//Internal border width

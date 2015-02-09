@@ -426,7 +426,7 @@ namespace ad
 	// Фабрика возврашает движок
     TImageComparer* CreateImageComparer(TEngine *pEngine)
     {
-		if (pEngine->Options()->compare.algorithmComparing == adAlgorithmComparing::AD_COMPARING_SQUARED_SUM)
+		if (pEngine->Options()->compare.algorithmComparing == AD_COMPARING_SQUARED_SUM)
 		{
 			adStatistic statistic;
 			pEngine->Status()->Export(&statistic);

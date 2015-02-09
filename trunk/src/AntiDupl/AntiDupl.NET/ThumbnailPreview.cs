@@ -29,6 +29,9 @@ using System.Drawing;
 
 namespace AntiDupl.NET
 {
+    /// <summary>
+    /// Панель превью изображения.
+    /// </summary>
     public class ThumbnailPreview : Panel
     {
         private CoreLib m_core;

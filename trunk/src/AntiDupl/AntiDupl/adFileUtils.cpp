@@ -402,4 +402,121 @@ namespace ad
 
 		return true;
 	}
+
+	//--------------------------------------------------------------------------
+	// Возвращает длину числа, переведенного в строку.
+	size_t LengthOfLong(const __int64 digit)
+	{
+		char buffer[65];
+		if (_i64toa_s(digit, buffer, 65, 10) == 0)
+			return strnlen(buffer, _countof(buffer));
+		else
+			return 0;
+	}
+
+	// Ищет цифры в имени файла с конца.
+	__int64 GetDigitInFileName(const TPath &path, TString & nameWithoutDigit, size_t & leadingZeros)
+	{
+		TString name = path.GetName(false);
+		size_t length = name.length();
+        //Находим первый не числовой символ с конца
+        bool canRename;
+        size_t digitPos = length - 1;
+
+		for (int i = length - 1; i >= 0; digitPos = i, i--)
+            if (!isdigit(name[i])) //если не цифра выходим
+            {
+                //digitPos = i;
+                break;
+            }
+
+        if (digitPos <= length - 1) //если цифра найдена
+            canRename = true;
+        else
+            canRename = false;
+
+		__int64 result = -1;
+        int numOfZero = 0;
+		wchar_t * pEnd;
+        if (canRename)
+        {
+			TString forParsing = name.substr(digitPos, length - digitPos);
+		    //result = wcstol(forParsing.c_str(), &pEnd, 10);
+			result = _wtoi64(forParsing.c_str());
+			if (result == _I64_MAX) //слишком длинный
+			//if (errno == ERANGE)
+				digitPos = 0;
+            leadingZeros = forParsing.length() - LengthOfLong(result);
+        }
+
+		if (digitPos > 0)
+            nameWithoutDigit = name.substr(0, digitPos);
+        else
+            nameWithoutDigit = TString();
+        return result;
+	}
+
+	// Перименовываем, добавляя _2 к имени файла.
+	TString GetNewNameForFileAdd(const TPath &oldPath)
+    {
+		TString uniquePath;
+		const int SIMILAR_PREFIX_SIZE = 16;
+		const TChar *SIMILAR_PREFIX_FORMAT = TEXT("_%u");
+		TChar buffer[SIMILAR_PREFIX_SIZE];
+		unsigned long counter = 2;
+
+		do 
+		{
+			_stprintf_s(buffer, SIMILAR_PREFIX_FORMAT, counter++);
+			uniquePath = CreatePath(oldPath.GetDirectory(), oldPath.GetName(false) + TString(buffer) + oldPath.GetExtension());
+		} 
+		while (IsFileExists(uniquePath.c_str()));
+
+        return uniquePath;
+    }
+
+	// Перименовываем, увеличивая число в имени файла.
+	TString GetNewNameForFileDigit(const TPath &oldPath, const TString &nameWithoutDigit, __int64 & counter, size_t & leadingZeros)
+    {
+		TString pathWithDigit;
+		const int BUFFER_SIZE = 65;
+		char buffer[BUFFER_SIZE];
+		TString leadingZeroString;
+
+		counter++;
+		if (leadingZeros > 0)
+		{
+			if (LengthOfLong(counter) > LengthOfLong(counter - 1)) //если цифра удленилась
+               leadingZeros--;
+			for (unsigned int i = 0; i < leadingZeros; i++)
+				leadingZeroString.push_back('0');
+		}
+
+		if (_i64toa_s(counter, buffer, BUFFER_SIZE, 10) == 0)
+		{
+			pathWithDigit = CreatePath(oldPath.GetDirectory(), nameWithoutDigit + leadingZeroString + TString(buffer) + oldPath.GetExtension());
+			if (IsFileExists(pathWithDigit.c_str())) //если такой файл уже есть, то не увеличиваем номер, а добавляем _2
+				return GetNewNameForFileAdd(oldPath);
+		}
+		else
+			return GetNewNameForFileAdd(oldPath);
+		return pathWithDigit;
+    }
+
+	// Возврашает имя файла похожое на переданное.
+	TString GetSimilarPath(const TPath &path)
+	{
+		__int64 digit;
+		size_t leadingZeros = 0;
+		TString nameWithoutDigit;
+
+		digit = GetDigitInFileName(path, nameWithoutDigit, leadingZeros);
+		if (digit == -1)
+			return GetNewNameForFileAdd(path);
+		else
+			return GetNewNameForFileDigit(path,
+									nameWithoutDigit,
+									digit,
+                                    leadingZeros);
+	}
 }
