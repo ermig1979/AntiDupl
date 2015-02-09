@@ -191,11 +191,44 @@ namespace ad
         return m_pUndoRedoEngine->RenameCurrent(renameCurrentType, newFileName) ? AD_OK : AD_ERROR_UNKNOWN;
     }
 
+	adError TResultStorage::MoveCurrentGroup(const TString& directory)
+    {
+        TUndoRedoStage *pCurrent = m_pUndoRedoEngine->Current();
+        if(pCurrent->currentIndex >= pCurrent->results.size())
+            return AD_ERROR_ZERO_TARGET;
+
+        TResult *pResult = pCurrent->results[pCurrent->currentIndex];
+		// Дефектные изображения не перемещаем.
+        if(pResult->type == AD_RESULT_DEFECT_IMAGE)
+            return AD_ERROR_ZERO_TARGET;
+
+		if(!IsDirectoryExists(directory.c_str()))
+            return AD_ERROR_DIRECTORY_IS_NOT_EXIST;
+
+        return m_pUndoRedoEngine->MoveCurrentGroup(directory) ? AD_OK : AD_ERROR_UNKNOWN;
+    }
+
+	adError TResultStorage::RenameCurrentGroupAs(const TString& fileName)
+    {
+        TUndoRedoStage *pCurrent = m_pUndoRedoEngine->Current();
+        if(pCurrent->currentIndex >= pCurrent->results.size())
+            return AD_ERROR_ZERO_TARGET;
+
+        TResult *pResult = pCurrent->results[pCurrent->currentIndex];
+		// Дефектные изображения не переименовываем.
+        if(pResult->type == AD_RESULT_DEFECT_IMAGE)
+            return AD_ERROR_ZERO_TARGET;
+
+        return m_pUndoRedoEngine->RenameCurrentGroupAs(fileName) ? AD_OK : AD_ERROR_UNKNOWN;
+    }
+
+
     void TResultStorage::Refresh()
     {
         m_pUndoRedoEngine->Clear();
         m_pUndoRedoEngine->Current()->RemoveInvalid(m_pStatus, m_pMistakeStorage);
-        m_pUndoRedoEngine->Current()->SetGroups(m_pStatus);
+        m_pUndoRedoEngine->Current()->SetGroups(m_pStatus); //очищает внутреннее хранилища групп
+		m_pUndoRedoEngine->Current()->UpdateGroups();
         m_pUndoRedoEngine->Current()->UpdateHints(m_pOptions, true);
     }
 
@@ -249,6 +282,7 @@ namespace ad
 		return m_pUndoRedoEngine->Current()->groups.Export(groupId, pStartFrom, pImageInfo, pImageInfoSize);
 	}
 
+	// Вызывается при запросе информации о размерах групп.
 	adError TResultStorage::Export(adSize groupId, adSizePtr pStartFrom, adImageInfoPtrW pImageInfo, adSizePtr pImageInfoSize) const
 	{
 		return m_pUndoRedoEngine->Current()->groups.Export(groupId, pStartFrom, pImageInfo, pImageInfoSize);

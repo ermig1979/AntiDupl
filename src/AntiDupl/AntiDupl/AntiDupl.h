@@ -224,7 +224,7 @@ extern "C"
         AD_GLOBAL_ACTION_SIZE
     };
 
-    enum adLocalActionType : adInt32
+    enum adLocalActionType : adInt32	//то же что и в CoreDll.cs
     {
         AD_LOCAL_ACTION_DELETE_DEFECT = 0,
         AD_LOCAL_ACTION_DELETE_FIRST = 1,
@@ -232,8 +232,14 @@ extern "C"
         AD_LOCAL_ACTION_DELETE_BOTH = 3,
         AD_LOCAL_ACTION_RENAME_FIRST_TO_SECOND = 4,
         AD_LOCAL_ACTION_RENAME_SECOND_TO_FIRST = 5,
-        AD_LOCAL_ACTION_PERFORM_HINT = 6,
-        AD_LOCAL_ACTION_MISTAKE = 7,
+		AD_LOCAL_ACTION_RENAME_FIRST_LIKE_SECOND = 6,
+        AD_LOCAL_ACTION_RENAME_SECOND_LIKE_FIRST = 7,
+        AD_LOCAL_ACTION_MOVE_FIRST_TO_SECOND = 8,
+        AD_LOCAL_ACTION_MOVE_SECOND_TO_FIRST = 9,
+		AD_LOCAL_ACTION_MOVE_AND_RENAME_FIRST_TO_SECOND = 10,
+        AD_LOCAL_ACTION_MOVE_AND_RENAME_SECOND_TO_FIRST = 11,
+        AD_LOCAL_ACTION_PERFORM_HINT = 12,
+        AD_LOCAL_ACTION_MISTAKE = 13,
         AD_LOCAL_ACTION_SIZE
     };
 
@@ -609,6 +615,8 @@ extern "C"
 
     DLLAPI adError adRenameCurrentA(adHandle handle, adRenameCurrentType renameCurrentType, const adCharA* newFileName);
     DLLAPI adError adRenameCurrentW(adHandle handle, adRenameCurrentType renameCurrentType, const adCharW* newFileName);
+	DLLAPI adError adMoveCurrentGroupW(adHandle handle, const adCharW* directory);
+	DLLAPI adError adRenameCurrentGroupAsW(adHandle handle, const adCharW* fileName);
 
     DLLAPI adError adSelectionSet(adHandle handle, adSizePtr pStartFrom, adSize size, adBool value);
     DLLAPI adError adSelectionGet(adHandle handle, adSizePtr pStartFrom, adBoolPtr pSelection, adSizePtr pSelectionSize);

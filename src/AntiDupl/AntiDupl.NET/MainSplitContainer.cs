@@ -29,6 +29,9 @@ using System.Drawing;
 
 namespace AntiDupl.NET
 {
+    /// <summary>
+    /// Две панели, разделенные подвижной строкой: таблицы и превью.
+    /// </summary>
     public class MainSplitContainer : SplitContainer
     {
         public const int VIEW_MIN_WIDTH = 260;
@@ -82,6 +85,7 @@ namespace AntiDupl.NET
 
             InitializeComponents();
 
+            // Связываем, чтобы при вызове события OnViewModeChange вызывалась функция SetViewMode
             m_options.resultsOptions.OnViewModeChange += new ResultsOptions.ViewModeChangeHandler(SetViewMode);
 
             SplitterMoved += new SplitterEventHandler(OnSplitterPositionChanged);

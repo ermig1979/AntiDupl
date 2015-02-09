@@ -30,6 +30,9 @@ using System.Threading;
 
 namespace AntiDupl.NET
 {
+    /// <summary>
+    /// Таблица групп.
+    /// </summary>
     public class ThumbnailGroupTable : Panel
     {
         private CoreLib m_core;
@@ -89,6 +92,9 @@ namespace AntiDupl.NET
             Controls.Clear();
         }
 
+        /// <summary>
+        /// Получаем из списка результатов группы и назначаем их скрытому полю m_groups.
+        /// </summary>
         private void GetGroups()
         {
             uint groupSize = m_core.GetGroupSize();
@@ -99,6 +105,7 @@ namespace AntiDupl.NET
                 return;
             }
             m_groups = m_core.GetGroup(0, groupSize);
+            // Находим размер самой большой группы.
             int groupSizeMax = 0;
             for (int i = 0; i < m_groups.Length; ++i)
             {
@@ -110,6 +117,9 @@ namespace AntiDupl.NET
             }
         }
 
+        /// <summary>
+        /// Устанавливаем размеры таблицы
+        /// </summary>
         private void UpdateControls()
         {
             SuspendDrawing(this);
@@ -120,8 +130,10 @@ namespace AntiDupl.NET
             
             if (m_groups.Length > 0)
             {
+                //Создаем массив панелей с группами дубликатов
                 m_thumbnailGroupPanels = new ThumbnailGroupPanel[m_groups.Length];
 
+                //Добавляем пустые первую, самую большую и последнию панель с группами дубликатов
                 AddGroupPanel(0);
 
                 if (m_groups.Length > 1)
@@ -134,6 +146,7 @@ namespace AntiDupl.NET
                     AddGroupPanel(m_maxGroupIndex);
                 }
 
+                // Изменяем размеры таблицы в соотвествии с размерами самой большой группы
                 ThumbnailGroupPanel maxPanel = m_thumbnailGroupPanels[m_maxGroupIndex];
                 height += (maxPanel.Height + maxPanel.Margin.Vertical) * m_groups.Length;
                 width += maxPanel.Width + maxPanel.Margin.Horizontal;
@@ -142,6 +155,11 @@ namespace AntiDupl.NET
             ResumeDrawing(this);
         }
 
+        /// <summary>
+        /// Это первая или последняя группа.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         private bool IsSpecial(int index)
         {
             return (index == 0 || index == m_groups.Length - 1 || index == m_maxGroupIndex);
@@ -161,8 +179,13 @@ namespace AntiDupl.NET
             return Math.Min(m_groups.Length - 1, index);// + 1000);
         }
 
+        /// <summary>
+        /// Создаем и добавляем в хранилише m_thumbnailGroupPanels ThumbnailGroupPanel - панель с дубликатами
+        /// </summary>
+        /// <param name="index"></param>
         private void AddGroupPanel(int index)
         {
+            // Если хранилище еще не содержит панелей групп
             if (m_thumbnailGroupPanels[index] == null)
             {
 
@@ -223,6 +246,10 @@ namespace AntiDupl.NET
             }
         }
 
+        /// <summary>
+        /// Удаляем из элементов управления и хранилиша m_thumbnailGroupPanels группу панелей.
+        /// </summary>
+        /// <param name="index"></param>
         private void RemoveGroupPanel(int index)
         {
             if (index > 0 && m_thumbnailGroupPanels[index] != null && !IsSpecial(index))
@@ -337,6 +364,9 @@ namespace AntiDupl.NET
             }
         }
 
+        /// <summary>
+        /// Заполняем хранилище изображений из групп. Запускается в отдельном потоке.
+        /// </summary>
         private void UpdateThumbnailsThread()
         {
             for (int i = 0; i < m_groups.Length; ++i)

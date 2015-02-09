@@ -93,6 +93,7 @@ namespace ad
 		static TIsSubPath IsSubPath(const TPath& path1, const TPath& path2);
 		bool IsSubPath(const TPath& path) const {return IsSubPath(*this, path) == SECOND;}
 
+		// Подсчет crc для пути.
 		inline unsigned __int32 GetCrc32() const 
 		{
 			return SimdCrc32c(m_compare.string.c_str(), m_compare.string.length()*sizeof(TChar));
@@ -107,6 +108,14 @@ namespace ad
 		{
 			return TString(m_original.prefix.first, m_original.directory.second);
 		}
+		
+		inline TString GetExtension() const 
+		{
+			return TString(m_original.name.second);
+		}
+
+		//-----------------------------------------------------------------------------
+		// Статические функции класса.
 
 		static inline int CompareByPath(const TPath& path1, const TPath& path2) 
 		{

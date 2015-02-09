@@ -100,6 +100,7 @@ namespace ad
         return AD_OK;
     }
 
+	// ¬озврашает текущий индекс
     adError TUndoRedoStage::GetCurrent(adSizePtr pCurrentIndex)
     {
         if(pCurrentIndex == NULL)
@@ -165,6 +166,7 @@ namespace ad
         return AD_OK;
     }
 
+	// Ёскпортириет список результатов из хранилища.
     adError TUndoRedoStage::Export(adSizePtr pStartFrom, adResultPtrW pResult, adSizePtr pResultSize) const
     {
         if(pResult == NULL || pResultSize == NULL || pStartFrom == NULL)

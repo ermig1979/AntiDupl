@@ -54,10 +54,12 @@ namespace ad
         delete m_pCurrent;
     }
 
+	//public Выполняем определнный тип действий с текщим или выделенными результатами.
     bool TUndoRedoEngine::ApplyTo(adLocalActionType localActionType, adTargetType targetType)
     {
         bool onceMaked = false;
 
+		// Сохраняем сотояние
         TUndoRedoChange *pOldChange = m_pCurrent->change;
         m_pCurrent->change = new TUndoRedoChange();
 
@@ -89,6 +91,7 @@ namespace ad
             m_pStatus->Reset();
         }
 
+		// Если ничего сделано не было.
         if(!onceMaked)
         {
             delete m_pCurrent->change;
@@ -98,6 +101,7 @@ namespace ad
 
         m_pUndoDeque->push_back(m_pCurrent->Clone());
 
+		// Удаляем из списка ошибочные или удаленные
         if(localActionType == AD_LOCAL_ACTION_MISTAKE)
             m_pCurrent->RemoveMistaken(m_pStatus, m_pMistakeStorage);
         else
@@ -117,20 +121,29 @@ namespace ad
         return true;
     }
     
+	// private Переименовывает/перемещает файл с заменой
     bool TUndoRedoEngine::Rename(TImageInfo *pImageInfo, const TString & newFileName)
     {
+		// Сохраняем состояние
         TUndoRedoChange *pOldChange = m_pCurrent->change;
         m_pCurrent->change = new TUndoRedoChange();
+		// Если удается переименовать/переместить файл с заменой
         if(::MoveFileEx(pImageInfo->path.Original().c_str(), newFileName.c_str(), 
 			MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED) != FALSE)
         {
+			// Добавляем в список переименованных действие
             m_pCurrent->change->renamedImages.push_back(TRename(pImageInfo, pImageInfo->path.Original(), newFileName));
+			// Изменяем статус
             m_pStatus->RenameImage(1);
+			// В хранилише ошибочных меняем имя
             m_pMistakeStorage->Rename(pImageInfo, newFileName);
+			// Путь в информации о файле меняем
             pImageInfo->Rename(newFileName);
 
+			// Отмечаем новое состояние в очереди действий
             m_pUndoDeque->push_back(m_pCurrent->Clone());
 
+			// Обновляем подсказки в текущей группе.
             m_pCurrent->groups.Get(pImageInfo->group)->invalidHint = true;
             m_pCurrent->UpdateHints(m_pOptions, false);
 
@@ -139,6 +152,7 @@ namespace ad
             if(pOldChange)
                 delete pOldChange;
 
+			// Очишаем точки возврата в будушее.
             ClearRedo();
             AdjustUndoDequeSize(m_pOptions->advanced.undoQueueSize);
 
@@ -152,23 +166,137 @@ namespace ad
         }    
     }
 
-    bool TUndoRedoEngine::RenameCurrent(adRenameCurrentType renameCurrentType, const TString & newFileName)
+	//private 
+	bool TUndoRedoEngine::Rename(TImageInfo *pOldImageInfo, TImageInfo *pNewImageInfo)
     {
-        TResult *pResult = m_pCurrent->results[m_pCurrent->currentIndex];
-        TImageInfo *pImageInfo = renameCurrentType == AD_RENAME_CURRENT_FIRST ? pResult->first : pResult->second;
-        return Rename(pImageInfo, newFileName);
-    }
-    
-	// Переименовывает файл с заданной группой и индексом.
-    bool TUndoRedoEngine::Rename(adSize groupId, adSize index, const TString & newFileName)
-    {
-        TImageGroupPtr pImageGroup = m_pCurrent->groups.Get(groupId, false);
-        if(pImageGroup && index < pImageGroup->images.size())
+        const TChar *oldName = pOldImageInfo->path.Original().c_str();
+        const TChar *newName = pNewImageInfo->path.Original().c_str();
+
+        if(pOldImageInfo->removed || !IsFileExists(oldName))
+            return false;
+
+		// если новое имя пустое
+        if(newName == TString())
+            return false;
+
+        TString oldExtension = GetFileExtension(oldName);
+        TString newExtension = GetFileExtension(newName);
+
+        TString newPath;
+        if(oldExtension.GetUpper() == newExtension.GetUpper())
         {
-            TImageInfoPtr pImageInfo = pImageGroup->images[index];
-            return Rename(pImageInfo, newFileName);
+            newPath = newName;
         }
-        return false; 
+        else
+        {
+			// Перименовываем имя файла, если расширения разные.
+            TString templatePath(newName);
+            templatePath = templatePath.substr(0, templatePath.size() - newExtension.size() - 1);
+            adPath path;
+            _stprintf_s(path, TEXT("%s.%s"), templatePath.c_str(), oldExtension.c_str());
+            for(int i = 0; IsFileExists(path) && i <= 0xffff; ++i)
+                _stprintf_s(path, TEXT("%s_%d.%s"), templatePath.c_str(), i, oldExtension.c_str());
+            newPath = path;
+        }
+
+		// Если NewImageInfo удален, то заменяем его pOldImageInfo
+        if(Delete(pNewImageInfo))
+        {
+            if(::MoveFileEx(oldName, newPath.c_str(), 
+				MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED) != FALSE)
+            {
+                m_pCurrent->change->renamedImages.push_back(TRename(pOldImageInfo, pOldImageInfo->path.Original(), newPath));
+                m_pStatus->RenameImage(1);
+                m_pMistakeStorage->Rename(pOldImageInfo, newPath);
+                pOldImageInfo->Rename(newPath);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+	//private Переименовываем old в new без замены
+	bool TUndoRedoEngine::RenameLike(TImageInfo *pOldImageInfo, TImageInfo *pNewImageInfo)
+    {
+		const TChar *oldPath = pOldImageInfo->path.Original().c_str();
+        const TChar *newPath = pNewImageInfo->path.Original().c_str();
+
+		if(pOldImageInfo->removed || !IsFileExists(oldPath))
+            return false;
+
+		// если новый путь пустой
+        if(newPath == TString())
+            return false;
+
+		//если имена без расширений равны
+		if (pNewImageInfo->path.GetName(false) == pOldImageInfo->path.GetName(false))
+			return false;
+
+		TString target = CreatePath(pOldImageInfo->path.GetDirectory(), pNewImageInfo->path.GetName(false) + pOldImageInfo->path.GetExtension());
+		if (IsFileExists(target.c_str()))
+			target = GetSimilarPath(TPath(target));
+
+		if(::MoveFileEx(oldPath, target.c_str(), MOVEFILE_COPY_ALLOWED) != FALSE)
+        {
+            m_pCurrent->change->renamedImages.push_back(TRename(pOldImageInfo, pOldImageInfo->path.Original(), target));
+            m_pStatus->RenameImage(1);
+            m_pMistakeStorage->Rename(pOldImageInfo, target);
+            pOldImageInfo->Rename(target);
+            return true;
+        }
+        return false;
+    }
+
+	//private Перемещаем файл из old в new без замены
+	bool TUndoRedoEngine::Move(TImageInfo *pOldImageInfo, TImageInfo *pNewImageInfo)
+    {
+		const TChar *oldPath = pOldImageInfo->path.Original().c_str();
+		const TString newDir = pNewImageInfo->path.GetDirectory();
+
+		if(pOldImageInfo->removed || !IsFileExists(oldPath) || !IsDirectoryExists(newDir.c_str()))
+            return false;
+
+		//Если картинка уже в заданной директории
+		if (pOldImageInfo->path.GetDirectory() == newDir)
+			return false;
+
+		TString target = CreatePath(newDir, pOldImageInfo->path.GetName(false) + pOldImageInfo->path.GetExtension());
+		if (IsFileExists(target.c_str()))
+			target = GetSimilarPath(TPath(target));
+
+		if(::MoveFileEx(oldPath, target.c_str(), MOVEFILE_COPY_ALLOWED) != FALSE)
+        {
+            m_pCurrent->change->renamedImages.push_back(TRename(pOldImageInfo, pOldImageInfo->path.Original(), target));
+            m_pStatus->RenameImage(1);
+            m_pMistakeStorage->Rename(pOldImageInfo, target);
+            pOldImageInfo->Rename(target);
+            return true;
+        }
+        return false;
+    }
+
+	//private Перемещаем и переименовываем файл из old в new как соседа
+	bool TUndoRedoEngine::MoveAndRenameLike(TImageInfo *pOldImageInfo, TImageInfo *pNewImageInfo)
+    {
+		const TChar *oldPath = pOldImageInfo->path.Original().c_str();
+
+		if(pOldImageInfo->removed || !IsFileExists(oldPath) || !IsDirectoryExists(pNewImageInfo->path.GetDirectory().c_str()))
+            return false;
+
+		TString target = CreatePath(pNewImageInfo->path.GetDirectory(), pNewImageInfo->path.GetName(false) + pOldImageInfo->path.GetExtension());
+		if (IsFileExists(target.c_str()))
+			target = GetSimilarPath(TPath(target));
+
+		if(::MoveFileEx(oldPath, target.c_str(), MOVEFILE_COPY_ALLOWED) != FALSE)
+        {
+            m_pCurrent->change->renamedImages.push_back(TRename(pOldImageInfo, pOldImageInfo->path.Original(), target));
+            m_pStatus->RenameImage(1);
+            m_pMistakeStorage->Rename(pOldImageInfo, target);
+            pOldImageInfo->Rename(target);
+            return true;
+        }
+        return false;
     }
 
     bool TUndoRedoEngine::Undo()
@@ -176,13 +304,18 @@ namespace ad
         if(m_pUndoDeque->empty())
             return false;
 
+		// Возврашаем прошлое состояние в хранилишах.
         m_pRedoDeque->push_back(m_pCurrent);
         m_pCurrent = m_pUndoDeque->back();
         m_pUndoDeque->pop_back();
 
+		//?? FIX Может надо Apply вызывать? иначе после undo группы пустые
+		m_pCurrent->UpdateGroups();
+
         m_pStatus->SetProgress(0, 0);
         size_t current = 0, total = m_pCurrent->change->renamedImages.size() + m_pCurrent->change->deletedImages.size();
 
+		// Переименовываем обратно переименованные файлы.
         TRenameList & renamedImages = m_pCurrent->change->renamedImages;
         for(TRenameList::iterator it = renamedImages.begin(); it != renamedImages.end(); ++it, ++current)
         {
@@ -195,6 +328,7 @@ namespace ad
             m_pStatus->SetProgress(current, total);
         }
 
+		// Восстанавливаем удаленные файлы.
         TImageInfoPtrList & deletedImages = m_pCurrent->change->deletedImages;
         for(TImageInfoPtrList::iterator it = deletedImages.begin(); it != deletedImages.end(); ++it, ++current)
         {
@@ -202,6 +336,7 @@ namespace ad
             m_pStatus->SetProgress(current, total);
         }
 
+		// Добавляем в список результатов удаленные элементы.
         TResultPtrList & removedResults = m_pCurrent->change->removedResults;
         for(TResultPtrList::iterator it = removedResults.begin(); it != removedResults.end(); ++it)
         {
@@ -329,6 +464,7 @@ namespace ad
         m_pStatus->Reset();
     }
 
+	//private
     bool TUndoRedoEngine::ApplyTo(adLocalActionType localActionType, TResult *pResult)
     {
         if(pResult->type == AD_RESULT_DEFECT_IMAGE)
@@ -336,15 +472,10 @@ namespace ad
             switch(localActionType)
             {
             case AD_LOCAL_ACTION_DELETE_DEFECT:
-                Delete(pResult->first);
-                return true;
+                return Delete(pResult->first);
             case AD_LOCAL_ACTION_PERFORM_HINT:
                 if(pResult->hint == AD_HINT_DELETE_FIRST)
-                {
-                    Delete(pResult->first);
-                    return true;
-                }
-                break;
+                    return Delete(pResult->first);
             case AD_LOCAL_ACTION_MISTAKE:
                 m_pMistakeStorage->Add(pResult->first);
                 m_pCurrent->change->mistakenResults.push_back(pResult);
@@ -356,36 +487,38 @@ namespace ad
             switch(localActionType)
             {
             case AD_LOCAL_ACTION_DELETE_FIRST:
-                Delete(pResult->first);
-                return true;
+                return Delete(pResult->first);
             case AD_LOCAL_ACTION_DELETE_SECOND:
-                Delete(pResult->second);
-                return true;
+                return Delete(pResult->second);
             case AD_LOCAL_ACTION_DELETE_BOTH:
-                Delete(pResult->first);
-                Delete(pResult->second);
-                return true;
+                return (Delete(pResult->first) || Delete(pResult->second));
             case AD_LOCAL_ACTION_RENAME_FIRST_TO_SECOND:
-                Rename(pResult->first, pResult->second);
-                return true;
+                return Rename(pResult->first, pResult->second);
             case AD_LOCAL_ACTION_RENAME_SECOND_TO_FIRST:
-                Rename(pResult->second, pResult->first);
-                return true;
+                return Rename(pResult->second, pResult->first);
+			case AD_LOCAL_ACTION_RENAME_FIRST_LIKE_SECOND:
+                return RenameLike(pResult->first, pResult->second);
+			case AD_LOCAL_ACTION_RENAME_SECOND_LIKE_FIRST:
+				return RenameLike(pResult->second, pResult->first);
+			case AD_LOCAL_ACTION_MOVE_FIRST_TO_SECOND:
+				return Move(pResult->first, pResult->second);
+			case AD_LOCAL_ACTION_MOVE_SECOND_TO_FIRST:
+				return Move(pResult->second, pResult->first);
+			case AD_LOCAL_ACTION_MOVE_AND_RENAME_FIRST_TO_SECOND:
+				return MoveAndRenameLike(pResult->first, pResult->second);
+			case AD_LOCAL_ACTION_MOVE_AND_RENAME_SECOND_TO_FIRST:
+				return MoveAndRenameLike(pResult->second, pResult->first);
             case AD_LOCAL_ACTION_PERFORM_HINT:
                 switch(pResult->hint)
                 {
                 case AD_HINT_DELETE_FIRST:
-                    Delete(pResult->first);
-                    return true;
+                    return Delete(pResult->first);
                 case AD_HINT_DELETE_SECOND:
-                    Delete(pResult->second);
-                    return true;
+                    return Delete(pResult->second);
                 case AD_HINT_RENAME_FIRST_TO_SECOND:
-                    Rename(pResult->first, pResult->second);
-                    return true;
+                    return Rename(pResult->first, pResult->second);
                 case AD_HINT_RENAME_SECOND_TO_FIRST:
-                    Rename(pResult->second, pResult->first);
-                    return true;
+                    return Rename(pResult->second, pResult->first);
                 }
                 break;
             case AD_LOCAL_ACTION_MISTAKE:
@@ -397,6 +530,7 @@ namespace ad
         return false;
     }
 
+	//private Удаляет изображение
     bool TUndoRedoEngine::Delete(TImageInfo *pImageInfo)
     {
         const TChar *fileName = pImageInfo->path.Original().c_str();
@@ -411,49 +545,147 @@ namespace ad
         return false;
     }
 
-    bool TUndoRedoEngine::Rename(TImageInfo *pOldImageInfo, TImageInfo *pNewImageInfo)
+	//public
+    bool TUndoRedoEngine::RenameCurrent(adRenameCurrentType renameCurrentType, const TString & newFileName)
     {
-        const TChar *oldName = pOldImageInfo->path.Original().c_str();
-        const TChar *newName = pNewImageInfo->path.Original().c_str();
+        TResult *pResult = m_pCurrent->results[m_pCurrent->currentIndex];
+		// Получаем информацию о файле, который переименовываем
+        TImageInfo *pImageInfo = renameCurrentType == AD_RENAME_CURRENT_FIRST ? pResult->first : pResult->second;
+        return Rename(pImageInfo, newFileName);
+    }
 
-        if(pOldImageInfo->removed || !IsFileExists(oldName))
+	//public Переименовывает файл с заданной группой и индексом.
+    bool TUndoRedoEngine::Rename(adSize groupId, adSize index, const TString & newFileName)
+    {
+        TImageGroupPtr pImageGroup = m_pCurrent->groups.Get(groupId, false);
+        if(pImageGroup && index < pImageGroup->images.size())
+        {
+            TImageInfoPtr pImageInfo = pImageGroup->images[index];
+            return Rename(pImageInfo, newFileName);
+        }
+        return false; 
+    }
+
+	//public Переносим файлы из текущей группы в заданную директорию.
+	bool TUndoRedoEngine::MoveCurrentGroup(const TString & directory)
+    {
+		bool isMoving = false;
+
+		if(!IsDirectoryExists(directory.c_str()))
             return false;
 
-        if(newName == TString())
+		// Сохраняем сотояние
+        TUndoRedoChange *pOldChange = m_pCurrent->change;
+        m_pCurrent->change = new TUndoRedoChange();
+
+        TResult *pResult = m_pCurrent->results[m_pCurrent->currentIndex];
+		TImageGroupPtr pImageGroup = m_pCurrent->groups.Get(pResult->group, false);
+		if(pImageGroup == NULL)
+			return false;
+
+		// Проходимся по списку изображений в группе.
+		for (unsigned int i = 0; i < pImageGroup->images.size(); i++)
+		{
+			if (pImageGroup->images[i]->path.GetDirectory() != directory)
+			{
+				TString target = CreatePath(directory, pImageGroup->images[i]->path.GetName());
+				if (IsFileExists(target.c_str()))
+					target = GetSimilarPath(TPath(target));
+
+				//if (Rename(pImageGroup->images[i], target))
+				if(::MoveFileEx(pImageGroup->images[i]->path.Original().c_str(), target.c_str(), MOVEFILE_COPY_ALLOWED) != FALSE)
+				{
+					m_pCurrent->change->renamedImages.push_back(TRename(pImageGroup->images[i], pImageGroup->images[i]->path.Original(), target));
+					m_pStatus->RenameImage(1);
+					m_pMistakeStorage->Rename(pImageGroup->images[i], target);
+					pImageGroup->images[i]->Rename(target);
+					isMoving = true;
+				}
+			}
+		}
+
+		// Если ничего сделано не было.
+        if(!isMoving)
+        {
+            delete m_pCurrent->change;
+            m_pCurrent->change = pOldChange;
+            return false;
+        }
+
+        m_pUndoDeque->push_back(m_pCurrent->Clone());
+
+        m_pCurrent->UpdateGroups();
+        m_pCurrent->UpdateHints(m_pOptions, false);
+
+        m_pCurrent->change = NULL;
+
+        if(pOldChange)
+            delete pOldChange;
+
+        ClearRedo();
+        AdjustUndoDequeSize(m_pOptions->advanced.undoQueueSize);
+
+        return true;
+    }
+
+	//public Переименовавает файлы в группе как переданное имя файла.
+	bool TUndoRedoEngine::RenameCurrentGroupAs(const TString & fileName)
+    {
+		bool isRenaming = false;
+
+		// если новое имя пустое
+        if(fileName == TString())
             return false;
 
-        TString oldExtension = GetFileExtension(oldName);
-        TString newExtension = GetFileExtension(newName);
+		// Сохраняем сотояние
+        TUndoRedoChange *pOldChange = m_pCurrent->change;
+        m_pCurrent->change = new TUndoRedoChange();
 
-        TString newPath;
-        if(oldExtension.GetUpper() == newExtension.GetUpper())
+        TResult *pResult = m_pCurrent->results[m_pCurrent->currentIndex];
+		TImageGroupPtr pImageGroup = m_pCurrent->groups.Get(pResult->group, false);
+		if(pImageGroup == NULL)
+			return false;
+
+		for (unsigned int i = 0; i < pImageGroup->images.size(); i++)
+		{
+			if (pImageGroup->images[i]->path.GetName(false) != fileName)
+			{
+				TString target = CreatePath(pImageGroup->images[i]->path.GetDirectory(), fileName + pImageGroup->images[i]->path.GetExtension());
+				if (IsFileExists(target.c_str()))
+					target = GetSimilarPath(TPath(target));
+				//if (Rename(pImageGroup->images[i], target))
+				if(::MoveFileEx(pImageGroup->images[i]->path.Original().c_str(), target.c_str(), MOVEFILE_COPY_ALLOWED) != FALSE)
+				{
+					m_pCurrent->change->renamedImages.push_back(TRename(pImageGroup->images[i], pImageGroup->images[i]->path.Original(), target));
+					m_pStatus->RenameImage(1);
+					m_pMistakeStorage->Rename(pImageGroup->images[i], target);
+					pImageGroup->images[i]->Rename(target);
+					isRenaming = true;
+				}
+			}
+		}
+
+		// Если ничего сделано не было.
+        if(!isRenaming)
         {
-            newPath = newName;
-        }
-        else
-        {
-            TString templatePath(newName);
-            templatePath = templatePath.substr(0, templatePath.size() - newExtension.size() - 1);
-            adPath path;
-            _stprintf_s(path, TEXT("%s.%s"), templatePath.c_str(), oldExtension.c_str());
-            for(int i = 0; IsFileExists(path) && i <= 0xffff; ++i)
-                _stprintf_s(path, TEXT("%s_%d.%s"), templatePath.c_str(), i, oldExtension.c_str());
-            newPath = path;
+            delete m_pCurrent->change;
+            m_pCurrent->change = pOldChange;
+            return false;
         }
 
-        if(Delete(pNewImageInfo))
-        {
-            if(::MoveFileEx(oldName, newPath.c_str(), 
-				MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED) != FALSE)
-            {
-                m_pCurrent->change->renamedImages.push_back(TRename(pOldImageInfo, pOldImageInfo->path.Original(), newPath));
-                m_pStatus->RenameImage(1);
-                m_pMistakeStorage->Rename(pOldImageInfo, newPath);
-                pOldImageInfo->Rename(newPath);
-                return true;
-            }
-        }
+        m_pUndoDeque->push_back(m_pCurrent->Clone());
 
-        return false;
+        m_pCurrent->UpdateGroups();
+        m_pCurrent->UpdateHints(m_pOptions, false);
+
+        m_pCurrent->change = NULL;
+
+        if(pOldChange)
+            delete pOldChange;
+
+        ClearRedo();
+        AdjustUndoDequeSize(m_pOptions->advanced.undoQueueSize);
+
+        return true;
     }
 }

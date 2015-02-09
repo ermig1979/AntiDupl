@@ -201,6 +201,16 @@ namespace AntiDupl.NET
             return m_dll.adRenameCurrentW(m_handle, renameCurrentType, newFileName) == CoreDll.Error.Ok;
         }
 
+        public bool MoveCurrentGroup(string directory)
+        {
+            return m_dll.adMoveCurrentGroupW(m_handle, directory) == CoreDll.Error.Ok;
+        }
+
+        public bool RenameCurrentGroupAs(string fileName)
+        {
+            return m_dll.adRenameCurrentGroupAsW(m_handle, fileName) == CoreDll.Error.Ok;
+        }
+
         public CoreResult[] GetResult(uint startFrom, uint size)
         {
             uint resultSize = GetResultSize();
@@ -323,6 +333,10 @@ namespace AntiDupl.NET
             return null;
         }
 
+        /// <summary>
+        /// Возврашает общее количество групп.
+        /// </summary>
+        /// <returns></returns>
         public uint GetGroupSize()
         {
             UIntPtr[] pStartFrom = new UIntPtr[1];
@@ -335,6 +349,13 @@ namespace AntiDupl.NET
             return 0;
         }
 
+        /// <summary>
+        /// Возврашает массив CoreImageInfo содержащихся в переданной группе.
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="startFrom"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
         public CoreImageInfo[] GetImageInfo(int groupId, uint startFrom, uint size)
         {
             uint imageInfoSize = GetImageInfoSize(groupId);
@@ -372,6 +393,11 @@ namespace AntiDupl.NET
             return null;
         }
 
+        /// <summary>
+        /// Возвращает количество изображений в переданной группе.
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
         public uint GetImageInfoSize(int groupId)
         {
             UIntPtr[] pStartFrom = new UIntPtr[1];
@@ -452,6 +478,12 @@ namespace AntiDupl.NET
             return error == CoreDll.Error.Ok ? bitmap : null;
         }
 
+        /// <summary>
+        /// Возврашает загруженное изображение по заланному пути и заданного размера.
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public System.Drawing.Bitmap LoadBitmap(System.Drawing.Size size, string path)
         {
             return LoadBitmap(size.Width, size.Height, path);

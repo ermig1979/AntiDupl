@@ -69,6 +69,8 @@ namespace ad
         adError ApplyTo(adLocalActionType localActionType, adTargetType targetType);
 
         adError RenameCurrent(adRenameCurrentType renameCurrentType, const TString& newFileName);
+		adError MoveCurrentGroup(const TString& directory);
+		adError RenameCurrentGroupAs(const TString& fileName);
 
         bool CanApply(adActionEnableType actionEnableType) const;
 

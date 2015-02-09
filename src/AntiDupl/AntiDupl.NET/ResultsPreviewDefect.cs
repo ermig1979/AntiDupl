@@ -30,6 +30,9 @@ using System.Diagnostics;
 
 namespace AntiDupl.NET
 {
+    /// <summary>
+    /// Панель которая включает в себя панель с просмотра изображеня и панель инструментов для работы с дефектными изображенями.
+    /// </summary>
     public class ResultsPreviewDefect : ResultsPreviewBase
     {
         ImagePreviewPanel m_imagePreviewPanel;

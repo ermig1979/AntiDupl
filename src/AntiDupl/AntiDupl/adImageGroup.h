@@ -47,7 +47,9 @@ namespace ad
 	{
 		TSize id;
 
+		// Список изображений входящих в группу.
 		TImageInfoPtrVector images;
+		// Список результатов
 		TResultPtrList results;
 
 		bool invalidHint;

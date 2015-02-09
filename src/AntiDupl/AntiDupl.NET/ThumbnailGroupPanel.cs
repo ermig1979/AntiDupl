@@ -29,6 +29,9 @@ using System.Drawing;
 
 namespace AntiDupl.NET
 {
+    /// <summary>
+    /// Панель содержит панели изображений одной группы.
+    /// </summary>
     public class ThumbnailGroupPanel : RaisedPanel
     {
         private CoreLib m_core;

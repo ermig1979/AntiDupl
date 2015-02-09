@@ -123,6 +123,7 @@ namespace ad
         m_map.clear();
     }
 
+	// Создает иникальное имя для временного хранения удаленного файла, например: F:\Dupli\~~adt00000000~~seehofer.jpg
     TString TRecycleBin::GetUniquePath(const TPath &path)
     {
         TString uniquePath;
