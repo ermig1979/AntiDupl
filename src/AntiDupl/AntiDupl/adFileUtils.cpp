@@ -222,7 +222,7 @@ namespace ad
             result = GetModuleFileName(NULL, buffer, MAX_PATH_EX);
             if(result > 0 && result < MAX_PATH_EX)
                 str = buffer;
-            delete buffer;
+            delete [] buffer;
             return str;
 #else
             return TString();
@@ -423,7 +423,7 @@ namespace ad
         bool canRename;
         size_t digitPos = length - 1;
 
-		for (int i = length - 1; i >= 0; digitPos = i, i--)
+		for (int i = length - 1; i >= 0; digitPos = i, i-- )
             if (!isdigit(name[i])) //если не цифра выходим
             {
                 //digitPos = i;
@@ -488,7 +488,7 @@ namespace ad
 		{
 			if (LengthOfLong(counter) > LengthOfLong(counter - 1)) //если цифра удленилась
                leadingZeros--;
-			for (unsigned int i = 0; i < leadingZeros; i++)
+			for (size_t i = 0; i < leadingZeros; i++)
 				leadingZeroString.push_back('0');
 		}
 

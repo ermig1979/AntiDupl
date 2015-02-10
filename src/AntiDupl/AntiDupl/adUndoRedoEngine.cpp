@@ -584,18 +584,19 @@ namespace ad
 			return false;
 
 		// Проходимся по списку изображений в группе.
-		for (unsigned int i = 0; i < pImageGroup->images.size(); i++)
+		for (size_t i = 0; i < pImageGroup->images.size(); i++)
 		{
-			if (pImageGroup->images[i]->path.GetDirectory() != directory)
+			TPath * path = &pImageGroup->images[i]->path;
+			if (path->GetDirectory() != directory)
 			{
-				TString target = CreatePath(directory, pImageGroup->images[i]->path.GetName());
+				TString target = CreatePath(directory, path->GetName());
 				if (IsFileExists(target.c_str()))
 					target = GetSimilarPath(TPath(target));
 
 				//if (Rename(pImageGroup->images[i], target))
-				if(::MoveFileEx(pImageGroup->images[i]->path.Original().c_str(), target.c_str(), MOVEFILE_COPY_ALLOWED) != FALSE)
+				if(::MoveFileEx(path->Original().c_str(), target.c_str(), MOVEFILE_COPY_ALLOWED) != FALSE)
 				{
-					m_pCurrent->change->renamedImages.push_back(TRename(pImageGroup->images[i], pImageGroup->images[i]->path.Original(), target));
+					m_pCurrent->change->renamedImages.push_back(TRename(pImageGroup->images[i], path->Original(), target));
 					m_pStatus->RenameImage(1);
 					m_pMistakeStorage->Rename(pImageGroup->images[i], target);
 					pImageGroup->images[i]->Rename(target);
@@ -646,7 +647,7 @@ namespace ad
 		if(pImageGroup == NULL)
 			return false;
 
-		for (unsigned int i = 0; i < pImageGroup->images.size(); i++)
+		for (size_t i = 0; i < pImageGroup->images.size(); i++)
 		{
 			if (pImageGroup->images[i]->path.GetName(false) != fileName)
 			{
