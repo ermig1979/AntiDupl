@@ -132,7 +132,7 @@ namespace ad
 	// Загружаем данные изображения
 	void TInputFileStream::Load(TImageInfo & imageInfo) const
 	{
-		//imageInfo = TImageInfo();
+		imageInfo = TImageInfo();
 		Load((TFileInfo&)imageInfo);
 		Load(imageInfo.type);
 		Load(imageInfo.width);
@@ -142,7 +142,7 @@ namespace ad
 		if(m_version > 2)
 			Load(imageInfo.blurring); 
 		if(m_version > 3)
-			LoadExif(imageInfo.imageExif);
+			Load(imageInfo.imageExif);
 	}
 
 	// Считываем эскиз изображения
@@ -182,16 +182,16 @@ namespace ad
 	}
 
 	// Загружаем Exif
-	void TInputFileStream::LoadExif(TImageExif * imageExif) const
+	void TInputFileStream::Load(TImageExif & imageExif) const
 	{
-		Load(imageExif->isEmpty);
-		Load(imageExif->imageDescription);
-		Load(imageExif->equipMake);
-		Load(imageExif->equipModel);
-		Load(imageExif->softwareUsed);
-		Load(imageExif->dateTime);
-		Load(imageExif->artist);
-		Load(imageExif->userComment);
+		Load(imageExif.isEmpty);
+		Load(imageExif.imageDescription);
+		Load(imageExif.equipMake);
+		Load(imageExif.equipModel);
+		Load(imageExif.softwareUsed);
+		Load(imageExif.dateTime);
+		Load(imageExif.artist);
+		Load(imageExif.userComment);
 	}
 
 	//-------------------------------------------------------------------------
@@ -222,16 +222,16 @@ namespace ad
 	}
 
 	// Сохраняем Exif
-	void TOutputFileStream::SaveExif(const TImageExif * imageExif) const
+	void TOutputFileStream::Save(const TImageExif & imageExif) const
 	{
-		Save(imageExif->isEmpty);
-		Save(imageExif->imageDescription);
-		Save(imageExif->equipMake);
-		Save(imageExif->equipModel);
-		Save(imageExif->softwareUsed);
-		Save(imageExif->dateTime);
-		Save(imageExif->artist);
-		Save(imageExif->userComment);
+		Save(imageExif.isEmpty);
+		Save(imageExif.imageDescription);
+		Save(imageExif.equipMake);
+		Save(imageExif.equipModel);
+		Save(imageExif.softwareUsed);
+		Save(imageExif.dateTime);
+		Save(imageExif.artist);
+		Save(imageExif.userComment);
 	}
 
 	// Записываем данные любого типа заданого размера
@@ -271,7 +271,7 @@ namespace ad
 		Save(imageInfo.height);
 		Save(imageInfo.blockiness); 
 		Save(imageInfo.blurring); 
-		SaveExif(imageInfo.imageExif);
+		Save(imageInfo.imageExif);
 	}
 
 	// Сохраняем пиксели изображения

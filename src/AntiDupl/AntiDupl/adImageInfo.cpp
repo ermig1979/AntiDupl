@@ -33,7 +33,7 @@ namespace ad
         height = 0;
 		blockiness = -1.0;
 		blurring = -1.0;
-		imageExif = new TImageExif();
+		imageExif;
 
         index = AD_UNDEFINED;
         group = AD_UNDEFINED;
@@ -44,9 +44,6 @@ namespace ad
     
     TImageInfo::~TImageInfo()
     {
-		// вываливается если раскоментить
-		//if (!imageExif->isEmpty)
-		//	delete imageExif;
     }
 
     TImageInfo& TImageInfo::operator = (const TImageInfo& imageInfo)
@@ -83,7 +80,8 @@ namespace ad
         pImageInfo->height = height;
 		pImageInfo->blockiness = blockiness;
 		pImageInfo->blurring = blurring;
-		imageExif->Export(&pImageInfo->exifInfo);
+		//imageExif->Export(&pImageInfo->exifInfo);
+		imageExif.Export(&pImageInfo->exifInfo);
 
         return true;
     }
@@ -102,7 +100,8 @@ namespace ad
         pImageInfo->height = height;
 		pImageInfo->blockiness = blockiness;
 		pImageInfo->blurring = blurring;
-		imageExif->Export(&pImageInfo->exifInfo);
+		//imageExif->Export(&pImageInfo->exifInfo);
+		imageExif.Export(&pImageInfo->exifInfo);
 
         return true;
     }

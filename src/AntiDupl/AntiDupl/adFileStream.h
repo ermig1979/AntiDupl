@@ -99,7 +99,7 @@ namespace ad
 		void Load(struct TPixelData & pixelData) const;
 		void Load(struct TImageData & imageData) const;
 		void Load(struct TResult & result) const;
-		void LoadExif(struct TImageExif * imageExif) const; // Эта функция обещает не менять *this
+		void Load(struct TImageExif & imageExif) const; // Эта функция обещает не менять *this
 	};
 
 	//-------------------------------------------------------------------------
@@ -125,8 +125,7 @@ namespace ad
 		void Save(const struct TPixelData & pixelData) const;
 		void Save(const struct TImageData & imageData) const;
 		void Save(const struct TResult & result) const;
-		void SaveExif(const struct TImageExif * imageExif) const; // Эта функция обещает не менять *this, ни imageExif
-		
+		void Save(const struct TImageExif & imageExif) const; // Эта функция обещает не менять *this, ни imageExif
 	};
 }
 

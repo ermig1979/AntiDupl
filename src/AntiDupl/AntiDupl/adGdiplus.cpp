@@ -266,7 +266,7 @@ namespace ad
         if(pView)
         {
             TGdiplus* pGdiplus = new TGdiplus();
-			pGdiplus->m_exifInfo = imageExif;
+			pGdiplus->m_exifInfo = *imageExif; //// вывод значения содержащегося в переменной через указатель, операцией разименования указателя
             pGdiplus->m_pView = pView;
             pGdiplus->m_format = format;
             return pGdiplus;
