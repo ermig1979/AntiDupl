@@ -164,8 +164,10 @@ namespace ad
         return pView;
     }
 
-	void FullExifStruct(TString *structProperty, Gdiplus::PropertyItem *gdiProp, TImageExif *imageExif)
+	void FullExifStruct(TString *structProperty, const Gdiplus::PropertyItem *gdiProp, TImageExif *imageExif)
 	{
+		if (gdiProp->length > SIZE_CHECK_LIMIT)
+			return;
 		structProperty->assign(TString((char*)gdiProp->value).Trim().ToWString().c_str(), gdiProp->length);
 		imageExif->isEmpty = false;
 	}
