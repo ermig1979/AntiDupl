@@ -58,4 +58,19 @@ namespace ad
 		userComment.CopyTo(pExifInfo->userComment, MAX_EXIF_SIZE);
 		return true;
     }
+
+	TImageExif& TImageExif::operator = (const TImageExif& exifInfo)
+    {
+		isEmpty = exifInfo.isEmpty;
+		imageDescription = exifInfo.imageDescription;
+		equipMake = exifInfo.equipMake;
+		equipModel = exifInfo.equipModel;
+		softwareUsed = exifInfo.softwareUsed;
+		dateTime = exifInfo.dateTime;
+		artist = exifInfo.artist;
+		userComment = exifInfo.userComment;
+
+        return *this;
+    }
+
 }

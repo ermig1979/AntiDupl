@@ -53,9 +53,8 @@ namespace ad
 
         virtual ~TImage();
 
-		TImageExif* ImageExif() 
+		TImageExif ImageExif() 
 		{
-			// возвращает указатель
 			return m_exifInfo; 
 		}
 
@@ -73,7 +72,7 @@ namespace ad
 
         TView *m_pView;
         TFormat m_format;
-		TImageExif *m_exifInfo;
+		TImageExif m_exifInfo;
     };
 }
 
