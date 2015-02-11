@@ -34,10 +34,6 @@ namespace ad
 	{
 	}
 
-	/*TImageExif::~TImageExif()
-	{
-	}*/
-
 	// Экспортируем в структуры для передачи из dll
 	bool TImageExif::Export(adExifInfoA * pExifInfo) const
     {
