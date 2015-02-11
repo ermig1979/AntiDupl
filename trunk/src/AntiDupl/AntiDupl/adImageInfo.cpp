@@ -44,8 +44,9 @@ namespace ad
     
     TImageInfo::~TImageInfo()
     {
-		if (!imageExif->isEmpty)
-			delete imageExif;
+		// вываливается если раскоментить
+		//if (!imageExif->isEmpty)
+		//	delete imageExif;
     }
 
     TImageInfo& TImageInfo::operator = (const TImageInfo& imageInfo)

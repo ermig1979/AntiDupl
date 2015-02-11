@@ -132,7 +132,7 @@ namespace ad
 	// Загружаем данные изображения
 	void TInputFileStream::Load(TImageInfo & imageInfo) const
 	{
-		imageInfo = TImageInfo();
+		//imageInfo = TImageInfo();
 		Load((TFileInfo&)imageInfo);
 		Load(imageInfo.type);
 		Load(imageInfo.width);
