@@ -83,7 +83,7 @@ namespace ad
             else
                 levels[i].view.Recreate(size, TView::Gray8);
 
-			size = TPoint((size.x + 1) >> 1, (size.y + 1) >> 1);
+			size = TPoint((size.x + 1) >> 1, (size.y + 1) >> 1); //делим размеры на 2
 			if(size.x < 3 || size.y < 3 || size.x*size.y < AD_BLURRING_DETECTOR_AREA_MIN)
 				break;
         }
@@ -100,6 +100,7 @@ namespace ad
         }
 	}
 	
+	//Обратная функция распределения (Какое количество пикселей лежит в заданном пороге)
 	double TBlurringDetector::Quantile(const TUInt32 * histogram, double threshold) const
 	{
 		TUInt32 total = 0; 
@@ -167,27 +168,28 @@ namespace ad
                         levels[transition + 1].scale*(threshold - before))/(after - before);
                 }
             }
-            else 
+            else if(levels[firstMinimum].quantile < threshold)
             {
-                if(levels[firstMinimum].quantile < threshold)
+                if(firstMinimum == 0)
                 {
-                    if(firstMinimum == 0)
-                    {
-                        radius = threshold / levels[0].quantile;
-                    }
+                    radius = threshold / levels[0].quantile;
+                }
+                else
+                {
+                    double y0 = levels[firstMinimum - 1].quantile;
+                    double y1 = levels[firstMinimum].quantile;
+                    double y2 = levels[firstMinimum + 1].quantile;
+                    double x = -(y2 - y0)/(y2 + y0 - 2*y1)/2.0;
+                    if(x > 0)
+                        radius = levels[firstMinimum].scale*(1 - x) + levels[firstMinimum + 1].scale*x;
                     else
-                    {
-                        double y0 = levels[firstMinimum - 1].quantile;
-                        double y1 = levels[firstMinimum].quantile;
-                        double y2 = levels[firstMinimum + 1].quantile;
-                        double x = -(y2 - y0)/(y2 + y0 - 2*y1)/2.0;
-                        if(x > 0)
-                            radius = levels[firstMinimum].scale*(1 - x) + levels[firstMinimum + 1].scale*x;
-                        else
-                            radius = levels[firstMinimum].scale*(1 + x) - levels[firstMinimum - 1].scale*x;
-                    }
+                        radius = levels[firstMinimum].scale*(1 + x) - levels[firstMinimum - 1].scale*x;
                 }
             }
+			else
+			{
+				radius = threshold / levels[0].quantile;
+			}
         }
 
         return range >= AD_BLURRING_DETECTOR_RANGE_MIN ? radius : levels.back().scale;
