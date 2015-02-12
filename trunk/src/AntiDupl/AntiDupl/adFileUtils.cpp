@@ -426,7 +426,6 @@ namespace ad
 		for (int i = length - 1; i >= 0; digitPos = i, i-- )
             if (!isdigit(name[i])) //если не цифра выходим
             {
-                //digitPos = i;
                 break;
             }
 
@@ -440,10 +439,8 @@ namespace ad
         if (canRename)
         {
 			TString forParsing = name.substr(digitPos, length - digitPos);
-		    //result = wcstol(forParsing.c_str(), &pEnd, 10);
 			result = _wtoi64(forParsing.c_str());
 			if (result == _I64_MAX) //слишком длинный
-			//if (errno == ERANGE)
 				digitPos = 0;
             leadingZeros = forParsing.length() - LengthOfLong(result);
         }
