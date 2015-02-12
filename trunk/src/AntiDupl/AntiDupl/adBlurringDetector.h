@@ -49,8 +49,9 @@ namespace ad
 		void InitLevels(const TView & view, TLevels & levels) const;
 		void EstimateAbsSecondDerivativeHistograms(TLevels & levels) const;
 		double Quantile(const TUInt32 * histogram, double threshold) const;
-		double Threshold(const TLevels & levels) const;
-        double Radius(const TLevels & levels, double threshold) const;
+        double Range(const TLevels & levels) const;
+		double Threshold(double range) const;
+        double Radius(const TLevels & levels, double range, double threshold) const;
 	};
 }
 #endif//__adBlurringDetector_h__ 
