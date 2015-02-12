@@ -26,10 +26,13 @@
 
 namespace ad
 {
-	const double AD_EDGE_CROP = 0.1;
-	const double AD_QUANTILE = 0.001;
-	const size_t AD_LEVEL_COUNT = 6;
-	const size_t AD_SIZE_MIN = 16;
+	const double AD_BLURRING_DETECTOR_EDGE_CROP = 0.1;
+	const double AD_BLURRING_DETECTOR_QUANTILE = 0.001;
+	const size_t AD_BLURRING_DETECTOR_LEVEL_COUNT_MAX = 16;
+	const size_t AD_BLURRING_DETECTOR_SIZE_MIN = 64;
+    const size_t AD_BLURRING_DETECTOR_AREA_MIN = 256;
+    const double AD_BLURRING_DETECTOR_RANGE_THRESOLD = 64.0;
+    const double AD_BLURRING_DETECTOR_RANGE_MIN = 16.0;
 
     TBlurringDetector::TBlurringDetector()
     {
@@ -43,7 +46,7 @@ namespace ad
 	{
 		AD_FUNCTION_PERFORMANCE_TEST
 
-		if(view.height < AD_SIZE_MIN || view.width < AD_SIZE_MIN)
+		if(view.height < AD_BLURRING_DETECTOR_SIZE_MIN || view.width < AD_BLURRING_DETECTOR_SIZE_MIN)
 			return 0.0;
 
 		TLevels levels;
@@ -52,22 +55,26 @@ namespace ad
 
 		EstimateAbsSecondDerivativeHistograms(levels);
 
-		double threshold = Threshold(levels);
+        double range = Range(levels);
 
-		return Radius(levels, threshold);
+		double threshold = Threshold(range);
+
+        double radius = Radius(levels, range, threshold);
+
+        return radius;
 	}
 
 	void TBlurringDetector::InitLevels(const TView & view, TLevels & levels) const
 	{
 		TView cropped = view.Region(
-			(ptrdiff_t)::floor(AD_EDGE_CROP*view.width),
-			(ptrdiff_t)::floor(AD_EDGE_CROP*view.height),
-			(ptrdiff_t)::ceil((1.0 - AD_EDGE_CROP)*view.width),
-			(ptrdiff_t)::ceil((1.0 - AD_EDGE_CROP)*view.height));
+			(ptrdiff_t)::floor(AD_BLURRING_DETECTOR_EDGE_CROP*view.width),
+			(ptrdiff_t)::floor(AD_BLURRING_DETECTOR_EDGE_CROP*view.height),
+			(ptrdiff_t)::ceil((1.0 - AD_BLURRING_DETECTOR_EDGE_CROP)*view.width),
+			(ptrdiff_t)::ceil((1.0 - AD_BLURRING_DETECTOR_EDGE_CROP)*view.height));
 
 		TPoint size = cropped.Size();
-        levels.reserve(AD_LEVEL_COUNT);
-        for(size_t i = 0; i < AD_LEVEL_COUNT; ++i)
+        levels.reserve(AD_BLURRING_DETECTOR_LEVEL_COUNT_MAX);
+        for(size_t i = 0; i < AD_BLURRING_DETECTOR_LEVEL_COUNT_MAX; ++i)
         {
 			levels.push_back(TLevel());
             levels[i].scale = 1 << i;
@@ -77,7 +84,7 @@ namespace ad
                 levels[i].view.Recreate(size, TView::Gray8);
 
 			size = TPoint((size.x + 1) >> 1, (size.y + 1) >> 1);
-			if(size.x < 3 || size.y < 3)
+			if(size.x < 3 || size.y < 3 || size.x*size.y < AD_BLURRING_DETECTOR_AREA_MIN)
 				break;
         }
 	}
@@ -89,7 +96,7 @@ namespace ad
             if(i > 0)
                 Simd::ReduceGray2x2(levels[i - 1].view, levels[i].view);
             Simd::AbsSecondDerivativeHistogram(levels[i].view, 1, 1, levels[i].histogram);
-			levels[i].quantile = Quantile(levels[i].histogram, 1.0 - AD_QUANTILE);
+			levels[i].quantile = Quantile(levels[i].histogram, 1.0 - AD_BLURRING_DETECTOR_QUANTILE);
         }
 	}
 	
@@ -98,57 +105,91 @@ namespace ad
 		TUInt32 total = 0; 
 		for(size_t i = 0; i < HISTOGRAM_SIZE; ++i)
 			total += histogram[i];
-		TUInt32 bound = TUInt32(::ceil(total*threshold));
+        TUInt32 bound = TUInt32(threshold < 0.5 ? ::ceil(total*threshold) : ::floor(total*threshold));
 		
 		size_t index = 0;
 		TUInt32 sum = 0;
-		for(TUInt32 sum = 0; index < HISTOGRAM_SIZE && sum <= bound; ++index)
+		for(; index < HISTOGRAM_SIZE && sum <= bound; ++index)
 			sum += histogram[index];
+        index--;
 
 		double last = double(sum - histogram[index])/total;
         double current = double(sum)/total;
         return index + (threshold - last)/(current - last);
 	}
 
-	double TBlurringDetector::Threshold(const TLevels & levels) const
+    double TBlurringDetector::Range(const TLevels & levels) const
+    {
+        size_t index = levels.size()/3;
+        TView view = levels[index].view;
+        TUInt32 histogram[HISTOGRAM_SIZE];
+        Simd::Histogram(view, histogram);
+        return Quantile(histogram, 1.0 - AD_BLURRING_DETECTOR_QUANTILE) - 
+            Quantile(histogram, AD_BLURRING_DETECTOR_QUANTILE);
+    }
+
+	double TBlurringDetector::Threshold(double range) const
 	{
-		size_t index = levels.size()/2;
-		TView view = levels[index].view;
-		TUInt32 histogram[HISTOGRAM_SIZE];
-		Simd::Histogram(view, histogram);
-		double range = Quantile(histogram, 1.0 - AD_QUANTILE) - Quantile(histogram, AD_QUANTILE);
-		return Simd::Max(range * ::pow(64.0/range, 0.125) / 4.0, 16.0);
+        return range * ::pow(AD_BLURRING_DETECTOR_RANGE_THRESOLD/range, 
+            range < AD_BLURRING_DETECTOR_RANGE_THRESOLD ? -0.125 : 0.125) / 6.0;
 	}
 
-	double TBlurringDetector::Radius(const TLevels & levels, double threshold) const
+	double TBlurringDetector::Radius(const TLevels & levels, double range, double threshold) const
 	{
-		size_t transition = -1;
-        for(size_t i = 0; i < levels.size(); ++i)
+        size_t firstMinimum = -1;
+        for(size_t i = 0; i < levels.size() - 1; ++i)
         {
-            if(levels[i].quantile < threshold)
-                transition = i;
-            if(levels[i].quantile > threshold)
+            if(levels[i].quantile < levels[i + 1].quantile)
+            {
+                firstMinimum = i;
                 break;
+            }
         }
+
         double radius = 0.0;
-        if(transition != -1)
+        if(firstMinimum != -1)
         {
-            if(transition < levels.size() - 1)
+            size_t transition = -1;
+            for(size_t i = firstMinimum; i < levels.size(); ++i)
             {
-                double before = levels[transition].quantile;
-                double after = levels[transition + 1].quantile;
-                radius = double(levels[transition].scale*(after - threshold) + 
-                    levels[transition + 1].scale*(threshold - before))/(after - before);
+                if(levels[i].quantile < threshold)
+                    transition = i;
+                if(levels[i].quantile > threshold)
+                    break;
             }
-            else
+            if(transition != -1)
             {
-                radius = levels.back().scale;
+                if(transition < levels.size() - 1)
+                {
+                    double before = levels[transition].quantile;
+                    double after = levels[transition + 1].quantile;
+                    radius = double(levels[transition].scale*(after - threshold) + 
+                        levels[transition + 1].scale*(threshold - before))/(after - before);
+                }
+            }
+            else 
+            {
+                if(levels[firstMinimum].quantile < threshold)
+                {
+                    if(firstMinimum == 0)
+                    {
+                        radius = threshold / levels[0].quantile;
+                    }
+                    else
+                    {
+                        double y0 = levels[firstMinimum - 1].quantile;
+                        double y1 = levels[firstMinimum].quantile;
+                        double y2 = levels[firstMinimum + 1].quantile;
+                        double x = -(y2 - y0)/(y2 + y0 - 2*y1)/2.0;
+                        if(x > 0)
+                            radius = levels[firstMinimum].scale*(1 - x) + levels[firstMinimum + 1].scale*x;
+                        else
+                            radius = levels[firstMinimum].scale*(1 + x) - levels[firstMinimum - 1].scale*x;
+                    }
+                }
             }
         }
-        else 
-        {
-            radius = threshold / levels[0].quantile;
-        }
-  		return radius;
+
+        return range >= AD_BLURRING_DETECTOR_RANGE_MIN ? radius : levels.back().scale;
 	}
 }
