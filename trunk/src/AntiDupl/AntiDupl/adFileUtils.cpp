@@ -437,7 +437,6 @@ namespace ad
 
 		__int64 result = -1;
         int numOfZero = 0;
-		wchar_t * pEnd;
         if (canRename)
         {
 			TString forParsing = name.substr(digitPos, length - digitPos);
