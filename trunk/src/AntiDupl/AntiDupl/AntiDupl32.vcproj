@@ -266,6 +266,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\adDump.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\adDump.h"
+			>
+		</File>
+		<File
 			RelativePath=".\adDuplResultFilter.cpp"
 			>
 		</File>

@@ -49,6 +49,8 @@ typedef ad::TEngine* adHandle;
 #include "adImageUtils.h"
 #include "adRecycleBin.h"
 #include "adExternal.h"
+#include "adDump.h"
+
 
 #define CHECK_HANDLE \
     if(handle == NULL) \
@@ -65,7 +67,6 @@ typedef ad::TEngine* adHandle;
     if(p == NULL) \
     return AD_ERROR_INVALID_POINTER;
 
-//using namespace ad;
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReasonForCall, LPVOID lpReserved)
 {
@@ -114,6 +115,8 @@ DLLAPI adError adVersionGet(adVersionType versionType, adCharA * pVersion, adSiz
 
 DLLAPI adHandle adCreate()
 {
+	SetUnhandledExceptionFilter(UnhandledException);
+
 	return new ad::TEngine();
 }
 
