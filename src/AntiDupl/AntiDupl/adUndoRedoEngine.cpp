@@ -649,15 +649,15 @@ namespace ad
 
 		for (size_t i = 0; i < pImageGroup->images.size(); i++)
 		{
-			if (pImageGroup->images[i]->path.GetName(false) != fileName)
+			TPath* path = &pImageGroup->images[i]->path;
+			if (path->GetName(false) != fileName)
 			{
-				TString target = CreatePath(pImageGroup->images[i]->path.GetDirectory(), fileName + pImageGroup->images[i]->path.GetExtension());
+				TString target = CreatePath(path->GetDirectory(), fileName + path->GetExtension());
 				if (IsFileExists(target.c_str()))
-					target = GetSimilarPath(TPath(target));
-				//if (Rename(pImageGroup->images[i], target))
-				if(::MoveFileEx(pImageGroup->images[i]->path.Original().c_str(), target.c_str(), MOVEFILE_COPY_ALLOWED) != FALSE)
+					target = GetSimilarPath(TPath(target), *path); //разименовываем указатель
+				if(::MoveFileEx(path->Original().c_str(), target.c_str(), MOVEFILE_COPY_ALLOWED) != FALSE)
 				{
-					m_pCurrent->change->renamedImages.push_back(TRename(pImageGroup->images[i], pImageGroup->images[i]->path.Original(), target));
+					m_pCurrent->change->renamedImages.push_back(TRename(pImageGroup->images[i], path->Original(), target));
 					m_pStatus->RenameImage(1);
 					m_pMistakeStorage->Rename(pImageGroup->images[i], target);
 					pImageGroup->images[i]->Rename(target);
