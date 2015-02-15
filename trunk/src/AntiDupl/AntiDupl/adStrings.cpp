@@ -117,17 +117,24 @@ namespace ad
 	}
 
 	// Обрезает начальные и концевые пробелы.
-	TString TString::Trim()
+	void TString::Trim()
 	{
-		TString::const_iterator it = this->begin();
-		while (it != this->end() && iswspace(*it))
-			it++;
+		if (this->length() > 0)
+		{
+			// Находим начало без пробелов.
+			TString::const_iterator it = this->begin();
+			while (it != this->end() && iswspace(*it))
+				it++;
 
-		TString::const_reverse_iterator rit = this->rbegin();
-		while (rit.base() != it && iswspace(*rit))
-			rit++;
+			it = this->erase(this->begin(), it);
 
-		return std::wstring(it, rit.base());
+			// Находим конец без пробелов.
+			TString::const_reverse_iterator rit = this->rbegin();
+			while (rit.base() != it && iswspace(*rit))
+				rit++;
+
+			this->erase(rit.base(), this->end());
+		}
 	}
 
 	std::wstring TString::ToWString() const

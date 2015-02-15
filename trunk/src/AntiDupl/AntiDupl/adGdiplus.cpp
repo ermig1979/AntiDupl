@@ -168,15 +168,17 @@ namespace ad
 	{
 		if (gdiProp->length > SIZE_CHECK_LIMIT)
 			return;
-		structProperty->assign(TString((char*)gdiProp->value).Trim().ToWString().c_str(), gdiProp->length);
-		imageExif->isEmpty = false;
+		TString str = TString((char*)gdiProp->value);
+		str.Trim();
+		if (str.length() > 0)
+		{
+			structProperty->assign(str.c_str(), gdiProp->length);
+			imageExif->isEmpty = false;
+		}
 	}
 
-	static TImageExif* GetExifProperty(Gdiplus::Bitmap * pBitmap)
+	static void GetExifProperty(Gdiplus::Bitmap * pBitmap, TImageExif *pImageExif)
 	{
-		// инициализируем указатель
-		TImageExif *pImageExif = new TImageExif();
-
 		//Exif data
 		UINT  size = 0;
 		UINT  count = 0;
@@ -223,7 +225,6 @@ namespace ad
 		}
 
 		free(pPropBuffer);
-		return pImageExif;
 	}
 
 	// Загрузка изображения с помощью GDI.
@@ -233,7 +234,7 @@ namespace ad
 
         TView *pView = NULL;
         TImage::TFormat format = TImage::None;
-		TImageExif *imageExif = NULL; //указатель
+		TImageExif *imageExif = new TImageExif();; //указатель
 
         if(hGlobal)
         {
@@ -244,7 +245,7 @@ namespace ad
 				{
 					Gdiplus::Bitmap *pBitmap = Gdiplus::Bitmap::FromStream(pStream);
 
-					imageExif = GetExifProperty(pBitmap);
+					GetExifProperty(pBitmap, imageExif);
 
                     if(pBitmap && pBitmap->GetWidth() && pBitmap->GetHeight())
                     {
@@ -267,10 +268,15 @@ namespace ad
         {
             TGdiplus* pGdiplus = new TGdiplus();
 			pGdiplus->m_exifInfo = *imageExif; //// вывод значения содержащегося в переменной через указатель, операцией разименования указателя
+			if(imageExif)
+				delete imageExif;
             pGdiplus->m_pView = pView;
             pGdiplus->m_format = format;
             return pGdiplus;
         }
+
+		if(imageExif)
+			delete imageExif;
 
         return NULL;
     }

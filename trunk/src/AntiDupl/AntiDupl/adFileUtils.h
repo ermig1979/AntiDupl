@@ -69,6 +69,7 @@ namespace ad
 
 	size_t LengthOfLong(const __int64 digit);
 	TString GetSimilarPath(const TPath &path);
+	TString GetSimilarPath(const TPath &path, const TPath &pathForRename);
 }
 
 #endif//__adFileUtils_h__

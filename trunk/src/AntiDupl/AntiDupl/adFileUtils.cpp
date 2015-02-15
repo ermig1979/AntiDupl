@@ -421,7 +421,7 @@ namespace ad
 		size_t length = name.length();
         //Находим первый не числовой символ с конца
         bool canRename;
-        size_t digitPos = length - 1;
+        size_t digitPos = length;
 
 		for (int i = length - 1; i >= 0; digitPos = i, i-- )
             if (!isdigit(name[i])) //если не цифра выходим
@@ -445,7 +445,7 @@ namespace ad
             leadingZeros = forParsing.length() - LengthOfLong(result);
         }
 
-		if (digitPos > 0)
+		if (digitPos > 0 && digitPos < length)
             nameWithoutDigit = name.substr(0, digitPos);
         else
             nameWithoutDigit = TString();
@@ -468,6 +468,25 @@ namespace ad
 		} 
 		while (IsFileExists(uniquePath.c_str()));
 
+        return uniquePath;
+    }
+
+	TString GetNewNameForFileAdd(const TPath &oldPath, const TPath &pathForRename)
+    {
+		TString uniquePath;
+		const int SIMILAR_PREFIX_SIZE = 16;
+		const TChar *SIMILAR_PREFIX_FORMAT = TEXT("_%u");
+		TChar buffer[SIMILAR_PREFIX_SIZE];
+		unsigned long counter = 2;
+
+		do 
+		{
+			_stprintf_s(buffer, SIMILAR_PREFIX_FORMAT, counter++);
+			uniquePath = CreatePath(oldPath.GetDirectory(), oldPath.GetName(false) + TString(buffer) + oldPath.GetExtension());
+			if (TPath::EqualByNameWithExtension(uniquePath, pathForRename))
+				break;
+		} 
+		while (IsFileExists(uniquePath.c_str()));
         return uniquePath;
     }
 
@@ -499,6 +518,35 @@ namespace ad
 		return pathWithDigit;
     }
 
+	TString GetNewNameForFileDigit(const TPath &oldPath, const TString &nameWithoutDigit, __int64 & counter, size_t & leadingZeros, const TPath &pathForRename)
+    {
+		TString pathWithDigit;
+		const int BUFFER_SIZE = 65;
+		char buffer[BUFFER_SIZE];
+		TString leadingZeroString;
+
+		counter++;
+		if (leadingZeros > 0)
+		{
+			if (LengthOfLong(counter) > LengthOfLong(counter - 1)) //если цифра удленилась
+               leadingZeros--;
+			for (size_t i = 0; i < leadingZeros; i++)
+				leadingZeroString.push_back('0');
+		}
+
+		if (_i64toa_s(counter, buffer, BUFFER_SIZE, 10) == 0)
+		{
+			pathWithDigit = CreatePath(oldPath.GetDirectory(), nameWithoutDigit + leadingZeroString + TString(buffer) + oldPath.GetExtension());
+			if(TPath::EqualByNameWithExtension(pathWithDigit, pathForRename))
+				return pathForRename.Original();
+			if (IsFileExists(pathWithDigit.c_str())) //если такой файл уже есть, то не увеличиваем номер, а добавляем _2
+				return GetNewNameForFileAdd(oldPath);
+		}
+		else
+			return GetNewNameForFileAdd(oldPath);
+		return pathWithDigit;
+    }
+
 	// Возврашает имя файла похожое на переданное.
 	TString GetSimilarPath(const TPath &path)
 	{
@@ -514,5 +562,23 @@ namespace ad
 									nameWithoutDigit,
 									digit,
                                     leadingZeros);
+	}
+
+	// Возврашает имя файла похожое на переданное, не переименовывая существующий
+	TString GetSimilarPath(const TPath &path, const TPath &pathForRename)
+	{
+		__int64 digit;
+		size_t leadingZeros = 0;
+		TString nameWithoutDigit;
+
+		digit = GetDigitInFileName(path, nameWithoutDigit, leadingZeros);
+		if (digit == -1)
+			return GetNewNameForFileAdd(path, pathForRename);
+		else
+			return GetNewNameForFileDigit(path,
+									nameWithoutDigit,
+									digit,
+                                    leadingZeros,
+									pathForRename);
 	}
 }
