@@ -50,7 +50,6 @@ namespace AntiDupl.NET
         private ToolStripMenuItem m_moveGroupToNeighbourItem;
         private ToolStripMenuItem m_renameGroupAsNeighbourItem;
 
-
         
         public ImagePreviewContextMenu(CoreLib core, Options options, ImagePreviewPanel imagePreviewPanel, ResultsListView resultsListView)
         {
@@ -73,7 +72,9 @@ namespace AntiDupl.NET
             m_openImageItem = InitFactory.MenuItem.Create(null, null, OpenImage);
             m_openFolderItem = InitFactory.MenuItem.Create(null, null, OpenFolder);
             m_renameImageItem = InitFactory.MenuItem.Create(null, null, m_imagePreviewPanel.RenameImage);
-            m_moveImageAndRenameToNeighbourItem = InitFactory.MenuItem.Create(null, null, new EventHandler(this.MoveAndRenameToNeighbour));
+            m_renameImageLikeNeighbourItem = InitFactory.MenuItem.Create(null, null, new EventHandler(RenameImageLikeNeighbour));
+            m_moveImageToNeighbourItem = InitFactory.MenuItem.Create(null, null, new EventHandler(MoveImageToNeighbour));
+            m_moveImageAndRenameToNeighbourItem = InitFactory.MenuItem.Create(null, null, new EventHandler(MoveAndRenameToNeighbour));
             m_moveGroupToNeighbourItem = InitFactory.MenuItem.Create(null, null, MoveGroupToNeighbour);
             m_renameGroupAsNeighbourItem = InitFactory.MenuItem.Create(null, null, RenameCurrentGroupAsNeighbour);
             
@@ -91,8 +92,15 @@ namespace AntiDupl.NET
             Items.Add(m_openFolderItem);
             Items.Add(new ToolStripSeparator());
             Items.Add(m_renameImageItem);
-            if (MoveAndRenameToNeighbourEnable())
+            if (RenameImageLikeNeighbourEnable())
             {
+                m_renameImageLikeNeighbourItem.Image = m_imagePreviewPanel.RenameCurrentType == CoreDll.RenameCurrentType.First ? Resources.Images.Get("RenameFirstLikeSecondVerticalMenu") : Resources.Images.Get("RenameSecondLikeFirstVerticalMenu");
+                Items.Add(m_renameImageLikeNeighbourItem);
+            }
+            if (MoveToNeighbourEnable())
+            {
+                m_moveImageToNeighbourItem.Image = m_imagePreviewPanel.RenameCurrentType == CoreDll.RenameCurrentType.First ? Resources.Images.Get("MoveFirstToSecondVerticalMenu") : Resources.Images.Get("MoveSecondToFirstVerticalMenu");
+                Items.Add(m_moveImageToNeighbourItem);
                 Items.Add(m_moveImageAndRenameToNeighbourItem);
             }
             if (MoveGroupEnable())
@@ -112,6 +120,8 @@ namespace AntiDupl.NET
             m_openImageItem.Text = s.ImagePreviewContextMenu_OpenImageItem_Text;
             m_openFolderItem.Text = s.ImagePreviewContextMenu_OpenFolderItem_Text;
             m_renameImageItem.Text = s.ImagePreviewContextMenu_RenameImageItem_Text;
+            m_renameImageLikeNeighbourItem.Text = s.ImagePreviewContextMenu_RenameImageLikeNeighbour_Text;
+            m_moveImageToNeighbourItem.Text = s.ImagePreviewContextMenu_MoveImageToNeighbourItem_Text;
             m_moveImageAndRenameToNeighbourItem.Text = s.ImagePreviewContextMenu_MoveAndRenameImageToNeighbourItem_Text;
             m_moveGroupToNeighbourItem.Text = s.ImagePreviewContextMenu_MoveGroupToNeighbourItem_Text;
             m_renameGroupAsNeighbourItem.Text = s.ImagePreviewContextMenu_RenameGroupAsNeighbourItem_Text;
@@ -146,21 +156,53 @@ namespace AntiDupl.NET
             Clipboard.SetText(Path.GetFileNameWithoutExtension(m_imagePreviewPanel.CurrentImageInfo.path));
         }
 
-        private void MoveAndRenameToNeighbour(object sender, EventArgs e)
+        /// <summary>
+        /// Проверка на то, что имена разные.
+        /// </summary>
+        /// <returns></returns>
+        private bool RenameImageLikeNeighbourEnable()
         {
-            m_resultsListView.MoveAndRenameToNeighbour(m_imagePreviewPanel.RenameCurrentType);
+            if (m_imagePreviewPanel.NeighbourImageInfo != null && m_imagePreviewPanel.CurrentImageInfo != null)
+            {
+                return m_imagePreviewPanel.NeighbourImageInfo.GetFileNameWithoutExtensionString() != m_imagePreviewPanel.CurrentImageInfo.GetFileNameWithoutExtensionString();
+            }
+            return false;
+        }
+
+        private void RenameImageLikeNeighbour(object sender, EventArgs e)
+        {
+            if (m_imagePreviewPanel.RenameCurrentType == CoreDll.RenameCurrentType.First)
+                m_resultsListView.MakeAction(CoreDll.LocalActionType.RenameFirstLikeSecond, CoreDll.TargetType.Current);
+            else
+                m_resultsListView.MakeAction(CoreDll.LocalActionType.RenameSecondLikeFirst, CoreDll.TargetType.Current);
         }
 
         /// <summary>
         /// Проверка на то, что директории у картинок разные.
         /// </summary>
-        private bool MoveAndRenameToNeighbourEnable()
+        private bool MoveToNeighbourEnable()
         {
             if (m_imagePreviewPanel.NeighbourImageInfo != null && m_imagePreviewPanel.CurrentImageInfo != null)
             {
                 return m_imagePreviewPanel.NeighbourImageInfo.GetDirectoryString() != m_imagePreviewPanel.CurrentImageInfo.GetDirectoryString();
             }
             return false;
+        }
+
+        private void MoveImageToNeighbour(object sender, EventArgs e)
+        {
+            if (m_imagePreviewPanel.RenameCurrentType == CoreDll.RenameCurrentType.First)
+                m_resultsListView.MakeAction(CoreDll.LocalActionType.MoveFirstToSecond, CoreDll.TargetType.Current);
+            else
+                m_resultsListView.MakeAction(CoreDll.LocalActionType.MoveSecondToFirst, CoreDll.TargetType.Current);
+        }
+
+        private void MoveAndRenameToNeighbour(object sender, EventArgs e)
+        {
+            if (m_imagePreviewPanel.RenameCurrentType == CoreDll.RenameCurrentType.First)
+                m_resultsListView.MakeAction(CoreDll.LocalActionType.MoveAndRenameFirstToSecond, CoreDll.TargetType.Current);
+            else
+                m_resultsListView.MakeAction(CoreDll.LocalActionType.MoveAndRenameSecondToFirst, CoreDll.TargetType.Current);
         }
 
         /// <summary>

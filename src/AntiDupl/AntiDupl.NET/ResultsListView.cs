@@ -253,18 +253,6 @@ namespace AntiDupl.NET
             m_makeAction = false;
         }
 
-        public void MoveAndRenameToNeighbour(CoreDll.RenameCurrentType renameCurrentType)
-        {
-            m_makeAction = true;
-            ProgressForm progressForm;
-            if (renameCurrentType == CoreDll.RenameCurrentType.First)
-                progressForm = new ProgressForm(CoreDll.LocalActionType.MoveAndRenameFirstToSecond, CoreDll.TargetType.Current, m_core, m_options, m_coreOptions, m_mainSplitContainer);
-            else
-                progressForm = new ProgressForm(CoreDll.LocalActionType.MoveAndRenameSecondToFirst, CoreDll.TargetType.Current, m_core, m_options, m_coreOptions, m_mainSplitContainer);
-            progressForm.Execute();
-            m_makeAction = false;
-        }
-
         /// <summary>
         /// Перенести текущую группу в папку.
         /// </summary>

@@ -158,10 +158,6 @@ namespace AntiDupl.NET
         public string ResultsPreviewDuplPair_DeleteBothButton_ToolTip_Text;
         public string ResultsPreviewDuplPair_RenameFirstToSecondButton_ToolTip_Text;
         public string ResultsPreviewDuplPair_RenameSecondToFirstButton_ToolTip_Text;
-        public string ResultsPreviewDuplPair_RenameFirstLikeSecondButton_ToolTip_Text;
-        public string ResultsPreviewDuplPair_RenameSecondLikeFirstButton_ToolTipText;
-        public string ResultsPreviewDuplPair_MoveFirstToSecondButton_ToolTipText;
-        public string ResultsPreviewDuplPair_MoveSecondToFirstButton_ToolTipText;
         public string ResultsPreviewDuplPair_MistakeButton_ToolTip_Text;
 
         public string ResultsPreviewDefect_DeleteButton_ToolTip_Text;
@@ -291,6 +287,8 @@ namespace AntiDupl.NET
         public string ImagePreviewContextMenu_OpenImageItem_Text;
         public string ImagePreviewContextMenu_OpenFolderItem_Text;
         public string ImagePreviewContextMenu_RenameImageItem_Text;
+        public string ImagePreviewContextMenu_RenameImageLikeNeighbour_Text;
+        public string ImagePreviewContextMenu_MoveImageToNeighbourItem_Text;
         public string ImagePreviewContextMenu_MoveAndRenameImageToNeighbourItem_Text;
         public string ImagePreviewContextMenu_MoveGroupToNeighbourItem_Text;
         public string ImagePreviewContextMenu_RenameGroupAsNeighbourItem_Text;

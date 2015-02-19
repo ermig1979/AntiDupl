@@ -155,10 +155,6 @@ namespace AntiDupl.NET
             s.ResultsPreviewDuplPair_DeleteBothButton_ToolTip_Text = "Delete both pictures";
             s.ResultsPreviewDuplPair_RenameFirstToSecondButton_ToolTip_Text = "Replace second picture by the first picture";
             s.ResultsPreviewDuplPair_RenameSecondToFirstButton_ToolTip_Text = "Replace first picture by the second picture";
-            s.ResultsPreviewDuplPair_RenameFirstLikeSecondButton_ToolTip_Text = "Rename first picture as the second picture";
-            s.ResultsPreviewDuplPair_RenameSecondLikeFirstButton_ToolTipText = "Rename second picture as the first picture";
-            s.ResultsPreviewDuplPair_MoveFirstToSecondButton_ToolTipText = "Move first picture to the second picture";
-            s.ResultsPreviewDuplPair_MoveSecondToFirstButton_ToolTipText = "Move second picture to the first picture";
             s.ResultsPreviewDuplPair_MistakeButton_ToolTip_Text = "Mark current result as a mistake";
 
             s.ResultsPreviewDefect_DeleteButton_ToolTip_Text = "Delete picture";
@@ -288,6 +284,8 @@ namespace AntiDupl.NET
             s.ImagePreviewContextMenu_OpenImageItem_Text = "Open image";
             s.ImagePreviewContextMenu_OpenFolderItem_Text = "Open containing folder";
             s.ImagePreviewContextMenu_RenameImageItem_Text = "Rename image";
+            s.ImagePreviewContextMenu_RenameImageLikeNeighbour_Text = "Rename like neighbour";
+            s.ImagePreviewContextMenu_MoveImageToNeighbourItem_Text = "Move image to neighbour";
             s.ImagePreviewContextMenu_MoveAndRenameImageToNeighbourItem_Text = "Move and rename image to neighbour";
             s.ImagePreviewContextMenu_MoveGroupToNeighbourItem_Text = "Move group of image in neighbour directory";
             s.ImagePreviewContextMenu_RenameGroupAsNeighbourItem_Text = "Rename group of image as neighbour image";

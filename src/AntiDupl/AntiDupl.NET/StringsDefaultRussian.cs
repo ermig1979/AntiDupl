@@ -155,10 +155,6 @@ namespace AntiDupl.NET
             s.ResultsPreviewDuplPair_DeleteBothButton_ToolTip_Text = "Удалить обе картинки";
             s.ResultsPreviewDuplPair_RenameFirstToSecondButton_ToolTip_Text = "Заместить вторую картинку первой";
             s.ResultsPreviewDuplPair_RenameSecondToFirstButton_ToolTip_Text = "Заместить первую картинку второй";
-            s.ResultsPreviewDuplPair_RenameFirstLikeSecondButton_ToolTip_Text = "Переименовать первую картинку как вторую";
-            s.ResultsPreviewDuplPair_RenameSecondLikeFirstButton_ToolTipText = "Переименовать вторую картинку как первую";
-            s.ResultsPreviewDuplPair_MoveFirstToSecondButton_ToolTipText = "Переместить первую картинку ко второй";
-            s.ResultsPreviewDuplPair_MoveSecondToFirstButton_ToolTipText = "Переместить вторую картинку к первой";
             s.ResultsPreviewDuplPair_MistakeButton_ToolTip_Text = "Пометить текущий результат как ошибочный";
 
             s.ResultsPreviewDefect_DeleteButton_ToolTip_Text = "Удалить картинку";
@@ -288,6 +284,8 @@ namespace AntiDupl.NET
             s.ImagePreviewContextMenu_OpenImageItem_Text = "Открыть картинку";
             s.ImagePreviewContextMenu_OpenFolderItem_Text = "Открыть каталог с картинкой";
             s.ImagePreviewContextMenu_RenameImageItem_Text = "Переименовать картинку";
+            s.ImagePreviewContextMenu_RenameImageLikeNeighbour_Text = "Переименовать картинку как соседнию";
+            s.ImagePreviewContextMenu_MoveImageToNeighbourItem_Text = "Переместить картинку к соседней";
             s.ImagePreviewContextMenu_MoveAndRenameImageToNeighbourItem_Text = "Переместить и переименовать к соседней";
             s.ImagePreviewContextMenu_MoveGroupToNeighbourItem_Text = "Перенести группу в папку к соседней";
             s.ImagePreviewContextMenu_RenameGroupAsNeighbourItem_Text = "Переименовать файлы в группе как соседней файл";
