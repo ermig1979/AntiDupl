@@ -38,10 +38,6 @@ namespace AntiDupl.NET
             CurrentDuplPairDeleteBoth,
             CurrentDuplPairRenameFirstToSecond,
             CurrentDuplPairRenameSecondToFirst,
-            CurrentDuplPairRenameFirstLikeSecond,
-            CurrentDuplPairRenameSecondLikeFirst,
-            CurrentDuplPairMoveFirstToSecond,
-            CurrentDuplPairMoveSecondToFirst,
             CurrentMistake,
             Size
         }
@@ -70,11 +66,6 @@ namespace AntiDupl.NET
             keys[(int)Action.CurrentDuplPairRenameFirstToSecond] = Keys.NumPad4;
             keys[(int)Action.CurrentDuplPairRenameSecondToFirst] = Keys.NumPad6;
             keys[(int)Action.CurrentMistake] = Keys.NumPad5;
-            keys[(int)Action.CurrentDuplPairRenameFirstLikeSecond] = Keys.NumPad7;
-            keys[(int)Action.CurrentDuplPairRenameSecondLikeFirst] = Keys.NumPad8;
-            keys[(int)Action.CurrentDuplPairMoveFirstToSecond] = Keys.F9;
-            keys[(int)Action.CurrentDuplPairMoveSecondToFirst] = Keys.F10;
-            keys[(int)Action.CurrentDuplPairRenameSecondToFirst] = Keys.NumPad6;
         }
 
         public void SetDefault(Action action)
