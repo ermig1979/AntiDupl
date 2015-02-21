@@ -166,7 +166,7 @@ namespace ad
         }    
     }
 
-	//private 
+	//private заменяем NewImageInfo файлом OldImageInfo
 	bool TUndoRedoEngine::Rename(TImageInfo *pOldImageInfo, TImageInfo *pNewImageInfo)
     {
         const TChar *oldName = pOldImageInfo->path.Original().c_str();
@@ -174,6 +174,14 @@ namespace ad
 
         if(pOldImageInfo->removed || !IsFileExists(oldName))
             return false;
+
+		//Проверяем нет ли в уже переименованных нашего файла
+		TRenameList & renamedImages = m_pCurrent->change->renamedImages;
+		for(TRenameList::iterator it = renamedImages.begin(); it != renamedImages.end(); ++it)
+        {
+			if (it->info == pOldImageInfo)
+				return false;
+        }
 
 		// если новое имя пустое
         if(newName == TString())

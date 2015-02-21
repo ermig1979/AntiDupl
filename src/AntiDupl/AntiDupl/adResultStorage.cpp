@@ -163,9 +163,10 @@ namespace ad
         if(targetType < 0 && targetType >= AD_TARGET_SIZE)
             return AD_ERROR_INVALID_TARGET_TYPE;
 
-        if(targetType == AD_TARGET_SELECTED &&
+		// Запрешена замена выделнных
+        /*if(targetType == AD_TARGET_SELECTED &&
            (localActionType == AD_LOCAL_ACTION_RENAME_FIRST_TO_SECOND || localActionType == AD_LOCAL_ACTION_RENAME_SECOND_TO_FIRST))
-            return AD_ERROR_INVALID_PARAMETER_COMBINATION;
+            return AD_ERROR_INVALID_PARAMETER_COMBINATION;*/
 
         return m_pUndoRedoEngine->ApplyTo(localActionType, targetType) ? AD_OK : AD_ERROR_ZERO_TARGET;
     }
