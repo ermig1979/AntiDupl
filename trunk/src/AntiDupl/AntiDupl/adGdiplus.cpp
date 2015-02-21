@@ -172,7 +172,7 @@ namespace ad
 		str.Trim();
 		if (str.length() > 0)
 		{
-			structProperty->assign(str.c_str(), gdiProp->length);
+			structProperty->assign(str);
 			imageExif->isEmpty = false;
 		}
 	}

@@ -220,8 +220,8 @@ namespace AntiDupl.NET
             s.ResultsListViewContextMenu_DeleteFirstItem_Text = "Удалить первые картинки в выделенных результатах";
             s.ResultsListViewContextMenu_DeleteSecondItem_Text = "Удалить вторые картинки в выделенных результатах";
             s.ResultsListViewContextMenu_DeleteBothItem_Text = "Удалить все парные картинки в выделенных результатах";
-            s.ResultsListViewContextMenu_RenameFirstToSecondIcon_ToolTip_Text = "Заместить первые картинки вторыми в выделенных результатах";
-            s.ResultsListViewContextMenu_RenameSecondToFirstIcon_ToolTip_Text = "Заместить вторые картинки первыми в выделенных результатах";
+            s.ResultsListViewContextMenu_RenameFirstToSecondIcon_ToolTip_Text = "Заместить вторые картинки первыми в выделенных результатах";
+            s.ResultsListViewContextMenu_RenameSecondToFirstIcon_ToolTip_Text = "Заместить первые картинки вторыми в выделенных результатах";
             s.ResultsListViewContextMenu_RenameFirstLikeSecondButton_ToolTip_Text = "Переименовать первые картинки как вторые в выделенных результатах";
             s.ResultsListViewContextMenu_RenameSecondLikeFirstButton_ToolTipText = "Переименовать вторые картинки как первые в выделенных результатах";
             s.ResultsListViewContextMenu_MoveFirstToSecondButton_ToolTipText = "Переместить первые картинки ко вторым в выделенных результатах";

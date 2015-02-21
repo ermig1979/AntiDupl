@@ -310,7 +310,7 @@ namespace ad
                     }
                     break;
                 case AD_RESULT_DUPL_IMAGE_PAIR:
-                    if(validator(pResult->first, pResult->second))
+                    if(validator(pResult->first, pResult->second)) //если хоть одна удалена
                     {
                         validList.push_back(pResult);
                         if(searchValidCurrent)
