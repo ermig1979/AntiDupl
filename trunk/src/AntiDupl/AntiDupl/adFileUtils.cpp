@@ -424,7 +424,7 @@ namespace ad
         size_t digitPos = length;
 
 		for (int i = length - 1; i >= 0; digitPos = i, i-- )
-            if (!isdigit(name[i])) //если не цифра выходим
+            if (!iswdigit(name[i])) //если не цифра выходим
             {
                 break;
             }
