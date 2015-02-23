@@ -80,7 +80,6 @@ namespace ad
         pImageInfo->height = height;
 		pImageInfo->blockiness = blockiness;
 		pImageInfo->blurring = blurring;
-		//imageExif->Export(&pImageInfo->exifInfo);
 		imageExif.Export(&pImageInfo->exifInfo);
 
         return true;
@@ -100,7 +99,6 @@ namespace ad
         pImageInfo->height = height;
 		pImageInfo->blockiness = blockiness;
 		pImageInfo->blurring = blurring;
-		//imageExif->Export(&pImageInfo->exifInfo);
 		imageExif.Export(&pImageInfo->exifInfo);
 
         return true;

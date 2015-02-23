@@ -317,7 +317,7 @@ namespace AntiDupl.NET
         /// </summary>
         private bool ExifEqual(CoreDll.adImageExifW imageExif1, CoreDll.adImageExifW imageExif2)
         {
-            if (imageExif1.isEmpty == imageExif1.isEmpty &&
+            if (imageExif1.isEmpty == imageExif2.isEmpty &&
                 imageExif1.artist.CompareTo(imageExif2.artist) == 0 &&
                 imageExif1.dateTime.CompareTo(imageExif2.dateTime) == 0 &&
                 imageExif1.equipMake.CompareTo(imageExif2.equipMake) == 0 &&
