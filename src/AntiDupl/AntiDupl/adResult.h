@@ -37,7 +37,8 @@ namespace ad
 
         TResultType type;
         TImageInfoPtr first;
-        TImageInfoPtr second;
+		//Используется только в режиме работы с парами
+        TImageInfoPtr second; 
         TDefectType defect;
         double difference;
         TTransformType transform;

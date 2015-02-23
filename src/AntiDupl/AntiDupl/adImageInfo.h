@@ -38,7 +38,6 @@ namespace ad
         TUInt32 height;
 		double blockiness;
 		double blurring;
-		//TImageExif* imageExif;
 		TImageExif imageExif;
 
         size_t index;
