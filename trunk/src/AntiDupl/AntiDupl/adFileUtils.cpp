@@ -441,7 +441,10 @@ namespace ad
 			TString forParsing = name.substr(digitPos, length - digitPos);
 			result = _wtoi64(forParsing.c_str());
 			if (result == _I64_MAX) //слишком длинный
+			{
 				digitPos = 0;
+				result = -1;
+			}
             leadingZeros = forParsing.length() - LengthOfLong(result);
         }
 
