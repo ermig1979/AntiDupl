@@ -1927,6 +1927,17 @@ SIMD_API float SimdSquaredDifferenceSum32f(const float * a, const float * b, siz
     return simdSquaredDifferenceSum32f(a, b, size);
 }
 
+
+SIMD_API void SimdSigmaDouble(const uint8_t * srcFirst, size_t strideFirst, const uint8_t * srcSecond, size_t strideSecond, size_t width, size_t height, float averageFirst, float averageSecond, float * sigmaOfBoth)
+{
+#ifdef SIMD_SSE2_ENABLE
+    if(Sse2::Enable && width >= Sse2::A)
+        Sse2::SigmaDouble(srcFirst, strideFirst, srcSecond, strideSecond, width, height, averageFirst, averageSecond, sigmaOfBoth);
+    else
+#endif
+		Base::SigmaDouble(srcFirst, strideFirst, srcSecond, strideSecond, width, height, averageFirst, averageSecond, sigmaOfBoth);
+}
+
 SIMD_API void SimdGetStatistic(const uint8_t * src, size_t stride, size_t width, size_t height,
                   uint8_t * min, uint8_t * max, uint8_t * average)
 {

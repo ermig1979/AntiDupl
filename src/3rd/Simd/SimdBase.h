@@ -295,6 +295,8 @@ namespace Simd
 
         float SquaredDifferenceSum32f(const float * a, const float * b, size_t size);
 
+		void SigmaDouble(const uint8_t * srcFirst, size_t strideFirst, const uint8_t * srcSecond, size_t strideSecond, size_t width, size_t height, float averageFirst, float  averageSecond, float * sigmaOfBoth);
+
         void GetStatistic(const uint8_t * src, size_t stride, size_t width, size_t height, 
             uint8_t * min, uint8_t * max, uint8_t * average);
 

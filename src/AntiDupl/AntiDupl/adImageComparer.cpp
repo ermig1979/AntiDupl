@@ -349,14 +349,14 @@ namespace ad
 			uint64_t sum = 0;
 			SimdValueSum(pFirst->data->main,  m_pOptions->advanced.reducedImageSize, 
 					m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize, &sum);
-			pFirst->data->average = (double)sum / (m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize - 1);
+			pFirst->data->average = (float)sum / (m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize);
 		}
 		if (pSecond->data->average == 0)
 		{
 			uint64_t sum = 0;
 			SimdValueSum(pSecond->data->main,  m_pOptions->advanced.reducedImageSize, 
 					m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize, &sum);
-			pSecond->data->average = (double)sum / (m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize - 1);
+			pSecond->data->average = (float)sum / (m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize);
 		}
 
 		if (pFirst->data->varianceSquare == 0)
@@ -364,7 +364,7 @@ namespace ad
 			uint64_t sumSquare = 0;
 			SimdSquareSum(pFirst->data->main,  m_pOptions->advanced.reducedImageSize, 
 						m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize, &sumSquare);
-			double averageSquare = (double)sumSquare / (m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize - 1);
+			float averageSquare = (float)sumSquare / (m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize);
 			pFirst->data->varianceSquare = fabs(averageSquare - (pFirst->data->average * pFirst->data->average));
 		}
 
@@ -373,20 +373,21 @@ namespace ad
 			uint64_t sumSquare = 0;
 			SimdSquareSum(pSecond->data->main,  m_pOptions->advanced.reducedImageSize, 
 						m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize, &sumSquare);
-			double averageSquareSecond = (double)sumSquare / (m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize - 1);
+			float averageSquareSecond = (float)sumSquare / (m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize);
 			pSecond->data->varianceSquare = fabs(averageSquareSecond - (pSecond->data->average * pSecond->data->average));
 		}
 
 		float sigmaOfBoth = 0;
-		SigmaDouble(pFirst->data->main, pSecond->data->main, 
-			m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize, 
+		SimdSigmaDouble(pFirst->data->main, m_pOptions->advanced.reducedImageSize, 
+			pSecond->data->main, m_pOptions->advanced.reducedImageSize, 
+			m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize,
 			pFirst->data->average, pSecond->data->average, &sigmaOfBoth);
 
 		float res = (2 * pFirst->data->average * pSecond->data->average + C1) * (2 * sigmaOfBoth + C2) / 
 			((pow(pFirst->data->average, 2) + pow(pSecond->data->average, 2) + C1) * 
 			(pFirst->data->varianceSquare + pSecond->data->varianceSquare + C2));  
 
-		if (res > 2 || res < 0) // может быть равным 1.0000000594991703 и должно быть от 0 до 1
+		if (res > 2 || res < -2) // может быть равным 1.0000000594991703 и должно быть от 0 до 1
 			return false;
 
 		double difference = 100 - (res * 100);
@@ -400,27 +401,6 @@ namespace ad
         if(pFirst->crc32c != pSecond->crc32c)
             *pDifference += ADDITIONAL_DIFFERENCE_FOR_DIFFERENT_CRC32;
         return true;
-    }
-
-	// covariance of x and y - ковариация  x и y
-	void TImageComparer_SSIM::SigmaDouble(const uint8_t * src1, const uint8_t * src2, size_t width, size_t height, float averageFirst, float averageSecond, float * sigmaOfBoth)
-    {
-		double sum = 0;
-		for(size_t row = 0; row < height; ++row)
-		{
-			double rowSum = 0;
-			for(size_t col = 0; col < width; ++col)
-			{
-				int value1 = src1[col];
-				int value2 = src2[col];
-				rowSum += ((value1 - averageFirst) * (value2 - averageSecond));
-			}
-			sum += rowSum;
-			src1 += width;
-			src2 += width;
-		}
-
-		*sigmaOfBoth = sum / (width * height - 1);
     }
     //-------------------------------------------------------------------------
 	// Фабрика возврашает движок

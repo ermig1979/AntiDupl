@@ -2336,6 +2336,11 @@ extern "C"
         \return sum of squared differences.
     */
     SIMD_API float SimdSquaredDifferenceSum32f(const float * a, const float * b, size_t size);
+	
+	/*
+	covariance of x and y - ковариация  x и y
+	*/
+	SIMD_API void SimdSigmaDouble(const uint8_t * srcFirst, size_t strideFirst, const uint8_t * srcSecond, size_t strideSecond, size_t width, size_t height, float averageFirst, float averageSecond, float * sigmaOfBoth);
 
     /*! @ingroup other_statistic
 

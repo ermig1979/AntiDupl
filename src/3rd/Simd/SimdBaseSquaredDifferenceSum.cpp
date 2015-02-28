@@ -75,5 +75,26 @@ namespace Simd
                 sum += Simd::Square(a[i] - b[i]);
             return sum;
         }
+
+
+		void SigmaDouble(const uint8_t * srcFirst, size_t strideFirst, const uint8_t * srcSecond, size_t strideSecond, size_t width, size_t height, const float averageFirst, const float averageSecond, float * sigmaOfBoth)
+		{
+			assert(width < 0x10000);
+
+			float sum = 0;
+			for(size_t row = 0; row < height; ++row)
+			{
+				float rowSum = 0;
+				for(size_t col = 0; col < width; ++col)
+				{
+					rowSum += ((srcFirst[col] - averageFirst) * (srcSecond [col] - averageSecond));
+				}
+				sum += rowSum;
+				srcFirst += strideFirst;
+				srcSecond += strideSecond;
+			}
+
+			*sigmaOfBoth = sum / (width * height);
+		}
     }
 }

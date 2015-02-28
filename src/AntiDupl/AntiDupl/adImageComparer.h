@@ -138,7 +138,6 @@ namespace ad
 		virtual bool IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference);
 
     private:
-		void SigmaDouble(const uint8_t * src1, const uint8_t * src2, size_t width, size_t height, float averageFirst, float averageSecond, float * sigmaOfBoth);
 		float C1;
 		float C2;
     };
