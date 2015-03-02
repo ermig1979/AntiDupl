@@ -1187,6 +1187,27 @@ SIMD_API void SimdHistogramMasked(const uint8_t *src, size_t srcStride, size_t w
     Base::HistogramMasked(src, srcStride, width, height, mask, maskStride, index, histogram);
 }
 
+SIMD_API void SimdHogDirectionHistograms(const uint8_t * src, size_t stride, size_t width, size_t height, 
+                                         size_t cellX, size_t cellY, size_t quantization, float * histograms)
+{
+#ifdef SIMD_AVX2_ENABLE
+    if(Avx2::Enable && width >= Avx2::A + 2)
+        Avx2::HogDirectionHistograms(src, stride, width, height, cellX, cellY, quantization, histograms);
+    else
+#endif
+#ifdef SIMD_SSE2_ENABLE
+    if(Sse2::Enable && width >= Sse2::A + 2)
+        Sse2::HogDirectionHistograms(src, stride, width, height, cellX, cellY, quantization, histograms);
+    else
+#endif
+#ifdef SIMD_VSX_ENABLE
+    if(Vsx::Enable && width >= Vsx::A + 2)
+        Vsx::HogDirectionHistograms(src, stride, width, height, cellX, cellY, quantization, histograms);
+    else
+#endif
+        Base::HogDirectionHistograms(src, stride, width, height, cellX, cellY, quantization, histograms);
+}
+
 SIMD_API void SimdIntegral(const uint8_t * src, size_t srcStride, size_t width, size_t height,
                       uint8_t * sum, size_t sumStride, uint8_t * sqsum, size_t sqsumStride, uint8_t * tilted, size_t tiltedStride,
                       SimdPixelFormatType sumFormat, SimdPixelFormatType sqsumFormat)
@@ -1776,6 +1797,26 @@ SIMD_API void SimdSobelDxAbs(const uint8_t * src, size_t srcStride, size_t width
         Base::SobelDxAbs(src, srcStride, width, height, dst, dstStride);
 }
 
+SIMD_API void SimdSobelDxAbsSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum)
+{
+#ifdef SIMD_AVX2_ENABLE
+    if(Avx2::Enable && width > Avx2::A)
+        Avx2::SobelDxAbsSum(src, stride, width, height, sum);
+    else
+#endif
+#ifdef SIMD_SSSE3_ENABLE
+    if(Ssse3::Enable && width > Ssse3::A)
+        Ssse3::SobelDxAbsSum(src, stride, width, height, sum);
+    else
+#endif
+#ifdef SIMD_VSX_ENABLE
+    if(Vsx::Enable && width > Vsx::A)
+        Vsx::SobelDxAbsSum(src, stride, width, height, sum);
+    else
+#endif
+        Base::SobelDxAbsSum(src, stride, width, height, sum);
+}
+
 SIMD_API void SimdSobelDy(const uint8_t * src, size_t srcStride, size_t width, size_t height, uint8_t * dst, size_t dstStride)
 {
 #ifdef SIMD_AVX2_ENABLE
@@ -1814,6 +1855,26 @@ SIMD_API void SimdSobelDyAbs(const uint8_t * src, size_t srcStride, size_t width
     else
 #endif
         Base::SobelDyAbs(src, srcStride, width, height, dst, dstStride);
+}
+
+SIMD_API void SimdSobelDyAbsSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum)
+{
+#ifdef SIMD_AVX2_ENABLE
+    if(Avx2::Enable && width > Avx2::A)
+        Avx2::SobelDyAbsSum(src, stride, width, height, sum);
+    else
+#endif
+#ifdef SIMD_SSSE3_ENABLE
+    if(Ssse3::Enable && width > Ssse3::A)
+        Ssse3::SobelDyAbsSum(src, stride, width, height, sum);
+    else
+#endif
+#ifdef SIMD_VSX_ENABLE
+    if(Vsx::Enable && width > Vsx::A)
+        Vsx::SobelDyAbsSum(src, stride, width, height, sum);
+    else
+#endif
+        Base::SobelDyAbsSum(src, stride, width, height, sum);
 }
 
 SIMD_API void SimdContourMetrics(const uint8_t * src, size_t srcStride, size_t width, size_t height, uint8_t * dst, size_t dstStride)
@@ -1925,17 +1986,6 @@ SimdSquaredDifferenceSum32fPtr simdSquaredDifferenceSum32f = SIMD_FUNC3(SquaredD
 SIMD_API float SimdSquaredDifferenceSum32f(const float * a, const float * b, size_t size)
 {
     return simdSquaredDifferenceSum32f(a, b, size);
-}
-
-
-SIMD_API void SimdSigmaDouble(const uint8_t * srcFirst, size_t strideFirst, const uint8_t * srcSecond, size_t strideSecond, size_t width, size_t height, float averageFirst, float averageSecond, float * sigmaOfBoth)
-{
-#ifdef SIMD_SSE2_ENABLE
-    if(Sse2::Enable && width >= Sse2::A)
-        Sse2::SigmaDouble(srcFirst, strideFirst, srcSecond, strideSecond, width, height, averageFirst, averageSecond, sigmaOfBoth);
-    else
-#endif
-		Base::SigmaDouble(srcFirst, strideFirst, srcSecond, strideSecond, width, height, averageFirst, averageSecond, sigmaOfBoth);
 }
 
 SIMD_API void SimdGetStatistic(const uint8_t * src, size_t stride, size_t width, size_t height,
@@ -2098,6 +2148,26 @@ SIMD_API void SimdSquareSum(const uint8_t * src, size_t stride, size_t width, si
     else
 #endif
         Base::SquareSum(src, stride, width, height, sum);
+}
+
+SIMD_API void SimdCorrelationSum(const uint8_t * a, size_t aStride, const uint8_t * b, size_t bStride, size_t width, size_t height, uint64_t * sum)
+{
+#ifdef SIMD_AVX2_ENABLE
+    if(Avx2::Enable && width >= Avx2::A)
+        Avx2::CorrelationSum(a, aStride, b, bStride, width, height, sum);
+    else
+#endif
+#ifdef SIMD_SSE2_ENABLE
+    if(Sse2::Enable && width >= Sse2::A)
+        Sse2::CorrelationSum(a, aStride, b, bStride, width, height, sum);
+    else
+#endif
+#ifdef SIMD_VSX_ENABLE
+    if(Vsx::Enable && width >= Vsx::A)
+        Vsx::CorrelationSum(a, aStride, b, bStride, width, height, sum);
+    else
+#endif
+        Base::CorrelationSum(a, aStride, b, bStride, width, height, sum);
 }
 
 SIMD_API void SimdStretchGray2x2(const uint8_t *src, size_t srcWidth, size_t srcHeight, size_t srcStride,
