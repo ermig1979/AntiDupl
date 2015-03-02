@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://simd.sourceforge.net).
 *
-* Copyright (c) 2011-2015 Yermalayeu Ihar.
+* Copyright (c) 2011-2015 Yermalayeu Ihar, 2015 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -21,59 +21,30 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
-#include "Simd/SimdMath.h"
 #include "Simd/SimdBase.h"
 
 namespace Simd
 {
-    namespace Base
-    {
-		void SquaredDifferenceSum(const uint8_t *a, size_t aStride, const uint8_t *b, size_t bStride, 
-			size_t width, size_t height, uint64_t * sum)
+	namespace Base
+	{
+		void SigmaDouble(const uint8_t * srcFirst, size_t strideFirst, const uint8_t * srcSecond, size_t strideSecond, size_t width, size_t height, const float averageFirst, const float averageSecond, float * sigmaOfBoth)
 		{
 			assert(width < 0x10000);
 
-			*sum = 0;
+			float sum = 0;
 			for(size_t row = 0; row < height; ++row)
 			{
-				int rowSum = 0;
+				float rowSum = 0;
 				for(size_t col = 0; col < width; ++col)
 				{
-					rowSum += SquaredDifference(a[col], b[col]);
+					rowSum += ((srcFirst[col] - averageFirst) * (srcSecond [col] - averageSecond));
 				}
-				*sum += rowSum;
-				a += aStride;
-				b += bStride;
+				sum += rowSum;
+				srcFirst += strideFirst;
+				srcSecond += strideSecond;
 			}
+
+			*sigmaOfBoth = sum / (width * height);
 		}
-
-		void SquaredDifferenceSumMasked(const uint8_t *a, size_t aStride, const uint8_t *b, size_t bStride, 
-			const uint8_t *mask, size_t maskStride, uint8_t index, size_t width, size_t height, uint64_t * sum)
-		{
-			assert(width < 0x10000);
-
-			*sum = 0;
-			for(size_t row = 0; row < height; ++row)
-			{
-				int rowSum = 0;
-				for(size_t col = 0; col < width; ++col)
-				{
-					if(mask[col] == index)
-						rowSum += SquaredDifference(a[col], b[col]);
-				}
-				*sum += rowSum;
-				a += aStride;
-				b += bStride;
-				mask += maskStride;
-			}
-		}
-
-        float SquaredDifferenceSum32f(const float * a, const float * b, size_t size)
-        {
-            float sum = 0;
-            for(size_t i = 0; i < size; ++i)
-                sum += Simd::Square(a[i] - b[i]);
-            return sum;
-        }
-    }
+	}
 }
