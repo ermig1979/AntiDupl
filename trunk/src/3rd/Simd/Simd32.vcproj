@@ -491,6 +491,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimdBaseSSIM.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdBaseStatistic.cpp"
 				>
 			</File>
@@ -1149,6 +1153,10 @@
 						EnableEnhancedInstructionSet="2"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\SimdSse2SSIM.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\SimdSse2Statistic.cpp"
