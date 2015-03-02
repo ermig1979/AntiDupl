@@ -33,8 +33,8 @@
     This is the reference documentation of <a href="http://simd.sourceforge.net">Simd Library</a>,
     the C++ image processing library.
     This documentation have been generated using the tool <a href="http://www.doxygen.org">doxygen</a>.
-    It contains a detailed description of all classes and functions of the Simd Library.
-    If you have downloaded the Simd Library package, you actually have a local copy of these pages in the
+    It contains a detailed description of all classes and functions of the %Simd Library.
+    If you have downloaded the %Simd Library package, you actually have a local copy of these pages in the
     \c simd/doc/help/ directory.
 
     Use the menu above to navigate through the documentation pages.
@@ -46,51 +46,89 @@
 /*!
     \page foo2
 
-    The <b>Simd Library</b> is a high performance image processing library, designed for C and C++ programmers.
-    It provides many useful algorithms for image processing  such as: pixel format conversion, image scaling and filtration, 
-    extraction of statistic information from images, motion detection. 
+    The <b>%Simd Library</b> is a free open source image processing library, designed for C and C++ programmers.
+    It provides many useful high performance algorithms for image processing such as: pixel format conversion, image scaling and filtration, 
+    extraction of statistic information from images, motion detection.
     The algorithms are optimized with using of different SIMD CPU extensions. 
     In particular the library supports following CPU extensions: SSE, SSE2, SSSE3, SSE4.1, SSE4.2, AVX and AVX2 for x86/x64, VMX(Altivec) and VSX(Power7) for PowerPC. 
-    The Simd Library has C API and also contains useful C++ classes and functions to facilitate access to C API.
+    The %Simd Library has C API and also contains useful C++ classes and functions to facilitate access to C API.
     The library supports dynamic and static linking, 32-bit and 64-bit Windows and Linux, MSVS and G++ compilers, MSVS project and CMake build systems.
 
     \section s1 Library structure
 
-    The source of Simd Library is placed in the 
-    \c simd/src/Simd/ directory.
+    The source of %Simd Library is placed in the \c simd/src/Simd/ directory, its test framework is placed in the \c simd/src/Test/ directory.
 
 */
 /*@}*/
 
-/*! @defgroup c_types C API Types
-    \short Types of Simd Library C API.
+/*! @defgroup c_types C Types
+    \short Types of %Simd Library C API.
 */
 
-/*! @defgroup c_functions C API Functions
-    \short Functions of Simd Library C API.
+/*! @defgroup cpp_types C++ Types
+    \short C++ API Types of %Simd Library.
 */
 
-/*! @ingroup c_functions
+/*! @ingroup cpp_types
+    @defgroup cpp_allocator struct Allocator
+    \short Allocator structure and related functions. 
+*/
+
+/*! @ingroup cpp_types
+    @defgroup cpp_point struct Point
+    \short Point structure and related functions. 
+*/
+
+/*! @ingroup cpp_point
+    @defgroup cpp_point_functions Related Functions 
+    \short Related functions for Point structure. 
+*/
+
+/*! @ingroup cpp_types
+    @defgroup cpp_rectangle struct Rectangle
+    \short Rectangle structure and related functions. 
+*/
+
+/*! @ingroup cpp_rectangle
+    @defgroup cpp_rectangle_functions Related Functions 
+    \short Related functions for Rectangle structure. 
+*/
+
+/*! @ingroup cpp_types
+    @defgroup cpp_view struct View
+    \short View structure and related functions. 
+*/
+
+/*! @ingroup cpp_view
+    @defgroup cpp_view_functions Related Functions 
+    \short Related functions for View structure. 
+*/
+
+/*! @defgroup functions Functions
+    \short Functions of %Simd Library API.
+*/
+
+/*! @ingroup functions
     @defgroup info Info
     \short Functions with information about library.
 */
 
-/*! @ingroup c_functions
+/*! @ingroup functions
     @defgroup memory Memory Utilities
     \short Functions for memory management.
 */
 
-/*! @ingroup c_functions
+/*! @ingroup functions
     @defgroup hash Hash Functions
     \short Functions for hash estimation.
 */
 
-/*! @ingroup c_functions
+/*! @ingroup functions
     @defgroup reordering Byte Reordering
     \short Functions for bytes reordering.
 */
 
-/*! @ingroup c_functions
+/*! @ingroup functions
     @defgroup conversion Conversion
     \short Functions for image format conversions.
 */
@@ -125,32 +163,32 @@
     \short Functions for other image format conversions.
 */
 
-/*! @ingroup c_functions
+/*! @ingroup functions
     @defgroup drawing Drawing
     \short Functions for image drawing.
 */
 
-/*! @ingroup c_functions
+/*! @ingroup functions
     @defgroup correlation Correlation
     \short Functions for estimation of correlation.
 */
 
-/*! @ingroup c_functions
+/*! @ingroup functions
     @defgroup histogram Histogram
     \short Functions for estimation of image histogram.
 */
 
-/*! @ingroup c_functions
+/*! @ingroup functions
     @defgroup integral Integral
     \short Functions for estimation of integral image.
 */
 
-/*! @ingroup c_functions
+/*! @ingroup functions
     @defgroup operation Operations
     \short Various mathematical operations with images.
 */
 
-/*! @ingroup c_functions
+/*! @ingroup functions
     @defgroup filter Filters
     \short Various image filters.
 */
@@ -170,32 +208,32 @@
     \short Other image filters.
 */
 
-/*! @ingroup c_functions
+/*! @ingroup functions
     @defgroup resizing Resizing
     \short Functions for image resizing.
 */
 
-/*! @ingroup c_functions
+/*! @ingroup functions
     @defgroup shifting Shifting
     \short Functions for image shifting.
 */
 
-/*! @ingroup c_functions
+/*! @ingroup functions
     @defgroup copying Copying
     \short Functions for image copying.
 */
 
-/*! @ingroup c_functions
+/*! @ingroup functions
     @defgroup filling Filling
     \short Functions for image filling.
 */
 
-/*! @ingroup c_functions
+/*! @ingroup functions
     @defgroup binarization Binarization
     \short Functions for image binarization.
 */
 
-/*! @ingroup c_functions
+/*! @ingroup functions
     @defgroup statistic Statistic
     \short Functions for image statistic estimation.
 */
@@ -216,11 +254,16 @@
 */
 
 /*! @ingroup statistic
+    @defgroup sobel_statistic Sobel Statistic
+    \short Getting of statistic related with Sobel filters.
+*/
+
+/*! @ingroup statistic
     @defgroup other_statistic Other Statistic
     \short Estimation of various image statistic.
 */
 
-/*! @ingroup c_functions
+/*! @ingroup functions
     @defgroup motion_detection Motion Detection
     \short Functions for motion detection.
 */
@@ -260,33 +303,9 @@
     \short Functions for edge background updating.
 */
 
-/*! @defgroup cpp_types C++ API Types
-    \short C++ API Types of Simd Library.
-*/
-
-/*! @ingroup cpp_types
-    @defgroup cpp_allocator struct Allocator
-    \short Allocator structure and related functions. 
-*/
-
-/*! @ingroup cpp_types
-    @defgroup cpp_point struct Point
-    \short Point structure and related functions. 
-*/
-
-/*! @ingroup cpp_point
-    @defgroup cpp_point_functions Related Functions 
-    \short Related functions for Point structure. 
-*/
-
-/*! @ingroup cpp_types
-    @defgroup cpp_rectangle struct Rectangle
-    \short Rectangle structure and related functions. 
-*/
-
-/*! @ingroup cpp_rectangle
-    @defgroup cpp_rectangle_functions Related Functions 
-    \short Related functions for Rectangle structure. 
+/*! @ingroup functions
+    @defgroup face_recognition Face Recognition
+    \short Functions for face recognition.
 */
 
 #ifndef __SimdHelp_h__

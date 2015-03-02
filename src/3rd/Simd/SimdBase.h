@@ -190,6 +190,12 @@ namespace Simd
         void HistogramMasked(const uint8_t * src, size_t srcStride, size_t width, size_t height, 
             const uint8_t * mask, size_t maskStride, uint8_t index, uint32_t * histogram);
 
+        void AddRowToHistograms(int * indexes, float * values, size_t row, size_t width, size_t height, 
+            size_t cellX, size_t cellY, size_t quantization, float * histograms);
+
+        void HogDirectionHistograms(const uint8_t * src, size_t stride, size_t width, size_t height, 
+            size_t cellX, size_t cellY, size_t quantization, float * histograms);
+
         void Integral(const uint8_t * src, size_t srcStride, size_t width, size_t height, 
             uint8_t * sum, size_t sumStride, uint8_t * sqsum, size_t sqsumStride, uint8_t * tilted, size_t tiltedStride, 
             SimdPixelFormatType sumFormat, SimdPixelFormatType sqsumFormat);
@@ -275,9 +281,13 @@ namespace Simd
 
         void SobelDxAbs(const uint8_t * src, size_t srcStride, size_t width, size_t height, uint8_t * dst, size_t dstStride);
 
+        void SobelDxAbsSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum);
+
         void SobelDy(const uint8_t * src, size_t srcStride, size_t width, size_t height, uint8_t * dst, size_t dstStride);
 
         void SobelDyAbs(const uint8_t * src, size_t srcStride, size_t width, size_t height, uint8_t * dst, size_t dstStride);
+
+        void SobelDyAbsSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum);
 
         void ContourMetrics(const uint8_t * src, size_t srcStride, size_t width, size_t height, uint8_t * dst, size_t dstStride);
 
@@ -294,8 +304,6 @@ namespace Simd
             const uint8_t *mask, size_t maskStride, uint8_t index, size_t width, size_t height, uint64_t * sum);
 
         float SquaredDifferenceSum32f(const float * a, const float * b, size_t size);
-
-		void SigmaDouble(const uint8_t * srcFirst, size_t strideFirst, const uint8_t * srcSecond, size_t strideSecond, size_t width, size_t height, float averageFirst, float  averageSecond, float * sigmaOfBoth);
 
         void GetStatistic(const uint8_t * src, size_t stride, size_t width, size_t height, 
             uint8_t * min, uint8_t * max, uint8_t * average);
@@ -314,6 +322,8 @@ namespace Simd
         void ValueSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum);
 
         void SquareSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum);
+
+        void CorrelationSum(const uint8_t * a, size_t aStride, const uint8_t * b, size_t bStride, size_t width, size_t height, uint64_t * sum);
 
         void StretchGray2x2(const uint8_t *src, size_t srcWidth, size_t srcHeight, size_t srcStride, 
             uint8_t *dst, size_t dstWidth, size_t dstHeight, size_t dstStride);

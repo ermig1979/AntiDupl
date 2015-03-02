@@ -308,8 +308,8 @@ namespace ad
         :TImageComparer(pEngine)
     {
 		//константы
-		C1 = pow(0.01 * PIXEL_MAX_DIFFERENCE, 2);
-        C2 = pow(0.03 * PIXEL_MAX_DIFFERENCE, 2);
+		C1 = (float)pow(0.01 * PIXEL_MAX_DIFFERENCE, 2);
+        C2 = (float)pow(0.03 * PIXEL_MAX_DIFFERENCE, 2);
         m_sets.resize(1);
     }
 
@@ -377,11 +377,13 @@ namespace ad
 			pSecond->data->varianceSquare = fabs(averageSquareSecond - (pSecond->data->average * pSecond->data->average));
 		}
 
-		float sigmaOfBoth = 0;
-		SimdSigmaDouble(pFirst->data->main, m_pOptions->advanced.reducedImageSize, 
-			pSecond->data->main, m_pOptions->advanced.reducedImageSize, 
-			m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize,
-			pFirst->data->average, pSecond->data->average, &sigmaOfBoth);
+        uint64_t correlationSum = 0;
+        SimdCorrelationSum(
+            pFirst->data->main, m_pOptions->advanced.reducedImageSize, 
+            pSecond->data->main, m_pOptions->advanced.reducedImageSize, 
+            m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize, &correlationSum);
+        float sigmaOfBoth = (float)correlationSum/(m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize) - 
+            pFirst->data->average*pSecond->data->average;
 
 		float res = (2 * pFirst->data->average * pSecond->data->average + C1) * (2 * sigmaOfBoth + C2) / 
 			((pow(pFirst->data->average, 2) + pow(pSecond->data->average, 2) + C1) * 

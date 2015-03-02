@@ -155,6 +155,9 @@ namespace Simd
         void AbsSecondDerivativeHistogram(const uint8_t *src, size_t width, size_t height, size_t stride,
             size_t step, size_t indent, uint32_t * histogram);
 
+        void HogDirectionHistograms(const uint8_t * src, size_t stride, size_t width, size_t height, 
+            size_t cellX, size_t cellY, size_t quantization, float * histograms);
+
         void InterferenceIncrement(uint8_t * statistic, size_t stride, size_t width, size_t height, uint8_t increment, int16_t saturation);
 
         void InterferenceIncrementMasked(uint8_t * statistic, size_t statisticStride, size_t width, size_t height, 
@@ -227,9 +230,13 @@ namespace Simd
 
         void SobelDxAbs(const uint8_t * src, size_t srcStride, size_t width, size_t height, uint8_t * dst, size_t dstStride);
 
+        void SobelDxAbsSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum);
+
         void SobelDy(const uint8_t * src, size_t srcStride, size_t width, size_t height, uint8_t * dst, size_t dstStride);
 
         void SobelDyAbs(const uint8_t * src, size_t srcStride, size_t width, size_t height, uint8_t * dst, size_t dstStride);
+
+        void SobelDyAbsSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum);
 
         void ContourMetrics(const uint8_t * src, size_t srcStride, size_t width, size_t height, uint8_t * dst, size_t dstStride);
 
@@ -262,6 +269,8 @@ namespace Simd
         void ValueSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum);
 
         void SquareSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum);
+
+        void CorrelationSum(const uint8_t * a, size_t aStride, const uint8_t * b, size_t bStride, size_t width, size_t height, uint64_t * sum);
 
         void StretchGray2x2(const uint8_t *src, size_t srcWidth, size_t srcHeight, size_t srcStride, 
             uint8_t *dst, size_t dstWidth, size_t dstHeight, size_t dstStride);

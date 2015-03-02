@@ -147,6 +147,9 @@ namespace Simd
         void AbsSecondDerivativeHistogram(const uint8_t *src, size_t width, size_t height, size_t stride,
             size_t step, size_t indent, uint32_t * histogram);
 
+        void HogDirectionHistograms(const uint8_t * src, size_t stride, size_t width, size_t height, 
+            size_t cellX, size_t cellY, size_t quantization, float * histograms);
+
         void InterferenceIncrement(uint8_t * statistic, size_t stride, size_t width, size_t height, uint8_t increment, int16_t saturation);
 
         void InterferenceIncrementMasked(uint8_t * statistic, size_t statisticStride, size_t width, size_t height, 
@@ -243,7 +246,7 @@ namespace Simd
 
         void SquareSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum);
 
-		void SigmaDouble(const uint8_t * srcFirst, size_t strideFirst, const uint8_t * srcSecond, size_t strideSecond, size_t width, size_t height, const float averageFirst, const float averageSecond, float * sigmaOfBoth);
+        void CorrelationSum(const uint8_t * a, size_t aStride, const uint8_t * b, size_t bStride, size_t width, size_t height, uint64_t * sum);
 
         void StretchGray2x2(const uint8_t *src, size_t srcWidth, size_t srcHeight, size_t srcStride, 
             uint8_t *dst, size_t dstWidth, size_t dstHeight, size_t dstStride);

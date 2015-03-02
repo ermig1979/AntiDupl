@@ -231,6 +231,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimdAvx2Hog.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdAvx2Interference.cpp"
 				>
 			</File>
@@ -428,6 +432,10 @@
 			</File>
 			<File
 				RelativePath=".\SimdBaseHistogram.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdBaseHog.cpp"
 				>
 			</File>
 			<File
@@ -856,6 +864,26 @@
 			</File>
 			<File
 				RelativePath=".\SimdSse2Histogram.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						EnableEnhancedInstructionSet="2"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						EnableEnhancedInstructionSet="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\SimdSse2Hog.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1824,6 +1852,10 @@
 			</File>
 			<File
 				RelativePath=".\SimdVsxHistogram.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxHog.cpp"
 				>
 			</File>
 			<File
