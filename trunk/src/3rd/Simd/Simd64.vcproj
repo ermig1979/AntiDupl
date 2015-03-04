@@ -495,10 +495,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SimdBaseSSIM.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\SimdBaseStatistic.cpp"
 				>
 			</File>
@@ -664,10 +660,6 @@
 			</File>
 			<File
 				RelativePath=".\SimdSse2SquaredDifferenceSum.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SimdSse2SSIM.cpp"
 				>
 			</File>
 			<File
