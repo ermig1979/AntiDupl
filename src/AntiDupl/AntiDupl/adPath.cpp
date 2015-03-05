@@ -151,15 +151,15 @@ namespace ad
 	{
 		const TChar *p1 = path1.m_compare.directory.first;
 		const TChar *p2 = path2.m_compare.directory.first;
-		while(*p1 != 0 && *p2 != 0 && *p1 == *p2)
+		while(*p1 != 0 && *p2 != 0 && *p1 == *p2) //если символы равны удаляем их
 		{
 			p1++;
 			p2++;
 		}
 		if(*p1 == 0 && *p2 == 0)
 			return EQUAL; 
-		if(*p1 == 0 && *p2 == DELIMETER && path1.m_enableSubFolder == true)
-			return SECOND; 
+		if(*p1 == 0 && *p2 == DELIMETER && path1.m_enableSubFolder == true) //если второй начинается со слеша и включены субдиректории
+			return SECOND; //второй путь входит в первый
 		if(*p2 == 0 && *p1 == DELIMETER && path2.m_enableSubFolder == true)
 			return FIRST;  //первая входит во вторую
 		return NONE;

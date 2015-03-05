@@ -398,7 +398,10 @@ namespace AntiDupl.NET
             {
                 Array.Resize(ref path, path.Length + 1);
                 path[path.Length - 1] = new CorePathWithSubFolder();
-                path[path.Length - 1].path = dialog.SelectedPath;
+                if (dialog.SelectedPath[dialog.SelectedPath.Length - 1] == Path.DirectorySeparatorChar)
+                    path[path.Length - 1].path = dialog.SelectedPath.Remove(dialog.SelectedPath.Length - 1);
+                else
+                    path[path.Length - 1].path = dialog.SelectedPath;
                 path[path.Length - 1].enableSubFolder = true;
                 SetCurrentPath(path);
                 m_newCoreOptions.Validate(m_core, m_options.onePath);
