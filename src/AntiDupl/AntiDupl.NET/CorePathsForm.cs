@@ -504,7 +504,10 @@ namespace AntiDupl.NET
                 dialog.SelectedPath = path[listBox.SelectedIndex].path;
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    path[listBox.SelectedIndex].path = dialog.SelectedPath;
+                    if (dialog.SelectedPath[dialog.SelectedPath.Length - 1] == Path.DirectorySeparatorChar)
+                        path[listBox.SelectedIndex].path = dialog.SelectedPath.Remove(dialog.SelectedPath.Length - 1);
+                    else
+                        path[listBox.SelectedIndex].path = dialog.SelectedPath;
                     SetCurrentPath(path);
                     m_newCoreOptions.Validate(m_core, m_options.onePath);
                     UpdatePath();
