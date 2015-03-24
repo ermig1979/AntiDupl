@@ -86,6 +86,7 @@ namespace AntiDupl.NET
         private MainSplitContainer m_mainSplitContainer;
         private CoreLib m_core;
         private AntiDupl.NET.Options m_options;
+        public CoreOptions CoreOptions { get { return m_coreOptions; } } 
         private CoreOptions m_coreOptions;
         private CoreResult[] m_results;
         private ResultsOptions.ViewMode m_viewMode = ResultsOptions.ViewMode.VerticalPairTable;
@@ -238,6 +239,12 @@ namespace AntiDupl.NET
             ProgressForm progressForm = new ProgressForm(action, target, m_core, m_options, m_coreOptions, m_mainSplitContainer);
             progressForm.Execute();
             m_makeAction = false;
+        }
+
+        public void RefreshResults()
+        {
+            ProgressForm progressForm = new ProgressForm(ProgressForm.Type.RefreshResults, m_core, m_options, m_coreOptions, m_mainSplitContainer);
+            progressForm.Execute();
         }
 
         /// <summary>

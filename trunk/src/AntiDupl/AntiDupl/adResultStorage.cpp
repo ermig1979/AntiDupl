@@ -228,8 +228,9 @@ namespace ad
     {
         m_pUndoRedoEngine->Clear();
         m_pUndoRedoEngine->Current()->RemoveInvalid(m_pStatus, m_pMistakeStorage);
-        m_pUndoRedoEngine->Current()->SetGroups(m_pStatus); //очищает внутреннее хранилища групп
-		m_pUndoRedoEngine->Current()->UpdateGroups();
+		m_pUndoRedoEngine->Current()->RemoveSkipped(m_pStatus, m_pOptions); //удаляет из результатов пропускаемые
+        m_pUndoRedoEngine->Current()->SetGroups(m_pStatus); //очищает внутреннее хранилище групп
+		m_pUndoRedoEngine->Current()->UpdateGroups(); //обновляет группы из результатов
         m_pUndoRedoEngine->Current()->UpdateHints(m_pOptions, true);
     }
 

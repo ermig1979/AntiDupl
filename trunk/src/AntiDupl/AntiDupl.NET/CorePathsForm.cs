@@ -34,6 +34,9 @@ namespace AntiDupl.NET
 {
     public class CorePathsForm : Form
     {
+        static public int FORM_WIDTH = 450;
+        static public int FORM_HEIGHT = 350;
+
         private CoreLib m_core;
         private Options m_options;
         private CoreOptions m_oldCoreOptions; //опции до изменения
@@ -71,8 +74,9 @@ namespace AntiDupl.NET
 
         void InitializeComponent()
         {
-            ClientSize = new System.Drawing.Size(420, 320);
-            FormBorderStyle = FormBorderStyle.FixedDialog;
+            ClientSize = new System.Drawing.Size(FORM_WIDTH, FORM_HEIGHT);
+            FormBorderStyle = FormBorderStyle.Sizable;
+            Icon = Resources.Icons.Get(Icon.Size);
             StartPosition = FormStartPosition.CenterScreen;
             ShowInTaskbar = false;
             MaximizeBox = false;

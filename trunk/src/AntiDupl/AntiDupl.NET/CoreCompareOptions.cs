@@ -38,6 +38,7 @@ namespace AntiDupl.NET
         public int minimalImageSize;
         public int maximalImageSize;
         public bool compareInsideOneFolder;
+        public bool compareInsideOneSearchPath;
         public CoreDll.AlgorithmComparing algorithmComparing;
 
         public CoreCompareOptions()
@@ -56,6 +57,7 @@ namespace AntiDupl.NET
             minimalImageSize = compareOptions.minimalImageSize;
             maximalImageSize = compareOptions.maximalImageSize;
             compareInsideOneFolder = compareOptions.compareInsideOneFolder;
+            compareInsideOneSearchPath = compareOptions.compareInsideOneSearchPath;
         }
 
         public CoreCompareOptions(ref CoreDll.adCompareOptions compareOptions)
@@ -70,6 +72,7 @@ namespace AntiDupl.NET
             minimalImageSize = compareOptions.minimalImageSize;
             maximalImageSize = compareOptions.maximalImageSize;
             compareInsideOneFolder = compareOptions.compareInsideOneFolder != CoreDll.FALSE;
+            compareInsideOneSearchPath = compareOptions.compareInsideOneSearchPath != CoreDll.FALSE;
         }
 
         public void ConvertTo(ref CoreDll.adCompareOptions compareOptions)
@@ -84,6 +87,7 @@ namespace AntiDupl.NET
             compareOptions.minimalImageSize = minimalImageSize;
             compareOptions.maximalImageSize = maximalImageSize;
             compareOptions.compareInsideOneFolder = compareInsideOneFolder ? CoreDll.TRUE : CoreDll.FALSE;
+            compareOptions.compareInsideOneSearchPath = compareInsideOneSearchPath ? CoreDll.TRUE : CoreDll.FALSE;
         }
 
         public CoreCompareOptions Clone()
@@ -103,7 +107,8 @@ namespace AntiDupl.NET
                 thresholdDifference == compareOptions.thresholdDifference &&
                 minimalImageSize == compareOptions.minimalImageSize &&
                 maximalImageSize == compareOptions.maximalImageSize &&
-                compareInsideOneFolder == compareOptions.compareInsideOneFolder;
+                compareInsideOneFolder == compareOptions.compareInsideOneFolder &&
+                compareInsideOneSearchPath == compareOptions.compareInsideOneSearchPath;
         }
     }
 }

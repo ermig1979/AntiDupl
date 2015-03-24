@@ -89,7 +89,8 @@ namespace AntiDupl.NET
             s.CoreOptionsForm_ThresholdDifferenceLabeledComboBox_Text = "Пороговая разность";
             s.CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text = "Минимальная ширина/высота картинок";
             s.CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text = "Максимальная ширина/высота картинок";
-            s.CoreOptionsForm_CompareInsideOneFolderCheckBox_Text = "Сравнивать картинки из одного пути друг с другом";
+            s.CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text = "Сравнивать картинки из одного пути поиска друг с другом";
+            s.CoreOptionsForm_CompareInsideOneFolderCheckBox_Text = "Сравнивать картинки внутри одного каталога";
 
             s.CoreOptionsForm_DefectTabPage_Text = "Дефекты";
             s.CoreOptionsForm_CheckOnDefectCheckBox_Text = "Проверять на дефекты";
@@ -254,7 +255,7 @@ namespace AntiDupl.NET
             s.MainMenu_SearchMenuItem_Text = "Поиск";
             s.MainMenu_Search_StartMenuItem_Text = "Начать поиск";
             s.MainMenu_Search_RefreshResultsMenuItem_Text = "Обновить результаты";
-            s.MainMenu_Search_RefreshImagesMenuItem_Text = "Обновить базу данных о картинках";
+            s.MainMenu_Search_RefreshImagesMenuItem_Text = "Удалить неактуальные записи из базы данных о картинках";
             s.MainMenu_Search_PathsMenuItem_Text = "Пути";
             s.MainMenu_Search_OptionsMenuItem_Text = "Опции";
             s.MainMenu_Search_OnePathMenuItem_Text = "Один путь поиска";
@@ -283,6 +284,8 @@ namespace AntiDupl.NET
             s.ImagePreviewContextMenu_CopyFileNameItem_Text = "Скопировать имя картинки";
             s.ImagePreviewContextMenu_OpenImageItem_Text = "Открыть картинку";
             s.ImagePreviewContextMenu_OpenFolderItem_Text = "Открыть каталог с картинкой";
+            s.ImagePreviewContextMenu_AddToIgnore_Text = "Добавить в игнорируемые";
+            s.ImagePreviewContextMenu_AddToIgnoreDirectory_Text = "Добавить директорию в игнорируемые";
             s.ImagePreviewContextMenu_RenameImageItem_Text = "Переименовать картинку";
             s.ImagePreviewContextMenu_RenameImageLikeNeighbour_Text = "Переименовать картинку как соседнию";
             s.ImagePreviewContextMenu_MoveImageToNeighbourItem_Text = "Переместить картинку к соседней";

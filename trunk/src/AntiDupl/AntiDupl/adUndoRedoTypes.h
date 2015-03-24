@@ -86,6 +86,7 @@ namespace ad
         void RemoveInvalid(TStatus *pStatus, TMistakeStorage *pMistakeStorage);
         void RemoveDeleted(TStatus *pStatus);
         void RemoveMistaken(TStatus *pStatus, TMistakeStorage *pMistakeStorage);
+		void RemoveSkipped(TStatus *pStatus, TOptions *pOptions);
         
         void SetGroups(TStatus *pStatus);
         void UpdateGroups();

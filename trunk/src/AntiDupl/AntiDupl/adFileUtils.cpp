@@ -403,6 +403,33 @@ namespace ad
 		return true;
 	}
 
+	bool DeleteFiles(const TString& directory, const TString& extension)
+	{
+		WIN32_FIND_DATA findData;
+		bool result = true;
+        TString searchPath = CreatePath(directory, TString(TEXT("*")) + extension);
+        HANDLE hFind = FindFirstFile(searchPath.c_str(), &findData);
+        if(hFind != INVALID_HANDLE_VALUE)
+        {
+            do
+            {
+                TString name = findData.cFileName;
+                if(name != TEXT(".") && name != TEXT(".."))
+                {
+                    TString pathForDel = CreatePath(directory, name);
+                    
+                    if(!DeleteFile(pathForDel.c_str()))
+                    {
+                        result = false;
+                        break;
+                    }
+                }
+            } while(FindNextFile(hFind, &findData));
+            FindClose(hFind);
+        }
+		return result;
+	}
+
 	//--------------------------------------------------------------------------
 	// ¬озвращает длину числа, переведенного в строку.
 	size_t LengthOfLong(const __int64 digit)

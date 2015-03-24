@@ -167,12 +167,7 @@ template <class TChar> adError Load(adHandle handle, adFileType fileType, const 
 		return handle->MistakeStorage()->Load(pPath, check != FALSE);
 	case AD_FILE_IMAGE_DATA_BASE:
 		if(check)
-		{
-			adError result = handle->ImageDataStorage()->Load(pPath); 
-			if(result == AD_OK)
-				handle->ImageDataStorage()->Check();
-			return result;
-		}
+			return handle->ImageDataStorage()->ClearDatabase(pPath);
 		else
 			return handle->ImageDataStorage()->Load(pPath);
 	default:

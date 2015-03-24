@@ -36,6 +36,12 @@ namespace AntiDupl.NET
         {
         }
 
+        public CorePathWithSubFolder(string path, bool enableSubFolder)
+        {
+            this.path = path;
+            this.enableSubFolder = enableSubFolder;
+        }
+
         public CorePathWithSubFolder(CorePathWithSubFolder pathWithSubFolder)
         {
             enableSubFolder = pathWithSubFolder.enableSubFolder;

@@ -93,6 +93,7 @@ namespace AntiDupl.NET
         public string CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text;
         public string CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text;
         public string CoreOptionsForm_CompareInsideOneFolderCheckBox_Text;
+        public string CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text;
 
         public string CoreOptionsForm_DefectTabPage_Text;
         public string CoreOptionsForm_CheckOnDefectCheckBox_Text;
@@ -286,6 +287,8 @@ namespace AntiDupl.NET
         public string ImagePreviewContextMenu_CopyFileNameItem_Text;
         public string ImagePreviewContextMenu_OpenImageItem_Text;
         public string ImagePreviewContextMenu_OpenFolderItem_Text;
+        public string ImagePreviewContextMenu_AddToIgnore_Text;
+        public string ImagePreviewContextMenu_AddToIgnoreDirectory_Text;
         public string ImagePreviewContextMenu_RenameImageItem_Text;
         public string ImagePreviewContextMenu_RenameImageLikeNeighbour_Text;
         public string ImagePreviewContextMenu_MoveImageToNeighbourItem_Text;

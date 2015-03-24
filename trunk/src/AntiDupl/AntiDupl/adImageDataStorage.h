@@ -39,8 +39,10 @@ namespace ad
 
 		TImageDataPtr Get(const TFileInfo& fileInfo);
 
-		adError Load(const TChar *path);
+		adError Load(const TChar *path, bool allLoad = false);
 		adError Save(const TChar *path) const;
+
+		adError ClearDatabase(const TChar *path);
 
 		void Check();
 		void Clear();
@@ -61,8 +63,8 @@ namespace ad
 		{
 			enum Type
 			{
-				Skip,
-				Old,
+				Skip, //не загружаем, так как их нет в путях поиска, но сохраняем
+				Old, // удаляется при сохранение, и они только и загружаются (если есть в путях поиска)
 				New,
 			} type;
 			short key;
@@ -76,7 +78,7 @@ namespace ad
 		typedef std::map<short, TData> TIndex;
 
 		void CreateSorted(TVector & sorted) const;
-		void SetOld(TIndex & index) const;
+		void SetOld(TIndex & index, bool allLoad) const;
 		void UpdateIndex(TIndex & index) const;
 
 		TString GetDataFileName(short key) const;
@@ -84,7 +86,7 @@ namespace ad
 		bool SaveIndex(const TIndex & index, const TChar *path) const;
 		bool SaveData(const TData & data, const TChar *path) const;
 
-		bool LoadIndex(TIndex & index, const TChar *fileName) const;
+		bool LoadIndex(TIndex & index, const TChar *fileName, bool allLoad = false) const;
 		bool LoadData(TData & data, const TChar *path, short key);
 	};
     //-------------------------------------------------------------------------

@@ -67,6 +67,8 @@ namespace ad
 
 	bool SearchFiles(const TString& directory, TStrings & files, bool subFolders = true, const TString & mask = TString("*"));
 
+	bool DeleteFiles(const TString& directory, const TString& extension);
+
 	size_t LengthOfLong(const __int64 digit);
 	TString GetSimilarPath(const TPath &path);
 	TString GetSimilarPath(const TPath &path, const TPath &pathForRename);

@@ -335,6 +335,7 @@ namespace AntiDupl.NET
             public int minimalImageSize;
             public int maximalImageSize;
             public int compareInsideOneFolder;
+            public int compareInsideOneSearchPath;
             public AlgorithmComparing algorithmComparing;
         }
 
