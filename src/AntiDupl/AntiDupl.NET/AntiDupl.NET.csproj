@@ -107,7 +107,6 @@
     <Compile Include="DynamicModule.cs" />
     <Compile Include="External.cs" />
     <Compile Include="FolderOpener.cs" />
-    <Compile Include="Rename.cs" />
     <Compile Include="ThumbnailGroupTable.cs">
       <SubType>Component</SubType>
     </Compile>

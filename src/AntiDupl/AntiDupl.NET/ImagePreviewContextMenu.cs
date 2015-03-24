@@ -36,6 +36,7 @@ namespace AntiDupl.NET
     {
         private CoreLib m_core;
         private Options m_options;
+        private CoreOptions m_coreOptions;
         private ImagePreviewPanel m_imagePreviewPanel;
         private ResultsListView m_resultsListView;
 
@@ -43,6 +44,8 @@ namespace AntiDupl.NET
         private ToolStripMenuItem m_copyFileNameItem;
         private ToolStripMenuItem m_openImageItem;
         private ToolStripMenuItem m_openFolderItem;
+        private ToolStripMenuItem m_addToIgnore;
+        private ToolStripMenuItem m_addToIgnoreDirectory;
         private ToolStripMenuItem m_renameImageItem;
         private ToolStripMenuItem m_renameImageLikeNeighbourItem;
         private ToolStripMenuItem m_moveImageToNeighbourItem;
@@ -51,10 +54,11 @@ namespace AntiDupl.NET
         private ToolStripMenuItem m_renameGroupAsNeighbourItem;
 
         
-        public ImagePreviewContextMenu(CoreLib core, Options options, ImagePreviewPanel imagePreviewPanel, ResultsListView resultsListView)
+        public ImagePreviewContextMenu(CoreLib core, Options options, CoreOptions coreOptions, ImagePreviewPanel imagePreviewPanel, ResultsListView resultsListView)
         {
             m_core = core;
             m_options = options;
+            m_coreOptions = coreOptions;
             m_imagePreviewPanel = imagePreviewPanel;
             m_resultsListView = resultsListView;
             InitializeComponents();
@@ -71,6 +75,8 @@ namespace AntiDupl.NET
             m_copyFileNameItem = InitFactory.MenuItem.Create(null, null, new EventHandler(this.CopyFileName));
             m_openImageItem = InitFactory.MenuItem.Create(null, null, OpenImage);
             m_openFolderItem = InitFactory.MenuItem.Create(null, null, OpenFolder);
+            m_addToIgnore = InitFactory.MenuItem.Create(null, null, AddToIgnore);
+            m_addToIgnoreDirectory = InitFactory.MenuItem.Create(null, null, AddToIgnoreDirectory);
             m_renameImageItem = InitFactory.MenuItem.Create(null, null, m_imagePreviewPanel.RenameImage);
             m_renameImageLikeNeighbourItem = InitFactory.MenuItem.Create(null, null, new EventHandler(RenameImageLikeNeighbour));
             m_moveImageToNeighbourItem = InitFactory.MenuItem.Create(null, null, new EventHandler(MoveImageToNeighbour));
@@ -90,6 +96,9 @@ namespace AntiDupl.NET
             Items.Add(new ToolStripSeparator());
             Items.Add(m_openImageItem);
             Items.Add(m_openFolderItem);
+            Items.Add(new ToolStripSeparator());
+            Items.Add(m_addToIgnore);
+            Items.Add(m_addToIgnoreDirectory);
             Items.Add(new ToolStripSeparator());
             Items.Add(m_renameImageItem);
             if (RenameImageLikeNeighbourEnable())
@@ -119,6 +128,8 @@ namespace AntiDupl.NET
             m_copyFileNameItem.Text = s.ImagePreviewContextMenu_CopyFileNameItem_Text;
             m_openImageItem.Text = s.ImagePreviewContextMenu_OpenImageItem_Text;
             m_openFolderItem.Text = s.ImagePreviewContextMenu_OpenFolderItem_Text;
+            m_addToIgnore.Text = s.ImagePreviewContextMenu_AddToIgnore_Text;
+            m_addToIgnoreDirectory.Text = s.ImagePreviewContextMenu_AddToIgnoreDirectory_Text;
             m_renameImageItem.Text = s.ImagePreviewContextMenu_RenameImageItem_Text;
             m_renameImageLikeNeighbourItem.Text = s.ImagePreviewContextMenu_RenameImageLikeNeighbour_Text;
             m_moveImageToNeighbourItem.Text = s.ImagePreviewContextMenu_MoveImageToNeighbourItem_Text;
@@ -144,6 +155,28 @@ namespace AntiDupl.NET
         private void OpenFolder(object sender, EventArgs e)
         {
             FolderOpener.OpenContainingFolder(m_imagePreviewPanel.CurrentImageInfo);
+        }
+
+        private void AddToIgnore(object sender, EventArgs e)
+        {
+            if (m_imagePreviewPanel.CurrentImageInfo != null)
+            {
+                Array.Resize(ref m_coreOptions.ignorePath, m_coreOptions.ignorePath.Length + 1);
+                m_coreOptions.ignorePath[m_coreOptions.ignorePath.Length - 1] = new CorePathWithSubFolder(m_imagePreviewPanel.CurrentImageInfo.path, false);
+                m_coreOptions.Validate(m_core, m_options.onePath);
+                m_resultsListView.RefreshResults();
+            }
+        }
+
+        private void AddToIgnoreDirectory(object sender, EventArgs e)
+        {
+            if (m_imagePreviewPanel.CurrentImageInfo != null)
+            {
+                Array.Resize(ref m_coreOptions.ignorePath, m_coreOptions.ignorePath.Length + 1);
+                m_coreOptions.ignorePath[m_coreOptions.ignorePath.Length - 1] = new CorePathWithSubFolder(m_imagePreviewPanel.CurrentImageInfo.GetDirectoryString(), true);
+                m_coreOptions.Validate(m_core, m_options.onePath);
+                m_resultsListView.RefreshResults();
+            }
         }
 
         private void CopyPath(object sender, EventArgs e)

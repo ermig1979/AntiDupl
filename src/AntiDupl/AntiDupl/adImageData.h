@@ -36,7 +36,7 @@ namespace ad
 	{
 		TInt32 ratio; // Ratio between height and width of image;
 		bool valid; // The Image lie in 'valid' directory;
-		size_t index; // Index of the path where this image were found;
+		size_t index; // Index of the path from path list where this image were found;
 		TDefectType defect;
 		TUInt32 crc32c;
 		TPixelDataPtr data;

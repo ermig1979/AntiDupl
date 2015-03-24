@@ -96,6 +96,7 @@ namespace ad
         m_options.push_back(TOption(&compare.minimalImageSize, TEXT("CompareOptions"), TEXT("MinimalImageSize"), 64, 0, INT_MAX));
 		m_options.push_back(TOption(&compare.maximalImageSize, TEXT("CompareOptions"), TEXT("MaximalImageSize"), 8196, 0, INT_MAX));
         m_options.push_back(TOption(&compare.compareInsideOneFolder, TEXT("CompareOptions"), TEXT("CompareInsideOneFolder"), TRUE, FALSE, TRUE));
+		m_options.push_back(TOption(&compare.compareInsideOneSearchPath, TEXT("CompareOptions"), TEXT("CompareInsideOneSearchPath"), TRUE, FALSE, TRUE));
 		m_options.push_back(TOption((int*)&compare.algorithmComparing, TEXT("CompareOptions"), TEXT("AlgorithmOfComparing"), AD_COMPARING_SQUARED_SUM, 0, AD_COMPARING_SIZE));
 
         m_options.push_back(TOption(&defect.checkOnDefect, TEXT("DefectOptions"), TEXT("CheckOnDefect"), TRUE, FALSE, TRUE));

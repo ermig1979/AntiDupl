@@ -195,14 +195,14 @@ namespace ad
             TMistakeStorage *m_pMistakeStorage;
         public:
             TValidator(TMistakeStorage *pMistakeStorage) :m_pMistakeStorage(pMistakeStorage) {}
-            bool operator()(TImageInfo* a) const 
+            bool operator()(TImageInfo* a) const //DEFECT
             {
                 return 
                     !a->removed && 
                     IsFileExists(a->path.Original().c_str()) &&
                     !m_pMistakeStorage->IsHas(a);
             }
-            bool operator()(TImageInfo* a, TImageInfo* b) const 
+            bool operator()(TImageInfo* a, TImageInfo* b) const //DUPL_IMAGE_PAIR
             {
                 return 
                     (!a->removed) && (!b->removed) &&
@@ -242,6 +242,30 @@ namespace ad
         RemoveInvalid(TValidator(pMistakeStorage), pStatus);
     }
 
+	void TUndoRedoStage::RemoveSkipped(TStatus *pStatus, TOptions *pOptions)
+	{
+		class TValidator
+        {
+			TOptions *m_pOptions;
+        public:
+			TValidator(TOptions *pOptions) :m_pOptions(pOptions) {}
+            bool operator()(TImageInfo* a) const //DEFECT
+			{
+				return !((m_pOptions->ignorePaths.IsHasPath(a->path.Original()) != AD_IS_NOT_EXIST) ||
+						 (m_pOptions->ignorePaths.IsHasPath(a->path.GetDirectory()) != AD_IS_NOT_EXIST));
+			} 
+            bool operator()(TImageInfo* a, TImageInfo* b) const  //DUPL_IMAGE_PAIR true - оставл€ть, false- удал€ть
+            {	// != AD_IS_NOT_EXIST - есть в каталоге пропуска (удалить), == AD_IS_NOT_EXIST - нету в каталоге пропуска
+				return !((m_pOptions->ignorePaths.IsHasPath(a->path.Original()) != AD_IS_NOT_EXIST) ||
+					   (m_pOptions->ignorePaths.IsHasPath(a->path.GetDirectory()) != AD_IS_NOT_EXIST) ||
+					   (m_pOptions->ignorePaths.IsHasPath(b->path.Original()) != AD_IS_NOT_EXIST) ||
+					   (m_pOptions->ignorePaths.IsHasPath(b->path.GetDirectory()) != AD_IS_NOT_EXIST));
+			}
+        };
+
+        RemoveInvalid(TValidator(pOptions), pStatus);
+	}
+
     void TUndoRedoStage::SetGroups(TStatus *pStatus)
     {
 		groups.Set(results, pStatus);
@@ -270,6 +294,7 @@ namespace ad
         }
     }
 
+	// ”даление неправильных результатов из списка результатов.
     template <class TValidator> void TUndoRedoStage::RemoveInvalid(const TValidator &validator, TStatus *pStatus, bool canCancel)
     {
         pStatus->SetProgress(0, 0);

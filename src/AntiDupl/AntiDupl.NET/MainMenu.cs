@@ -280,7 +280,7 @@ namespace AntiDupl.NET
 
         private void RefreshImagesAction(object sender, EventArgs e)
         {
-            ProgressForm progressForm = new ProgressForm(ProgressForm.Type.RefreshImages, m_core, m_options, m_coreOptions, m_mainSplitContainer);
+            ProgressForm progressForm = new ProgressForm(ProgressForm.Type.ClearDatabase, m_core, m_options, m_coreOptions, m_mainSplitContainer);
             progressForm.Execute();
         }
 

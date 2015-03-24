@@ -76,16 +76,18 @@ namespace ad
 	{
 		m_pStatus->Reset();
 		size_t size = m_storage.size(), i = 0;
-		for(TStorage::iterator it = m_storage.begin(); it != m_storage.end(); ++it)
+		for(TStorage::iterator it = m_storage.begin(); it != m_storage.end(); )
 		{
 			if(m_pStatus->Stopped())
 				break;
 
-			if(!it->second->Actual())
+			if(!it->second->Actual(true))
 			{
 				delete it->second;
 				it = m_storage.erase(it);
 			}
+			else
+				++it;
 
 			m_pStatus->SetProgress(i++, size);
 		}
@@ -112,14 +114,14 @@ namespace ad
 		return it->second;
 	}
 
-	adError TImageDataStorage::Load(const TChar *path)
+	adError TImageDataStorage::Load(const TChar *path, bool allLoad)
 	{
 		if(!IsDirectoryExists(path))
 			return AD_ERROR_DIRECTORY_IS_NOT_EXIST;
 
 		TIndex index;
-		if( LoadIndex(index, CreatePath(path, TString(INDEX_FILE_NAME) + FILE_EXTENSION).c_str()) || 
-			LoadIndex(index, CreatePath(path, TString(BACKUP_FILE_NAME) + FILE_EXTENSION).c_str()))
+		if( LoadIndex(index, CreatePath(path, TString(INDEX_FILE_NAME) + FILE_EXTENSION).c_str(), allLoad) || 
+			LoadIndex(index, CreatePath(path, TString(BACKUP_FILE_NAME) + FILE_EXTENSION).c_str(), allLoad))
 		{
 			size_t size = 0;
 			for(TIndex::iterator it = index.begin(); it != index.end(); ++it)
@@ -156,6 +158,7 @@ namespace ad
 		{
 			for(TIndex::const_iterator it = index.begin(); it != index.end(); ++it)
 			{
+				//удал€ем старый файл хранилища изображений
 				if(it->second.type == TData::Old)
 				{
 					TString fileName = CreatePath(path, GetDataFileName(it->second.key));
@@ -174,6 +177,27 @@ namespace ad
 		return AD_ERROR_UNKNOWN;
 	}
 
+	adError TImageDataStorage::ClearDatabase(const TChar *directory)
+	{
+		if (Load(directory, true) == AD_OK)
+		{
+			DeleteFiles(directory, FILE_EXTENSION);
+			
+			Check();
+
+			TIndex index;
+			UpdateIndex(index);
+
+			if(SaveIndex(index, directory))
+			{
+				Clear();
+				return AD_OK;
+			}
+		}
+		return AD_ERROR_UNKNOWN;
+	}
+
+
 	void TImageDataStorage::CreateSorted(TVector & sorted) const
 	{
 		sorted.clear();
@@ -181,7 +205,7 @@ namespace ad
 		size_t size = 0;
 		for(TStorage::const_iterator it = m_storage.begin(); it != m_storage.end(); ++it)
 		{
-			if(it->second->NeedToSave())
+			if(it->second->NeedToSave()) //data filled
 				size++;
 		}
 
@@ -206,19 +230,25 @@ namespace ad
 		}
 	}
 
-	void TImageDataStorage::SetOld(TIndex & index) const
+	// ≈сли файлы есть в пут€х поиска то оставл€ем в базе.
+	void TImageDataStorage::SetOld(TIndex & index, bool allLoad) const
 	{
 		for(TIndex::iterator it = index.begin(); it != index.end(); ++it)
 		{
 			TData & data = it->second;
-			for(size_t i = 0; i < m_pOptions->searchPaths.Size(); ++i)
+			if (allLoad)
+				data.type = TData::Old;
+			else
 			{
-				const TPath & path = m_pOptions->searchPaths[i];
-				if((!TPath::LesserByPath(path, data.first) && !TPath::BiggerByPath(path, data.last)) 
-					|| path.IsSubPath(data.first) || path.IsSubPath(data.last))
+				for(size_t i = 0; i < m_pOptions->searchPaths.Size(); ++i)
 				{
-					data.type = TData::Old;
-					break;
+					const TPath & path = m_pOptions->searchPaths[i];
+					if((!TPath::LesserByPath(path, data.first) && !TPath::BiggerByPath(path, data.last)) 
+						|| path.IsSubPath(data.first) || path.IsSubPath(data.last))
+					{
+						data.type = TData::Old;
+						break;
+					}
 				}
 			}
 		}
@@ -231,7 +261,7 @@ namespace ad
 			Simd::Square(m_pOptions->advanced.reducedImageSize/REDUCED_IMAGE_SIZE_MIN);
 
 		TVector sorted;
-		CreateSorted(sorted);
+		CreateSorted(sorted); //создание вектора из заполненных значений в m_storage
 
 		short key = 0;
 		for(size_t i = 0; i < sorted.size(); i += dataSizeMax)
@@ -239,7 +269,7 @@ namespace ad
 			size_t begin = i;
 			size_t end = std::min(i + dataSizeMax, sorted.size());
 
-			while(index.count(key))
+			while(index.count(key)) //находим свободный номер индекса
 				key++;
 
 			TData & data = index[key];
@@ -311,7 +341,7 @@ namespace ad
 		return dataSaveResult;
 	}
 
-	// —охранение данных о картинках
+	// —охранение данных о картинках в 0000.adi
 	bool TImageDataStorage::SaveData(const TData & data, const TChar *path) const
 	{
 		try
@@ -335,7 +365,7 @@ namespace ad
 		return true;
 	}
 
-	bool TImageDataStorage::LoadIndex(TIndex & index, const TChar *fileName) const
+	bool TImageDataStorage::LoadIndex(TIndex & index, const TChar *fileName, bool allLoad) const
 	{
 		try
 		{
@@ -355,7 +385,7 @@ namespace ad
 				index[data.key] = data;
 			}
 
-			SetOld(index);
+			SetOld(index, allLoad);
 		}
 		catch (TException e)
 		{
@@ -364,6 +394,7 @@ namespace ad
 		return true;
 	}
 
+	//key - номер файла индекса 0001.adi - 1
 	bool TImageDataStorage::LoadData(TData & data, const TChar *path, short key)
 	{
 		try

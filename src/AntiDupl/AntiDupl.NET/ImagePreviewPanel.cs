@@ -102,7 +102,7 @@ namespace AntiDupl.NET
             RowCount = 2;
 
             m_pictureBoxPanel = new PictureBoxPanel(m_core, m_options);
-            m_pictureBoxPanel.ContextMenuStrip = new ImagePreviewContextMenu(m_core, m_options, this, m_resultsListView);
+            m_pictureBoxPanel.ContextMenuStrip = new ImagePreviewContextMenu(m_core, m_options, m_resultsListView.CoreOptions, this, m_resultsListView);
             
             m_fileSizeLabel = new Label();
             m_fileSizeLabel.Dock = DockStyle.Fill;

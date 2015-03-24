@@ -127,47 +127,50 @@ namespace ad
             }
         }
 		// Ñğàâíèâàåì ñ íàáîğîì îñòàëüíûõ
-        for(TImageDataPtrList::const_iterator i = set.other.begin(); i != set.other.end(); ++i)
-        {
-            if(IsDuplPair(pTransformed, *i, &difference))
-                m_pResult->AddDuplImagePair(pOriginal, *i, difference, transform);
-        }
-    }
+		for(TImageDataPtrList::const_iterator i = set.other.begin(); i != set.other.end(); ++i)
+		{
+			if(IsDuplPair(pTransformed, *i, &difference))
+				m_pResult->AddDuplImagePair(pOriginal, *i, difference, transform);
+		}
+	}
 
-    void TImageComparer::AddToSet(Set &set, TImageDataPtr pImageData)
-    {
-        if(pImageData->valid)
-            set.valid.push_back(pImageData);
-        else
-            set.other.push_back(pImageData);
+	void TImageComparer::AddToSet(Set &set, TImageDataPtr pImageData)
+	{
+		if(pImageData->valid)
+			set.valid.push_back(pImageData);
+		else
+			set.other.push_back(pImageData);
     }
 
 	// Ñğàâíåíèå äâóõ êàğòèíîê
-    bool TImageComparer::IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference)
-    {
-        if(m_pOptions->compare.typeControl == TRUE && 
-            pFirst->type != pSecond->type)
-            return false;
+	bool TImageComparer::IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference)
+	{
+		if(m_pOptions->compare.typeControl == TRUE && 
+			pFirst->type != pSecond->type)
+			return false;
 
-        if(m_pOptions->compare.sizeControl == TRUE &&
-            (pFirst->height != pSecond->height || 
-            pFirst->width != pSecond->width))
-            return false;
+		if(m_pOptions->compare.sizeControl == TRUE &&
+			(pFirst->height != pSecond->height || 
+			pFirst->width != pSecond->width))
+			return false;
 
-        if(m_pOptions->compare.ratioControl == TRUE)
-        {
-            if(Simd::Square(pFirst->ratio - pSecond->ratio) > Simd::Square(RATIO_THRESHOLD_DIFFERENCE))
-                return false;
-        }
+		if(m_pOptions->compare.ratioControl == TRUE)
+		{
+			if(Simd::Square(pFirst->ratio - pSecond->ratio) > Simd::Square(RATIO_THRESHOLD_DIFFERENCE))
+				return false;
+		}
 
-        if(m_pOptions->compare.compareInsideOneFolder == FALSE && pFirst->index == pSecond->index)
-            return false;
+		if(m_pOptions->compare.compareInsideOneFolder == FALSE && TPath::EqualByDirectory(pFirst->path, pSecond->path))
+			return false;
+
+		if(m_pOptions->compare.compareInsideOneSearchPath == FALSE && pFirst->index == pSecond->index)
+			return false;
 
 		uint64_t fastDifference = 0;
-        SimdSquaredDifferenceSum(pFirst->data->fast, FAST_DATA_SIZE, pSecond->data->fast, FAST_DATA_SIZE, 
+		SimdSquaredDifferenceSum(pFirst->data->fast, FAST_DATA_SIZE, pSecond->data->fast, FAST_DATA_SIZE, 
 			FAST_DATA_SIZE, 1, &fastDifference);
-        if(fastDifference > m_fastThreshold)
-            return false;
+		if(fastDifference > m_fastThreshold)
+			return false;
 
         uint64_t mainDifference = 0;
         if(m_pOptions->advanced.ignoreFrameWidth > 0)
@@ -341,7 +344,10 @@ namespace ad
                 return false;
         }
 
-        if(m_pOptions->compare.compareInsideOneFolder == FALSE && pFirst->index == pSecond->index)
+        if(m_pOptions->compare.compareInsideOneFolder == FALSE && TPath::EqualByDirectory(pFirst->path, pSecond->path))
+            return false;
+
+		if(m_pOptions->compare.compareInsideOneSearchPath == FALSE && pFirst->index == pSecond->index)
             return false;
 
 		if (pFirst->data->average == 0)

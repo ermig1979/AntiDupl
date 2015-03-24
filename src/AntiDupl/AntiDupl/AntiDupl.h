@@ -412,6 +412,7 @@ extern "C"
         adInt32 minimalImageSize;
 		adInt32 maximalImageSize;
         adBool compareInsideOneFolder;
+		adBool compareInsideOneSearchPath;
 		adAlgorithmComparing algorithmComparing;
     };
     typedef adCompareOptions* adCompareOptionsPtr;

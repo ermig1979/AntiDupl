@@ -89,7 +89,8 @@ namespace AntiDupl.NET
             s.CoreOptionsForm_ThresholdDifferenceLabeledComboBox_Text = "Threshold difference";
             s.CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text = "Minimal image width/height";
             s.CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text = "Maximal image width/height";
-            s.CoreOptionsForm_CompareInsideOneFolderCheckBox_Text = "Compare images from one path with one another";
+            s.CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text = "Compare images from one path of search with one another";
+            s.CoreOptionsForm_CompareInsideOneFolderCheckBox_Text = "Compare images inside one directory";
 
             s.CoreOptionsForm_DefectTabPage_Text = "Defects";
             s.CoreOptionsForm_CheckOnDefectCheckBox_Text = "Check on defect";
@@ -254,7 +255,7 @@ namespace AntiDupl.NET
             s.MainMenu_SearchMenuItem_Text = "Search";
             s.MainMenu_Search_StartMenuItem_Text = "Start search";
             s.MainMenu_Search_RefreshResultsMenuItem_Text = "Refresh results";
-            s.MainMenu_Search_RefreshImagesMenuItem_Text = "Refresh database of image";
+            s.MainMenu_Search_RefreshImagesMenuItem_Text = "Delete irrelevant records from a database of image";
             s.MainMenu_Search_PathsMenuItem_Text = "Paths";
             s.MainMenu_Search_OptionsMenuItem_Text = "Options";
             s.MainMenu_Search_OnePathMenuItem_Text = "One search path";
@@ -283,6 +284,8 @@ namespace AntiDupl.NET
             s.ImagePreviewContextMenu_CopyFileNameItem_Text = "Copy image name";
             s.ImagePreviewContextMenu_OpenImageItem_Text = "Open image";
             s.ImagePreviewContextMenu_OpenFolderItem_Text = "Open containing folder";
+            s.ImagePreviewContextMenu_AddToIgnore_Text = "Add to the ignored";
+            s.ImagePreviewContextMenu_AddToIgnoreDirectory_Text = "Add directory to the ignored";
             s.ImagePreviewContextMenu_RenameImageItem_Text = "Rename image";
             s.ImagePreviewContextMenu_RenameImageLikeNeighbour_Text = "Rename like neighbour";
             s.ImagePreviewContextMenu_MoveImageToNeighbourItem_Text = "Move image to neighbour";
