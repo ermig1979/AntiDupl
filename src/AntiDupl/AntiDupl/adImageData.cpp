@@ -89,6 +89,7 @@ namespace ad
 		valid = imageData.valid;
 		defect = imageData.defect;
 		crc32c = imageData.crc32c;
+		index = imageData.index;
 		if(m_owner && imageData.data->side != data->side)
 		{
 			delete data;
@@ -167,7 +168,8 @@ namespace ad
 			valid = pOptions->validPaths.IsHasSubPath(path) != AD_IS_NOT_EXIST || 
 				pOptions->validPaths.IsHasPath(path) != AD_IS_NOT_EXIST;
 
-			index = std::min(pOptions->searchPaths.IsHasSubPath(path), pOptions->searchPaths.IsHasPath(path));
+			//узнаем в каком из путей содержится и записываем индекс путя.
+			index = pOptions->searchPaths.IsHasSubPath(path);
 		}
 	}
 
