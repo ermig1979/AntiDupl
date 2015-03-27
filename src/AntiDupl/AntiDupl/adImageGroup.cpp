@@ -213,18 +213,7 @@ namespace ad
 			pImageGroup->UpdateImages();
 		}
 
-		//SetGroupSize
-		for(TResultPtrVector::iterator it = results.begin(); it != results.end(); ++it)
-		{
-			TResultPtr pResult = *it;
-			if(pResult->type == AD_RESULT_DUPL_IMAGE_PAIR)
-			{
-				TImageGroup * pGroup = Get(pResult->group, false);
-				pResult->groupSize = pGroup->images.size();
-			}
-			else if(pResult->type == AD_RESULT_DEFECT_IMAGE)
-				pResult->groupSize = 1;
-		}
+		SetGroupSize(results);
 
 		UpdateVector();
 
@@ -241,6 +230,7 @@ namespace ad
 			pImageGroup->results.clear();
 		}
 
+		// заполняем результаты в группах
 		for(TResultPtrVector::iterator resultIt = results.begin(); resultIt != results.end(); ++resultIt)
 		{
 			TResultPtr pResult = *resultIt;
@@ -261,6 +251,8 @@ namespace ad
 				pImageGroup->UpdateImages();
 		}
 
+		SetGroupSize(results);
+
 		UpdateVector();
 	}
 
@@ -280,6 +272,23 @@ namespace ad
 				}
 			}
 			pImageGroup->invalidHint = false;
+		}
+	}
+
+	
+	void TImageGroupStorage::SetGroupSize(TResultPtrVector & results)
+	{
+		for(TResultPtrVector::iterator it = results.begin(); it != results.end(); ++it)
+		{
+			TResultPtr pResult = *it;
+			if(pResult->type == AD_RESULT_DUPL_IMAGE_PAIR)
+			{
+				TImageGroup * pGroup = Get(pResult->group, false);
+				if (pGroup)
+					pResult->groupSize = pGroup->images.size();
+			}
+			else if(pResult->type == AD_RESULT_DEFECT_IMAGE)
+				pResult->groupSize = 1;
 		}
 	}
 

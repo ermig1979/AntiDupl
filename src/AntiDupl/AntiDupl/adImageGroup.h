@@ -87,6 +87,7 @@ namespace ad
 		void Erase(size_t id);
 		void Clear();
 		void UpdateVector();
+		void SetGroupSize(TResultPtrVector & results);
 
 		typedef std::map<size_t, TImageGroupPtr> TMap;
 		typedef std::vector<TImageGroupPtr> TVector;
