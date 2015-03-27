@@ -43,6 +43,7 @@ namespace ad
         double difference;
         TTransformType transform;
         TSize group;
+		TSize groupSize;
         THintType hint;
 
         TResult();

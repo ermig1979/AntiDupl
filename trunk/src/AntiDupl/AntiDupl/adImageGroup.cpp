@@ -213,6 +213,14 @@ namespace ad
 			pImageGroup->UpdateImages();
 		}
 
+		//SetGroupSize
+		for(TResultPtrVector::iterator it = results.begin(); it != results.end(); ++it)
+		{
+			TResultPtr pResult = *it;
+			TImageGroup * pGroup = Get(pResult->group, false);
+			pResult->groupSize = pGroup->images.size();
+		}
+
 		UpdateVector();
 
 		pStatus->Reset();

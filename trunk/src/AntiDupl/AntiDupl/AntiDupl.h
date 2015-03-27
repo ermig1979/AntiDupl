@@ -210,7 +210,8 @@ extern "C"
         AD_SORT_BY_DIFFERENCE = 38,
         AD_SORT_BY_TRANSFORM = 39,
         AD_SORT_BY_GROUP = 40,
-        AD_SORT_BY_HINT = 41,
+		AD_SORT_BY_GROUP_SIZE = 41,
+        AD_SORT_BY_HINT = 42,
         AD_SORT_SIZE
     };
 
@@ -543,6 +544,7 @@ extern "C"
         double difference;
         adTransformType transform;
         adSize group;
+		adSize groupSize;
         adHintType hint;
     };
     typedef adResultA* adResultPtrA;
@@ -556,6 +558,7 @@ extern "C"
         double difference;
         adTransformType transform;
         adSize group;
+		adSize groupSize;
         adHintType hint;
     };
     typedef adResultW* adResultPtrW;

@@ -36,6 +36,7 @@ namespace AntiDupl.NET
         public double difference;
         public CoreDll.TransformType transform;
         public int group;
+        public int groupSize;
         public CoreDll.HintType hint;
 
         public CoreResult(ref CoreDll.adResultW result)
@@ -47,6 +48,7 @@ namespace AntiDupl.NET
             difference = result.difference;
             transform = result.transform;
             group = result.group.ToInt32();
+            groupSize = result.groupSize.ToInt32();
             hint = result.hint;
         }
     }

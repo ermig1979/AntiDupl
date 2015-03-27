@@ -189,6 +189,7 @@ namespace AntiDupl.NET
 
         public string ResultsListView_Type_Column_Text;
         public string ResultsListView_Group_Column_Text;
+        public string ResultsListView_GroupSize_Column_Text;
         public string ResultsListView_Difference_Column_Text;
         public string ResultsListView_Defect_Column_Text;
         public string ResultsListView_Transform_Column_Text;

@@ -190,6 +190,10 @@ namespace AntiDupl.NET
             cells[(int)ResultsListView.ColumnsTypeHorizontal.Group].Value = (result.group == -1 ? "" : result.group.ToString());
             cells[(int)ResultsListView.ColumnsTypeHorizontal.Group].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
+            cells[(int)ResultsListView.ColumnsTypeHorizontal.GroupSize] = new DataGridViewTextBoxCell();
+            cells[(int)ResultsListView.ColumnsTypeHorizontal.GroupSize].Value = (result.groupSize == -1 ? "" : result.groupSize.ToString());
+            cells[(int)ResultsListView.ColumnsTypeHorizontal.GroupSize].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
             cells[(int)ResultsListView.ColumnsTypeHorizontal.Difference].Value = "";
 
             cells[(int)ResultsListView.ColumnsTypeHorizontal.Defect] = new DataGridViewImageCell();
@@ -309,6 +313,10 @@ namespace AntiDupl.NET
             cells[(int)ResultsListView.ColumnsTypeHorizontal.Group] = new DataGridViewTextBoxCell();
             cells[(int)ResultsListView.ColumnsTypeHorizontal.Group].Value = (result.group == -1 ? "" : result.group.ToString());
             cells[(int)ResultsListView.ColumnsTypeHorizontal.Group].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            cells[(int)ResultsListView.ColumnsTypeHorizontal.GroupSize] = new DataGridViewTextBoxCell();
+            cells[(int)ResultsListView.ColumnsTypeHorizontal.GroupSize].Value = (result.groupSize == -1 ? "" : result.groupSize.ToString());
+            cells[(int)ResultsListView.ColumnsTypeHorizontal.GroupSize].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             cells[(int)ResultsListView.ColumnsTypeHorizontal.Difference] = new DataGridViewTextBoxCell();
             cells[(int)ResultsListView.ColumnsTypeHorizontal.Difference].Value = result.difference.ToString("F2");

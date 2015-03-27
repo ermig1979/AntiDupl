@@ -186,6 +186,7 @@ namespace AntiDupl.NET
 
             s.ResultsListView_Type_Column_Text = "Тип";
             s.ResultsListView_Group_Column_Text = "Группа";
+            s.ResultsListView_GroupSize_Column_Text = "Размер группы";
             s.ResultsListView_Difference_Column_Text = "Различие";
             s.ResultsListView_Defect_Column_Text = "Тип дефекта";
             s.ResultsListView_Transform_Column_Text = "Трансформация";
