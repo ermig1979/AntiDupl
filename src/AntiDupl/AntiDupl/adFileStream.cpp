@@ -178,6 +178,7 @@ namespace ad
 		Load(result.difference);
 		Load(result.transform);
 		LoadSizeChecked(result.group, SIZE_CHECK_LIMIT);
+		Load(result.groupSize);
 		Load(result.hint);
 	}
 
@@ -305,6 +306,7 @@ namespace ad
 		Save(result.difference);
 		Save(result.transform);
 		SaveSize(result.group);
+		Save(result.groupSize);
 		Save(result.hint);
 	}
 }

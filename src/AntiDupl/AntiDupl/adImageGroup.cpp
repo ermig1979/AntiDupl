@@ -217,8 +217,13 @@ namespace ad
 		for(TResultPtrVector::iterator it = results.begin(); it != results.end(); ++it)
 		{
 			TResultPtr pResult = *it;
-			TImageGroup * pGroup = Get(pResult->group, false);
-			pResult->groupSize = pGroup->images.size();
+			if(pResult->type == AD_RESULT_DUPL_IMAGE_PAIR)
+			{
+				TImageGroup * pGroup = Get(pResult->group, false);
+				pResult->groupSize = pGroup->images.size();
+			}
+			else if(pResult->type == AD_RESULT_DEFECT_IMAGE)
+				pResult->groupSize = 1;
 		}
 
 		UpdateVector();
