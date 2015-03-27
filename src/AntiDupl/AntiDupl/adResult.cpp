@@ -37,6 +37,7 @@ namespace ad
         difference(0),
         transform(AD_TRANSFORM_TURN_0),
         group(AD_UNDEFINED),
+		groupSize(AD_UNDEFINED),
         hint(AD_HINT_NONE)
     {
     }
@@ -52,6 +53,7 @@ namespace ad
         difference(result.difference),
         transform(result.transform),
         group(result.group),
+		groupSize(result.groupSize),
         hint(result.hint)
     {
     }
@@ -166,6 +168,7 @@ namespace ad
         pResult->difference = difference;
         pResult->transform = transform;
 		pResult->group = group;
+		pResult->groupSize = groupSize;
         pResult->hint = hint;
 
         return result;
@@ -185,6 +188,7 @@ namespace ad
         pResult->difference = difference;
         pResult->transform = transform;
         pResult->group = group;
+		pResult->groupSize = groupSize;
         pResult->hint = hint;
 
         return result;
@@ -241,6 +245,10 @@ namespace ad
                 return m_increasing ? 
                     pFirst->group < pSecond->group : 
                     pFirst->group > pSecond->group;
+			case AD_SORT_BY_GROUP_SIZE:
+                return m_increasing ? 
+                    pFirst->groupSize < pSecond->groupSize : 
+                    pFirst->groupSize > pSecond->groupSize;
             case AD_SORT_BY_HINT:
                 return m_increasing ? 
                     pFirst->hint < pSecond->hint : 

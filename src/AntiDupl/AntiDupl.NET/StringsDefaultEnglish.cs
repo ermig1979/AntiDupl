@@ -186,6 +186,7 @@ namespace AntiDupl.NET
 
             s.ResultsListView_Type_Column_Text = "Type";
             s.ResultsListView_Group_Column_Text = "Group";
+            s.ResultsListView_GroupSize_Column_Text = "Group size";
             s.ResultsListView_Difference_Column_Text = "Difference";
             s.ResultsListView_Defect_Column_Text = "Defect type";
             s.ResultsListView_Transform_Column_Text = "Transformation";

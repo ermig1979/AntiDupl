@@ -81,14 +81,16 @@ namespace AntiDupl.NET
             columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.Type], 0, 0);
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.Group] = InitFactory.CheckBox.Create(OnOptionChanged);
             columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.Group], 0, 1);
+            m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.GroupSize] = InitFactory.CheckBox.Create(OnOptionChanged);
+            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.GroupSize], 0, 2);
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.Difference] = InitFactory.CheckBox.Create(OnOptionChanged);
-            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.Difference], 0, 2);
+            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.Difference], 0, 3);
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.Defect] = InitFactory.CheckBox.Create(OnOptionChanged);
-            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.Defect], 0, 3);
+            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.Defect], 0, 4);
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.Transform] = InitFactory.CheckBox.Create(OnOptionChanged);
-            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.Transform], 0, 4);
+            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.Transform], 0, 5);
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.Hint] = InitFactory.CheckBox.Create(OnOptionChanged);
-            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.Hint], 0, 5);
+            columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.Hint], 0, 6);
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileName] = InitFactory.CheckBox.Create(OnOptionChanged);
             columnsTableLayoutPanel.Controls.Add(m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileName], 1, 0);
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileDirectory] = InitFactory.CheckBox.Create(OnOptionChanged);
@@ -148,6 +150,7 @@ namespace AntiDupl.NET
 
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.Type].Text = s.ResultsListView_Type_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.Group].Text = s.ResultsListView_Group_Column_Text;
+            m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.GroupSize].Text = s.ResultsListView_GroupSize_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.Difference].Text = s.ResultsListView_Difference_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.Defect].Text = s.ResultsListView_Defect_Column_Text;
             m_checkBoxes[(int)ResultsListView.ColumnsTypeHorizontal.Transform].Text = s.ResultsListView_Transform_Column_Text;

@@ -41,6 +41,7 @@ namespace AntiDupl.NET
         {
             Type,
             Group,
+            GroupSize,
             Difference,
             Defect,
             Transform,
@@ -60,6 +61,7 @@ namespace AntiDupl.NET
         {
             Type,
             Group,
+            GroupSize,
             Difference,
             Defect,
             Transform,
@@ -151,6 +153,7 @@ namespace AntiDupl.NET
 
             Columns[(int)ColumnsTypeVertical.Type].Name = s.ResultsListView_Type_Column_Text;
             Columns[(int)ColumnsTypeVertical.Group].Name = s.ResultsListView_Group_Column_Text;
+            Columns[(int)ColumnsTypeVertical.GroupSize].Name = s.ResultsListView_GroupSize_Column_Text;
             Columns[(int)ColumnsTypeVertical.Difference].Name = s.ResultsListView_Difference_Column_Text;
             Columns[(int)ColumnsTypeVertical.Defect].Name = s.ResultsListView_Defect_Column_Text;
             Columns[(int)ColumnsTypeVertical.Transform].Name = s.ResultsListView_Transform_Column_Text;
@@ -419,6 +422,9 @@ namespace AntiDupl.NET
                     case ColumnsTypeVertical.Group:
                         sortType = CoreDll.SortType.ByGroup;
                         break;
+                    case ColumnsTypeVertical.GroupSize:
+                        sortType = CoreDll.SortType.ByGroupSize;
+                        break;
                     case ColumnsTypeVertical.Difference:
                         sortType = CoreDll.SortType.ByDifference;
                         break;
@@ -466,6 +472,9 @@ namespace AntiDupl.NET
                         break;
                     case ColumnsTypeHorizontal.Group:
                         sortType = CoreDll.SortType.ByGroup;
+                        break;
+                    case ColumnsTypeHorizontal.GroupSize:
+                        sortType = CoreDll.SortType.ByGroupSize;
                         break;
                     case ColumnsTypeHorizontal.Difference:
                         sortType = CoreDll.SortType.ByDifference;

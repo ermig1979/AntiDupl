@@ -151,7 +151,8 @@ namespace AntiDupl.NET
             ByDifference = 38,
             ByTransform = 39,
             ByGroup = 40,
-            ByHint = 41,
+            ByGroupSize = 41,
+            ByHint = 42,
         }
 
         public enum GlobalActionType : int
@@ -441,6 +442,7 @@ namespace AntiDupl.NET
             public double difference;
             public TransformType transform;
             public IntPtr group;
+            public IntPtr groupSize;
             public HintType hint;
         }
 
