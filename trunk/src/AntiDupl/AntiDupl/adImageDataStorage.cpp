@@ -132,9 +132,16 @@ namespace ad
 			size_t i = 0;
 			for(TIndex::iterator it = index.begin(); it != index.end(); ++it)
 			{
+				if(m_pStatus->Stopped())
+				{
+					m_pStatus->Reset();
+					return AD_ERROR_UNKNOWN;
+				}
+
 				if(it->second.type == TData::Old)
 				{
-					LoadData(it->second, path, it->second.key);
+					if (!LoadData(it->second, path, it->second.key))
+						return AD_ERROR_UNKNOWN;
 					m_pStatus->SetProgress(i, size);
 					i += it->second.size;
 				}
