@@ -503,6 +503,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimdBaseSvm.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdBaseTexture.cpp"
 				>
 			</File>
@@ -886,6 +890,10 @@
 				RelativePath=".\SimdAvx1SquaredDifferenceSum.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\SimdAvx1Svm.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Sse"
@@ -896,6 +904,10 @@
 			</File>
 			<File
 				RelativePath=".\SimdSse1SquaredDifferenceSum.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdSse1Svm.cpp"
 				>
 			</File>
 		</Filter>
@@ -1060,6 +1072,10 @@
 			</File>
 			<File
 				RelativePath=".\SimdVsxStretchGray2x2.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxSvm.cpp"
 				>
 			</File>
 			<File

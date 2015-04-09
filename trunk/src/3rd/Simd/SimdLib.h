@@ -2272,7 +2272,7 @@ extern "C"
 
     /*! @ingroup shifting
 
-        \fn void SimdShiftBilinear(const uint8_t * src, size_t srcStride, size_t width, size_t height, size_t channelCount, const uint8_t * bkg, size_t bkgStride, double shiftX, double shiftY, size_t cropLeft, size_t cropTop, size_t cropRight, size_t cropBottom, uint8_t * dst, size_t dstStride);
+        \fn void SimdShiftBilinear(const uint8_t * src, size_t srcStride, size_t width, size_t height, size_t channelCount, const uint8_t * bkg, size_t bkgStride, const double * shiftX, const double * shiftY, size_t cropLeft, size_t cropTop, size_t cropRight, size_t cropBottom, uint8_t * dst, size_t dstStride);
 
         \short Performs shifting of input image with using bilinear interpolation. 
 
@@ -2297,7 +2297,7 @@ extern "C"
         \param [in] dstStride - a row size of the output image.
     */
     SIMD_API void SimdShiftBilinear(const uint8_t * src, size_t srcStride, size_t width, size_t height, size_t channelCount,
-        const uint8_t * bkg, size_t bkgStride, double shiftX, double shiftY,
+        const uint8_t * bkg, size_t bkgStride, const double * shiftX, const double * shiftY,
         size_t cropLeft, size_t cropTop, size_t cropRight, size_t cropBottom, uint8_t * dst, size_t dstStride);
 
     /*! @ingroup sobel_filter
@@ -2567,7 +2567,7 @@ extern "C"
 
     /*! @ingroup correlation
 
-        \fn float SimdSquaredDifferenceSum32f(const float * a, const float * b, size_t size);
+        \fn void SimdSquaredDifferenceSum32f(const float * a, const float * b, size_t size, float * sum);
 
         \short Calculates sum of squared differences for two 32-bit float arrays. 
 
@@ -2579,9 +2579,9 @@ extern "C"
         \param [in] a - a pointer to the first array.
         \param [in] b - a pointer to the second array.
         \param [in] size - a size of arrays.
-        \return sum of squared differences.
+        \param [out] sum - a sum of squared differences.
     */
-    SIMD_API float SimdSquaredDifferenceSum32f(const float * a, const float * b, size_t size);
+    SIMD_API void SimdSquaredDifferenceSum32f(const float * a, const float * b, size_t size, float * sum);
 
     /*! @ingroup other_statistic
 
@@ -2793,6 +2793,26 @@ extern "C"
     */
     SIMD_API void SimdStretchGray2x2(const uint8_t * src, size_t srcWidth, size_t srcHeight, size_t srcStride,
         uint8_t * dst, size_t dstWidth, size_t dstHeight, size_t dstStride);
+
+    /*! @ingroup svm
+
+        \fn void SimdSvmSumLinear(const float * x, const float * svs, const float * weights, size_t length, size_t count, float * sum);
+
+        \short It is a part of linear SVM (Support Vector Machine) prediction algorithm. 
+
+        For each support vector:
+        \n sum += SUM(x[j]*svs[j][i])*weight[i];
+
+        \note The array with support vectors must has following structure: svs[length][count].
+
+        \param [in] x - a vector of features which need to predict with using SVM.
+        \param [in] svs - an array with support vectors. 
+        \param [in] weights - a weight coefficient of each support vector.
+        \param [in] length - a length of these current and support vectors.
+        \param [in] count - a count of support vectors.
+        \param [out] sum - a pointer to result sum.
+    */
+    SIMD_API void SimdSvmSumLinear(const float * x, const float * svs, const float * weights, size_t length, size_t count, float * sum);
 
     /*! @ingroup texture_estimation
 
