@@ -235,7 +235,7 @@ namespace AntiDupl.NET
                 try
                 {
                     XmlSerializer xmlSerializer = new XmlSerializer(typeof(CoreOptions));
-                    fileStream = new FileStream(fileName, FileMode.Open);
+                    fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
                     CoreOptions coreOptions = (CoreOptions)xmlSerializer.Deserialize(fileStream);
                     fileStream.Close();
                     coreOptions.Validate(core, onePath);
