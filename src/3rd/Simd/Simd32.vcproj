@@ -507,6 +507,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimdBaseSvm.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SimdBaseTexture.cpp"
 				>
 			</File>
@@ -1722,6 +1726,10 @@
 				RelativePath=".\SimdAvx1SquaredDifferenceSum.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\SimdAvx1Svm.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Sse"
@@ -1732,6 +1740,26 @@
 			</File>
 			<File
 				RelativePath=".\SimdSse1SquaredDifferenceSum.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						EnableEnhancedInstructionSet="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						EnableEnhancedInstructionSet="1"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\SimdSse1Svm.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1912,6 +1940,10 @@
 			</File>
 			<File
 				RelativePath=".\SimdVsxStretchGray2x2.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimdVsxSvm.cpp"
 				>
 			</File>
 			<File

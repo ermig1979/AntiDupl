@@ -1732,7 +1732,7 @@ SIMD_API void SimdSegmentationShrinkRegion(const uint8_t * mask, size_t stride, 
 }
 
 SIMD_API void SimdShiftBilinear(const uint8_t * src, size_t srcStride, size_t width, size_t height, size_t channelCount,
-    const uint8_t * bkg, size_t bkgStride, double shiftX, double shiftY,
+    const uint8_t * bkg, size_t bkgStride, const double * shiftX, const double * shiftY,
     size_t cropLeft, size_t cropTop, size_t cropRight, size_t cropBottom, uint8_t * dst, size_t dstStride)
 {
 #ifdef SIMD_AVX2_ENABLE
@@ -1980,12 +1980,12 @@ SIMD_API void SimdSquaredDifferenceSumMasked(const uint8_t *a, size_t aStride, c
         Base::SquaredDifferenceSumMasked(a, aStride, b, bStride, mask, maskStride, index, width, height, sum);
 }
 
-typedef float (* SimdSquaredDifferenceSum32fPtr) (const float * a, const float * b, size_t size);
+typedef void (* SimdSquaredDifferenceSum32fPtr) (const float * a, const float * b, size_t size, float * sum);
 SimdSquaredDifferenceSum32fPtr simdSquaredDifferenceSum32f = SIMD_FUNC3(SquaredDifferenceSum32f, SIMD_AVX_FUNC, SIMD_SSE_FUNC, SIMD_VSX_FUNC);
 
-SIMD_API float SimdSquaredDifferenceSum32f(const float * a, const float * b, size_t size)
+SIMD_API void SimdSquaredDifferenceSum32f(const float * a, const float * b, size_t size, float * sum)
 {
-    return simdSquaredDifferenceSum32f(a, b, size);
+    simdSquaredDifferenceSum32f(a, b, size, sum);
 }
 
 SIMD_API void SimdGetStatistic(const uint8_t * src, size_t stride, size_t width, size_t height,
@@ -2189,6 +2189,26 @@ SIMD_API void SimdStretchGray2x2(const uint8_t *src, size_t srcWidth, size_t src
     else
 #endif
         Base::StretchGray2x2(src, srcWidth, srcHeight, srcStride, dst, dstWidth, dstHeight, dstStride);
+}
+
+SIMD_API void SimdSvmSumLinear(const float * x, const float * svs, const float * weights, size_t length, size_t count, float * sum)
+{
+#ifdef SIMD_AVX_ENABLE
+    if(Avx::Enable)
+        Avx::SvmSumLinear(x, svs, weights, length, count, sum);
+    else
+#endif
+#ifdef SIMD_SSE_ENABLE
+    if(Sse::Enable)
+        Sse::SvmSumLinear(x, svs, weights, length, count, sum);
+    else
+#endif
+#ifdef SIMD_VSX_ENABLE
+    if(Vsx::Enable)
+        Vsx::SvmSumLinear(x, svs, weights, length, count, sum);
+    else
+#endif
+        Base::SvmSumLinear(x, svs, weights, length, count, sum);
 }
 
 SIMD_API void SimdTextureBoostedSaturatedGradient(const uint8_t * src, size_t srcStride, size_t width, size_t height,
