@@ -196,7 +196,7 @@ namespace AntiDupl.NET
                     try
                     {
                         XmlSerializer xmlSerializer = new XmlSerializer(typeof(AntiDupl.NET.Strings));
-                        FileStream fileStream = new FileStream(path, FileMode.Open);
+                        FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
                         AntiDupl.NET.Strings strings = (AntiDupl.NET.Strings)xmlSerializer.Deserialize(fileStream);
                         fileStream.Close();
                         return strings;
