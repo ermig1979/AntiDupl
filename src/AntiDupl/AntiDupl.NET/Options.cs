@@ -86,7 +86,7 @@ namespace AntiDupl.NET
                 try
                 {
                     XmlSerializer xmlSerializer = new XmlSerializer(typeof(Options));
-                    fileStream = new FileStream(Options.GetOptionsFileName(), FileMode.Open);
+                    fileStream = new FileStream(Options.GetOptionsFileName(), FileMode.Open, FileAccess.Read);
                     Options options = (Options)xmlSerializer.Deserialize(fileStream);
                     options.resultsOptions.Check();
                     fileStream.Close();
