@@ -112,7 +112,7 @@ namespace AntiDupl.NET
             buttonsTableLayoutPanel.Controls.Add(m_minimizeToSystrayButton, 3, 0);
 
             m_notifyIcon = new NotifyIcon();
-            m_notifyIcon.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
+            m_notifyIcon.Icon = Resources.Icons.Get();
             m_notifyIcon.Text = Application.ProductName;
             m_notifyIcon.DoubleClick += new EventHandler(OnNotifyIconDoubleClick);
 

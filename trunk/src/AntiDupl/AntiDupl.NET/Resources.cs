@@ -114,16 +114,28 @@ namespace AntiDupl.NET
         {
             static public Icon Get(Size size)
             {
-                Icon icon;
+                Icon icon = Get();
+                return new Icon(icon, size);
+            }
+
+            static public Icon Get()
+            {
+                Icon icon = null;
                 try
                 {
                     icon = new Icon(GetPath(Path, "Icon", Extension));
                 }
                 catch
                 {
-                    icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
+                    try
+                    {
+                        icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
+                    }
+                    catch
+                    {
+                    } 
                 }
-                return new Icon(icon, size);
+                return icon;
             }
 
             static private string Path { get { return string.Format("{0}\\icons", Resources.Path); } }
