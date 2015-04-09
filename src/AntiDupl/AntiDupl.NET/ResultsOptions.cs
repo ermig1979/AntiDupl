@@ -208,6 +208,35 @@ namespace AntiDupl.NET
             SetDefaultVerticalColumns();
             SetDefaultHorizontalColumns();
         }
+
+        public void Check()
+        {
+            if (columnOptionsVertical.Length < (int)ResultsListView.ColumnsTypeVertical.Size ||
+                columnOptionsHorizontal.Length < (int)ResultsListView.ColumnsTypeHorizontal.Size)
+            {
+                ResultsOptions options = new ResultsOptions();
+                if (columnOptionsVertical.Length < options.columnOptionsVertical.Length)
+                {
+                    for (int i = 0; i < columnOptionsVertical.Length; ++i)
+                    {
+                        options.columnOptionsVertical[i].visible = columnOptionsVertical[i].visible;
+                        options.columnOptionsVertical[i].width = columnOptionsVertical[i].width;
+                        options.columnOptionsVertical[i].order = columnOptionsVertical[i].order;
+                    }
+                    columnOptionsVertical = options.columnOptionsVertical;
+                }
+                if (columnOptionsHorizontal.Length < options.columnOptionsHorizontal.Length)
+                {
+                    for (int i = 0; i < columnOptionsHorizontal.Length; ++i)
+                    {
+                        options.columnOptionsHorizontal[i].visible = columnOptionsHorizontal[i].visible;
+                        options.columnOptionsHorizontal[i].width = columnOptionsHorizontal[i].width;
+                        options.columnOptionsHorizontal[i].order = columnOptionsHorizontal[i].order;
+                    }
+                    columnOptionsHorizontal = options.columnOptionsHorizontal;
+                }
+            }
+        }
         
         private void SetDefaultVerticalColumns()
         {
