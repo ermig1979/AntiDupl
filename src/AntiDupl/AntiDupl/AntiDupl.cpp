@@ -49,8 +49,7 @@ typedef ad::TEngine* adHandle;
 #include "adImageUtils.h"
 #include "adRecycleBin.h"
 #include "adExternal.h"
-//#include "adDump.h"
-
+#include "adDump.h"
 
 #define CHECK_HANDLE \
     if(handle == NULL) \
@@ -115,7 +114,7 @@ DLLAPI adError adVersionGet(adVersionType versionType, adCharA * pVersion, adSiz
 
 DLLAPI adHandle adCreate()
 {
-	//SetUnhandledExceptionFilter(UnhandledException);
+    ad::DumpInit();
 
 	return new ad::TEngine();
 }

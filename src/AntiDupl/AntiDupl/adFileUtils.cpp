@@ -450,11 +450,11 @@ namespace ad
         bool canRename;
         size_t digitPos = length;
 
-		for (int i = length - 1; i >= 0; digitPos = i, i-- )
+		for (ptrdiff_t i = length - 1; i >= 0; digitPos = i, i-- )
+        {
             if (!iswdigit(name[i])) //если не цифра выходим
-            {
                 break;
-            }
+        }
 
         if (digitPos <= length - 1) //если цифра найдена
             canRename = true;
