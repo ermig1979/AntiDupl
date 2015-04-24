@@ -888,11 +888,15 @@ namespace AntiDupl.NET
                 {
                     DataGridViewCustomRow row = (DataGridViewCustomRow)Rows[i];
                     if (row.selected)
+                    {
+                        if (String.IsNullOrEmpty(m_results[i].second.path))
+                            return false;
                         if (!Path.GetDirectoryName(m_results[i].first.path).Equals(Path.GetDirectoryName(m_results[i].second.path)))
                         {
                             moveEnable = true;
                             break;
                         }
+                    }
                 }
             }
             return moveEnable;
