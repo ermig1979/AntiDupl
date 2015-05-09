@@ -245,13 +245,14 @@ namespace ad
 				{
 					Gdiplus::Bitmap *pBitmap = Gdiplus::Bitmap::FromStream(pStream);
 
-					GetExifProperty(pBitmap, imageExif);
-
                     if(pBitmap && pBitmap->GetWidth() && pBitmap->GetHeight())
                     {
                         pView = GetView(pBitmap);
                         if(pView)
+						{
                             format = GetFormat(pBitmap);
+							GetExifProperty(pBitmap, imageExif);
+						}
                     }
                     AD_PERFORMANCE_TEST_SET_SIZE(pBitmap->GetHeight()*pBitmap->GetWidth())
                         delete pBitmap;
