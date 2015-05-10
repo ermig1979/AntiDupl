@@ -41,7 +41,7 @@ namespace AntiDupl.NET
         static public int IGNORE_FRAME_WIDTH_STEP = 3;
         
         static public int FORM_WIDTH = 400;
-        static public int FORM_HEIGHT = 380;
+        static public int FORM_HEIGHT = 400;
         static public int COMBO_BOX_WIDTH = 65;
         static public int COMBO_BOX_HEIGHT = 20;
 
@@ -125,7 +125,7 @@ namespace AntiDupl.NET
         void InitializeComponent()
         {
             ClientSize = new System.Drawing.Size(FORM_WIDTH, FORM_HEIGHT);
-            FormBorderStyle = FormBorderStyle.FixedDialog;
+            FormBorderStyle = FormBorderStyle.Sizable;
             StartPosition = FormStartPosition.CenterScreen;
             ShowInTaskbar = false;
             MaximizeBox = false;
@@ -168,6 +168,7 @@ namespace AntiDupl.NET
 
             m_setDefaultButton = new Button();
             m_setDefaultButton.AutoSize = true;
+            m_setDefaultButton.Width = 100;
             m_setDefaultButton.Click += new EventHandler(OnSetDefaultButtonClick);
             mainButtonsTableLayoutPanel.Controls.Add(m_setDefaultButton, 3, 0);
         }
@@ -178,6 +179,7 @@ namespace AntiDupl.NET
             m_mainTabControl.Controls.Add(m_compareTabPage);
 
             TableLayoutPanel checkTableLayoutPanel = InitFactory.Layout.Create(1, 10, 5); //column, row, padding
+            checkTableLayoutPanel.AutoScroll = true;
             m_compareTabPage.Controls.Add(checkTableLayoutPanel);
 
             m_checkOnEqualityCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
@@ -231,6 +233,7 @@ namespace AntiDupl.NET
             m_mainTabControl.Controls.Add(m_defectTabPage);
 
             TableLayoutPanel defectTableLayoutPanel = InitFactory.Layout.Create(1, 6, 5); //column, row, padding
+            defectTableLayoutPanel.AutoScroll = true;
             m_defectTabPage.Controls.Add(defectTableLayoutPanel);
 
             m_checkOnDefectCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
@@ -262,6 +265,7 @@ namespace AntiDupl.NET
             m_mainTabControl.Controls.Add(m_searchTabPage);
 
             TableLayoutPanel searchTableLayoutPanel = InitFactory.Layout.Create(1, 4, 5);
+            searchTableLayoutPanel.AutoScroll = true;
             m_searchTabPage.Controls.Add(searchTableLayoutPanel);
 
             m_searchFileTypeGroupBox = new GroupBox();
@@ -269,6 +273,7 @@ namespace AntiDupl.NET
             searchTableLayoutPanel.Controls.Add(m_searchFileTypeGroupBox, 0, 0);
 
             TableLayoutPanel searchFileTypeTableLayoutPanel = InitFactory.Layout.Create(3, 5, 5);
+            searchFileTypeTableLayoutPanel.AutoScroll = true;
             m_searchFileTypeGroupBox.Controls.Add(searchFileTypeTableLayoutPanel);
 
             m_bmpCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
@@ -323,6 +328,7 @@ namespace AntiDupl.NET
             m_mainTabControl.Controls.Add(m_advancedTabPage);
 
             TableLayoutPanel advancedTableLayoutPanel = InitFactory.Layout.Create(1, 10, 5);
+            advancedTableLayoutPanel.AutoScroll = true;
             m_advancedTabPage.Controls.Add(advancedTableLayoutPanel);
 
             m_deleteToRecycleBinCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
