@@ -74,6 +74,7 @@ namespace AntiDupl.NET
             columnsTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33F));
             columnsTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34F));
             columnsTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33F));
+            columnsTableLayoutPanel.AutoScroll = true;
             mainTableLayoutPanel.Controls.Add(columnsTableLayoutPanel, 0, 0);
 
             m_checkBoxes = new CheckBox[(int)ResultsListView.ColumnsTypeHorizontal.Size];
