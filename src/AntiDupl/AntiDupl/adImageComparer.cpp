@@ -30,6 +30,7 @@
 #include "adResult.h"
 #include "adResultStorage.h"
 #include "adImageComparer.h"
+#include "adImageDataStorage.h"
 
 namespace ad
 {
@@ -308,7 +309,8 @@ namespace ad
     }
 	//-------------------------------------------------------------------------
     TImageComparer_SSIM::TImageComparer_SSIM(TEngine *pEngine)
-        :TImageComparer(pEngine)
+        :TImageComparer(pEngine),
+		m_pImageDataStorage(pEngine->ImageDataStorage())
     {
 		//константы
 		C1 = (float)pow(0.01 * PIXEL_MAX_DIFFERENCE, 2);
@@ -356,6 +358,7 @@ namespace ad
 			SimdValueSum(pFirst->data->main,  m_pOptions->advanced.reducedImageSize, 
 					m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize, &sum);
 			pFirst->data->average = (float)sum / (m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize);
+			m_pImageDataStorage->SetSaveState(true);
 		}
 		if (pSecond->data->average == 0)
 		{
@@ -363,6 +366,7 @@ namespace ad
 			SimdValueSum(pSecond->data->main,  m_pOptions->advanced.reducedImageSize, 
 					m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize, &sum);
 			pSecond->data->average = (float)sum / (m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize);
+			m_pImageDataStorage->SetSaveState(true);
 		}
 
 		if (pFirst->data->varianceSquare == 0)
@@ -372,6 +376,7 @@ namespace ad
 						m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize, &sumSquare);
 			float averageSquare = (float)sumSquare / (m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize);
 			pFirst->data->varianceSquare = fabs(averageSquare - (pFirst->data->average * pFirst->data->average));
+			m_pImageDataStorage->SetSaveState(true);
 		}
 
 		if (pSecond->data->varianceSquare == 0)
@@ -381,6 +386,7 @@ namespace ad
 						m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize, &sumSquare);
 			float averageSquareSecond = (float)sumSquare / (m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize);
 			pSecond->data->varianceSquare = fabs(averageSquareSecond - (pSecond->data->average * pSecond->data->average));
+			m_pImageDataStorage->SetSaveState(true);
 		}
 
         uint64_t correlationSum = 0;

@@ -44,7 +44,8 @@ namespace ad
 
 	TImageDataStorage::TImageDataStorage(TEngine *pEngine)
 		:m_pStatus(pEngine->Status()),
-		m_pOptions(pEngine->Options())
+		m_pOptions(pEngine->Options()), 
+		m_needToSave (false)
 	{
 	}
 
@@ -105,11 +106,13 @@ namespace ad
 			{
 				delete it->second;
 				it->second = new TImageData(fileInfo, m_pOptions->advanced.reducedImageSize);
+				m_needToSave = true;
 			}
 		}
 		else
 		{
 			it = Insert(new TImageData(fileInfo, m_pOptions->advanced.reducedImageSize));
+			m_needToSave = true;
 		}
 		return it->second;
 	}
@@ -152,36 +155,41 @@ namespace ad
 		return AD_ERROR_UNKNOWN;
 	}
 
-	adError TImageDataStorage::Save(const TChar *path) const
+	adError TImageDataStorage::Save(const TChar *path)
 	{
 		if(!IsDirectoryExists(path))
 			return AD_ERROR_DIRECTORY_IS_NOT_EXIST;
 
-		TIndex index;
-		if(!LoadIndex(index, CreatePath(path, TString(INDEX_FILE_NAME) + FILE_EXTENSION).c_str()))
-			LoadIndex(index, CreatePath(path, TString(BACKUP_FILE_NAME) + FILE_EXTENSION).c_str());
-		UpdateIndex(index);
-		if(SaveIndex(index, path))
+		if (m_needToSave)
 		{
-			for(TIndex::const_iterator it = index.begin(); it != index.end(); ++it)
+			TIndex index;
+			if(!LoadIndex(index, CreatePath(path, TString(INDEX_FILE_NAME) + FILE_EXTENSION).c_str()))
+				LoadIndex(index, CreatePath(path, TString(BACKUP_FILE_NAME) + FILE_EXTENSION).c_str());
+			UpdateIndex(index);
+			if(SaveIndex(index, path))
 			{
-				//удаляем старый файл хранилища изображений
-				if(it->second.type == TData::Old)
+				for(TIndex::const_iterator it = index.begin(); it != index.end(); ++it)
 				{
-					TString fileName = CreatePath(path, GetDataFileName(it->second.key));
-					if(IsFileExists(fileName.c_str()))
+					//удаляем старый файл хранилища изображений
+					if(it->second.type == TData::Old)
 					{
-						::DeleteFile(fileName.c_str());
+						TString fileName = CreatePath(path, GetDataFileName(it->second.key));
+						if(IsFileExists(fileName.c_str()))
+						{
+							::DeleteFile(fileName.c_str());
+						}
 					}
 				}
+				::CopyFile(
+					CreatePath(path, TString(INDEX_FILE_NAME) + FILE_EXTENSION).c_str(),
+					CreatePath(path, TString(BACKUP_FILE_NAME) + FILE_EXTENSION).c_str(),
+					FALSE);
+				m_needToSave = false;
+				return AD_OK;
 			}
-			::CopyFile(
-				CreatePath(path, TString(INDEX_FILE_NAME) + FILE_EXTENSION).c_str(),
-				CreatePath(path, TString(BACKUP_FILE_NAME) + FILE_EXTENSION).c_str(),
-				FALSE);
-			return AD_OK;
 		}
-		return AD_ERROR_UNKNOWN;
+		else
+			return AD_OK;
 	}
 
 	adError TImageDataStorage::ClearDatabase(const TChar *directory)
@@ -429,5 +437,10 @@ namespace ad
 			return e.Error == AD_OK;
 		}
 		return true;
+	}
+
+	void TImageDataStorage::SetSaveState(const bool needToSave)
+	{
+		m_needToSave = needToSave;
 	}
 }

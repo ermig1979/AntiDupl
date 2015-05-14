@@ -34,6 +34,7 @@ namespace ad
     struct TOptions;
     class TEngine;
     class TResultStorage;
+	class TImageDataStorage;
     typedef TImageData* TImageDataPtr;
     //-------------------------------------------------------------------------
 	// Общий класс движка
@@ -140,6 +141,7 @@ namespace ad
     private:
 		float C1;
 		float C2;
+		TImageDataStorage *m_pImageDataStorage;
     };
     //-------------------------------------------------------------------------
     TImageComparer* CreateImageComparer(TEngine *pEngine);
