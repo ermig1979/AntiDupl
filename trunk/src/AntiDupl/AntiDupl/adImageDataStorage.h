@@ -40,12 +40,13 @@ namespace ad
 		TImageDataPtr Get(const TFileInfo& fileInfo);
 
 		adError Load(const TChar *path, bool allLoad = false);
-		adError Save(const TChar *path) const;
+		adError Save(const TChar *path);
 
 		adError ClearDatabase(const TChar *path);
 
 		void Check();
 		void Clear();
+		void SetSaveState(const bool needToSave);
 
 	private:
 		typedef std::multimap<TUInt32, TImageDataPtr> TStorage;
@@ -58,6 +59,8 @@ namespace ad
 		TStorage m_storage;
 		TStatus *m_pStatus;
 		TOptions *m_pOptions;
+
+		bool m_needToSave;
 
 		struct TData
 		{
@@ -76,7 +79,7 @@ namespace ad
 			TData(short key_ = 0) : key(key_), size(0), type(Skip) {}
 		};
 		typedef std::map<short, TData> TIndex;
-
+		
 		void CreateSorted(TVector & sorted) const;
 		void SetOld(TIndex & index, bool allLoad) const;
 		void UpdateIndex(TIndex & index) const;
