@@ -66,7 +66,7 @@ namespace ad
 		return m_storage.insert(TStorage::value_type(pImageData->hash, pImageData));
 	}
 
-	void TImageDataStorage::Clear()
+	void TImageDataStorage::ClearMemory()
 	{
 		for(TStorage::iterator it = m_storage.begin(); it != m_storage.end(); ++it)
 			delete it->second;
@@ -168,18 +168,7 @@ namespace ad
 			UpdateIndex(index);
 			if(SaveIndex(index, path))
 			{
-				for(TIndex::const_iterator it = index.begin(); it != index.end(); ++it)
-				{
-					//удаляем старый файл хранилища изображений
-					if(it->second.type == TData::Old)
-					{
-						TString fileName = CreatePath(path, GetDataFileName(it->second.key));
-						if(IsFileExists(fileName.c_str()))
-						{
-							::DeleteFile(fileName.c_str());
-						}
-					}
-				}
+				DeleteOldIndex(index, path);
 				::CopyFile(
 					CreatePath(path, TString(INDEX_FILE_NAME) + FILE_EXTENSION).c_str(),
 					CreatePath(path, TString(BACKUP_FILE_NAME) + FILE_EXTENSION).c_str(),
@@ -188,8 +177,8 @@ namespace ad
 				return AD_OK;
 			}
 		}
-		else
-			return AD_OK;
+		
+		return AD_OK;
 	}
 
 	adError TImageDataStorage::ClearDatabase(const TChar *directory)
@@ -205,10 +194,11 @@ namespace ad
 
 			if(SaveIndex(index, directory))
 			{
-				Clear();
+				ClearMemory();
 				return AD_OK;
 			}
 		}
+		ClearMemory();
 		return AD_ERROR_UNKNOWN;
 	}
 
@@ -294,6 +284,22 @@ namespace ad
 			data.first = sorted[begin]->path;
 			data.last = sorted[end - 1]->path;
 			data.data = TVector(sorted.begin() + begin, sorted.begin() + end);
+		}
+	}
+
+	//удаляем старый файл хранилища изображений
+	void TImageDataStorage::DeleteOldIndex(TIndex & index, const TChar *path) const
+	{
+		for(TIndex::const_iterator it = index.begin(); it != index.end(); ++it)
+		{
+			if(it->second.type == TData::Old)
+			{
+				TString fileName = CreatePath(path, GetDataFileName(it->second.key));
+				if(IsFileExists(fileName.c_str()))
+				{
+					::DeleteFile(fileName.c_str());
+				}
+			}
 		}
 	}
 

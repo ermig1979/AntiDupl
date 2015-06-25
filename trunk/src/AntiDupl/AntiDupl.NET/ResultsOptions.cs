@@ -106,7 +106,195 @@ namespace AntiDupl.NET
                 }
             }
         }
-   
+
+        public delegate void HighlightDiffrentChangeHandler();
+        public event HighlightDiffrentChangeHandler OnHighlightDiffrentChange;
+        public void RaiseEventOnHighlightDiffrentChange()
+        { 
+            if (OnHighlightDiffrentChange != null)
+                OnHighlightDiffrentChange();
+        }
+
+        private bool m_highlightDiffrent = false;
+        public bool HighlightDiffrent
+        {
+            get
+            {
+                return m_highlightDiffrent;
+            }
+            set
+            {
+                if (m_highlightDiffrent != value)
+                {
+                    m_highlightDiffrent = value;
+                }
+            }
+        }
+
+        private float m_diffrentThreshold = 99.90F;
+        public float DiffrentThreshold
+        { 
+            get
+            { 
+                return m_diffrentThreshold; 
+            }
+            set 
+            {
+                if (m_diffrentThreshold != value)
+                {
+                    m_diffrentThreshold = value;
+                }
+            }
+        }
+
+
+        private bool m_notHighlightIfFragmentsMoreThan = true;
+        public bool NotHighlightIfFragmentsMoreThan
+        {
+            get
+            {
+                return m_notHighlightIfFragmentsMoreThan;
+            }
+            set
+            {
+                if (m_notHighlightIfFragmentsMoreThan != value)
+                {
+                    m_notHighlightIfFragmentsMoreThan = value;
+                }
+            }
+        }
+
+        private int m_notHighlightMaxFragments = 32;
+        public int NotHighlightMaxFragments
+        {
+            get
+            {
+                return m_notHighlightMaxFragments;
+            }
+            set
+            {
+                if (m_notHighlightMaxFragments != value)
+                {
+                    m_notHighlightMaxFragments = value;
+                }
+            }
+        }
+
+        private bool m_highlightAllDiffrents = true;
+        public bool HighlightAllDiffrents
+        {
+            get
+            {
+                return m_highlightAllDiffrents;
+            }
+            set
+            {
+                if (m_highlightAllDiffrents != value)
+                {
+                    m_highlightAllDiffrents = value;
+                }
+            }
+        }
+      
+        private int m_maxFragmentsForHighlight = 10;
+        public int MaxFragmentsForHighlight
+        {
+            get
+            {
+                return m_maxFragmentsForHighlight;
+            }
+            set
+            {
+                if (m_maxFragmentsForHighlight != value)
+                {
+                    m_maxFragmentsForHighlight = value;
+                }
+            }
+        }
+
+        private int m_amountOfFragmentsOnX = 16;
+        public int AmountOfFragmentsOnX
+        {
+            get
+            {
+                return m_amountOfFragmentsOnX;
+            }
+            set
+            {
+                if (m_amountOfFragmentsOnX != value)
+                {
+                    m_amountOfFragmentsOnX = value;
+                }
+            }
+        }
+
+        private int m_amountOfFragmentsOnY = 16;
+        public int AmountOfFragmentsOnY
+        {
+            get
+            {
+                return m_amountOfFragmentsOnY;
+            }
+            set
+            {
+                if (m_amountOfFragmentsOnY != value)
+                {
+                    m_amountOfFragmentsOnY = value;
+                }
+            }
+        }
+
+        private int m_normalizedSizeOfImage = 512;
+        public int NormalizedSizeOfImage
+        {
+            get
+            {
+                return m_normalizedSizeOfImage;
+            }
+            set
+            {
+                if (m_normalizedSizeOfImage != value)
+                {
+                    m_normalizedSizeOfImage = value;
+                }
+            }
+        }
+
+        private int m_penThickness = 2;
+        public int PenThickness
+        {
+            get
+            {
+                return m_penThickness;
+            }
+            set
+            {
+                if (m_penThickness != value)
+                {
+                    m_penThickness = value;
+                }
+            }
+        }
+
+
+        private bool m_showNeighboursImages = false;
+        public bool ShowNeighboursImages
+        {
+            get
+            {
+                return m_showNeighboursImages;
+            }
+            set
+            {
+                if (m_showNeighboursImages != value)
+                {
+                    m_showNeighboursImages = value;
+                    if (OnImageViewChange != null)
+                        OnImageViewChange();
+                }
+            }
+        }
+
         public struct ColumnOptions
         {
             public bool visible;

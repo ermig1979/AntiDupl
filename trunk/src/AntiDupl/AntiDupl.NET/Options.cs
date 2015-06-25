@@ -65,6 +65,8 @@ namespace AntiDupl.NET
         public bool useImageDataBase = true;
         public bool checkResultsAtLoading = true;
         public bool checkMistakesAtLoading = true;
+        public bool loadProfileOnLoading = true;
+        public bool saveProfileOnClosing = true;
 
         public MainFormOptions mainFormOptions = new MainFormOptions();
         public ResultsOptions resultsOptions = new ResultsOptions();
@@ -120,6 +122,8 @@ namespace AntiDupl.NET
             useImageDataBase = options.useImageDataBase;
             checkResultsAtLoading = options.checkResultsAtLoading;
             checkMistakesAtLoading = options.checkMistakesAtLoading;
+            loadProfileOnLoading = options.loadProfileOnLoading;
+            saveProfileOnClosing = options.saveProfileOnClosing;
         }
 
         public void Save()
@@ -156,6 +160,8 @@ namespace AntiDupl.NET
             options.useImageDataBase = useImageDataBase;
             options.checkResultsAtLoading = checkResultsAtLoading;
             options.checkMistakesAtLoading = checkMistakesAtLoading;
+            options.loadProfileOnLoading = loadProfileOnLoading;
+            options.saveProfileOnClosing = saveProfileOnClosing;
         }
 
         public static void PathCopy(string[] source, ref string[] destination)
@@ -214,6 +220,10 @@ namespace AntiDupl.NET
             if (checkResultsAtLoading != options.checkResultsAtLoading)
                 return false;
             if (checkMistakesAtLoading != options.checkMistakesAtLoading)
+                return false;
+            if (loadProfileOnLoading != options.loadProfileOnLoading)
+                return false;
+            if (saveProfileOnClosing != options.saveProfileOnClosing)
                 return false;
             if (m_language != options.m_language)
                 return false;

@@ -28,6 +28,8 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Threading;
 
 namespace AntiDupl.NET
 {
@@ -45,6 +47,18 @@ namespace AntiDupl.NET
         private ToolStripButton m_deleteBothButton;
         private ToolStripButton m_mistakeButton;
 
+        private struct RectanglesWithSimilarity
+        {
+            public Rectangle rectangle;
+            public float similarity;
+
+            public RectanglesWithSimilarity(Rectangle rectangle, float similarity)
+            {
+                this.rectangle = rectangle;
+                this.similarity = similarity;
+            }
+        }
+
         public ResultsPreviewDuplPair(CoreLib core, Options options, CoreOptions coreOptions, ResultsListView resultsListView)
             : base(core, options, coreOptions, resultsListView)
         {
@@ -53,6 +67,7 @@ namespace AntiDupl.NET
             Resources.Strings.OnCurrentChange += new Resources.Strings.CurrentChangeHandler(UpdateStrings);
             OnOptionsChanged();
             m_options.OnChange += new Options.ChangeHandler(OnOptionsChanged);
+            m_options.resultsOptions.OnHighlightDiffrentChange += new ResultsOptions.HighlightDiffrentChangeHandler(OnHighlightDiffrentChange);
         }
 
         private void InitializeComponents()
@@ -66,6 +81,34 @@ namespace AntiDupl.NET
             m_renameFirstToSecondButton = InitFactory.ToolButton.Create("RenameFirstToSecondVerticalButton", CoreDll.LocalActionType.RenameFirstToSecond, OnButtonClicked);
             m_renameSecondToFirstButton = InitFactory.ToolButton.Create("RenameSecondToFirstVerticalButton", CoreDll.LocalActionType.RenameSecondToFirst, OnButtonClicked);
             m_mistakeButton = InitFactory.ToolButton.Create("MistakeButton", CoreDll.LocalActionType.Mistake, OnButtonClicked);
+            
+           /* m_difrentNumericUpDown = new System.Windows.Forms.NumericUpDown();
+            m_difrentNumericUpDown.Size = new System.Drawing.Size(62, 17);
+            m_difrentNumericUpDown.Location = new System.Drawing.Point(102, 0);
+            m_difrentNumericUpDown.Margin = new Padding(0);
+            m_difrentNumericUpDown.DecimalPlaces = 2;
+            m_difrentNumericUpDown.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
+            m_difrentNumericUpDown.Minimum = new decimal(new int[] { 0, 0, 0, 0 });
+            m_difrentNumericUpDown.Value = new decimal(m_options.resultsOptions.DiffrentThreshold);
+            m_difrentNumericUpDown.ValueChanged += new System.EventHandler(m_difrentNumericUpDown_ValueChanged);
+
+            m_checkBoxDiffrent = new System.Windows.Forms.CheckBox();
+            m_checkBoxDiffrent.AutoSize = true;
+            //this.checkBox1.Location = new System.Drawing.Point(321, 459);
+            //this.checkBox1.Name = "checkBox1";
+            m_checkBoxDiffrent.Size = new System.Drawing.Size(80, 17);
+            //this.checkBox1.TabIndex = 6;
+            m_checkBoxDiffrent.Text = "Highlight";
+            m_checkBoxDiffrent.UseVisualStyleBackColor = true;
+            m_checkBoxDiffrent.Checked = m_options.resultsOptions.HighlightDiffrent; //TODO
+            m_checkBoxDiffrent.CheckedChanged += new System.EventHandler(checkBoxDiffrent_CheckedChanged);
+
+            m_difrentPanel = new System.Windows.Forms.Panel();
+            m_difrentPanel.Controls.Add(m_checkBoxDiffrent);
+            m_difrentPanel.Controls.Add(m_difrentNumericUpDown);
+            //m_difrentPanel.Location = new System.Drawing.Point(225, 459);
+            //m_difrentPanel.AutoSize = true;
+            m_difrentPanel.Size = new System.Drawing.Size(200, 20);*/
         }
 
         public void UpdateStrings()
@@ -92,6 +135,7 @@ namespace AntiDupl.NET
             m_currentSearchResult = currentSearchResult;
             m_firstImagePreviewPanel.SetResult(m_currentSearchResult);
             m_secondImagePreviewPanel.SetResult(m_currentSearchResult);
+            SetDiffrent();
             SetHint(m_currentSearchResult.hint);
             UpdateNextAndPreviousButtonEnabling();
         }
@@ -198,5 +242,95 @@ namespace AntiDupl.NET
             m_toolStrip.Items.Add(new ToolStripSeparator());
             m_toolStrip.Items.Add(m_mistakeButton);
         }
+
+
+        private void OnHighlightDiffrentChange()
+        {
+            SetDiffrent();
+        }
+
+        private delegate void HighlightCompleteDelegate(List<Rectangle> rectangles);
+        private event HighlightCompleteDelegate HighlightCompleteEvent;
+        private Thread _thread;
+        private bool _highlightStop = false;
+
+        private void SetDiffrent()
+        {
+            if (m_options.resultsOptions.HighlightDiffrent)
+            {
+                if (_thread != null && _thread.ThreadState == System.Threading.ThreadState.Running)
+                {
+                    HighlightCompleteEvent -= new HighlightCompleteDelegate(HighlightCompleteEventHandler);
+                    _highlightStop = true;
+                    _thread.Join();
+                }
+                HighlightCompleteEvent += new HighlightCompleteDelegate(HighlightCompleteEventHandler);
+                _highlightStop = false;
+                ComparableBitmap[] bitmap1 = m_firstImagePreviewPanel.GetImageFragments();
+                ComparableBitmap[] bitmap2 = m_secondImagePreviewPanel.GetImageFragments();
+                _thread = new Thread(
+                     unused => CalculateRectanglesOfDiffrents(bitmap1, bitmap2));
+                _thread.Name = "Calculate rectangles of diffrents";
+                _thread.Start();
+            }
+            else
+            {
+                m_firstImagePreviewPanel.ClearDiffrent();
+                m_secondImagePreviewPanel.ClearDiffrent();
+            }
+        }
+
+        private void CalculateRectanglesOfDiffrents(ComparableBitmap[] bitmap1, ComparableBitmap[] bitmap2)
+        {
+            if ((bitmap1 == null) || (bitmap2 == null))
+                return;
+
+            List<RectanglesWithSimilarity> rectangles = new List<RectanglesWithSimilarity>();
+            float similarity;
+            for (int i = 0; i < bitmap1.Length; i++)
+            {
+                if (_highlightStop)
+                    return;
+                similarity = Comparator.Similarity(bitmap1[i].GrayscaleData, bitmap2[i].GrayscaleData);
+                if (similarity < m_options.resultsOptions.DiffrentThreshold)
+                {
+                    rectangles.Add(new RectanglesWithSimilarity(bitmap1[i].Rect, similarity));
+                }
+            }
+
+            if (m_options.resultsOptions.NotHighlightIfFragmentsMoreThan && rectangles.Count > m_options.resultsOptions.NotHighlightMaxFragments)
+                return;
+
+            if (!m_options.resultsOptions.HighlightAllDiffrents)
+            {
+                if (HighlightCompleteEvent != null)
+                    HighlightCompleteEvent((from rect in rectangles
+                        orderby rect.similarity descending
+                        select rect.rectangle).Take(m_options.resultsOptions.MaxFragmentsForHighlight).ToList());
+            }
+
+            if (HighlightCompleteEvent != null)
+                HighlightCompleteEvent((from rect in rectangles
+                    select rect.rectangle).ToList());
+        }
+
+        private void HighlightCompleteEventHandler(List<Rectangle> rectangles)
+        {
+            if (InvokeRequired) // Проверяем в этом ли потоке нахождится созданый обьект 
+            {
+                object[] eventArgs = { rectangles };
+                Invoke(new HighlightCompleteDelegate(HighlightCompleteEventHandler), eventArgs);
+                return;
+            }
+
+            if (rectangles != null && rectangles.Count > 0)
+            {
+                m_firstImagePreviewPanel.SetDiffrent(rectangles);
+                m_secondImagePreviewPanel.SetDiffrent(rectangles);
+            }
+
+            HighlightCompleteEvent -= new HighlightCompleteDelegate(HighlightCompleteEventHandler);
+        }
+    
     }
 }

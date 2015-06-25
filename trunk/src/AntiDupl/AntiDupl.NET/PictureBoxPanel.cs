@@ -43,8 +43,45 @@ namespace AntiDupl.NET
         private Rectangle m_bitmapRect;
         private MemoryStream m_memoryStream;
         private Bitmap m_bitmap;
+        /// <summary>
+        /// Изображение загруженное из файла.
+        /// </summary>
+        public Bitmap Bitmap { get 
+        {
+            if (m_bitmap != m_originalBitmap && m_originalBitmap != null)
+            {
+                return m_originalBitmap;
+            }
+            return m_bitmap; 
+        } }
         private bool m_animationEnable = false;
         private bool m_currentlyAnimating = false;
+
+        private Bitmap m_originalBitmap;
+        private Rectangle[] m_rectanglesOfDiffrent;
+        private Pen penForDiffrent = new Pen(new SolidBrush(Color.Red), 4);
+
+        private ImagePreviewPanel.Position m_position;
+        public ImagePreviewPanel.Position Position
+        {
+            get { return m_position; }
+            set
+            {
+                m_position = value;
+            }
+        }
+        private string m_prevFile;
+        private string m_nextFile;
+        private Bitmap m_prevBitmap;
+        private Bitmap m_nextBitmap;
+        private Rectangle m_prevBitmapRect;
+        private Rectangle m_nextBitmapRect;
+        private enum Neighbour
+        {
+            Previous,
+            Next,
+        }
+
 
         public PictureBoxPanel(CoreLib core, Options options)
         {
@@ -53,7 +90,7 @@ namespace AntiDupl.NET
             InitializeComponents();
             m_options.resultsOptions.OnImageViewChange += new ResultsOptions.ImageViewChangeHandler(OnImageViewChange);
         }
-        
+
         private void InitializeComponents()
         {
             Location = new System.Drawing.Point(0, 0);
@@ -68,8 +105,13 @@ namespace AntiDupl.NET
 
         public void UpdateImage(CoreImageInfo currentImageInfo)
         {
+            if (m_originalBitmap != null)
+            {
+                m_originalBitmap.Dispose();
+                m_originalBitmap = null;
+            }
             m_currentImageInfo = currentImageInfo;
-            if(currentImageInfo != null)
+            if (currentImageInfo != null)
             {
                 StopAnimate();
                 if (m_currentImageInfo.type != CoreDll.ImageType.None)
@@ -78,7 +120,7 @@ namespace AntiDupl.NET
                     {
                         try
                         {
-                            if (LoadFileToMemoryStream(m_currentImageInfo.path))
+                            if (LoadFileToMemoryStream(ref m_memoryStream, m_currentImageInfo.path))
                             {
                                 m_bitmap = new Bitmap(m_memoryStream);
                                 m_animationEnable = ImageAnimator.CanAnimate(m_bitmap);
@@ -98,22 +140,25 @@ namespace AntiDupl.NET
                     else
                     {
                         m_bitmap = m_core.LoadBitmap(m_currentImageInfo);
-                    } 
+                    }
                 }
                 else
                 {
                     m_bitmap = null;
                 }
+
+                if (m_options.resultsOptions.ShowNeighboursImages)
+                    ShowNeighboursImages(true);
             }
         }
 
-        private bool LoadFileToMemoryStream(string path)
+        private bool LoadFileToMemoryStream(ref MemoryStream memoryStream, string path)
         {
-            if (m_memoryStream != null)
+            if (memoryStream != null)
             {
-                m_memoryStream.Close();
-                m_memoryStream.Dispose();
-                m_memoryStream = null;
+                memoryStream.Close();
+                memoryStream.Dispose();
+                memoryStream = null;
             }
             FileInfo fileInfo = new FileInfo(path);
             if (fileInfo.Exists)
@@ -124,7 +169,7 @@ namespace AntiDupl.NET
                     byte[] buffer = new byte[fileStream.Length];
                     fileStream.Read(buffer, 0, buffer.Length);
                     fileStream.Close();
-                    m_memoryStream = new MemoryStream(buffer);
+                    memoryStream = new MemoryStream(buffer);
                     return true;
                 }
                 catch
@@ -169,13 +214,20 @@ namespace AntiDupl.NET
             {
                 e.Graphics.DrawImage(m_bitmap, m_bitmapRect);
             }
+            if (m_options.resultsOptions.ShowNeighboursImages)
+            {
+                if (m_prevBitmap != null)
+                    e.Graphics.DrawImage(m_prevBitmap, m_prevBitmapRect);
+                if (m_nextBitmap != null)
+                    e.Graphics.DrawImage(m_nextBitmap, m_nextBitmapRect);
+            }
         }
 
         private void OnFrameChanged(object sender, EventArgs e)
         {
             Invalidate();
         }
-        
+
         private void OnImageDoubleClicked(object sender, System.EventArgs e)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
@@ -193,11 +245,17 @@ namespace AntiDupl.NET
         private void OnSizeChanged(object sender, EventArgs e)
         {
             UpdateImagePadding(m_neighbourSizeMax);
+            if (m_options.resultsOptions.ShowNeighboursImages)
+                ShowNeighboursImages(false);
+            Refresh();
         }
 
         private void OnImageViewChange()
         {
             UpdateImagePadding(m_neighbourSizeMax);
+            if (m_options.resultsOptions.ShowNeighboursImages)
+                ShowNeighboursImages(true);
+            Refresh();
         }
 
         public void UpdateImagePadding(Size neighbourSizeMax)
@@ -205,61 +263,326 @@ namespace AntiDupl.NET
             m_neighbourSizeMax = neighbourSizeMax;
             if (m_currentImageInfo != null)
             {
-                int hp = 0, vp = 0;
-                int w = ClientSize.Width;
-                int h = ClientSize.Height;
-                int cw = (int)m_currentImageInfo.width;
-                int ch = (int)m_currentImageInfo.height;
-                if (cw > 0 && ch > 0)
+                int horizontalPosition = 0, verticalPosition = 0;
+                int clientWidth = ClientSize.Width;
+                int clientHeight = ClientSize.Height;
+                int currentWidth = (int)m_currentImageInfo.width;
+                int currentHeight = (int)m_currentImageInfo.height;
+                int targetWidth = 100;
+                int targetHeight = 100;
+                if (currentWidth > 0 && currentHeight > 0)
                 {
                     if (m_options.resultsOptions.ProportionalImageSize)
                     {
-                        int nw = (int)m_neighbourSizeMax.Width;
-                        int nh = (int)m_neighbourSizeMax.Height;
-                        int mw = Math.Max(cw, nw);
-                        int mh = Math.Max(ch, nh);
-                        if (m_options.resultsOptions.StretchSmallImages || mw >= w || mh >= h)
+                        int neighbourWidth = (int)m_neighbourSizeMax.Width;
+                        int neighbourHeight = (int)m_neighbourSizeMax.Height;
+                        int maxWidth = Math.Max(currentWidth, neighbourWidth);
+                        int maxHeight = Math.Max(currentHeight, neighbourHeight);
+                        if (m_options.resultsOptions.StretchSmallImages || maxWidth >= clientWidth || maxHeight >= clientHeight)
                         {
-                            if (mw * h > mh * w)
+                            if (maxWidth * clientHeight > maxHeight * clientWidth)
                             {
-                                vp = (h - ch * w / mw) / 2;
-                                hp = (w - cw * w / mw) / 2;
+                                targetHeight = currentHeight * clientWidth / maxWidth;
+                                targetWidth = currentWidth * clientWidth / maxWidth;
+
+                                verticalPosition = (clientHeight - targetHeight) / 2;
+                                if (m_options.resultsOptions.ShowNeighboursImages)
+                                {
+                                    if (m_position == ImagePreviewPanel.Position.Top || m_position == ImagePreviewPanel.Position.Bottom)
+                                        horizontalPosition = clientWidth - targetWidth;
+                                    else
+                                        verticalPosition = 0;
+                                }
+                                else
+                                {
+                                    horizontalPosition = (clientWidth - targetWidth) / 2;
+                                    verticalPosition = (clientHeight - targetHeight) / 2;
+                                }
                             }
                             else
                             {
-                                vp = (h - ch * h / mh) / 2;
-                                hp = (w - cw * h / mh) / 2;
+                                targetHeight = currentHeight * clientHeight / maxHeight;
+                                targetWidth = currentWidth * clientHeight / maxHeight;
+
+
+                                if (m_options.resultsOptions.ShowNeighboursImages)
+                                {
+                                    if (m_position == ImagePreviewPanel.Position.Top || m_position == ImagePreviewPanel.Position.Bottom)
+                                        horizontalPosition = clientWidth - targetWidth;
+                                    else
+                                        verticalPosition = 0;
+                                }
+                                else
+                                {
+                                    verticalPosition = (clientHeight - targetHeight) / 2;
+                                    horizontalPosition = (clientWidth - targetWidth) / 2;
+                                }
                             }
                         }
                         else
                         {
-                            vp = (h - ch) / 2;
-                            hp = (w - cw) / 2;
+                            targetHeight = currentHeight;
+                            targetWidth = currentWidth;
+                            if (m_options.resultsOptions.ShowNeighboursImages)
+                            {
+                                if (m_position == ImagePreviewPanel.Position.Top || m_position == ImagePreviewPanel.Position.Bottom)
+                                {
+                                    verticalPosition = (clientHeight - currentHeight) / 2;
+                                    horizontalPosition = clientWidth - currentWidth;
+                                }
+                                else
+                                {
+                                    verticalPosition = 0;
+                                    horizontalPosition = (clientWidth - currentWidth) / 2;
+                                }
+                            }
+                            else
+                            {
+                                verticalPosition = (clientHeight - currentHeight) / 2;
+                                horizontalPosition = (clientWidth - currentWidth) / 2;
+                            }
                         }
                     }
                     else
                     {
-                        if (m_options.resultsOptions.StretchSmallImages || cw >= w || ch >= h)
+                        if (m_options.resultsOptions.StretchSmallImages || currentWidth >= clientWidth || currentHeight >= clientHeight)
                         {
-                            if (cw * h > ch * w)
+                            if (currentWidth * clientHeight > currentHeight * clientWidth) //если ширина больше
                             {
-                                vp = (h - w * ch / cw) / 2;
+                                targetWidth = clientWidth;
+                                targetHeight = clientWidth * currentHeight / currentWidth;
+                                if (m_options.resultsOptions.ShowNeighboursImages)
+                                {
+                                    if (m_position == ImagePreviewPanel.Position.Top || m_position == ImagePreviewPanel.Position.Bottom)
+                                        verticalPosition = (clientHeight - targetHeight) / 2;
+                                    else
+                                        verticalPosition = 0;
+                                }
+                                else
+                                    verticalPosition = (clientHeight - targetHeight) / 2;
+
                             }
                             else
                             {
-                                hp = (w - h * cw / ch) / 2;
+                                targetWidth = clientHeight * currentWidth / currentHeight;
+                                targetHeight = clientHeight;
+                                if (m_options.resultsOptions.ShowNeighboursImages)
+                                {
+                                    if (m_position == ImagePreviewPanel.Position.Top || m_position == ImagePreviewPanel.Position.Bottom)
+                                        horizontalPosition = clientWidth - targetWidth;
+                                }
+                                else
+                                    horizontalPosition = (clientWidth - targetWidth) / 2;
                             }
                         }
                         else
                         {
-                            vp = (h - ch) / 2;
-                            hp = (w - cw) / 2;
+                            if (m_options.resultsOptions.ShowNeighboursImages)
+                            {
+                                if (m_position == ImagePreviewPanel.Position.Top || m_position == ImagePreviewPanel.Position.Bottom)
+                                    horizontalPosition = clientWidth - currentWidth;
+                                else
+                                    verticalPosition = 0;
+                            }
+                            else
+                            {
+                                verticalPosition = (clientHeight - currentHeight) / 2;
+                                horizontalPosition = (clientWidth - currentWidth) / 2;
+                            }
+                            targetWidth = currentWidth;
+                            targetHeight = currentHeight;
                         }
                     }
                 }
-                m_bitmapRect = new Rectangle(hp, vp, w - 2 * hp, h - 2 * vp);
+                m_bitmapRect = new Rectangle(horizontalPosition, verticalPosition, targetWidth, targetHeight);
             }
-            Refresh();
+            //Refresh();
+        }
+
+        /// <summary>
+        /// Рисует в храящемся изображение m_bitmap бордюры отличий.
+        /// </summary>
+        public bool SetDiffrent(List<Rectangle> rectanglesOfDiffrentIn)
+        {
+            if (!m_animationEnable)
+            {
+                if (m_originalBitmap == null)
+                    m_originalBitmap = m_bitmap.Clone() as Bitmap;
+                else if (m_bitmap != m_originalBitmap)
+                    m_bitmap = m_originalBitmap.Clone() as Bitmap;
+
+                m_rectanglesOfDiffrent = new Rectangle[rectanglesOfDiffrentIn.Count];
+                rectanglesOfDiffrentIn.CopyTo(m_rectanglesOfDiffrent);
+
+                //преобразуем в соответсвии с размером полного изображения
+                double multiplierX = m_bitmap.Width / (double)m_options.resultsOptions.NormalizedSizeOfImage;
+                double multiplierY = m_bitmap.Height / (double)m_options.resultsOptions.NormalizedSizeOfImage;
+
+                for (int i = 0; i < m_rectanglesOfDiffrent.Length; i++)
+                {
+                    m_rectanglesOfDiffrent[i] = new Rectangle((int)(m_rectanglesOfDiffrent[i].X * multiplierX),
+                        (int)(m_rectanglesOfDiffrent[i].Y * multiplierY),
+                        (int)(m_rectanglesOfDiffrent[i].Width * multiplierX),
+                        (int)(m_rectanglesOfDiffrent[i].Height * multiplierY));
+                }
+
+                int penThickness = Math.Min(m_bitmap.Width, m_bitmap.Height) * m_options.resultsOptions.PenThickness / m_options.resultsOptions.NormalizedSizeOfImage;
+                penForDiffrent = new Pen(new SolidBrush(Color.Red), penThickness);
+                try
+                {
+                    using (Graphics gr = Graphics.FromImage(m_bitmap))
+                    {
+                        for (int i = 0; i < m_rectanglesOfDiffrent.Length; i++)
+                            gr.DrawRectangle(penForDiffrent, m_rectanglesOfDiffrent[i]);
+                    }
+                    this.Invalidate();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    //на этом изображение не получается рисовать
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        public void ClearDiffrent()
+        {
+            if (m_originalBitmap != null)
+            {
+                m_bitmap = m_originalBitmap.Clone() as Bitmap;
+                m_originalBitmap.Dispose();
+                m_originalBitmap = null;
+            }
+            m_rectanglesOfDiffrent = null;
+            this.Invalidate();
+        }
+
+        private void ShowNeighboursImages(bool forceLoad)
+        {
+            if (m_options.resultsOptions.ShowNeighboursImages && m_currentImageInfo != null)
+            {
+                if (forceLoad)
+                {
+                    CleanNeighbours();
+                    GetNeighboursFileNames(m_currentImageInfo.path, ref m_prevFile, ref m_nextFile);
+                }
+                if (m_prevFile != null)
+                    m_prevBitmap = GetBitmap(m_prevFile);
+                if (m_prevBitmap != null)
+                    m_prevBitmapRect = GetRectangle(m_position, m_prevBitmap, Neighbour.Previous);
+                if (m_nextFile != null)
+                    m_nextBitmap = GetBitmap(m_nextFile);
+                if (m_nextBitmap != null)
+                    m_nextBitmapRect = GetRectangle(m_position, m_nextBitmap, Neighbour.Next);
+            }
+            else
+            {
+                CleanNeighbours();
+            }
+        }
+
+        private void CleanNeighbours()
+        {
+            if (m_prevFile != null)
+                m_prevFile = null;
+            if (m_nextFile != null)
+                m_nextFile = null;
+            if (m_prevBitmap != null)
+                m_prevBitmap = null;
+            if (m_nextBitmap != null)
+                m_nextBitmap = null;
+        }
+
+        private Rectangle GetRectangle(ImagePreviewPanel.Position position, Bitmap bitmap, Neighbour neighbour)
+        {
+            const float PERCENT_OF_NEIGHBOUR = 0.30F;
+            int clientWidth = ClientSize.Width;
+            int clientHeight = ClientSize.Height;
+            int neighbourMaxWidth = (int)((float)clientWidth * PERCENT_OF_NEIGHBOUR);
+            int neighbourMaxHeight = (int)((float)clientHeight * PERCENT_OF_NEIGHBOUR);
+            int currentWidth = bitmap.Width;
+            int currentHeight = bitmap.Height;
+            int horizontalPosition = 0, verticalPosition = 0;
+            int neighbourWidth, neighbourHeight;
+
+            if (currentWidth > currentHeight)
+            {
+                neighbourWidth = neighbourMaxWidth;
+                neighbourHeight = neighbourMaxWidth * currentHeight / currentWidth;
+            }
+            else if (currentWidth < currentHeight)
+            {
+                neighbourHeight = neighbourMaxHeight;
+                neighbourWidth = neighbourMaxHeight * currentWidth / currentHeight;
+            }
+            else
+            {
+                neighbourWidth = neighbourMaxWidth;
+                neighbourHeight = neighbourMaxHeight;
+            }
+
+            if (position == ImagePreviewPanel.Position.Top || position == ImagePreviewPanel.Position.Bottom)
+            {
+                if (neighbour == Neighbour.Next)
+                {
+                    verticalPosition = clientHeight - neighbourHeight;
+                }
+            }
+            else
+            {
+                verticalPosition = clientHeight - neighbourHeight;
+                if (neighbour == Neighbour.Previous)
+                {
+                    horizontalPosition = clientWidth - neighbourWidth;
+                }
+            }
+
+            return new Rectangle(horizontalPosition, verticalPosition, neighbourWidth, neighbourHeight);
+        }
+
+        private Bitmap GetBitmap(string m_fileName)
+        {
+            try
+            {
+                if (m_fileName != null)
+                {
+                    MemoryStream memoryStream = null;
+                    if (LoadFileToMemoryStream(ref memoryStream, m_fileName))
+                    {
+                        return new Bitmap(memoryStream);
+                    }
+                }
+            }
+            catch
+            {
+                return m_core.LoadBitmap(m_currentImageInfo);
+            }
+
+            return null;
+        }
+
+        private void GetNeighboursFileNames(string filePreview, ref string m_prevFile, ref string m_nextFile)
+        {
+            if (m_prevFile == null && m_nextFile == null)
+            {
+                DirectoryInfo directoryInfo = new DirectoryInfo(Path.GetDirectoryName(filePreview));
+                FileInfo[] filesInfos = directoryInfo.GetFiles();
+                for (int i = 0; i < filesInfos.Length; i++)
+                {
+                    if (filesInfos[i].FullName == filePreview)
+                    {
+                        if (i > 0)  //previos
+                            if (File.Exists(filesInfos[i - 1].FullName))
+                                m_prevFile = filesInfos[i - 1].FullName;
+                        if (i < filesInfos.Length - 1) //next
+                            if (File.Exists(filesInfos[i + 1].FullName))
+                                m_nextFile = filesInfos[i + 1].FullName;
+                        break;
+                    }
+                }
+            }
         }
     }
 }

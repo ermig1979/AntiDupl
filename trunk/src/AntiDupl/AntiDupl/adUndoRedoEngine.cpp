@@ -329,7 +329,10 @@ namespace ad
         {
             if(::MoveFileEx(it->second.c_str(), it->first.c_str(), 
 				MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED) != TRUE)
+			{
+				m_pStatus->Reset();
                 return false;
+			}
             m_pMistakeStorage->Rename(it->info, it->first);
             it->info->Rename(it->first);
             m_pStatus->RenameImage(-1);

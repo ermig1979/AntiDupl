@@ -84,6 +84,7 @@ namespace AntiDupl.NET
             m_index = index;
             m_pictureBoxPanel.UpdateImage(ImageInfo);
             m_pictureBoxPanel.UpdateImagePadding(m_group.sizeMax);
+            m_pictureBoxPanel.Refresh();
         }
     }
 }

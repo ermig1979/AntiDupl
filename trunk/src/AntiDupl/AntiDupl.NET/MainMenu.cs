@@ -43,6 +43,8 @@ namespace AntiDupl.NET
         private ToolStripMenuItem m_fileMenuItem;
         private ToolStripMenuItem m_file_profileOpenMenuItem;
         private ToolStripMenuItem m_file_profileSaveAsMenuItem;
+        private ToolStripMenuItem m_file_loadProfileOnLoading;
+        private ToolStripMenuItem m_file_saveProfileOnClosing;
         private ToolStripMenuItem m_file_exitMenuItem;
 
         private ToolStripMenuItem m_editMenuItem;
@@ -59,6 +61,7 @@ namespace AntiDupl.NET
         private ToolStripMenuItem m_view_hotKeysMenuItem;
         private ToolStripMenuItem m_view_stretchSmallImageMenuItem;
         private ToolStripMenuItem m_view_proportionalImageViewMenuItem;
+        private ToolStripMenuItem m_view_showNeighbourImageMenuItem;
 
         private ToolStripMenuItem m_searchMenuItem;
         private ToolStripMenuItem m_search_startMenuItem;
@@ -101,10 +104,15 @@ namespace AntiDupl.NET
             m_file_exitMenuItem = InitFactory.MenuItem.Create(null, null, ExitAction);
             m_file_profileOpenMenuItem = InitFactory.MenuItem.Create("ProfileOpenMenu", null, ProfileOpenAction);
             m_file_profileSaveAsMenuItem = InitFactory.MenuItem.Create("ProfileSaveAsMenu", null, ProfileSaveAsAction);
-
+            m_file_loadProfileOnLoading = InitFactory.MenuItem.Create(null, null, LoadProfileOnLoadingAction, m_options.loadProfileOnLoading);
+            m_file_saveProfileOnClosing = InitFactory.MenuItem.Create(null, null, SaveProfileOnClosingAction, m_options.saveProfileOnClosing);
+            
             m_fileMenuItem = new ToolStripMenuItem();
             m_fileMenuItem.DropDownItems.Add(m_file_profileOpenMenuItem);
             m_fileMenuItem.DropDownItems.Add(m_file_profileSaveAsMenuItem);
+            m_fileMenuItem.DropDownItems.Add(new ToolStripSeparator());
+            m_fileMenuItem.DropDownItems.Add(m_file_loadProfileOnLoading);
+            m_fileMenuItem.DropDownItems.Add(m_file_saveProfileOnClosing);
             m_fileMenuItem.DropDownItems.Add(new ToolStripSeparator());
             m_fileMenuItem.DropDownItems.Add(m_file_exitMenuItem);
 
@@ -126,6 +134,7 @@ namespace AntiDupl.NET
             m_view_hotKeysMenuItem = InitFactory.MenuItem.Create(null, null, OnHotKeysClick);
             m_view_stretchSmallImageMenuItem = InitFactory.MenuItem.Create(null, null, ViewItemCheckChangeAction, m_options.resultsOptions.StretchSmallImages);
             m_view_proportionalImageViewMenuItem = InitFactory.MenuItem.Create(null, null, ViewItemCheckChangeAction, m_options.resultsOptions.ProportionalImageSize);
+            m_view_showNeighbourImageMenuItem = InitFactory.MenuItem.Create(null, null, ViewItemCheckChangeAction, m_options.resultsOptions.ShowNeighboursImages);
  
             m_viewMenuItem = new ToolStripMenuItem();
             m_viewMenuItem.DropDownItems.Add(m_view_toolMenuItem);
@@ -139,6 +148,7 @@ namespace AntiDupl.NET
             m_viewMenuItem.DropDownItems.Add(new ToolStripSeparator());
             m_viewMenuItem.DropDownItems.Add(m_view_stretchSmallImageMenuItem);
             m_viewMenuItem.DropDownItems.Add(m_view_proportionalImageViewMenuItem);
+            m_viewMenuItem.DropDownItems.Add(m_view_showNeighbourImageMenuItem);
 
             m_search_startMenuItem = InitFactory.MenuItem.Create("StartMenu", null, StartSearchAction);
             m_search_refreshResultsMenuItem = InitFactory.MenuItem.Create("RefreshMenu", null, RefreshResultsAction);
@@ -190,6 +200,8 @@ namespace AntiDupl.NET
             m_fileMenuItem.Text = s.MainMenu_FileMenuItem_Text;
             m_file_profileOpenMenuItem.Text = s.MainMenu_File_OpenProfileMenuItem_Text;
             m_file_profileSaveAsMenuItem.Text = s.MainMenu_File_SaveProfileAsMenuItem_Text;
+            m_file_loadProfileOnLoading.Text = "loadProfileOnLoading";
+            m_file_saveProfileOnClosing.Text = "saveProfileOnClosing";
             m_file_exitMenuItem.Text = s.MainMenu_File_ExitMenuItem_Text;
 
             m_editMenuItem.Text = s.MainMenu_EditMenuItem_Text;
@@ -204,6 +216,7 @@ namespace AntiDupl.NET
             m_view_hotKeysMenuItem.Text = s.MainMenu_View_HotKeysMenuItem_Text;
             m_view_stretchSmallImageMenuItem.Text = s.MainMenu_View_StretchSmallImagesMenuItem_Text;
             m_view_proportionalImageViewMenuItem.Text = s.MainMenu_View_ProportionalImageSizeMenuItem_Text;
+            m_view_showNeighbourImageMenuItem.Text = "showNeighbourImage";
 
             m_searchMenuItem.Text = s.MainMenu_SearchMenuItem_Text;
             m_search_startMenuItem.Text = s.MainMenu_Search_StartMenuItem_Text;
@@ -240,6 +253,10 @@ namespace AntiDupl.NET
             else if (item == m_view_proportionalImageViewMenuItem)
             {
                 m_options.resultsOptions.ProportionalImageSize = item.Checked;
+            }
+            else if (item == m_view_showNeighbourImageMenuItem)
+            {
+                m_options.resultsOptions.ShowNeighboursImages = item.Checked;
             }
             m_mainForm.Refresh();
         }
@@ -318,13 +335,14 @@ namespace AntiDupl.NET
             dialog.Filter = "Antidupl profile files (*.xml)|*.xml";
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                if (string.Compare(dialog.FileName, m_options.coreOptionsFileName) != 0)
+                /*if (string.Compare(dialog.FileName, m_options.coreOptionsFileName) != 0)
                 {
                     m_coreOptions.Save(m_options.coreOptionsFileName);
                     ProgressForm saveProgressForm = new ProgressForm(ProgressForm.Type.SaveResults, m_core, m_options, m_coreOptions, m_mainSplitContainer);
                     saveProgressForm.Execute();
                     m_options.coreOptionsFileName = dialog.FileName;
-                }
+                }*/
+                m_options.coreOptionsFileName = dialog.FileName;
                 m_coreOptions.Save(m_options.coreOptionsFileName);
                 ProgressForm progressForm = new ProgressForm(ProgressForm.Type.SaveResults, m_core, m_options, m_coreOptions, m_mainSplitContainer);
                 progressForm.Execute();
@@ -414,6 +432,16 @@ namespace AntiDupl.NET
         private void CheckMistakesAtLoadingAction(object sender, EventArgs e)
         {
             m_options.checkMistakesAtLoading = m_search_checkMistakesAtLoadingMenuItem.Checked;
+        }
+
+        private void LoadProfileOnLoadingAction(object sender, EventArgs e)
+        {
+            m_options.loadProfileOnLoading = m_file_loadProfileOnLoading.Checked;
+        }
+
+        private void SaveProfileOnClosingAction(object sender, EventArgs e)
+        {
+            m_options.saveProfileOnClosing = m_file_saveProfileOnClosing.Checked;
         }
 
         public void HelpAction(object sender, EventArgs e)
