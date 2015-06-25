@@ -58,7 +58,6 @@ namespace AntiDupl.NET
 
             layout.Controls.Add(CreateInfoTable(Font), 0, 3);
 
-            layout.AutoScroll = true;
             Controls.Add(layout);
         }
 

@@ -53,7 +53,13 @@ namespace AntiDupl.NET
         {
             m_core = new CoreLib();
             m_options = Options.Load();
-            m_coreOptions = CoreOptions.Load(m_options.coreOptionsFileName, m_core, m_options.onePath);
+            if (m_options.loadProfileOnLoading)
+                m_coreOptions = CoreOptions.Load(m_options.coreOptionsFileName, m_core, m_options.onePath);
+            else
+            {
+                m_options.coreOptionsFileName = Options.GetDefaultCoreOptionsFileName();
+                m_coreOptions = new CoreOptions(m_core);
+            }
             Resources.Strings.SetCurrent(m_options.Language);
 
             StartFinishForm startFinishForm = new StartFinishForm(m_core, m_options);
@@ -91,7 +97,8 @@ namespace AntiDupl.NET
 
         private void OnFormClosed(object sender, FormClosedEventArgs e)
         {
-            m_coreOptions.Save(m_options.coreOptionsFileName);
+            if (m_options.saveProfileOnClosing)
+                m_coreOptions.Save(m_options.coreOptionsFileName);
 
             m_mainSplitContainer.ClearResults();
             GetSavedViewOptions();

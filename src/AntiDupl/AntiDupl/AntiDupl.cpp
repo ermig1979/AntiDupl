@@ -232,7 +232,7 @@ DLLAPI adError adClear(adHandle handle, adFileType fileType)
         handle->MistakeStorage()->Clear();
         break;
     case AD_FILE_IMAGE_DATA_BASE:
-        handle->ImageDataStorage()->Clear();
+        handle->ImageDataStorage()->ClearMemory();
         break;
     case AD_FILE_TEMPORARY:
         handle->RecycleBin()->ClearTemporaryFiles(false);

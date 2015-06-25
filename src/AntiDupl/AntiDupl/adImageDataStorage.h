@@ -35,7 +35,7 @@ namespace ad
 	{
 	public:
 		TImageDataStorage(TEngine *pEngine);
-		~TImageDataStorage() {Clear();}
+		~TImageDataStorage() {ClearMemory();}
 
 		TImageDataPtr Get(const TFileInfo& fileInfo);
 
@@ -45,7 +45,7 @@ namespace ad
 		adError ClearDatabase(const TChar *path);
 
 		void Check();
-		void Clear();
+		void ClearMemory();
 		void SetSaveState(const bool needToSave);
 
 	private:
@@ -83,6 +83,7 @@ namespace ad
 		void CreateSorted(TVector & sorted) const;
 		void SetOld(TIndex & index, bool allLoad) const;
 		void UpdateIndex(TIndex & index) const;
+		void DeleteOldIndex(TIndex & index, const TChar *path) const;
 
 		TString GetDataFileName(short key) const;
 

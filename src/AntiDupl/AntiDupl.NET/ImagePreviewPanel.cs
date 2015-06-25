@@ -179,81 +179,26 @@ namespace AntiDupl.NET
             m_toolTip.AutoPopDelay = Int16.MaxValue;
         }
 
-        private List<string> GetExifList(CoreImageInfo currentImageInfo, Strings s)
-        {
-            List<string> exifList = new List<string>();
-            if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.imageDescription))
-                exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_ImageDescription + currentImageInfo.exifInfo.imageDescription);
-            if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.equipMake))
-                exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_EquipMake + currentImageInfo.exifInfo.equipMake);
-            if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.equipModel))
-                exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_EquipModel + currentImageInfo.exifInfo.equipModel);
-            if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.softwareUsed))
-                exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_SoftwareUsed + currentImageInfo.exifInfo.softwareUsed);
-            if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.dateTime))
-                exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_DateTime + currentImageInfo.exifInfo.dateTime);
-            if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.artist))
-                exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_Artist + currentImageInfo.exifInfo.artist);
-            if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.userComment))
-                exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_UserComment + currentImageInfo.exifInfo.userComment);
-            return exifList;
-        }
-
-        /// <summary>
-        /// Устанавливает значение подсказки tooltip для надписи EXIF.
-        /// </summary>
-        private void SetExifTooltip(CoreImageInfo currentImageInfo)
-        {
-            Strings s = Resources.Strings.Current;
-            string exifSting = String.Empty;
-
-            List<string> exifList = GetExifList(currentImageInfo, s);
-
-            if (exifList.Count > 0)
-            {
-                for (int i = 0; i < exifList.Count - 1; i++)
-                {
-                    exifSting = exifSting + exifList[i];
-                    exifSting = exifSting + Environment.NewLine;
-                }
-                exifSting = exifSting + exifList[exifList.Count - 1];
-
-                m_toolTip.SetToolTip(m_imageExifLabel, exifSting);
-            }
-        }
-
-        /// <summary>
-        /// Изменение подсказки EXIF при смене языка.
-        /// </summary>
-        /// <param name="result"></param>
-        public void UpdateExifTooltip(CoreResult result)
-        {
-            if (result.type == CoreDll.ResultType.None)
-                throw new Exception("Bad result type!");
-
-            switch(m_position)
-            {
-            case Position.Left:
-            case Position.Top:
-                if (result.first.exifInfo.isEmpty == CoreDll.FALSE)
-                    SetExifTooltip(result.first);
-                break;
-            case Position.Right:
-            case Position.Bottom:
-                if (result.second.exifInfo.isEmpty == CoreDll.FALSE)
-                    SetExifTooltip(result.second);
-                break;
-            }
-        }
-
         /// <summary>
         /// Set information in image panel.
         /// Установка информации в панели изображения.
         /// </summary>
         private void SetImageInfo(CoreImageInfo currentImageInfo, CoreImageInfo neighbourImageInfo)
         {
-            bool updateCurrent = UpdateImageInfo(ref m_currentImageInfo, currentImageInfo);
-            bool updateNeighbour = UpdateImageInfo(ref m_neighbourImageInfo, neighbourImageInfo);
+            /*bool updateCurrent = UpdateImageInfo(ref m_currentImageInfo, currentImageInfo);
+            bool updateNeighbour = UpdateImageInfo(ref m_neighbourImageInfo, neighbourImageInfo);*/
+            bool updateCurrent = true;
+            bool updateNeighbour = true;
+            if (!m_options.resultsOptions.ShowNeighboursImages)
+            {
+                m_currentImageInfo = currentImageInfo;
+                m_neighbourImageInfo = neighbourImageInfo;
+            }
+            else
+            {
+                updateCurrent = UpdateImageInfo(ref m_currentImageInfo, currentImageInfo);
+                updateNeighbour = UpdateImageInfo(ref m_neighbourImageInfo, neighbourImageInfo);
+            }
             if (updateCurrent)
             {
                 m_pictureBoxPanel.UpdateImage(currentImageInfo);
@@ -312,24 +257,6 @@ namespace AntiDupl.NET
             }
         }
 
-        /// <summary>
-        /// Проверка равны ли Exif.
-        /// </summary>
-        private bool ExifEqual(CoreDll.adImageExifW imageExif1, CoreDll.adImageExifW imageExif2)
-        {
-            if (imageExif1.isEmpty == imageExif2.isEmpty &&
-                imageExif1.artist.CompareTo(imageExif2.artist) == 0 &&
-                imageExif1.dateTime.CompareTo(imageExif2.dateTime) == 0 &&
-                imageExif1.equipMake.CompareTo(imageExif2.equipMake) == 0 &&
-                imageExif1.equipModel.CompareTo(imageExif2.equipModel) == 0 &&
-                imageExif1.imageDescription.CompareTo(imageExif2.imageDescription) == 0 &&
-                imageExif1.softwareUsed.CompareTo(imageExif2.softwareUsed) == 0 &&
-                imageExif1.userComment.CompareTo(imageExif2.userComment) == 0)
-                return true;
-
-            return false;
-        }
-        
         /// <summary>
         /// Проверяет, нужно ли обновление текущей информации об изображении.
         /// </summary>
@@ -391,6 +318,8 @@ namespace AntiDupl.NET
                     m_renameCurrentType = CoreDll.RenameCurrentType.Second;
                     break;
             }
+
+            m_pictureBoxPanel.Position = m_position;
             
             TableLayoutPanel infoLayout = InitFactory.Layout.Create(7, 1); //number of controls in panel
             infoLayout.Height = m_imageSizeLabel.Height;
@@ -500,5 +429,157 @@ namespace AntiDupl.NET
                     dialog.Title, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.Cancel;
             }
         }
+
+        private List<string> GetExifList(CoreImageInfo currentImageInfo, Strings s)
+        {
+            List<string> exifList = new List<string>();
+            if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.imageDescription))
+                exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_ImageDescription + currentImageInfo.exifInfo.imageDescription);
+            if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.equipMake))
+                exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_EquipMake + currentImageInfo.exifInfo.equipMake);
+            if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.equipModel))
+                exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_EquipModel + currentImageInfo.exifInfo.equipModel);
+            if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.softwareUsed))
+                exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_SoftwareUsed + currentImageInfo.exifInfo.softwareUsed);
+            if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.dateTime))
+                exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_DateTime + currentImageInfo.exifInfo.dateTime);
+            if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.artist))
+                exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_Artist + currentImageInfo.exifInfo.artist);
+            if (!String.IsNullOrEmpty(currentImageInfo.exifInfo.userComment))
+                exifList.Add(s.ImagePreviewPanel_EXIF_Tooltip_UserComment + currentImageInfo.exifInfo.userComment);
+            return exifList;
+        }
+
+        /// <summary>
+        /// Устанавливает значение подсказки tooltip для надписи EXIF.
+        /// </summary>
+        private void SetExifTooltip(CoreImageInfo currentImageInfo)
+        {
+            Strings s = Resources.Strings.Current;
+            string exifSting = String.Empty;
+
+            List<string> exifList = GetExifList(currentImageInfo, s);
+
+            if (exifList.Count > 0)
+            {
+                for (int i = 0; i < exifList.Count - 1; i++)
+                {
+                    exifSting = exifSting + exifList[i];
+                    exifSting = exifSting + Environment.NewLine;
+                }
+                exifSting = exifSting + exifList[exifList.Count - 1];
+
+                m_toolTip.SetToolTip(m_imageExifLabel, exifSting);
+            }
+        }
+
+        /// <summary>
+        /// Изменение подсказки EXIF при смене языка.
+        /// </summary>
+        /// <param name="result"></param>
+        public void UpdateExifTooltip(CoreResult result)
+        {
+            if (result.type == CoreDll.ResultType.None)
+                throw new Exception("Bad result type!");
+
+            switch (m_position)
+            {
+                case Position.Left:
+                case Position.Top:
+                    if (result.first.exifInfo.isEmpty == CoreDll.FALSE)
+                        SetExifTooltip(result.first);
+                    break;
+                case Position.Right:
+                case Position.Bottom:
+                    if (result.second.exifInfo.isEmpty == CoreDll.FALSE)
+                        SetExifTooltip(result.second);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Проверка равны ли Exif.
+        /// </summary>
+        private bool ExifEqual(CoreDll.adImageExifW imageExif1, CoreDll.adImageExifW imageExif2)
+        {
+            if (imageExif1.isEmpty == imageExif2.isEmpty &&
+                imageExif1.artist.CompareTo(imageExif2.artist) == 0 &&
+                imageExif1.dateTime.CompareTo(imageExif2.dateTime) == 0 &&
+                imageExif1.equipMake.CompareTo(imageExif2.equipMake) == 0 &&
+                imageExif1.equipModel.CompareTo(imageExif2.equipModel) == 0 &&
+                imageExif1.imageDescription.CompareTo(imageExif2.imageDescription) == 0 &&
+                imageExif1.softwareUsed.CompareTo(imageExif2.softwareUsed) == 0 &&
+                imageExif1.userComment.CompareTo(imageExif2.userComment) == 0)
+                return true;
+
+            return false;
+        }
+
+        public ComparableBitmap[] GetImageFragments()
+        {
+            int amountOfFragments = m_options.resultsOptions.AmountOfFragmentsOnX * m_options.resultsOptions.AmountOfFragmentsOnY;
+
+            Bitmap bitmap = m_pictureBoxPanel.Bitmap;
+            if (bitmap != null && m_options.resultsOptions.NormalizedSizeOfImage > 16)
+            {
+                Size smallSize = new Size(m_options.resultsOptions.NormalizedSizeOfImage, m_options.resultsOptions.NormalizedSizeOfImage);
+                bitmap = ResizeImage(bitmap, smallSize);
+
+                if (bitmap != null)
+                {
+                    ComparableBitmap[] fragments = new ComparableBitmap[amountOfFragments];
+                    int widthOfFragment = bitmap.Width / m_options.resultsOptions.AmountOfFragmentsOnX;
+                    int heightOfFragment = bitmap.Height / m_options.resultsOptions.AmountOfFragmentsOnX;
+
+                    for (int i = 0, x = 0, y = 0; i < amountOfFragments; i++)
+                    {
+                        Rectangle rectangle = new Rectangle(x, y, widthOfFragment, heightOfFragment);
+                        fragments[i] = new ComparableBitmap(bitmap, rectangle);
+
+                        x += widthOfFragment;
+                        if (x >= bitmap.Width)
+                        {
+                            x = 0;
+                            y = y + heightOfFragment;
+                        }
+                    }
+
+                    return fragments;
+                }
+            }
+
+            return null;
+        }
+
+        public void SetDiffrent(List<Rectangle> rectangles)
+        {
+            m_pictureBoxPanel.SetDiffrent(rectangles);
+        }
+
+        public void ClearDiffrent()
+        {
+            m_pictureBoxPanel.ClearDiffrent();
+        }
+
+        public static Bitmap ResizeImage(Bitmap imgToResize, Size size)
+        {
+            try
+            {
+                Bitmap b = new Bitmap(size.Width, size.Height);
+                using (Graphics g = Graphics.FromImage((Image)b))
+                {
+                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    g.DrawImage(imgToResize, new Rectangle(0, 0, size.Width, size.Height),
+                       0, 0, imgToResize.Width, imgToResize.Height, GraphicsUnit.Pixel);
+                }
+                return b;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            return null;
+        }
+
     }
 }

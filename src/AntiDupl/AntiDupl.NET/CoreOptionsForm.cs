@@ -40,7 +40,7 @@ namespace AntiDupl.NET
         static public int IGNORE_FRAME_WIDTH_MAX = 12;
         static public int IGNORE_FRAME_WIDTH_STEP = 3;
         
-        static public int FORM_WIDTH = 400;
+        static public int FORM_WIDTH = 430;
         static public int FORM_HEIGHT = 400;
         static public int COMBO_BOX_WIDTH = 65;
         static public int COMBO_BOX_HEIGHT = 20;
@@ -106,6 +106,21 @@ namespace AntiDupl.NET
         private LabeledIntegerEdit m_resultCountMaxLabeledIntegerEdit;
         private LabeledComboBox m_ignoreFrameWidthLabeledComboBox;
 
+        private TabPage m_highlightTabPage;
+        private CheckBox m_highlightDiffrentCheckBox;
+        private NumericUpDown m_difrentNumericUpDown;
+        private CheckBox m_notHighlightIfFragmentsMoreThemCheckBox;
+        private LabeledIntegerEdit m_maxFragmentsForDisableHighlightLabeledIntegerEdit;
+        private CheckBox m_highlightAllDiffrentsCheckBox;
+        private LabeledIntegerEdit m_maxFragmentsForHighlightLabeledIntegerEdit;
+        private LabeledIntegerEdit m_amountOfFragmentsOnXLabeledIntegerEdit;
+        private LabeledIntegerEdit m_amountOfFragmentsOnYLabeledIntegerEdit;
+        private LabeledIntegerEdit m_normalizedSizeOfImageLabeledIntegerEdit;
+        private LabeledIntegerEdit m_penThicknessLabeledIntegerEdit;
+            
+        /// <summary>
+        /// Все компоненты иницализированы.
+        /// </summary>
         private bool m_inited = false;
 
         public CoreOptionsForm(CoreLib core, Options options, CoreOptions coreOptions)
@@ -150,6 +165,8 @@ namespace AntiDupl.NET
             InitilizeSearchTabPage();
 
             InitilizeAdvancedTabPage();
+
+            InitilizeHighlightTabPage();
 
             TableLayoutPanel mainButtonsTableLayoutPanel = InitFactory.Layout.Create(4, 1);
             mainButtonsTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
@@ -378,6 +395,126 @@ namespace AntiDupl.NET
             advancedTableLayoutPanel.Controls.Add(m_ignoreFrameWidthLabeledComboBox, 0, 9);
         }
 
+        private void InitilizeHighlightTabPage()
+        {
+            m_highlightTabPage = new TabPage();
+            m_mainTabControl.Controls.Add(m_highlightTabPage);
+
+            TableLayoutPanel highlightTableLayoutPanel = InitFactory.Layout.Create(1, 10, 5);
+            highlightTableLayoutPanel.AutoScroll = true;
+            m_highlightTabPage.Controls.Add(highlightTableLayoutPanel);
+
+            m_highlightDiffrentCheckBox = InitFactory.CheckBox.Create(OnHighlightChanged);
+            m_highlightDiffrentCheckBox.Checked = m_options.resultsOptions.HighlightDiffrent;
+            highlightTableLayoutPanel.Controls.Add(m_highlightDiffrentCheckBox, 0, 1);
+
+
+            m_difrentNumericUpDown = new System.Windows.Forms.NumericUpDown();
+            m_difrentNumericUpDown.Margin = new Padding(0);
+            m_difrentNumericUpDown.DecimalPlaces = 2;
+            m_difrentNumericUpDown.Increment = new decimal(new int[] { 1, 0, 0, 65536});
+            m_difrentNumericUpDown.Minimum = new decimal(new int[] { 0, 0, 0, 0});
+            m_difrentNumericUpDown.Value = new decimal(m_options.resultsOptions.DiffrentThreshold);
+            m_difrentNumericUpDown.ValueChanged += new System.EventHandler(OnHighlightChanged);
+            highlightTableLayoutPanel.Controls.Add(m_difrentNumericUpDown, 0, 2);
+
+            m_notHighlightIfFragmentsMoreThemCheckBox = InitFactory.CheckBox.Create(OnHighlightChanged);
+            m_notHighlightIfFragmentsMoreThemCheckBox.Checked = m_options.resultsOptions.NotHighlightIfFragmentsMoreThan;
+            highlightTableLayoutPanel.Controls.Add(m_notHighlightIfFragmentsMoreThemCheckBox, 0, 3);
+
+            m_maxFragmentsForDisableHighlightLabeledIntegerEdit = new LabeledIntegerEdit(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnHighlightChanged);
+            m_maxFragmentsForDisableHighlightLabeledIntegerEdit.Min = 0;
+            m_maxFragmentsForDisableHighlightLabeledIntegerEdit.Max = 4000;
+            m_maxFragmentsForDisableHighlightLabeledIntegerEdit.Value = m_options.resultsOptions. NotHighlightMaxFragments;
+            highlightTableLayoutPanel.Controls.Add(m_maxFragmentsForDisableHighlightLabeledIntegerEdit, 0, 4);
+
+            m_highlightAllDiffrentsCheckBox = InitFactory.CheckBox.Create(OnHighlightChanged);
+            m_highlightAllDiffrentsCheckBox.Checked = m_options.resultsOptions.HighlightAllDiffrents;
+            highlightTableLayoutPanel.Controls.Add(m_highlightAllDiffrentsCheckBox, 0, 5);
+
+            m_maxFragmentsForHighlightLabeledIntegerEdit = new LabeledIntegerEdit(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnHighlightChanged);
+            m_maxFragmentsForHighlightLabeledIntegerEdit.Min = 0;
+            m_maxFragmentsForHighlightLabeledIntegerEdit.Max = 4000;
+            m_maxFragmentsForHighlightLabeledIntegerEdit.Value = m_options.resultsOptions.MaxFragmentsForHighlight;
+            highlightTableLayoutPanel.Controls.Add(m_maxFragmentsForHighlightLabeledIntegerEdit, 0, 6);
+
+            m_amountOfFragmentsOnXLabeledIntegerEdit = new LabeledIntegerEdit(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnHighlightChanged);
+            m_amountOfFragmentsOnXLabeledIntegerEdit.Min = 0;
+            m_amountOfFragmentsOnXLabeledIntegerEdit.Max = 100;
+            m_amountOfFragmentsOnXLabeledIntegerEdit.Value = m_options.resultsOptions.AmountOfFragmentsOnX;
+            highlightTableLayoutPanel.Controls.Add(m_amountOfFragmentsOnXLabeledIntegerEdit, 0, 7);
+
+            m_amountOfFragmentsOnYLabeledIntegerEdit = new LabeledIntegerEdit(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnHighlightChanged);
+            m_amountOfFragmentsOnYLabeledIntegerEdit.Min = 0;
+            m_amountOfFragmentsOnYLabeledIntegerEdit.Max = 100;
+            m_amountOfFragmentsOnYLabeledIntegerEdit.Value = m_options.resultsOptions.AmountOfFragmentsOnY;
+            highlightTableLayoutPanel.Controls.Add(m_amountOfFragmentsOnYLabeledIntegerEdit, 0, 8);
+
+            m_normalizedSizeOfImageLabeledIntegerEdit = new LabeledIntegerEdit(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnHighlightChanged);
+            m_normalizedSizeOfImageLabeledIntegerEdit.Min = 0;
+            m_normalizedSizeOfImageLabeledIntegerEdit.Max = 2048;
+            m_normalizedSizeOfImageLabeledIntegerEdit.Value = m_options.resultsOptions.NormalizedSizeOfImage;
+            highlightTableLayoutPanel.Controls.Add(m_normalizedSizeOfImageLabeledIntegerEdit, 0, 9);
+
+            m_penThicknessLabeledIntegerEdit = new LabeledIntegerEdit(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnHighlightChanged);
+            m_penThicknessLabeledIntegerEdit.Min = 0;
+            m_penThicknessLabeledIntegerEdit.Max = 100;
+            m_penThicknessLabeledIntegerEdit.Value = m_options.resultsOptions.PenThickness;
+            highlightTableLayoutPanel.Controls.Add(m_penThicknessLabeledIntegerEdit, 0, 10);
+
+            UpdateHighlightItemsEnabling();
+        }
+
+        private void OnHighlightChanged(object sender, EventArgs e)
+        {
+            if (m_inited)
+            {
+                m_options.resultsOptions.HighlightDiffrent = m_highlightDiffrentCheckBox.Checked;
+                m_options.resultsOptions.DiffrentThreshold = Decimal.ToSingle(m_difrentNumericUpDown.Value);
+                m_options.resultsOptions.NotHighlightIfFragmentsMoreThan = m_notHighlightIfFragmentsMoreThemCheckBox.Checked;
+                m_options.resultsOptions.NotHighlightMaxFragments = m_maxFragmentsForDisableHighlightLabeledIntegerEdit.Value;
+                m_options.resultsOptions.HighlightAllDiffrents = m_highlightAllDiffrentsCheckBox.Checked;
+                m_options.resultsOptions.MaxFragmentsForHighlight = m_maxFragmentsForHighlightLabeledIntegerEdit.Value;
+                m_options.resultsOptions.AmountOfFragmentsOnX = m_amountOfFragmentsOnXLabeledIntegerEdit.Value;
+                m_options.resultsOptions.AmountOfFragmentsOnY = m_amountOfFragmentsOnYLabeledIntegerEdit.Value;
+                m_options.resultsOptions.NormalizedSizeOfImage = m_normalizedSizeOfImageLabeledIntegerEdit.Value;
+                m_options.resultsOptions.PenThickness = m_penThicknessLabeledIntegerEdit.Value;
+                UpdateHighlightItemsEnabling();
+                m_options.resultsOptions.RaiseEventOnHighlightDiffrentChange();
+            }
+        }
+
+        /// <summary>
+        /// Проверка возмодных состояний настроек.
+        /// </summary>
+        private void UpdateHighlightItemsEnabling()
+        {
+            if (m_highlightDiffrentCheckBox.Checked)
+            {
+                m_difrentNumericUpDown.Enabled = true;
+                m_highlightAllDiffrentsCheckBox.Enabled = true;
+                m_notHighlightIfFragmentsMoreThemCheckBox.Enabled = true;
+                m_maxFragmentsForDisableHighlightLabeledIntegerEdit.Enabled = m_notHighlightIfFragmentsMoreThemCheckBox.Checked;
+                m_maxFragmentsForHighlightLabeledIntegerEdit.Enabled = !m_highlightAllDiffrentsCheckBox.Checked;
+                m_amountOfFragmentsOnXLabeledIntegerEdit.Enabled = true;
+                m_amountOfFragmentsOnYLabeledIntegerEdit.Enabled = true;
+                m_normalizedSizeOfImageLabeledIntegerEdit.Enabled = true;
+                m_penThicknessLabeledIntegerEdit.Enabled = true;
+            }
+            else 
+            {
+                m_difrentNumericUpDown.Enabled = false;
+                m_highlightAllDiffrentsCheckBox.Enabled = false;
+                m_notHighlightIfFragmentsMoreThemCheckBox.Enabled = false;
+                m_maxFragmentsForDisableHighlightLabeledIntegerEdit.Enabled = false;
+                m_maxFragmentsForHighlightLabeledIntegerEdit.Enabled = false;
+                m_amountOfFragmentsOnXLabeledIntegerEdit.Enabled = false;
+                m_amountOfFragmentsOnYLabeledIntegerEdit.Enabled = false;
+                m_normalizedSizeOfImageLabeledIntegerEdit.Enabled = false;
+                m_penThicknessLabeledIntegerEdit.Enabled = false;
+            }
+        }
+
         /// <summary>
         /// Чтение опций из CoreOptions.
         /// </summary>
@@ -540,6 +677,17 @@ namespace AntiDupl.NET
             m_undoQueueSizeLabeledIntegerEdit.Text = s.CoreOptionsForm_UndoQueueSizeLabeledIntegerEdit_Text;
             m_resultCountMaxLabeledIntegerEdit.Text = s.CoreOptionsForm_ResultCountMaxLabeledIntegerEdit_Text;
             m_ignoreFrameWidthLabeledComboBox.Text = s.CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text;
+
+            m_highlightTabPage.Text = "Highlight";
+            m_highlightDiffrentCheckBox.Text = "Highlight diffrent";
+            m_notHighlightIfFragmentsMoreThemCheckBox.Text = "Not highlight diffrents if fragments more than";
+            m_maxFragmentsForDisableHighlightLabeledIntegerEdit.Text = "NotHighlightMaxFragments";
+            m_highlightAllDiffrentsCheckBox.Text = "Highlight all diffrents";
+            m_maxFragmentsForHighlightLabeledIntegerEdit.Text = "Max amount of fragments for highlight";
+            m_amountOfFragmentsOnXLabeledIntegerEdit.Text = "Amount of fragments on X";
+            m_amountOfFragmentsOnYLabeledIntegerEdit.Text = "Amount of fragments on Y";
+            m_normalizedSizeOfImageLabeledIntegerEdit.Text = "Normalized size of image";
+            m_penThicknessLabeledIntegerEdit.Text = "Pen thickness";
         }
 
         /// <summary>
