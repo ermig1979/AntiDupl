@@ -502,7 +502,7 @@ namespace ad
             case AD_LOCAL_ACTION_DELETE_SECOND:
                 return Delete(pResult->second);
             case AD_LOCAL_ACTION_DELETE_BOTH:
-                return (Delete(pResult->first) || Delete(pResult->second));
+                return (Delete(pResult->first) && Delete(pResult->second));
             case AD_LOCAL_ACTION_RENAME_FIRST_TO_SECOND:
                 return Rename(pResult->first, pResult->second);
             case AD_LOCAL_ACTION_RENAME_SECOND_TO_FIRST:

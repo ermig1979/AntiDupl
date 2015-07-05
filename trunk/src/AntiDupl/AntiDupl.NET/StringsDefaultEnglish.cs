@@ -113,6 +113,17 @@ namespace AntiDupl.NET
             s.CoreOptionsForm_ResultCountMaxLabeledIntegerEdit_Text = "Maximal count of results";
             s.CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text = "Width of ignored frame of image";
 
+            s.CoreOptionsForm_HighlightTabPage_Text = "Highlight";
+            s.CoreOptionsForm_HighlightDiffrentCheckBox_Text = "Highlight diffrent";
+            s.CoreOptionsForm_NotHighlightIfFragmentsMoreThemCheckBox_Text = "Not highlight diffrents if fragments more than";
+            s.CoreOptionsForm_MaxFragmentsForDisableHighlightLabeledIntegerEdit_Text = "Max fragments for disable highlight";
+            s.CoreOptionsForm_HighlightAllDiffrentsCheckBox_Text = "Highlight all diffrents";
+            s.CoreOptionsForm_MaxFragmentsForHighlightLabeledIntegerEdit_Text = "Max amount of fragments for highlight";
+            s.CoreOptionsForm_AmountOfFragmentsOnXLabeledIntegerEdit_Text = "Amount of fragments on X";
+            s.CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text = "Amount of fragments on Y";
+            s.CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text = "Normalized size of image";
+            s.CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text = "Pen thickness";
+
             s.CorePathsForm_Text = "Paths";
             s.CorePathsForm_SearchTabPage_Text = "Search";
             s.CorePathsForm_IgnoreTabPage_Text = "Ignore";
