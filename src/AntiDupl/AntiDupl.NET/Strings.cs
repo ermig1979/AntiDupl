@@ -116,6 +116,17 @@ namespace AntiDupl.NET
         public string CoreOptionsForm_ResultCountMaxLabeledIntegerEdit_Text;
         public string CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text;
 
+        public string CoreOptionsForm_HighlightTabPage_Text;
+        public string CoreOptionsForm_HighlightDiffrentCheckBox_Text;
+        public string CoreOptionsForm_NotHighlightIfFragmentsMoreThemCheckBox_Text;
+        public string CoreOptionsForm_MaxFragmentsForDisableHighlightLabeledIntegerEdit_Text;
+        public string CoreOptionsForm_HighlightAllDiffrentsCheckBox_Text;
+        public string CoreOptionsForm_MaxFragmentsForHighlightLabeledIntegerEdit_Text;
+        public string CoreOptionsForm_AmountOfFragmentsOnXLabeledIntegerEdit_Text;
+        public string CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text;
+        public string CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text;
+        public string CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text;
+
         public string CorePathsForm_Text;
         public string CorePathsForm_SearchTabPage_Text;
         public string CorePathsForm_IgnoreTabPage_Text;

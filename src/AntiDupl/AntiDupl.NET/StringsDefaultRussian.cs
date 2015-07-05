@@ -113,6 +113,17 @@ namespace AntiDupl.NET
             s.CoreOptionsForm_ResultCountMaxLabeledIntegerEdit_Text = "Максимальное количество результатов";
             s.CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text = "Ширина игнорируемой рамки картинки";
 
+            s.CoreOptionsForm_HighlightTabPage_Text = "Подсветка";
+            s.CoreOptionsForm_HighlightDiffrentCheckBox_Text = "Подсветка различий";
+            s.CoreOptionsForm_NotHighlightIfFragmentsMoreThemCheckBox_Text = "Не подсвечивать различия если фрагментов больше чем";
+            s.CoreOptionsForm_MaxFragmentsForDisableHighlightLabeledIntegerEdit_Text = "Максимально количество фрагментов для отключения подсветки";
+            s.CoreOptionsForm_HighlightAllDiffrentsCheckBox_Text = "Подсвечивать все различия";
+            s.CoreOptionsForm_MaxFragmentsForHighlightLabeledIntegerEdit_Text = "Максимально количество фрагментов для подсветки";
+            s.CoreOptionsForm_AmountOfFragmentsOnXLabeledIntegerEdit_Text = "Количество фрагментов по X";
+            s.CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text = "Количество фрагментов по Y";
+            s.CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text = "Нормированный размер изображения";
+            s.CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text = "Толшина рамки выделения";
+
             s.CorePathsForm_Text = "Пути";
             s.CorePathsForm_SearchTabPage_Text = "Искать";
             s.CorePathsForm_IgnoreTabPage_Text = "Пропускать";

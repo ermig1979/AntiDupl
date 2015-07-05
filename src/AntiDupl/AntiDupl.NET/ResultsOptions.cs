@@ -73,7 +73,7 @@ namespace AntiDupl.NET
         public delegate void ImageViewChangeHandler();
         public event ImageViewChangeHandler OnImageViewChange;
         private bool m_stretchSmallImages = false;
-        public bool StretchSmallImages 
+        public bool StretchSmallImages
         {
             get
             {
@@ -110,7 +110,7 @@ namespace AntiDupl.NET
         public delegate void HighlightDiffrentChangeHandler();
         public event HighlightDiffrentChangeHandler OnHighlightDiffrentChange;
         public void RaiseEventOnHighlightDiffrentChange()
-        { 
+        {
             if (OnHighlightDiffrentChange != null)
                 OnHighlightDiffrentChange();
         }
@@ -133,12 +133,12 @@ namespace AntiDupl.NET
 
         private float m_diffrentThreshold = 99.90F;
         public float DiffrentThreshold
-        { 
+        {
             get
-            { 
-                return m_diffrentThreshold; 
+            {
+                return m_diffrentThreshold;
             }
-            set 
+            set
             {
                 if (m_diffrentThreshold != value)
                 {
@@ -195,7 +195,7 @@ namespace AntiDupl.NET
                 }
             }
         }
-      
+
         private int m_maxFragmentsForHighlight = 10;
         public int MaxFragmentsForHighlight
         {
@@ -314,6 +314,11 @@ namespace AntiDupl.NET
 
         public System.Drawing.Size thumbnailSizeMax = new System.Drawing.Size(DEFAULT_THUMBNAIL_WIDTH_MAX, DEFAULT_THUMBNAIL_HEIGHT_MAX);
 
+        public ResultsOptions Clone()
+        {
+            return new ResultsOptions(this);
+        }
+
         public ResultsOptions(ResultsOptions options)
         {
             columnOptionsVertical = new ColumnOptions[(int)ResultsListView.ColumnsTypeVertical.Size];
@@ -329,6 +334,17 @@ namespace AntiDupl.NET
             splitterDistanceHorizontalMaximized = options.splitterDistanceHorizontalMaximized;
             splitterDistanceHorizontalNormal = options.splitterDistanceHorizontalNormal;
             thumbnailSizeMax = options.thumbnailSizeMax;
+
+            m_highlightDiffrent = options.HighlightDiffrent;
+            m_diffrentThreshold = options.DiffrentThreshold;
+            m_notHighlightIfFragmentsMoreThan = options.NotHighlightIfFragmentsMoreThan;
+            m_notHighlightMaxFragments = options.NotHighlightMaxFragments;
+            m_highlightAllDiffrents = options.HighlightAllDiffrents;
+            m_maxFragmentsForHighlight = options.MaxFragmentsForHighlight;
+            m_amountOfFragmentsOnX = options.AmountOfFragmentsOnX;
+            m_amountOfFragmentsOnY = options.AmountOfFragmentsOnY;
+            m_normalizedSizeOfImage = options.NormalizedSizeOfImage;
+            m_penThickness = options.PenThickness;
         }
 
         public ResultsOptions()
@@ -425,7 +441,7 @@ namespace AntiDupl.NET
                 }
             }
         }
-        
+
         private void SetDefaultVerticalColumns()
         {
             columnOptionsVertical[(int)ResultsListView.ColumnsTypeVertical.Type].visible = true;
@@ -567,5 +583,6 @@ namespace AntiDupl.NET
             columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileTime].width = 115;
             columnOptionsHorizontal[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileTime].order = 20;
         }
+
     }
 }

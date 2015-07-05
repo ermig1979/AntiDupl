@@ -50,6 +50,7 @@ namespace AntiDupl.NET
         private CoreOptions m_oldCoreOptions;
         private CoreOptions m_newCoreOptions;
         private CoreOptions m_defaultCoreOptions;
+        private ResultsOptions m_oldResultsOptions;
 
         private Button m_okButton;
         private Button m_cancelButton;
@@ -130,6 +131,7 @@ namespace AntiDupl.NET
             m_oldCoreOptions = coreOptions; //old options - cancel
             m_newCoreOptions = m_oldCoreOptions.Clone();  //new created options
             m_defaultCoreOptions = new CoreOptions(m_core, m_options.onePath); //default options
+            m_oldResultsOptions = m_options.resultsOptions.Clone();
             InitializeComponent();
             UpdateStrings();
             GetOptions();
@@ -678,16 +680,16 @@ namespace AntiDupl.NET
             m_resultCountMaxLabeledIntegerEdit.Text = s.CoreOptionsForm_ResultCountMaxLabeledIntegerEdit_Text;
             m_ignoreFrameWidthLabeledComboBox.Text = s.CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text;
 
-            m_highlightTabPage.Text = "Highlight";
-            m_highlightDiffrentCheckBox.Text = "Highlight diffrent";
-            m_notHighlightIfFragmentsMoreThemCheckBox.Text = "Not highlight diffrents if fragments more than";
-            m_maxFragmentsForDisableHighlightLabeledIntegerEdit.Text = "NotHighlightMaxFragments";
-            m_highlightAllDiffrentsCheckBox.Text = "Highlight all diffrents";
-            m_maxFragmentsForHighlightLabeledIntegerEdit.Text = "Max amount of fragments for highlight";
-            m_amountOfFragmentsOnXLabeledIntegerEdit.Text = "Amount of fragments on X";
-            m_amountOfFragmentsOnYLabeledIntegerEdit.Text = "Amount of fragments on Y";
-            m_normalizedSizeOfImageLabeledIntegerEdit.Text = "Normalized size of image";
-            m_penThicknessLabeledIntegerEdit.Text = "Pen thickness";
+            m_highlightTabPage.Text = s.CoreOptionsForm_HighlightTabPage_Text;
+            m_highlightDiffrentCheckBox.Text = s.CoreOptionsForm_HighlightDiffrentCheckBox_Text;
+            m_notHighlightIfFragmentsMoreThemCheckBox.Text = s.CoreOptionsForm_NotHighlightIfFragmentsMoreThemCheckBox_Text;
+            m_maxFragmentsForDisableHighlightLabeledIntegerEdit.Text = s.CoreOptionsForm_MaxFragmentsForDisableHighlightLabeledIntegerEdit_Text;
+            m_highlightAllDiffrentsCheckBox.Text = s.CoreOptionsForm_HighlightAllDiffrentsCheckBox_Text;
+            m_maxFragmentsForHighlightLabeledIntegerEdit.Text = s.CoreOptionsForm_MaxFragmentsForHighlightLabeledIntegerEdit_Text;
+            m_amountOfFragmentsOnXLabeledIntegerEdit.Text = s.CoreOptionsForm_AmountOfFragmentsOnXLabeledIntegerEdit_Text;
+            m_amountOfFragmentsOnYLabeledIntegerEdit.Text = s.CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text;
+            m_normalizedSizeOfImageLabeledIntegerEdit.Text = s.CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text;
+            m_penThicknessLabeledIntegerEdit.Text = s.CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text;
         }
 
         /// <summary>
@@ -795,6 +797,7 @@ namespace AntiDupl.NET
 
         private void OnCancelButtonClick(object sender, EventArgs e)
         {
+            m_options.resultsOptions = m_oldResultsOptions;
             Close();
         }
 
