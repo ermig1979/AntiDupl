@@ -188,6 +188,7 @@ namespace AntiDupl.NET
                 Close();
                 m_mainForm.Resize -= new EventHandler(OnMainFormResize);
                 m_mainForm.WindowState = m_mainFormWindowState;
+                m_mainForm.UpdateCaption();
                 m_mainForm.Activate();
                 m_mainSplitContainer.UpdateResults();
             }
@@ -263,7 +264,7 @@ namespace AntiDupl.NET
                 else
                 {
                     Text = builder.ToString();
-                    m_mainForm.Text = Application.ProductName;
+                    m_mainForm.UpdateCaption();
                 }
             }
         }
