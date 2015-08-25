@@ -63,7 +63,7 @@ namespace AntiDupl.NET
 
         private void InitializeComponents()
         {
-            ClientSize = new System.Drawing.Size(420, 278);
+            ClientSize = new System.Drawing.Size(420, 315);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             StartPosition = FormStartPosition.CenterScreen;
             ShowInTaskbar = false;
@@ -189,6 +189,7 @@ namespace AntiDupl.NET
             m_hotKeyItems[(int)HotKeyOptions.Action.CurrentDuplPairRenameFirstToSecond].text.Text = s.ResultsPreviewDuplPair_RenameFirstToSecondButton_ToolTip_Text;
             m_hotKeyItems[(int)HotKeyOptions.Action.CurrentDuplPairRenameSecondToFirst].text.Text = s.ResultsPreviewDuplPair_RenameSecondToFirstButton_ToolTip_Text;
             m_hotKeyItems[(int)HotKeyOptions.Action.CurrentMistake].text.Text = s.ResultsPreviewDuplPair_MistakeButton_ToolTip_Text;
+            m_hotKeyItems[(int)HotKeyOptions.Action.ShowNeighbours].text.Text = s.MainMenu_View_ShowNeighbourImageMenuItem_Text;
         }
 
         private void OnButtonClick(object sender, EventArgs e)
@@ -207,6 +208,8 @@ namespace AntiDupl.NET
             if (button == m_okButton)
             {
                 m_newHotKeyOptions.CopyTo(ref m_options.hotKeyOptions);
+                // для обновления подсказки в меню
+                Resources.Strings.Update();
             }
             Close();
         }
@@ -234,7 +237,7 @@ namespace AntiDupl.NET
             for(int i = 0; i < m_hotKeyItems.Length; i++)
             {
                 m_hotKeyItems[i].ckeck.Checked = m_newHotKeyOptions.keys[i] != Keys.None;
-                m_hotKeyItems[i].edit.Text = m_newHotKeyOptions.keys[i].ToString();
+                m_hotKeyItems[i].edit.Text = m_newHotKeyOptions.keys[i].ToString().Replace(',', '+');
             }
         }
 

@@ -200,8 +200,8 @@ namespace AntiDupl.NET
             m_fileMenuItem.Text = s.MainMenu_FileMenuItem_Text;
             m_file_profileOpenMenuItem.Text = s.MainMenu_File_OpenProfileMenuItem_Text;
             m_file_profileSaveAsMenuItem.Text = s.MainMenu_File_SaveProfileAsMenuItem_Text;
-            m_file_loadProfileOnLoading.Text = "loadProfileOnLoading";
-            m_file_saveProfileOnClosing.Text = "saveProfileOnClosing";
+            m_file_loadProfileOnLoading.Text = s.MainMenu_File_LoadProfileOnLoadingMenuItem_Text;
+            m_file_saveProfileOnClosing.Text = s.MainMenu_File_SaveProfileOnClosingMenuItem_Text;
             m_file_exitMenuItem.Text = s.MainMenu_File_ExitMenuItem_Text;
 
             m_editMenuItem.Text = s.MainMenu_EditMenuItem_Text;
@@ -216,7 +216,7 @@ namespace AntiDupl.NET
             m_view_hotKeysMenuItem.Text = s.MainMenu_View_HotKeysMenuItem_Text;
             m_view_stretchSmallImageMenuItem.Text = s.MainMenu_View_StretchSmallImagesMenuItem_Text;
             m_view_proportionalImageViewMenuItem.Text = s.MainMenu_View_ProportionalImageSizeMenuItem_Text;
-            m_view_showNeighbourImageMenuItem.Text = "showNeighbourImage";
+            m_view_showNeighbourImageMenuItem.Text = s.MainMenu_View_ShowNeighbourImageMenuItem_Text + String.Format(" ({0})", m_options.hotKeyOptions.keys[(int)HotKeyOptions.Action.ShowNeighbours].ToString().Replace(',', '+'));
 
             m_searchMenuItem.Text = s.MainMenu_SearchMenuItem_Text;
             m_search_startMenuItem.Text = s.MainMenu_Search_StartMenuItem_Text;

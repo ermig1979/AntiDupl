@@ -316,6 +316,12 @@ namespace AntiDupl.NET
             
             private static ArrayList m_strings = new ArrayList();
             private static int m_currentIndex = 0;
+
+            public static void Update()
+            {
+                if (OnCurrentChange != null)
+                    OnCurrentChange();
+            }
         }
 
         static public class WebLinks

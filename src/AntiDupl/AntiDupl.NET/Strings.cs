@@ -117,10 +117,11 @@ namespace AntiDupl.NET
         public string CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text;
 
         public string CoreOptionsForm_HighlightTabPage_Text;
-        public string CoreOptionsForm_HighlightDiffrentCheckBox_Text;
+        public string CoreOptionsForm_HighlightDifferenceCheckBox_Text;
+        public string CoreOptionsForm_DifrentValue_Text;
         public string CoreOptionsForm_NotHighlightIfFragmentsMoreThemCheckBox_Text;
         public string CoreOptionsForm_MaxFragmentsForDisableHighlightLabeledIntegerEdit_Text;
-        public string CoreOptionsForm_HighlightAllDiffrentsCheckBox_Text;
+        public string CoreOptionsForm_HighlightAllDifferencesCheckBox_Text;
         public string CoreOptionsForm_MaxFragmentsForHighlightLabeledIntegerEdit_Text;
         public string CoreOptionsForm_AmountOfFragmentsOnXLabeledIntegerEdit_Text;
         public string CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text;
@@ -252,6 +253,8 @@ namespace AntiDupl.NET
         public string MainMenu_FileMenuItem_Text;
         public string MainMenu_File_OpenProfileMenuItem_Text;
         public string MainMenu_File_SaveProfileAsMenuItem_Text;
+        public string MainMenu_File_LoadProfileOnLoadingMenuItem_Text;
+        public string MainMenu_File_SaveProfileOnClosingMenuItem_Text;
         public string MainMenu_File_ExitMenuItem_Text;
 
         public string MainMenu_EditMenuItem_Text;
@@ -266,6 +269,7 @@ namespace AntiDupl.NET
         public string MainMenu_View_HotKeysMenuItem_Text;
         public string MainMenu_View_StretchSmallImagesMenuItem_Text;
         public string MainMenu_View_ProportionalImageSizeMenuItem_Text;
+        public string MainMenu_View_ShowNeighbourImageMenuItem_Text;
 
         public string MainMenu_SearchMenuItem_Text;
         public string MainMenu_Search_StartMenuItem_Text;

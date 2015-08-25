@@ -114,10 +114,11 @@ namespace AntiDupl.NET
             s.CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text = "Ширина игнорируемой рамки картинки";
 
             s.CoreOptionsForm_HighlightTabPage_Text = "Подсветка";
-            s.CoreOptionsForm_HighlightDiffrentCheckBox_Text = "Подсветка различий";
-            s.CoreOptionsForm_NotHighlightIfFragmentsMoreThemCheckBox_Text = "Не подсвечивать различия если фрагментов больше чем";
+            s.CoreOptionsForm_HighlightDifferenceCheckBox_Text = "Подсветка различий";
+            s.CoreOptionsForm_DifrentValue_Text = "Величина различия";
+            s.CoreOptionsForm_NotHighlightIfFragmentsMoreThemCheckBox_Text = "Не подсвечивать различия, если фрагментов больше чем:";
             s.CoreOptionsForm_MaxFragmentsForDisableHighlightLabeledIntegerEdit_Text = "Максимально количество фрагментов для отключения подсветки";
-            s.CoreOptionsForm_HighlightAllDiffrentsCheckBox_Text = "Подсвечивать все различия";
+            s.CoreOptionsForm_HighlightAllDifferencesCheckBox_Text = "Подсвечивать все различия";
             s.CoreOptionsForm_MaxFragmentsForHighlightLabeledIntegerEdit_Text = "Максимально количество фрагментов для подсветки";
             s.CoreOptionsForm_AmountOfFragmentsOnXLabeledIntegerEdit_Text = "Количество фрагментов по X";
             s.CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text = "Количество фрагментов по Y";
@@ -249,6 +250,8 @@ namespace AntiDupl.NET
             s.MainMenu_FileMenuItem_Text = "Файл";
             s.MainMenu_File_OpenProfileMenuItem_Text = "Открыть профиль поиска";
             s.MainMenu_File_SaveProfileAsMenuItem_Text = "Сохранить профиль поиска как";
+            s.MainMenu_File_LoadProfileOnLoadingMenuItem_Text = "Загружать профиль при загрузке";
+            s.MainMenu_File_SaveProfileOnClosingMenuItem_Text = "Сохранять профиль при закрытие";
             s.MainMenu_File_ExitMenuItem_Text = "Выход";
 
             s.MainMenu_EditMenuItem_Text = "Правка";
@@ -263,6 +266,7 @@ namespace AntiDupl.NET
             s.MainMenu_View_HotKeysMenuItem_Text = "Горячие клавиши";
             s.MainMenu_View_StretchSmallImagesMenuItem_Text = "Растягивать небольшие изображения";
             s.MainMenu_View_ProportionalImageSizeMenuItem_Text = "Пропорциональный размер картинок";
+            s.MainMenu_View_ShowNeighbourImageMenuItem_Text = "Показывать соседние изображения";
 
             s.MainMenu_SearchMenuItem_Text = "Поиск";
             s.MainMenu_Search_StartMenuItem_Text = "Начать поиск";

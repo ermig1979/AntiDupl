@@ -40,7 +40,7 @@ namespace AntiDupl.NET
         static public int IGNORE_FRAME_WIDTH_MAX = 12;
         static public int IGNORE_FRAME_WIDTH_STEP = 3;
         
-        static public int FORM_WIDTH = 430;
+        static public int FORM_WIDTH = 450;
         static public int FORM_HEIGHT = 400;
         static public int COMBO_BOX_WIDTH = 65;
         static public int COMBO_BOX_HEIGHT = 20;
@@ -108,11 +108,11 @@ namespace AntiDupl.NET
         private LabeledComboBox m_ignoreFrameWidthLabeledComboBox;
 
         private TabPage m_highlightTabPage;
-        private CheckBox m_highlightDiffrentCheckBox;
-        private NumericUpDown m_difrentNumericUpDown;
+        private CheckBox m_highlightDifferenceCheckBox;
+        private LabeledNumericUpDown m_difrentValue;
         private CheckBox m_notHighlightIfFragmentsMoreThemCheckBox;
         private LabeledIntegerEdit m_maxFragmentsForDisableHighlightLabeledIntegerEdit;
-        private CheckBox m_highlightAllDiffrentsCheckBox;
+        private CheckBox m_highlightAllDifferencesCheckBox;
         private LabeledIntegerEdit m_maxFragmentsForHighlightLabeledIntegerEdit;
         private LabeledIntegerEdit m_amountOfFragmentsOnXLabeledIntegerEdit;
         private LabeledIntegerEdit m_amountOfFragmentsOnYLabeledIntegerEdit;
@@ -406,19 +406,23 @@ namespace AntiDupl.NET
             highlightTableLayoutPanel.AutoScroll = true;
             m_highlightTabPage.Controls.Add(highlightTableLayoutPanel);
 
-            m_highlightDiffrentCheckBox = InitFactory.CheckBox.Create(OnHighlightChanged);
-            m_highlightDiffrentCheckBox.Checked = m_options.resultsOptions.HighlightDiffrent;
-            highlightTableLayoutPanel.Controls.Add(m_highlightDiffrentCheckBox, 0, 1);
+            m_highlightDifferenceCheckBox = InitFactory.CheckBox.Create(OnHighlightChanged);
+            m_highlightDifferenceCheckBox.Checked = m_options.resultsOptions.HighlightDifference;
+            highlightTableLayoutPanel.Controls.Add(m_highlightDifferenceCheckBox, 0, 1);
 
-
-            m_difrentNumericUpDown = new System.Windows.Forms.NumericUpDown();
+            m_difrentValue = new LabeledNumericUpDown(2, 
+                                                new decimal(new int[] { 1, 0, 0, 65536}), 
+                                                new decimal(0), 
+                                                new decimal(m_options.resultsOptions.DifferenceThreshold), 
+                                                OnHighlightChanged);
+            /*m_difrentNumericUpDown = new System.Windows.Forms.NumericUpDown();
             m_difrentNumericUpDown.Margin = new Padding(0);
             m_difrentNumericUpDown.DecimalPlaces = 2;
             m_difrentNumericUpDown.Increment = new decimal(new int[] { 1, 0, 0, 65536});
-            m_difrentNumericUpDown.Minimum = new decimal(new int[] { 0, 0, 0, 0});
+            m_difrentNumericUpDown.Minimum = new decimal(0);
             m_difrentNumericUpDown.Value = new decimal(m_options.resultsOptions.DiffrentThreshold);
-            m_difrentNumericUpDown.ValueChanged += new System.EventHandler(OnHighlightChanged);
-            highlightTableLayoutPanel.Controls.Add(m_difrentNumericUpDown, 0, 2);
+            m_difrentNumericUpDown.ValueChanged += new System.EventHandler(OnHighlightChanged);*/
+            highlightTableLayoutPanel.Controls.Add(m_difrentValue, 0, 2);
 
             m_notHighlightIfFragmentsMoreThemCheckBox = InitFactory.CheckBox.Create(OnHighlightChanged);
             m_notHighlightIfFragmentsMoreThemCheckBox.Checked = m_options.resultsOptions.NotHighlightIfFragmentsMoreThan;
@@ -430,9 +434,9 @@ namespace AntiDupl.NET
             m_maxFragmentsForDisableHighlightLabeledIntegerEdit.Value = m_options.resultsOptions. NotHighlightMaxFragments;
             highlightTableLayoutPanel.Controls.Add(m_maxFragmentsForDisableHighlightLabeledIntegerEdit, 0, 4);
 
-            m_highlightAllDiffrentsCheckBox = InitFactory.CheckBox.Create(OnHighlightChanged);
-            m_highlightAllDiffrentsCheckBox.Checked = m_options.resultsOptions.HighlightAllDiffrents;
-            highlightTableLayoutPanel.Controls.Add(m_highlightAllDiffrentsCheckBox, 0, 5);
+            m_highlightAllDifferencesCheckBox = InitFactory.CheckBox.Create(OnHighlightChanged);
+            m_highlightAllDifferencesCheckBox.Checked = m_options.resultsOptions.HighlightAllDifferences;
+            highlightTableLayoutPanel.Controls.Add(m_highlightAllDifferencesCheckBox, 0, 5);
 
             m_maxFragmentsForHighlightLabeledIntegerEdit = new LabeledIntegerEdit(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnHighlightChanged);
             m_maxFragmentsForHighlightLabeledIntegerEdit.Min = 0;
@@ -471,18 +475,18 @@ namespace AntiDupl.NET
         {
             if (m_inited)
             {
-                m_options.resultsOptions.HighlightDiffrent = m_highlightDiffrentCheckBox.Checked;
-                m_options.resultsOptions.DiffrentThreshold = Decimal.ToSingle(m_difrentNumericUpDown.Value);
+                m_options.resultsOptions.HighlightDifference = m_highlightDifferenceCheckBox.Checked;
+                m_options.resultsOptions.DifferenceThreshold = m_difrentValue.Value;
                 m_options.resultsOptions.NotHighlightIfFragmentsMoreThan = m_notHighlightIfFragmentsMoreThemCheckBox.Checked;
                 m_options.resultsOptions.NotHighlightMaxFragments = m_maxFragmentsForDisableHighlightLabeledIntegerEdit.Value;
-                m_options.resultsOptions.HighlightAllDiffrents = m_highlightAllDiffrentsCheckBox.Checked;
+                m_options.resultsOptions.HighlightAllDifferences = m_highlightAllDifferencesCheckBox.Checked;
                 m_options.resultsOptions.MaxFragmentsForHighlight = m_maxFragmentsForHighlightLabeledIntegerEdit.Value;
                 m_options.resultsOptions.AmountOfFragmentsOnX = m_amountOfFragmentsOnXLabeledIntegerEdit.Value;
                 m_options.resultsOptions.AmountOfFragmentsOnY = m_amountOfFragmentsOnYLabeledIntegerEdit.Value;
                 m_options.resultsOptions.NormalizedSizeOfImage = m_normalizedSizeOfImageLabeledIntegerEdit.Value;
                 m_options.resultsOptions.PenThickness = m_penThicknessLabeledIntegerEdit.Value;
                 UpdateHighlightItemsEnabling();
-                m_options.resultsOptions.RaiseEventOnHighlightDiffrentChange();
+                m_options.resultsOptions.RaiseEventOnHighlightDifferenceChange();
             }
         }
 
@@ -491,13 +495,13 @@ namespace AntiDupl.NET
         /// </summary>
         private void UpdateHighlightItemsEnabling()
         {
-            if (m_highlightDiffrentCheckBox.Checked)
+            if (m_highlightDifferenceCheckBox.Checked)
             {
-                m_difrentNumericUpDown.Enabled = true;
-                m_highlightAllDiffrentsCheckBox.Enabled = true;
+                m_difrentValue.Enabled = true;
+                m_highlightAllDifferencesCheckBox.Enabled = true;
                 m_notHighlightIfFragmentsMoreThemCheckBox.Enabled = true;
                 m_maxFragmentsForDisableHighlightLabeledIntegerEdit.Enabled = m_notHighlightIfFragmentsMoreThemCheckBox.Checked;
-                m_maxFragmentsForHighlightLabeledIntegerEdit.Enabled = !m_highlightAllDiffrentsCheckBox.Checked;
+                m_maxFragmentsForHighlightLabeledIntegerEdit.Enabled = !m_highlightAllDifferencesCheckBox.Checked;
                 m_amountOfFragmentsOnXLabeledIntegerEdit.Enabled = true;
                 m_amountOfFragmentsOnYLabeledIntegerEdit.Enabled = true;
                 m_normalizedSizeOfImageLabeledIntegerEdit.Enabled = true;
@@ -505,8 +509,8 @@ namespace AntiDupl.NET
             }
             else 
             {
-                m_difrentNumericUpDown.Enabled = false;
-                m_highlightAllDiffrentsCheckBox.Enabled = false;
+                m_difrentValue.Enabled = false;
+                m_highlightAllDifferencesCheckBox.Enabled = false;
                 m_notHighlightIfFragmentsMoreThemCheckBox.Enabled = false;
                 m_maxFragmentsForDisableHighlightLabeledIntegerEdit.Enabled = false;
                 m_maxFragmentsForHighlightLabeledIntegerEdit.Enabled = false;
@@ -681,10 +685,11 @@ namespace AntiDupl.NET
             m_ignoreFrameWidthLabeledComboBox.Text = s.CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text;
 
             m_highlightTabPage.Text = s.CoreOptionsForm_HighlightTabPage_Text;
-            m_highlightDiffrentCheckBox.Text = s.CoreOptionsForm_HighlightDiffrentCheckBox_Text;
+            m_highlightDifferenceCheckBox.Text = s.CoreOptionsForm_HighlightDifferenceCheckBox_Text;
+            m_difrentValue.Text = s.CoreOptionsForm_DifrentValue_Text;
             m_notHighlightIfFragmentsMoreThemCheckBox.Text = s.CoreOptionsForm_NotHighlightIfFragmentsMoreThemCheckBox_Text;
             m_maxFragmentsForDisableHighlightLabeledIntegerEdit.Text = s.CoreOptionsForm_MaxFragmentsForDisableHighlightLabeledIntegerEdit_Text;
-            m_highlightAllDiffrentsCheckBox.Text = s.CoreOptionsForm_HighlightAllDiffrentsCheckBox_Text;
+            m_highlightAllDifferencesCheckBox.Text = s.CoreOptionsForm_HighlightAllDifferencesCheckBox_Text;
             m_maxFragmentsForHighlightLabeledIntegerEdit.Text = s.CoreOptionsForm_MaxFragmentsForHighlightLabeledIntegerEdit_Text;
             m_amountOfFragmentsOnXLabeledIntegerEdit.Text = s.CoreOptionsForm_AmountOfFragmentsOnXLabeledIntegerEdit_Text;
             m_amountOfFragmentsOnYLabeledIntegerEdit.Text = s.CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text;

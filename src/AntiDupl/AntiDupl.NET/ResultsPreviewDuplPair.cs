@@ -67,7 +67,7 @@ namespace AntiDupl.NET
             Resources.Strings.OnCurrentChange += new Resources.Strings.CurrentChangeHandler(UpdateStrings);
             OnOptionsChanged();
             m_options.OnChange += new Options.ChangeHandler(OnOptionsChanged);
-            m_options.resultsOptions.OnHighlightDiffrentChange += new ResultsOptions.HighlightDiffrentChangeHandler(OnHighlightDiffrentChange);
+            m_options.resultsOptions.OnHighlightDifferenceChange += new ResultsOptions.HighlightDifferenceChangeHandler(OnHighlightDifferenceChange);
         }
 
         private void InitializeComponents()
@@ -135,7 +135,7 @@ namespace AntiDupl.NET
             m_currentSearchResult = currentSearchResult;
             m_firstImagePreviewPanel.SetResult(m_currentSearchResult);
             m_secondImagePreviewPanel.SetResult(m_currentSearchResult);
-            SetDiffrent();
+            SetDifference();
             SetHint(m_currentSearchResult.hint);
             UpdateNextAndPreviousButtonEnabling();
         }
@@ -244,9 +244,9 @@ namespace AntiDupl.NET
         }
 
 
-        private void OnHighlightDiffrentChange()
+        private void OnHighlightDifferenceChange()
         {
-            SetDiffrent();
+            SetDifference();
         }
 
         private delegate void HighlightCompleteDelegate(List<Rectangle> rectangles);
@@ -254,9 +254,9 @@ namespace AntiDupl.NET
         private Thread _thread;
         private bool _highlightStop = false;
 
-        private void SetDiffrent()
+        private void SetDifference()
         {
-            if (m_options.resultsOptions.HighlightDiffrent)
+            if (m_options.resultsOptions.HighlightDifference)
             {
                 if (_thread != null && _thread.ThreadState == System.Threading.ThreadState.Running)
                 {
@@ -269,18 +269,18 @@ namespace AntiDupl.NET
                 ComparableBitmap[] bitmap1 = m_firstImagePreviewPanel.GetImageFragments();
                 ComparableBitmap[] bitmap2 = m_secondImagePreviewPanel.GetImageFragments();
                 _thread = new Thread(
-                     unused => CalculateRectanglesOfDiffrents(bitmap1, bitmap2));
-                _thread.Name = "Calculate rectangles of diffrents";
+                     unused => CalculateRectanglesOfDifferences(bitmap1, bitmap2));
+                _thread.Name = "Calculate rectangles of differences";
                 _thread.Start();
             }
             else
             {
-                m_firstImagePreviewPanel.ClearDiffrent();
-                m_secondImagePreviewPanel.ClearDiffrent();
+                m_firstImagePreviewPanel.ClearDifference();
+                m_secondImagePreviewPanel.ClearDifference();
             }
         }
 
-        private void CalculateRectanglesOfDiffrents(ComparableBitmap[] bitmap1, ComparableBitmap[] bitmap2)
+        private void CalculateRectanglesOfDifferences(ComparableBitmap[] bitmap1, ComparableBitmap[] bitmap2)
         {
             if ((bitmap1 == null) || (bitmap2 == null))
                 return;
@@ -292,7 +292,7 @@ namespace AntiDupl.NET
                 if (_highlightStop)
                     return;
                 similarity = Comparator.Similarity(bitmap1[i].GrayscaleData, bitmap2[i].GrayscaleData);
-                if (similarity < m_options.resultsOptions.DiffrentThreshold)
+                if (similarity < m_options.resultsOptions.DifferenceThreshold)
                 {
                     rectangles.Add(new RectanglesWithSimilarity(bitmap1[i].Rect, similarity));
                 }
@@ -301,7 +301,7 @@ namespace AntiDupl.NET
             if (m_options.resultsOptions.NotHighlightIfFragmentsMoreThan && rectangles.Count > m_options.resultsOptions.NotHighlightMaxFragments)
                 return;
 
-            if (!m_options.resultsOptions.HighlightAllDiffrents)
+            if (!m_options.resultsOptions.HighlightAllDifferences)
             {
                 if (HighlightCompleteEvent != null)
                     HighlightCompleteEvent((from rect in rectangles
@@ -325,8 +325,8 @@ namespace AntiDupl.NET
 
             if (rectangles != null && rectangles.Count > 0)
             {
-                m_firstImagePreviewPanel.SetDiffrent(rectangles);
-                m_secondImagePreviewPanel.SetDiffrent(rectangles);
+                m_firstImagePreviewPanel.SetDifference(rectangles);
+                m_secondImagePreviewPanel.SetDifference(rectangles);
             }
 
             HighlightCompleteEvent -= new HighlightCompleteDelegate(HighlightCompleteEventHandler);

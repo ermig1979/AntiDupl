@@ -327,6 +327,8 @@ namespace AntiDupl.NET
                         MakeAction(CoreDll.LocalActionType.RenameSecondToFirst, CoreDll.TargetType.Current);
                     else if (hotKey == m_options.hotKeyOptions.keys[(int)HotKeyOptions.Action.CurrentMistake])
                         MakeAction(CoreDll.LocalActionType.Mistake, CoreDll.TargetType.Current);
+                    else if (hotKey == m_options.hotKeyOptions.keys[(int)HotKeyOptions.Action.ShowNeighbours])
+                        m_options.resultsOptions.ShowNeighboursImages = !m_options.resultsOptions.ShowNeighboursImages;
                     return;
                 }
             }

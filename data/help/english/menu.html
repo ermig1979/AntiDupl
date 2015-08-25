@@ -8,29 +8,35 @@
 <h3>Main Menu</h3>
 
 <p align="justify">
-With the main menu, you can customize the look of the program, as well as perform all basic operations.
-The most important and frequently used items of the menu are dublicated by the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>.
-The contents of the main menu are described in detail below:
+	With the main menu, you can customize the look of the program, as well as perform all basic operations.
+	The most important and frequently used items of the menu are dublicated by the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>.
+	The contents of the main menu are described in detail below:
 </p>
 
 <h4>File</h4>
 
 <p align="justify">
-Menu <b>File</b> contains the following items:
+	Menu <b>File</b> contains the following items:
 </p>
 
 <ul>
- <li><p align="justify">
-<img src="../../resources/images/ProfileOpenMenu.img" /> <b>Open search profile</b> - clicking on the item you can load a previously saved search profile (search settings, search paths and search results).
-This item is duplicated by button of the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>.
- </p></li>
- <li><p align="justify">
-<img src="../../resources/images/ProfileSaveAsMenu.img" /> <b>Save search profile as</b> - this item allows you to save your current search profile with a new name.
-This item is duplicated by button of the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>.
- </p></li>
- <li><p align="justify">
-<b>Exit</b> - when you click on this point the program will exit.
- </p></li>
+	<li><p align="justify">
+		<img src="../../resources/images/ProfileOpenMenu.img" /> <b>Open search profile</b> - clicking on the item you can load a previously saved search profile (search settings, search paths and search results).
+		This item is duplicated by button of the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>.
+	 </p></li>
+	 <li><p align="justify">
+		<img src="../../resources/images/ProfileSaveAsMenu.img" /> <b>Save search profile as</b> - this item allows you to save your current search profile with a new name.
+		This item is duplicated by button of the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>.
+	 </p></li>
+	 <li><p align="justify">
+		<b>Load profile on loading</b> - when enabled this menu item, on loading the program the last kept profile will be loaded. By default this item is on.
+	</p></li>
+	<li><p align="justify">
+		<b>Save profile on closing</b> - when enabled this menu item, on closing the program the current profile will saved. By default this item is on.
+	</p></li>
+	 <li><p align="justify">
+		<b>Exit</b> - when you click on this point the program will exit.
+	 </p></li>
 </ul>
 
 <h4>Edit</h4>
@@ -40,19 +46,19 @@ Menu <b>Edit</b> contains the following items:
 </p>
 
 <ul>
- <li><p align="justify">
-<img src="../../resources/images/UndoMenu.img" /> <b>Undo (Ctrl-Z)</b> - allows to undo last user action (deletion, renaming and moving of images or marking result as mistake).
-User can cancel up to 10 consecutive operations.
-Note that the operations "load results", "start search" and "refresh results" can not be undone.
-This item is duplicated by button of the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>.
- </p></li>
- <li><p align="justify">
-<img src="../../resources/images/RedoMenu.img" /> <b>Redo (Ctrl-Y)</b> - allows you to repeat the previously undone action.
-This item is duplicated by button of the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>.
- </p></li>
- <li><p align="justify">
-<b>Sellect all (Ctrl-A)</b> - allows to select all search results.
- </p></li>
+	<li><p align="justify">
+		<img src="../../resources/images/UndoMenu.img" /> <b>Undo (Ctrl-Z)</b> - allows to undo last user action (deletion, renaming and moving of images or marking result as mistake).
+		User can cancel up to 10 consecutive operations.
+		Note that the operations "load results", "start search" and "refresh results" can not be undone.
+		This item is duplicated by button of the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>.
+	</p></li>
+	<li><p align="justify">
+		<img src="../../resources/images/RedoMenu.img" /> <b>Redo (Ctrl-Y)</b> - allows you to repeat the previously undone action.
+		This item is duplicated by button of the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>.
+	</p></li>
+	<li><p align="justify">
+		<b>Sellect all (Ctrl-A)</b> - allows to select all search results.
+	</p></li>
 </ul>
 
 <h4>View</h4>
@@ -62,42 +68,46 @@ Menu <b>View</b> contains the following items:
 </p>
 
 <ul>
- <li><p align="justify">
-<b>Tool Bar</b> - this menu item defines the visibility of the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>. 
-By default this item is on.
- </p></li>
- <li><p align="justify">
-<b>Status Bar</b> - this menu item defines the visibility of the <a href="index.html?page=status.html" target="_top">Status Bar</a>. 
-By default this item is on.
- </p></li>
- <li><p align="justify">
-<b>Language</b> - this option specifies the interface language.
-By default it may be Russian or English, but user can add translation into his native language.
-To do so, you need to create their own version of the file of string resources in xml-format and add into <b>data\resources\strings</b> directory.
- </p></li>
- <li><p align="justify">
-<b>View mode of results</b> - In this menu item you can select the mode of the results view (table of vertical pairs or the table of horizontal pairs). 
-The table of vertical pairs is used by default.
- </p></li>
- <li><p align="justify">
-<b>Select Columns</b> - item brings up a window where you can adjust the appearance of columns in a table of results.
-In the table of vertical pairs of view mode of results, it looks like:
- </p> <img src="files/SelectColumnsForm.png" /> <p align="justify">
-And for a table of horizontal pairs of view mode of results, it looks like:
- </p> <img src="files/SelectColumnsForm2.png" /> <p align="justify">
- </p></li>
- <li><p align="justify">
-<b>Hot keys</b> - this item brings up a window where you can change 
-<a href="index.html?page=hotkeys.html" target="_top">hot keys</a> used in the program.
- </p></li>
- <li><p align="justify">
-<b>Stretch small images</b> - this menu item defines whether to stretch small images to the size of <a href="index.html?page=preview.html" target="_top">Preview Panel</a>.
-By default this item is off.
- </p></li>
- <li><p align="justify">
-<b>Proportional size of images</b> - when enabled, this menu item, a pair of images are displayed on the same scale at <a href="index.html?page=preview.html" target="_top">Preview Panel</a>.
-By default this item is on.
- </p></li>
+	<li><p align="justify">
+		<b>Tool Bar</b> - this menu item defines the visibility of the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>. 
+		By default this item is on.
+	</p></li>
+	<li><p align="justify">
+		<b>Status Bar</b> - this menu item defines the visibility of the <a href="index.html?page=status.html" target="_top">Status Bar</a>. 
+		By default this item is on.
+	</p></li>
+	<li><p align="justify">
+		<b>Language</b> - this option specifies the interface language.
+		By default it may be Russian or English, but user can add translation into his native language.
+		To do so, you need to create their own version of the file of string resources in xml-format and add into <b>data\resources\strings</b> directory.
+	</p></li>
+	<li><p align="justify">
+		<b>View mode of results</b> - In this menu item you can select the mode of the results view (table of vertical pairs or the table of horizontal pairs). 
+		The table of vertical pairs is used by default.
+	</p></li>
+	<li><p align="justify">
+		<b>Select Columns</b> - item brings up a window where you can adjust the appearance of columns in a table of results.
+		In the table of vertical pairs of view mode of results, it looks like:
+		</p> <img src="files/SelectColumnsForm.png" /> <p align="justify">
+		And for a table of horizontal pairs of view mode of results, it looks like:
+		</p> <img src="files/SelectColumnsForm2.png" /> <p align="justify">
+	</p></li>
+	<li><p align="justify">
+		<b>Hot keys</b> - this item brings up a window where you can change 
+		<a href="index.html?page=hotkeys.html" target="_top">hot keys</a> used in the program.
+	</p></li>
+	<li><p align="justify">
+		<b>Stretch small images</b> - this menu item defines whether to stretch small images to the size of <a href="index.html?page=preview.html" target="_top">Preview Panel</a>.
+		By default this item is off.
+	</p></li>
+	<li><p align="justify">
+		<b>Proportional size of images</b> - when enabled, this menu item, a pair of images are displayed on the same scale at <a href="index.html?page=preview.html" target="_top">Preview Panel</a>.
+		By default this item is on.
+	</p></li>
+	<li><p align="justify">
+		<b>Show neighbour images</b> - when enabled, this menu item, on the panel of a preview of the image the neighbour images when sorting according to a name will be shown.
+		By default this item is off.
+	</p></li>
 </ul>
 
 <h4>Search</h4>
