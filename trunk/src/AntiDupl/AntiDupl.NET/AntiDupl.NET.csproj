@@ -112,6 +112,9 @@
     <Compile Include="DynamicModule.cs" />
     <Compile Include="External.cs" />
     <Compile Include="FolderOpener.cs" />
+    <Compile Include="LabeledNumericUpDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ThumbnailGroupTable.cs">
       <SubType>Component</SubType>
     </Compile>

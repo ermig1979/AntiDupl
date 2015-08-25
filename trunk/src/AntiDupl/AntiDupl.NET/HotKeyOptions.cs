@@ -39,6 +39,7 @@ namespace AntiDupl.NET
             CurrentDuplPairRenameFirstToSecond,
             CurrentDuplPairRenameSecondToFirst,
             CurrentMistake,
+            ShowNeighbours,
             Size
         }
         
@@ -66,16 +67,34 @@ namespace AntiDupl.NET
             keys[(int)Action.CurrentDuplPairRenameFirstToSecond] = Keys.NumPad4;
             keys[(int)Action.CurrentDuplPairRenameSecondToFirst] = Keys.NumPad6;
             keys[(int)Action.CurrentMistake] = Keys.NumPad5;
+            keys[(int)Action.ShowNeighbours] = Keys.Control | Keys.Q;
         }
 
         public void SetDefault(Action action)
         {
-            for(Keys key = Keys.NumPad1; key < Keys.NumPad7; key++)
+            int i = 1;
+            for (Keys key = Keys.NumPad1; key < Keys.NumPad5; key++, i++)
+            {
+                if ((int)action == i)
+                {
+                    keys[(int)action] = key;
+                    break;
+                }
+            }
+            if (action == Action.CurrentDefectDelete)
+                keys[(int)Action.CurrentDefectDelete] = Keys.NumPad1;
+            if (action == Action.CurrentMistake)
+                keys[(int)Action.CurrentMistake] = Keys.NumPad5;
+            if (action == Action.CurrentDuplPairRenameSecondToFirst)
+                keys[(int)Action.CurrentDuplPairRenameSecondToFirst] = Keys.NumPad6;
+            if (action == Action.ShowNeighbours)
+                keys[(int)Action.ShowNeighbours] = Keys.Alt | Keys.Q;
+            /*for(Keys key = Keys.NumPad1; key < Keys.NumPad7; key++)
             {
                 keys[(int)action] = key;
                 if(Valid(action)) 
                     break;
-            }
+            }*/
         }
         
         public void CopyTo(ref HotKeyOptions options)

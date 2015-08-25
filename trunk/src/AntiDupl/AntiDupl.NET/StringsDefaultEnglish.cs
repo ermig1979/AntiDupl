@@ -114,11 +114,12 @@ namespace AntiDupl.NET
             s.CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text = "Width of ignored frame of image";
 
             s.CoreOptionsForm_HighlightTabPage_Text = "Highlight";
-            s.CoreOptionsForm_HighlightDiffrentCheckBox_Text = "Highlight diffrent";
-            s.CoreOptionsForm_NotHighlightIfFragmentsMoreThemCheckBox_Text = "Not highlight diffrents if fragments more than";
-            s.CoreOptionsForm_MaxFragmentsForDisableHighlightLabeledIntegerEdit_Text = "Max fragments for disable highlight";
-            s.CoreOptionsForm_HighlightAllDiffrentsCheckBox_Text = "Highlight all diffrents";
-            s.CoreOptionsForm_MaxFragmentsForHighlightLabeledIntegerEdit_Text = "Max amount of fragments for highlight";
+            s.CoreOptionsForm_HighlightDifferenceCheckBox_Text = "Highlight differences";
+            s.CoreOptionsForm_DifrentValue_Text = "Value of difference";
+            s.CoreOptionsForm_NotHighlightIfFragmentsMoreThemCheckBox_Text = "Not highlight differences if fragments more than:";
+            s.CoreOptionsForm_MaxFragmentsForDisableHighlightLabeledIntegerEdit_Text = "Maximum fragments for disable highlight";
+            s.CoreOptionsForm_HighlightAllDifferencesCheckBox_Text = "Highlight all differences";
+            s.CoreOptionsForm_MaxFragmentsForHighlightLabeledIntegerEdit_Text = "Maximum amount of fragments for highlight";
             s.CoreOptionsForm_AmountOfFragmentsOnXLabeledIntegerEdit_Text = "Amount of fragments on X";
             s.CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text = "Amount of fragments on Y";
             s.CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text = "Normalized size of image";
@@ -249,6 +250,8 @@ namespace AntiDupl.NET
             s.MainMenu_FileMenuItem_Text = "File";
             s.MainMenu_File_OpenProfileMenuItem_Text = "Open search profile";
             s.MainMenu_File_SaveProfileAsMenuItem_Text = "Save search profile as";
+            s.MainMenu_File_LoadProfileOnLoadingMenuItem_Text = "Load profile on loading";
+            s.MainMenu_File_SaveProfileOnClosingMenuItem_Text = "Save profile on closing";
             s.MainMenu_File_ExitMenuItem_Text = "Exit";
 
             s.MainMenu_EditMenuItem_Text = "Edit";
@@ -263,6 +266,7 @@ namespace AntiDupl.NET
             s.MainMenu_View_HotKeysMenuItem_Text = "Hot keys";
             s.MainMenu_View_StretchSmallImagesMenuItem_Text = "Stretch small images";
             s.MainMenu_View_ProportionalImageSizeMenuItem_Text = "Proportional size of images";
+            s.MainMenu_View_ShowNeighbourImageMenuItem_Text = "Show neighbour images";
 
             s.MainMenu_SearchMenuItem_Text = "Search";
             s.MainMenu_Search_StartMenuItem_Text = "Start search";

@@ -551,14 +551,14 @@ namespace AntiDupl.NET
             return null;
         }
 
-        public void SetDiffrent(List<Rectangle> rectangles)
+        public void SetDifference(List<Rectangle> rectangles)
         {
-            m_pictureBoxPanel.SetDiffrent(rectangles);
+            m_pictureBoxPanel.SetDifference(rectangles);
         }
 
-        public void ClearDiffrent()
+        public void ClearDifference()
         {
-            m_pictureBoxPanel.ClearDiffrent();
+            m_pictureBoxPanel.ClearDifference();
         }
 
         public static Bitmap ResizeImage(Bitmap imgToResize, Size size)

@@ -107,42 +107,42 @@ namespace AntiDupl.NET
             }
         }
 
-        public delegate void HighlightDiffrentChangeHandler();
-        public event HighlightDiffrentChangeHandler OnHighlightDiffrentChange;
-        public void RaiseEventOnHighlightDiffrentChange()
+        public delegate void HighlightDifferenceChangeHandler();
+        public event HighlightDifferenceChangeHandler OnHighlightDifferenceChange;
+        public void RaiseEventOnHighlightDifferenceChange()
         {
-            if (OnHighlightDiffrentChange != null)
-                OnHighlightDiffrentChange();
+            if (OnHighlightDifferenceChange != null)
+                OnHighlightDifferenceChange();
         }
 
-        private bool m_highlightDiffrent = false;
-        public bool HighlightDiffrent
+        private bool m_highlightDifference = false;
+        public bool HighlightDifference
         {
             get
             {
-                return m_highlightDiffrent;
+                return m_highlightDifference;
             }
             set
             {
-                if (m_highlightDiffrent != value)
+                if (m_highlightDifference != value)
                 {
-                    m_highlightDiffrent = value;
+                    m_highlightDifference = value;
                 }
             }
         }
 
-        private float m_diffrentThreshold = 99.90F;
-        public float DiffrentThreshold
+        private float m_differenceThreshold = 99.90F;
+        public float DifferenceThreshold
         {
             get
             {
-                return m_diffrentThreshold;
+                return m_differenceThreshold;
             }
             set
             {
-                if (m_diffrentThreshold != value)
+                if (m_differenceThreshold != value)
                 {
-                    m_diffrentThreshold = value;
+                    m_differenceThreshold = value;
                 }
             }
         }
@@ -180,18 +180,18 @@ namespace AntiDupl.NET
             }
         }
 
-        private bool m_highlightAllDiffrents = true;
-        public bool HighlightAllDiffrents
+        private bool m_highlightAllDifferences = true;
+        public bool HighlightAllDifferences
         {
             get
             {
-                return m_highlightAllDiffrents;
+                return m_highlightAllDifferences;
             }
             set
             {
-                if (m_highlightAllDiffrents != value)
+                if (m_highlightAllDifferences != value)
                 {
-                    m_highlightAllDiffrents = value;
+                    m_highlightAllDifferences = value;
                 }
             }
         }
@@ -335,11 +335,11 @@ namespace AntiDupl.NET
             splitterDistanceHorizontalNormal = options.splitterDistanceHorizontalNormal;
             thumbnailSizeMax = options.thumbnailSizeMax;
 
-            m_highlightDiffrent = options.HighlightDiffrent;
-            m_diffrentThreshold = options.DiffrentThreshold;
+            m_highlightDifference = options.HighlightDifference;
+            m_differenceThreshold = options.DifferenceThreshold;
             m_notHighlightIfFragmentsMoreThan = options.NotHighlightIfFragmentsMoreThan;
             m_notHighlightMaxFragments = options.NotHighlightMaxFragments;
-            m_highlightAllDiffrents = options.HighlightAllDiffrents;
+            m_highlightAllDifferences = options.HighlightAllDifferences;
             m_maxFragmentsForHighlight = options.MaxFragmentsForHighlight;
             m_amountOfFragmentsOnX = options.AmountOfFragmentsOnX;
             m_amountOfFragmentsOnY = options.AmountOfFragmentsOnY;

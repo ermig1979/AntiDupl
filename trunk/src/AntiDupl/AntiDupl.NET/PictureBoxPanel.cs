@@ -58,8 +58,8 @@ namespace AntiDupl.NET
         private bool m_currentlyAnimating = false;
 
         private Bitmap m_originalBitmap;
-        private Rectangle[] m_rectanglesOfDiffrent;
-        private Pen penForDiffrent = new Pen(new SolidBrush(Color.Red), 4);
+        private Rectangle[] m_rectanglesOfDifferences;
+        private Pen penForDifferences = new Pen(new SolidBrush(Color.Red), 4);
 
         private ImagePreviewPanel.Position m_position;
         public ImagePreviewPanel.Position Position
@@ -289,9 +289,15 @@ namespace AntiDupl.NET
                                 if (m_options.resultsOptions.ShowNeighboursImages)
                                 {
                                     if (m_position == ImagePreviewPanel.Position.Top || m_position == ImagePreviewPanel.Position.Bottom)
-                                        horizontalPosition = clientWidth - targetWidth;
+                                    {
+                                        horizontalPosition = clientWidth - targetWidth; //сдвигаем влево
+                                        verticalPosition = (clientHeight - targetHeight) / 2;
+                                    }
                                     else
+                                    {
+                                        horizontalPosition = (clientWidth - targetWidth) / 2;
                                         verticalPosition = 0;
+                                    }
                                 }
                                 else
                                 {
@@ -304,13 +310,18 @@ namespace AntiDupl.NET
                                 targetHeight = currentHeight * clientHeight / maxHeight;
                                 targetWidth = currentWidth * clientHeight / maxHeight;
 
-
                                 if (m_options.resultsOptions.ShowNeighboursImages)
                                 {
                                     if (m_position == ImagePreviewPanel.Position.Top || m_position == ImagePreviewPanel.Position.Bottom)
-                                        horizontalPosition = clientWidth - targetWidth;
+                                    {
+                                        horizontalPosition = clientWidth - targetWidth; //сдвигаем влево
+                                        verticalPosition = (clientHeight - targetHeight) / 2; //посеридине
+                                    }
                                     else
+                                    {
+                                        horizontalPosition = (clientWidth - targetWidth) / 2;
                                         verticalPosition = 0;
+                                    }
                                 }
                                 else
                                 {
@@ -343,7 +354,7 @@ namespace AntiDupl.NET
                             }
                         }
                     }
-                    else
+                    else // если не надо пропорциональными делать
                     {
                         if (m_options.resultsOptions.StretchSmallImages || currentWidth >= clientWidth || currentHeight >= clientHeight)
                         {
@@ -402,7 +413,7 @@ namespace AntiDupl.NET
         /// <summary>
         /// Рисует в храящемся изображение m_bitmap бордюры отличий.
         /// </summary>
-        public bool SetDiffrent(List<Rectangle> rectanglesOfDiffrentIn)
+        public bool SetDifference(List<Rectangle> rectanglesOfDifferenceIn)
         {
             if (!m_animationEnable)
             {
@@ -411,29 +422,29 @@ namespace AntiDupl.NET
                 else if (m_bitmap != m_originalBitmap)
                     m_bitmap = m_originalBitmap.Clone() as Bitmap;
 
-                m_rectanglesOfDiffrent = new Rectangle[rectanglesOfDiffrentIn.Count];
-                rectanglesOfDiffrentIn.CopyTo(m_rectanglesOfDiffrent);
+                m_rectanglesOfDifferences = new Rectangle[rectanglesOfDifferenceIn.Count];
+                rectanglesOfDifferenceIn.CopyTo(m_rectanglesOfDifferences);
 
                 //преобразуем в соответсвии с размером полного изображения
                 double multiplierX = m_bitmap.Width / (double)m_options.resultsOptions.NormalizedSizeOfImage;
                 double multiplierY = m_bitmap.Height / (double)m_options.resultsOptions.NormalizedSizeOfImage;
 
-                for (int i = 0; i < m_rectanglesOfDiffrent.Length; i++)
+                for (int i = 0; i < m_rectanglesOfDifferences.Length; i++)
                 {
-                    m_rectanglesOfDiffrent[i] = new Rectangle((int)(m_rectanglesOfDiffrent[i].X * multiplierX),
-                        (int)(m_rectanglesOfDiffrent[i].Y * multiplierY),
-                        (int)(m_rectanglesOfDiffrent[i].Width * multiplierX),
-                        (int)(m_rectanglesOfDiffrent[i].Height * multiplierY));
+                    m_rectanglesOfDifferences[i] = new Rectangle((int)(m_rectanglesOfDifferences[i].X * multiplierX),
+                        (int)(m_rectanglesOfDifferences[i].Y * multiplierY),
+                        (int)(m_rectanglesOfDifferences[i].Width * multiplierX),
+                        (int)(m_rectanglesOfDifferences[i].Height * multiplierY));
                 }
 
                 int penThickness = Math.Min(m_bitmap.Width, m_bitmap.Height) * m_options.resultsOptions.PenThickness / m_options.resultsOptions.NormalizedSizeOfImage;
-                penForDiffrent = new Pen(new SolidBrush(Color.Red), penThickness);
+                penForDifferences = new Pen(new SolidBrush(Color.Red), penThickness);
                 try
                 {
                     using (Graphics gr = Graphics.FromImage(m_bitmap))
                     {
-                        for (int i = 0; i < m_rectanglesOfDiffrent.Length; i++)
-                            gr.DrawRectangle(penForDiffrent, m_rectanglesOfDiffrent[i]);
+                        for (int i = 0; i < m_rectanglesOfDifferences.Length; i++)
+                            gr.DrawRectangle(penForDifferences, m_rectanglesOfDifferences[i]);
                     }
                     this.Invalidate();
                     return true;
@@ -447,7 +458,7 @@ namespace AntiDupl.NET
             return false;
         }
 
-        public void ClearDiffrent()
+        public void ClearDifference()
         {
             if (m_originalBitmap != null)
             {
@@ -455,7 +466,7 @@ namespace AntiDupl.NET
                 m_originalBitmap.Dispose();
                 m_originalBitmap = null;
             }
-            m_rectanglesOfDiffrent = null;
+            m_rectanglesOfDifferences = null;
             this.Invalidate();
         }
 
@@ -568,18 +579,21 @@ namespace AntiDupl.NET
             if (m_prevFile == null && m_nextFile == null)
             {
                 DirectoryInfo directoryInfo = new DirectoryInfo(Path.GetDirectoryName(filePreview));
-                FileInfo[] filesInfos = directoryInfo.GetFiles();
-                for (int i = 0; i < filesInfos.Length; i++)
+                if (directoryInfo.Exists)
                 {
-                    if (filesInfos[i].FullName == filePreview)
+                    FileInfo[] filesInfos = directoryInfo.GetFiles();
+                    for (int i = 0; i < filesInfos.Length; i++)
                     {
-                        if (i > 0)  //previos
-                            if (File.Exists(filesInfos[i - 1].FullName))
-                                m_prevFile = filesInfos[i - 1].FullName;
-                        if (i < filesInfos.Length - 1) //next
-                            if (File.Exists(filesInfos[i + 1].FullName))
-                                m_nextFile = filesInfos[i + 1].FullName;
-                        break;
+                        if (filesInfos[i].FullName == filePreview)
+                        {
+                            if (i > 0)  //previos
+                                if (File.Exists(filesInfos[i - 1].FullName))
+                                    m_prevFile = filesInfos[i - 1].FullName;
+                            if (i < filesInfos.Length - 1) //next
+                                if (File.Exists(filesInfos[i + 1].FullName))
+                                    m_nextFile = filesInfos[i + 1].FullName;
+                            break;
+                        }
                     }
                 }
             }
