@@ -88,7 +88,7 @@ namespace AntiDupl.NET
             if (action == Action.CurrentDuplPairRenameSecondToFirst)
                 keys[(int)Action.CurrentDuplPairRenameSecondToFirst] = Keys.NumPad6;
             if (action == Action.ShowNeighbours)
-                keys[(int)Action.ShowNeighbours] = Keys.Alt | Keys.Q;
+                keys[(int)Action.ShowNeighbours] = Keys.Control | Keys.Q;
             /*for(Keys key = Keys.NumPad1; key < Keys.NumPad7; key++)
             {
                 keys[(int)action] = key;
