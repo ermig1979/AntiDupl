@@ -544,7 +544,7 @@ namespace AntiDupl.NET
             else
             {
                 verticalPosition = clientHeight - neighbourHeight;
-                if (neighbour == Neighbour.Previous)
+                if (neighbour == Neighbour.Next)
                 {
                     horizontalPosition = clientWidth - neighbourWidth;
                 }
