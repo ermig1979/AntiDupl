@@ -54,8 +54,13 @@ namespace AntiDupl.NET
         public HotKeyOptions(HotKeyOptions options)
         {
             keys = new Keys[(int)Action.Size];
-            for(int i = 0; i < keys.Length; ++i)
-                keys[i] = options.keys[i];
+            if (options.keys.Length == (int)Action.Size)
+            {
+                for (int i = 0; i < keys.Length; ++i)
+                    keys[i] = options.keys[i];
+            }
+            else
+                SetDefault();
         }
         
         public void SetDefault()
@@ -99,12 +104,16 @@ namespace AntiDupl.NET
         
         public void CopyTo(ref HotKeyOptions options)
         {
+            if (keys.Length != options.keys.Length)
+                options.keys = new Keys[(int)Action.Size];
             for (int i = 0; i < keys.Length; ++i)
                 options.keys[i] = keys[i];
         }
 
         public bool Equals(HotKeyOptions options)
         {
+            if (keys.Length != options.keys.Length)
+                return false;
             for (int i = 0; i < keys.Length; ++i)
                 if(options.keys[i] != keys[i])
                     return false;
