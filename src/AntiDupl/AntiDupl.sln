@@ -34,6 +34,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntiDupl.NET", "AntiDupl.NE
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenNN", "..\3rd\OpenNN\OpenNN.vcproj", "{50B028F4-CCBB-457C-A1EF-002331C1FADF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D3C797D9-B0CB-45B9-B3FC-2E16141B2C62} = {D3C797D9-B0CB-45B9-B3FC-2E16141B2C62}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyxml", "..\3rd\tinyxml\tinyxml.vcproj", "{D3C797D9-B0CB-45B9-B3FC-2E16141B2C62}"
 EndProject
