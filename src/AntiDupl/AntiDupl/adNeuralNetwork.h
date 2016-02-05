@@ -25,7 +25,7 @@
 #define __adNeuralNetwork_h__
 
 #include "adConfig.h"
-//#include "adStrings.h"
+#include "adStrings.h"
 
 namespace ad
 {
@@ -33,6 +33,8 @@ namespace ad
 	//-------------------------------------------------------------------------
 	class TNeuralNetwork
 	{
+	private:
+		//TString m_neuralNetworkPath;
 	public:
 		TNeuralNetwork(void);
 		~TNeuralNetwork(void);

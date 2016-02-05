@@ -154,7 +154,7 @@ extern "C"
         AD_OPTIONS_COMPARE = 1,
         AD_OPTIONS_DEFECT = 2,
         AD_OPTIONS_ADVANCED = 3,
-		AD_OPTIONS_HINT = 3,
+		AD_OPTIONS_HINT = 4,
         AD_OPTIONS_SIZE
     };
 

@@ -37,6 +37,7 @@ namespace AntiDupl.NET
         public CoreCompareOptions compareOptions;
         public CoreDefectOptions defectOptions;
         public CoreAdvancedOptions advancedOptions;
+        public CoreHintOptions hintOptions;
 
         public CorePathWithSubFolder[] searchPath;
         public CorePathWithSubFolder[] ignorePath;
@@ -49,6 +50,8 @@ namespace AntiDupl.NET
             compareOptions = new CoreCompareOptions();
             defectOptions = new CoreDefectOptions();
             advancedOptions = new CoreAdvancedOptions();
+            hintOptions = new CoreHintOptions();
+
             searchPath = new CorePathWithSubFolder[1];
             ignorePath = new CorePathWithSubFolder[0];
             validPath = new CorePathWithSubFolder[0];
@@ -72,6 +75,8 @@ namespace AntiDupl.NET
             compareOptions = options.compareOptions.Clone();
             defectOptions = options.defectOptions.Clone();
             advancedOptions = options.advancedOptions.Clone();
+            hintOptions = options.hintOptions.Clone();
+
             searchPath = PathClone(options.searchPath);
             ignorePath = PathClone(options.ignorePath);
             validPath = PathClone(options.validPath);
@@ -97,6 +102,7 @@ namespace AntiDupl.NET
             compareOptions = core.compareOptions.Clone();
             defectOptions = core.defectOptions.Clone();
             advancedOptions = core.advancedOptions.Clone();
+            hintOptions = core.hintOptions.Clone();
             if (onePath)
             {
                 searchPath[0] = core.searchPath[0];
@@ -121,6 +127,7 @@ namespace AntiDupl.NET
             core.compareOptions = compareOptions.Clone();
             core.defectOptions = defectOptions.Clone();
             core.advancedOptions = advancedOptions.Clone();
+            core.hintOptions = hintOptions.Clone();
             if (onePath)
             {
                 CorePathWithSubFolder[] tmpSearch = new CorePathWithSubFolder[1];
@@ -160,6 +167,8 @@ namespace AntiDupl.NET
             options.compareOptions = compareOptions.Clone();
             options.defectOptions = defectOptions.Clone();
             options.advancedOptions = advancedOptions.Clone();
+            options.hintOptions = hintOptions.Clone();
+
             PathCopy(searchPath, ref options.searchPath);
             PathCopy(ignorePath, ref options.ignorePath);
             PathCopy(validPath, ref options.validPath);
@@ -213,6 +222,8 @@ namespace AntiDupl.NET
             if (!defectOptions.Equals(options.defectOptions))
                 return false;
             if (!advancedOptions.Equals(options.advancedOptions))
+                return false;
+            if (!hintOptions.Equals(options.hintOptions))
                 return false;
             if (!Equals(searchPath, options.searchPath))
                 return false;
