@@ -45,6 +45,8 @@ namespace ad
         TSize group;
 		TSize groupSize;
         THintType hint;
+		// Флаг значит, что файл удаляется по автоматической подсказке а не в ручную пользователем.
+		bool deleteByHint;
 
         TResult();
         TResult(const TResult& result);

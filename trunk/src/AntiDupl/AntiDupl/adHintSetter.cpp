@@ -24,19 +24,38 @@
 #include "adHintSetter.h"
 #include "adOptions.h"
 #include "adResult.h"
+#include "adNeuralNetwork.h"
+#include "adException.h"
+
+//#include "../../source/opennn.h"
 
 namespace ad
 {
     THintSetter::THintSetter(TOptions *pOptions)
         :m_pOptions(pOptions)
     {
-        m_autoDeleteThresholdDifference = std::min(double(AUTO_DELETE_DIFFERENCE_MAX),
-            double(m_pOptions->compare.thresholdDifference)/AUTO_DELETE_DIFFERENCE_FACTOR);
+        //m_autoDeleteThresholdDifference = std::min(double(AUTO_DELETE_DIFFERENCE_MAX),
+        //    double(m_pOptions->compare.thresholdDifference)/AUTO_DELETE_DIFFERENCE_FACTOR);
 
-		m_blockinessThreshold = m_pOptions->defect.blockinessThreshold;
+		//m_blockinessThreshold = m_pOptions->defect.blockinessThreshold;
     }
 
-    void THintSetter::Execute(TResult *pResult, bool canRename) const
+	void THintSetter::Execute(TResult *pResult, bool canRename) const
+    {
+		throw TException(adError::AD_ERROR_UNKNOWN);
+	}
+
+	//-------------------------------------------------------------------------
+	THintSetter_Algorithm::THintSetter_Algorithm(TOptions *pOptions)
+		:THintSetter(pOptions)
+    {
+        m_autoDeleteThresholdDifference = std::min(double(AUTO_DELETE_DIFFERENCE_MAX),
+            double(m_pOptions->compare.thresholdDifference) / AUTO_DELETE_DIFFERENCE_FACTOR);
+
+		m_blockinessThreshold = m_pOptions->defect.blockinessThreshold;
+	}
+
+	void THintSetter_Algorithm::Execute(TResult *pResult, bool canRename) const
     {
         if(pResult->type == AD_RESULT_NONE || pResult->transform != AD_TRANSFORM_TURN_0)
         {
@@ -132,4 +151,55 @@ namespace ad
 
         pResult->hint = AD_HINT_NONE;
     }
+
+	//-------------------------------------------------------------------------
+
+	THintSetter_Neural_Network::THintSetter_Neural_Network(TOptions *pOptions)
+		:THintSetter(pOptions)
+    {
+		//m_pNeuralNetwork = new TNeuralNetwork();
+		// Data set 
+
+		/*DataSet data_set;
+      
+		data_set.load_data("pima_indians_diabetes/pima_indians_diabetes.dat");*/
+	}
+
+	void THintSetter_Neural_Network::Execute(TResult *pResult, bool canRename) const
+    {
+		if(pResult->type == AD_RESULT_NONE || pResult->transform != AD_TRANSFORM_TURN_0)
+        {
+            pResult->hint = AD_HINT_NONE;
+            return;
+        }
+
+        if(pResult->type == AD_RESULT_DEFECT_IMAGE) //if image has defect
+        {
+            pResult->hint = AD_HINT_DELETE_FIRST;
+            return;
+        }
+
+		bool predictDelFirst = m_pNeuralNetwork->GetPredict(pResult);
+		if (predictDelFirst)
+			pResult->hint = AD_HINT_DELETE_FIRST;
+		else
+			pResult->hint = AD_HINT_DELETE_SECOND;
+		return;
+	}
+
+	//-------------------------------------------------------------------------
+	// Вне класса
+	THintSetter* GetHintSetterPointer(TOptions *pOptions)
+	{
+		if (pOptions->hint.algorithmOfHintSetting == AD_HINT_SET_BY_ALGORITHM)
+		{
+			return new THintSetter_Algorithm(pOptions);
+		}
+		else if (pOptions->hint.algorithmOfHintSetting == adAlgorithmOfHintSetting::AD_HINT_SET_BY_NEURAL_NETWORK)
+		{
+			return new THintSetter_Neural_Network(pOptions);
+		}
+		else
+			throw TException(adError::AD_ERROR_INVALID_PARAMETER_COMBINATION);
+	}
 }

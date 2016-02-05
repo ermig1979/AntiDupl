@@ -85,16 +85,17 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AboutProgramForm.cs">
+    <Compile Include="CoreHintOptions.cs" />
+    <Compile Include="Form\AboutProgramForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AboutProgramPanel.cs">
+    <Compile Include="GUIControl\AboutProgramPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ClipboardContentBuilder.cs" />
     <Compile Include="ComparableBitmap.cs" />
     <Compile Include="Comparator.cs" />
-    <Compile Include="ComplexProgressBar.cs">
+    <Compile Include="GUIControl\ComplexProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CoreAdvancedOptions.cs" />
@@ -112,125 +113,125 @@
     <Compile Include="DynamicModule.cs" />
     <Compile Include="External.cs" />
     <Compile Include="FolderOpener.cs" />
-    <Compile Include="LabeledNumericUpDown.cs">
+    <Compile Include="GUIControl\LabeledNumericUpDown.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ThumbnailGroupTable.cs">
+    <Compile Include="GUIControl\ThumbnailGroupTable.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ThumbnailPreview.cs">
+    <Compile Include="GUIControl\ThumbnailPreview.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="RaisedPanel.cs">
+    <Compile Include="GUIControl\RaisedPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ThumbnailGroupPanel.cs">
+    <Compile Include="GUIControl\ThumbnailGroupPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ImagePreviewContextMenu.cs">
+    <Compile Include="GUIControl\ImagePreviewContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="PictureBoxPanel.cs">
+    <Compile Include="GUIControl\PictureBoxPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ProgressForm.cs">
+    <Compile Include="Form\ProgressForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ProgressUtils.cs" />
     <Compile Include="StringsDefaultRussian.cs" />
     <Compile Include="CoreOptions.cs" />
-    <Compile Include="CoreOptionsForm.cs">
+    <Compile Include="Form\CoreOptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CorePathsForm.cs">
+    <Compile Include="Form\CorePathsForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CoreLib.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="DataGridViewCustomRow.cs" />
     <Compile Include="HotKeyOptions.cs" />
-    <Compile Include="ImagePreviewPanel.cs">
+    <Compile Include="GUIControl\ImagePreviewPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="LabeledComboBox.cs">
+    <Compile Include="GUIControl\LabeledComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="DataGridViewDoubleTextBoxCell.cs" />
     <Compile Include="InitFactory.cs" />
-    <Compile Include="LabeledIntegerEdit.cs">
+    <Compile Include="GUIControl\LabeledIntegerEdit.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="LanguageMenuItem.cs">
+    <Compile Include="GUIControl\LanguageMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="MainForm.cs">
+    <Compile Include="Form\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainFormOptions.cs" />
-    <Compile Include="MainMenu.cs">
+    <Compile Include="GUIControl\MainMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="MainToolStrip.cs">
+    <Compile Include="GUIControl\MainToolStrip.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="NewVersionMenuItem.cs">
+    <Compile Include="GUIControl\NewVersionMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Options.cs" />
-    <Compile Include="ThumbnailPanel.cs">
+    <Compile Include="GUIControl\ThumbnailPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ThumbnailPreviewContextMenu.cs">
+    <Compile Include="GUIControl\ThumbnailPreviewContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ThumbnailStorage.cs" />
-    <Compile Include="ViewModeMenuItem.cs">
+    <Compile Include="GUIControl\ViewModeMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="ResultRowSetter.cs" />
-    <Compile Include="MainSplitContainer.cs">
+    <Compile Include="GUIControl\MainSplitContainer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ResultsListView.cs">
+    <Compile Include="GUIControl\ResultsListView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ResultsListViewContextMenu.cs">
+    <Compile Include="GUIControl\ResultsListViewContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="MainStatusStrip.cs">
+    <Compile Include="GUIControl\MainStatusStrip.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ResultsOptions.cs" />
-    <Compile Include="ResultsPreviewBase.cs">
+    <Compile Include="GUIControl\ResultsPreviewBase.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ResultsPreviewContainer.cs">
+    <Compile Include="GUIControl\ResultsPreviewContainer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ResultsPreviewDefect.cs">
+    <Compile Include="GUIControl\ResultsPreviewDefect.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ResultsPreviewDuplPair.cs">
+    <Compile Include="GUIControl\ResultsPreviewDuplPair.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="SearchExecuterForm.cs">
+    <Compile Include="Form\SearchExecuterForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ProgressPanel.cs">
+    <Compile Include="GUIControl\ProgressPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="SelectHorizontalColumnsForm.cs">
+    <Compile Include="Form\SelectHorizontalColumnsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SelectHotKeysForm.cs">
+    <Compile Include="Form\SelectHotKeysForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SelectVerticalColumnsForm.cs">
+    <Compile Include="Form\SelectVerticalColumnsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="StartFinishForm.cs">
+    <Compile Include="Form\StartFinishForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Strings.cs" />

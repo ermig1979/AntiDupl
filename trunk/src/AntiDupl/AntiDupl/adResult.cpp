@@ -38,7 +38,8 @@ namespace ad
         transform(AD_TRANSFORM_TURN_0),
         group(AD_UNDEFINED),
 		groupSize(AD_UNDEFINED),
-        hint(AD_HINT_NONE)
+        hint(AD_HINT_NONE),
+		deleteByHint(false)
     {
     }
 
@@ -54,7 +55,8 @@ namespace ad
         transform(result.transform),
         group(result.group),
 		groupSize(result.groupSize),
-        hint(result.hint)
+        hint(result.hint),
+		deleteByHint(result.deleteByHint)
     {
     }
 

@@ -494,7 +494,14 @@ namespace AntiDupl.NET
             return LoadBitmap((int)imageInfo.width, (int)imageInfo.height, imageInfo.path);
         }
 
+        public bool TrainNeuralNetwork()
+        {
+            return m_dll.adTrainNeuralNetwork(m_handle) == CoreDll.Error.Ok;
+        }
+
         //-----------Public properties----------------------------------------------
+
+        #region Public properties
 
         public CoreSearchOptions searchOptions
         {
@@ -560,6 +567,23 @@ namespace AntiDupl.NET
             }
         }
 
+        public CoreHintOptions hintOptions
+        {
+            get
+            {
+                CoreDll.adHintOptions[] options = new CoreDll.adHintOptions[1];
+                m_dll.adOptionsGet(m_handle, CoreDll.OptionsType.Hint, Marshal.UnsafeAddrOfPinnedArrayElement(options, 0));
+                return new CoreHintOptions(ref options[0]);
+            }
+            set
+            {
+                CoreDll.adHintOptions[] options = new CoreDll.adHintOptions[1]; //создаем массив из одного значения
+                value.ConvertTo(ref options[0]); //конвертируем переданный класс
+                m_dll.adOptionsSet(m_handle, CoreDll.OptionsType.Hint, Marshal.UnsafeAddrOfPinnedArrayElement(options, 0));
+            }
+        }
+
+
         public CorePathWithSubFolder[] searchPath
         {
             get
@@ -607,9 +631,11 @@ namespace AntiDupl.NET
                 SetPath(CoreDll.PathType.Delete, value);
             }
         }
-       
+
+        #endregion
 
         //-----------Private functions:--------------------------------------------
+        #region private
 
         static private string BufferToString(char[] buffer, int startIndex, int maxSize)
         {
@@ -665,5 +691,7 @@ namespace AntiDupl.NET
                 Marshal.UnsafeAddrOfPinnedArrayElement(buffer, 0),
                 new IntPtr(path.Length)) == CoreDll.Error.Ok;
         }
+
+        #endregion
     };
 }

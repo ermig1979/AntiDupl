@@ -30,17 +30,42 @@ namespace ad
 {
     struct TOptions;
     struct TResult;
+	class TNeuralNetwork;
     //-------------------------------------------------------------------------
+	// Общий класс установшика подсказок
     class THintSetter
     {
+	protected:
         TOptions *m_pOptions;
+	public:
+        THintSetter(TOptions *pOptions);
+
+        virtual void Execute(TResult *pResult, bool canRename) const; //можно переопределить в наследнике
+    };
+
+	//-------------------------------------------------------------------------
+    class THintSetter_Algorithm : public THintSetter
+    {
+	private:
         double m_autoDeleteThresholdDifference;
 		adInt32 m_blockinessThreshold;
     public:
-        THintSetter(TOptions *pOptions);
+		THintSetter_Algorithm(TOptions *pOptions);
+		virtual void Execute(TResult *pResult, bool canRename) const; //переопределяем
+	};
 
-        void Execute(TResult *pResult, bool canRename) const;
-    };
+	//-------------------------------------------------------------------------
+    class THintSetter_Neural_Network : public THintSetter
+    {
+	private:
+		TNeuralNetwork* m_pNeuralNetwork;
+    public:
+		THintSetter_Neural_Network(TOptions *pOptions);
+		virtual void Execute(TResult *pResult, bool canRename) const; //переопределяем
+	};
+	//-------------------------------------------------------------------------
+    THintSetter* GetHintSetterPointer(TOptions *pOptions);
+    //-------------------------------------------------------------------------
 }
 
 #endif/*__adHintSetter_h__*/

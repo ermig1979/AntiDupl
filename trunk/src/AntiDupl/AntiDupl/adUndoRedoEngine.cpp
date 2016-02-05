@@ -31,6 +31,7 @@
 #include "adImageInfoStorage.h"
 #include "adUndoRedoTypes.h"
 #include "adUndoRedoEngine.h"
+#include "adStatisticsOfDeleting.h"
 
 namespace ad
 {
@@ -44,6 +45,7 @@ namespace ad
         m_pUndoDeque = new TUndoRedoStagePtrDeque();
         m_pRedoDeque = new TUndoRedoStagePtrDeque();
         m_pCurrent = new TUndoRedoStage();
+		m_pStatisticsOfDeleting = new TStatisticsOfDeleting();
     }
 
     TUndoRedoEngine::~TUndoRedoEngine()
@@ -460,6 +462,8 @@ namespace ad
                 pResult->first->links--;
                 if(pResult->type == AD_RESULT_DUPL_IMAGE_PAIR)
                     pResult->second->links--;
+
+				m_pStatisticsOfDeleting->Write(pResult);
             }
             TImageInfoPtrList& deletedImages = pStage->change->deletedImages;
             for(TImageInfoPtrList::iterator it = deletedImages.begin(); it != deletedImages.end(); ++it)
@@ -478,6 +482,8 @@ namespace ad
 	//private
     bool TUndoRedoEngine::ApplyTo(adLocalActionType localActionType, TResult *pResult)
     {
+		bool result;
+
         if(pResult->type == AD_RESULT_DEFECT_IMAGE)
         {
             switch(localActionType)
@@ -523,9 +529,18 @@ namespace ad
                 switch(pResult->hint)
                 {
                 case AD_HINT_DELETE_FIRST:
-                    return Delete(pResult->first);
+					pResult->deleteByHint = true;
+					result = Delete(pResult->first);
+                    if (!result)
+						pResult->deleteByHint = false;
+					return result;
                 case AD_HINT_DELETE_SECOND:
-                    return Delete(pResult->second);
+                    //return Delete(pResult->second);
+					pResult->deleteByHint = true;
+					result = Delete(pResult->second);
+                    if (!result)
+						pResult->deleteByHint = false;
+					return result;
                 case AD_HINT_RENAME_FIRST_TO_SECOND:
                     return Rename(pResult->first, pResult->second);
                 case AD_HINT_RENAME_SECOND_TO_FIRST:
