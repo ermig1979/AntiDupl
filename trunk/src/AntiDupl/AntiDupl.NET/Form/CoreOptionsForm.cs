@@ -492,6 +492,7 @@ namespace AntiDupl.NET
             tableLayoutPanel.Controls.Add(m_hintTypeLabeledComboBox, 0, 0);
 
             m_trainButton = new Button();
+            m_trainButton.Text = "Train";
             m_trainButton.Click += new EventHandler(OnTrainButtonClick);
             tableLayoutPanel.Controls.Add(m_trainButton, 0, 1);
         }
@@ -602,6 +603,8 @@ namespace AntiDupl.NET
             m_undoQueueSizeLabeledIntegerEdit.Value = m_newCoreOptions.advancedOptions.undoQueueSize;
             m_resultCountMaxLabeledIntegerEdit.Value = m_newCoreOptions.advancedOptions.resultCountMax;
             m_ignoreFrameWidthLabeledComboBox.SelectedValue = m_newCoreOptions.advancedOptions.ignoreFrameWidth;
+
+            m_hintTypeLabeledComboBox.SelectedValue = (int)m_newCoreOptions.hintOptions.algorithmOfHintSetting;
         }
 
         /// <summary>
@@ -653,6 +656,8 @@ namespace AntiDupl.NET
             m_newCoreOptions.advancedOptions.undoQueueSize = m_undoQueueSizeLabeledIntegerEdit.Value;
             m_newCoreOptions.advancedOptions.resultCountMax = m_resultCountMaxLabeledIntegerEdit.Value;
             m_newCoreOptions.advancedOptions.ignoreFrameWidth = m_ignoreFrameWidthLabeledComboBox.SelectedValue;
+
+            m_newCoreOptions.hintOptions.algorithmOfHintSetting = (CoreDll.AlgorithmOfHintSetting)m_hintTypeLabeledComboBox.SelectedValue;
         }
 
         private void UpdateStrings()

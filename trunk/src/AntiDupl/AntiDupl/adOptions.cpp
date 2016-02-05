@@ -166,6 +166,9 @@ namespace ad
         case AD_OPTIONS_ADVANCED:
             memcpy(&advanced, pOptions, sizeof(adAdvancedOptions));
             break;
+		case AD_OPTIONS_HINT:
+			memcpy(&hint, pOptions, sizeof(adHintOptions));
+            break;
         default:
             return AD_ERROR_INVALID_OPTIONS_TYPE;
         }

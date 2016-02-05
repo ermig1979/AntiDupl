@@ -18,10 +18,19 @@ namespace AntiDupl.NET
             algorithmOfHintSetting = hintOptions.algorithmOfHintSetting;
         }
 
+        public CoreHintOptions(CoreHintOptions hintOptions)
+        {
+            algorithmOfHintSetting = hintOptions.algorithmOfHintSetting;
+        }
+
         public void ConvertTo(ref CoreDll.adHintOptions hintOptions)
         {
             hintOptions.algorithmOfHintSetting = algorithmOfHintSetting;
         }
 
+        public CoreHintOptions Clone()
+        {
+            return new CoreHintOptions(this);
+        }
     }
 }
