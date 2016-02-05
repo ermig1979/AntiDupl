@@ -44,6 +44,7 @@ namespace ad
     class TSearcher;
     class TRecycleBin;
 	class TCriticalSection;
+	class TNeuralNetwork;
 
     typedef TImageData *TImageDataPtr; 
     //-------------------------------------------------------------------------
@@ -63,6 +64,7 @@ namespace ad
         TResultStorage* Result() {return m_pResult;}
         TCriticalSection* CriticalSection() {return m_pCriticalSection;}
         TRecycleBin* RecycleBin() {return m_pRecycleBin;}
+		TNeuralNetwork* GetNeuralNetworkPonter() {return m_pNeuralNetwork;} 
 
     private:
         TImageDataPtrs *m_pImageDataPtrs;
@@ -77,6 +79,7 @@ namespace ad
         TInit *m_pInit;
         TSearcher *m_pSearcher;
         TRecycleBin *m_pRecycleBin;
+		TNeuralNetwork *m_pNeuralNetwork;
     };
     //-------------------------------------------------------------------------
 }

@@ -485,6 +485,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\adStatistics.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\adStatistics.h"
+			>
+		</File>
+		<File
 			RelativePath=".\adStatus.cpp"
 			>
 		</File>

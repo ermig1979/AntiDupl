@@ -97,6 +97,7 @@ namespace AntiDupl.NET
             Compare = 1,
             Defect = 2,
             Advanced = 3,
+            Hint = 4,
         }
 
         public enum FileType : int
@@ -301,6 +302,12 @@ namespace AntiDupl.NET
 		    SquaredSum = 0,
 		    SSIM = 1,
 	    };
+
+        public enum AlgorithmOfHintSetting : int
+	    {
+		    Set_by_algorithm = 0,
+		    Set_by_neural_network = 1,
+	    };
         
         //-----------API structures--------------------------------------------
 
@@ -363,6 +370,12 @@ namespace AntiDupl.NET
             public int undoQueueSize;
             public int resultCountMax;
             public int ignoreFrameWidth;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct adHintOptions
+        {
+            public AlgorithmOfHintSetting algorithmOfHintSetting;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -637,5 +650,10 @@ namespace AntiDupl.NET
         public delegate Error adLoadBitmapW_fn(IntPtr handle, string fileName, IntPtr pBitmap);
         [DynamicModuleApi]
         public adLoadBitmapW_fn adLoadBitmapW = null;
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+        public delegate Error adTrainNeuralNetwork_delegate(IntPtr handle);
+        [DynamicModuleApi]
+        public adTrainNeuralNetwork_delegate adTrainNeuralNetwork = null;
     }
 }

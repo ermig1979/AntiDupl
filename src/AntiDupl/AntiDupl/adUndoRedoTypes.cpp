@@ -294,7 +294,7 @@ namespace ad
         }
     }
 
-	// Удаление неправильных результатов из списка результатов.
+	// Удаление неправильных результатов из списка результатов и сохранение состояния.
     template <class TValidator> void TUndoRedoStage::RemoveInvalid(const TValidator &validator, TStatus *pStatus, bool canCancel)
     {
         pStatus->SetProgress(0, 0);

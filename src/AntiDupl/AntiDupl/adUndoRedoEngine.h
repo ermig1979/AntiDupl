@@ -40,6 +40,7 @@ namespace ad
     class TStatus;
     class TMistakeStorage;
     class TImageInfoStorage;
+	class TStatisticsOfDeleting;
 
     typedef TUndoRedoStage* TUndoRedoStagePtr;
     typedef std::deque<TUndoRedoStagePtr> TUndoRedoStagePtrDeque;
@@ -55,7 +56,7 @@ namespace ad
         bool Undo();
         bool Redo();
 
-        bool UndoEnable() const {return !m_pUndoDeque->empty();}
+        bool UndoEnable() const {return !m_pUndoDeque->empty();} // A read-only function
         bool RedoEnable() const {return !m_pRedoDeque->empty();}
 
         void Clear();
@@ -86,6 +87,7 @@ namespace ad
         TStatus *m_pStatus;
         TMistakeStorage *m_pMistakeStorage;
         TImageInfoStorage *m_pImageInfoStorage;
+		TStatisticsOfDeleting *m_pStatisticsOfDeleting;
 
         TUndoRedoStagePtrDeque *m_pUndoDeque;
         TUndoRedoStagePtrDeque *m_pRedoDeque;
