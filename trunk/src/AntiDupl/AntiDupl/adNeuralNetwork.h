@@ -26,15 +26,18 @@
 
 #include "adConfig.h"
 #include "adStrings.h"
+#include "OpenNN/opennn.h"
 
 namespace ad
 {
 	struct TResult;
+	class OpenNN::NeuralNetwork;
 	//-------------------------------------------------------------------------
 	class TNeuralNetwork
 	{
 	private:
 		//TString m_neuralNetworkPath;
+		OpenNN::NeuralNetwork * m_neural_network_point;
 	public:
 		TNeuralNetwork(void);
 		~TNeuralNetwork(void);

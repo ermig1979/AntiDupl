@@ -500,8 +500,8 @@ namespace AntiDupl.NET
         private void OnTrainButtonClick(object sender, EventArgs e)
         {
             //MessageBox.Show("Train started!");
-            m_core.TrainNeuralNetwork();
-            //MessageBox.Show("Train started!");
+            if (m_core.TrainNeuralNetwork())
+                MessageBox.Show("Train succesfull!");
         }
 
         private void OnHighlightChanged(object sender, EventArgs e)
