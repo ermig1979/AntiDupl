@@ -26,6 +26,7 @@
 #include "adStrings.h"
 #include "adStatisticsOfDeleting.h"
 #include "adFileUtils.h"
+#include "adResult.h"
 #include "OpenNN/opennn.h"
 
 using namespace OpenNN;
@@ -34,8 +35,10 @@ namespace ad
 {
 	TNeuralNetwork::TNeuralNetwork(void)
 		//m_neuralNetworkPath()
+		:m_neural_network_point()
 	{
 		//m_neuralNetworkPath = TString(GetApplicationDirectory() + TEXT("\\NeuralNetwork\\neural_network.xml"));
+		//m_neural_network_point = new OpenNN::NeuralNetwork();
 	}
 
 	TNeuralNetwork::~TNeuralNetwork(void)
@@ -44,7 +47,37 @@ namespace ad
 
 	bool TNeuralNetwork::GetPredict(TResult *pResult)
 	{
-		return true;
+		//m_neural_network_point = new OpenNN::NeuralNetwork();
+		//if(m_neural_network_point)
+			//m_neural_network_point = new OpenNN::NeuralNetwork();
+		//	return AD_ERROR_INVALID_POINTER;
+		NeuralNetwork neural_network(9, 9, 1);
+
+		neural_network.load("NeuralNetwork/neural_network.xml");
+		neural_network.set_scaling_unscaling_layers_flag(false);
+
+		// Print results to screen
+
+		Vector<double> inputs(9, 0.0);
+		Vector<double> outputs(1, 0.0);
+
+		//std::cout << "pregnant glucose pressure thickness insulin mass_index pedigree age" << std::endl;
+
+		inputs[0] = pResult->difference;
+		inputs[1] = pResult->first->Area();
+		inputs[2] = pResult->first->size;
+		inputs[3] = pResult->first->blockiness;
+		inputs[4] = pResult->first->blurring;
+		inputs[5] = pResult->second->Area();
+		inputs[6] = pResult->second->size;
+		inputs[7] = pResult->second->blockiness;
+		inputs[8] = pResult->second->blurring;
+
+		outputs = neural_network.calculate_outputs(inputs);
+		double output = outputs[0];
+
+		bool deleteFirst = outputs.calculate_binary()[0];
+		return deleteFirst;
 	}
 
 	adError TNeuralNetwork::Train()
@@ -104,12 +137,13 @@ namespace ad
 		const unsigned int outputs_number = data_set.get_variables_information().count_targets_number();
 
 		NeuralNetwork neural_network(inputs_number, hidden_neurons_number, outputs_number);
+		//m_neural_network_point = new OpenNN::NeuralNetwork(inputs_number, hidden_neurons_number, outputs_number);
 
 		neural_network.set_inputs_outputs_information(inputs_targets_information); 
 		neural_network.set_inputs_outputs_statistics(inputs_targets_statistics); 
 
 		neural_network.set_scaling_unscaling_layers_flag(false);
-		  //neural_network.set_scaling_unscaling_layers_flag(true);
+		//neural_network.set_scaling_unscaling_layers_flag(true);
 
 		// Performance functional
 
@@ -134,27 +168,26 @@ namespace ad
 		//neural_network.set_inputs_scaling_outputs_unscaling_methods("MinimumMaximum");
 		//neural_network.set_scaling_unscaling_layers_flag(true);
 
-		/*// Testing analysis
+		// Testing analysis
+		//TestingAnalysis testing_analysis(&neural_network, &data_set);
+		//testing_analysis.construct_pattern_recognition_testing();
+		//PatternRecognitionTesting* pattern_recognition_testing_pointer = testing_analysis.get_pattern_recognition_testing_pointer();
 
-		TestingAnalysis testing_analysis(&neural_network, &data_set);
-
-		testing_analysis.construct_pattern_recognition_testing();
-
-		PatternRecognitionTesting* pattern_recognition_testing_pointer = testing_analysis.get_pattern_recognition_testing_pointer();
-*/
 		// Save results
 
 		//data_set.save("NeuralNetwork/data_set.xml");
 
 		neural_network.save("NeuralNetwork/neural_network.xml");
 		//neural_network.save(m_neuralNetworkPath.ToString());
-		neural_network.save_expression("NeuralNetwork/expression.txt");
+		//neural_network.save_expression("NeuralNetwork/expression.txt");
 
 		training_strategy.save("NeuralNetwork/training_strategy.xml");
 		training_strategy_results.save("NeuralNetwork/training_strategy_results.dat");
 
 		//pattern_recognition_testing_pointer->save_confusion("pima_indians_diabetes/confusion.dat");   
 		//pattern_recognition_testing_pointer->save_binary_classification_test("pima_indians_diabetes/binary_classification_test.dat");  
+
+		
 		  
 		return adError::AD_OK;
 	}

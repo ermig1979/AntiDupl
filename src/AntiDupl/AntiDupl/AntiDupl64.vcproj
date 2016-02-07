@@ -421,6 +421,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\adNeuralNetwork.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\adNeuralNetwork.h"
+			>
+		</File>
+		<File
 			RelativePath=".\adOptions.cpp"
 			>
 		</File>
@@ -485,11 +493,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\adStatistics.cpp"
+			RelativePath=".\adStatisticsOfDeleting.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\adStatistics.h"
+			RelativePath=".\adStatisticsOfDeleting.h"
 			>
 		</File>
 		<File

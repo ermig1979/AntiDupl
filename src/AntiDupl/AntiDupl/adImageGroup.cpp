@@ -256,6 +256,7 @@ namespace ad
 		UpdateVector();
 	}
 
+	//void TImageGroupStorage::UpdateHints(TOptions *pOptions, bool force, TStatus * pStatus)
 	void TImageGroupStorage::UpdateHints(TOptions *pOptions, bool force)
 	{
 		//THintSetter hintSetter(pOptions);
