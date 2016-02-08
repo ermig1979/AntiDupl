@@ -35,14 +35,22 @@ namespace ad
 {
 	TNeuralNetwork::TNeuralNetwork(void)
 		//m_neuralNetworkPath()
-		:m_neural_network_point()
+		//:m_neural_network_point()
+		//:m_neural_network_pointer(NULL)
 	{
 		//m_neuralNetworkPath = TString(GetApplicationDirectory() + TEXT("\\NeuralNetwork\\neural_network.xml"));
-		//m_neural_network_point = new OpenNN::NeuralNetwork();
+		m_neural_network_pointer = new OpenNN::NeuralNetwork();
+		//m_neural_network = new OpenNN::NeuralNetwork();
 	}
 
 	TNeuralNetwork::~TNeuralNetwork(void)
 	{
+	}
+
+	bool TNeuralNetwork::Load()
+	{
+		m_neural_network_pointer->load("NeuralNetwork/neural_network.xml");
+		return true;
 	}
 
 	bool TNeuralNetwork::GetPredict(TResult *pResult)
@@ -51,10 +59,10 @@ namespace ad
 		//if(m_neural_network_point)
 			//m_neural_network_point = new OpenNN::NeuralNetwork();
 		//	return AD_ERROR_INVALID_POINTER;
-		NeuralNetwork neural_network(9, 9, 1);
+		//NeuralNetwork neural_network(9, 8, 1);
 
-		neural_network.load("NeuralNetwork/neural_network.xml");
-		neural_network.set_scaling_unscaling_layers_flag(false);
+		//m_neural_network_pointer->load("NeuralNetwork/neural_network.xml");
+		m_neural_network_pointer->set_scaling_unscaling_layers_flag(false);
 
 		// Print results to screen
 
@@ -73,7 +81,7 @@ namespace ad
 		inputs[7] = pResult->second->blockiness;
 		inputs[8] = pResult->second->blurring;
 
-		outputs = neural_network.calculate_outputs(inputs);
+		outputs = m_neural_network_pointer->calculate_outputs(inputs);
 		double output = outputs[0];
 
 		bool deleteFirst = outputs.calculate_binary()[0];
@@ -136,18 +144,19 @@ namespace ad
 		const unsigned int hidden_neurons_number = 9;
 		const unsigned int outputs_number = data_set.get_variables_information().count_targets_number();
 
-		NeuralNetwork neural_network(inputs_number, hidden_neurons_number, outputs_number);
+		//NeuralNetwork neural_network(inputs_number, hidden_neurons_number, outputs_number);
 		//m_neural_network_point = new OpenNN::NeuralNetwork(inputs_number, hidden_neurons_number, outputs_number);
+		m_neural_network_pointer = new OpenNN::NeuralNetwork(inputs_number, hidden_neurons_number, outputs_number);
 
-		neural_network.set_inputs_outputs_information(inputs_targets_information); 
-		neural_network.set_inputs_outputs_statistics(inputs_targets_statistics); 
+		m_neural_network_pointer->set_inputs_outputs_information(inputs_targets_information); 
+		m_neural_network_pointer->set_inputs_outputs_statistics(inputs_targets_statistics); 
 
-		neural_network.set_scaling_unscaling_layers_flag(false);
+		m_neural_network_pointer->set_scaling_unscaling_layers_flag(false);
 		//neural_network.set_scaling_unscaling_layers_flag(true);
 
 		// Performance functional
 
-		PerformanceFunctional performance_functional(&neural_network, &data_set);
+		PerformanceFunctional performance_functional(m_neural_network_pointer, &data_set);
 
 		// Training strategy
 
@@ -177,17 +186,14 @@ namespace ad
 
 		//data_set.save("NeuralNetwork/data_set.xml");
 
-		neural_network.save("NeuralNetwork/neural_network.xml");
-		//neural_network.save(m_neuralNetworkPath.ToString());
-		//neural_network.save_expression("NeuralNetwork/expression.txt");
+		m_neural_network_pointer->save("NeuralNetwork/neural_network.xml");
+		m_neural_network_pointer->save_expression("NeuralNetwork/expression.txt");
 
 		training_strategy.save("NeuralNetwork/training_strategy.xml");
 		training_strategy_results.save("NeuralNetwork/training_strategy_results.dat");
 
 		//pattern_recognition_testing_pointer->save_confusion("pima_indians_diabetes/confusion.dat");   
 		//pattern_recognition_testing_pointer->save_binary_classification_test("pima_indians_diabetes/binary_classification_test.dat");  
-
-		
 		  
 		return adError::AD_OK;
 	}
