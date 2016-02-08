@@ -37,12 +37,16 @@ namespace ad
 	{
 	private:
 		//TString m_neuralNetworkPath;
-		OpenNN::NeuralNetwork * m_neural_network_point;
+		//OpenNN::NeuralNetwork * m_neural_network_point;
+		/// Pointer to a neural network object.
+		OpenNN::NeuralNetwork* m_neural_network_pointer;
+		//OpenNN::NeuralNetwork m_neural_network;
 	public:
 		TNeuralNetwork(void);
 		~TNeuralNetwork(void);
 		bool GetPredict(TResult *pResult);
 		adError Train();
+		bool Load();
 	};
 }
 

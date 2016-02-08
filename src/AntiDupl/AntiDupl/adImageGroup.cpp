@@ -260,7 +260,9 @@ namespace ad
 	void TImageGroupStorage::UpdateHints(TOptions *pOptions, bool force)
 	{
 		//THintSetter hintSetter(pOptions);
-		THintSetter *hintSetter = GetHintSetterPointer(pOptions);
+		//m_hintSetter_pointer = GetHintSetterPointer(pOptions);
+		THintSetter *hintSetter_pointer = THintSetterStorage::GetHintSetterPointer(pOptions);
+		//hintSetter_pointer->Load();
 		for(TMap::iterator groupIt = m_map.begin(); groupIt != m_map.end(); ++groupIt)
 		{
 			TImageGroupPtr pImageGroup = groupIt->second;
@@ -270,7 +272,7 @@ namespace ad
 				for(TResultPtrList::iterator resultIt = results.begin(); resultIt != results.end(); ++resultIt)
 				{
 					TResultPtr pResult = *resultIt;
-					hintSetter->Execute(pResult, results.size() == 1);
+					hintSetter_pointer->Execute(pResult, results.size() == 1);
 				}
 			}
 			pImageGroup->invalidHint = false;

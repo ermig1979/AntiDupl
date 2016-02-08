@@ -26,6 +26,7 @@
 
 #include "adConfig.h"
 
+
 namespace ad
 {
     struct TOptions;
@@ -39,7 +40,7 @@ namespace ad
         TOptions *m_pOptions;
 	public:
         THintSetter(TOptions *pOptions);
-
+		virtual adAlgorithmOfHintSetting AlgorithmOfHintSetting() const; // —войство только дл€ чтени€
         virtual void Execute(TResult *pResult, bool canRename) const; //можно переопределить в наследнике
     };
 
@@ -51,6 +52,7 @@ namespace ad
 		adInt32 m_blockinessThreshold;
     public:
 		THintSetter_Algorithm(TOptions *pOptions);
+		virtual adAlgorithmOfHintSetting AlgorithmOfHintSetting() const { return adAlgorithmOfHintSetting::AD_HINT_SET_BY_ALGORITHM; } // —войство только дл€ чтени€
 		virtual void Execute(TResult *pResult, bool canRename) const; //переопредел€ем
 	};
 
@@ -61,10 +63,18 @@ namespace ad
 		TNeuralNetwork* m_pNeuralNetwork;
     public:
 		THintSetter_Neural_Network(TOptions *pOptions);
+		virtual adAlgorithmOfHintSetting AlgorithmOfHintSetting() const { return adAlgorithmOfHintSetting::AD_HINT_SET_BY_NEURAL_NETWORK; } // —войство только дл€ чтени€
 		virtual void Execute(TResult *pResult, bool canRename) const; //переопредел€ем
 	};
 	//-------------------------------------------------------------------------
-    THintSetter* GetHintSetterPointer(TOptions *pOptions);
+	class THintSetterStorage
+    {
+	private:
+		static THintSetter* m_hintSetter_pointer; //its just a declaration, not a definition!
+    public:
+		static THintSetter* GetHintSetterPointer(TOptions *pOptions);
+	};
+    //THintSetter* GetHintSetterPointer(TOptions *pOptions);
     //-------------------------------------------------------------------------
 }
 
