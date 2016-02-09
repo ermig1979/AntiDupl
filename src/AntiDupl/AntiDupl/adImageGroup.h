@@ -74,7 +74,7 @@ namespace ad
 		void Assign(const TImageGroupStorage & storage);
 		void Set(TResultPtrVector & results, TStatus * pStatus);
 		void Update(TResultPtrVector & results);
-		void UpdateHints(TOptions *pOptions, bool force);
+		void UpdateHints(TOptions *pOptions, bool force, TStatus *pStatus);
 
 		adError Export(adSizePtr pStartFrom, adGroupPtr pGroup, adSizePtr pGroupSize) const;
 		adError Export(adSize groupId, adSizePtr pStartFrom, adImageInfoPtrA pImageInfo, adSizePtr pImageInfoSize) const;

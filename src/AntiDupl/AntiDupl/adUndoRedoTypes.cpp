@@ -276,9 +276,9 @@ namespace ad
 		groups.Update(results);
     }
 
-    void TUndoRedoStage::UpdateHints(TOptions *pOptions, bool force)
+    void TUndoRedoStage::UpdateHints(TOptions *pOptions, bool force, TStatus *pStatus)
     {
-		groups.UpdateHints(pOptions, force);
+		groups.UpdateHints(pOptions, force, pStatus);
     }
 
     void TUndoRedoStage::UpdateCurrentIndex()

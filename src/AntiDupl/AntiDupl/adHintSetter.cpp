@@ -163,7 +163,7 @@ namespace ad
     {
 		m_pNeuralNetwork = new TNeuralNetwork();
 
-		m_pNeuralNetwork->Load();
+		//m_netLoaded = m_pNeuralNetwork->Load();
 	}
 
 	void THintSetter_Neural_Network::Execute(TResult *pResult, bool canRename) const
@@ -180,11 +180,14 @@ namespace ad
             return;
         }
 
-		bool predictDelFirst = m_pNeuralNetwork->GetPredict(pResult);
-		if (predictDelFirst)
-			pResult->hint = AD_HINT_DELETE_FIRST;
-		else
-			pResult->hint = AD_HINT_DELETE_SECOND;
+		if (m_pNeuralNetwork->Loaded())
+		{
+			bool predictDelFirst = m_pNeuralNetwork->GetPredict(pResult);
+			if (predictDelFirst)
+				pResult->hint = AD_HINT_DELETE_FIRST;
+			else
+				pResult->hint = AD_HINT_DELETE_SECOND;
+		}
 		return;
 	}
 

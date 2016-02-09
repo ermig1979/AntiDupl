@@ -110,7 +110,7 @@ namespace ad
             m_pCurrent->RemoveDeleted(m_pStatus);
 
         m_pCurrent->UpdateGroups();
-        m_pCurrent->UpdateHints(m_pOptions, false);
+        m_pCurrent->UpdateHints(m_pOptions, false, m_pStatus);
 
         m_pCurrent->change = NULL;
 
@@ -147,7 +147,7 @@ namespace ad
 
 			// Обновляем подсказки в текущей группе.
             m_pCurrent->groups.Get(pImageInfo->group)->invalidHint = true;
-            m_pCurrent->UpdateHints(m_pOptions, false);
+            m_pCurrent->UpdateHints(m_pOptions, false, m_pStatus);
 
             m_pCurrent->change = NULL;
 
@@ -642,7 +642,7 @@ namespace ad
         m_pUndoDeque->push_back(m_pCurrent->Clone());
 
         m_pCurrent->UpdateGroups();
-        m_pCurrent->UpdateHints(m_pOptions, false);
+        m_pCurrent->UpdateHints(m_pOptions, false, m_pStatus);
 
         m_pCurrent->change = NULL;
 
@@ -703,7 +703,7 @@ namespace ad
         m_pUndoDeque->push_back(m_pCurrent->Clone());
 
         m_pCurrent->UpdateGroups();
-        m_pCurrent->UpdateHints(m_pOptions, false);
+        m_pCurrent->UpdateHints(m_pOptions, false, m_pStatus);
 
         m_pCurrent->change = NULL;
 

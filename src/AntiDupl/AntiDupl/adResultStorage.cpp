@@ -152,7 +152,7 @@ namespace ad
 
     void TResultStorage::SetHint()
     {
-        m_pUndoRedoEngine->Current()->UpdateHints(m_pOptions, true);
+        m_pUndoRedoEngine->Current()->UpdateHints(m_pOptions, true, m_pStatus);
     }
 
     adError TResultStorage::ApplyTo(adLocalActionType localActionType, adTargetType targetType)
@@ -231,7 +231,7 @@ namespace ad
 		m_pUndoRedoEngine->Current()->RemoveSkipped(m_pStatus, m_pOptions); //удаляет из результатов пропускаемые
         m_pUndoRedoEngine->Current()->SetGroups(m_pStatus); //очищает внутреннее хранилище групп
 		m_pUndoRedoEngine->Current()->UpdateGroups(); //обновляет группы из результатов
-        m_pUndoRedoEngine->Current()->UpdateHints(m_pOptions, true);
+        m_pUndoRedoEngine->Current()->UpdateHints(m_pOptions, true, m_pStatus);
     }
 
     bool TResultStorage::Undo()
@@ -379,7 +379,7 @@ namespace ad
 				}
 			}
 			m_pUndoRedoEngine->Current()->UpdateGroups();
-			m_pUndoRedoEngine->Current()->UpdateHints(m_pOptions, true);
+			m_pUndoRedoEngine->Current()->UpdateHints(m_pOptions, true, m_pStatus);
 		}
 		catch (TException e)
 		{

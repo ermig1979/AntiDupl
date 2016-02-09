@@ -61,6 +61,7 @@ namespace ad
     {
 	private:
 		TNeuralNetwork* m_pNeuralNetwork;
+		//bool m_netLoaded;
     public:
 		THintSetter_Neural_Network(TOptions *pOptions);
 		virtual adAlgorithmOfHintSetting AlgorithmOfHintSetting() const { return adAlgorithmOfHintSetting::AD_HINT_SET_BY_NEURAL_NETWORK; } // Свойство только для чтения

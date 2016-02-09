@@ -4808,6 +4808,7 @@ void load(const std::string& filename)
          for(unsigned int j = 0; j < columns_number; j++)
          {
             file >> data[i][j];
+			 //std::cerr << data[i][j] << std::endl;
          }     
       }
    }   

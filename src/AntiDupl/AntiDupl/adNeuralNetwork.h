@@ -36,6 +36,8 @@ namespace ad
 	class TNeuralNetwork
 	{
 	private:
+		TString m_directory;
+		bool m_netLoaded;
 		//TString m_neuralNetworkPath;
 		//OpenNN::NeuralNetwork * m_neural_network_point;
 		/// Pointer to a neural network object.
@@ -46,7 +48,7 @@ namespace ad
 		~TNeuralNetwork(void);
 		bool GetPredict(TResult *pResult);
 		adError Train();
-		bool Load();
+		bool Loaded();
 	};
 }
 
