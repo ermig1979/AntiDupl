@@ -256,15 +256,18 @@ namespace ad
 		UpdateVector();
 	}
 
-	//void TImageGroupStorage::UpdateHints(TOptions *pOptions, bool force, TStatus * pStatus)
-	void TImageGroupStorage::UpdateHints(TOptions *pOptions, bool force)
+	void TImageGroupStorage::UpdateHints(TOptions *pOptions, bool force, TStatus * pStatus)
+	//void TImageGroupStorage::UpdateHints(TOptions *pOptions, bool force)
 	{
+		pStatus->SetProgress(0, 0);
+		size_t current = 0, total = m_map.size();
 		//THintSetter hintSetter(pOptions);
 		//m_hintSetter_pointer = GetHintSetterPointer(pOptions);
 		THintSetter *hintSetter_pointer = THintSetterStorage::GetHintSetterPointer(pOptions);
 		//hintSetter_pointer->Load();
 		for(TMap::iterator groupIt = m_map.begin(); groupIt != m_map.end(); ++groupIt)
 		{
+			pStatus->SetProgress(current++, total);
 			TImageGroupPtr pImageGroup = groupIt->second;
 			if(force || pImageGroup->invalidHint)
 			{
@@ -277,6 +280,7 @@ namespace ad
 			}
 			pImageGroup->invalidHint = false;
 		}
+		pStatus->Reset();
 	}
 	
 	void TImageGroupStorage::SetGroupSize(TResultPtrVector & results)

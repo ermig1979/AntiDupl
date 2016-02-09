@@ -37,6 +37,8 @@ namespace ad
 		//m_neuralNetworkPath()
 		//:m_neural_network_point()
 		//:m_neural_network_pointer(NULL)
+		:m_directory("NeuralNetwork"),
+		m_netLoaded(false)
 	{
 		//m_neuralNetworkPath = TString(GetApplicationDirectory() + TEXT("\\NeuralNetwork\\neural_network.xml"));
 		m_neural_network_pointer = new OpenNN::NeuralNetwork();
@@ -47,10 +49,19 @@ namespace ad
 	{
 	}
 
-	bool TNeuralNetwork::Load()
+	bool TNeuralNetwork::Loaded()
 	{
-		m_neural_network_pointer->load("NeuralNetwork/neural_network.xml");
-		return true;
+		if (!m_netLoaded)
+		{
+			if(!IsDirectoryExists(m_directory.c_str()))
+				return m_netLoaded = false;
+			TString fileName("NeuralNetwork/neural_network.xml");
+			if(!IsFileExists(fileName.c_str()))
+				return m_netLoaded = false;
+			m_neural_network_pointer->load("NeuralNetwork/neural_network.xml");
+		}
+		m_netLoaded = true;
+		return m_netLoaded;
 	}
 
 	bool TNeuralNetwork::GetPredict(TResult *pResult)
@@ -95,7 +106,10 @@ namespace ad
 
 		DataSet data_set;
 	      
+		setlocale( LC_ALL, ".ACP" );
 		data_set.load_data(path.ToString());
+		//data_set.load_data(path.ToWString());
+		//data_set.load_data(L"d:\\Борисов\\SoftMy\\AntiDupl.NET_stat\\bin\\Debug\\Statistics.txt");
 
 		// Variables information
 
@@ -141,7 +155,7 @@ namespace ad
 		//NeuralNetwork neural_network(8, 6, 1);
 
 		const unsigned int inputs_number = data_set.get_variables_information().count_inputs_number();
-		const unsigned int hidden_neurons_number = 9;
+		const unsigned int hidden_neurons_number = 8;
 		const unsigned int outputs_number = data_set.get_variables_information().count_targets_number();
 
 		//NeuralNetwork neural_network(inputs_number, hidden_neurons_number, outputs_number);
@@ -178,13 +192,16 @@ namespace ad
 		//neural_network.set_scaling_unscaling_layers_flag(true);
 
 		// Testing analysis
-		//TestingAnalysis testing_analysis(&neural_network, &data_set);
-		//testing_analysis.construct_pattern_recognition_testing();
-		//PatternRecognitionTesting* pattern_recognition_testing_pointer = testing_analysis.get_pattern_recognition_testing_pointer();
-
+		/*TestingAnalysis testing_analysis(m_neural_network_pointer, &data_set);
+		testing_analysis.construct_pattern_recognition_testing();
+		PatternRecognitionTesting* pattern_recognition_testing_pointer = testing_analysis.get_pattern_recognition_testing_pointer();
+*/
 		// Save results
 
-		//data_set.save("NeuralNetwork/data_set.xml");
+		if(!IsDirectoryExists(m_directory.c_str()))
+			CreateDirectory(m_directory.c_str(), NULL);
+
+		data_set.save("NeuralNetwork/data_set.xml");
 
 		m_neural_network_pointer->save("NeuralNetwork/neural_network.xml");
 		m_neural_network_pointer->save_expression("NeuralNetwork/expression.txt");
@@ -192,8 +209,8 @@ namespace ad
 		training_strategy.save("NeuralNetwork/training_strategy.xml");
 		training_strategy_results.save("NeuralNetwork/training_strategy_results.dat");
 
-		//pattern_recognition_testing_pointer->save_confusion("pima_indians_diabetes/confusion.dat");   
-		//pattern_recognition_testing_pointer->save_binary_classification_test("pima_indians_diabetes/binary_classification_test.dat");  
+		//pattern_recognition_testing_pointer->save_confusion("NeuralNetwork/confusion.dat");   
+		//pattern_recognition_testing_pointer->save_binary_classification_test("NeuralNetwork/binary_classification_test.dat");  
 		  
 		return adError::AD_OK;
 	}

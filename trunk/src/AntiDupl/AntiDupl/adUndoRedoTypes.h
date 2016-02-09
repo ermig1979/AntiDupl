@@ -90,7 +90,7 @@ namespace ad
         
         void SetGroups(TStatus *pStatus);
         void UpdateGroups();
-        void UpdateHints(TOptions *pOptions, bool force);
+        void UpdateHints(TOptions *pOptions, bool force, TStatus *pStatus);
 
     private:
         void UpdateCurrentIndex();
