@@ -56,6 +56,7 @@ namespace ad
 	void TStatisticsOfDeleting::Write(TResult * result)
 	{
 		if(!result->deleteByHint &&
+			result->difference != 0.0 &&
 			(result->first->removed && !result->second->removed ||
 			 !result->first->removed && result->second->removed))
 		{
