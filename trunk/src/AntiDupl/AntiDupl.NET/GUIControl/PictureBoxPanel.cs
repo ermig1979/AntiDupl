@@ -582,6 +582,9 @@ namespace AntiDupl.NET
                 if (directoryInfo.Exists)
                 {
                     FileInfo[] filesInfos = directoryInfo.GetFiles();
+
+                    Array.Sort(filesInfos, new Comparison<FileInfo>((f, f2) => f.FullName.CompareTo(f2.FullName)));
+
                     for (int i = 0; i < filesInfos.Length; i++)
                     {
                         if (filesInfos[i].FullName == filePreview)
