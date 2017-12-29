@@ -1,7 +1,7 @@
 /*
-* Simd Library (http://simd.sourceforge.net).
+* Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2015 Yermalayeu Ihar.
+* Copyright (c) 2011-2017 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -32,8 +32,10 @@
 #include <assert.h>
 #include <memory.h>
 #include <limits.h>
+#include <float.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <cmath>
 
 #if defined(_MSC_VER) && defined(_MSC_FULL_VER)
 
@@ -43,8 +45,12 @@
 #define SIMD_X86_ENABLE
 #endif
 
-#ifdef _M_X64
+#if defined(_M_X64) || defined(_M_AMD64)
 #define SIMD_X64_ENABLE
+#endif
+
+#if defined(_M_ARM)
+#define SIMD_ARM_ENABLE
 #endif
 
 #if defined(SIMD_X64_ENABLE) || defined(SIMD_X86_ENABLE)
@@ -55,6 +61,10 @@
 
 #if !defined(SIMD_SSE2_DISABLE) && _MSC_VER >= 1300
 #define SIMD_SSE2_ENABLE
+#endif
+
+#if !defined(SIMD_SSE3_DISABLE) && _MSC_VER >= 1500
+#define SIMD_SSE3_ENABLE
 #endif
 
 #if !defined(SIMD_SSSE3_DISABLE) && _MSC_VER >= 1500
@@ -77,7 +87,31 @@
 #define SIMD_AVX2_ENABLE
 #endif
 
+#if defined(NDEBUG) && _MSC_VER >= 1700 && _MSC_VER < 1900
+#define SIMD_MADDUBS_ERROR // Visual Studio 2012/2013 release mode compiler bug in function _mm256_maddubs_epi16:
+#endif
+
+#if !defined(SIMD_AVX512F_DISABLE) && _MSC_VER >= 1911
+#define SIMD_AVX512F_ENABLE
+#endif
+
+#if !defined(SIMD_AVX512BW_DISABLE) && _MSC_VER >= 1911
+#define SIMD_AVX512BW_ENABLE
+#endif
+
 #endif//defined(SIMD_X64_ENABLE) || defined(SIMD_X86_ENABLE)
+
+#if defined(SIMD_ARM_ENABLE)
+
+#if !defined(SIMD_NEON_DISABLE) && _MSC_VER >= 1700
+#define SIMD_NEON_ENABLE
+#endif
+
+#endif
+
+#if _MSC_VER >= 1900
+#define SIMD_CPP_2011_ENABLE
+#endif
 
 #elif defined(__GNUC__)
 
@@ -87,7 +121,7 @@
 #define SIMD_X86_ENABLE
 #endif
 
-#ifdef __x86_64__
+#if defined(__x86_64__) || defined(__amd64__)
 #define SIMD_X64_ENABLE
 #endif
 
@@ -95,8 +129,24 @@
 #define SIMD_BIG_ENDIAN
 #endif
 
+#ifdef __powerpc__
+#define SIMD_PPC_ENABLE
+#endif
+
 #ifdef __powerpc64__
 #define SIMD_PPC64_ENABLE
+#endif
+
+#if defined __arm__
+#define SIMD_ARM_ENABLE
+#endif
+
+#if defined __aarch64__
+#define SIMD_ARM64_ENABLE
+#endif
+
+#if defined __mips__
+#define SIMD_MIPS_ENABLE
 #endif
 
 #if defined(SIMD_X86_ENABLE) || defined(SIMD_X64_ENABLE)
@@ -107,6 +157,10 @@
 
 #if !defined(SIMD_SSE2_DISABLE) && defined(__SSE2__)
 #define SIMD_SSE2_ENABLE
+#endif
+
+#if !defined(SIMD_SSE3_DISABLE) && defined(__SSE3__)
+#define SIMD_SSE3_ENABLE
 #endif
 
 #if !defined(SIMD_SSSE3_DISABLE) && defined(__SSSE3__)
@@ -129,10 +183,60 @@
 #define SIMD_AVX2_ENABLE
 #endif
 
+#if !defined(__clang__) || (defined(__clang__) && __clang_major__ >= 4)
+#if !defined(SIMD_AVX512F_DISABLE) && defined(__AVX512F__)
+#define SIMD_AVX512F_ENABLE
+#endif
+
+#if !defined(SIMD_AVX512BW_DISABLE) && defined(__AVX512BW__)
+#define SIMD_AVX512BW_ENABLE
+#endif
+#endif
+
 #endif//defined(SIMD_X86_ENABLE) || defined(SIMD_X64_ENABLE)
+
+#if defined(SIMD_PPC_ENABLE) || defined(SIMD_PPC64_ENABLE)
+
+#if !defined(SIMD_VMX_DISABLE) && defined(__ALTIVEC__)
+#define SIMD_VMX_ENABLE
+#endif
 
 #if !defined(SIMD_VSX_DISABLE) && defined(__VSX__)
 #define SIMD_VSX_ENABLE
+#endif
+
+#endif//defined(SIMD_PPC_ENABLE) || defined(SIMD_PPC64_ENABLE) 
+
+#if defined(SIMD_ARM_ENABLE) || defined(SIMD_ARM64_ENABLE)
+
+#if !defined(SIMD_NEON_DISABLE) && (defined(__ARM_NEON) || defined(SIMD_ARM64_ENABLE))
+#define SIMD_NEON_ENABLE
+#endif
+
+#if !defined(SIMD_NEON_ASM_DISABLE) && defined(__GNUC__)
+#define SIMD_NEON_ASM_ENABLE
+#endif
+
+#if !defined(SIMD_NEON_FP16_DISABLE) && (defined(__ARM_FP16_FORMAT_IEEE) || defined(__ARM_FP16_FORMAT_ALTERNATIVE))
+#define SIMD_NEON_FP16_ENABLE
+#endif
+
+#endif//defined(SIMD_ARM_ENABLE) || defined(SIMD_ARM64_ENABLE)
+
+#if defined(SIMD_MIPS_ENABLE)
+
+#if !defined(SIMD_MSA_DISABLE) && defined(__mips_msa) 
+#define SIMD_MSA_ENABLE
+#endif
+
+#endif //defined(SIMD_MIPS_ENABLE)
+
+#if __cplusplus >= 201103L
+#define SIMD_CPP_2011_ENABLE
+#endif
+
+#if defined(__clang__)
+#define SIMD_CLANG_AVX2_BGR_TO_BGRA_ERROR
 #endif
 
 #else
@@ -149,6 +253,10 @@
 #include <emmintrin.h>
 #endif
 
+#ifdef SIMD_SSE3_ENABLE
+# include <pmmintrin.h>
+#endif
+
 #ifdef SIMD_SSSE3_ENABLE
 #include <tmmintrin.h>
 #endif
@@ -161,11 +269,12 @@
 #include <nmmintrin.h>
 #endif
 
-#if defined(SIMD_AVX_ENABLE) || defined(SIMD_AVX2_ENABLE)
+#if defined(SIMD_AVX_ENABLE) || defined(SIMD_AVX2_ENABLE) \
+    || defined(SIMD_AVX512F_ENABLE) || defined(SIMD_AVX512BW_ENABLE) 
 #include <immintrin.h>
 #endif
 
-#ifdef SIMD_VSX_ENABLE
+#if defined(SIMD_VMX_ENABLE) || defined(SIMD_VSX_ENABLE)
 #include <altivec.h>
 #include <vec_types.h>
 #ifdef __cplusplus
@@ -175,14 +284,39 @@
 #endif
 #endif
 
-#if defined(SIMD_AVX_ENABLE) || defined(SIMD_AVX2_ENABLE)
+#if defined(SIMD_NEON_ENABLE)
+#include <arm_neon.h>
+#endif
+
+#if defined(SIMD_MSA_ENABLE)
+#include <msa.h>
+#endif
+
+#if defined(SIMD_AVX512F_ENABLE) || defined(SIMD_AVX512BW_ENABLE)
+#define SIMD_ALIGN 64
+#elif defined(SIMD_AVX_ENABLE) || defined(SIMD_AVX2_ENABLE)
 #define SIMD_ALIGN 32
-#elif defined(SIMD_SSE_ENABLE) || defined(SIMD_SSE2_ENABLE) || defined(SIMD_SSSE3_ENABLE) || defined(SIMD_SSE41_ENABLE) || defined(SIMD_SSE42_ENABLE) || defined(SIMD_VSX_ENABLE)
+#elif defined(SIMD_SSE_ENABLE) || defined(SIMD_SSE2_ENABLE) || defined(SIMD_SSE3_ENABLE)  || defined(SIMD_SSSE3_ENABLE) || defined(SIMD_SSE41_ENABLE) || defined(SIMD_SSE42_ENABLE) \
+    || defined(SIMD_VMX_ENABLE) || defined(SIMD_VSX_ENABLE) \
+	|| defined(SIMD_NEON_ENABLE) \
+    || defined(SIMD_MSA_ENABLE)
 #define SIMD_ALIGN 16
-#elif defined (SIMD_X64_ENABLE) || defined(SIMD_PPC64_ENABLE)
+#elif defined (SIMD_X64_ENABLE) || defined(SIMD_PPC64_ENABLE) || defined(SIMD_ARM64_ENABLE)
 #define SIMD_ALIGN 8
 #else
 #define SIMD_ALIGN 4
+#endif
+
+#if (defined(SIMD_AVX512F_ENABLE) || defined(SIMD_AVX512F_ENABLE))
+#ifdef SIMD_X64_ENABLE
+#ifndef _MSC_VER
+#define SIMD_ZMM_COUNT 32
+#else
+#define SIMD_ZMM_COUNT 16
+#endif
+#else
+#define SIMD_ZMM_COUNT 8
+#endif
 #endif
 
 #endif//__SimdDefs_h__

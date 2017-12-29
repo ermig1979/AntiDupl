@@ -1,7 +1,7 @@
 /*
-* Simd Library (http://simd.sourceforge.net).
+* Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2015 Yermalayeu Ihar.
+* Copyright (c) 2011-2017 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,6 @@
 * SOFTWARE.
 */
 #include "Simd/SimdMemory.h"
-#include "Simd/SimdSse42.h"
 
 namespace Simd
 {
@@ -31,7 +30,7 @@ namespace Simd
     {
         SIMD_INLINE void Crc32c(size_t & crc, const size_t * p, const size_t * end)
         {
-            while(p < end)
+            while (p < end)
             {
 #ifdef SIMD_X64_ENABLE
                 crc = _mm_crc32_u64(crc, *p++);
@@ -43,7 +42,7 @@ namespace Simd
 
         SIMD_INLINE void Crc32c(size_t & crc, const uint8_t * p, const uint8_t * end)
         {
-            while(p < end)
+            while (p < end)
                 crc = _mm_crc32_u8((uint32_t)crc, *p++);
         }
 

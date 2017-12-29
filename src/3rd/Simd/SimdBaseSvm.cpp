@@ -1,7 +1,7 @@
 /*
-* Simd Library (http://simd.sourceforge.net).
+* Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2015 Yermalayeu Ihar.
+* Copyright (c) 2011-2017 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
-#include "Simd/SimdBase.h"
 #include "Simd/SimdMemory.h"
 
 namespace Simd
@@ -54,16 +53,16 @@ namespace Simd
         void SvmSumLinear(const float * x, const float * svs, const float * weights, size_t length, size_t count, float * sum)
         {
             Buffer buffer(count);
-            for(size_t j = 0; j < length; ++j)
+            for (size_t j = 0; j < length; ++j)
             {
                 float v = x[j];
-                for(size_t i = 0; i < count; ++i)
+                for (size_t i = 0; i < count; ++i)
                     buffer.sums[i] += v*svs[i];
                 svs += count;
             }
             *sum = 0;
-            for(size_t i = 0; i < count; ++i)
-                *sum += buffer.sums[i]*weights[i];
+            for (size_t i = 0; i < count; ++i)
+                *sum += buffer.sums[i] * weights[i];
         }
     }
 }

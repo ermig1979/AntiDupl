@@ -1,8 +1,8 @@
 /*
-* Simd Library (http://simd.sourceforge.net).
+* Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2015 Yermalayeu Ihar,
-*               2014-2015 Antonenka Mikhail.
+* Copyright (c) 2011-2017 Yermalayeu Ihar,
+*               2014-2016 Antonenka Mikhail.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 
 #include "Simd/SimdView.hpp"
 #include "Simd/SimdPixel.hpp"
+#include "Simd/SimdPyramid.hpp"
 
 #ifndef __SimdLib_hpp__
 #define __SimdLib_hpp__
@@ -36,7 +37,7 @@ namespace Simd
 
         \fn void AbsDifferenceSum(const View<A>& a, const View<A>& b, uint64_t & sum)
 
-        \short Gets sum of absolute difference of two gray 8-bit images. 
+        \short Gets sum of absolute difference of two gray 8-bit images.
 
         Both images must have the same width and height.
 
@@ -46,7 +47,7 @@ namespace Simd
         \param [in] b - a second image.
         \param [out] sum - the result sum of absolute difference of two images.
     */
-    template<class A> SIMD_INLINE void AbsDifferenceSum(const View<A>& a, const View<A>& b, uint64_t & sum)
+    template<template<class> class A> SIMD_INLINE void AbsDifferenceSum(const View<A>& a, const View<A>& b, uint64_t & sum)
     {
         assert(Compatible(a, b) && a.format == View<A>::Gray8);
 
@@ -57,7 +58,7 @@ namespace Simd
 
         \fn void AbsDifferenceSum(const View<A>& a, const View<A>& b, const View<A>& mask, uint8_t index, uint64_t & sum)
 
-        \short Gets sum of absolute difference of two gray 8-bit images based on gray 8-bit mask. 
+        \short Gets sum of absolute difference of two gray 8-bit images based on gray 8-bit mask.
 
         Gets the absolute difference sum for all points when mask[i] == index.
         Both images and mask must have the same width and height.
@@ -70,7 +71,7 @@ namespace Simd
         \param [in] index - a mask index.
         \param [out] sum - the result sum of absolute difference of two images.
     */
-    template<class A> SIMD_INLINE void AbsDifferenceSum(const View<A>& a, const View<A>& b, const View<A>& mask, uint8_t index, uint64_t & sum)
+    template<template<class> class A> SIMD_INLINE void AbsDifferenceSum(const View<A>& a, const View<A>& b, const View<A>& mask, uint8_t index, uint64_t & sum)
     {
         assert(Compatible(a, b, mask) && a.format == View<A>::Gray8);
 
@@ -81,7 +82,7 @@ namespace Simd
 
         \fn void AbsDifferenceSums3x3(const View<A>& current, const View<A>& background, uint64_t * sums)
 
-        \short Gets 9 sums of absolute difference of two gray 8-bit images with various relative shifts in neighborhood 3x3. 
+        \short Gets 9 sums of absolute difference of two gray 8-bit images with various relative shifts in neighborhood 3x3.
 
         Both images must have the same width and height. The image height and width must be equal or greater 3.
         The sums are calculated with central part (indent width = 1) of current image and with part of background image with corresponding shift.
@@ -93,7 +94,7 @@ namespace Simd
         \param [in] background - a background image.
         \param [out] sums - the pointer to buffer with result sums. Buffer size must be equal or greater 9.
     */
-    template<class A> SIMD_INLINE void AbsDifferenceSums3x3(const View<A>& current, const View<A>& background, uint64_t * sums)
+    template<template<class> class A> SIMD_INLINE void AbsDifferenceSums3x3(const View<A>& current, const View<A>& background, uint64_t * sums)
     {
         assert(Compatible(current, background) && current.format == View<A>::Gray8 && current.width > 2 && current.height > 2);
 
@@ -104,7 +105,7 @@ namespace Simd
 
         \fn void AbsDifferenceSums3x3(const View<A>& current, const View<A>& background, const View<A>& mask, uint8_t index, uint64_t * sums)
 
-        \short Gets 9 sums of absolute difference of two gray 8-bit images with various relative shifts in neighborhood 3x3 based on gray 8-bit mask. 
+        \short Gets 9 sums of absolute difference of two gray 8-bit images with various relative shifts in neighborhood 3x3 based on gray 8-bit mask.
 
         Gets the absolute difference sums for all points when mask[i] == index.
         Both images and mask must have the same width and height. The image height and width must be equal or greater 3.
@@ -119,7 +120,7 @@ namespace Simd
         \param [in] index - a mask index.
         \param [out] sums - the pointer to buffer with result sums. Buffer size must be equal or greater 9.
     */
-    template<class A> SIMD_INLINE void AbsDifferenceSums3x3(const View<A>& current, const View<A>& background, const View<A>& mask, uint8_t index, uint64_t * sums)
+    template<template<class> class A> SIMD_INLINE void AbsDifferenceSums3x3(const View<A>& current, const View<A>& background, const View<A>& mask, uint8_t index, uint64_t * sums)
     {
         assert(Compatible(current, background, mask) && current.format == View<A>::Gray8 && current.width > 2 && current.height > 2);
 
@@ -131,21 +132,28 @@ namespace Simd
 
         \fn void AbsGradientSaturatedSum(const View<A>& src, View<A>& dst)
 
-        \short Puts to destination 8-bit gray image saturated sum of absolute gradient for every point of source 8-bit gray image. 
+        \short Puts to destination 8-bit gray image saturated sum of absolute gradient for every point of source 8-bit gray image.
 
         Both images must have the same width and height.
 
-        For border pixels dst[x, y] = 0, for other pixels: 
-        \n dst[x, y] = min(dx[x, y] + dy[x, y], 255), where 
-        \n dx[x, y] = abs(src[x + 1, y] - src[x - 1, y]), 
-        \n dy[x, y] = abs(src[x, y + 1] - src[x, y - 1]).
+        For border pixels:
+        \verbatim
+        dst[x, y] = 0;
+        \endverbatim
+
+        For other pixels:
+        \verbatim
+        dx = abs(src[x + 1, y] - src[x - 1, y]);
+        dy = abs(src[x, y + 1] - src[x, y - 1]);
+        dst[x, y] = min(dx + dy, 255);
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdAbsGradientSaturatedSum.
 
         \param [in] src - a source 8-bit gray image.
         \param [out] dst - a destination 8-bit gray image.
     */
-    template<class A> SIMD_INLINE void AbsGradientSaturatedSum(const View<A>& src, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void AbsGradientSaturatedSum(const View<A>& src, View<A>& dst)
     {
         assert(Compatible(src, dst) && src.format == View<A>::Gray8 && src.height >= 3 && src.width >= 3);
 
@@ -156,14 +164,15 @@ namespace Simd
 
         \fn void AddFeatureDifference(const View<A>& value, const View<A>& lo, const View<A>& hi, uint16_t weight, View<A>& difference)
 
-        \short Adds feature difference to common difference sum. 
+        \short Adds feature difference to common difference sum.
 
         All images must have the same width, height and format (8-bit gray).
 
-        For every point: 
-        \n difference[i] += (weight * excess[i]*excess[i]) >> 16, 
-        \n where 
-        \n excess[i] = max(lo[i] - value[i], 0) + max(value[i] - hi[i], 0).
+        For every point:
+        \verbatim
+        excess = max(lo[i] - value[i], 0) + max(value[i] - hi[i], 0);
+        difference[i] += (weight * excess*excess) >> 16;
+        \endverbatim
 
         This function is used for difference estimation in algorithm of motion detection.
 
@@ -175,7 +184,7 @@ namespace Simd
         \param [in] weight - a current feature weight (unsigned 16-bit value).
         \param [in, out] difference - an image with total difference.
     */
-    template<class A> SIMD_INLINE void AddFeatureDifference(const View<A>& value, const View<A>& lo, const View<A>& hi, uint16_t weight, View<A>& difference)
+    template<template<class> class A> SIMD_INLINE void AddFeatureDifference(const View<A>& value, const View<A>& lo, const View<A>& hi, uint16_t weight, View<A>& difference)
     {
         assert(Compatible(value, lo, hi, difference) && value.format == View<A>::Gray8);
 
@@ -187,12 +196,14 @@ namespace Simd
 
         \fn void AlphaBlending(const View<A>& src, const View<A>& alpha, View<A>& dst)
 
-        \short Performs alpha blending operation. 
+        \short Performs alpha blending operation.
 
         All images must have the same width and height. Source and destination images must have the same format (8 bit per channel, for example GRAY8, BGR24 or BGRA32). Alpha must be 8-bit gray image.
 
-        For every point: 
-        \n dst[i] = (src[i]*alpha[i] + dst[i]*(255 - alpha[i]))/255.
+        For every point:
+        \verbatim
+        dst[x, y, c] = (src[x, y, c]*alpha[x, y] + dst[x, y, c]*(255 - alpha[x, y]))/255;
+        \endverbatim
 
         This function is used for image drawing.
 
@@ -202,24 +213,54 @@ namespace Simd
         \param [in] alpha - an image with alpha channel.
         \param [in, out] dst - a background image.
     */
-    template<class A> SIMD_INLINE void AlphaBlending(const View<A>& src, const View<A>& alpha, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void AlphaBlending(const View<A>& src, const View<A>& alpha, View<A>& dst)
     {
         assert(Compatible(src, dst) && EqualSize(src, alpha) && alpha.format == View<A>::Gray8 && src.ChannelSize() == 1);
 
         SimdAlphaBlending(src.data, src.stride, src.width, src.height, src.ChannelCount(), alpha.data, alpha.stride, dst.data, dst.stride);
     }
 
+    /*! @ingroup drawing
+
+        \fn void AlphaFilling(View<A> & dst, const Pixel & pixel, const View<A> & alpha)
+
+        \short Performs alpha filling operation.
+
+        All images must have the same width and height. Destination images must have 8 bit per channel (for example GRAY8, BGR24 or BGRA32). Alpha must be 8-bit gray image.
+
+        For every point:
+        \verbatim
+        dst[x, y, c] = (pixel[c]*alpha[x, y] + dst[x, y, c]*(255 - alpha[x, y]))/255;
+        \endverbatim
+
+        This function is used for image drawing.
+
+        \note This function is a C++ wrapper for function ::SimdAlphaFilling.
+
+        \param [in, out] dst - a background image.
+        \param [in] pixel - a foreground color.
+        \param [in] alpha - an image with alpha channel.
+    */
+    template<template<class> class A, class Pixel> SIMD_INLINE void AlphaFilling(View<A> & dst, const Pixel & pixel, const View<A> & alpha)
+    {
+        assert(EqualSize(dst, alpha) && alpha.format == View<A>::Gray8 && dst.ChannelSize() == 1 && dst.ChannelCount() == sizeof(Pixel));
+
+        SimdAlphaFilling(dst.data, dst.stride, dst.width, dst.height, (uint8_t*)&pixel, sizeof(Pixel), alpha.data, alpha.stride);
+    }
+
     /*! @ingroup background
 
         \fn void BackgroundGrowRangeSlow(const View<A>& value, View<A>& lo, View<A>& hi)
 
-        \short Performs background update (initial grow, slow mode). 
+        \short Performs background update (initial grow, slow mode).
 
-        All images must have the same width, height and format (8-bit gray). 
+        All images must have the same width, height and format (8-bit gray).
 
-        For every point: 
-        \n lo[i] -= value[i] < lo[i] ? 1 : 0; 
-        \n hi[i] += value[i] > hi[i] ? 1 : 0.
+        For every point:
+        \verbatim
+        lo[i] -= value[i] < lo[i] ? 1 : 0;
+        hi[i] += value[i] > hi[i] ? 1 : 0;
+        \endverbatim
 
         This function is used for background updating in motion detection algorithm.
 
@@ -229,7 +270,7 @@ namespace Simd
         \param [in, out] lo - a feature lower bound of dynamic background.
         \param [in, out] hi - a feature upper bound of dynamic background.
     */
-    template<class A> SIMD_INLINE void BackgroundGrowRangeSlow(const View<A>& value, View<A>& lo, View<A>& hi)
+    template<template<class> class A> SIMD_INLINE void BackgroundGrowRangeSlow(const View<A>& value, View<A>& lo, View<A>& hi)
     {
         assert(Compatible(value, lo, hi) && value.format == View<A>::Gray8);
 
@@ -240,13 +281,15 @@ namespace Simd
 
         \fn void BackgroundGrowRangeFast(const View<A>& value, View<A>& lo, View<A>& hi)
 
-        \short Performs background update (initial grow, fast mode). 
+        \short Performs background update (initial grow, fast mode).
 
-        All images must have the same width, height and format (8-bit gray). 
+        All images must have the same width, height and format (8-bit gray).
 
-        For every point: 
-        \n lo[i] = value[i] < lo[i] ? value[i] : lo[i]; 
-        \n hi[i] = value[i] > hi[i] ? value[i] : hi[i].
+        For every point:
+        \verbatim
+        lo[i] = value[i] < lo[i] ? value[i] : lo[i];
+        hi[i] = value[i] > hi[i] ? value[i] : hi[i];
+        \endverbatim
 
         This function is used for background updating in motion detection algorithm.
 
@@ -256,7 +299,7 @@ namespace Simd
         \param [in, out] lo - a feature lower bound of dynamic background.
         \param [in, out] hi - a feature upper bound of dynamic background.
     */
-    template<class A> SIMD_INLINE void BackgroundGrowRangeFast(const View<A>& value, View<A>& lo, View<A>& hi)
+    template<template<class> class A> SIMD_INLINE void BackgroundGrowRangeFast(const View<A>& value, View<A>& lo, View<A>& hi)
     {
         assert(Compatible(value, lo, hi) && value.format == View<A>::Gray8);
 
@@ -267,13 +310,15 @@ namespace Simd
 
         \fn void BackgroundIncrementCount(const View<A>& value, const View<A>& loValue, const View<A>& hiValue, View<A>& loCount, View<A>& hiCount)
 
-        \short Performs collection of background statistic. 
+        \short Performs collection of background statistic.
 
-        All images must have the same width, height and format (8-bit gray). 
+        All images must have the same width, height and format (8-bit gray).
 
-        Updates background statistic counters for every point: 
-        \n loCount[i] += (value[i] < loValue[i] && loCount[i] < 255) ? 1 : 0; 
-        \n hiCount[i] += (value[i] > hiValue[i] && hiCount[i] < 255) ? 1 : 0;
+        Updates background statistic counters for every point:
+        \verbatim
+        loCount[i] += (value[i] < loValue[i] && loCount[i] < 255) ? 1 : 0;
+        hiCount[i] += (value[i] > hiValue[i] && hiCount[i] < 255) ? 1 : 0;
+        \endverbatim
 
         This function is used for background updating in motion detection algorithm.
 
@@ -285,7 +330,7 @@ namespace Simd
         \param [in, out] loCount - a count of feature lower bound of dynamic background.
         \param [in, out] hiCount - a count of feature upper bound of dynamic background.
     */
-    template<class A> SIMD_INLINE void BackgroundIncrementCount(const View<A>& value, const View<A>& loValue, const View<A>& hiValue, View<A>& loCount, View<A>& hiCount)
+    template<template<class> class A> SIMD_INLINE void BackgroundIncrementCount(const View<A>& value, const View<A>& loValue, const View<A>& hiValue, View<A>& loCount, View<A>& hiCount)
     {
         assert(Compatible(value, loValue, hiValue, loCount, hiCount) && value.format == View<A>::Gray8);
 
@@ -298,17 +343,19 @@ namespace Simd
 
         \fn void BackgroundAdjustRange(View<A>& loCount, View<A>& loValue, View<A>& hiCount, View<A>& hiValue, uint8_t threshold)
 
-        \short Performs adjustment of background range. 
+        \short Performs adjustment of background range.
 
-        All images must have the same width, height and format (8-bit gray). 
+        All images must have the same width, height and format (8-bit gray).
 
-        Adjusts background range for every point: 
-        \n loValue[i] -= (loCount[i] > threshold && loValue[i] > 0) ? 1 : 0;
-        \n loValue[i] += (loCount[i] < threshold && loValue[i] < 255) ? 1 : 0; 
-        \n loCount[i] = 0;
-        \n hiValue[i] += (hiCount[i] > threshold && hiValue[i] < 255) ? 1 : 0;
-        \n hiValue[i] -= (hiCount[i] < threshold && hiValue[i] > 0) ? 1 : 0; 
-        \n hiCount[i] = 0;
+        Adjusts background range for every point:
+        \verbatim
+        loValue[i] -= (loCount[i] > threshold && loValue[i] > 0) ? 1 : 0;
+        loValue[i] += (loCount[i] < threshold && loValue[i] < 255) ? 1 : 0;
+        loCount[i] = 0;
+        hiValue[i] += (hiCount[i] > threshold && hiValue[i] < 255) ? 1 : 0;
+        hiValue[i] -= (hiCount[i] < threshold && hiValue[i] > 0) ? 1 : 0;
+        hiCount[i] = 0;
+        \endverbatim
 
         This function is used for background updating in motion detection algorithm.
 
@@ -320,7 +367,7 @@ namespace Simd
         \param [in, out] hiValue - a value of feature upper bound of dynamic background.
         \param [in] threshold - a count threshold.
     */
-    template<class A> SIMD_INLINE void BackgroundAdjustRange(View<A>& loCount, View<A>& loValue, View<A>& hiCount, View<A>& hiValue, uint8_t threshold)
+    template<template<class> class A> SIMD_INLINE void BackgroundAdjustRange(View<A>& loCount, View<A>& loValue, View<A>& hiCount, View<A>& hiValue, uint8_t threshold)
     {
         assert(Compatible(loValue, hiValue, loCount, hiCount) && loValue.format == View<A>::Gray8);
 
@@ -332,17 +379,22 @@ namespace Simd
 
         \fn void BackgroundAdjustRange(View<A>& loCount, View<A>& loValue, View<A>& hiCount, View<A>& hiValue, uint8_t threshold, const View<A>& mask)
 
-        \short Performs adjustment of background range with using adjust range mask. 
+        \short Performs adjustment of background range with using adjust range mask.
 
-        All images must have the same width, height and format (8-bit gray). 
+        All images must have the same width, height and format (8-bit gray).
 
-        Adjusts background range for every point when mask[i] != 0 : 
-        \n loValue[i] -= (loCount[i] > threshold && loValue[i] > 0) ? 1 : 0;
-        \n loValue[i] += (loCount[i] < threshold && loValue[i] < 255) ? 1 : 0; 
-        \n loCount[i] = 0;
-        \n hiValue[i] += (hiCount[i] > threshold && hiValue[i] < 255) ? 1 : 0;
-        \n hiValue[i] -= (hiCount[i] < threshold && hiValue[i] > 0) ? 1 : 0; 
-        \n hiCount[i] = 0;
+        Adjusts background range for every point:
+        \verbatim
+        if(mask[i])
+        {
+            loValue[i] -= (loCount[i] > threshold && loValue[i] > 0) ? 1 : 0;
+            loValue[i] += (loCount[i] < threshold && loValue[i] < 255) ? 1 : 0;
+            loCount[i] = 0;
+            hiValue[i] += (hiCount[i] > threshold && hiValue[i] < 255) ? 1 : 0;
+            hiValue[i] -= (hiCount[i] < threshold && hiValue[i] > 0) ? 1 : 0;
+            hiCount[i] = 0;
+        }
+        \endverbatim
 
         This function is used for background updating in motion detection algorithm.
 
@@ -355,7 +407,7 @@ namespace Simd
         \param [in] threshold - a count threshold.
         \param [in] mask - an adjust range mask.
     */
-    template<class A> SIMD_INLINE void BackgroundAdjustRange(View<A>& loCount, View<A>& loValue, View<A>& hiCount, View<A>& hiValue, uint8_t threshold, const View<A>& mask)
+    template<template<class> class A> SIMD_INLINE void BackgroundAdjustRange(View<A>& loCount, View<A>& loValue, View<A>& hiCount, View<A>& hiValue, uint8_t threshold, const View<A>& mask)
     {
         assert(Compatible(loValue, hiValue, loCount, hiCount, mask) && loValue.format == View<A>::Gray8);
 
@@ -368,15 +420,15 @@ namespace Simd
 
         \fn void BackgroundShiftRange(const View<A>& value, View<A>& lo, View<A>& hi)
 
-        \short Shifts background range. 
+        \short Shifts background range.
 
-        All images must have the same width, height and format (8-bit gray). 
+        All images must have the same width, height and format (8-bit gray).
 
-        For every point: 
+        For every point:
         \verbatim
         if (value[i] > hi[i])
         {
-            lo[i] = min(lo[i] + value[i] - hi[i], 0xFF);
+            lo[i] = min(lo[i] + value[i] - hi[i], 255);
             hi[i] = value[i];
         }
         if (lo[i] > value[i])
@@ -394,7 +446,7 @@ namespace Simd
         \param [in, out] lo - a feature lower bound of dynamic background.
         \param [in, out] hi - a feature upper bound of dynamic background.
     */
-    template<class A> SIMD_INLINE void BackgroundShiftRange(const View<A>& value, View<A>& lo, View<A>& hi)
+    template<template<class> class A> SIMD_INLINE void BackgroundShiftRange(const View<A>& value, View<A>& lo, View<A>& hi)
     {
         assert(Compatible(value, lo, hi) && value.format == View<A>::Gray8);
 
@@ -405,21 +457,24 @@ namespace Simd
 
         \fn void BackgroundShiftRange(const View<A>& value, View<A>& lo, View<A>& hi, const View<A>& mask);
 
-        \short Shifts background range with using shift range mask. 
+        \short Shifts background range with using shift range mask.
 
-        All images must have the same width, height and format (8-bit gray). 
+        All images must have the same width, height and format (8-bit gray).
 
-        For every point when mask[i] != 0 : 
+        For every point:
         \verbatim
-        if (value[i] > hi[i])
+        if(mask[i])
         {
-            lo[i] = min(lo[i] + value[i] - hi[i], 0xFF);
-            hi[i] = value[i];
-        }
-        if (lo[i] > value[i])
-        {
-            lo[i] = value[i];
-            hi[i] = max(hi[i] - lo[i] + value[i], 0);
+            if (value[i] > hi[i])
+            {
+                lo[i] = min(lo[i] + value[i] - hi[i], 255);
+                hi[i] = value[i];
+            }
+            if (lo[i] > value[i])
+            {
+                lo[i] = value[i];
+                hi[i] = max(hi[i] - lo[i] + value[i], 0);
+            }
         }
         \endverbatim
 
@@ -432,7 +487,7 @@ namespace Simd
         \param [in, out] hi - a feature upper bound of dynamic background.
         \param [in] mask - a shift range mask.
     */
-    template<class A> SIMD_INLINE void BackgroundShiftRange(const View<A>& value, View<A>& lo, View<A>& hi, const View<A>& mask)
+    template<template<class> class A> SIMD_INLINE void BackgroundShiftRange(const View<A>& value, View<A>& lo, View<A>& hi, const View<A>& mask)
     {
         assert(Compatible(value, lo, hi, mask) && value.format == View<A>::Gray8);
 
@@ -444,12 +499,15 @@ namespace Simd
 
         \fn void BackgroundInitMask(const View<A>& src, uint8_t index, uint8_t value, View<A>& dst);
 
-        \short Creates background update mask. 
+        \short Creates background update mask.
 
-        All images must have the same width, height and format (8-bit gray). 
+        All images must have the same width, height and format (8-bit gray).
 
-        For every point when mask[i] == index: 
-        \n dst[i] = value; 
+        For every point:
+        \verbatim
+        if(mask[i] == index)
+            dst[i] = value;
+        \endverbatim
 
         This function is used for background updating in motion detection algorithm.
 
@@ -460,7 +518,7 @@ namespace Simd
         \param [in] value - a value to fill the output mask.
         \param [out] dst - an output mask image.
     */
-    template<class A> SIMD_INLINE void BackgroundInitMask(const View<A>& src, uint8_t index, uint8_t value, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void BackgroundInitMask(const View<A>& src, uint8_t index, uint8_t value, View<A>& dst)
     {
         assert(Compatible(src, dst) && src.format == View<A>::Gray8);
 
@@ -471,7 +529,7 @@ namespace Simd
 
         \fn void BayerToBgr(const View<A>& bayer, View<A>& bgr);
 
-        \short Converts 8-bit Bayer image to 24-bit BGR. 
+        \short Converts 8-bit Bayer image to 24-bit BGR.
 
         All images must have the same width and height. The width and the height must be even.
 
@@ -480,11 +538,11 @@ namespace Simd
         \param [in] bayer - an input 8-bit Bayer image.
         \param [out] bgr - an output 24-bit BGR image.
     */
-    template<class A> SIMD_INLINE void BayerToBgr(const View<A>& bayer, View<A>& bgr)
+    template<template<class> class A> SIMD_INLINE void BayerToBgr(const View<A>& bayer, View<A>& bgr)
     {
         assert(EqualSize(bgr, bayer) && bgr.format == View<A>::Bgr24);
         assert(bayer.format >= View<A>::BayerGrbg && bayer.format <= View<A>::BayerBggr);
-        assert((bayer.width%2 == 0) && (bayer.height%2 == 0));
+        assert((bayer.width % 2 == 0) && (bayer.height % 2 == 0));
 
         SimdBayerToBgr(bayer.data, bayer.width, bayer.height, bayer.stride, (SimdPixelFormatType)bayer.format, bgr.data, bgr.stride);
     }
@@ -493,7 +551,7 @@ namespace Simd
 
         \fn void BayerToBgra(const View<A>& bayer, View<A>& bgra, uint8_t alpha = 0xFF);
 
-        \short Converts 8-bit Bayer image to 32-bit BGRA. 
+        \short Converts 8-bit Bayer image to 32-bit BGRA.
 
         All images must have the same width and height. The width and the height must be even.
 
@@ -503,11 +561,11 @@ namespace Simd
         \param [out] bgra - an output 32-bit BGRA image.
         \param [in] alpha - a value of alpha channel. It is equal to 256 by default.
     */
-    template<class A> SIMD_INLINE void BayerToBgra(const View<A>& bayer, View<A>& bgra, uint8_t alpha = 0xFF)
+    template<template<class> class A> SIMD_INLINE void BayerToBgra(const View<A>& bayer, View<A>& bgra, uint8_t alpha = 0xFF)
     {
         assert(EqualSize(bgra, bayer) && bgra.format == View<A>::Bgra32);
         assert(bayer.format >= View<A>::BayerGrbg && bayer.format <= View<A>::BayerBggr);
-        assert((bayer.width%2 == 0) && (bayer.height%2 == 0));
+        assert((bayer.width % 2 == 0) && (bayer.height % 2 == 0));
 
         SimdBayerToBgra(bayer.data, bayer.width, bayer.height, bayer.stride, (SimdPixelFormatType)bayer.format, bgra.data, bgra.stride, alpha);
     }
@@ -516,7 +574,7 @@ namespace Simd
 
         \fn void BgraToBayer(const View<A>& bgra, View<A>& bayer)
 
-        \short Converts 32-bit BGRA image to 8-bit Bayer image. 
+        \short Converts 32-bit BGRA image to 8-bit Bayer image.
 
         All images must have the same width and height. The width and the height must be even.
 
@@ -525,11 +583,11 @@ namespace Simd
         \param [in] bgra - an input 32-bit BGRA image.
         \param [out] bayer - an output 8-bit Bayer image.
     */
-    template<class A> SIMD_INLINE void BgraToBayer(const View<A>& bgra, View<A>& bayer)
+    template<template<class> class A> SIMD_INLINE void BgraToBayer(const View<A>& bgra, View<A>& bayer)
     {
         assert(EqualSize(bgra, bayer) && bgra.format == View<A>::Bgra32);
         assert(bayer.format >= View<A>::BayerGrbg && bayer.format <= View<A>::BayerBggr);
-        assert((bayer.width%2 == 0) && (bayer.height%2 == 0));
+        assert((bayer.width % 2 == 0) && (bayer.height % 2 == 0));
 
         SimdBgraToBayer(bgra.data, bgra.width, bgra.height, bgra.stride, bayer.data, bayer.stride, (SimdPixelFormatType)bayer.format);
     }
@@ -538,16 +596,16 @@ namespace Simd
 
         \fn void BgraToBgr(const View<A>& bgra, View<A>& bgr)
 
-        \short Converts 32-bit BGRA image to 24-bit BGR image. 
+        \short Converts 32-bit BGRA image to 24-bit BGR image.
 
-        All images must have the same width and height. 
+        All images must have the same width and height.
 
         \note This function is a C++ wrapper for function ::SimdBgraToBgr.
 
         \param [in] bgra - an input 32-bit BGRA image.
         \param [out] bgr - an output 24-bit BGR image.
     */
-    template<class A> SIMD_INLINE void BgraToBgr(const View<A>& bgra, View<A>& bgr)
+    template<template<class> class A> SIMD_INLINE void BgraToBgr(const View<A>& bgra, View<A>& bgr)
     {
         assert(EqualSize(bgra, bgr) && bgra.format == View<A>::Bgra32 && bgr.format == View<A>::Bgr24);
 
@@ -558,16 +616,16 @@ namespace Simd
 
         \fn void BgraToGray(const View<A>& bgra, View<A>& gray)
 
-        \short Converts 32-bit BGRA image to 8-bit gray image. 
+        \short Converts 32-bit BGRA image to 8-bit gray image.
 
-        All images must have the same width and height. 
+        All images must have the same width and height.
 
         \note This function is a C++ wrapper for function ::SimdBgraToGray.
 
         \param [in] bgra - an input 32-bit BGRA image.
         \param [out] gray - an output 8-bit gray image.
     */
-    template<class A> SIMD_INLINE void BgraToGray(const View<A>& bgra, View<A>& gray)
+    template<template<class> class A> SIMD_INLINE void BgraToGray(const View<A>& bgra, View<A>& gray)
     {
         assert(EqualSize(bgra, gray) && bgra.format == View<A>::Bgra32 && gray.format == View<A>::Gray8);
 
@@ -576,24 +634,24 @@ namespace Simd
 
     /*! @ingroup bgra_conversion
 
-	    \fn void BgraToYuv420p(const View<A>& bgra, View<A>& y, View<A>& u, View<A>& v)
+        \fn void BgraToYuv420p(const View<A>& bgra, View<A>& y, View<A>& u, View<A>& v)
 
-        \short Converts 32-bit BGRA image to YUV420P. 
+        \short Converts 32-bit BGRA image to YUV420P.
 
-	    The input BGRA and output Y images must have the same width and height.
-        The input U and V images must have the same width and height (half size relative to Y component). 
+        The input BGRA and output Y images must have the same width and height.
+        The input U and V images must have the same width and height (half size relative to Y component).
 
         \note This function is a C++ wrapper for function ::SimdBgraToYuv420p.
 
-	    \param [in] bgra - an input 32-bit BGRA image.
-	    \param [out] y - an output 8-bit image with Y color plane.
-	    \param [out] u - an output 8-bit image with U color plane.
-	    \param [out] v - an output 8-bit image with V color plane.
-	*/
-    template<class A> SIMD_INLINE void BgraToYuv420p(const View<A>& bgra, View<A>& y, View<A>& u, View<A>& v)
+        \param [in] bgra - an input 32-bit BGRA image.
+        \param [out] y - an output 8-bit image with Y color plane.
+        \param [out] u - an output 8-bit image with U color plane.
+        \param [out] v - an output 8-bit image with V color plane.
+    */
+    template<template<class> class A> SIMD_INLINE void BgraToYuv420p(const View<A>& bgra, View<A>& y, View<A>& u, View<A>& v)
     {
-        assert(y.width == 2*u.width && y.height == 2*u.height && y.format == u.format);
-        assert(y.width == 2*v.width && y.height == 2*v.height && y.format == v.format);
+        assert(y.width == 2 * u.width && y.height == 2 * u.height && y.format == u.format);
+        assert(y.width == 2 * v.width && y.height == 2 * v.height && y.format == v.format);
         assert(y.width == bgra.width && y.height == bgra.height);
         assert(y.format == View<A>::Gray8 && bgra.format == View<A>::Bgra32);
 
@@ -602,20 +660,46 @@ namespace Simd
 
     /*! @ingroup bgra_conversion
 
-	    \fn void BgraToYuv444p(const View<A>& bgra, View<A>& y, View<A>& u, View<A>& v)
+        \fn void BgraToYuv422p(const View<A>& bgra, View<A>& y, View<A>& u, View<A>& v)
 
-        \short Converts 32-bit BGRA image to YUV444P. 
+        \short Converts 32-bit BGRA image to YUV422P.
 
-	    The input BGRA and output Y, U and V images must have the same width and height.
+        The input BGRA and output Y images must have the same width and height.
+        The input U and V images must have the same width and height (their width is equal to half width of Y component).
+
+        \note This function is a C++ wrapper for function ::SimdBgraToYuv422p.
+
+        \param [in] bgra - an input 32-bit BGRA image.
+        \param [out] y - an output 8-bit image with Y color plane.
+        \param [out] u - an output 8-bit image with U color plane.
+        \param [out] v - an output 8-bit image with V color plane.
+    */
+    template<template<class> class A> SIMD_INLINE void BgraToYuv422p(const View<A>& bgra, View<A>& y, View<A>& u, View<A>& v)
+    {
+        assert(y.width == 2 * u.width && y.height == u.height && y.format == u.format);
+        assert(y.width == 2 * v.width && y.height == v.height && y.format == v.format);
+        assert(y.width == bgra.width && y.height == bgra.height);
+        assert(y.format == View<A>::Gray8 && bgra.format == View<A>::Bgra32);
+
+        SimdBgraToYuv422p(bgra.data, bgra.width, bgra.height, bgra.stride, y.data, y.stride, u.data, u.stride, v.data, v.stride);
+    }
+
+    /*! @ingroup bgra_conversion
+
+        \fn void BgraToYuv444p(const View<A>& bgra, View<A>& y, View<A>& u, View<A>& v)
+
+        \short Converts 32-bit BGRA image to YUV444P.
+
+        The input BGRA and output Y, U and V images must have the same width and height.
 
         \note This function is a C++ wrapper for function ::SimdBgraToYuv444p.
 
-	    \param [in] bgra - an input 32-bit BGRA image.
-	    \param [out] y - an output 8-bit image with Y color plane.
-	    \param [out] u - an output 8-bit image with U color plane.
-	    \param [out] v - an output 8-bit image with V color plane.
-	*/
-    template<class A> SIMD_INLINE void BgraToYuv444p(const View<A>& bgra, View<A>& y, View<A>& u, View<A>& v)
+        \param [in] bgra - an input 32-bit BGRA image.
+        \param [out] y - an output 8-bit image with Y color plane.
+        \param [out] u - an output 8-bit image with U color plane.
+        \param [out] v - an output 8-bit image with V color plane.
+    */
+    template<template<class> class A> SIMD_INLINE void BgraToYuv444p(const View<A>& bgra, View<A>& y, View<A>& u, View<A>& v)
     {
         assert(EqualSize(bgra, y) && Compatible(y, u, v));
         assert(y.format == View<A>::Gray8 && bgra.format == View<A>::Bgra32);
@@ -627,7 +711,7 @@ namespace Simd
 
         \fn void BgrToBayer(const View<A>& bgr, View<A>& bayer)
 
-        \short Converts 24-bit BGR image to 8-bit Bayer image. 
+        \short Converts 24-bit BGR image to 8-bit Bayer image.
 
         All images must have the same width and height. The width and the height must be even.
 
@@ -636,11 +720,11 @@ namespace Simd
         \param [in] bgr - an input 24-bit BGR image.
         \param [out] bayer - an output 8-bit Bayer image.
     */
-    template<class A> SIMD_INLINE void BgrToBayer(const View<A>& bgr, View<A>& bayer)
+    template<template<class> class A> SIMD_INLINE void BgrToBayer(const View<A>& bgr, View<A>& bayer)
     {
         assert(EqualSize(bgr, bayer) && bgr.format == View<A>::Bgr24);
         assert(bayer.format >= View<A>::BayerGrbg && bayer.format <= View<A>::BayerBggr);
-        assert((bayer.width%2 == 0) && (bayer.height%2 == 0));
+        assert((bayer.width % 2 == 0) && (bayer.height % 2 == 0));
 
         SimdBgrToBayer(bgr.data, bgr.width, bgr.height, bgr.stride, bayer.data, bayer.stride, (SimdPixelFormatType)bayer.format);
     }
@@ -649,9 +733,9 @@ namespace Simd
 
         \fn void BgrToBgra(const View<A>& bgr, View<A>& bgra, uint8_t alpha = 0xFF)
 
-        \short Converts 24-bit BGR image to 32-bit BGRA image. 
+        \short Converts 24-bit BGR image to 32-bit BGRA image.
 
-        All images must have the same width and height. 
+        All images must have the same width and height.
 
         \note This function is a C++ wrapper for function ::SimdBgrToBgra.
 
@@ -659,7 +743,7 @@ namespace Simd
         \param [out] bgra - an output 32-bit BGRA image.
         \param [in] alpha - a value of alpha channel. It is equal to 256 by default.
     */
-    template<class A> SIMD_INLINE void BgrToBgra(const View<A>& bgr, View<A>& bgra, uint8_t alpha = 0xFF)
+    template<template<class> class A> SIMD_INLINE void BgrToBgra(const View<A>& bgr, View<A>& bgra, uint8_t alpha = 0xFF)
     {
         assert(EqualSize(bgr, bgra) && bgra.format == View<A>::Bgra32 && bgr.format == View<A>::Bgr24);
 
@@ -670,9 +754,9 @@ namespace Simd
 
         \fn void Bgr48pToBgra32(const View<A>& blue, const View<A>& green, const View<A>& red, View<A>& bgra, uint8_t alpha = 0xFF)
 
-        \short Converts 48-bit planar BGR image to 32-bit BGRA image. 
+        \short Converts 48-bit planar BGR image to 32-bit BGRA image.
 
-        All images must have the same width and height. 
+        All images must have the same width and height.
 
         \note This function is a C++ wrapper for function ::SimdBgr48pToBgra32.
 
@@ -682,7 +766,7 @@ namespace Simd
         \param [out] bgra - an output 32-bit BGRA image.
         \param [in] alpha - a value of alpha channel. It is equal to 256 by default.
     */
-    template<class A> SIMD_INLINE void Bgr48pToBgra32(const View<A>& blue, const View<A>& green, const View<A>& red, View<A>& bgra, uint8_t alpha = 0xFF)
+    template<template<class> class A> SIMD_INLINE void Bgr48pToBgra32(const View<A>& blue, const View<A>& green, const View<A>& red, View<A>& bgra, uint8_t alpha = 0xFF)
     {
         assert(Compatible(blue, green, red) && EqualSize(blue, bgra) && blue.format == View<A>::Int16 && bgra.format == View<A>::Bgra32);
 
@@ -693,16 +777,16 @@ namespace Simd
 
         \fn void BgrToGray(const View<A>& bgr, View<A>& gray)
 
-        \short Converts 24-bit BGR image to 8-bit gray image. 
+        \short Converts 24-bit BGR image to 8-bit gray image.
 
-        All images must have the same width and height. 
+        All images must have the same width and height.
 
         \note This function is a C++ wrapper for function ::SimdBgrToGray.
 
         \param [in] bgr - an input 24-bit BGR image.
         \param [out] gray - an output 8-bit gray image.
     */
-    template<class A> SIMD_INLINE void BgrToGray(const View<A>& bgr, View<A>& gray)
+    template<template<class> class A> SIMD_INLINE void BgrToGray(const View<A>& bgr, View<A>& gray)
     {
         assert(EqualSize(bgr, gray) && bgr.format == View<A>::Bgr24 && gray.format == View<A>::Gray8);
 
@@ -713,16 +797,16 @@ namespace Simd
 
         \fn void BgrToHsl(const View<A> & bgr, View<A> & hsl)
 
-        \short Converts 24-bit BGR image to 24-bit HSL(Hue, Saturation, Lightness) image. 
+        \short Converts 24-bit BGR image to 24-bit HSL(Hue, Saturation, Lightness) image.
 
-        All images must have the same width and height. 
+        All images must have the same width and height.
 
         \note This function is a C++ wrapper for function ::SimdBgrToHsl.
 
         \param [in] bgr - an input 24-bit BGR image.
         \param [out] hsl - an output 24-bit HSL image.
     */
-    template<class A> SIMD_INLINE void BgrToHsl(const View<A> & bgr, View<A> & hsl)
+    template<template<class> class A> SIMD_INLINE void BgrToHsl(const View<A> & bgr, View<A> & hsl)
     {
         assert(EqualSize(bgr, hsl) && bgr.format == View<A>::Bgr24 && hsl.format == View<A>::Hsl24);
 
@@ -733,16 +817,16 @@ namespace Simd
 
         \fn void BgrToHsv(const View<A> & bgr, View<A> & hsv)
 
-        \short Converts 24-bit BGR image to 24-bit HSV(Hue, Saturation, Value) image. 
+        \short Converts 24-bit BGR image to 24-bit HSV(Hue, Saturation, Value) image.
 
-        All images must have the same width and height. 
+        All images must have the same width and height.
 
         \note This function is a C++ wrapper for function ::SimdBgrToHsv.
 
         \param [in] bgr - an input 24-bit BGR image.
         \param [out] hsv - an output 24-bit HSV image.
     */
-    template<class A> SIMD_INLINE void BgrToHsv(const View<A> & bgr, View<A> & hsv)
+    template<template<class> class A> SIMD_INLINE void BgrToHsv(const View<A> & bgr, View<A> & hsv)
     {
         assert(EqualSize(bgr, hsv) && bgr.format == View<A>::Bgr24 && hsv.format == View<A>::Hsv24);
 
@@ -751,24 +835,24 @@ namespace Simd
 
     /*! @ingroup bgr_conversion
 
-	    \fn void BgrToYuv420p(const View<A>& bgr, View<A>& y, View<A>& u, View<A>& v)
+        \fn void BgrToYuv420p(const View<A>& bgr, View<A>& y, View<A>& u, View<A>& v)
 
-        \short Converts 24-bit BGR image to YUV420P. 
+        \short Converts 24-bit BGR image to YUV420P.
 
-	    The input BGR and output Y images must have the same width and height.
-        The input U and V images must have the same width and height (half size relative to Y component). 
+        The input BGR and output Y images must have the same width and height.
+        The input U and V images must have the same width and height (half size relative to Y component).
 
         \note This function is a C++ wrapper for function ::SimdBgrToYuv420p.
 
-	    \param [in] bgr - an input 24-bit BGR image.
-	    \param [out] y - an output 8-bit image with Y color plane.
-	    \param [out] u - an output 8-bit image with U color plane.
-	    \param [out] v - an output 8-bit image with V color plane.
-	*/
-    template<class A> SIMD_INLINE void BgrToYuv420p(const View<A>& bgr, View<A>& y, View<A>& u, View<A>& v)
+        \param [in] bgr - an input 24-bit BGR image.
+        \param [out] y - an output 8-bit image with Y color plane.
+        \param [out] u - an output 8-bit image with U color plane.
+        \param [out] v - an output 8-bit image with V color plane.
+    */
+    template<template<class> class A> SIMD_INLINE void BgrToYuv420p(const View<A>& bgr, View<A>& y, View<A>& u, View<A>& v)
     {
-        assert(y.width == 2*u.width && y.height == 2*u.height && y.format == u.format);
-        assert(y.width == 2*v.width && y.height == 2*v.height && y.format == v.format);
+        assert(y.width == 2 * u.width && y.height == 2 * u.height && y.format == u.format);
+        assert(y.width == 2 * v.width && y.height == 2 * v.height && y.format == v.format);
         assert(y.width == bgr.width && y.height == bgr.height);
         assert(y.format == View<A>::Gray8 && bgr.format == View<A>::Bgr24);
 
@@ -777,20 +861,46 @@ namespace Simd
 
     /*! @ingroup bgr_conversion
 
-	    \fn void BgrToYuv444p(const View<A>& bgr, View<A>& y, View<A>& u, View<A>& v)
+        \fn void BgrToYuv422p(const View<A>& bgr, View<A>& y, View<A>& u, View<A>& v)
 
-        \short Converts 24-bit BGR image to YUV444P. 
+        \short Converts 24-bit BGR image to YUV422P.
 
-	    The input BGR and output Y, U and V images must have the same width and height.
+        The input BGR and output Y images must have the same width and height.
+        The input U and V images must have the same width and height (their width is equal to half width of Y component).
+
+        \note This function is a C++ wrapper for function ::SimdBgrToYuv422p.
+
+        \param [in] bgr - an input 24-bit BGR image.
+        \param [out] y - an output 8-bit image with Y color plane.
+        \param [out] u - an output 8-bit image with U color plane.
+        \param [out] v - an output 8-bit image with V color plane.
+    */
+    template<template<class> class A> SIMD_INLINE void BgrToYuv422p(const View<A>& bgr, View<A>& y, View<A>& u, View<A>& v)
+    {
+        assert(y.width == 2 * u.width && y.height == u.height && y.format == u.format);
+        assert(y.width == 2 * v.width && y.height == v.height && y.format == v.format);
+        assert(y.width == bgr.width && y.height == bgr.height);
+        assert(y.format == View<A>::Gray8 && bgr.format == View<A>::Bgr24);
+
+        SimdBgrToYuv422p(bgr.data, bgr.width, bgr.height, bgr.stride, y.data, y.stride, u.data, u.stride, v.data, v.stride);
+    }
+
+    /*! @ingroup bgr_conversion
+
+        \fn void BgrToYuv444p(const View<A>& bgr, View<A>& y, View<A>& u, View<A>& v)
+
+        \short Converts 24-bit BGR image to YUV444P.
+
+        The input BGR and output Y, U and V images must have the same width and height.
 
         \note This function is a C++ wrapper for function ::SimdBgrToYuv444p.
 
-	    \param [in] bgr - an input 24-bit BGR image.
-	    \param [out] y - an output 8-bit image with Y color plane.
-	    \param [out] u - an output 8-bit image with U color plane.
-	    \param [out] v - an output 8-bit image with V color plane.
-	*/
-    template<class A> SIMD_INLINE void BgrToYuv444p(const View<A>& bgr, View<A>& y, View<A>& u, View<A>& v)
+        \param [in] bgr - an input 24-bit BGR image.
+        \param [out] y - an output 8-bit image with Y color plane.
+        \param [out] u - an output 8-bit image with U color plane.
+        \param [out] v - an output 8-bit image with V color plane.
+    */
+    template<template<class> class A> SIMD_INLINE void BgrToYuv444p(const View<A>& bgr, View<A>& y, View<A>& u, View<A>& v)
     {
         assert(EqualSize(bgr, y) && Compatible(y, u, v));
         assert(y.format == View<A>::Gray8 && bgr.format == View<A>::Bgr24);
@@ -802,13 +912,15 @@ namespace Simd
 
         \fn void Binarization(const View<A>& src, uint8_t value, uint8_t positive, uint8_t negative, View<A>& dst, SimdCompareType compareType)
 
-        \short Performs binarization of 8-bit gray image. 
+        \short Performs binarization of 8-bit gray image.
 
         All images must have 8-bit gray format and must have the same width and height.
 
         For every point:
-        \n dst[i] = compare(src[i], value) ? positive : negative,
-        \n compare(a, b) depends from compareType (see ::SimdCompareType).
+        \verbatim
+        dst[i] = compare(src[i], value) ? positive : negative;
+        \endverbatim
+        where compare(a, b) depends from compareType (see ::SimdCompareType).
 
         \note This function is a C++ wrapper for function ::SimdBinarization.
 
@@ -819,7 +931,7 @@ namespace Simd
         \param [out] dst - an output 8-bit gray binarized image.
         \param [in] compareType - a compare operation type (see ::SimdCompareType).
     */
-    template<class A> SIMD_INLINE void Binarization(const View<A>& src, uint8_t value, uint8_t positive, uint8_t negative, View<A>& dst, SimdCompareType compareType)
+    template<template<class> class A> SIMD_INLINE void Binarization(const View<A>& src, uint8_t value, uint8_t positive, uint8_t negative, View<A>& dst, SimdCompareType compareType)
     {
         assert(Compatible(src, dst) && src.format == View<A>::Gray8);
 
@@ -830,14 +942,28 @@ namespace Simd
 
         \fn void AveragingBinarization(const View<A>& src, uint8_t value, size_t neighborhood, uint8_t threshold, uint8_t positive, uint8_t negative, View<A>& dst, SimdCompareType compareType)
 
-        \short Performs averaging binarization of 8-bit gray image. 
+        \short Performs averaging binarization of 8-bit gray image.
 
         All images must have 8-bit gray format and must have the same width and height.
 
         For every point:
-        \n dst[i] = sum[i]*255 > area[i]*threshold ? positive : negative,
-        \n where sum[i] is a sum of positive compare(src[i], value) operation (see ::SimdCompareType) in the point neighborhood (from -neighborhood to neighborhood for x and y),
-        \n area[i] - an area of the point neighborhood ( (2*neighborhood + 1)^2 for central part of the image).
+        \verbatim
+        sum = 0; area = 0;
+        for(dy = -neighborhood; dy <= neighborhood; ++dy)
+        {
+            for(dx = -neighborhood; dx <= neighborhood; ++dx)
+            {
+                if(x + dx >= 0 && x + dx < width && y + dy >= 0 && y + dy < height)
+                {
+                    area++;
+                    if(compare(src[x + dx, x + dy], value))
+                        sum++;
+                }
+            }
+        }
+        dst[x, y] = sum*255 > area*threshold ? positive : negative;
+        \endverbatim
+        where compare(a, b) depends from compareType (see ::SimdCompareType).
 
         \note This function is a C++ wrapper for function ::SimdAveragingBinarization.
 
@@ -850,7 +976,7 @@ namespace Simd
         \param [out] dst - an output 8-bit gray binarized image.
         \param [in] compareType - a compare operation type (see ::SimdCompareType).
     */
-    template<class A> SIMD_INLINE void AveragingBinarization(const View<A>& src, uint8_t value, size_t neighborhood, uint8_t threshold, uint8_t positive, uint8_t negative, View<A>& dst, SimdCompareType compareType)
+    template<template<class> class A> SIMD_INLINE void AveragingBinarization(const View<A>& src, uint8_t value, size_t neighborhood, uint8_t threshold, uint8_t positive, uint8_t negative, View<A>& dst, SimdCompareType compareType)
     {
         assert(Compatible(src, dst) && src.format == View<A>::Gray8);
 
@@ -862,11 +988,14 @@ namespace Simd
 
         \fn void ConditionalCount8u(const View<A> & src, uint8_t value, SimdCompareType compareType, uint32_t & count)
 
-        \short Calculates number of points satisfying certain condition for 8-bit gray image. 
+        \short Calculates number of points satisfying certain condition for 8-bit gray image.
 
         For every point:
-        \n count += compare(src[i], value) ? 1 : 0,
-        \n compare(a, b) depends from compareType (see ::SimdCompareType).
+        \verbatim
+        if(compare(src[i], value))
+            count++;
+        \endverbatim
+        where compare(a, b) depends from compareType (see ::SimdCompareType).
 
         \note This function is a C++ wrapper for function ::SimdConditionalCount8u.
 
@@ -875,7 +1004,7 @@ namespace Simd
         \param [in] compareType - a compare operation type (see ::SimdCompareType).
         \param [out] count - a pointer to result unsigned 32-bit value.
     */
-    template<class A> SIMD_INLINE void ConditionalCount8u(const View<A> & src, uint8_t value, SimdCompareType compareType, uint32_t & count)
+    template<template<class> class A> SIMD_INLINE void ConditionalCount8u(const View<A> & src, uint8_t value, SimdCompareType compareType, uint32_t & count)
     {
         assert(src.format == View<A>::Gray8);
 
@@ -886,11 +1015,14 @@ namespace Simd
 
         \fn void ConditionalCount16i(const View<A> & src, int16_t value, SimdCompareType compareType, uint32_t & count)
 
-        \short Calculates number of points satisfying certain condition for 16-bit signed integer image. 
+        \short Calculates number of points satisfying certain condition for 16-bit signed integer image.
 
         For every point:
-        \n count += compare(src[i], value) ? 1 : 0,
-        \n compare(a, b) depends from compareType (see ::SimdCompareType).
+        \verbatim
+        if(compare(src[i], value))
+            count++;
+        \endverbatim
+        where compare(a, b) depends from compareType (see ::SimdCompareType).
 
         \note This function is a C++ wrapper for function ::SimdConditionalCount16i.
 
@@ -899,7 +1031,7 @@ namespace Simd
         \param [in] compareType - a compare operation type (see ::SimdCompareType).
         \param [out] count - a pointer to result unsigned 32-bit value.
     */
-    template<class A> SIMD_INLINE void ConditionalCount16i(const View<A> & src, int16_t value, SimdCompareType compareType, uint32_t & count)
+    template<template<class> class A> SIMD_INLINE void ConditionalCount16i(const View<A> & src, int16_t value, SimdCompareType compareType, uint32_t & count)
     {
         assert(src.format == View<A>::Int16);
 
@@ -910,13 +1042,16 @@ namespace Simd
 
         \fn void ConditionalSum(const View<A> & src, const View<A> & mask, uint8_t value, SimdCompareType compareType, uint64_t & sum)
 
-        \short Calculates sum of image points when mask points satisfying certain condition. 
+        \short Calculates sum of image points when mask points satisfying certain condition.
 
         All images must have 8-bit gray format and must have the same width and height.
 
         For every point:
-        \n sum += compare(mask[i], value) ? src[i] : 0,
-        \n compare(a, b) depends from compareType (see ::SimdCompareType).
+        \verbatim
+        if(compare(mask[i], value))
+            sum += src[i];
+        \endverbatim
+        where compare(a, b) depends from compareType (see ::SimdCompareType).
 
         \note This function is a C++ wrapper for function ::SimdConditionalSum.
 
@@ -926,7 +1061,7 @@ namespace Simd
         \param [in] compareType - a compare operation type (see ::SimdCompareType).
         \param [out] sum - a pointer to result unsigned 64-bit value.
     */
-    template<class A> SIMD_INLINE void ConditionalSum(const View<A> & src, const View<A> & mask, uint8_t value, SimdCompareType compareType, uint64_t & sum)
+    template<template<class> class A> SIMD_INLINE void ConditionalSum(const View<A> & src, const View<A> & mask, uint8_t value, SimdCompareType compareType, uint64_t & sum)
     {
         assert(Compatible(src, mask) && src.format == View<A>::Gray8);
 
@@ -937,13 +1072,16 @@ namespace Simd
 
         \fn void ConditionalSquareSum(const View<A>& src, const View<A>& mask, uint8_t value, SimdCompareType compareType, uint64_t & sum)
 
-        \short Calculates sum of squared image points when mask points satisfying certain condition. 
+        \short Calculates sum of squared image points when mask points satisfying certain condition.
 
         All images must have 8-bit gray format and must have the same width and height.
 
         For every point:
-        \n sum += compare(mask[i], value) ? src[i]*src[i] : 0,
-        \n compare(a, b) depends from compareType (see ::SimdCompareType).
+        \verbatim
+        if(compare(mask[i], value))
+            sum += src[i]*src[i];
+        \endverbatim
+        where compare(a, b) depends from compareType (see ::SimdCompareType).
 
         \note This function is a C++ wrapper for function ::SimdConditionalSquareSum.
 
@@ -953,7 +1091,7 @@ namespace Simd
         \param [in] compareType - a compare operation type (see ::SimdCompareType).
         \param [out] sum - a pointer to result unsigned 64-bit value.
     */
-    template<class A> SIMD_INLINE void ConditionalSquareSum(const View<A>& src, const View<A>& mask, uint8_t value, SimdCompareType compareType, uint64_t & sum)
+    template<template<class> class A> SIMD_INLINE void ConditionalSquareSum(const View<A>& src, const View<A>& mask, uint8_t value, SimdCompareType compareType, uint64_t & sum)
     {
         assert(Compatible(src, mask) && src.format == View<A>::Gray8);
 
@@ -964,16 +1102,20 @@ namespace Simd
 
         \fn void ConditionalSquareGradientSum(const View<A>& src, const View<A>& mask, uint8_t value, SimdCompareType compareType, uint64_t & sum)
 
-        \short Calculates sum of squared gradient of image points when mask points satisfying certain condition. 
+        \short Calculates sum of squared gradient of image points when mask points satisfying certain condition.
 
         All images must have 8-bit gray format and must have the same width and height. The image height and width must be equal or greater 3.
 
-        For every point:
-        \n sum += compare(mask[x, y], value) ? dx[x, y]*dx[x, y] + dy[x, y]*dy[x, y] : 0, 
-        \n where for border pixels dx[x, y] = 0 and dy[x, y] = 0, for other pixels: 
-        \n dx[x, y] = src[x + 1, y] - src[x - 1, y], 
-        \n dy[x, y] = src[x, y + 1] - src[x, y - 1];
-        \n compare(a, b) depends from compareType (see ::SimdCompareType).
+        For every point except border:
+        \verbatim
+        if(compare(mask[x, y], value))
+        {
+            dx = src[x + 1, y] - src[x - 1, y];
+            dy = src[x, y + 1] - src[x, y - 1];
+            sum += dx*dx + dy*dy;
+        }
+        \endverbatim
+        where compare(a, b) depends from compareType (see ::SimdCompareType).
 
         \note This function is a C++ wrapper for function ::SimdConditionalSquareGradientSum.
 
@@ -983,18 +1125,48 @@ namespace Simd
         \param [in] compareType - a compare operation type (see ::SimdCompareType).
         \param [out] sum - a pointer to result unsigned 64-bit value.
     */
-    template<class A> SIMD_INLINE void ConditionalSquareGradientSum(const View<A>& src, const View<A>& mask, uint8_t value, SimdCompareType compareType, uint64_t & sum)
+    template<template<class> class A> SIMD_INLINE void ConditionalSquareGradientSum(const View<A>& src, const View<A>& mask, uint8_t value, SimdCompareType compareType, uint64_t & sum)
     {
         assert(Compatible(src, mask) && src.format == View<A>::Gray8 && src.width >= 3 && src.height >= 3);
 
         SimdConditionalSquareGradientSum(src.data, src.stride, src.width, src.height, mask.data, mask.stride, value, compareType, &sum);
     }
 
+    /*! @ingroup conditional
+
+        \fn void ConditionalFill(const View<A> & src, uint8_t threshold, SimdCompareType compareType, uint8_t value, View<A> & dst);
+
+        \short Fills pixels of 8-bit gray image by given value if corresponding pixels of input 8-bit gray image satisfy certain condition.
+
+        All images must have the same width and height.
+
+        For every point:
+        \verbatim
+        if(compare(src[i], threshold))
+            dst[i] = value;
+        \endverbatim
+        where compare(a, b) depends from compareType (see ::SimdCompareType).
+
+        \note This function is a C++ wrapper for function ::SimdConditionalFill
+
+        \param [in] src - an input 8-bit gray image.
+        \param [in] threshold - a second value for compare operation.
+        \param [in] compareType - a compare operation type (see ::SimdCompareType).
+        \param [in] value - a value for fill operation.
+        \param [in, out] dst - an output 8-bit gray image.
+        */
+    template<template<class> class A> SIMD_INLINE void ConditionalFill(const View<A> & src, uint8_t threshold, SimdCompareType compareType, uint8_t value, View<A> & dst)
+    {
+        assert(Compatible(src, dst) && src.format == View<A>::Gray8);
+
+        SimdConditionalFill(src.data, src.stride, src.width, src.height, threshold, compareType, value, dst.data, dst.stride);
+    }
+
     /*! @ingroup copying
 
         \fn void Copy(const View<A> & src, View<B> & dst)
 
-        \short Copies pixels data of image from source to destination. 
+        \short Copies pixels data of image from source to destination.
 
         All images must have the same width, height and format.
 
@@ -1003,18 +1175,21 @@ namespace Simd
         \param [in] src - a source image.
         \param [out] dst - a destination image.
     */
-    template<class A, class B> SIMD_INLINE void Copy(const View<A> & src, View<B> & dst)
+    template<template<class> class A, template<class> class B> SIMD_INLINE void Copy(const View<A> & src, View<B> & dst)
     {
         assert(Compatible(src, dst));
 
-        SimdCopy(src.data, src.stride, src.width, src.height, src.PixelSize(), dst.data, dst.stride);
+        if (src.format)
+        {
+            SimdCopy(src.data, src.stride, src.width, src.height, src.PixelSize(), dst.data, dst.stride);
+        }
     }
 
     /*! @ingroup copying
 
         \fn void CopyFrame(const View<A>& src, const Rectangle<ptrdiff_t> & frame, View<A>& dst)
 
-        \short Copies pixels data of image from source to destination except for the portion bounded frame. 
+        \short Copies pixels data of image from source to destination except for the portion bounded frame.
 
         All images must have the same width, height and format.
 
@@ -1024,7 +1199,7 @@ namespace Simd
         \param [in] frame - a frame rectangle.
         \param [out] dst - a destination image.
     */
-    template<class A> SIMD_INLINE void CopyFrame(const View<A>& src, const Rectangle<ptrdiff_t> & frame, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void CopyFrame(const View<A>& src, const Rectangle<ptrdiff_t> & frame, View<A>& dst)
     {
         assert(Compatible(src, dst) && frame.Width() >= 0 && frame.Height() >= 0);
         assert(frame.left >= 0 && frame.top >= 0 && frame.right <= ptrdiff_t(src.width) && frame.bottom <= ptrdiff_t(src.height));
@@ -1037,7 +1212,7 @@ namespace Simd
 
         \fn void DeinterleaveUv(const View<A>& uv, View<A>& u, View<A>& v)
 
-        \short Deinterleaves 16-bit UV interleaved image into separated 8-bit U and V planar images. 
+        \short Deinterleaves 16-bit UV interleaved image into separated 8-bit U and V planar images.
 
         All images must have the same width and height.
         This function used for NV12 to YUV420P conversion.
@@ -1048,23 +1223,70 @@ namespace Simd
         \param [out] u - an output 8-bit U planar image.
         \param [out] v - an output 8-bit V planar image.
     */
-    template<class A> SIMD_INLINE void DeinterleaveUv(const View<A>& uv, View<A>& u, View<A>& v)
+    template<template<class> class A> SIMD_INLINE void DeinterleaveUv(const View<A>& uv, View<A>& u, View<A>& v)
     {
         assert(EqualSize(uv, u, v) && uv.format == View<A>::Uv16 && u.format == View<A>::Gray8 && v.format == View<A>::Gray8);
 
         SimdDeinterleaveUv(uv.data, uv.stride, uv.width, uv.height, u.data, u.stride, v.data, v.stride);
     }
 
+    /*! @ingroup other_conversion
+
+        \fn void DeinterleaveBgr(const View<A>& bgr, View<A>& b, View<A>& g, View<A>& r)
+
+        \short Deinterleaves 24-bit BGR interleaved image into separated 8-bit Blue, Green and Red planar images.
+
+        All images must have the same width and height.
+
+        \note This function is a C++ wrapper for function ::SimdDeinterleaveBgr.
+
+        \param [in] bgr - an input 24-bit BGR interleaved image.
+        \param [out] b - an output 8-bit Blue planar image.
+        \param [out] g - an output 8-bit Green planar image.
+        \param [out] r - an output 8-bit Red planar image.
+        */
+    template<template<class> class A> SIMD_INLINE void DeinterleaveBgr(const View<A>& bgr, View<A>& b, View<A>& g, View<A>& r)
+    {
+        assert(EqualSize(bgr, b) && Compatible(b, g, r) && bgr.format == View<A>::Bgr24 && b.format == View<A>::Gray8);
+
+        SimdDeinterleaveBgr(bgr.data, bgr.stride, bgr.width, bgr.height, b.data, b.stride, g.data, g.stride, r.data, r.stride);
+    }
+
+    /*! @ingroup other_conversion
+
+        \fn void DeinterleaveBgra(const View<A>& bgra, View<A>& b, View<A>& g, View<A>& r, View<A>& a)
+
+        \short Deinterleaves 32-bit BGRA interleaved image into separated 8-bit Blue, Green, Red and Alpha planar images.
+
+        All images must have the same width and height.
+
+        \note This function is a C++ wrapper for function ::SimdDeinterleaveBgra.
+
+        \param [in] bgra - an input 32-bit BGRA interleaved image.
+        \param [out] b - an output 8-bit Blue planar image.
+        \param [out] g - an output 8-bit Green planar image.
+        \param [out] r - an output 8-bit Red planar image.
+        \param [out] a - an output 8-bit Alpha planar image.
+    */
+    template<template<class> class A> SIMD_INLINE void DeinterleaveBgra(const View<A>& bgra, View<A>& b, View<A>& g, View<A>& r, View<A>& a)
+    {
+        assert(EqualSize(bgra, b) && Compatible(b, g, r, a) && bgra.format == View<A>::Bgra32 && b.format == View<A>::Gray8);
+
+        SimdDeinterleaveBgra(bgra.data, bgra.stride, bgra.width, bgra.height, b.data, b.stride, g.data, g.stride, r.data, r.stride, a.data, a.stride);
+    }
+
     /*! @ingroup edge_background
 
         \fn void EdgeBackgroundGrowRangeSlow(const View<A>& value, View<A>& background)
 
-        \short Performs edge background update (initial grow, slow mode). 
+        \short Performs edge background update (initial grow, slow mode).
 
-        All images must have the same width, height and format (8-bit gray). 
+        All images must have the same width, height and format (8-bit gray).
 
-        For every point: 
-        \n background[i] += value[i] > background[i] ? 1 : 0; 
+        For every point:
+        \verbatim
+        background[i] += value[i] > background[i] ? 1 : 0;
+        \endverbatim
 
         This function is used for edge background updating in motion detection algorithm.
 
@@ -1073,7 +1295,7 @@ namespace Simd
         \param [in] value - a current feature value.
         \param [in, out] background - a feature value of edge dynamic background.
     */
-    template<class A> SIMD_INLINE void EdgeBackgroundGrowRangeSlow(const View<A>& value, View<A>& background)
+    template<template<class> class A> SIMD_INLINE void EdgeBackgroundGrowRangeSlow(const View<A>& value, View<A>& background)
     {
         assert(Compatible(value, background) && value.format == View<A>::Gray8);
 
@@ -1084,12 +1306,14 @@ namespace Simd
 
         \fn void EdgeBackgroundGrowRangeFast(const View<A>& value, View<A>& background)
 
-        \short Performs edge background update (initial grow, fast mode). 
+        \short Performs edge background update (initial grow, fast mode).
 
-        All images must have the same width, height and format (8-bit gray). 
+        All images must have the same width, height and format (8-bit gray).
 
-        For every point: 
-        \n background[i] = value[i] > background[i] ? value[i] : background[i]; 
+        For every point:
+        \verbatim
+        background[i] = value[i] > background[i] ? value[i] : background[i];
+        \endverbatim
 
         This function is used for edge background updating in motion detection algorithm.
 
@@ -1098,7 +1322,7 @@ namespace Simd
         \param [in] value - a current feature value.
         \param [in, out] background - a feature value of edge dynamic background.
     */
-    template<class A> SIMD_INLINE void EdgeBackgroundGrowRangeFast(const View<A>& value, View<A>& background)
+    template<template<class> class A> SIMD_INLINE void EdgeBackgroundGrowRangeFast(const View<A>& value, View<A>& background)
     {
         assert(Compatible(value, background) && value.format == View<A>::Gray8);
 
@@ -1109,12 +1333,14 @@ namespace Simd
 
         \fn void EdgeBackgroundIncrementCount(const View<A>& value, const View<A>& backgroundValue, View<A>& backgroundCount)
 
-        \short Performs collection of edge background statistic. 
+        \short Performs collection of edge background statistic.
 
-        All images must have the same width, height and format (8-bit gray). 
+        All images must have the same width, height and format (8-bit gray).
 
-        Updates background statistic counters for every point: 
-        \n backgroundCount[i] += (value[i] > backgroundValue[i] && backgroundCount[i] < 255) ? 1 : 0;
+        Updates background statistic counters for every point:
+        \verbatim
+        backgroundCount[i] += (value[i] > backgroundValue[i] && backgroundCount[i] < 255) ? 1 : 0;
+        \endverbatim
 
         This function is used for edge background updating in motion detection algorithm.
 
@@ -1124,7 +1350,7 @@ namespace Simd
         \param [in] backgroundValue - a value of feature of edge dynamic background.
         \param [in, out] backgroundCount - a count of feature of edge dynamic background.
     */
-    template<class A> SIMD_INLINE void EdgeBackgroundIncrementCount(const View<A>& value, const View<A>& backgroundValue, View<A>& backgroundCount)
+    template<template<class> class A> SIMD_INLINE void EdgeBackgroundIncrementCount(const View<A>& value, const View<A>& backgroundValue, View<A>& backgroundCount)
     {
         assert(Compatible(value, backgroundValue, backgroundCount) && value.format == View<A>::Gray8);
 
@@ -1136,14 +1362,16 @@ namespace Simd
 
         \fn void EdgeBackgroundAdjustRange(View<A>& backgroundCount, View<A>& backgroundValue, uint8_t threshold)
 
-        \short Performs adjustment of edge background range. 
+        \short Performs adjustment of edge background range.
 
-        All images must have the same width, height and format (8-bit gray). 
+        All images must have the same width, height and format (8-bit gray).
 
-        Adjusts edge background range for every point: 
-        \n backgroundValue[i] += (backgroundCount[i] > threshold && backgroundValue[i] < 255) ? 1 : 0;
-        \n backgroundValue[i] -= (backgroundCount[i] < threshold && backgroundValue[i] > 0) ? 1 : 0; 
-        \n backgroundCount[i] = 0;
+        Adjusts edge background range for every point:
+        \verbatim
+        backgroundValue[i] += (backgroundCount[i] > threshold && backgroundValue[i] < 255) ? 1 : 0;
+        backgroundValue[i] -= (backgroundCount[i] < threshold && backgroundValue[i] > 0) ? 1 : 0;
+        backgroundCount[i] = 0;
+        \endverbatim
 
         This function is used for edge background updating in motion detection algorithm.
 
@@ -1153,7 +1381,7 @@ namespace Simd
         \param [in, out] backgroundValue - a value of feature of edge dynamic background.
         \param [in] threshold - a count threshold.
     */
-    template<class A> SIMD_INLINE void EdgeBackgroundAdjustRange(View<A>& backgroundCount, View<A>& backgroundValue, uint8_t threshold)
+    template<template<class> class A> SIMD_INLINE void EdgeBackgroundAdjustRange(View<A>& backgroundCount, View<A>& backgroundValue, uint8_t threshold)
     {
         assert(Compatible(backgroundCount, backgroundValue) && backgroundCount.format == View<A>::Gray8);
 
@@ -1165,14 +1393,19 @@ namespace Simd
 
         \fn void EdgeBackgroundAdjustRange(View<A>& backgroundCount, View<A>& backgroundValue, uint8_t threshold, const View<A>& mask)
 
-        \short Performs adjustment of edge background range with using adjust range mask. 
+        \short Performs adjustment of edge background range with using adjust range mask.
 
-        All images must have the same width, height and format (8-bit gray). 
+        All images must have the same width, height and format (8-bit gray).
 
-        Adjusts edge background range for every point when mask[i] != 0: 
-        \n backgroundValue[i] += (backgroundCount[i] > threshold && backgroundValue[i] < 255) ? 1 : 0;
-        \n backgroundValue[i] -= (backgroundCount[i] < threshold && backgroundValue[i] > 0) ? 1 : 0; 
-        \n backgroundCount[i] = 0;
+        Adjusts edge background range for every point:
+        \verbatim
+        if(mask[i])
+        {
+            backgroundValue[i] += (backgroundCount[i] > threshold && backgroundValue[i] < 255) ? 1 : 0;
+            backgroundValue[i] -= (backgroundCount[i] < threshold && backgroundValue[i] > 0) ? 1 : 0;
+            backgroundCount[i] = 0;
+        }
+        \endverbatim
 
         This function is used for edge background updating in motion detection algorithm.
 
@@ -1183,7 +1416,7 @@ namespace Simd
         \param [in] threshold - a count threshold.
         \param [in] mask - an adjust range mask.
     */
-    template<class A> SIMD_INLINE void EdgeBackgroundAdjustRange(View<A>& backgroundCount, View<A>& backgroundValue, uint8_t threshold, const View<A>& mask)
+    template<template<class> class A> SIMD_INLINE void EdgeBackgroundAdjustRange(View<A>& backgroundCount, View<A>& backgroundValue, uint8_t threshold, const View<A>& mask)
     {
         assert(Compatible(backgroundCount, backgroundValue, mask) && backgroundCount.format == View<A>::Gray8);
 
@@ -1195,12 +1428,14 @@ namespace Simd
 
         \fn void EdgeBackgroundShiftRange(const View<A>& value, View<A>& background)
 
-        \short Shifts edge background range. 
+        \short Shifts edge background range.
 
-        All images must have the same width, height and format (8-bit gray). 
+        All images must have the same width, height and format (8-bit gray).
 
-        For every point: 
-        \n background[i] = value[i];
+        For every point:
+        \verbatim
+        background[i] = value[i];
+        \endverbatim
 
         This function is used for fast edge background updating in motion detection algorithm.
 
@@ -1209,7 +1444,7 @@ namespace Simd
         \param [in] value - a current feature value.
         \param [in, out] background - a feature of the edge dynamic background.
     */
-    template<class A> SIMD_INLINE void EdgeBackgroundShiftRange(const View<A>& value, View<A>& background)
+    template<template<class> class A> SIMD_INLINE void EdgeBackgroundShiftRange(const View<A>& value, View<A>& background)
     {
         assert(Compatible(value, background) && value.format == View<A>::Gray8);
 
@@ -1220,12 +1455,15 @@ namespace Simd
 
         \fn void EdgeBackgroundShiftRange(const View<A>& value, View<A>& background, const View<A>& mask)
 
-        \short Shifts edge background range with using shift range mask. 
+        \short Shifts edge background range with using shift range mask.
 
-        All images must have the same width, height and format (8-bit gray). 
+        All images must have the same width, height and format (8-bit gray).
 
-        For every point when mask[i] != 0 : 
-        \n background[i] = value[i];
+        For every point:
+        \verbatim
+        if(mask[i]])
+            background[i] = value[i];
+        \endverbatim
 
         This function is used for fast edge background updating in motion detection algorithm.
 
@@ -1235,7 +1473,7 @@ namespace Simd
         \param [in, out] background - a feature of the edge dynamic background.
         \param [in] mask - a shift range mask.
     */
-    template<class A> SIMD_INLINE void EdgeBackgroundShiftRange(const View<A>& value, View<A>& background, const View<A>& mask)
+    template<template<class> class A> SIMD_INLINE void EdgeBackgroundShiftRange(const View<A>& value, View<A>& background, const View<A>& mask)
     {
         assert(Compatible(value, background, mask) && value.format == View<A>::Gray8);
 
@@ -1247,14 +1485,14 @@ namespace Simd
 
         \fn void Fill(View<A>& dst, uint8_t value)
 
-        \short Fills pixels data of image by given value. 
+        \short Fills pixels data of image by given value.
 
         \note This function is a C++ wrapper for function ::SimdFill.
 
         \param [out] dst - a destination image.
         \param [in] value - a value to fill image.
     */
-    template<class A> SIMD_INLINE void Fill(View<A>& dst, uint8_t value)
+    template<template<class> class A> SIMD_INLINE void Fill(View<A>& dst, uint8_t value)
     {
         SimdFill(dst.data, dst.stride, dst.width, dst.height, dst.PixelSize(), value);
     }
@@ -1263,7 +1501,7 @@ namespace Simd
 
         \fn void FillFrame(View<A>& dst, const Rectangle<ptrdiff_t> & frame, uint8_t value)
 
-        \short Fills pixels data of image except for the portion bounded frame by given value. 
+        \short Fills pixels data of image except for the portion bounded frame by given value.
 
         \note This function is a C++ wrapper for function ::SimdFillFrame.
 
@@ -1271,7 +1509,7 @@ namespace Simd
         \param [in] frame - a frame rectangle.
         \param [in] value - a value to fill image.
     */
-    template<class A> SIMD_INLINE void FillFrame(View<A>& dst, const Rectangle<ptrdiff_t> & frame, uint8_t value)
+    template<template<class> class A> SIMD_INLINE void FillFrame(View<A>& dst, const Rectangle<ptrdiff_t> & frame, uint8_t value)
     {
         SimdFillFrame(dst.data, dst.stride, dst.width, dst.height, dst.PixelSize(),
             frame.left, frame.top, frame.right, frame.bottom, value);
@@ -1281,7 +1519,7 @@ namespace Simd
 
         \fn void FillBgr(View<A>& dst, uint8_t blue, uint8_t green, uint8_t red)
 
-        \short Fills pixels data of 24-bit BGR image by given color(blue, green, red). 
+        \short Fills pixels data of 24-bit BGR image by given color(blue, green, red).
 
         \note This function is a C++ wrapper for function ::SimdFillBgr.
 
@@ -1290,7 +1528,7 @@ namespace Simd
         \param [in] green - a green channel of BGR to fill image.
         \param [in] red - a red channel of BGR to fill image.
     */
-    template<class A> SIMD_INLINE void FillBgr(View<A>& dst, uint8_t blue, uint8_t green, uint8_t red)
+    template<template<class> class A> SIMD_INLINE void FillBgr(View<A>& dst, uint8_t blue, uint8_t green, uint8_t red)
     {
         assert(dst.format == View<A>::Bgr24);
 
@@ -1301,7 +1539,7 @@ namespace Simd
 
         \fn void FillBgra(View<A>& dst, uint8_t blue, uint8_t green, uint8_t red, uint8_t alpha = 0xFF)
 
-        \short Fills pixels data of 32-bit BGRA image by given color(blue, green, red, alpha). 
+        \short Fills pixels data of 32-bit BGRA image by given color(blue, green, red, alpha).
 
         \note This function is a C++ wrapper for function ::SimdFillBgra.
 
@@ -1311,32 +1549,51 @@ namespace Simd
         \param [in] red - a red channel of BGRA to fill image.
         \param [in] alpha - a alpha channel of BGRA to fill image. It is equal to 255 by default.
     */
-    template<class A> SIMD_INLINE void FillBgra(View<A>& dst, uint8_t blue, uint8_t green, uint8_t red, uint8_t alpha = 0xFF)
+    template<template<class> class A> SIMD_INLINE void FillBgra(View<A>& dst, uint8_t blue, uint8_t green, uint8_t red, uint8_t alpha = 0xFF)
     {
         assert(dst.format == View<A>::Bgra32);
 
         SimdFillBgra(dst.data, dst.stride, dst.width, dst.height, blue, green, red, alpha);
     }
 
-    /*! @ingroup gray_conversion
+    /*! @ingroup filling
+
+        \fn void FillPixel(View<A> & dst, const Pixel & pixel)
+
+        \short Fills image by value of given pixel.
+
+        \note This function is a C++ wrapper for function ::SimdFillPixel.
+
+        \param [out] dst - a destination image.
+        \param [in] pixel - a pixel of type which correspond to image format. The size of the type is restricted by range [1, 4].
+    */
+    template<template<class> class A, class Pixel> SIMD_INLINE void FillPixel(View<A> & dst, const Pixel & pixel)
+    {
+        assert(dst.PixelSize() == sizeof(Pixel));
+
+        SimdFillPixel(dst.data, dst.stride, dst.width, dst.height, (uint8_t*)&pixel, sizeof(Pixel));
+    }
+
+    /*! @ingroup other_filter
 
         \fn void GaussianBlur3x3(const View<A>& src, View<A>& dst)
 
-        \short Performs Gaussian blur filtration with window 3x3. 
+        \short Performs Gaussian blur filtration with window 3x3.
 
         For every point:
-        \n dst[x, y] = (src[x-1, y-1] + 2*src[x, y-1] + src[x+1, y-1] + 
-        \n 2*(src[x-1, y] + 2*src[x, y] + src[x+1, y]) +
-        \n src[x-1, y+1] + 2*src[x, y+1] + src[x+1, y+1] + 8) / 16; 
-
-        All images must have the same width, height and format (8-bit gray, 24-bit BGR or 32-bit BGRA).
+        \verbatim
+        dst[x, y] = (src[x-1, y-1] + 2*src[x, y-1] + src[x+1, y-1] +
+                    2*(src[x-1, y] + 2*src[x, y] + src[x+1, y]) +
+                    src[x-1, y+1] + 2*src[x, y+1] + src[x+1, y+1] + 8) / 16;
+        \endverbatim
+        All images must have the same width, height and format (8-bit gray, 16-bit UV, 24-bit BGR or 32-bit BGRA).
 
         \note This function is a C++ wrapper for function ::SimdGaussianBlur3x3.
 
         \param [in] src - a source image.
         \param [out] dst - a destination image.
     */
-    template<class A> SIMD_INLINE void GaussianBlur3x3(const View<A>& src, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void GaussianBlur3x3(const View<A>& src, View<A>& dst)
     {
         assert(Compatible(src, dst) && src.ChannelSize() == 1);
 
@@ -1347,16 +1604,16 @@ namespace Simd
 
         \fn void GrayToBgr(const View<A>& gray, View<A>& bgr)
 
-        \short Converts 8-bit gray image to 24-bit BGR image. 
+        \short Converts 8-bit gray image to 24-bit BGR image.
 
-        All images must have the same width and height. 
+        All images must have the same width and height.
 
         \note This function is a C++ wrapper for function ::SimdGrayToBgr.
 
         \param [in] gray - an input 8-bit gray image.
         \param [out] bgr - an output 24-bit BGR image.
     */
-    template<class A> SIMD_INLINE void GrayToBgr(const View<A>& gray, View<A>& bgr)
+    template<template<class> class A> SIMD_INLINE void GrayToBgr(const View<A>& gray, View<A>& bgr)
     {
         assert(EqualSize(gray, bgr) && bgr.format == View<A>::Bgr24 && gray.format == View<A>::Gray8);
 
@@ -1367,9 +1624,9 @@ namespace Simd
 
         \fn void GrayToBgra(const View<A>& gray, View<A>& bgra, uint8_t alpha = 0xFF)
 
-        \short Converts 8-bit gray image to 32-bit BGRA image. 
+        \short Converts 8-bit gray image to 32-bit BGRA image.
 
-        All images must have the same width and height. 
+        All images must have the same width and height.
 
         \note This function is a C++ wrapper for function ::SimdGrayToBgra.
 
@@ -1377,7 +1634,7 @@ namespace Simd
         \param [out] bgra - an output 32-bit BGRA image.
         \param [in] alpha - a value of alpha channel. It is equal to 255 by default.
     */
-    template<class A> SIMD_INLINE void GrayToBgra(const View<A>& gray, View<A>& bgra, uint8_t alpha = 0xFF)
+    template<template<class> class A> SIMD_INLINE void GrayToBgra(const View<A>& gray, View<A>& bgra, uint8_t alpha = 0xFF)
     {
         assert(EqualSize(gray, bgra) && bgra.format == View<A>::Bgra32 && gray.format == View<A>::Gray8);
 
@@ -1388,12 +1645,14 @@ namespace Simd
 
         \fn void AbsSecondDerivativeHistogram(const View<A>& src, size_t step, size_t indent, uint32_t * histogram)
 
-        \short Calculates histogram of second derivative for 8-bit gray image. 
+        \short Calculates histogram of second derivative for 8-bit gray image.
 
-        For all points except the boundary (defined by parameter indent): 
-        \n histogram[max(dx, dy)]++, where
-        \n dx = abs(src[x, y] - average(src[x+step, y], src[x-step, y])),
-        \n dy = abs(src[x, y] - average(src[x, y+step], src[x, y-step])).
+        For all points except the boundary (defined by parameter indent):
+        \verbatim
+        dx = abs(src[x, y] - average(src[x+step, y], src[x-step, y]));
+        dy = abs(src[x, y] - average(src[x, y+step], src[x, y-step]));
+        histogram[max(dx, dy)]++;
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdAbsSecondDerivativeHistogram.
 
@@ -1402,9 +1661,9 @@ namespace Simd
         \param [in] indent - a indent from image boundary.
         \param [out] histogram - a pointer to histogram (array of 256 unsigned 32-bit values).
     */
-    template<class A> SIMD_INLINE void AbsSecondDerivativeHistogram(const View<A>& src, size_t step, size_t indent, uint32_t * histogram)
+    template<template<class> class A> SIMD_INLINE void AbsSecondDerivativeHistogram(const View<A>& src, size_t step, size_t indent, uint32_t * histogram)
     {
-        assert(src.format == View<A>::Gray8 && indent >= step && src.width > 2*indent && src.height > 2*indent);
+        assert(src.format == View<A>::Gray8 && indent >= step && src.width > 2 * indent && src.height > 2 * indent);
 
         SimdAbsSecondDerivativeHistogram(src.data, src.width, src.height, src.stride, step, indent, histogram);
     }
@@ -1413,17 +1672,19 @@ namespace Simd
 
         \fn void Histogram(const View<A>& src, uint32_t * histogram)
 
-        \short Calculates histogram for 8-bit gray image. 
+        \short Calculates histogram for 8-bit gray image.
 
-        For all points: 
-        \n histogram[src(i)]++.
+        For all points:
+        \verbatim
+        histogram[src[i]]++.
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdHistogram.
 
         \param [in] src - an input 8-bit gray image.
         \param [out] histogram - a pointer to histogram (array of 256 unsigned 32-bit values).
     */
-    template<class A> SIMD_INLINE void Histogram(const View<A>& src, uint32_t * histogram)
+    template<template<class> class A> SIMD_INLINE void Histogram(const View<A>& src, uint32_t * histogram)
     {
         assert(src.format == View<A>::Gray8);
 
@@ -1434,10 +1695,13 @@ namespace Simd
 
         \fn void HistogramMasked(const View<A> & src, const View<A> & mask, uint8_t index, uint32_t * histogram)
 
-        \short Calculates histogram for 8-bit gray image with using mask. 
+        \short Calculates histogram for 8-bit gray image with using mask.
 
-        For every point where mask[i] == index: 
-        \n histogram[src(i)]++.
+        For every point:
+        \verbatim
+        if(mask[i] == index)
+            histogram[src[i]]++.
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdHistogramMasked.
 
@@ -1446,50 +1710,186 @@ namespace Simd
         \param [in] index - a mask index.
         \param [out] histogram - a pointer to histogram (array of 256 unsigned 32-bit values).
     */
-    template<class A> SIMD_INLINE void HistogramMasked(const View<A> & src, const View<A> & mask, uint8_t index, uint32_t * histogram)
+    template<template<class> class A> SIMD_INLINE void HistogramMasked(const View<A> & src, const View<A> & mask, uint8_t index, uint32_t * histogram)
     {
         assert(Compatible(src, mask) && src.format == View<A>::Gray8);
 
         SimdHistogramMasked(src.data, src.stride, src.width, src.height, mask.data, mask.stride, index, histogram);
     }
 
-    /*! @ingroup face_recognition
+    /*! @ingroup histogram
 
-        \fn void SimdHogDirectionHistograms(const uint8_t * src, size_t stride, size_t width, size_t height, size_t cellX, size_t cellY, size_t quantization, float * histograms);
+        \fn void HistogramConditional(const View<A>& src, const View<A>& mask, uint8_t value, SimdCompareType compareType, uint32_t * histogram)
 
-        \short Calculates HOG direction histograms for 8-bit gray image. 
+        \short Calculates histogram of 8-bit gray image for those points when mask points satisfying certain condition.
+
+        For every point:
+        \verbatim
+        if(compare(mask[x, y], value))
+            histogram[src[x, y]]++.
+        \endverbatim
+
+        \note This function is a C++ wrapper for function ::SimdHistogramConditional.
+
+        \param [in] src - an input 8-bit gray image.
+        \param [in] mask - a mask 8-bit image.
+        \param [in] value - a second value for compare operation.
+        \param [in] compareType - a compare operation type (see ::SimdCompareType).
+        \param [out] histogram - a pointer to histogram (array of 256 unsigned 32-bit values).
+    */
+    template<template<class> class A> SIMD_INLINE void HistogramConditional(const View<A>& src, const View<A>& mask, uint8_t value, SimdCompareType compareType, uint32_t * histogram)
+    {
+        assert(Compatible(src, mask) && src.format == View<A>::Gray8);
+
+        SimdHistogramConditional(src.data, src.stride, src.width, src.height, mask.data, mask.stride, value, compareType, histogram);
+    }
+
+    /*! @ingroup histogram
+
+        \fn void ChangeColors(const View<A> & src, const uint8_t * colors, View<A> & dst)
+
+        \short Changes colors for 8-bit gray image with using of color map.
+
+        The input and output 8-bit gray images must have the same size.
+
+        \note This function is a C++ wrapper for function ::SimdChangeColors.
+
+        \param [in] src - an input 8-bit gray image.
+        \param [in] colors - a pointer to the color map (array of 256 unsigned 8-bit values).
+        \param [out] dst - an output 8-bit gray image.
+    */
+    template<template<class> class A> SIMD_INLINE void ChangeColors(const View<A> & src, const uint8_t * colors, View<A> & dst)
+    {
+        assert(Compatible(src, dst) && src.format == View<A>::Gray8);
+
+        SimdChangeColors(src.data, src.stride, src.width, src.height, colors, dst.data, dst.stride);
+    }
+
+    /*! @ingroup histogram
+
+        \fn void NormalizeHistogram(const View<A> & src, View<A> & dst)
+
+        \short Normalizes histogram for 8-bit gray image.
+
+        The input and output 8-bit gray images must have the same size.
+
+        \note This function is a C++ wrapper for function ::SimdNormalizeHistogram.
+
+        \param [in] src - an input 8-bit gray image.
+        \param [out] dst - an output 8-bit image with normalized histogram.
+    */
+    template<template<class> class A> SIMD_INLINE void NormalizeHistogram(const View<A> & src, View<A> & dst)
+    {
+        assert(Compatible(src, dst) && src.format == View<A>::Gray8);
+
+        SimdNormalizeHistogram(src.data, src.stride, src.width, src.height, dst.data, dst.stride);
+    }
+
+    /*! @ingroup hog
+
+        \fn void SimdHogDirectionHistograms(const View<A> & src, const Point<ptrdiff_t> & cell, size_t quantization, float * histograms);
+
+        \short Calculates HOG direction histograms for 8-bit gray image.
 
         Calculates HOG direction histogram for every cell of 8-bit gray image. This function is useful for face recognition.
 
         \note This function is a C++ wrapper for function ::SimdHogDirectionHistograms.
 
         \param [in] src - an input 8-bit gray image. Its size must be a multiple of cell size.
-        \param [in] cell - a size of cell. 
+        \param [in] cell - a size of cell.
         \param [in] quantization - a direction quantization. Must be even.
         \param [out] histograms - a pointer to buffer with histograms. Array must has size grater or equal to (src.width/cell.x)*(src.height/cell.y)*quantization.
     */
-    template<class A> SIMD_INLINE void HogDirectionHistograms(const View<A> & src, const Point<ptrdiff_t> & cell, size_t quantization, float * histograms)
+    template<template<class> class A> SIMD_INLINE void HogDirectionHistograms(const View<A> & src, const Point<ptrdiff_t> & cell, size_t quantization, float * histograms)
     {
-        assert(src.format == View<A>::Gray8 && src.width%cell.x == 0 && src.height%cell.y == 0 && quantization%2 == 0);
+        assert(src.format == View<A>::Gray8 && src.width%cell.x == 0 && src.height%cell.y == 0 && quantization % 2 == 0);
 
         SimdHogDirectionHistograms(src.data, src.stride, src.width, src.height, cell.x, cell.y, quantization, histograms);
+    }
+
+    /*! @ingroup hog
+
+        \fn void HogExtractFeatures(const View<A> & src, float * features)
+
+        \short Extracts HOG features for 8-bit gray image.
+
+        Extracts HOG features 8-bit gray image. 31 features are extracted for 8x8 cell size and 2x2 block size. This function is useful for face recognition.
+
+        \note This function is a C++ wrapper for function ::SimdHogExtractFeatures.
+
+        \param [in] src - an input 8-bit gray image. Its width and height must be a multiple of 8 and greater or equal to 16.
+        \param [out] features - a pointer to buffer with features. Array must has size grater or equal to (width/8)*(height/8)*31.
+    */
+    template<template<class> class A> SIMD_INLINE void HogExtractFeatures(const View<A> & src, float * features)
+    {
+        assert(src.format == View<A>::Gray8 && src.width % 8 == 0 && src.height % 8 == 0 && src.width >= 16 && src.height >= 16);
+
+        SimdHogExtractFeatures(src.data, src.stride, src.width, src.height, features);
+    }
+
+    /*! @ingroup hog
+
+        \fn void HogLiteExtractFeatures(const View<A> & src, size_t cell, float * features, size_t featuresStride)
+
+        \short Extracts lite HOG features for 8-bit gray image.
+
+        Extracts lite (for 8 directions) HOG features 8-bit gray image. 16 features are extracted for 8x8 or 4x4 cell size and 2x2 block size.
+
+        \note This function is a C++ wrapper for function ::SimdHogLiteExtractFeatures.
+
+        \param [in] src - an input 8-bit gray image. Its width and height must be a multiple of cell and greater or equal to cell*3.
+        \param [in] cell - a size of cell. It must be 4 or 8.
+        \param [out] features - a pointer to buffer with features. Array must has size grater or equal to (height/cell - 2)*featuresStride.
+        \param [in] featuresStride - a row size of the buffer with features. It must be grater or equal to (width/cell - 2)*16.
+    */
+    template<template<class> class A> SIMD_INLINE void HogLiteExtractFeatures(const View<A> & src, size_t cell, float * features, size_t featuresStride)
+    {
+        assert((cell == 4 || cell == 8) && featuresStride >= (src.width / cell - 2) * 16);
+        assert(src.format == View<A>::Gray8 && src.width >= cell * 3 && src.height >= cell * 3);
+
+        SimdHogLiteExtractFeatures(src.data, src.stride, src.width, src.height, cell, features, featuresStride);
+    }
+
+    /*! @ingroup other_conversion
+
+        \fn void Int16ToGray(const View<A> & src, View<A> & dst)
+
+        \short Converts 16-bit signed integer image to 8-bit gray image with saturation.
+
+        All images must have the same width and height.
+
+        For every point:
+        \verbatim
+        dst[i] = Max(0, Min(255, src[i]));
+        \endverbatim
+
+        \note This function is a C++ wrapper for function ::SimdInt16ToGray.
+
+        \param [in] src - an input 16-bit signed integer image
+        \param [out] dst - an output 8-bit gray image.
+    */
+    template<template<class> class A> SIMD_INLINE void Int16ToGray(const View<A> & src, View<A> & dst)
+    {
+        assert(EqualSize(src, dst) && src.format == View<A>::Int16 && dst.format == View<A>::Gray8);
+
+        SimdInt16ToGray(src.data, src.width, src.height, src.stride, dst.data, dst.stride);
     }
 
     /*! @ingroup integral
 
         \fn void Integral(const View<A>& src, View<A>& sum)
 
-        \short Calculates integral images for input 8-bit gray image. 
+        \short Calculates integral images for input 8-bit gray image.
 
-        The function can calculates sum integral image. 
-        A integral image must have width and height per unit greater than that of the input image. 
+        The function can calculates sum integral image.
+        A integral image must have width and height per unit greater than that of the input image.
 
         \note This function is a C++ wrapper for function ::SimdIntegral.
 
         \param [in] src - an input 8-bit gray image.
-        \param [out] sum - a 32-bit integer sum image. 
+        \param [out] sum - a 32-bit integer sum image.
     */
-    template<class A> SIMD_INLINE void Integral(const View<A>& src, View<A>& sum)
+    template<template<class> class A> SIMD_INLINE void Integral(const View<A>& src, View<A>& sum)
     {
         assert(src.width + 1 == sum.width && src.height + 1 == sum.height);
         assert(src.format == View<A>::Gray8 && sum.format == View<A>::Int32);
@@ -1502,18 +1902,18 @@ namespace Simd
 
         \fn void Integral(const View<A>& src, View<A>& sum, View<A>& sqsum)
 
-        \short Calculates integral images for input 8-bit gray image. 
+        \short Calculates integral images for input 8-bit gray image.
 
-        The function can calculates sum integral image and square sum integral image. 
-        A integral images must have width and height per unit greater than that of the input image. 
+        The function can calculates sum integral image and square sum integral image.
+        A integral images must have width and height per unit greater than that of the input image.
 
         \note This function is a C++ wrapper for function ::SimdIntegral.
 
         \param [in] src - an input 8-bit gray image.
-        \param [out] sum - a 32-bit integer sum image. 
+        \param [out] sum - a 32-bit integer sum image.
         \param [out] sqsum - a 32-bit integer or 64-bit float point square sum image.
     */
-    template<class A> SIMD_INLINE void Integral(const View<A>& src, View<A>& sum, View<A>& sqsum)
+    template<template<class> class A> SIMD_INLINE void Integral(const View<A>& src, View<A>& sum, View<A>& sqsum)
     {
         assert(src.width + 1 == sum.width && src.height + 1 == sum.height && EqualSize(sum, sqsum));
         assert(src.format == View<A>::Gray8 && sum.format == View<A>::Int32 && (sqsum.format == View<A>::Int32 || sqsum.format == View<A>::Double));
@@ -1526,19 +1926,19 @@ namespace Simd
 
         \fn void Integral(const View<A>& src, View<A>& sum, View<A>& sqsum, View<A>& tilted)
 
-        \short Calculates integral images for input 8-bit gray image. 
+        \short Calculates integral images for input 8-bit gray image.
 
-        The function can calculates sum integral image, square sum integral image and tilted sum integral image. 
-        A integral images must have width and height per unit greater than that of the input image. 
+        The function can calculates sum integral image, square sum integral image and tilted sum integral image.
+        A integral images must have width and height per unit greater than that of the input image.
 
         \note This function is a C++ wrapper for function ::SimdIntegral.
 
         \param [in] src - an input 8-bit gray image.
-        \param [out] sum - a 32-bit integer sum image. 
+        \param [out] sum - a 32-bit integer sum image.
         \param [out] sqsum - a 32-bit integer or 64-bit float point square sum image.
         \param [out] tilted - a 32-bit integer tilted sum image.
     */
-    template<class A> SIMD_INLINE void Integral(const View<A>& src, View<A>& sum, View<A>& sqsum, View<A>& tilted)
+    template<template<class> class A> SIMD_INLINE void Integral(const View<A>& src, View<A>& sum, View<A>& sqsum, View<A>& tilted)
     {
         assert(src.width + 1 == sum.width && src.height + 1 == sum.height && EqualSize(sum, sqsum) && Compatible(sum, tilted));
         assert(src.format == View<A>::Gray8 && sum.format == View<A>::Int32 && (sqsum.format == View<A>::Int32 || sqsum.format == View<A>::Double));
@@ -1551,10 +1951,12 @@ namespace Simd
 
         \fn void InterferenceIncrement(View<A> & dst, uint8_t increment, int16_t saturation)
 
-        \short Increments statistic of interference detector. 
+        \short Increments statistic of interference detector.
 
-        For every point: 
-        \n statistic[i] = min(statistic[i] + increment, saturation); 
+        For every point:
+        \verbatim
+        statistic[i] = min(statistic[i] + increment, saturation);
+        \endverbatim
 
         This function is used for interference detection in motion detection algorithm.
 
@@ -1564,7 +1966,7 @@ namespace Simd
         \param [in] increment - an increment of statistic.
         \param [in] saturation - an upper saturation of statistic.
     */
-    template<class A> SIMD_INLINE void InterferenceIncrement(View<A> & dst, uint8_t increment, int16_t saturation)
+    template<template<class> class A> SIMD_INLINE void InterferenceIncrement(View<A> & dst, uint8_t increment, int16_t saturation)
     {
         assert(dst.format == View<A>::Int16);
 
@@ -1575,12 +1977,15 @@ namespace Simd
 
         \fn void InterferenceIncrementMasked(View<A> & dst, uint8_t increment, int16_t saturation, const View<A>& mask, uint8_t index)
 
-        \short Increments statistic of interference detector with using segmentation mask. 
+        \short Increments statistic of interference detector with using segmentation mask.
 
-        For every point when mask[i] == index: 
-        \n statistic[i] = min(statistic[i] + increment, saturation); 
+        For every point:
+        \verbatim
+        if(mask[i] == index)
+            statistic[i] = min(statistic[i] + increment, saturation);
+        \endverbatim
 
-        All images must have the same width, height. 
+        All images must have the same width, height.
         This function is used for interference detection in motion detection algorithm.
 
         \note This function is a C++ wrapper for function ::SimdInterferenceIncrementMasked.
@@ -1591,7 +1996,7 @@ namespace Simd
         \param [in] mask - a 8-bit gray image with mask.
         \param [in] index - an index of mask.
     */
-    template<class A> SIMD_INLINE void InterferenceIncrementMasked(View<A> & dst, uint8_t increment, int16_t saturation, const View<A>& mask, uint8_t index)
+    template<template<class> class A> SIMD_INLINE void InterferenceIncrementMasked(View<A> & dst, uint8_t increment, int16_t saturation, const View<A>& mask, uint8_t index)
     {
         assert(dst.format == View<A>::Int16 && mask.format == View<A>::Gray8 && EqualSize(dst, mask));
 
@@ -1602,10 +2007,12 @@ namespace Simd
 
         \fn void InterferenceDecrement(View<A> & dst, uint8_t decrement, int16_t saturation)
 
-        \short Decrements statistic of interference detector. 
+        \short Decrements statistic of interference detector.
 
-        For every point: 
-        \n statistic[i] = max(statistic[i] - decrement, saturation); 
+        For every point:
+        \verbatim
+        statistic[i] = max(statistic[i] - decrement, saturation);
+        \endverbatim
 
         This function is used for interference detection in motion detection algorithm.
 
@@ -1615,7 +2022,7 @@ namespace Simd
         \param [in] decrement - a decrement of statistic.
         \param [in] saturation - a lower saturation of statistic.
     */
-    template<class A> SIMD_INLINE void InterferenceDecrement(View<A> & dst, uint8_t decrement, int16_t saturation)
+    template<template<class> class A> SIMD_INLINE void InterferenceDecrement(View<A> & dst, uint8_t decrement, int16_t saturation)
     {
         assert(dst.format == View<A>::Int16);
 
@@ -1626,12 +2033,15 @@ namespace Simd
 
         \fn void InterferenceDecrementMasked(View<A> & dst, uint8_t decrement, int16_t saturation, const View<A>& mask, uint8_t index)
 
-        \short Decrements statistic of interference detector with using segmentation mask. 
+        \short Decrements statistic of interference detector with using segmentation mask.
 
-        For every point when mask[i] == index: 
-        \n statistic[i] = max(statistic[i] - decrement, saturation); 
+        For every point:
+        \verbatim
+        if(mask[i] == index)
+            statistic[i] = max(statistic[i] - decrement, saturation);
+        \endverbatim
 
-        All images must have the same width, height. 
+        All images must have the same width, height.
         This function is used for interference detection in motion detection algorithm.
 
         \note This function is a C++ wrapper for function ::SimdInterferenceDecrementMasked.
@@ -1642,47 +2052,225 @@ namespace Simd
         \param [in] mask - a 8-bit gray image with mask.
         \param [in] index - an index of mask.
     */
-    template<class A> SIMD_INLINE void InterferenceDecrementMasked(View<A> & dst, uint8_t decrement, int16_t saturation, const View<A>& mask, uint8_t index)
+    template<template<class> class A> SIMD_INLINE void InterferenceDecrementMasked(View<A> & dst, uint8_t decrement, int16_t saturation, const View<A>& mask, uint8_t index)
     {
         assert(dst.format == View<A>::Int16 && mask.format == View<A>::Gray8 && EqualSize(dst, mask));
 
         SimdInterferenceDecrementMasked(dst.data, dst.stride, dst.width, dst.height, decrement, saturation, mask.data, mask.stride, index);
     }
 
+    /*! @ingroup other_conversion
+
+        \fn void InterleaveUv(const View<A>& u, const View<A>& v, View<A>& uv)
+
+        \short Interleaves 8-bit U and V planar images into one 16-bit UV interleaved image.
+
+        All images must have the same width and height.
+        This function used for YUV420P to NV12 conversion.
+
+        \note This function is a C++ wrapper for function ::SimdInterleaveUv.
+
+        \param [in] u - an input 8-bit U planar image.
+        \param [in] v - an input 8-bit V planar image.
+        \param [out] uv - an output 16-bit UV interleaved image.
+    */
+    template<template<class> class A> SIMD_INLINE void InterleaveUv(const View<A>& u, const View<A>& v, View<A>& uv)
+    {
+        assert(EqualSize(uv, u, v) && uv.format == View<A>::Uv16 && u.format == View<A>::Gray8 && v.format == View<A>::Gray8);
+
+        SimdInterleaveUv(u.data, u.stride, v.data, v.stride, u.width, u.height, uv.data, uv.stride);
+    }
+
+    /*! @ingroup other_conversion
+
+        \fn void InterleaveBgr(const View<A> & b, const View<A> & g, const View<A> & r, View<A> & bgr)
+
+        \short Interleaves 8-bit Blue, Green and Red planar images into one 24-bit BGR interleaved image.
+
+        All images must have the same width and height.
+
+        \note This function is a C++ wrapper for function ::SimdInterleaveBgr.
+
+        \param [in] b - an input 8-bit Blue planar image.
+        \param [in] g - an input 8-bit Green planar image.
+        \param [in] r - an input 8-bit Red planar image.
+        \param [out] bgr - an output 24-bit BGR interleaved image.
+    */
+    template<template<class> class A> SIMD_INLINE void InterleaveBgr(const View<A> & b, const View<A> & g, const View<A> & r, View<A> & bgr)
+    {
+        assert(EqualSize(bgr, b, g, r) && Compatible(b, g, r) && bgr.format == View<A>::Bgr24 && b.format == View<A>::Gray8);
+
+        SimdInterleaveBgr(b.data, b.stride, g.data, g.stride, r.data, r.stride, bgr.width, bgr.height, bgr.data, bgr.stride);
+    }
+
+    /*! @ingroup other_conversion
+
+        \fn void InterleaveBgra(const View<A>& b, const View<A>& g, const View<A>& r, const View<A>& a, View<A>& bgra)
+
+        \short Interleaves 8-bit Blue, Green, Red and Alpha planar images into one 32-bit BGRA interleaved image.
+
+        All images must have the same width and height.
+
+        \note This function is a C++ wrapper for function ::SimdInterleaveBgra.
+
+        \param [in] b - an input 8-bit Blue planar image.
+        \param [in] g - an input 8-bit Green planar image.
+        \param [in] r - an input 8-bit Red planar image.
+        \param [in] a - an input 8-bit Alpha planar image.
+        \param [out] bgra - an output 32-bit BGRA interleaved image.
+    */
+    template<template<class> class A> SIMD_INLINE void InterleaveBgra(const View<A>& b, const View<A>& g, const View<A>& r, const View<A>& a, View<A>& bgra)
+    {
+        assert(EqualSize(bgra, b) && Compatible(b, g, r, a) && bgra.format == View<A>::Bgra32 && b.format == View<A>::Gray8);
+
+        SimdInterleaveBgra(b.data, b.stride, g.data, g.stride, r.data, r.stride, a.data, a.stride, bgra.width, bgra.height, bgra.data, bgra.stride);
+    }
+
+    /*! @ingroup laplace_filter
+
+        \fn void Laplace(const View<A>& src, View<A>& dst)
+
+        \short Calculates Laplace's filter.
+
+        All images must have the same width and height. Input image must has 8-bit gray format, output image must has 16-bit integer format.
+
+        For every point:
+        \verbatim
+        dst[x, y] =
+            - src[x-1, y-1] -   src[x, y-1] - src[x+1, y-1]
+            - src[x-1, y]   + 8*src[x, y]   - src[x+1, y]
+            - src[x-1, y+1] -   src[x, y+1] - src[x+1, y+1].
+        \endverbatim
+
+        \note This function is a C++ wrapper for function ::SimdLaplace.
+
+        \param [in] src - an input image.
+        \param [out] dst - an output image.
+    */
+    template<template<class> class A> SIMD_INLINE void Laplace(const View<A>& src, View<A>& dst)
+    {
+        assert(EqualSize(src, dst) && src.format == View<A>::Gray8 && dst.format == View<A>::Int16);
+
+        SimdLaplace(src.data, src.stride, src.width, src.height, dst.data, dst.stride);
+    }
+
+    /*! @ingroup laplace_filter
+
+        \fn void LaplaceAbs(const View<A>& src, View<A>& dst)
+
+        \short Calculates absolute value of Laplace's filter.
+
+        All images must have the same width and height. Input image must has 8-bit gray format, output image must has 16-bit integer format.
+
+        For every point:
+        \verbatim
+        dst[x, y] = abs(
+            - src[x-1, y-1] -   src[x, y-1] - src[x+1, y-1]
+            - src[x-1, y]   + 8*src[x, y]   - src[x+1, y]
+            - src[x-1, y+1] -   src[x, y+1] - src[x+1, y+1]).
+        \endverbatim
+
+        \note This function is a C++ wrapper for function ::SimdLaplaceAbs.
+
+        \param [in] src - an input image.
+        \param [out] dst - an output image.
+    */
+    template<template<class> class A> SIMD_INLINE void LaplaceAbs(const View<A>& src, View<A>& dst)
+    {
+        assert(EqualSize(src, dst) && src.format == View<A>::Gray8 && dst.format == View<A>::Int16);
+
+        SimdLaplaceAbs(src.data, src.stride, src.width, src.height, dst.data, dst.stride);
+    }
+
+    /*! @ingroup other_statistic
+
+        \fn void LaplaceAbsSum(const View<A>& src, uint64_t & sum)
+
+        \short Calculates sum of absolute value of Laplace's filter.
+
+        Input image must has 8-bit gray format.
+
+        For every point:
+        \verbatim
+        sum += abs(
+            - src[x-1, y-1] -   src[x, y-1] - src[x+1, y-1]
+            - src[x-1, y]   + 8*src[x, y]   - src[x+1, y]
+            - src[x-1, y+1] -   src[x, y+1] - src[x+1, y+1]).
+        \endverbatim
+
+        \note This function is a C++ wrapper for function ::SimdLaplaceAbsSum.
+
+        \param [in] src - an input image.
+        \param [out] sum - a result sum.
+    */
+    template<template<class> class A> SIMD_INLINE void LaplaceAbsSum(const View<A> & src, uint64_t & sum)
+    {
+        assert(src.format == View<A>::Gray8);
+
+        SimdLaplaceAbsSum(src.data, src.stride, src.width, src.height, &sum);
+    }
+
     /*! @ingroup other_filter
 
         \fn void LbpEstimate(const View<A>& src, View<A>& dst)
 
-        \short Calculates LBP (Local Binary Patterns) for 8-bit gray image. 
+        \short Calculates LBP (Local Binary Patterns) for 8-bit gray image.
 
-        All images must have the same width and height. 
+        All images must have the same width and height.
 
         \note This function is a C++ wrapper for function ::SimdLbpEstimate.
 
         \param [in] src - an input 8-bit gray image.
         \param [out] dst - an output 8-bit gray image with LBP.
     */
-    template<class A> SIMD_INLINE void LbpEstimate(const View<A>& src, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void LbpEstimate(const View<A>& src, View<A>& dst)
     {
         assert(Compatible(src, dst) && src.format == View<A>::Gray8);
 
         SimdLbpEstimate(src.data, src.stride, src.width, src.height, dst.data, dst.stride);
     }
 
+    /*! @ingroup other_filter
+
+        \fn void MeanFilter3x3(const View<A>& src, View<A>& dst)
+
+        \short Performs an averaging with window 3x3.
+
+        For every point:
+        \verbatim
+        dst[x, y] = (src[x-1, y-1] + src[x, y-1] + src[x+1, y-1] +
+                     src[x-1, y] + src[x, y] + src[x+1, y] +
+                     src[x-1, y+1] + src[x, y+1] + src[x+1, y+1] + 4) / 9;
+        \endverbatim
+
+        All images must have the same width, height and format (8-bit gray, 16-bit UV, 24-bit BGR or 32-bit BGRA).
+
+        \note This function is a C++ wrapper for function ::SimdMeanFilter3x3.
+
+        \param [in] src - a source image.
+        \param [out] dst - a destination image.
+    */
+    template<template<class> class A> SIMD_INLINE void MeanFilter3x3(const View<A>& src, View<A>& dst)
+    {
+        assert(Compatible(src, dst) && src.ChannelSize() == 1);
+
+        SimdMeanFilter3x3(src.data, src.stride, src.width, src.height, src.ChannelCount(), dst.data, dst.stride);
+    }
+
     /*! @ingroup median_filter
 
         \fn void MedianFilterRhomb3x3(const View<A>& src, View<A>& dst)
 
-        \short Performs median filtration of input image (filter window is a rhomb 3x3). 
+        \short Performs median filtration of input image (filter window is a rhomb 3x3).
 
-        All images must have the same width, height and format (8-bit gray, 24-bit BGR or 32-bit BGRA). 
+        All images must have the same width, height and format (8-bit gray, 16-bit UV, 24-bit BGR or 32-bit BGRA).
 
         \note This function is a C++ wrapper for function ::SimdMedianFilterRhomb3x3.
 
         \param [in] src - an original input image.
         \param [out] dst - a filtered output image.
     */
-    template<class A> SIMD_INLINE void MedianFilterRhomb3x3(const View<A>& src, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void MedianFilterRhomb3x3(const View<A>& src, View<A>& dst)
     {
         assert(Compatible(src, dst) && src.ChannelSize() == 1);
 
@@ -1693,16 +2281,16 @@ namespace Simd
 
         \fn void MedianFilterRhomb5x5(const View<A>& src, View<A>& dst)
 
-        \short Performs median filtration of input image (filter window is a rhomb 5x5). 
+        \short Performs median filtration of input image (filter window is a rhomb 5x5).
 
-        All images must have the same width, height and format (8-bit gray, 24-bit BGR or 32-bit BGRA). 
+        All images must have the same width, height and format (8-bit gray, 16-bit UV, 24-bit BGR or 32-bit BGRA).
 
         \note This function is a C++ wrapper for function ::SimdMedianFilterRhomb5x5.
 
         \param [in] src - an original input image.
         \param [out] dst - a filtered output image.
     */
-    template<class A> SIMD_INLINE void MedianFilterRhomb5x5(const View<A>& src, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void MedianFilterRhomb5x5(const View<A>& src, View<A>& dst)
     {
         assert(Compatible(src, dst) && src.ChannelSize() == 1);
 
@@ -1713,16 +2301,16 @@ namespace Simd
 
         \fn void MedianFilterSquare3x3(const View<A>& src, View<A>& dst)
 
-        \short Performs median filtration of input image (filter window is a square 3x3). 
+        \short Performs median filtration of input image (filter window is a square 3x3).
 
-        All images must have the same width, height and format (8-bit gray, 24-bit BGR or 32-bit BGRA). 
+        All images must have the same width, height and format (8-bit gray, 16-bit UV, 24-bit BGR or 32-bit BGRA).
 
         \note This function is a C++ wrapper for function ::SimdMedianFilterSquare3x3.
 
         \param [in] src - an original input image.
         \param [out] dst - a filtered output image.
     */
-    template<class A> SIMD_INLINE void MedianFilterSquare3x3(const View<A>& src, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void MedianFilterSquare3x3(const View<A>& src, View<A>& dst)
     {
         assert(Compatible(src, dst) && src.ChannelSize() == 1);
 
@@ -1733,29 +2321,56 @@ namespace Simd
 
         \fn void MedianFilterSquare5x5(const View<A>& src, View<A>& dst)
 
-        \short Performs median filtration of input image (filter window is a square 5x5). 
+        \short Performs median filtration of input image (filter window is a square 5x5).
 
-        All images must have the same width, height and format (8-bit gray, 24-bit BGR or 32-bit BGRA). 
+        All images must have the same width, height and format (8-bit gray, 16-bit UV, 24-bit BGR or 32-bit BGRA).
 
         \note This function is a C++ wrapper for function ::SimdMedianFilterSquare5x5.
 
         \param [in] src - an original input image.
         \param [out] dst - a filtered output image.
     */
-    template<class A> SIMD_INLINE void MedianFilterSquare5x5(const View<A>& src, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void MedianFilterSquare5x5(const View<A>& src, View<A>& dst)
     {
         assert(Compatible(src, dst) && src.ChannelSize() == 1);
 
         SimdMedianFilterSquare5x5(src.data, src.stride, src.width, src.height, src.ChannelCount(), dst.data, dst.stride);
     }
 
+    /*! @ingroup neural
+
+        \fn void NeuralConvert(const View<A> & src, float * dst, size_t stride, bool inversion)
+
+        \short Converts a 8-bit gray image to the 32-bit float array.
+
+        The length of output array must be equal to the area of input image.
+
+        For every point:
+        \verbatim
+        dst[i] = inversion ? (255 - src[col]) / 255 : src[i]/255;
+        \endverbatim
+
+        \note This function is a C++ wrapper for function ::SimdNeuralConvert.
+
+        \param [in] src - an input image.
+        \param [out] dst - a pointer to output array.
+        \param [in] stride - a row size of the output array.
+        \param [in] inversion - a flag of color inversion.
+    */
+    template<template<class> class A> SIMD_INLINE void NeuralConvert(const View<A> & src, float * dst, size_t stride, bool inversion)
+    {
+        assert(src.format == View<A>::Gray8);
+
+        SimdNeuralConvert(src.data, src.stride, src.width, src.height, dst, stride, inversion ? 1 : 0);
+    }
+
     /*! @ingroup operation
 
         \fn void OperationBinary8u(const View<A>& a, const View<A>& b, View<A>& dst, SimdOperationBinary8uType type)
 
-        \short Performs given operation between two images. 
+        \short Performs given operation between two images.
 
-        All images must have the same width, height and format (8-bit gray, 16-bit UV (UV plane of NV12 pixel format), 24-bit BGR or 32-bit BGRA). 
+        All images must have the same width, height and format (8-bit gray, 16-bit UV (UV plane of NV12 pixel format), 24-bit BGR or 32-bit BGRA).
 
         \note This function is a C++ wrapper for function ::SimdOperationBinary8u.
 
@@ -1764,7 +2379,7 @@ namespace Simd
         \param [out] dst - an output image.
         \param [in] type - a type of operation (see ::SimdOperationBinary8uType).
     */
-    template<class A> SIMD_INLINE void OperationBinary8u(const View<A>& a, const View<A>& b, View<A>& dst, SimdOperationBinary8uType type)
+    template<template<class> class A> SIMD_INLINE void OperationBinary8u(const View<A>& a, const View<A>& b, View<A>& dst, SimdOperationBinary8uType type)
     {
         assert(Compatible(a, b, dst) && a.ChannelSize() == 1);
 
@@ -1775,9 +2390,9 @@ namespace Simd
 
         \fn void OperationBinary16i(const View<A>& a, const View<A>& b, View<A>& dst, SimdOperationBinary16iType type)
 
-        \short Performs given operation between two images. 
+        \short Performs given operation between two images.
 
-        All images must have the same width, height and Simd::View::Int16 pixel format. 
+        All images must have the same width, height and Simd::View::Int16 pixel format.
 
         \note This function is a C++ wrapper for function ::SimdOperationBinary16i.
 
@@ -1786,7 +2401,7 @@ namespace Simd
         \param [out] dst - an output image.
         \param [in] type - a type of operation (see ::SimdOperationBinary16iType).
     */
-    template<class A> SIMD_INLINE void OperationBinary16i(const View<A>& a, const View<A>& b, View<A>& dst, SimdOperationBinary16iType type)
+    template<template<class> class A> SIMD_INLINE void OperationBinary16i(const View<A>& a, const View<A>& b, View<A>& dst, SimdOperationBinary16iType type)
     {
         assert(Compatible(a, b, dst) && a.format == View<A>::Int16);
 
@@ -1797,10 +2412,12 @@ namespace Simd
 
         \fn void VectorProduct(const uint8_t * vertical, const uint8_t * horizontal, View<A>& dst)
 
-        \short Calculates result 8-bit gray image as product of two vectors. 
+        \short Calculates result 8-bit gray image as product of two vectors.
 
-        For all points: 
-        \n dst[x, y] = horizontal[x]*vertical[y]/255.
+        For all points:
+        \verbatim
+        dst[x, y] = horizontal[x]*vertical[y]/255;
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdVectorProduct.
 
@@ -1808,7 +2425,7 @@ namespace Simd
         \param [in] horizontal - a pointer to pixels data of horizontal vector. It length is equal to result image width.
         \param [out] dst - a result image.
     */
-    template<class A> SIMD_INLINE void VectorProduct(const uint8_t * vertical, const uint8_t * horizontal, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void VectorProduct(const uint8_t * vertical, const uint8_t * horizontal, View<A>& dst)
     {
         assert(dst.format == View<A>::Gray8);
 
@@ -1819,37 +2436,41 @@ namespace Simd
 
         \fn void ReduceGray2x2(const View<A>& src, View<A>& dst)
 
-        \short Performs reducing and Gaussian blurring (in two time) a 8-bit gray image with using window 2x2. 
+        \short Performs reducing (in 2 times) and Gaussian blurring a 8-bit gray image with using window 2x2.
 
         For input and output image must be performed: dst.width = (src.width + 1)/2,  dst.height = (src.height + 1)/2.
 
-        For all points: 
-        \n dst[x, y] = (src[2*x, 2*y] + src[2*x, 2*y + 1] + src[2*x + 1, 2*y] + src[2*x + 1, 2*y + 1] + 2)/4.
+        For all points:
+        \verbatim
+        dst[x, y] = (src[2*x, 2*y] + src[2*x, 2*y + 1] + src[2*x + 1, 2*y] + src[2*x + 1, 2*y + 1] + 2)/4;
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdReduceGray2x2.
 
         \param [in] src - an original input image.
         \param [out] dst - a reduced output image.
     */
-    template<class A> SIMD_INLINE void ReduceGray2x2(const View<A>& src, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void ReduceGray2x2(const View<A>& src, View<A>& dst)
     {
-        assert(src.format == View<A>::Gray8 && dst.format == View<A>::Gray8);
+        assert(src.format == View<A>::Gray8 && dst.format == View<A>::Gray8 && Scale(src.Size()) == dst.Size());
 
         SimdReduceGray2x2(src.data, src.width, src.height, src.stride, dst.data, dst.width, dst.height, dst.stride);
     }
-    
+
     /*! @ingroup resizing
 
         \fn void ReduceGray3x3(const View<A>& src, View<A>& dst, bool compensation = true)
 
-        \short Performs reducing and Gaussian blurring (in two time) a 8-bit gray image with using window 3x3. 
+        \short Performs reducing (in 2 times) and Gaussian blurring a 8-bit gray image with using window 3x3.
 
         For input and output image must be performed: dst.width = (src.width + 1)/2,  dst.height = (src.height + 1)/2.
 
         For every point:
-        \n dst[x, y] = (src[2*x-1, 2*y-1] + 2*src[2*x, 2*y-1] + src[2*x+1, 2*y-1] + 
-        \n 2*(src[2*x-1, 2*y] + 2*src[2*x, 2*y] + src[2*x+1, 2*y]) +
-        \n src[2*x-1, 2*y+1] + 2*src[2*x, 2*y+1] + src[2*x+1, 2*y+1] + compensation ? 8 : 0) / 16; 
+        \verbatim
+        dst[x, y] = (src[2*x-1, 2*y-1] + 2*src[2*x, 2*y-1] + src[2*x+1, 2*y-1] +
+                  2*(src[2*x-1, 2*y]   + 2*src[2*x, 2*y]   + src[2*x+1, 2*y]) +
+                     src[2*x-1, 2*y+1] + 2*src[2*x, 2*y+1] + src[2*x+1, 2*y+1] + compensation ? 8 : 0) / 16;
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdReduceGray3x3.
 
@@ -1857,9 +2478,9 @@ namespace Simd
         \param [out] dst - a reduced output image.
         \param [in] compensation - a flag of compensation of rounding. It is equal to 'true' by default.
     */
-    template<class A> SIMD_INLINE void ReduceGray3x3(const View<A>& src, View<A>& dst, bool compensation = true)
+    template<template<class> class A> SIMD_INLINE void ReduceGray3x3(const View<A>& src, View<A>& dst, bool compensation = true)
     {
-        assert(src.format == View<A>::Gray8 && dst.format == View<A>::Gray8);
+        assert(src.format == View<A>::Gray8 && dst.format == View<A>::Gray8 && Scale(src.Size()) == dst.Size());
 
         SimdReduceGray3x3(src.data, src.width, src.height, src.stride, dst.data, dst.width, dst.height, dst.stride, compensation ? 1 : 0);
     }
@@ -1868,24 +2489,26 @@ namespace Simd
 
         \fn void ReduceGray4x4(const View<A>& src, View<A>& dst)
 
-        \short Performs reducing and Gaussian blurring (in two time) a 8-bit gray image with using window 4x4. 
+        \short Performs reducing (in 2 times) and Gaussian blurring a 8-bit gray image with using window 4x4.
 
         For input and output image must be performed: dst.width = (src.width + 1)/2,  dst.height = (src.height + 1)/2.
 
         For every point:
-        \n dst[x, y] = (src[2*x-1, 2*y-1] + 3*src[2*x, 2*y-1] + 3*src[2*x+1, 2*y-1] + src[2*x+2, 2*y-1]
-        \n 3*(src[2*x-1, 2*y] + 3*src[2*x, 2*y] + 3*src[2*x+1, 2*y] + src[2*x+2, 2*y]) +
-        \n 3*(src[2*x-1, 2*y+1] + 3*src[2*x, 2*y+1] + 3*src[2*x+1, 2*y+1] + src[2*x+2, 2*y+1]) +
-        \n src[2*x-1, 2*y+2] + 3*src[2*x, 2*y+2] + 3*src[2*x+1, 2*y+2] + src[2*x+2, 2*y+2] + 32) / 64; 
+        \verbatim
+        dst[x, y] =   (src[2*x-1, 2*y-1] + 3*src[2*x, 2*y-1] + 3*src[2*x+1, 2*y-1] + src[2*x+2, 2*y-1]
+                    3*(src[2*x-1, 2*y]   + 3*src[2*x, 2*y]   + 3*src[2*x+1, 2*y]   + src[2*x+2, 2*y]) +
+                    3*(src[2*x-1, 2*y+1] + 3*src[2*x, 2*y+1] + 3*src[2*x+1, 2*y+1] + src[2*x+2, 2*y+1]) +
+                       src[2*x-1, 2*y+2] + 3*src[2*x, 2*y+2] + 3*src[2*x+1, 2*y+2] + src[2*x+2, 2*y+2] + 32) / 64;
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdReduceGray4x4.
 
         \param [in] src - an original input image.
         \param [out] dst - a reduced output image.
     */
-    template<class A> SIMD_INLINE void ReduceGray4x4(const View<A>& src, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void ReduceGray4x4(const View<A>& src, View<A>& dst)
     {
-        assert(src.format == View<A>::Gray8 && dst.format == View<A>::Gray8);
+        assert(src.format == View<A>::Gray8 && dst.format == View<A>::Gray8 && Scale(src.Size()) == dst.Size());
 
         SimdReduceGray4x4(src.data, src.width, src.height, src.stride, dst.data, dst.width, dst.height, dst.stride);
     }
@@ -1894,16 +2517,20 @@ namespace Simd
 
         \fn void ReduceGray5x5(const View<A>& src, View<A>& dst, bool compensation = true)
 
-        \short Performs reducing and Gaussian blurring (in two time) a 8-bit gray image with using window 5x5. 
+        \short Performs reducing (in 2 times) and Gaussian blurring a 8-bit gray image with using window 5x5.
 
         For input and output image must be performed: dst.width = (src.width + 1)/2,  dst.height = (src.height + 1)/2.
 
         For every point:
-        \n dst[x, y] = (src[2*x-2, 2*y-2] + 4*src[2*x-1, 2*y-2] + 6*src[2*x, 2*y-2] + 4*src[2*x+1, 2*y-2] + src[2*x+2, 2*y-2] +
-        \n 4*(src[2*x-2, 2*y-1] + 4*src[2*x-1, 2*y-1] + 6*src[2*x, 2*y-1] + 4*src[2*x+1, 2*y-1] + src[2*x+2, 2*y-1]) +
-        \n 6*(src[2*x-2, 2*y] + 4*src[2*x-1, 2*y] + 6*src[2*x, 2*y] + 4*src[2*x+1, 2*y] + src[2*x+2, 2*y]) +
-        \n 4*(src[2*x-2, 2*y+1] + 4*src[2*x-1, 2*y+1] + 6*src[2*x, 2*y+1] + 4*src[2*x+1, 2*y+1] + src[2*x+2, 2*y+1]) +
-        \n src[2*x-2, 2*y+2] + 4*src[2*x-1, 2*y+2] + 6*src[2*x, 2*y+2] + 4*src[2*x+1, 2*y+2] + src[2*x+2, 2*y+2] + compensation ? 128 : 0) / 256; 
+        \verbatim
+        dst[x, y] = (
+               src[2*x-2, 2*y-2] + 4*src[2*x-1, 2*y-2] + 6*src[2*x, 2*y-2] + 4*src[2*x+1, 2*y-2] + src[2*x+2, 2*y-2] +
+            4*(src[2*x-2, 2*y-1] + 4*src[2*x-1, 2*y-1] + 6*src[2*x, 2*y-1] + 4*src[2*x+1, 2*y-1] + src[2*x+2, 2*y-1]) +
+            6*(src[2*x-2, 2*y]   + 4*src[2*x-1, 2*y]   + 6*src[2*x, 2*y]   + 4*src[2*x+1, 2*y]   + src[2*x+2, 2*y]) +
+            4*(src[2*x-2, 2*y+1] + 4*src[2*x-1, 2*y+1] + 6*src[2*x, 2*y+1] + 4*src[2*x+1, 2*y+1] + src[2*x+2, 2*y+1]) +
+               src[2*x-2, 2*y+2] + 4*src[2*x-1, 2*y+2] + 6*src[2*x, 2*y+2] + 4*src[2*x+1, 2*y+2] + src[2*x+2, 2*y+2] +
+            compensation ? 128 : 0) / 256;
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdReduceGray5x5.
 
@@ -1911,31 +2538,67 @@ namespace Simd
         \param [out] dst - a reduced output image.
         \param [in] compensation - a flag of compensation of rounding. It is equal to 'true' by default.
     */
-    template<class A> SIMD_INLINE void ReduceGray5x5(const View<A>& src, View<A>& dst, bool compensation = true)
+    template<template<class> class A> SIMD_INLINE void ReduceGray5x5(const View<A>& src, View<A>& dst, bool compensation = true)
     {
-        assert(src.format == View<A>::Gray8 && dst.format == View<A>::Gray8);
+        assert(src.format == View<A>::Gray8 && dst.format == View<A>::Gray8 && Scale(src.Size()) == dst.Size());
 
         SimdReduceGray5x5(src.data, src.width, src.height, src.stride, dst.data, dst.width, dst.height, dst.stride, compensation ? 1 : 0);
     }
 
     /*! @ingroup resizing
 
+        \fn void ReduceGray(const View<A> & src, View<A> & dst, ::SimdReduceType reduceType, bool compensation = true)
+
+        \short Performs reducing (in 2 times) and Gaussian blurring a 8-bit gray image.
+
+        For input and output image must be performed: dst.width = (src.width + 1)/2,  dst.height = (src.height + 1)/2.
+
+        \param [in] src - an original input image.
+        \param [out] dst - a reduced output image.
+        \param [in] reduceType - a type of function used for image reducing.
+        \param [in] compensation - a flag of compensation of rounding. It is relevant only for ::SimdReduce3x3 and ::SimdReduce5x5. It is equal to 'true' by default.
+    */
+    template<template<class> class A> SIMD_INLINE void ReduceGray(const View<A> & src, View<A> & dst, ::SimdReduceType reduceType, bool compensation = true)
+    {
+        assert(src.format == View<A>::Gray8 && dst.format == View<A>::Gray8 && Scale(src.Size()) == dst.Size());
+
+        switch (reduceType)
+        {
+        case SimdReduce2x2:
+            Simd::ReduceGray2x2(src, dst);
+            break;
+        case SimdReduce3x3:
+            Simd::ReduceGray3x3(src, dst, compensation);
+            break;
+        case SimdReduce4x4:
+            Simd::ReduceGray4x4(src, dst);
+            break;
+        case SimdReduce5x5:
+            Simd::ReduceGray5x5(src, dst, compensation);
+            break;
+        default:
+            assert(0);
+        }
+    }
+
+    /*! @ingroup resizing
+
         \fn void ResizeBilinear(const View<A>& src, View<A>& dst)
 
-        \short Performs resizing of input image with using bilinear interpolation. 
+        \short Performs resizing of input image with using bilinear interpolation.
 
-        All images must have the same format (8-bit gray, 24-bit BGR or 32-bit BGRA). 
+        All images must have the same format (8-bit gray, 16-bit UV, 24-bit BGR or 32-bit BGRA).
 
         \note This function is a C++ wrapper for function ::SimdResizeBilinear.
 
         \param [in] src - an original input image.
         \param [out] dst - a reduced output image.
     */
-    template<class A> SIMD_INLINE void ResizeBilinear(const View<A>& src, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void ResizeBilinear(const View<A>& src, View<A>& dst)
     {
         assert(src.format == dst.format && src.ChannelSize() == 1);
 
-        if(EqualSize(src, dst))
+        if (EqualSize(src, dst))
         {
             Copy(src, dst);
         }
@@ -1950,12 +2613,15 @@ namespace Simd
 
         \fn void SegmentationChangeIndex(View<A> & mask, uint8_t oldIndex, uint8_t newIndex)
 
-        \short Changes certain index in mask. 
+        \short Changes certain index in mask.
 
-        Mask must has 8-bit gray pixel format. 
+        Mask must has 8-bit gray pixel format.
 
         For every point:
-        \n mask[i] = mask[i] == oldIndex ? newIndex : mask[i]. 
+        \verbatim
+        if(mask[i] == oldIndex)
+            mask[i] = newIndex;
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdSegmentationChangeIndex.
 
@@ -1963,7 +2629,7 @@ namespace Simd
         \param [in] oldIndex - a mask old index.
         \param [in] newIndex - a mask new index.
     */
-    template<class A> SIMD_INLINE void SegmentationChangeIndex(View<A> & mask, uint8_t oldIndex, uint8_t newIndex)
+    template<template<class> class A> SIMD_INLINE void SegmentationChangeIndex(View<A> & mask, uint8_t oldIndex, uint8_t newIndex)
     {
         assert(mask.format == View<A>::Gray8);
 
@@ -1974,16 +2640,16 @@ namespace Simd
 
         \fn void SegmentationFillSingleHoles(View<A> & mask, uint8_t index)
 
-        \short Fill single holes in mask. 
+        \short Fill single holes in mask.
 
-        Mask must has 8-bit gray pixel format. 
+        Mask must has 8-bit gray pixel format.
 
         \note This function is a C++ wrapper for function ::SimdSegmentationFillSingleHoles.
 
         \param [in, out] mask - a 8-bit gray mask image.
         \param [in] index - a mask index.
     */
-    template<class A> SIMD_INLINE void SegmentationFillSingleHoles(View<A> & mask, uint8_t index)
+    template<template<class> class A> SIMD_INLINE void SegmentationFillSingleHoles(View<A> & mask, uint8_t index)
     {
         assert(mask.format == View<A>::Gray8 && mask.width > 2 && mask.height > 2);
 
@@ -1994,7 +2660,7 @@ namespace Simd
 
         \fn void SegmentationPropagate2x2(const View<A> & parent, View<A> & child, const View<A> & difference, uint8_t currentIndex, uint8_t invalidIndex, uint8_t emptyIndex, uint8_t differenceThreshold)
 
-        \short Propagates mask index from parent (upper) to child (lower) level of mask pyramid with using 2x2 scan window. 
+        \short Propagates mask index from parent (upper) to child (lower) level of mask pyramid with using 2x2 scan window.
 
         For parent and child image must be performed: parent.width = (child.width + 1)/2, parent.height = (child.height + 1)/2.
         All images must have 8-bit gray pixel format. Size of different image is equal to child image.
@@ -2009,13 +2675,13 @@ namespace Simd
         \param [in] emptyIndex - empty mask index.
         \param [in] differenceThreshold - a difference threshold for conditional index propagating.
     */
-    template<class A> SIMD_INLINE void SegmentationPropagate2x2(const View<A> & parent, View<A> & child, const View<A> & difference, uint8_t currentIndex, uint8_t invalidIndex, uint8_t emptyIndex, uint8_t differenceThreshold)
+    template<template<class> class A> SIMD_INLINE void SegmentationPropagate2x2(const View<A> & parent, View<A> & child, const View<A> & difference, uint8_t currentIndex, uint8_t invalidIndex, uint8_t emptyIndex, uint8_t differenceThreshold)
     {
         assert(parent.format == View<A>::Gray8 && parent.width >= 2 && parent.height >= 2);
-        assert((child.width + 1)/2 == parent.width && (child.height + 1)/2 == parent.height);
+        assert((child.width + 1) / 2 == parent.width && (child.height + 1) / 2 == parent.height);
         assert(Compatible(child, difference) && child.format == View<A>::Gray8);
 
-        SimdSegmentationPropagate2x2(parent.data, parent.stride, parent.width, parent.height, child.data, child.stride, 
+        SimdSegmentationPropagate2x2(parent.data, parent.stride, parent.width, parent.height, child.data, child.stride,
             difference.data, difference.stride, currentIndex, invalidIndex, emptyIndex, differenceThreshold);
     }
 
@@ -2023,9 +2689,9 @@ namespace Simd
 
         \fn void SegmentationShrinkRegion(const View<A> & mask, uint8_t index, Rectangle<ptrdiff_t> & rect)
 
-        \short Finds actual region of mask index location. 
+        \short Finds actual region of mask index location.
 
-        Mask must has 8-bit gray pixel format. 
+        Mask must has 8-bit gray pixel format.
 
         \note This function is a C++ wrapper for function ::SimdSegmentationShrinkRegion.
 
@@ -2033,7 +2699,7 @@ namespace Simd
         \param [in] index - a mask index.
         \param [in, out] rect - a region bounding box rectangle.
     */
-    template<class A> SIMD_INLINE void SegmentationShrinkRegion(const View<A> & mask, uint8_t index, Rectangle<ptrdiff_t> & rect)
+    template<template<class> class A> SIMD_INLINE void SegmentationShrinkRegion(const View<A> & mask, uint8_t index, Rectangle<ptrdiff_t> & rect)
     {
         assert(mask.format == View<A>::Gray8);
         assert(rect.Width() > 0 && rect.Height() > 0 && Rectangle<ptrdiff_t>(mask.Size()).Contains(rect));
@@ -2045,9 +2711,9 @@ namespace Simd
 
         \fn void ShiftBilinear(const View<A> & src, const View<A> & bkg, const Point<double> & shift, const Rectangle<ptrdiff_t> & crop, View<A> & dst)
 
-        \short Performs shifting of input image with using bilinear interpolation. 
+        \short Performs shifting of input image with using bilinear interpolation.
 
-        All images must have the same width, height and format (8-bit gray, 24-bit BGR or 32-bit BGRA). 
+        All images must have the same width, height and format (8-bit gray, 16-bit UV, 24-bit BGR or 32-bit BGRA).
 
         \note This function is a C++ wrapper for function ::SimdShiftBilinear.
 
@@ -2057,7 +2723,7 @@ namespace Simd
         \param [in] crop - a crop rectangle.
         \param [out] dst - an output image.
     */
-    template<class A> SIMD_INLINE void ShiftBilinear(const View<A> & src, const View<A> & bkg, const Point<double> & shift, const Rectangle<ptrdiff_t> & crop, View<A> & dst)
+    template<template<class> class A> SIMD_INLINE void ShiftBilinear(const View<A> & src, const View<A> & bkg, const Point<double> & shift, const Rectangle<ptrdiff_t> & crop, View<A> & dst)
     {
         assert(Compatible(src, bkg, dst) && src.ChannelSize() == 1);
 
@@ -2069,19 +2735,21 @@ namespace Simd
 
         \fn void SobelDx(const View<A>& src, View<A>& dst)
 
-        \short Calculates Sobel's filter along x axis. 
+        \short Calculates Sobel's filter along x axis.
 
-        All images must have the same width and height. Input image must has 8-bit gray format, output image must has 16-bit integer format. 
+        All images must have the same width and height. Input image must has 8-bit gray format, output image must has 16-bit integer format.
 
-        For every point: 
-        \n dst[x, y] = (src[x+1,y-1] + 2*src[x+1, y] + src[x+1, y+1]) - (src[x-1,y-1] + 2*src[x-1, y] + src[x-1, y+1]).
+        For every point:
+        \verbatim
+        dst[x, y] = (src[x+1,y-1] + 2*src[x+1, y] + src[x+1, y+1]) - (src[x-1,y-1] + 2*src[x-1, y] + src[x-1, y+1]).
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdSobelDx.
 
         \param [in] src - an input image.
         \param [out] dst - an output image.
     */
-    template<class A> SIMD_INLINE void SobelDx(const View<A>& src, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void SobelDx(const View<A>& src, View<A>& dst)
     {
         assert(EqualSize(src, dst) && src.format == View<A>::Gray8 && dst.format == View<A>::Int16);
 
@@ -2092,19 +2760,21 @@ namespace Simd
 
         \fn void SobelDxAbs(const View<A>& src, View<A>& dst)
 
-        \short Calculates absolute value of Sobel's filter along x axis. 
+        \short Calculates absolute value of Sobel's filter along x axis.
 
-        All images must have the same width and height. Input image must has 8-bit gray format, output image must has 16-bit integer format. 
+        All images must have the same width and height. Input image must has 8-bit gray format, output image must has 16-bit integer format.
 
-        For every point: 
-        \n dst[x, y] = abs((src[x+1,y-1] + 2*src[x+1, y] + src[x+1, y+1]) - (src[x-1,y-1] + 2*src[x-1, y] + src[x-1, y+1])).
+        For every point:
+        \verbatim
+        dst[x, y] = abs((src[x+1,y-1] + 2*src[x+1, y] + src[x+1, y+1]) - (src[x-1,y-1] + 2*src[x-1, y] + src[x-1, y+1])).
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdSobelDxAbs.
 
         \param [in] src - an input image.
         \param [out] dst - an output image.
     */
-    template<class A> SIMD_INLINE void SobelDxAbs(const View<A>& src, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void SobelDxAbs(const View<A>& src, View<A>& dst)
     {
         assert(EqualSize(src, dst) && src.format == View<A>::Gray8 && dst.format == View<A>::Int16);
 
@@ -2115,19 +2785,21 @@ namespace Simd
 
         \fn void SobelDxAbsSum(const View<A>& src, uint64_t & sum)
 
-        \short Calculates sum of absolute value of Sobel's filter along x axis. 
+        \short Calculates sum of absolute value of Sobel's filter along x axis.
 
-        Input image must has 8-bit gray format. 
+        Input image must has 8-bit gray format.
 
-        For every point: 
-        \n sum += abs((src[x+1,y-1] + 2*src[x+1, y] + src[x+1, y+1]) - (src[x-1,y-1] + 2*src[x-1, y] + src[x-1, y+1])).
+        For every point:
+        \verbatim
+        sum += abs((src[x+1,y-1] + 2*src[x+1, y] + src[x+1, y+1]) - (src[x-1,y-1] + 2*src[x-1, y] + src[x-1, y+1]));
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdSobelDxAbsSum.
 
         \param [in] src - an input image.
         \param [out] sum - an unsigned 64-bit integer value with result sum.
     */
-    template<class A> SIMD_INLINE void SobelDxAbsSum(const View<A>& src, uint64_t & sum)
+    template<template<class> class A> SIMD_INLINE void SobelDxAbsSum(const View<A>& src, uint64_t & sum)
     {
         assert(src.format == View<A>::Gray8);
 
@@ -2138,19 +2810,21 @@ namespace Simd
 
         \fn void SobelDy(const View<A>& src, View<A>& dst)
 
-        \short Calculates Sobel's filter along y axis. 
+        \short Calculates Sobel's filter along y axis.
 
-        All images must have the same width and height. Input image must has 8-bit gray format, output image must has 16-bit integer format. 
+        All images must have the same width and height. Input image must has 8-bit gray format, output image must has 16-bit integer format.
 
-        For every point: 
-        \n dst[x, y] = (src[x-1,y+1] + 2*src[x, y+1] + src[x+1, y+1]) - (src[x-1,y-1] + 2*src[x, y-1] + src[x+1, y-1]).
+        For every point:
+        \verbatim
+        dst[x, y] = (src[x-1,y+1] + 2*src[x, y+1] + src[x+1, y+1]) - (src[x-1,y-1] + 2*src[x, y-1] + src[x+1, y-1]);
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdSobelDy.
 
         \param [in] src - an input image.
         \param [out] dst - an output image.
     */
-    template<class A> SIMD_INLINE void SobelDy(const View<A>& src, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void SobelDy(const View<A>& src, View<A>& dst)
     {
         assert(EqualSize(src, dst) && src.format == View<A>::Gray8 && dst.format == View<A>::Int16);
 
@@ -2161,19 +2835,21 @@ namespace Simd
 
         \fn void SobelDyAbs(const View<A>& src, View<A>& dst)
 
-        \short Calculates absolute value of Sobel's filter along y axis. 
+        \short Calculates absolute value of Sobel's filter along y axis.
 
-        All images must have the same width and height. Input image must has 8-bit gray format, output image must has 16-bit integer format. 
+        All images must have the same width and height. Input image must has 8-bit gray format, output image must has 16-bit integer format.
 
-        For every point: 
-        \n dst[x, y] = abs((src[x-1,y+1] + 2*src[x, y+1] + src[x+1, y+1]) - (src[x-1,y-1] + 2*src[x, y-1] + src[x+1, y-1])).
+        For every point:
+        \verbatim
+        dst[x, y] = abs((src[x-1,y+1] + 2*src[x, y+1] + src[x+1, y+1]) - (src[x-1,y-1] + 2*src[x, y-1] + src[x+1, y-1]));
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdSobelDyAbs.
 
         \param [in] src - an input image.
         \param [out] dst - an output image.
     */
-    template<class A> SIMD_INLINE void SobelDyAbs(const View<A>& src, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void SobelDyAbs(const View<A>& src, View<A>& dst)
     {
         assert(EqualSize(src, dst) && src.format == View<A>::Gray8 && dst.format == View<A>::Int16);
 
@@ -2184,19 +2860,21 @@ namespace Simd
 
         \fn void SobelDyAbsSum(const View<A>& src, uint64_t & sum)
 
-        \short Calculates sum of absolute value of Sobel's filter along y axis. 
+        \short Calculates sum of absolute value of Sobel's filter along y axis.
 
-        Input image must has 8-bit gray format. 
+        Input image must has 8-bit gray format.
 
-        For every point: 
-        \n sum += abs((src[x-1,y+1] + 2*src[x, y+1] + src[x+1, y+1]) - (src[x-1,y-1] + 2*src[x, y-1] + src[x+1, y-1])).
+        For every point:
+        \verbatim
+        sum += abs((src[x-1,y+1] + 2*src[x, y+1] + src[x+1, y+1]) - (src[x-1,y-1] + 2*src[x, y-1] + src[x+1, y-1]));
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdSobelDyAbsSum.
 
         \param [in] src - an input image.
         \param [out] sum - an unsigned 64-bit integer value with result sum.
     */
-    template<class A> SIMD_INLINE void SobelDyAbsSum(const View<A>& src, uint64_t & sum)
+    template<template<class> class A> SIMD_INLINE void SobelDyAbsSum(const View<A>& src, uint64_t & sum)
     {
         assert(src.format == View<A>::Gray8);
 
@@ -2207,22 +2885,24 @@ namespace Simd
 
         \fn void ContourMetrics(const View<A>& src, View<A>& dst)
 
-        \short Calculates contour metrics based on absolute value and direction of Sobel's filter along y and y axis. 
+        \short Calculates contour metrics based on absolute value and direction of Sobel's filter along y and y axis.
 
-        All images must have the same width and height. Input image must has 8-bit gray format, output image must has 16-bit integer format. 
-        This function is used for contour extraction. 
+        All images must have the same width and height. Input image must has 8-bit gray format, output image must has 16-bit integer format.
+        This function is used for contour extraction.
 
-        For every point: 
-        \n dy = abs((src[x-1,y+1] + 2*src[x, y+1] + src[x+1, y+1]) - (src[x-1,y-1] + 2*src[x, y-1] + src[x+1, y-1])).
-        \n dx = abs((src[x+1,y-1] + 2*src[x+1, y] + src[x+1, y+1]) - (src[x-1,y-1] + 2*src[x-1, y] + src[x-1, y+1])).
-        \n dst[x, y] = (dx + dy)*2 + (dx >= dy ? 0 : 1).
+        For every point:
+        \verbatim
+        dy = abs((src[x-1,y+1] + 2*src[x, y+1] + src[x+1, y+1]) - (src[x-1,y-1] + 2*src[x, y-1] + src[x+1, y-1]));
+        dx = abs((src[x+1,y-1] + 2*src[x+1, y] + src[x+1, y+1]) - (src[x-1,y-1] + 2*src[x-1, y] + src[x-1, y+1]));
+        dst[x, y] = (dx + dy)*2 + (dx >= dy ? 0 : 1);
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdContourMetrics.
 
         \param [in] src - a gray 8-bit input image.
         \param [out] dst - an output 16-bit image.
     */
-    template<class A> SIMD_INLINE void ContourMetrics(const View<A>& src, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void ContourMetrics(const View<A>& src, View<A>& dst)
     {
         assert(EqualSize(src, dst) && src.format == View<A>::Gray8 && dst.format == View<A>::Int16);
 
@@ -2233,15 +2913,17 @@ namespace Simd
 
         \fn void ContourMetrics(const View<A>& src, const View<A>& mask, uint8_t indexMin, View<A>& dst)
 
-        \short Calculates contour metrics based on absolute value and direction of Sobel's filter along y and y axis with using mask. 
+        \short Calculates contour metrics based on absolute value and direction of Sobel's filter along y and y axis with using mask.
 
-        All images must have the same width and height. Input image must has 8-bit gray format, output image must has 16-bit integer format. 
-        This function is used for contour extraction. 
+        All images must have the same width and height. Input image must has 8-bit gray format, output image must has 16-bit integer format.
+        This function is used for contour extraction.
 
-        For every point: 
-        \n dy = abs((src[x-1,y+1] + 2*src[x, y+1] + src[x+1, y+1]) - (src[x-1,y-1] + 2*src[x, y-1] + src[x+1, y-1])).
-        \n dx = abs((src[x+1,y-1] + 2*src[x+1, y] + src[x+1, y+1]) - (src[x-1,y-1] + 2*src[x-1, y] + src[x-1, y+1])).
-        \n dst[x, y] = mask[x, y] < indexMin ? 0 : (dx + dy)*2 + (dx >= dy ? 0 : 1).
+        For every point:
+        \verbatim
+        dy = abs((src[x-1,y+1] + 2*src[x, y+1] + src[x+1, y+1]) - (src[x-1,y-1] + 2*src[x, y-1] + src[x+1, y-1]));
+        dx = abs((src[x+1,y-1] + 2*src[x+1, y] + src[x+1, y+1]) - (src[x-1,y-1] + 2*src[x-1, y] + src[x-1, y+1]));
+        dst[x, y] = mask[x, y] < indexMin ? 0 : (dx + dy)*2 + (dx >= dy ? 0 : 1);
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdContourMetricsMasked.
 
@@ -2250,7 +2932,7 @@ namespace Simd
         \param [in] indexMin - a mask minimal permissible index.
         \param [out] dst - an output 16-bit image.
     */
-    template<class A> SIMD_INLINE void ContourMetrics(const View<A>& src, const View<A>& mask, uint8_t indexMin, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void ContourMetrics(const View<A>& src, const View<A>& mask, uint8_t indexMin, View<A>& dst)
     {
         assert(Compatible(src, mask) && EqualSize(src, dst) && src.format == View<A>::Gray8 && dst.format == View<A>::Int16);
 
@@ -2261,18 +2943,20 @@ namespace Simd
 
         \fn void ContourAnchors(const View<A>& src, size_t step, int16_t threshold, View<A>& dst)
 
-        \short Extract contour anchors from contour metrics. 
+        \short Extract contour anchors from contour metrics.
 
-        All images must have the same width and height. Input image must has 16-bit integer format, output image must has 8-bit gray format. 
-        Input image with metrics can be estimated by using ::SimdContourMetrics or ::SimdContourMetricsMasked functions. 
-        This function is used for contour extraction. 
+        All images must have the same width and height. Input image must has 16-bit integer format, output image must has 8-bit gray format.
+        Input image with metrics can be estimated by using ::SimdContourMetrics or ::SimdContourMetricsMasked functions.
+        This function is used for contour extraction.
 
-        For every point (except border): 
-        \n a[x, y] = src[x, y] >> 1.
-        \n if(src[x, y] & 1)
-        \n dst[x, y] = a[x, y] > 0 && (a[x, y] - a[x + 1, y] >= threshold) && (a[x, y] - a[x - 1, y] >= threshold) ? 255 : 0;
-        \n else
-        \n dst[x, y] = a[x, y] > 0 && (a[x, y] - a[x, y + 1] >= threshold) && (a[x, y] - a[x, y - 1] >= threshold) ? 255 : 0;
+        For every point (except border):
+        \verbatim
+        a[x, y] = src[x, y] >> 1.
+        if(src[x, y] & 1)
+            dst[x, y] = a[x, y] > 0 && (a[x, y] - a[x + 1, y] >= threshold) && (a[x, y] - a[x - 1, y] >= threshold) ? 255 : 0;
+        else
+            dst[x, y] = a[x, y] > 0 && (a[x, y] - a[x, y + 1] >= threshold) && (a[x, y] - a[x, y - 1] >= threshold) ? 255 : 0;
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdContourAnchors.
 
@@ -2281,7 +2965,7 @@ namespace Simd
         \param [in] threshold - a threshold of anchor creation.
         \param [out] dst - an output 8-bit gray image.
     */
-    template<class A> SIMD_INLINE void ContourAnchors(const View<A>& src, size_t step, int16_t threshold, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void ContourAnchors(const View<A>& src, size_t step, int16_t threshold, View<A>& dst)
     {
         assert(EqualSize(src, dst) && src.format == View<A>::Int16 && dst.format == View<A>::Gray8);
 
@@ -2292,12 +2976,14 @@ namespace Simd
 
         \fn void SquaredDifferenceSum(const View<A>& a, const View<A>& b, uint64_t & sum)
 
-        \short Calculates sum of squared differences for two 8-bit gray images. 
+        \short Calculates sum of squared differences for two 8-bit gray images.
 
-        All images must have the same width and height. 
+        All images must have the same width and height.
 
-        For every point: 
-        \n sum += (a[i] - b[i])*(a[i] - b[i]).
+        For every point:
+        \verbatim
+        sum += (a[i] - b[i])*(a[i] - b[i]);
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdSquaredDifferenceSum.
 
@@ -2305,7 +2991,7 @@ namespace Simd
         \param [in] b - a second image.
         \param [out] sum - a reference to unsigned 64-bit integer value with result sum.
     */
-    template<class A> SIMD_INLINE void SquaredDifferenceSum(const View<A>& a, const View<A>& b, uint64_t & sum)
+    template<template<class> class A> SIMD_INLINE void SquaredDifferenceSum(const View<A>& a, const View<A>& b, uint64_t & sum)
     {
         assert(Compatible(a, b) && a.format == View<A>::Gray8);
 
@@ -2316,12 +3002,15 @@ namespace Simd
 
         \fn void SquaredDifferenceSum(const View<A>& a, const View<A>& b, const View<A>& mask, uint8_t index, uint64_t & sum)
 
-        \short Calculates sum of squared differences for two images with using mask. 
+        \short Calculates sum of squared differences for two images with using mask.
 
-        All images must have the same width, height and format (8-bit gray). 
+        All images must have the same width, height and format (8-bit gray).
 
-        For every point where mask[i] == index: 
-        \n sum += (a[i] - b[i])*(a[i] - b[i]).
+        For every point:
+        \verbatim
+        if(mask[i] == index)
+            sum += (a[i] - b[i])*(a[i] - b[i]);
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdSquaredDifferenceSumMasked.
 
@@ -2331,7 +3020,7 @@ namespace Simd
         \param [in] index - a mask index.
         \param [out] sum - a reference to unsigned 64-bit integer value with result sum.
     */
-    template<class A> SIMD_INLINE void SquaredDifferenceSum(const View<A>& a, const View<A>& b, const View<A>& mask, uint8_t index, uint64_t & sum)
+    template<template<class> class A> SIMD_INLINE void SquaredDifferenceSum(const View<A>& a, const View<A>& b, const View<A>& mask, uint8_t index, uint64_t & sum)
     {
         assert(Compatible(a, b, mask) && a.format == View<A>::Gray8);
 
@@ -2342,9 +3031,9 @@ namespace Simd
 
         \fn void GetStatistic(const View<A>& src, uint8_t & min, uint8_t & max, uint8_t & average)
 
-        \short Finds minimal, maximal and average pixel values for given image. 
+        \short Finds minimal, maximal and average pixel values for given image.
 
-        The image must has 8-bit gray format. 
+        The image must has 8-bit gray format.
 
         \note This function is a C++ wrapper for function ::SimdGetStatistic.
 
@@ -2353,7 +3042,7 @@ namespace Simd
         \param [out] max - a reference to unsigned 8-bit integer value with found maximal pixel value.
         \param [out] average - a reference to unsigned 8-bit integer value with found average pixel value.
     */
-    template<class A> SIMD_INLINE void GetStatistic(const View<A>& src, uint8_t & min, uint8_t & max, uint8_t & average)
+    template<template<class> class A> SIMD_INLINE void GetStatistic(const View<A>& src, uint8_t & min, uint8_t & max, uint8_t & average)
     {
         assert(src.format == View<A>::Gray8);
 
@@ -2364,17 +3053,22 @@ namespace Simd
 
         \fn void GetMoments(const View<A>& mask, uint8_t index, uint64_t & area, uint64_t & x, uint64_t & y, uint64_t & xx, uint64_t & xy, uint64_t & yy)
 
-        \short Calculate statistical characteristics (moments) of pixels with given index. 
+        \short Calculate statistical characteristics (moments) of pixels with given index.
 
         The image must has 8-bit gray format.
 
-        For every point where mask[X, Y] == index: 
-        \n area += 1.
-        \n x += X.
-        \n y += Y.
-        \n xx += X*X.
-        \n xy += X*Y.
-        \n yy += Y*Y.
+        For every point:
+        \verbatim
+        if(mask[X, Y] == index)
+        {
+            area += 1.
+            x += X.
+            y += Y.
+            xx += X*X.
+            xy += X*Y.
+            yy += Y*Y.
+        }
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdGetMoments.
 
@@ -2387,7 +3081,7 @@ namespace Simd
         \param [out] xy - a reference to unsigned 64-bit integer value with found second-order moment xy.
         \param [out] yy - a reference to unsigned 64-bit integer value with found second-order moment yy.
     */
-    template<class A> SIMD_INLINE void GetMoments(const View<A>& mask, uint8_t index, uint64_t & area, uint64_t & x, uint64_t & y, uint64_t & xx, uint64_t & xy, uint64_t & yy)
+    template<template<class> class A> SIMD_INLINE void GetMoments(const View<A>& mask, uint8_t index, uint64_t & area, uint64_t & x, uint64_t & y, uint64_t & xx, uint64_t & xy, uint64_t & yy)
     {
         assert(mask.format == View<A>::Gray8);
 
@@ -2398,18 +3092,20 @@ namespace Simd
 
         \fn void GetRowSums(const View<A>& src, uint32_t * sums)
 
-        \short Calculate sums of rows for given 8-bit gray image. 
+        \short Calculate sums of rows for given 8-bit gray image.
 
-        For all rows: 
-        \n sums[y] += src[x, y]; 
-        \n where x changes from 0 to width.
+        For all rows:
+        \verbatim
+        for(x = 0; x < width; ++x)
+            sums[y] += src[x, y];
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdGetRowSums.
 
         \param [in] src - an input image.
         \param [out] sums - a pointer to array of unsigned 32-bit integers result sums of rows. It length must be equal to image height.
     */
-    template<class A> SIMD_INLINE void GetRowSums(const View<A>& src, uint32_t * sums)
+    template<template<class> class A> SIMD_INLINE void GetRowSums(const View<A>& src, uint32_t * sums)
     {
         assert(src.format == View<A>::Gray8);
 
@@ -2420,18 +3116,20 @@ namespace Simd
 
         \fn void GetColSums(const View<A>& src, uint32_t * sums)
 
-        \short Calculate sums of columns for given 8-bit gray image. 
+        \short Calculate sums of columns for given 8-bit gray image.
 
-        For all columns: 
-        \n sums[x] += src[x, y]; 
-        \n where y changes from 0 to height.
+        For all columns:
+        \verbatim
+        for(y = 0; y < height; ++y)
+            sums[x] += src[x, y];
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdGetColSums.
 
         \param [in] src - an input image.
         \param [out] sums - a pointer to array of unsigned 32-bit integers result sums of columns. It length must be equal to image width.
     */
-    template<class A> SIMD_INLINE void GetColSums(const View<A>& src, uint32_t * sums)
+    template<template<class> class A> SIMD_INLINE void GetColSums(const View<A>& src, uint32_t * sums)
     {
         assert(src.format == View<A>::Gray8);
 
@@ -2442,19 +3140,24 @@ namespace Simd
 
         \fn void GetAbsDyRowSums(const View<A>& src, uint32_t * sums)
 
-        \short Calculate sums of absolute derivate along y axis for rows for given 8-bit gray image. 
+        \short Calculate sums of absolute derivate along y axis for rows for given 8-bit gray image.
 
-        For all rows except the last: 
-        \n sums[y] += abs::(src[x, y+1] - src[x, y]); 
-        \n where x changes from 0 to width.
-        \n For the last row sums[height-1] = 0; 
+        For all rows except the last:
+        \verbatim
+        for(x = 0; x < width; ++x)
+            sums[y] += abs(src[x, y+1] - src[x, y]);
+        \endverbatim
+        For the last row:
+        \verbatim
+        sums[height-1] = 0;
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdGetAbsDyRowSums.
 
         \param [in] src - an input image.
         \param [out] sums - a pointer to array of unsigned 32-bit integers result sums. It length must be equal to image height.
     */
-    template<class A> SIMD_INLINE void GetAbsDyRowSums(const View<A>& src, uint32_t * sums)
+    template<template<class> class A> SIMD_INLINE void GetAbsDyRowSums(const View<A>& src, uint32_t * sums)
     {
         assert(src.format == View<A>::Gray8);
 
@@ -2465,19 +3168,24 @@ namespace Simd
 
         \fn void GetAbsDxColSums(const View<A>& src, uint32_t * sums)
 
-        \short Calculate sums of absolute derivate along x axis for columns for given 8-bit gray image. 
+        \short Calculate sums of absolute derivate along x axis for columns for given 8-bit gray image.
 
-        For all columns except the last: 
-        \n sums[x] += abs::(src[x+1, y] - src[x, y]); 
-        \n where y changes from 0 to height.
-        \n For the last column sums[width-1] = 0; 
+        For all columns except the last:
+        \verbatim
+        for(y = 0; y < height; ++y)
+            sums[y] += abs(src[x+1, y] - src[x, y]);
+        \endverbatim
+        For the last column:
+        \verbatim
+        sums[width-1] = 0;
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdGetAbsDxColSums.
 
         \param [in] src - an input image.
         \param [out] sums - a pointer to array of unsigned 32-bit integers result columns. It length must be equal to image width.
     */
-    template<class A> SIMD_INLINE void GetAbsDxColSums(const View<A>& src, uint32_t * sums)
+    template<template<class> class A> SIMD_INLINE void GetAbsDxColSums(const View<A>& src, uint32_t * sums)
     {
         assert(src.format == View<A>::Gray8);
 
@@ -2488,14 +3196,14 @@ namespace Simd
 
         \fn void ValueSum(const View<A>& src, uint64_t & sum)
 
-        \short Gets sum of value of pixels for gray 8-bit image. 
+        \short Gets sum of value of pixels for gray 8-bit image.
 
         \note This function is a C++ wrapper for function ::SimdValueSum.
 
         \param [in] src - an input image.
         \param [out] sum - a result sum.
     */
-    template<class A> SIMD_INLINE void ValueSum(const View<A>& src, uint64_t & sum)
+    template<template<class> class A> SIMD_INLINE void ValueSum(const View<A>& src, uint64_t & sum)
     {
         assert(src.format == View<A>::Gray8);
 
@@ -2506,30 +3214,32 @@ namespace Simd
 
         \fn void SquareSum(const View<A>& src, uint64_t & sum)
 
-        \short Gets sum of squared value of pixels for gray 8-bit image. 
+        \short Gets sum of squared value of pixels for gray 8-bit image.
 
         \note This function is a C++ wrapper for function ::SimdSquareSum.
 
         \param [in] src - an input image.
         \param [out] sum - a result sum.
     */
-    template<class A> SIMD_INLINE void SquareSum(const View<A> & src, uint64_t & sum)
+    template<template<class> class A> SIMD_INLINE void SquareSum(const View<A> & src, uint64_t & sum)
     {
         assert(src.format == View<A>::Gray8);
 
         SimdSquareSum(src.data, src.stride, src.width, src.height, &sum);
     }
-    
+
     /*! @ingroup other_statistic
 
         \fn void CorrelationSum(const View<A> & a, const View<A> & b, uint64_t & sum)
 
-        \short Gets sum of pixel correlation for two gray 8-bit images. 
+        \short Gets sum of pixel correlation for two gray 8-bit images.
 
-        For all points: 
-        \n sum += a[i]*b[i]; 
-        
-        All images must have the same width and height and 8-bit gray pixel format. 
+        For all points:
+        \verbatim
+        sum += a[i]*b[i];
+        \endverbatim
+
+        All images must have the same width and height and 8-bit gray pixel format.
 
         \note This function is a C++ wrapper for function ::SimdCorrelationSum.
 
@@ -2537,7 +3247,7 @@ namespace Simd
         \param [in] b - a second image.
         \param [out] sum - a result sum.
     */
-    template<class A> SIMD_INLINE void CorrelationSum(const View<A> & a, const View<A> & b, uint64_t & sum)
+    template<template<class> class A> SIMD_INLINE void CorrelationSum(const View<A> & a, const View<A> & b, uint64_t & sum)
     {
         assert(Compatible(a, b) && a.format == View<A>::Gray8);
 
@@ -2548,17 +3258,17 @@ namespace Simd
 
         \fn void StretchGray2x2(const View<A>& src, View<A>& dst)
 
-        \short Stretches input 8-bit gray image in two times. 
+        \short Stretches input 8-bit gray image in two times.
 
         \note This function is a C++ wrapper for function ::SimdStretchGray2x2.
 
         \param [in] src - an original input image.
         \param [out] dst - a stretched output image.
     */
-    template<class A> SIMD_INLINE void StretchGray2x2(const View<A> & src, View<A> & dst)
+    template<template<class> class A> SIMD_INLINE void StretchGray2x2(const View<A> & src, View<A> & dst)
     {
         assert(src.format == View<A>::Gray8 && dst.format == View<A>::Gray8);
-        assert(src.width*2 == dst.width && src.height*2 == dst.height);
+        assert(src.width * 2 == dst.width && src.height * 2 == dst.height);
 
         SimdStretchGray2x2(src.data, src.width, src.height, src.stride, dst.data, dst.width, dst.height, dst.stride);
     }
@@ -2567,13 +3277,20 @@ namespace Simd
 
         \fn void TextureBoostedSaturatedGradient(const View<A>& src, uint8_t saturation, uint8_t boost, View<A>& dx, View<A>& dy)
 
-        \short Calculates boosted saturated gradients for given input image. 
+        \short Calculates boosted saturated gradients for given input image.
 
         All images must have the same width, height and format (8-bit gray).
 
-        For border pixels dx[x, y] = 0 and dy[x, y] = 0, for other pixels: 
-        \n dx[x, y] = (saturation + max(-saturation, min(saturation, (src[x + 1, y] - src[x - 1, y]))))*boost, 
-        \n dy[x, y] = (saturation + max(-saturation, min(saturation, (src[x, y + 1] - src[x, y - 1]))))*boost.
+        For border pixels:
+        \verbatim
+        dx[x, y] = 0;
+        dy[x, y] = 0;
+        \endverbatim
+        For other pixels:
+        \verbatim
+        dx[x, y] = (saturation + max(-saturation, min(saturation, (src[x + 1, y] - src[x - 1, y]))))*boost;
+        dy[x, y] = (saturation + max(-saturation, min(saturation, (src[x, y + 1] - src[x, y - 1]))))*boost;
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdTextureBoostedSaturatedGradient.
 
@@ -2583,7 +3300,7 @@ namespace Simd
         \param [out] dx - an image with boosted saturated gradient along x axis.
         \param [out] dy - an image with boosted saturated gradient along y axis.
     */
-    template<class A> SIMD_INLINE void TextureBoostedSaturatedGradient(const View<A>& src, uint8_t saturation, uint8_t boost, View<A>& dx, View<A>& dy)
+    template<template<class> class A> SIMD_INLINE void TextureBoostedSaturatedGradient(const View<A>& src, uint8_t saturation, uint8_t boost, View<A>& dx, View<A>& dy)
     {
         assert(Compatible(src, dx, dy) && src.format == View<A>::Gray8 && src.height >= 3 && src.width >= 3);
 
@@ -2594,13 +3311,16 @@ namespace Simd
 
         \fn void TextureBoostedUv(const View<A>& src, uint8_t boost, View<A>& dst)
 
-        \short Calculates boosted colorized texture feature of input image (actual for U and V components of YUV format). 
+        \short Calculates boosted colorized texture feature of input image (actual for U and V components of YUV format).
 
         All images must have the same width, height and format (8-bit gray).
 
-        For every pixel: 
-        \n dst[x, y] = max(lo, min(hi, src[i]))*boost, 
-        \n where lo = 128 - (128/boost), hi = 255 - lo. 
+        For every pixel:
+        \verbatim
+        lo = 128 - (128/boost);
+        hi = 255 - lo;
+        dst[x, y] = max(lo, min(hi, src[i]))*boost;
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdTextureBoostedUv.
 
@@ -2608,7 +3328,7 @@ namespace Simd
         \param [in] boost - a boost coefficient.
         \param [out] dst - a result image.
     */
-    template<class A> SIMD_INLINE void TextureBoostedUv(const View<A>& src, uint8_t boost, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void TextureBoostedUv(const View<A>& src, uint8_t boost, View<A>& dst)
     {
         assert(Compatible(src, dst) && src.format == View<A>::Gray8);
 
@@ -2619,12 +3339,14 @@ namespace Simd
 
         \fn void TextureGetDifferenceSum(const View<A>& src, const View<A>& lo, const View<A>& hi, int64_t & sum)
 
-        \short Calculates difference between current image and background. 
+        \short Calculates difference between current image and background.
 
         All images must have the same width, height and format (8-bit gray).
 
-        For every pixel: 
-        \n sum += current - average(lo[i], hi[i]);
+        For every pixel:
+        \verbatim
+        sum += current - average(lo[i], hi[i]);
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdTextureGetDifferenceSum.
 
@@ -2633,7 +3355,7 @@ namespace Simd
         \param [in] hi - an image with upper bound of background feature.
         \param [out] sum - a reference to 64-bit integer with result sum.
     */
-    template<class A> SIMD_INLINE void TextureGetDifferenceSum(const View<A>& src, const View<A>& lo, const View<A>& hi, int64_t & sum)
+    template<template<class> class A> SIMD_INLINE void TextureGetDifferenceSum(const View<A>& src, const View<A>& lo, const View<A>& hi, int64_t & sum)
     {
         assert(Compatible(src, lo, hi) && src.format == View<A>::Gray8);
 
@@ -2644,12 +3366,14 @@ namespace Simd
 
         \fn void TexturePerformCompensation(const View<A>& src, int shift, View<A>& dst)
 
-        \short Performs brightness compensation of input image. 
+        \short Performs brightness compensation of input image.
 
         All images must have the same width, height and format (8-bit gray).
 
-        For every pixel: 
-        \n dst[i] = max(0, min(255, src[i] + shift));
+        For every pixel:
+        \verbatim
+        dst[i] = max(0, min(255, src[i] + shift));
+        \endverbatim
 
         \note This function is a C++ wrapper for function ::SimdTexturePerformCompensation.
 
@@ -2657,7 +3381,7 @@ namespace Simd
         \param [in] shift - a compensation shift.
         \param [out] dst - an output image.
     */
-    template<class A> SIMD_INLINE void TexturePerformCompensation(const View<A>& src, int shift, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void TexturePerformCompensation(const View<A>& src, int shift, View<A>& dst)
     {
         assert(Compatible(src, dst) && src.format == View<A>::Gray8 && shift > -0xFF && shift < 0xFF);
 
@@ -2668,10 +3392,10 @@ namespace Simd
 
         \fn void Yuv420pToBgr(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& bgr)
 
-        \short Converts YUV420P image to 24-bit BGR image. 
+        \short Converts YUV420P image to 24-bit BGR image.
 
-        The input Y and output BGR images must have the same width and height. 
-        The input U and V images must have the same width and height (half size relative to Y component). 
+        The input Y and output BGR images must have the same width and height.
+        The input U and V images must have the same width and height (half size relative to Y component).
 
         \note This function is a C++ wrapper for function ::SimdYuv420pToBgr.
 
@@ -2680,23 +3404,49 @@ namespace Simd
         \param [in] v - an input 8-bit image with V color plane.
         \param [out] bgr - an output 24-bit BGR image.
     */
-    template<class A> SIMD_INLINE void Yuv420pToBgr(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& bgr)
+    template<template<class> class A> SIMD_INLINE void Yuv420pToBgr(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& bgr)
     {
-        assert(y.width == 2*u.width && y.height == 2*u.height && y.format == u.format);
-        assert(y.width == 2*v.width && y.height == 2*v.height && y.format == v.format);
+        assert(y.width == 2 * u.width && y.height == 2 * u.height && y.format == u.format);
+        assert(y.width == 2 * v.width && y.height == 2 * v.height && y.format == v.format);
         assert(y.width == bgr.width && y.height == bgr.height);
         assert(y.format == View<A>::Gray8 && bgr.format == View<A>::Bgr24);
 
         SimdYuv420pToBgr(y.data, y.stride, u.data, u.stride, v.data, v.stride, y.width, y.height, bgr.data, bgr.stride);
-    }    
-    
+    }
+
+    /*! @ingroup yuv_conversion
+
+        \fn void Yuv422pToBgr(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& bgr)
+
+        \short Converts YUV422P image to 24-bit BGR image.
+
+        The input Y and output BGR images must have the same width and height.
+        The input U and V images must have the same width and height (their width is equal to half width of Y component).
+
+        \note This function is a C++ wrapper for function ::SimdYuv422pToBgr.
+
+        \param [in] y - an input 8-bit image with Y color plane.
+        \param [in] u - an input 8-bit image with U color plane.
+        \param [in] v - an input 8-bit image with V color plane.
+        \param [out] bgr - an output 24-bit BGR image.
+    */
+    template<template<class> class A> SIMD_INLINE void Yuv422pToBgr(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& bgr)
+    {
+        assert(y.width == 2 * u.width && y.height == u.height && y.format == u.format);
+        assert(y.width == 2 * v.width && y.height == v.height && y.format == v.format);
+        assert(y.width == bgr.width && y.height == bgr.height);
+        assert(y.format == View<A>::Gray8 && bgr.format == View<A>::Bgr24);
+
+        SimdYuv422pToBgr(y.data, y.stride, u.data, u.stride, v.data, v.stride, y.width, y.height, bgr.data, bgr.stride);
+    }
+
     /*! @ingroup yuv_conversion
 
         \fn void Yuv444pToBgr(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& bgr)
 
-        \short Converts YUV444P image to 24-bit BGR image. 
+        \short Converts YUV444P image to 24-bit BGR image.
 
-        The input Y, U, V and output BGR images must have the same width and height. 
+        The input Y, U, V and output BGR images must have the same width and height.
 
         \note This function is a C++ wrapper for function ::SimdYuv444pToBgr.
 
@@ -2705,7 +3455,7 @@ namespace Simd
         \param [in] v - an input 8-bit image with V color plane.
         \param [out] bgr - an output 24-bit BGR image.
     */
-    template<class A> SIMD_INLINE void Yuv444pToBgr(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& bgr)
+    template<template<class> class A> SIMD_INLINE void Yuv444pToBgr(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& bgr)
     {
         assert(Compatible(y, u, v) && EqualSize(y, bgr) && y.format == View<A>::Gray8 && bgr.format == View<A>::Bgr24);
 
@@ -2716,10 +3466,10 @@ namespace Simd
 
         \fn void Yuv420pToBgra(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& bgra, uint8_t alpha = 0xFF)
 
-        \short Converts YUV420P image to 32-bit BGRA image. 
+        \short Converts YUV420P image to 32-bit BGRA image.
 
-        The input Y and output BGRA images must have the same width and height. 
-        The input U and V images must have the same width and height (half size relative to Y component). 
+        The input Y and output BGRA images must have the same width and height.
+        The input U and V images must have the same width and height (half size relative to Y component).
 
         \note This function is a C++ wrapper for function ::SimdYuv420pToBgra.
 
@@ -2729,10 +3479,10 @@ namespace Simd
         \param [out] bgra - an output 32-bit BGRA image.
         \param [in] alpha - a value of alpha channel. It is equal to 255 by default.
     */
-    template<class A> SIMD_INLINE void Yuv420pToBgra(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& bgra, uint8_t alpha = 0xFF)
+    template<template<class> class A> SIMD_INLINE void Yuv420pToBgra(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& bgra, uint8_t alpha = 0xFF)
     {
-        assert(y.width == 2*u.width && y.height == 2*u.height && y.format == u.format);
-        assert(y.width == 2*v.width && y.height == 2*v.height && y.format == v.format);
+        assert(y.width == 2 * u.width && y.height == 2 * u.height && y.format == u.format);
+        assert(y.width == 2 * v.width && y.height == 2 * v.height && y.format == v.format);
         assert(y.width == bgra.width && y.height == bgra.height);
         assert(y.format == View<A>::Gray8 && bgra.format == View<A>::Bgra32);
 
@@ -2741,11 +3491,38 @@ namespace Simd
 
     /*! @ingroup yuv_conversion
 
+        \fn void Yuv422pToBgra(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& bgra, uint8_t alpha = 0xFF)
+
+        \short Converts YUV422P image to 32-bit BGRA image.
+
+        The input Y and output BGRA images must have the same width and height.
+        The input U and V images must have the same width and height (their width is equal to half width of Y component).
+
+        \note This function is a C++ wrapper for function ::SimdYuv422pToBgra.
+
+        \param [in] y - an input 8-bit image with Y color plane.
+        \param [in] u - an input 8-bit image with U color plane.
+        \param [in] v - an input 8-bit image with V color plane.
+        \param [out] bgra - an output 32-bit BGRA image.
+        \param [in] alpha - a value of alpha channel. It is equal to 255 by default.
+    */
+    template<template<class> class A> SIMD_INLINE void Yuv422pToBgra(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& bgra, uint8_t alpha = 0xFF)
+    {
+        assert(y.width == 2 * u.width && y.height == u.height && y.format == u.format);
+        assert(y.width == 2 * v.width && y.height == v.height && y.format == v.format);
+        assert(y.width == bgra.width && y.height == bgra.height);
+        assert(y.format == View<A>::Gray8 && bgra.format == View<A>::Bgra32);
+
+        SimdYuv422pToBgra(y.data, y.stride, u.data, u.stride, v.data, v.stride, y.width, y.height, bgra.data, bgra.stride, alpha);
+    }
+
+    /*! @ingroup yuv_conversion
+
         \fn void Yuv444pToBgra(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& bgra, uint8_t alpha = 0xFF)
 
-        \short Converts YUV444P image to 32-bit BGRA image. 
+        \short Converts YUV444P image to 32-bit BGRA image.
 
-        The input Y, U, V and output BGRA images must have the same width and height. 
+        The input Y, U, V and output BGRA images must have the same width and height.
 
         \note This function is a C++ wrapper for function ::SimdYuv444pToBgra.
 
@@ -2755,7 +3532,7 @@ namespace Simd
         \param [out] bgra - an output 32-bit BGRA image.
         \param [in] alpha - a value of alpha channel. It is equal to 255 by default.
     */
-    template<class A> SIMD_INLINE void Yuv444pToBgra(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& bgra, uint8_t alpha = 0xFF)
+    template<template<class> class A> SIMD_INLINE void Yuv444pToBgra(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& bgra, uint8_t alpha = 0xFF)
     {
         assert(Compatible(y, u, v) && EqualSize(y, bgra) && y.format == View<A>::Gray8 && bgra.format == View<A>::Bgra32);
 
@@ -2766,9 +3543,9 @@ namespace Simd
 
         \fn void Yuv444pToHsl(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& hsl)
 
-        \short Converts YUV444P image to 24-bit HSL(Hue, Saturation, Lightness) image. 
+        \short Converts YUV444P image to 24-bit HSL(Hue, Saturation, Lightness) image.
 
-        The input Y, U, V and output HSL images must have the same width and height. 
+        The input Y, U, V and output HSL images must have the same width and height.
 
         \note This function is a C++ wrapper for function ::SimdYuv444pToHsl.
 
@@ -2777,29 +3554,29 @@ namespace Simd
         \param [in] v - an input 8-bit image with V color plane.
         \param [out] hsl - an output 24-bit HSL image.
     */
-    template<class A> SIMD_INLINE void Yuv444pToHsl(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& hsl)
+    template<template<class> class A> SIMD_INLINE void Yuv444pToHsl(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& hsl)
     {
         assert(Compatible(y, u, v) && EqualSize(y, hsl) && y.format == View<A>::Gray8 && hsl.format == View<A>::Hsl24);
 
         SimdYuv444pToHsl(y.data, y.stride, u.data, u.stride, v.data, v.stride, y.width, y.height, hsl.data, hsl.stride);
     }
 
-     /*! @ingroup yuv_conversion
+    /*! @ingroup yuv_conversion
 
-        \fn void Yuv444pToHsv(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& hsv)
+       \fn void Yuv444pToHsv(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& hsv)
 
-        \short Converts YUV444P image to 24-bit HSV(Hue, Saturation, Value) image. 
+       \short Converts YUV444P image to 24-bit HSV(Hue, Saturation, Value) image.
 
-        The input Y, U, V and output HSV images must have the same width and height. 
+       The input Y, U, V and output HSV images must have the same width and height.
 
-        \note This function is a C++ wrapper for function ::SimdYuv444pToHsv.
+       \note This function is a C++ wrapper for function ::SimdYuv444pToHsv.
 
-        \param [in] y - an input 8-bit image with Y color plane.
-        \param [in] u - an input 8-bit image with U color plane.
-        \param [in] v - an input 8-bit image with V color plane.
-        \param [out] hsv - an output 24-bit HSV image.
-    */
-    template<class A> SIMD_INLINE void Yuv444pToHsv(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& hsv)
+       \param [in] y - an input 8-bit image with Y color plane.
+       \param [in] u - an input 8-bit image with U color plane.
+       \param [in] v - an input 8-bit image with V color plane.
+       \param [out] hsv - an output 24-bit HSV image.
+   */
+    template<template<class> class A> SIMD_INLINE void Yuv444pToHsv(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& hsv)
     {
         assert(Compatible(y, u, v) && EqualSize(y, hsv) && y.format == View<A>::Gray8 && hsv.format == View<A>::Hsv24);
 
@@ -2810,10 +3587,10 @@ namespace Simd
 
         \fn void Yuv420pToHue(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& hue)
 
-        \short Converts YUV420P image to 8-bit image with Hue component of HSV or HSL color space. 
+        \short Converts YUV420P image to 8-bit image with Hue component of HSV or HSL color space.
 
-        The input Y and output Hue images must have the same width and height. 
-        The input U and V images must have the same width and height (half size relative to Y component). 
+        The input Y and output Hue images must have the same width and height.
+        The input U and V images must have the same width and height (half size relative to Y component).
 
         \note This function is a C++ wrapper for function ::SimdYuv420pToHue.
 
@@ -2822,10 +3599,10 @@ namespace Simd
         \param [in] v - an input 8-bit image with V color plane.
         \param [out] hue - an output 8-bit Hue image.
     */
-    template<class A> SIMD_INLINE void Yuv420pToHue(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& hue)
+    template<template<class> class A> SIMD_INLINE void Yuv420pToHue(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& hue)
     {
-        assert(y.width == 2*u.width && y.height == 2*u.height && y.format == u.format);
-        assert(y.width == 2*v.width && y.height == 2*v.height && y.format == v.format);
+        assert(y.width == 2 * u.width && y.height == 2 * u.height && y.format == u.format);
+        assert(y.width == 2 * v.width && y.height == 2 * v.height && y.format == v.format);
         assert(Compatible(y, hue) && y.format == View<A>::Gray8);
 
         SimdYuv420pToHue(y.data, y.stride, u.data, u.stride, v.data, v.stride, y.width, y.height, hue.data, hue.stride);
@@ -2833,11 +3610,11 @@ namespace Simd
 
     /*! @ingroup yuv_conversion
 
-        \fn void Yuv444pToHue(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& hue)
+        \fn void Yuv444pToHue(const View<A> & y, const View<A> & u, const View<A> & v, View<A> & hue)
 
-        \short Converts YUV444P image to 8-bit image with Hue component of HSV or HSL color space. 
+        \short Converts YUV444P image to 8-bit image with Hue component of HSV or HSL color space.
 
-        The input Y, U, V and output Hue images must have the same width and height. 
+        The input Y, U, V and output Hue images must have the same width and height.
 
         \note This function is a C++ wrapper for function ::SimdYuv444pToHue.
 
@@ -2846,11 +3623,132 @@ namespace Simd
         \param [in] v - an input 8-bit image with V color plane.
         \param [out] hue - an output 8-bit Hue image.
     */
-    template<class A> SIMD_INLINE void Yuv444pToHue(const View<A>& y, const View<A>& u, const View<A>& v, View<A>& hue)
+    template<template<class> class A> SIMD_INLINE void Yuv444pToHue(const View<A> & y, const View<A> & u, const View<A> & v, View<A> & hue)
     {
         assert(Compatible(y, u, v, hue) && y.format == View<A>::Gray8);
 
         SimdYuv444pToHue(y.data, y.stride, u.data, u.stride, v.data, v.stride, y.width, y.height, hue.data, hue.stride);
+    }
+
+    /*! @ingroup universal_conversion
+
+        \fn void Convert(const View<A> & src, View<A> & dst)
+
+        \short Converts an image of one format to an image of another format.
+
+        The input and output images must have the same width and height.
+
+        \note This function supports conversion between Gray8, Bgr24 and Bgra32 image formats.
+
+        \param [in] src - an input image.
+        \param [out] dst - an output image.
+    */
+    template<template<class> class A> SIMD_INLINE void Convert(const View<A> & src, View<A> & dst)
+    {
+        assert(EqualSize(src, dst) && src.format && dst.format);
+
+        if (src.format == dst.format)
+        {
+            Copy(src, dst);
+            return;
+        }
+
+        switch (src.format)
+        {
+        case View<A>::Gray8:
+            switch (dst.format)
+            {
+            case View<A>::Bgra32:
+                GrayToBgra(src, dst);
+                break;
+            case View<A>::Bgr24:
+                GrayToBgr(src, dst);
+                break;
+            default:
+                assert(0);
+            }
+            break;
+
+        case View<A>::Bgr24:
+            switch (dst.format)
+            {
+            case View<A>::Bgra32:
+                BgrToBgra(src, dst);
+                break;
+            case View<A>::Gray8:
+                BgrToGray(src, dst);
+                break;
+            default:
+                assert(0);
+            }
+            break;
+
+        case View<A>::Bgra32:
+            switch (dst.format)
+            {
+            case View<A>::Bgr24:
+                BgraToBgr(src, dst);
+                break;
+            case View<A>::Gray8:
+                BgraToGray(src, dst);
+                break;
+            default:
+                assert(0);
+            }
+            break;
+
+        default:
+            assert(0);
+        }
+    }
+
+    /*! @ingroup cpp_pyramid_functions
+
+        \fn void Fill(Pyramid<A> & pyramid, uint8_t value)
+
+        \short Fills pixels data of images in the pyramid by given value.
+
+        \param [out] pyramid - a pyramid.
+        \param [in] value - a value to fill the pyramid.
+    */
+    template<template<class> class A> SIMD_INLINE void Fill(Pyramid<A> & pyramid, uint8_t value)
+    {
+        for (size_t level = 0; level < pyramid.Size(); ++level)
+            Simd::Fill(pyramid.At(level), value);
+    }
+
+    /*! @ingroup cpp_pyramid_functions
+
+        \fn void Copy(const Pyramid<A> & src, Pyramid<A> & dst)
+
+        \short Copies one pyramid to another pyramid.
+
+        \note Input and output pyramids must have the same size.
+
+        \param [in] src - an input pyramid.
+        \param [out] dst - an output pyramid.
+    */
+    template<template<class> class A> SIMD_INLINE void Copy(const Pyramid<A> & src, Pyramid<A> & dst)
+    {
+        assert(src.Size() == dst.Size());
+        for (size_t level = 0; level < src.Size(); ++level)
+            Simd::Copy(src.At(level), dst.At(level));
+    }
+
+    /*! @ingroup cpp_pyramid_functions
+
+        \fn void Build(Pyramid<A> & pyramid, ::SimdReduceType reduceType, bool compensation = true)
+
+        \short Builds the pyramid (fills upper levels on the base of the lowest level).
+
+        \param [out] pyramid - a built pyramid.
+        \param [in] reduceType - a type of function used for image reducing.
+        \param [in] compensation - a flag of compensation of rounding. It is relevant only for ::SimdReduce3x3 and ::SimdReduce5x5. It is equal to 'true' by default.
+    */
+    template<template<class> class A> SIMD_INLINE void Build(Pyramid<A> & pyramid, ::SimdReduceType reduceType, bool compensation = true)
+    {
+        for (size_t level = 1; level < pyramid.Size(); ++level)
+            Simd::ReduceGray(pyramid.At(level - 1), pyramid.At(level), reduceType, compensation);
     }
 }
 

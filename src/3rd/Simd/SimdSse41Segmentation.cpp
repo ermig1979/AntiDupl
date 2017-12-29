@@ -1,7 +1,7 @@
 /*
-* Simd Library (http://simd.sourceforge.net).
+* Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2015 Yermalayeu Ihar.
+* Copyright (c) 2011-2017 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -21,9 +21,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
-#include "Simd/SimdSse41.h"
 #include "Simd/SimdMemory.h"
-#include "Simd/SimdConst.h"
 
 namespace Simd
 {
@@ -34,12 +32,12 @@ namespace Simd
         {
             for (size_t col = 0; col < alignedSize; col += A)
             {
-                if(!_mm_testz_si128(_mm_cmpeq_epi8(_mm_loadu_si128((__m128i*)(mask + col)), index), K_INV_ZERO))
+                if (!_mm_testz_si128(_mm_cmpeq_epi8(_mm_loadu_si128((__m128i*)(mask + col)), index), K_INV_ZERO))
                     return true;
             }
-            if(alignedSize != fullSize)
+            if (alignedSize != fullSize)
             {
-                if(!_mm_testz_si128(_mm_cmpeq_epi8(_mm_loadu_si128((__m128i*)(mask + fullSize - A)), index), K_INV_ZERO))
+                if (!_mm_testz_si128(_mm_cmpeq_epi8(_mm_loadu_si128((__m128i*)(mask + fullSize - A)), index), K_INV_ZERO))
                     return true;
             }
             return false;
@@ -69,14 +67,14 @@ namespace Simd
             bool search = true;
             for (ptrdiff_t row = *top; search && row < *bottom; ++row)
             {
-                if(RowHasIndex(mask + row*stride + *left, alignedWidth, fullWidth, _index))
+                if (RowHasIndex(mask + row*stride + *left, alignedWidth, fullWidth, _index))
                 {
                     search = false;
                     *top = row;
                 }
             }
 
-            if(search)
+            if (search)
             {
                 *left = 0;
                 *top = 0;
@@ -88,7 +86,7 @@ namespace Simd
             search = true;
             for (ptrdiff_t row = *bottom - 1; search && row >= *top; --row)
             {
-                if(RowHasIndex(mask + row*stride + *left, alignedWidth, fullWidth, _index))
+                if (RowHasIndex(mask + row*stride + *left, alignedWidth, fullWidth, _index))
                 {
                     search = false;
                     *bottom = row + 1;
@@ -99,9 +97,9 @@ namespace Simd
             for (ptrdiff_t col = *left; search && col < *left + alignedWidth; col += A)
             {
                 uint8_t cols[A];
-                if(ColsHasIndex(mask + (*top)*stride + col, stride, *bottom - *top, _index, cols))
+                if (ColsHasIndex(mask + (*top)*stride + col, stride, *bottom - *top, _index, cols))
                 {
-                    for(size_t i = 0; i < A; i++)
+                    for (size_t i = 0; i < A; i++)
                     {
                         if (cols[i])
                         {
@@ -118,9 +116,9 @@ namespace Simd
             for (ptrdiff_t col = *right; search && col > *left; col -= A)
             {
                 uint8_t cols[A];
-                if(ColsHasIndex(mask + (*top)*stride + col - A, stride, *bottom - *top, _index, cols))
+                if (ColsHasIndex(mask + (*top)*stride + col - A, stride, *bottom - *top, _index, cols))
                 {
-                    for(ptrdiff_t i = A - 1; i >= 0; i--)
+                    for (ptrdiff_t i = A - 1; i >= 0; i--)
                     {
                         if (cols[i])
                         {
