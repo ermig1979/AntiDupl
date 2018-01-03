@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="../../Prop.props" />
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F8244CC3-B74E-44EC-AC54-6904561A6D0C}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectName>OpenNN64</ProjectName>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>_WINDOWS;_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings Condition="'$(Platform)'=='x64'">4267</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include=".\*.h" />
+    <ClInclude Include=".\data_set\*.h" />
+    <ClInclude Include=".\mathematical_model\*.h" />
+    <ClInclude Include=".\model_selection\*.h" />
+    <ClInclude Include=".\neural_network\*.h" />
+    <ClInclude Include=".\performance_functional\*.h" />
+    <ClInclude Include=".\testing_analysis\*.h" />
+    <ClInclude Include=".\training_strategy\*.h" />
+    <ClInclude Include=".\utilities\*.h" />
+    <ClCompile Include=".\data_set\*.cpp" />
+    <ClCompile Include=".\mathematical_model\*.cpp" />
+    <ClCompile Include=".\model_selection\*.cpp" />
+    <ClCompile Include=".\neural_network\*.cpp" />
+    <ClCompile Include=".\performance_functional\*.cpp" />
+    <ClCompile Include=".\testing_analysis\*.cpp" />
+    <ClCompile Include=".\training_strategy\*.cpp" />
+    <ClCompile Include=".\utilities\*.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>
