@@ -2,8 +2,8 @@
 
 echo Generate adExternal.h file:
 
-set TRUNK_DIR=..\..\..
-set SOLUTION_DIR=%TRUNK_DIR%\src\AntiDupl
+set ROOT_DIR=..\..\..
+set SOLUTION_DIR=%ROOT_DIR%\src\AntiDupl
 set PROJECT_DIR=%SOLUTION_DIR%\AntiDupl
 set EXTERNAL_FILE=%PROJECT_DIR%\adExternal.h
 set VERSION_FILE=%SOLUTION_DIR%\version.txt
@@ -55,5 +55,4 @@ echo.>>%EXTERNAL_FILE%
 echo #endif//__adExternal_h__>>%EXTERNAL_FILE%
 echo.>>%EXTERNAL_FILE%
 
-if ERRORLEVEL 1 exit 0
 
