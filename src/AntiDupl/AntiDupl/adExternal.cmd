@@ -17,7 +17,7 @@ set VERSION=
 for /f "delims=" %%i in ('type %VERSION_FILE%') do set VERSION=%%i
 
 echo /*>%EXTERNAL_FILE%
-echo * AntiDupl Dynamic-Link Library.>>%EXTERNAL_FILE%
+echo * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).>>%EXTERNAL_FILE%
 echo *>>%EXTERNAL_FILE%
 echo * Copyright (c) 2002-2018 Yermalayeu Ihar.>>%EXTERNAL_FILE%
 echo *>>%EXTERNAL_FILE%

@@ -1,7 +1,7 @@
 /*
-* AntiDupl Dynamic-Link Library.
+* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
-* Copyright (c) 2016 Borisov Dmitry.
+* Copyright (c) 2013-2018 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal

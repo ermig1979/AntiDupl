@@ -1,7 +1,7 @@
 /*
-* AntiDupl Dynamic-Link Library.
+* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
-* Copyright (c) 2016 Borisov Dmitry.
+* Copyright (c) 2013-2018 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -84,11 +84,11 @@ namespace ad
 
 		inputs[0] = pResult->difference;
 		inputs[1] = pResult->first->Area();
-		inputs[2] = pResult->first->size;
+		inputs[2] = (double)pResult->first->size;
 		inputs[3] = pResult->first->blockiness;
 		inputs[4] = pResult->first->blurring;
 		inputs[5] = pResult->second->Area();
-		inputs[6] = pResult->second->size;
+		inputs[6] = (double)pResult->second->size;
 		inputs[7] = pResult->second->blockiness;
 		inputs[8] = pResult->second->blurring;
 
