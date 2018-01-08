@@ -72,7 +72,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>$(SolutionDir)\..\..\data\CopyData.cmd $(SolutionDir)\..\..\data $(SolutionDir)\..\..\bin\$(ConfigurationName)</PostBuildEvent>
+    <PostBuildEvent>$(SolutionDir)\..\..\cmd\CopyData.cmd $(SolutionDir)\..\..\docs\data $(SolutionDir)\..\..\bin\$(ConfigurationName)</PostBuildEvent>
     <PreBuildEvent>$(SolutionDir)\Antidupl.NET\External.cmd $(SolutionDir)\Antidupl.NET</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>

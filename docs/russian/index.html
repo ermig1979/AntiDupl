@@ -1,0 +1,32 @@
+<html>
+<script type="text/javascript">
+function getParameter(parameterName, defaultValue)
+{
+ var parameters = location.search.substring(1).split("&");
+ var value = defaultValue;
+ for(var i = 0; i < parameters.length; i++)
+ {
+  if(parameters[i].split("=")[0] == parameterName)
+  {
+   if(parameters[i].split("=")[1].length > 1) 
+    value = parameters[i].split("=")[1];
+   return value;
+  }
+ }
+ return value;
+}
+</script>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+<title>AntiDupl - программа поиска похожих изображений</title>
+</head>
+
+<script language="JavaScript">
+ document.write('<frameset rows="175, *" cols="*" framespacing="0" frameborder="no" border="0">')
+ document.write('<frame src="head.html" scrolling="No" noresize="noresize" />')
+ document.write('<frame src='+getParameter("page", "news.html")+' name="mainFrame" id="mainFrame" />')
+ document.write('</frameset>');
+</script>
+
+</html>
