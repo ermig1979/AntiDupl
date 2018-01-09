@@ -40,13 +40,14 @@
 
 namespace ad
 {
-    TEngine::TEngine()
+    TEngine::TEngine(const TString & userPath)
+        : _userPath(userPath)
     {
 #ifdef AD_LOGGER_ENABLE
-        TLogger::s_logger.SetFileOut(TString(GetApplicationDirectory() + TEXT("\\AntiDupl.log")).c_str(), true);
+        TLogger::s_logger.SetFileOut(UserPath() + TEXT("\\log.txt")).c_str(), true);
 #endif//AD_LOGGER_ENABLE
         m_pInit = new TInit();
-        m_pOptions = new TOptions();
+        m_pOptions = new TOptions(userPath);
         m_pStatus = new TStatus();
         m_pMistakeStorage = new TMistakeStorage(this);
         m_pImageDataStorage = new TImageDataStorage(this);
@@ -57,7 +58,7 @@ namespace ad
         m_pCompareManager = new TCompareManager(this);
         m_pCollectManager = new TCollectManager(this, m_pCompareManager);
         m_pSearcher = new TSearcher(this, m_pImageDataPtrs);
-		m_pNeuralNetwork = new TNeuralNetwork();
+		m_pNeuralNetwork = new TNeuralNetwork(userPath);
     }
 
     TEngine::~TEngine()

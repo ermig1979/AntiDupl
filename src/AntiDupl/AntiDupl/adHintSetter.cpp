@@ -158,10 +158,10 @@ namespace ad
 	//-------------------------------------------------------------------------
 
 	THintSetter_Neural_Network::THintSetter_Neural_Network(TOptions *pOptions)
-		:THintSetter(pOptions)
+		: THintSetter(pOptions)
 		//m_pNeuralNetwork()
     {
-		m_pNeuralNetwork = new TNeuralNetwork();
+		m_pNeuralNetwork = new TNeuralNetwork(pOptions->userPath);
 
 		//m_netLoaded = m_pNeuralNetwork->Load();
 	}

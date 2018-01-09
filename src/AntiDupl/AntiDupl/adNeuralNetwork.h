@@ -35,7 +35,6 @@ namespace ad
 	//-------------------------------------------------------------------------
 	class TNeuralNetwork
 	{
-	private:
 		TString m_directory;
 		bool m_netLoaded;
 		//TString m_neuralNetworkPath;
@@ -44,10 +43,10 @@ namespace ad
 		OpenNN::NeuralNetwork* m_neural_network_pointer;
 		//OpenNN::NeuralNetwork m_neural_network;
 	public:
-		TNeuralNetwork(void);
+		TNeuralNetwork(const TString & userPath);
 		~TNeuralNetwork(void);
 		bool GetPredict(TResult *pResult);
-		adError Train();
+		adError Train(const TString & statisticsPath);
 		bool Loaded();
 	};
 }

@@ -29,10 +29,9 @@
 
 namespace ad
 {
-	TStatisticsOfDeleting::TStatisticsOfDeleting(void):
-		m_pCriticalSection(NULL),
-		//m_path(),
-		m_ofstream(GetStatisticsPath().c_str(), std::ios_base::app)
+	TStatisticsOfDeleting::TStatisticsOfDeleting(const TString & statisticsPath)
+		: m_pCriticalSection(NULL)
+		, m_ofstream(statisticsPath.ToString().c_str(), std::ios_base::app)
 	{
 		//TCriticalSection::TLocker locker(m_pCS);
 		//m_path = TString(GetApplicationDirectory() + TEXT("\\Statistics.txt"));
@@ -46,11 +45,6 @@ namespace ad
 		{
 			m_ofstream.close();
 		}
-	}
-
-	TString TStatisticsOfDeleting::GetStatisticsPath()
-	{
-		return TString(GetApplicationDirectory() + TEXT("\\Statistics.txt"));
 	}
 
 	void TStatisticsOfDeleting::Write(TResult * result)

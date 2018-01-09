@@ -326,24 +326,23 @@ namespace AntiDupl.NET
 
         static public class WebLinks
         {
-            public const string AntiduplSourceforgeNet = "http://antidupl.sourceforge.net/";
-            public const string AntiduplSourceforgeNetEnglish = "http://antidupl.sourceforge.net/english/index.html";
-            public const string AntiduplSourceforgeNetRussian = "http://antidupl.sourceforge.net/russian/index.html";
-            public const string Version = "http://antidupl.sourceforge.net/version.xml";
+            public const string GithubComAntidupl = "http://ermig1979.github.io/AntiDupl";
+            public const string GithubComAntiduplEnglish = "http://ermig1979.github.io/AntiDupl/english/index.html";
+            public const string GithubComAntiduplRussian = "http://ermig1979.github.io/AntiDupl/russian/index.html";
+            public const string Version = "http://ermig1979.github.io/AntiDupl/version.xml";
 
-            public const string SourceforgeNetSimd = "http://sourceforge.net/projects/simd/?source=directory";
-            public const string SourceforgeNetAntidupl = "http://sourceforge.net/projects/antidupl/?source=directory";
+            public const string GithubComSimd = "http://ermig1979.github.io/Simd";
 
             public const string OpenjpegOrg = "http://www.openjpeg.org";
 
-            public static string AntiduplNarodRuCurrent
+            public static string GithubComAntiduplCurrent
             {
                 get
                 {
                     if (Strings.IsCurrentRussianFamily())
-                        return AntiduplSourceforgeNetRussian;
+                        return GithubComAntiduplRussian;
                     else
-                        return AntiduplSourceforgeNetEnglish;
+                        return GithubComAntiduplEnglish;
                 }
             }
         }
@@ -352,9 +351,8 @@ namespace AntiDupl.NET
         {        
             static private string GetUrl(string page)
             {
-                Uri uri = new Uri(DataPath);
-                StringBuilder builder = new StringBuilder(uri.AbsoluteUri);
-                builder.Append("/help");
+                StringBuilder builder = new StringBuilder(WebLinks.GithubComAntidupl);
+                builder.Append("/data/help");
                 if (Strings.IsCurrentRussianFamily())
                     builder.Append("/russian");
                 else

@@ -58,6 +58,9 @@ namespace ad
     //-------------------------------------------------------------------------
     struct TOptions
     {
+        TString userPath;
+        TString statisticsPath;
+
         TPathContainer searchPaths;
         TPathContainer ignorePaths;
         TPathContainer validPaths;
@@ -69,7 +72,7 @@ namespace ad
         adAdvancedOptions advanced;
 		adHintOptions hint;
 
-        TOptions();
+        TOptions(const TString & userPath_);
 
         void SetDefault();
         void Validate();

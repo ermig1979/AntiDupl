@@ -598,7 +598,8 @@ extern "C"
 
     DLLAPI adError adVersionGet(adVersionType versionType, adCharA * pVersion, adSizePtr pVersionSize);
 
-    DLLAPI adEngineHandle adCreate();
+    DLLAPI adEngineHandle adCreateA(const adCharA * userPath);
+    DLLAPI adEngineHandle adCreateW(const adCharW * userPath);
     DLLAPI adError adRelease(adEngineHandle handle);
 
 	DLLAPI adError adStop(adEngineHandle handle);
@@ -668,6 +669,7 @@ extern "C"
     typedef adResultW adResult; 
     typedef adResultPtrW adResultPtr;
 
+#define adCreate adCreateW
 #define adLoad adLoadW
 #define adSave adSaveW
 #define adPathGet adPathGetW
@@ -690,6 +692,7 @@ extern "C"
     typedef adResultA adResult; 
     typedef adResultPtrA adResultPtr;
 
+#define adCreate adCreateA
 #define adLoad adLoadA
 #define adSave adSaveA
 #define adPathGet adPathGetA

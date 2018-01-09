@@ -492,9 +492,9 @@ namespace AntiDupl.NET
         public adVersionGet_fn adVersionGet = null;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
-        public delegate IntPtr adCreate_fn();
+        public delegate IntPtr adCreate_fn(string userPath);
         [DynamicModuleApi]
-        public adCreate_fn adCreate = null;
+        public adCreate_fn adCreateW = null;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
         public delegate Error adRelease_fn(IntPtr handle);

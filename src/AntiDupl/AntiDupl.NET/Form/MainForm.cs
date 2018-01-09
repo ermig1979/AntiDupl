@@ -51,7 +51,7 @@ namespace AntiDupl.NET
 
         public MainForm()
         {
-            m_core = new CoreLib();
+            m_core = new CoreLib(Resources.UserPath);
             m_options = Options.Load();
             if (m_options.loadProfileOnLoading)
                 m_coreOptions = CoreOptions.Load(m_options.coreOptionsFileName, m_core, m_options.onePath);

@@ -24,7 +24,7 @@
 #ifndef __adEngine_h__
 #define __adEngine_h__
 
-#include "adConfig.h"
+#include "adStrings.h"
 
 namespace ad
 {
@@ -52,11 +52,12 @@ namespace ad
     {
         friend class TImageComparer;
     public:
-        TEngine(); 
+        TEngine(const TString & userPath); 
         ~TEngine();
 
         void Search();
 
+        const TString & UserPath() const { return _userPath; }
         TStatus* Status() {return m_pStatus;}
         TOptions* Options() {return m_pOptions;};
         TImageDataStorage* ImageDataStorage() {return m_pImageDataStorage;}
@@ -64,9 +65,10 @@ namespace ad
         TResultStorage* Result() {return m_pResult;}
         TCriticalSection* CriticalSection() {return m_pCriticalSection;}
         TRecycleBin* RecycleBin() {return m_pRecycleBin;}
-		TNeuralNetwork* GetNeuralNetworkPonter() {return m_pNeuralNetwork;} 
+		TNeuralNetwork* GetNeuralNetworkPonter() {return m_pNeuralNetwork;}
 
     private:
+        TString _userPath;
         TImageDataPtrs *m_pImageDataPtrs;
         TCompareManager *m_pCompareManager;
         TCollectManager *m_pCollectManager;

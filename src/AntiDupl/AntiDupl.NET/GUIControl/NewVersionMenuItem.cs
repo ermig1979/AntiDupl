@@ -72,7 +72,7 @@ namespace AntiDupl.NET
 
         private void OnClick(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(Resources.WebLinks.AntiduplNarodRuCurrent);
+            System.Diagnostics.Process.Start(Resources.WebLinks.GithubComAntiduplCurrent);
         }
 
         private void UpdateStrings()

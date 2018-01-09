@@ -40,13 +40,10 @@ namespace ad
 	{
 		TCriticalSection *m_pCriticalSection;
 		std::ofstream m_ofstream; 
-		//static TString m_path;
 	public:
-		TStatisticsOfDeleting(void);
+		TStatisticsOfDeleting(const TString & statisticsPath);
 		~TStatisticsOfDeleting(void);
 		void Write(TResult * result);
-		//TString GetStatisticsPath() const {return m_path;} // A read-only function
-		static TString GetStatisticsPath();
 	};
 
 }

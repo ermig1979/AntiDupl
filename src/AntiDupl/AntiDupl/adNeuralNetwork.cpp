@@ -33,12 +33,12 @@ using namespace OpenNN;
 
 namespace ad
 {
-	TNeuralNetwork::TNeuralNetwork(void)
+	TNeuralNetwork::TNeuralNetwork(const TString & userPath)
 		//m_neuralNetworkPath()
 		//:m_neural_network_point()
 		//:m_neural_network_pointer(NULL)
-		:m_directory("NeuralNetwork"),
-		m_netLoaded(false)
+		: m_directory(userPath + TEXT("\\neural"))
+		, m_netLoaded(false)
 	{
 		//m_neuralNetworkPath = TString(GetApplicationDirectory() + TEXT("\\NeuralNetwork\\neural_network.xml"));
 		m_neural_network_pointer = new OpenNN::NeuralNetwork();
@@ -55,10 +55,10 @@ namespace ad
 		{
 			if(!IsDirectoryExists(m_directory.c_str()))
 				return m_netLoaded = false;
-			TString fileName("NeuralNetwork/neural_network.xml");
+			TString fileName(m_directory + TEXT("\\network.xml"));
 			if(!IsFileExists(fileName.c_str()))
 				return m_netLoaded = false;
-			m_neural_network_pointer->load("NeuralNetwork/neural_network.xml");
+			m_neural_network_pointer->load(fileName.ToString());
 		}
 		m_netLoaded = true;
 		return m_netLoaded;
@@ -99,15 +99,14 @@ namespace ad
 		return deleteFirst;
 	}
 
-	adError TNeuralNetwork::Train()
+	adError TNeuralNetwork::Train(const TString & statisticsPath)
 	{
-		TString path = TStatisticsOfDeleting::GetStatisticsPath();
 		//TString m_neuralNetworkPath = TString(GetApplicationDirectory() + TEXT("\\NeuralNetwork\\neural_network.xml"));
 
 		DataSet data_set;
 	      
 		setlocale( LC_ALL, ".ACP" );
-		data_set.load_data(path.ToString());
+		data_set.load_data(statisticsPath.ToString());
 		//data_set.load_data(path.ToWString());
 		//data_set.load_data(L"d:\\Борисов\\SoftMy\\AntiDupl.NET_stat\\bin\\Debug\\Statistics.txt");
 
@@ -201,13 +200,13 @@ namespace ad
 		if(!IsDirectoryExists(m_directory.c_str()))
 			CreateDirectory(m_directory.c_str(), NULL);
 
-		data_set.save("NeuralNetwork/data_set.xml");
+		data_set.save(TString(m_directory + TEXT("\\data_set.xml")).ToString());
 
-		m_neural_network_pointer->save("NeuralNetwork/neural_network.xml");
-		m_neural_network_pointer->save_expression("NeuralNetwork/expression.txt");
+		m_neural_network_pointer->save(TString(m_directory + TEXT("\\network.xml")).ToString());
+		m_neural_network_pointer->save_expression(TString(m_directory + TEXT("\\expression.txt")).ToString());
 
-		training_strategy.save("NeuralNetwork/training_strategy.xml");
-		training_strategy_results.save("NeuralNetwork/training_strategy_results.dat");
+		training_strategy.save(TString(m_directory + TEXT("\\training_strategy.xml")).ToString());
+		training_strategy_results.save(TString(m_directory + TEXT("\\training_results.dat")).ToString());
 
 		//pattern_recognition_testing_pointer->save_confusion("NeuralNetwork/confusion.dat");   
 		//pattern_recognition_testing_pointer->save_binary_classification_test("NeuralNetwork/binary_classification_test.dat");  

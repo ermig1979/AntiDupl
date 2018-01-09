@@ -45,7 +45,7 @@ namespace ad
         m_pUndoDeque = new TUndoRedoStagePtrDeque();
         m_pRedoDeque = new TUndoRedoStagePtrDeque();
         m_pCurrent = new TUndoRedoStage();
-		m_pStatisticsOfDeleting = new TStatisticsOfDeleting();
+		m_pStatisticsOfDeleting = new TStatisticsOfDeleting(m_pOptions->statisticsPath);
     }
 
     TUndoRedoEngine::~TUndoRedoEngine()

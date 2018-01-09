@@ -67,11 +67,13 @@ namespace ad
     }
     //---------------------------------------------------------------------------
 	// Класс опций
-    TOptions::TOptions()
-        :searchPaths(TEXT("SearchPaths"), true),
-        ignorePaths(TEXT("IgnorePaths")),
-        validPaths(TEXT("ValidPaths")),
-        deletePaths(TEXT("DeletePaths"))
+    TOptions::TOptions(const TString & userPath_)
+        : userPath(userPath_)
+        , statisticsPath(userPath + TEXT("\\statistics.txt"))
+        , searchPaths(TEXT("SearchPaths"), true)
+        , ignorePaths(TEXT("IgnorePaths"))
+        , validPaths(TEXT("ValidPaths"))
+        , deletePaths(TEXT("DeletePaths"))
     {
         m_options.push_back(TOption(&search.system, TEXT("SearchOptions"), TEXT("System"), FALSE, FALSE, TRUE));
         m_options.push_back(TOption(&search.hidden, TEXT("SearchOptions"), TEXT("Hidden"), FALSE, FALSE, TRUE));

@@ -93,8 +93,7 @@ namespace AntiDupl.NET
             pictureBox.Image = bitmap;
             layout.Controls.Add(pictureBox, 1, 0);
 
-            layout.Controls.Add(CreateLinkLabel(Application.ProductName, 
-                Resources.WebLinks.AntiduplSourceforgeNet, font), 2, 0);
+            layout.Controls.Add(CreateLinkLabel(Application.ProductName, Resources.WebLinks.GithubComAntidupl, font), 2, 0);
 
             return layout;
         }
@@ -113,10 +112,10 @@ namespace AntiDupl.NET
             table.Controls.Add(CreateLabel(Resources.Strings.Current.AboutProgramPanel_VersionLabel_Text, 
                 new Font(font, FontStyle.Bold)), 1, 0);
 
-            table.Controls.Add(CreateLinkLabel(Application.ProductName, Resources.WebLinks.SourceforgeNetAntidupl, font), 0, 1);
+            table.Controls.Add(CreateLinkLabel(Application.ProductName, Resources.WebLinks.GithubComAntidupl, font), 0, 1);
             table.Controls.Add(CreateLabel(m_core.GetVersion(CoreDll.VersionType.AntiDupl).ToString(), font), 1, 1);
 
-            table.Controls.Add(CreateLinkLabel("Simd", Resources.WebLinks.SourceforgeNetSimd, font), 0, 2);
+            table.Controls.Add(CreateLinkLabel("Simd", Resources.WebLinks.GithubComSimd, font), 0, 2);
             table.Controls.Add(CreateLabel(m_core.GetVersion(CoreDll.VersionType.Simd).ToString(), font), 1, 2);
 
             table.Controls.Add(CreateLinkLabel("OpenJPEG", Resources.WebLinks.OpenjpegOrg, font), 0, 3);

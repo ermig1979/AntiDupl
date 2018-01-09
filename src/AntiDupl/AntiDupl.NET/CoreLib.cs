@@ -39,7 +39,7 @@ namespace AntiDupl.NET
 
         //-----------Public functions----------------------------------------------
 
-        public CoreLib()
+        public CoreLib(string userPath)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace AntiDupl.NET
             }
             if (Version.Compatible(GetVersion(CoreDll.VersionType.AntiDupl)))
             {
-                m_handle = m_dll.adCreate();
+                m_handle = m_dll.adCreateW(userPath);
             }
             else
                 throw new Exception("Incompatible core library version!");

@@ -113,11 +113,18 @@ DLLAPI adError adVersionGet(adVersionType versionType, adCharA * pVersion, adSiz
 	return AD_OK;
 }
 
-DLLAPI adEngineHandle adCreate()
+DLLAPI adEngineHandle adCreateA(const adCharA * userPath)
 {
     ad::DumpInit();
 
-	return new ad::TEngine();
+    return new ad::TEngine(ad::TString(userPath));
+}
+
+DLLAPI adEngineHandle adCreateW(const adCharW * userPath)
+{
+    ad::DumpInit();
+
+    return new ad::TEngine(ad::TString(userPath));
 }
 
 DLLAPI adError adRelease(adEngineHandle handle)
@@ -565,6 +572,5 @@ DLLAPI adError adTrainNeuralNetwork(adEngineHandle handle)
 {
 	CHECK_HANDLE
 
-	return handle->GetNeuralNetworkPonter()->Train();
-    //return ad::TraineuralNetwork();
+	return handle->GetNeuralNetworkPonter()->Train(handle->Options()->statisticsPath);
 }
