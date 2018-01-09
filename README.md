@@ -1,4 +1,4 @@
-![AntiDupl screenshot](http://ermig1979.github.io/AntiDupl/docs/data/help/english/files/MainForm.png)
+![AntiDupl screenshot](https://ermig1979.github.io/AntiDupl/data/help/english/files/MainForm.png)
 
 Typically, modern computer users have large collections of images in various formats. 
 And then more these collections, then more likely to have the large number of duplicates. 
