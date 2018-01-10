@@ -1,0 +1,48 @@
+﻿<Window x:Class="AntiDuplWPF.View.ProgressDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:AntiDuplWPF.Control"
+        Title="ProgressDialog" Height="300" Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!--State-->
+            <RowDefinition Height="Auto"/>
+            <!--ProgressMessage-->
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <!--Cancel-->
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="{Binding Path=State, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <!-- Progress Message -->
+        <TextBlock Grid.Row="1" Text="{Binding Path=ProgressMessage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <!--<ProgressBar Grid.Row="2" Value="{Binding Path=Progress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                     Maximum="{Binding Path=ProgressMax, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                     Height="50"/>-->
+        <controls:ComplexProgressBar Grid.Row="2"
+            CurrentFirst="{Binding Progress, Mode=OneWay}"
+            CurrentSecond="{Binding CurrentSecond, Mode=OneWay}"
+            Maximum="{Binding ProgressMax, Mode=OneWay}"
+            Height="50"/>
+        <Button Grid.Row="3" Content="Cancel"  Command="{Binding Path=CancelCommand}" />
+        <!--<TextBlock Text="{Binding Path=LogMessage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                   HorizontalAlignment="Center"  />-->
+
+        <DataGrid Grid.Row="4" 
+                      ItemsSource="{Binding LogItems}" 
+                      x:Name="logGrid"
+                      AutoGenerateColumns="False" 
+                      IsReadOnly="True"
+			          HorizontalScrollBarVisibility="Auto" 
+                      VerticalScrollBarVisibility="Auto"
+                      IsSynchronizedWithCurrentItem="True" 
+                  SelectedItem="{Binding SelectedLogItem, Mode=TwoWay}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Time" Binding="{Binding Time, Mode=OneWay}" />
+                <DataGridTextColumn Header="Message" Binding="{Binding Message, Mode=OneWay}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

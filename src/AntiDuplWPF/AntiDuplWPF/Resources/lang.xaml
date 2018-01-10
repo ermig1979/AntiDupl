@@ -1,0 +1,97 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:v="clr-namespace:System;assembly=mscorlib">
+    <v:String x:Key="desc_ignorePair">Added to ignored pair {0}-{1}</v:String>
+    <v:String x:Key="desc_ignorePairs">Added to ignored {0} pairs</v:String>
+    <v:String x:Key="desc_deleteImage">Delete image {0}</v:String>
+    <v:String x:Key="desc_deleteOtherFromGroup">Delete all from group except {0}</v:String>
+    <v:String x:Key="desc_deleteOtherFromPair">Delete all from pair except {0}</v:String>
+    <v:String x:Key="desc_deleteFiles">Deleted {0} files</v:String>
+
+    <v:String x:Key="mainwindow_menu_result">Results</v:String>
+    <v:String x:Key="mainwindow_menu_result_load">Load</v:String>
+    <v:String x:Key="mainwindow_menu_result_save">Save</v:String>
+    <v:String x:Key="mainwindow_menu_view">View</v:String>
+    <v:String x:Key="mainwindow_menu_view_toGroup">To group</v:String>
+    <v:String x:Key="mainwindow_menu_view_toDuplPair">To dupl pair</v:String>
+    <v:String x:Key="mainwindow_contextmenu_IgnorePair">Ignore pair</v:String>
+    <v:String x:Key="mainwindow_contextmenu_IgnorePairs">Ignore selected pairs ({0})</v:String>
+    <v:String x:Key="mainwindow_contextmenu_OpenСomparator">Open comparator</v:String>
+    <v:String x:Key="mainwindow_contextmenu_ShowMatches">Show matches</v:String>
+    <v:String x:Key="mainwindow_contextmenu_IgnoreGroup">Ignore group</v:String>
+    <v:String x:Key="mainwindow_contextmenu_AutoDeleteBySaati">Auto delete by Saati index</v:String>
+
+    <v:String x:Key="mainwindow_tabControl_setting_header">Setting</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_path">Paths</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_pathmenu_deletecurrent">Delete current</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_start">Start</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_hashesInDupl">Hashes in duplicate</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_hammingDistance">Hamming distance</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_flipImage">Flip image</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_slowCompare">Slow compare</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_resizeAllTo">Resize all image to</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_sizeOfResizedImage">Size of resized image</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_onlyCropped">Only cropped</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_hammingDistanceForWholeImage">Hamming distance for whole image</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_postCheckBySURF">Post check by SURF</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_HashDBHEngineSetCacheSize">Cache size for HEngine set (mb)</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_HashDBInfoFromHashCacheSize">Cache size for storage info for hash (mb)</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_InfoFromHashMode">InfoFromHash mode</v:String>
+    <v:String x:Key="mainwindow_tabControl_duplPair">Dupl pairs</v:String>
+    <v:String x:Key="mainwindow_tabControl_duplPair_ignore">Ignore</v:String>
+    <v:String x:Key="mainwindow_tabControl_CompareMode">Compare mode</v:String>
+    <v:String x:Key="mainwindow_tabControl_DuplGroups">Dupl groups</v:String>
+
+    <v:String x:Key="mainwindow_GridColumn_Icon">Icon</v:String>
+    <v:String x:Key="mainwindow_GridColumn_Path">Path</v:String>
+    <v:String x:Key="mainwindow_GridColumn_SearchSubfolders">Search in subfolders</v:String>
+    <v:String x:Key="mainwindow_GridColumn_Image">Image</v:String>
+    <v:String x:Key="mainwindow_GridColumn_ImageInfo">Image info</v:String>
+    <v:String x:Key="mainwindow_GridColumn_CountOfHashes">Count of hashes</v:String>
+
+    <v:String x:Key="mainwindow_tooltip_FileSize">File size</v:String>
+    <v:String x:Key="mainwindow_tooltip_Resolution">Resolution</v:String>
+    <v:String x:Key="mainwindow_tooltip_JpegQuality">Jpeg quality</v:String>
+    <v:String x:Key="mainwindow_tooltip_Sharpness">Sharpness</v:String>
+    <v:String x:Key="mainwindow_tooltip_Delete">Delete</v:String>
+    <v:String x:Key="mainwindow_tooltip_MoveFirstToNeighbourDirectory">Move first file to neighbour directory</v:String>
+    <v:String x:Key="mainwindow_tooltip_MoveSecondToNeighbourDirectory">Move second file to neighbour directory</v:String>
+    <v:String x:Key="mainwindow_tooltip_Ignore">Ignore</v:String>
+    <v:String x:Key="mainwindow_tooltip_RenameTo">Rename {0} to {1}</v:String>
+    <v:String x:Key="mainwindow_tooltip_MoveAndRename">Move and rename</v:String>
+    <v:String x:Key="mainwindow_tooltip_ReplaseNeighbour">Replase neighbour</v:String>
+
+    <v:String x:Key="toolBar_Configuration">Configuration</v:String>
+    <v:String x:Key="toolBar_setSaati">Set priorities for criterions for method Saati</v:String>
+
+    <v:String x:Key="configurationWindow_thumbnailWidth">Thumbnail Width</v:String>
+    <v:String x:Key="configurationWindow_maxCachedThumbnail">Max cached thumbnail</v:String>
+    <v:String x:Key="configurationWindow_SaveResultInCurrentFile">Save result in current file</v:String>
+    <v:String x:Key="configurationWindow_BadColor">Bad color</v:String>
+    <v:String x:Key="configurationWindow_GoodColor">Good color</v:String>
+    <v:String x:Key="configurationWindow_AlternateColor">Alternate color</v:String>
+    <v:String x:Key="configurationWindow_FolderAreDiffrentColor">Folder are diffrent color</v:String>
+    <v:String x:Key="configurationWindow_DeleteHashesForResizedIimages">Delete hashes for resized images</v:String>
+    <v:String x:Key="configurationWindow_RemoveHashesForFilesIsNotAvailable">Remove hashes for files is not available</v:String>
+
+    <v:String x:Key="comparatorWindow_DeleteOther">DeleteOther</v:String>
+
+    <v:String x:Key="prioritiesWindow_CriterionWeigth">Criterions weigth</v:String>
+    <v:String x:Key="prioritiesWindow_pairedComparison">Enter by method of paired comparison</v:String>
+    <v:String x:Key="prioritiesWindow_enterCriteriaPriorities">Now we need to enter the criteria priorities</v:String>
+    <v:String x:Key="prioritiesWindow_IsUse">IsUse</v:String>
+    <v:String x:Key="prioritiesWindow_Name">Name</v:String>
+    <v:String x:Key="prioritiesWindow_Weight">Weight</v:String>
+
+    <v:String x:Key="progressWindow_ComputeHashes">Compute hashes</v:String>
+    <v:String x:Key="progressWindow_CompareHashes">Compare hashes</v:String>
+    <v:String x:Key="progressWindow_PostCheckBySURF">Post check by SURF</v:String>
+    <v:String x:Key="progressWindow_CancellationMessage">Work cancelled</v:String>
+    <v:String x:Key="progressWindow_PreparingMessage">Preparing to perform work.</v:String>
+
+    <v:String x:Key="criterion_Resolution">Resolution</v:String>
+    <v:String x:Key="criterion_LargerFileSize">LargerFileSize</v:String>
+    <v:String x:Key="criterion_SmallerFileSize">SmallerFileSize</v:String>
+    <v:String x:Key="criterion_JpegQuality">JpegQuality</v:String>
+    <v:String x:Key="criterion_Sharpness">Sharpness</v:String>
+</ResourceDictionary>

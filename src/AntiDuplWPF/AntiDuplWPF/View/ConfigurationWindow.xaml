@@ -1,0 +1,29 @@
+﻿<Window x:Class="AntiDuplWPF.View.ConfigurationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ConfigurationWindow" Height="300" Width="300">
+    <TabControl >
+        <TabItem Header="Main">
+            <StackPanel>
+                <Label Content="{DynamicResource configurationWindow_thumbnailWidth}" />
+                <TextBox Text="{Binding ThumbnailWidth, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Content="{DynamicResource configurationWindow_maxCachedThumbnail}" />
+                <TextBox Text="{Binding Configuration.MaxCachedThumbnail, UpdateSourceTrigger=PropertyChanged}"/>
+                <CheckBox Content="{DynamicResource configurationWindow_SaveResultInCurrentFile}"
+                    IsChecked="{Binding Configuration.SaveResultInCurrentFile, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+        </TabItem>
+        <TabItem Header="SearchOption">
+            <StackPanel>
+                <CheckBox Content="system" IsChecked="{Binding Option.SearchOptions.System}"/>
+                <CheckBox Content="hidden" IsChecked="{Binding Option.SearchOptions.Hidden}"/>
+            </StackPanel>
+        </TabItem>
+        <TabItem Header="CompareOption">
+            <StackPanel>
+                <CheckBox Content="CheckOnEquality" IsChecked="{Binding Option.CompareOptions.CheckOnEquality}"/>
+                <CheckBox Content="hidden" IsChecked="{Binding Option.SearchOptions.Hidden}"/>
+            </StackPanel>
+        </TabItem>
+    </TabControl>
+</Window>

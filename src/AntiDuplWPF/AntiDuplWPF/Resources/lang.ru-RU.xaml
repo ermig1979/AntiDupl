@@ -1,0 +1,98 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  	                xmlns:v="clr-namespace:System;assembly=mscorlib">
+    <v:String x:Key="desc_ignorePair">Добавлена в игнорируемые пара {0}-{1}</v:String>
+    <v:String x:Key="desc_ignorePairs">Добавлены в игнорируемые {0} пар</v:String>
+    <v:String x:Key="desc_deleteImage">Удалено изображение {0}</v:String>
+    <v:String x:Key="desc_deleteOtherFromGroup">Удалено все из группы кроме {0}</v:String>
+    <v:String x:Key="desc_deleteOtherFromPair">Удалено все из пары кроме {0}</v:String>
+    <v:String x:Key="desc_deleteFiles">Удалено {0} файлов</v:String>
+
+    <v:String x:Key="mainwindow_menu_result">Результаты</v:String>
+    <v:String x:Key="mainwindow_menu_result_load">Загрузить</v:String>
+    <v:String x:Key="mainwindow_menu_result_save">Сохранить</v:String>
+    <v:String x:Key="mainwindow_menu_view">Вид</v:String>
+    <v:String x:Key="mainwindow_menu_view_toGroup">В группы</v:String>
+    <v:String x:Key="mainwindow_menu_view_toDuplPair">В пары дубликатов</v:String>
+    <v:String x:Key="mainwindow_contextmenu_IgnorePair">Игнорировать пару</v:String>
+    <v:String x:Key="mainwindow_contextmenu_IgnorePairs">Игнорировать выделенные пары ({0})</v:String>
+    <v:String x:Key="mainwindow_contextmenu_OpenСomparator">Открыть сравнитель</v:String>
+    <v:String x:Key="mainwindow_contextmenu_ShowMatches">Показать совпадения</v:String>
+    <v:String x:Key="mainwindow_contextmenu_IgnoreGroup">Игнорировать группу</v:String>
+    <v:String x:Key="mainwindow_contextmenu_AutoDeleteBySaati">Автоматическое удаление по значению Саати индекса</v:String>
+
+    <v:String x:Key="mainwindow_tabControl_setting_header">Настройки</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_path">Пути</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_pathmenu_deletecurrent">Удалить текущий</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_start">Пуск</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_hashesInDupl">Хещей в дубликате</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_hammingDistance">Дистанция хамминга</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_flipImage">Отражать зеркально изображения</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_slowCompare">Медленное сравнение</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_resizeAllTo">Изменить разрешение всех изображений к</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_sizeOfResizedImage">Размер изображения</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_onlyCropped">Только обрезанные</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_hammingDistanceForWholeImage">Дистанция Хамминга для целого изображения</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_postCheckBySURF">Пост SURF проверка</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_HashDBHEngineSetCacheSize">Размер кеша для наборов HEngine (мб)</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_HashDBInfoFromHashCacheSize">Размер кеша для хранилиша информации по хещам (мб)</v:String>
+    <v:String x:Key="mainwindow_tabControl_setting_InfoFromHashMode">Режим InfoFromHash</v:String>
+    <v:String x:Key="mainwindow_tabControl_duplPair">Пары дубликатов</v:String>
+    <v:String x:Key="mainwindow_tabControl_duplPair_ignore">Игнор</v:String>
+    <v:String x:Key="mainwindow_tabControl_CompareMode">Режим сравнения</v:String>
+    <v:String x:Key="mainwindow_tabControl_DuplGroups">Группы дубликатов</v:String>
+
+    <v:String x:Key="mainwindow_GridColumn_Icon">Иконка</v:String>
+    <v:String x:Key="mainwindow_GridColumn_Path">Путь</v:String>
+    <v:String x:Key="mainwindow_GridColumn_SearchSubfolders">Поиск в каталогах</v:String>
+    <v:String x:Key="mainwindow_GridColumn_Image">Изображение</v:String>
+    <v:String x:Key="mainwindow_GridColumn_ImageInfo">Информация</v:String>
+    <v:String x:Key="mainwindow_GridColumn_CountOfHashes">Количество хещей</v:String>
+
+    <v:String x:Key="mainwindow_tooltip_FileSize">Размер файла</v:String>
+    <v:String x:Key="mainwindow_tooltip_Resolution">Разрешение</v:String>
+    <v:String x:Key="mainwindow_tooltip_JpegQuality">Качество JPEG</v:String>
+    <v:String x:Key="mainwindow_tooltip_Sharpness">Резкость</v:String>
+    <v:String x:Key="mainwindow_tooltip_Delete">Удалить</v:String>
+    <v:String x:Key="mainwindow_tooltip_MoveFirstToNeighbourDirectory">Переместить первый файл в директорию соседа</v:String>
+    <v:String x:Key="mainwindow_tooltip_MoveSecondToNeighbourDirectory">Переместить второй файл в директорию соседа</v:String>
+    <v:String x:Key="mainwindow_tooltip_Ignore">Игнорировать</v:String>
+    <v:String x:Key="mainwindow_tooltip_RenameTo">Переименовать {0} в {1}</v:String>
+    <v:String x:Key="mainwindow_tooltip_MoveAndRename">Переместить и переименовать</v:String>
+    <v:String x:Key="mainwindow_tooltip_ReplaseNeighbour">Заменить соседа</v:String>
+
+    <v:String x:Key="toolBar_Configuration">Настройки</v:String>
+    <v:String x:Key="toolBar_setSaati">Установить приоритет критериев для метода Саати</v:String>
+
+    <v:String x:Key="configurationWindow_thumbnailWidth">Ширина эскизов</v:String>
+    <v:String x:Key="configurationWindow_maxCachedThumbnail">Максимальное количество эскизов в кеше</v:String>
+    <v:String x:Key="configurationWindow_SaveResultInCurrentFile">Сохранять результат в текущем файле результатов</v:String>
+    <v:String x:Key="configurationWindow_BadColor">Цвет подсветки худщего параметра</v:String>
+    <v:String x:Key="configurationWindow_GoodColor">Цвет подсветки лучшего параметра</v:String>
+    <v:String x:Key="configurationWindow_AlternateColor">Альтернативный цвет</v:String>
+    <v:String x:Key="configurationWindow_FolderAreDiffrentColor">Цвет если различны директории</v:String>
+    <v:String x:Key="configurationWindow_DeleteHashesForResizedIimages">Удалить хеши для изображенний с измененным разрешением</v:String>
+    <v:String x:Key="configurationWindow_RemoveHashesForFilesIsNotAvailable">Удалить хеши для недоступных файлов</v:String>
+
+    <v:String x:Key="comparatorWindow_DeleteOther">Удалить остальные</v:String>
+
+    <v:String x:Key="prioritiesWindow_CriterionWeigth">Веса критериев</v:String>
+    <v:String x:Key="prioritiesWindow_pairedComparison">Ввести методом попарного сравнения</v:String>
+    <v:String x:Key="prioritiesWindow_enterCriteriaPriorities">Сейчас надо ввести приоритеты критериев</v:String>
+    <v:String x:Key="prioritiesWindow_IsUse">Используется</v:String>
+    <v:String x:Key="prioritiesWindow_Name">Наименование</v:String>
+    <v:String x:Key="prioritiesWindow_Weight">Вес</v:String>
+
+    <v:String x:Key="progressWindow_ComputeHashes">Подсчет хещей</v:String>
+    <v:String x:Key="progressWindow_CompareHashes">Сравнение хещей</v:String>
+    <v:String x:Key="progressWindow_PostCheckBySURF">Пост SURF проверка</v:String>
+    <v:String x:Key="progressWindow_CancellationMessage">Работа отменена</v:String>
+    <v:String x:Key="progressWindow_PreparingMessage">Подготовка к выполнению работы.</v:String>
+
+    <v:String x:Key="criterion_Resolution">Разрешение</v:String>
+    <v:String x:Key="criterion_LargerFileSize">Больший размер файла</v:String>
+    <v:String x:Key="criterion_SmallerFileSize">Меньший размер файла</v:String>
+    <v:String x:Key="criterion_JpegQuality">Блочность JPEG</v:String>
+    <v:String x:Key="criterion_Sharpness">Резкость</v:String>
+
+</ResourceDictionary>
