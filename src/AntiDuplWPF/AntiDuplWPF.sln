@@ -13,10 +13,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibOpenJpeg32", "..\3rd\Lib
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AntiDupl32", "AntiDupl\AntiDupl32.vcxproj", "{38555233-DD7B-4F45-9339-F3F70E70AF60}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenNN32", "..\3rd\OpenNN\OpenNN32.vcxproj", "{44F4252D-8C3C-4981-B11B-B6008646A4EA}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TinyXml32", "..\3rd\tinyxml\TinyXml32.vcxproj", "{1B11B527-4299-4551-8D47-6FD6191BCF48}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,38 +86,6 @@ Global
 		{38555233-DD7B-4F45-9339-F3F70E70AF60}.Template|Mixed Platforms.Build.0 = Template|Win32
 		{38555233-DD7B-4F45-9339-F3F70E70AF60}.Template|Win32.ActiveCfg = Template|Win32
 		{38555233-DD7B-4F45-9339-F3F70E70AF60}.Template|Win32.Build.0 = Template|Win32
-		{44F4252D-8C3C-4981-B11B-B6008646A4EA}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{44F4252D-8C3C-4981-B11B-B6008646A4EA}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{44F4252D-8C3C-4981-B11B-B6008646A4EA}.Debug|Mixed Platforms.Build.0 = Debug|Win32
-		{44F4252D-8C3C-4981-B11B-B6008646A4EA}.Debug|Win32.ActiveCfg = Debug|Win32
-		{44F4252D-8C3C-4981-B11B-B6008646A4EA}.Debug|Win32.Build.0 = Debug|Win32
-		{44F4252D-8C3C-4981-B11B-B6008646A4EA}.Release|Any CPU.ActiveCfg = Release|Win32
-		{44F4252D-8C3C-4981-B11B-B6008646A4EA}.Release|Mixed Platforms.ActiveCfg = Release|Win32
-		{44F4252D-8C3C-4981-B11B-B6008646A4EA}.Release|Mixed Platforms.Build.0 = Release|Win32
-		{44F4252D-8C3C-4981-B11B-B6008646A4EA}.Release|Win32.ActiveCfg = Release|Win32
-		{44F4252D-8C3C-4981-B11B-B6008646A4EA}.Release|Win32.Build.0 = Release|Win32
-		{44F4252D-8C3C-4981-B11B-B6008646A4EA}.Template|Any CPU.ActiveCfg = Release|Win32
-		{44F4252D-8C3C-4981-B11B-B6008646A4EA}.Template|Any CPU.Build.0 = Release|Win32
-		{44F4252D-8C3C-4981-B11B-B6008646A4EA}.Template|Mixed Platforms.ActiveCfg = Release|Win32
-		{44F4252D-8C3C-4981-B11B-B6008646A4EA}.Template|Mixed Platforms.Build.0 = Release|Win32
-		{44F4252D-8C3C-4981-B11B-B6008646A4EA}.Template|Win32.ActiveCfg = Release|Win32
-		{44F4252D-8C3C-4981-B11B-B6008646A4EA}.Template|Win32.Build.0 = Release|Win32
-		{1B11B527-4299-4551-8D47-6FD6191BCF48}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{1B11B527-4299-4551-8D47-6FD6191BCF48}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{1B11B527-4299-4551-8D47-6FD6191BCF48}.Debug|Mixed Platforms.Build.0 = Debug|Win32
-		{1B11B527-4299-4551-8D47-6FD6191BCF48}.Debug|Win32.ActiveCfg = Debug|Win32
-		{1B11B527-4299-4551-8D47-6FD6191BCF48}.Debug|Win32.Build.0 = Debug|Win32
-		{1B11B527-4299-4551-8D47-6FD6191BCF48}.Release|Any CPU.ActiveCfg = Release|Win32
-		{1B11B527-4299-4551-8D47-6FD6191BCF48}.Release|Mixed Platforms.ActiveCfg = Release|Win32
-		{1B11B527-4299-4551-8D47-6FD6191BCF48}.Release|Mixed Platforms.Build.0 = Release|Win32
-		{1B11B527-4299-4551-8D47-6FD6191BCF48}.Release|Win32.ActiveCfg = Release|Win32
-		{1B11B527-4299-4551-8D47-6FD6191BCF48}.Release|Win32.Build.0 = Release|Win32
-		{1B11B527-4299-4551-8D47-6FD6191BCF48}.Template|Any CPU.ActiveCfg = Release|Win32
-		{1B11B527-4299-4551-8D47-6FD6191BCF48}.Template|Any CPU.Build.0 = Release|Win32
-		{1B11B527-4299-4551-8D47-6FD6191BCF48}.Template|Mixed Platforms.ActiveCfg = Release|Win32
-		{1B11B527-4299-4551-8D47-6FD6191BCF48}.Template|Mixed Platforms.Build.0 = Release|Win32
-		{1B11B527-4299-4551-8D47-6FD6191BCF48}.Template|Win32.ActiveCfg = Release|Win32
-		{1B11B527-4299-4551-8D47-6FD6191BCF48}.Template|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -129,8 +93,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{1622C4EF-06A4-4DAA-9631-5D71B32858A2} = {41B5928C-AC44-420D-BD85-6F66F2EA05BC}
 		{1622C4EF-06A4-4DAA-9631-5D71B32858A4} = {41B5928C-AC44-420D-BD85-6F66F2EA05BC}
-		{44F4252D-8C3C-4981-B11B-B6008646A4EA} = {41B5928C-AC44-420D-BD85-6F66F2EA05BC}
-		{1B11B527-4299-4551-8D47-6FD6191BCF48} = {41B5928C-AC44-420D-BD85-6F66F2EA05BC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {74537DA7-BD6E-416A-9AE8-7B1E34845927}

@@ -80,7 +80,6 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CoreHintOptions.cs" />
     <Compile Include="Form\AboutProgramForm.cs">
       <SubType>Form</SubType>
     </Compile>

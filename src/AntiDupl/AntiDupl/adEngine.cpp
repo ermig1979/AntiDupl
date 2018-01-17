@@ -36,7 +36,6 @@
 #include "adPerformance.h"
 #include "adLogger.h"
 #include "adFileUtils.h"
-#include "adNeuralNetwork.h"
 
 namespace ad
 {
@@ -58,7 +57,6 @@ namespace ad
         m_pCompareManager = new TCompareManager(this);
         m_pCollectManager = new TCollectManager(this, m_pCompareManager);
         m_pSearcher = new TSearcher(this, m_pImageDataPtrs);
-		m_pNeuralNetwork = new TNeuralNetwork(userPath);
     }
 
     TEngine::~TEngine()

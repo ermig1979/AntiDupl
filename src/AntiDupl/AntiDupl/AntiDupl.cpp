@@ -50,7 +50,6 @@ typedef ad::TEngine* adEngineHandle;
 #include "adRecycleBin.h"
 #include "adExternal.h"
 #include "adDump.h"
-#include "adNeuralNetwork.h"
 
 #define CHECK_HANDLE \
     if(handle == NULL) \
@@ -568,9 +567,3 @@ DLLAPI adError adLoadBitmapW(adEngineHandle handle, const adCharW* fileName, adB
     return ad::LoadBitmap(fileName, pBitmap);
 }
 
-DLLAPI adError adTrainNeuralNetwork(adEngineHandle handle)
-{
-	CHECK_HANDLE
-
-	return handle->GetNeuralNetworkPonter()->Train(handle->Options()->statisticsPath);
-}

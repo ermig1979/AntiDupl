@@ -494,11 +494,6 @@ namespace AntiDupl.NET
             return LoadBitmap((int)imageInfo.width, (int)imageInfo.height, imageInfo.path);
         }
 
-        public bool TrainNeuralNetwork()
-        {
-            return m_dll.adTrainNeuralNetwork(m_handle) == CoreDll.Error.Ok;
-        }
-
         //-----------Public properties----------------------------------------------
 
         #region Public properties
@@ -566,23 +561,6 @@ namespace AntiDupl.NET
                 m_dll.adOptionsSet(m_handle, CoreDll.OptionsType.Advanced, Marshal.UnsafeAddrOfPinnedArrayElement(options, 0));
             }
         }
-
-        public CoreHintOptions hintOptions
-        {
-            get
-            {
-                CoreDll.adHintOptions[] options = new CoreDll.adHintOptions[1];
-                m_dll.adOptionsGet(m_handle, CoreDll.OptionsType.Hint, Marshal.UnsafeAddrOfPinnedArrayElement(options, 0));
-                return new CoreHintOptions(ref options[0]);
-            }
-            set
-            {
-                CoreDll.adHintOptions[] options = new CoreDll.adHintOptions[1]; //создаем массив из одного значения
-                value.ConvertTo(ref options[0]); //конвертируем переданный класс
-                m_dll.adOptionsSet(m_handle, CoreDll.OptionsType.Hint, Marshal.UnsafeAddrOfPinnedArrayElement(options, 0));
-            }
-        }
-
 
         public CorePathWithSubFolder[] searchPath
         {

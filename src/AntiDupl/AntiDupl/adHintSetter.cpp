@@ -24,26 +24,18 @@
 #include "adHintSetter.h"
 #include "adOptions.h"
 #include "adResult.h"
-#include "adNeuralNetwork.h"
 #include "adException.h"
 
 
 namespace ad
 {
     THintSetter::THintSetter(TOptions *pOptions)
-        :m_pOptions(pOptions)
-	    {
-        //m_autoDeleteThresholdDifference = std::min(double(AUTO_DELETE_DIFFERENCE_MAX),
-        //    double(m_pOptions->compare.thresholdDifference)/AUTO_DELETE_DIFFERENCE_FACTOR);
-		//m_blockinessThreshold = m_pOptions->defect.blockinessThreshold;
+        : m_pOptions(pOptions)
+	{
+
     }
 
 	void THintSetter::Execute(TResult *pResult, bool canRename) const
-    {
-		throw TException(adError::AD_ERROR_UNKNOWN);
-	}
-
-	adAlgorithmOfHintSetting THintSetter::AlgorithmOfHintSetting() const
     {
 		throw TException(adError::AD_ERROR_UNKNOWN);
 	}
@@ -156,63 +148,13 @@ namespace ad
     }
 
 	//-------------------------------------------------------------------------
-
-	THintSetter_Neural_Network::THintSetter_Neural_Network(TOptions *pOptions)
-		: THintSetter(pOptions)
-		//m_pNeuralNetwork()
-    {
-		m_pNeuralNetwork = new TNeuralNetwork(pOptions->userPath);
-
-		//m_netLoaded = m_pNeuralNetwork->Load();
-	}
-
-	void THintSetter_Neural_Network::Execute(TResult *pResult, bool canRename) const
-    {
-		if(pResult->type == AD_RESULT_NONE || pResult->transform != AD_TRANSFORM_TURN_0)
-        {
-            pResult->hint = AD_HINT_NONE;
-            return;
-        }
-
-        if(pResult->type == AD_RESULT_DEFECT_IMAGE) //if image has defect
-        {
-            pResult->hint = AD_HINT_DELETE_FIRST;
-            return;
-        }
-
-		if (m_pNeuralNetwork->Loaded())
-		{
-			bool predictDelFirst = m_pNeuralNetwork->GetPredict(pResult);
-			if (predictDelFirst)
-				pResult->hint = AD_HINT_DELETE_FIRST;
-			else
-				pResult->hint = AD_HINT_DELETE_SECOND;
-		}
-		return;
-	}
-
-	//-------------------------------------------------------------------------
 	// static
 	THintSetter *THintSetterStorage::m_hintSetter_pointer; //its a definition
 
 	THintSetter* THintSetterStorage::GetHintSetterPointer(TOptions *pOptions)
 	{
-		if (pOptions->hint.algorithmOfHintSetting == AD_HINT_SET_BY_ALGORITHM)
-		{
-			if (m_hintSetter_pointer == NULL ||
-				m_hintSetter_pointer->AlgorithmOfHintSetting() != AD_HINT_SET_BY_ALGORITHM)
-				m_hintSetter_pointer = new THintSetter_Algorithm(pOptions);
-
-			return m_hintSetter_pointer;
-		}
-		else if (pOptions->hint.algorithmOfHintSetting == adAlgorithmOfHintSetting::AD_HINT_SET_BY_NEURAL_NETWORK)
-		{
-			if (m_hintSetter_pointer == NULL ||
-				m_hintSetter_pointer->AlgorithmOfHintSetting() != AD_HINT_SET_BY_NEURAL_NETWORK) 
-				m_hintSetter_pointer = new THintSetter_Neural_Network(pOptions);
-			return m_hintSetter_pointer;
-		}
-		else
-			throw TException(adError::AD_ERROR_INVALID_PARAMETER_COMBINATION);
+		if (m_hintSetter_pointer == NULL)
+			m_hintSetter_pointer = new THintSetter_Algorithm(pOptions);
+		return m_hintSetter_pointer;
 	}
 }

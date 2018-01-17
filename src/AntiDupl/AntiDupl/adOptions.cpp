@@ -118,8 +118,6 @@ namespace ad
         m_options.push_back(TOption(&advanced.resultCountMax, TEXT("AdvancedOptions"), TEXT("ResultCountMax"), 100000, 1, INT_MAX));
         m_options.push_back(TOption(&advanced.ignoreFrameWidth, TEXT("AdvancedOptions"), TEXT("IgnoreFrameWidth"), 0, 0, 12));
 
-		m_options.push_back(TOption((int*)&hint.algorithmOfHintSetting, TEXT("HintOptions"), TEXT("AlgorithmOfHintSetting"), AD_HINT_SET_BY_ALGORITHM, 0, AD_HINT_SET_SIZE));
-
         SetDefault();
     }
 
@@ -168,9 +166,6 @@ namespace ad
         case AD_OPTIONS_ADVANCED:
             memcpy(&advanced, pOptions, sizeof(adAdvancedOptions));
             break;
-		case AD_OPTIONS_HINT:
-			memcpy(&hint, pOptions, sizeof(adHintOptions));
-            break;
         default:
             return AD_ERROR_INVALID_OPTIONS_TYPE;
         }
@@ -198,9 +193,6 @@ namespace ad
             break;
         case AD_OPTIONS_ADVANCED:
             memcpy(pOptions, &advanced, sizeof(adAdvancedOptions));
-            break;
-		case AD_OPTIONS_HINT:
-            memcpy(pOptions, &hint, sizeof(adHintOptions));
             break;
         default:
             return AD_ERROR_INVALID_OPTIONS_TYPE;

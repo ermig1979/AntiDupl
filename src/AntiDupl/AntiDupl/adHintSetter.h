@@ -31,7 +31,6 @@ namespace ad
 {
     struct TOptions;
     struct TResult;
-	class TNeuralNetwork;
     //-------------------------------------------------------------------------
 	// ќбщий класс установшика подсказок
     class THintSetter
@@ -40,7 +39,6 @@ namespace ad
         TOptions *m_pOptions;
 	public:
         THintSetter(TOptions *pOptions);
-		virtual adAlgorithmOfHintSetting AlgorithmOfHintSetting() const; // —войство только дл€ чтени€
         virtual void Execute(TResult *pResult, bool canRename) const; //можно переопределить в наследнике
     };
 
@@ -52,22 +50,10 @@ namespace ad
 		adInt32 m_blockinessThreshold;
     public:
 		THintSetter_Algorithm(TOptions *pOptions);
-		virtual adAlgorithmOfHintSetting AlgorithmOfHintSetting() const { return adAlgorithmOfHintSetting::AD_HINT_SET_BY_ALGORITHM; } // —войство только дл€ чтени€
 		virtual void Execute(TResult *pResult, bool canRename) const; //переопредел€ем
 	};
 
-	//-------------------------------------------------------------------------
-    class THintSetter_Neural_Network : public THintSetter
-    {
-	private:
-		TNeuralNetwork* m_pNeuralNetwork;
-		//bool m_netLoaded;
-    public:
-		THintSetter_Neural_Network(TOptions *pOptions);
-		virtual adAlgorithmOfHintSetting AlgorithmOfHintSetting() const { return adAlgorithmOfHintSetting::AD_HINT_SET_BY_NEURAL_NETWORK; } // —войство только дл€ чтени€
-		virtual void Execute(TResult *pResult, bool canRename) const; //переопредел€ем
-	};
-	//-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
 	class THintSetterStorage
     {
 	private:
@@ -75,7 +61,7 @@ namespace ad
     public:
 		static THintSetter* GetHintSetterPointer(TOptions *pOptions);
 	};
-    //THintSetter* GetHintSetterPointer(TOptions *pOptions);
+
     //-------------------------------------------------------------------------
 }
 

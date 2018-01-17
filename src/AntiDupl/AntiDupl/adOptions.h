@@ -70,7 +70,6 @@ namespace ad
         adCompareOptions compare;
         adDefectOptions defect;
         adAdvancedOptions advanced;
-		adHintOptions hint;
 
         TOptions(const TString & userPath_);
 

@@ -118,10 +118,6 @@ namespace AntiDupl.NET
         private LabeledIntegerEdit m_amountOfFragmentsOnYLabeledIntegerEdit;
         private LabeledIntegerEdit m_normalizedSizeOfImageLabeledIntegerEdit;
         private LabeledIntegerEdit m_penThicknessLabeledIntegerEdit;
-
-        private TabPage m_hintTabPage;
-        private LabeledComboBox m_hintTypeLabeledComboBox;
-        private Button m_trainButton;
             
         /// <summary>
         /// Все компоненты иницализированы.
@@ -174,7 +170,6 @@ namespace AntiDupl.NET
 
             InitilizeHighlightTabPage();
 
-            InitilizeHintTabPage();
 
             TableLayoutPanel mainButtonsTableLayoutPanel = InitFactory.Layout.Create(4, 1);
             mainButtonsTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
@@ -477,33 +472,6 @@ namespace AntiDupl.NET
             UpdateHighlightItemsEnabling();
         }
 
-        private void InitilizeHintTabPage()
-        {
-            m_hintTabPage = new TabPage();
-            m_mainTabControl.Controls.Add(m_hintTabPage);
-
-            TableLayoutPanel tableLayoutPanel = InitFactory.Layout.Create(1, 3, 5);
-            tableLayoutPanel.AutoScroll = true;
-            m_hintTabPage.Controls.Add(tableLayoutPanel);
-
-            m_hintTypeLabeledComboBox = new LabeledComboBox(COMBO_BOX_WIDTH + 115, COMBO_BOX_HEIGHT, OnOptionChanged);
-            m_hintTypeLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value(0, "Algo"));
-            m_hintTypeLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value(1, "Neural Network"));
-            tableLayoutPanel.Controls.Add(m_hintTypeLabeledComboBox, 0, 0);
-
-            m_trainButton = new Button();
-            m_trainButton.Text = "Train";
-            m_trainButton.Click += new EventHandler(OnTrainButtonClick);
-            tableLayoutPanel.Controls.Add(m_trainButton, 0, 1);
-        }
-
-        private void OnTrainButtonClick(object sender, EventArgs e)
-        {
-            //MessageBox.Show("Train started!");
-            if (m_core.TrainNeuralNetwork())
-                MessageBox.Show("Train succesfull!");
-        }
-
         private void OnHighlightChanged(object sender, EventArgs e)
         {
             if (m_inited)
@@ -603,8 +571,6 @@ namespace AntiDupl.NET
             m_undoQueueSizeLabeledIntegerEdit.Value = m_newCoreOptions.advancedOptions.undoQueueSize;
             m_resultCountMaxLabeledIntegerEdit.Value = m_newCoreOptions.advancedOptions.resultCountMax;
             m_ignoreFrameWidthLabeledComboBox.SelectedValue = m_newCoreOptions.advancedOptions.ignoreFrameWidth;
-
-            m_hintTypeLabeledComboBox.SelectedValue = (int)m_newCoreOptions.hintOptions.algorithmOfHintSetting;
         }
 
         /// <summary>
@@ -656,8 +622,6 @@ namespace AntiDupl.NET
             m_newCoreOptions.advancedOptions.undoQueueSize = m_undoQueueSizeLabeledIntegerEdit.Value;
             m_newCoreOptions.advancedOptions.resultCountMax = m_resultCountMaxLabeledIntegerEdit.Value;
             m_newCoreOptions.advancedOptions.ignoreFrameWidth = m_ignoreFrameWidthLabeledComboBox.SelectedValue;
-
-            m_newCoreOptions.hintOptions.algorithmOfHintSetting = (CoreDll.AlgorithmOfHintSetting)m_hintTypeLabeledComboBox.SelectedValue;
         }
 
         private void UpdateStrings()
@@ -732,8 +696,6 @@ namespace AntiDupl.NET
             m_amountOfFragmentsOnYLabeledIntegerEdit.Text = s.CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text;
             m_normalizedSizeOfImageLabeledIntegerEdit.Text = s.CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text;
             m_penThicknessLabeledIntegerEdit.Text = s.CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text;
-
-            m_hintTabPage.Text = "Подсказки";
         }
 
         /// <summary>

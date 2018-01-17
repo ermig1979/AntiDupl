@@ -154,7 +154,6 @@ extern "C"
         AD_OPTIONS_COMPARE = 1,
         AD_OPTIONS_DEFECT = 2,
         AD_OPTIONS_ADVANCED = 3,
-		AD_OPTIONS_HINT = 4,
         AD_OPTIONS_SIZE
     };
 
@@ -381,13 +380,6 @@ extern "C"
 		AD_COMPARING_SIZE
 	};
 
-	enum adAlgorithmOfHintSetting : adInt32
-	{
-		AD_HINT_SET_BY_ALGORITHM = 0,
-		AD_HINT_SET_BY_NEURAL_NETWORK = 1,
-		AD_HINT_SET_SIZE
-	};
-
     /*------------Structures-----------------------------------------------------*/
 
     struct adSearchOptions
@@ -450,12 +442,6 @@ extern "C"
         adInt32 ignoreFrameWidth;
     };
     typedef adAdvancedOptions* adAdvancedOptionsPtr;
-
-	struct adHintOptions
-    {
-        adAlgorithmOfHintSetting algorithmOfHintSetting;
-    };
-    typedef adHintOptions* adHintOptions_pointer;
 
     struct adStatistic
     {
@@ -652,8 +638,6 @@ extern "C"
 
     DLLAPI adError adLoadBitmapA(adEngineHandle handle, const adCharA* fileName, adBitmapPtr pBitmap);
     DLLAPI adError adLoadBitmapW(adEngineHandle handle, const adCharW* fileName, adBitmapPtr pBitmap);
-
-	DLLAPI adError adTrainNeuralNetwork(adEngineHandle handle);
 
     /*------------Unicode/Ansi defines-------------------------------------------*/
 
