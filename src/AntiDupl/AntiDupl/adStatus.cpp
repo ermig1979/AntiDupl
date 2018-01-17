@@ -156,10 +156,6 @@ namespace ad
         if(threadType < AD_THREAD_TYPE_MAIN || threadType >= AD_THREAD_TYPE_SIZE)            
             return AD_ERROR_INVALID_THREAD_TYPE;
 
-        if( (threadType == AD_THREAD_TYPE_COLLECT && threadId >= m_collectThreadStatuses.size()) ||
-            (threadType == AD_THREAD_TYPE_COMPARE && threadId >= m_compareThreadStatuses.size()))
-            return AD_ERROR_INVALID_THREAD_ID;
-
         TCriticalSection::TLocker locker(&m_criticalSection);
 
         switch(threadType)
@@ -171,9 +167,9 @@ namespace ad
             pStatus->total = m_total;
             break;
         case AD_THREAD_TYPE_COLLECT:
-            return m_collectThreadStatuses[threadId].Export(pStatus);
+            return threadId < m_collectThreadStatuses.size() ? m_collectThreadStatuses[threadId].Export(pStatus) : AD_ERROR_INVALID_THREAD_ID;
         case AD_THREAD_TYPE_COMPARE:
-            return m_compareThreadStatuses[threadId].Export(pStatus);
+            return threadId < m_compareThreadStatuses.size() ? m_compareThreadStatuses[threadId].Export(pStatus) : AD_ERROR_INVALID_THREAD_ID;
         }
 
         return AD_OK;
