@@ -112,7 +112,7 @@ there are following settings:
 By default, this option is enabled.
  <li><p align="justify">
 	<b>Check on blockiness</b> - the option defines, whether it is necessary to check pictures for existence of artifacts of compression of JPEG - a blockiness. The blockiness is defined by the greatest amount of gradients of brightness for extreme pixels of units 8x8.
-	By default, this option is enabled.
+	By default, this option is disable.
  </p></li>
   <li><p align="justify">
 	<b>Blockiness threshold</b> - percent of the amount of gradients in case of which the image is considered the defective. The chess black-and-white grid will have 100% with a size of cell of 8 pixels. The counted value will testify not necessarily to the worst visual quality in comparison with the picture with smaller value and vice versa. 
@@ -120,11 +120,11 @@ By default, this option is enabled.
  </p></li>
   <li><p align="justify">
 	<b>Check on blockiness only on not Jpeg</b> - the option defines, whether it is necessary to check pictures for existence of artifacts of compression of JPEG - a blockiness only not in Jpeg files. It allows to find only the pressed images, without showing the simply strongly oblate. If at the PNG or BMP file there are explicit artifacts of compression it means that the source file was saved in other format with certainly big size.
-	By default, this option is enabled.
+	By default, this option is disabled.
  </p></li>
  <li><p align="justify">
 	<b>Check on bluring</b>  -the option defines, whether it is necessary to check pictures for too big blur of the image. Blur is calculated a gradient of the second derivative (which it is maximum on lines and edges) for the original image and its reduced options. Exact value is defined by method of the linear interpolation.
-	By default, this option is enabled.
+	By default, this option is disabled.
  </p></li>
   <li><p align="justify">
 	<b>Bluring threshold</b> - blur radius in case of which the image is considered the defective. So far the algorithm is incomplete and high blur for landscape images is shown.
