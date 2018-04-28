@@ -60,7 +60,9 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <ClCompile Include=".\SimdAvx2*.cpp">
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+	  <EnableEnhancedInstructionSet Condition="'$(PlatformToolset)'=='v140'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+	  <EnableEnhancedInstructionSet Condition="'$(PlatformToolset)'=='v141'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(PlatformToolset)'=='v120'">AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
 	<ClCompile Include=".\SimdAvx512f*.cpp">
       <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
