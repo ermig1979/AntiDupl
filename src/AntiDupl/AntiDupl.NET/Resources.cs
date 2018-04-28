@@ -180,6 +180,7 @@ namespace AntiDupl.NET
 
                 try
                 {
+                    CreateIfNotExists(Path);
                     Save(StringsDefaultEnglish.Get());
                     Save(StringsDefaultRussian.Get());
                 }
@@ -214,6 +215,7 @@ namespace AntiDupl.NET
             {
                 try
                 {
+
                     TextWriter writer = new StreamWriter(GetPath(Path, strings.Name, Extension));
                     XmlSerializer xmlSerializer = new XmlSerializer(typeof(AntiDupl.NET.Strings));
                     xmlSerializer.Serialize(writer, strings);
