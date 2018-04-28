@@ -1,7 +1,8 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2018 Yermalayeu Ihar,
+*               2018-2018 Radchenko Andrey.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -552,6 +553,48 @@ namespace Simd
                 SquareSum<true>(src, stride, width, height, sum);
             else
                 SquareSum<false>(src, stride, width, height, sum);
+        }
+
+        template <bool align> void ValueSquareSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * valueSum, uint64_t * squareSum)
+        {
+            assert(width >= A);
+            if (align)
+                assert(Aligned(src) && Aligned(stride));
+
+            size_t alignedWidth = Simd::AlignLo(width, A);
+            uint8x16_t tailMask = ShiftLeft(K8_FF, A - width + alignedWidth);
+            uint64x2_t fullValueSum = K64_0000000000000000;
+            uint64x2_t fullSquareSum = K64_0000000000000000;
+            for (size_t row = 0; row < height; ++row)
+            {
+                uint32x4_t rowValueSum = K32_00000000;
+                uint32x4_t rowSquareSum = K32_00000000;
+                for (size_t col = 0; col < alignedWidth; col += A)
+                {
+                    uint8x16_t _src = Load<align>(src + col);
+                    rowValueSum = vpadalq_u16(rowValueSum, vpaddlq_u8(_src));
+                    rowSquareSum = vaddq_u32(rowSquareSum, Square(_src));
+                }
+                if (alignedWidth != width)
+                {
+                    uint8x16_t _src = vandq_u8(Load<false>(src + width - A), tailMask);
+                    rowValueSum = vpadalq_u16(rowValueSum, vpaddlq_u8(_src));
+                    rowSquareSum = vaddq_u32(rowSquareSum, Square(_src));
+                }
+                fullValueSum = vaddq_u64(fullValueSum, vpaddlq_u32(rowValueSum));
+                fullSquareSum = vaddq_u64(fullSquareSum, vpaddlq_u32(rowSquareSum));
+                src += stride;
+            }
+            *valueSum = ExtractSum64u(fullValueSum);
+            *squareSum = ExtractSum64u(fullSquareSum);
+        }
+
+        void ValueSquareSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * valueSum, uint64_t * squareSum)
+        {
+            if (Aligned(src) && Aligned(stride))
+                ValueSquareSum<true>(src, stride, width, height, valueSum, squareSum);
+            else
+                ValueSquareSum<false>(src, stride, width, height, valueSum, squareSum);
         }
 
         SIMD_INLINE uint32x4_t Correlation(const uint8x16_t & a, const uint8x16_t & b)

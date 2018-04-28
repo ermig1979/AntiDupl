@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2018 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -51,7 +51,7 @@ namespace Simd
 
         SIMD_INLINE float Uint8ToFloat32(int value, float lower, float boost)
         {
-            return value*boost - lower;
+            return value*boost + lower;
         }
 
         void Uint8ToFloat32(const uint8_t * src, size_t size, const float * lower, const float * upper, float * dst)
@@ -68,6 +68,20 @@ namespace Simd
             }
             for (; i < size; ++i)
                 dst[i] = Uint8ToFloat32(src[i], _lower, boost);
+        }
+
+        void CosineDistance32f(const float * a, const float * b, size_t size, float * distance)
+        {
+            float aa = 0, ab = 0, bb = 0;
+            for (size_t i = 0; i < size; ++i)
+            {
+                float _a = a[i];
+                float _b = b[i];
+                aa += _a * _a;
+                ab += _a * _b;
+                bb += _b * _b;
+            }
+            *distance = 1.0f - ab / ::sqrt(aa*bb);
         }
     }
 }

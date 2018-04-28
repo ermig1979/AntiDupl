@@ -1,8 +1,9 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar,
-*               2014-2016 Antonenka Mikhail.
+* Copyright (c) 2011-2018 Yermalayeu Ihar,
+*               2014-2018 Antonenka Mikhail,
+*               2018-2018 Radchenko Andrey.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -48,9 +49,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReasonForCall, LPVOID lpReserved)
 
 #include "Simd/SimdMemory.h"
 #include "Simd/SimdEnable.h"
-#include "Simd/SimdVersion.h"
 #include "Simd/SimdConst.h"
 #include "Simd/SimdLog.h"
+
+#include "Simd/SimdResizer.h"
 
 #include "Simd/SimdBase.h"
 #include "Simd/SimdSse1.h"
@@ -67,6 +69,15 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReasonForCall, LPVOID lpReserved)
 #include "Simd/SimdVsx.h"
 #include "Simd/SimdNeon.h"
 #include "Simd/SimdMsa.h"
+
+#if !defined(SIMD_VERSION)
+#include "Simd/SimdVersion.h"
+#endif
+
+SIMD_API const char * SimdVersion()
+{
+    return SIMD_VERSION;
+}
 
 using namespace Simd;
 
@@ -118,11 +129,6 @@ SIMD_API int SimdCpuInfo()
     return info;
 }
 
-SIMD_API const char * SimdVersion()
-{
-    return SIMD_VERSION;
-}
-
 SIMD_API void * SimdAllocate(size_t size, size_t align)
 {
     return Allocate(size, align);
@@ -141,6 +147,39 @@ SIMD_API size_t SimdAlign(size_t size, size_t align)
 SIMD_API size_t SimdAlignment()
 {
     return Simd::ALIGNMENT;
+}
+
+SIMD_API void SimdRelease(void * context)
+{
+    delete (Deletable*)context;
+}
+
+SIMD_API size_t SimdGetThreadNumber()
+{
+    return Base::GetThreadNumber();
+}
+
+SIMD_API void SimdSetThreadNumber(size_t threadNumber)
+{
+    Base::SetThreadNumber(threadNumber);
+}
+
+SIMD_API SimdBool SimdGetFlushToZero()
+{
+#ifdef SIMD_SSE_ENABLE
+    if (Sse::Enable)
+        return Sse::GetFlushToZero();
+    else
+#endif
+        return SimdFalse;
+}
+
+SIMD_API void SimdSetFlushToZero(SimdBool value)
+{
+#ifdef SIMD_SSE_ENABLE
+    if (Sse::Enable)
+        Sse::SetFlushToZero(value);
+#endif
 }
 
 SIMD_API uint32_t SimdCrc32c(const void * src, size_t size)
@@ -1600,11 +1639,6 @@ SIMD_API void SimdDetectionLbpDetect16ii(const void * hid, const uint8_t * mask,
         Base::DetectionLbpDetect16ii(hid, mask, maskStride, left, top, right, bottom, dst, dstStride);
 }
 
-SIMD_API void SimdDetectionFree(void * ptr)
-{
-    Base::DetectionFree(ptr);
-}
-
 SIMD_API void SimdEdgeBackgroundGrowRangeSlow(const uint8_t * value, size_t valueStride, size_t width, size_t height,
                                  uint8_t * background, size_t backgroundStride)
 {
@@ -1943,6 +1977,21 @@ SIMD_API void SimdSquaredDifferenceSum16f(const uint16_t * a, const uint16_t * b
         Base::SquaredDifferenceSum16f(a, b, size, sum);
 }
 
+SIMD_API void SimdCosineDistance16f(const uint16_t * a, const uint16_t * b, size_t size, float * distance)
+{
+#ifdef SIMD_AVX512BW_ENABLE
+    if (Avx512bw::Enable)
+        Avx512bw::CosineDistance16f(a, b, size, distance);
+    else
+#endif
+#ifdef SIMD_AVX2_ENABLE
+    if (Avx2::Enable && size >= Avx2::F)
+        Avx2::CosineDistance16f(a, b, size, distance);
+    else
+#endif
+        Base::CosineDistance16f(a, b, size, distance);
+}
+
 SIMD_API void SimdFloat32ToUint8(const float * src, size_t size, const float * lower, const float * upper, uint8_t * dst)
 {
 #ifdef SIMD_AVX512BW_ENABLE
@@ -1993,6 +2042,14 @@ SIMD_API void SimdUint8ToFloat32(const uint8_t * src, size_t size, const float *
         Base::Uint8ToFloat32(src, size, lower, upper, dst);
 }
 
+typedef void(*SimdCosineDistance32fPtr) (const float * a, const float * b, size_t size, float * distance);
+SimdCosineDistance32fPtr simdCosineDistance32f = SIMD_FUNC4(CosineDistance32f, SIMD_AVX512BW_FUNC, SIMD_AVX2_FUNC, SIMD_AVX_FUNC, SIMD_SSE_FUNC);
+
+SIMD_API void SimdCosineDistance32f(const float * a, const float * b, size_t size, float * distance)
+{
+    simdCosineDistance32f(a, b, size, distance);
+}
+
 SIMD_API void SimdGaussianBlur3x3(const uint8_t * src, size_t srcStride, size_t width, size_t height,
                      size_t channelCount, uint8_t * dst, size_t dstStride)
 {
@@ -2027,6 +2084,14 @@ SIMD_API void SimdGaussianBlur3x3(const uint8_t * src, size_t srcStride, size_t 
     else
 #endif
         Base::GaussianBlur3x3(src, srcStride, width, height, channelCount, dst, dstStride);
+}
+
+typedef void(*SimdGemm32fNNPtr) (size_t M, size_t N, size_t K, const float * alpha, const float * A, size_t lda, const float * B, size_t ldb, const float * beta, float * C, size_t ldc);
+SimdGemm32fNNPtr simdGemm32fNN = SIMD_FUNC4(Gemm32fNN, SIMD_AVX512F_FUNC, SIMD_AVX2_FUNC, SIMD_AVX_FUNC, SIMD_SSE_FUNC);
+
+SIMD_API void SimdGemm32fNN(size_t M, size_t N, size_t K, const float * alpha, const float * A, size_t lda, const float * B, size_t ldb, const float * beta, float * C, size_t ldc)
+{
+    simdGemm32fNN(M, N, K, alpha, A, lda, B, ldb, beta, C, ldc);
 }
 
 SIMD_API void SimdGrayToBgr(const uint8_t * gray, size_t width, size_t height, size_t grayStride, uint8_t * bgr, size_t bgrStride)
@@ -2338,29 +2403,29 @@ SIMD_API void SimdHogLiteExtractFeatures(const uint8_t * src, size_t srcStride, 
         Base::HogLiteExtractFeatures(src, srcStride, width, height, cell, features, featuresStride);
 }
 
-SIMD_API void SimdHogLiteFilterFeatures(const float * src, size_t srcStride, size_t srcWidth, size_t srcHeight, size_t featureSize, const float * filter, size_t filterSize, const uint32_t * mask, size_t maskStride, float * dst, size_t dstStride)
+SIMD_API void SimdHogLiteFilterFeatures(const float * src, size_t srcStride, size_t srcWidth, size_t srcHeight, size_t featureSize, const float * filter, size_t filterWidth, size_t filterHeight, const uint32_t * mask, size_t maskStride, float * dst, size_t dstStride)
 {
 #ifdef SIMD_AVX512BW_ENABLE
     if (Avx512bw::Enable)
-        Avx512bw::HogLiteFilterFeatures(src, srcStride, srcWidth, srcHeight, featureSize, filter, filterSize, mask, maskStride, dst, dstStride);
+        Avx512bw::HogLiteFilterFeatures(src, srcStride, srcWidth, srcHeight, featureSize, filter, filterWidth, filterHeight, mask, maskStride, dst, dstStride);
     else
 #endif
 #ifdef SIMD_AVX2_ENABLE
     if (Avx2::Enable)
-        Avx2::HogLiteFilterFeatures(src, srcStride, srcWidth, srcHeight, featureSize, filter, filterSize, mask, maskStride, dst, dstStride);
+        Avx2::HogLiteFilterFeatures(src, srcStride, srcWidth, srcHeight, featureSize, filter, filterWidth, filterHeight, mask, maskStride, dst, dstStride);
     else
 #endif
 #ifdef SIMD_AVX_ENABLE
     if (Avx::Enable)
-        Avx::HogLiteFilterFeatures(src, srcStride, srcWidth, srcHeight, featureSize, filter, filterSize, mask, maskStride, dst, dstStride);
+        Avx::HogLiteFilterFeatures(src, srcStride, srcWidth, srcHeight, featureSize, filter, filterWidth, filterHeight, mask, maskStride, dst, dstStride);
     else
 #endif
 #ifdef SIMD_SSE41_ENABLE
     if (Sse41::Enable)
-        Sse41::HogLiteFilterFeatures(src, srcStride, srcWidth, srcHeight, featureSize, filter, filterSize, mask, maskStride, dst, dstStride);
+        Sse41::HogLiteFilterFeatures(src, srcStride, srcWidth, srcHeight, featureSize, filter, filterWidth, filterHeight, mask, maskStride, dst, dstStride);
     else
 #endif
-        Base::HogLiteFilterFeatures(src, srcStride, srcWidth, srcHeight, featureSize, filter, filterSize, mask, maskStride, dst, dstStride);
+        Base::HogLiteFilterFeatures(src, srcStride, srcWidth, srcHeight, featureSize, filter, filterWidth, filterHeight, mask, maskStride, dst, dstStride);
 }
 
 SIMD_API void SimdHogLiteResizeFeatures(const float * src, size_t srcStride, size_t srcWidth, size_t srcHeight, size_t featureSize, float * dst, size_t dstStride, size_t dstWidth, size_t dstHeight)
@@ -3894,6 +3959,36 @@ SIMD_API void SimdResizeBilinear(const uint8_t *src, size_t srcWidth, size_t src
         Base::ResizeBilinear(src, srcWidth, srcHeight, srcStride, dst, dstWidth, dstHeight, dstStride, channelCount);
 }
 
+SIMD_API void * SimdResizerInit(size_t srcX, size_t srcY, size_t dstX, size_t dstY, size_t channels, SimdResizeChannelType type, SimdResizeMethodType method)
+{
+#ifdef SIMD_AVX512F_ENABLE
+    if (Avx512f::Enable)
+        return Avx512f::ResizerInit(srcX, srcY, dstX, dstY, channels, type, method);
+    else
+#endif
+#ifdef SIMD_AVX2_ENABLE
+    if (Avx2::Enable)
+        return Avx2::ResizerInit(srcX, srcY, dstX, dstY, channels, type, method);
+    else
+#endif
+#ifdef SIMD_AVX_ENABLE
+    if (Avx::Enable)
+        return Avx::ResizerInit(srcX, srcY, dstX, dstY, channels, type, method);
+    else
+#endif
+#ifdef SIMD_SSE_ENABLE
+    if (Sse::Enable)
+        return Sse::ResizerInit(srcX, srcY, dstX, dstY, channels, type, method);
+    else
+#endif
+        return Base::ResizerInit(srcX, srcY, dstX, dstY, channels, type, method);
+}
+
+SIMD_API void SimdResizerRun(const void * resizer, const uint8_t * src, size_t srcStride, uint8_t * dst, size_t dstStride)
+{
+    ((const Resizer*)resizer)->Run(src, srcStride, dst, dstStride);
+}
+
 SIMD_API void SimdSegmentationChangeIndex(uint8_t * mask, size_t stride, size_t width, size_t height, uint8_t oldIndex, uint8_t newIndex)
 {
 #ifdef SIMD_AVX512BW_ENABLE
@@ -4672,6 +4767,31 @@ SIMD_API void SimdSquareSum(const uint8_t * src, size_t stride, size_t width, si
         Base::SquareSum(src, stride, width, height, sum);
 }
 
+SIMD_API void SimdValueSquareSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * valueSum, uint64_t * squareSum)
+{
+#ifdef SIMD_AVX512BW_ENABLE
+    if (Avx512bw::Enable)
+        Avx512bw::ValueSquareSum(src, stride, width, height, valueSum, squareSum);
+    else
+#endif
+#ifdef SIMD_AVX2_ENABLE
+    if(Avx2::Enable && width >= Avx2::A)
+        Avx2::ValueSquareSum(src, stride, width, height, valueSum, squareSum);
+    else
+#endif
+#ifdef SIMD_SSE2_ENABLE
+    if(Sse2::Enable && width >= Sse2::A)
+        Sse2::ValueSquareSum(src, stride, width, height, valueSum, squareSum);
+    else
+#endif
+#ifdef SIMD_NEON_ENABLE
+    if (Neon::Enable && width >= Neon::A)
+        Neon::ValueSquareSum(src, stride, width, height, valueSum, squareSum);
+    else
+#endif
+        Base::ValueSquareSum(src, stride, width, height, valueSum, squareSum);
+}
+
 SIMD_API void SimdCorrelationSum(const uint8_t * a, size_t aStride, const uint8_t * b, size_t bStride, size_t width, size_t height, uint64_t * sum)
 {
 #ifdef SIMD_AVX512BW_ENABLE
@@ -4761,6 +4881,38 @@ SIMD_API void SimdSvmSumLinear(const float * x, const float * svs, const float *
     else
 #endif
         Base::SvmSumLinear(x, svs, weights, length, count, sum);
+}
+
+typedef void(*SimdSynetAddBiasPtr) (const float * bias, size_t count, size_t size, float * dst);
+volatile SimdSynetAddBiasPtr simdSynetAddBias = SIMD_FUNC3(SynetAddBias, SIMD_AVX512F_FUNC, SIMD_AVX_FUNC, SIMD_SSE_FUNC);
+
+SIMD_API void SimdSynetAddBias(const float * bias, size_t count, size_t size, float * dst)
+{
+    simdSynetAddBias(bias, count, size, dst);
+}
+
+typedef void(*SimdSynetEltwiseLayerForwardPtr) (float const * const * src, const float * weight, size_t count, size_t size, SimdSynetEltwiseOperationType type, float * dst);
+volatile SimdSynetEltwiseLayerForwardPtr simdSynetEltwiseLayerForward = SIMD_FUNC4(SynetEltwiseLayerForward, SIMD_AVX512F_FUNC, SIMD_AVX2_FUNC, SIMD_AVX_FUNC, SIMD_SSE_FUNC);
+
+SIMD_API void SimdSynetEltwiseLayerForward(float const * const * src, const float * weight, size_t count, size_t size, SimdSynetEltwiseOperationType type, float * dst)
+{
+    simdSynetEltwiseLayerForward(src, weight, count, size, type, dst);
+}
+
+typedef void(*SimdSynetLrnLayerCrossChannelsPtr) (const float * src, size_t half, size_t count, size_t size, const float * k, float * dst);
+volatile SimdSynetLrnLayerCrossChannelsPtr simdSynetLrnLayerCrossChannels = SIMD_FUNC3(SynetLrnLayerCrossChannels, SIMD_AVX512F_FUNC, SIMD_AVX2_FUNC, SIMD_SSE2_FUNC);
+
+SIMD_API void SimdSynetLrnLayerCrossChannels(const float * src, size_t half, size_t count, size_t size, const float * k, float * dst)
+{
+    simdSynetLrnLayerCrossChannels(src, half, count, size, k, dst);
+}
+
+typedef void(*SimdSynetScaleLayerForwardPtr) (const float * src, const float * scale, const float * bias, size_t count, size_t size, float * dst);
+volatile SimdSynetScaleLayerForwardPtr simdSynetScaleLayerForward = SIMD_FUNC4(SynetScaleLayerForward, SIMD_AVX512F_FUNC, SIMD_AVX2_FUNC, SIMD_AVX_FUNC, SIMD_SSE_FUNC);
+
+SIMD_API void SimdSynetScaleLayerForward(const float * src, const float * scale, const float * bias, size_t count, size_t size, float * dst)
+{
+    simdSynetScaleLayerForward(src, scale, bias, count, size, dst);
 }
 
 SIMD_API void SimdTextureBoostedSaturatedGradient(const uint8_t * src, size_t srcStride, size_t width, size_t height,

@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2018 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -179,9 +179,13 @@ namespace Simd
 
         void SquaredDifferenceSum16f(const uint16_t * a, const uint16_t * b, size_t size, float * sum);
 
+        void CosineDistance16f(const uint16_t * a, const uint16_t * b, size_t size, float * distance);
+
         void Float32ToUint8(const float * src, size_t size, const float * lower, const float * upper, uint8_t * dst);
 
         void Uint8ToFloat32(const uint8_t * src, size_t size, const float * lower, const float * upper, float * dst);
+
+        void CosineDistance32f(const float * a, const float * b, size_t size, float * distance);
 
         void GaussianBlur3x3(const uint8_t * src, size_t srcStride, size_t width, size_t height, size_t channelCount, uint8_t * dst, size_t dstStride);
 
@@ -211,7 +215,7 @@ namespace Simd
 
         void HogLiteExtractFeatures(const uint8_t * src, size_t srcStride, size_t width, size_t height, size_t cell, float * features, size_t featuresStride);
 
-        void HogLiteFilterFeatures(const float * src, size_t srcStride, size_t srcWidth, size_t srcHeight, size_t featureSize, const float * filter, size_t filterSize, const uint32_t * mask, size_t maskStride, float * dst, size_t dstStride);
+        void HogLiteFilterFeatures(const float * src, size_t srcStride, size_t srcWidth, size_t srcHeight, size_t featureSize, const float * filter, size_t filterWidth, size_t filterHeight, const uint32_t * mask, size_t maskStride, float * dst, size_t dstStride);
 
         void HogLiteResizeFeatures(const float * src, size_t srcStride, size_t srcWidth, size_t srcHeight, size_t featureSize, float * dst, size_t dstStride, size_t dstWidth, size_t dstHeight);
 
@@ -354,6 +358,8 @@ namespace Simd
         void ValueSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum);
 
         void SquareSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum);
+
+        void ValueSquareSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * valueSum, uint64_t * squareSum);
 
         void CorrelationSum(const uint8_t * a, size_t aStride, const uint8_t * b, size_t bStride, size_t width, size_t height, uint64_t * sum);
 

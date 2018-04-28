@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2018 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,10 @@ namespace Simd
 #ifdef SIMD_SSE_ENABLE    
     namespace Sse
     {
+        void CosineDistance32f(const float * a, const float * b, size_t size, float * distance);
+
+        void Gemm32fNN(size_t M, size_t N, size_t K, const float * alpha, const float * A, size_t lda, const float * B, size_t ldb, const float * beta, float * C, size_t ldc);
+
         void HogDeinterleave(const float * src, size_t srcStride, size_t width, size_t height, size_t count, float ** dst, size_t dstStride);
 
         void HogFilterSeparable(const float * src, size_t srcStride, size_t width, size_t height, const float * rowFilter, size_t rowSize, const float * colFilter, size_t colSize, float * dst, size_t dstStride, int add);
@@ -96,6 +100,12 @@ namespace Simd
         void SquaredDifferenceKahanSum32f(const float * a, const float * b, size_t size, float * sum);
 
         void SvmSumLinear(const float * x, const float * svs, const float * weights, size_t length, size_t count, float * sum);
+
+        void SynetAddBias(const float * bias, size_t count, size_t size, float * dst);
+
+        void SynetEltwiseLayerForward(float const * const * src, const float * weight, size_t count, size_t size, SimdSynetEltwiseOperationType type, float * dst);
+
+        void SynetScaleLayerForward(const float * src, const float * scale, const float * bias, size_t count, size_t size, float * dst);
     }
 #endif// SIMD_SSE_ENABLE
 }

@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar,
+* Copyright (c) 2011-2018 Yermalayeu Ihar,
 *               2014-2016 Antonenka Mikhail.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -65,6 +65,15 @@ typedef unsigned __int32  uint32_t;
 typedef signed __int64    int64_t;
 typedef unsigned __int64  uint64_t;
 #endif
+
+/*! @ingroup c_types
+    Describes boolean type.
+*/
+typedef enum
+{
+    SimdFalse = 0, /*!< False value. */
+    SimdTrue = 1, /*!< True value. */
+} SimdBool;
 
 /*! @ingroup c_types
     Describes types of SIMD extensions which supported by current CPU and Simd Library (see function ::SimdCpuInfo).
@@ -323,6 +332,58 @@ extern "C"
         \return a required alignment.
     */
     SIMD_API size_t SimdAlignment();
+
+    /*! @ingroup memory
+
+        \fn void SimdRelease(void * context);
+
+        \short Releases context created with using of Simd Library API.
+
+        \note This function releases a context created by functions ::SimdDetectionLoadA and ::SimdDetectionInit.
+
+        \param [in] context - a context to be released.
+    */    
+    SIMD_API void SimdRelease(void * context);
+
+    /*! @ingroup thread
+
+        \fn size_t SimdGetThreadNumber();
+
+        \short Gets number of threads used by Simd Library to parallelize some algorithms.
+
+        \return current thread number.
+    */
+    SIMD_API size_t SimdGetThreadNumber();
+
+    /*! @ingroup thread
+
+        \fn void SimdSetThreadNumber(size_t threadNumber);
+
+        \short Sets number of threads used by Simd Library to parallelize some algorithms.
+
+        \param [in] threadNumber - a number of threads.
+    */
+    SIMD_API void SimdSetThreadNumber(size_t threadNumber);
+
+    /*! @ingroup cpu_flags
+
+        \fn SimdBool SimdGetFlushToZero();
+
+        \short Gets current CPU Flush-To-Zero (FTZ) flag. It is used in order to process subnormal numbers.
+
+        \return current FTZ flag.
+    */
+    SIMD_API SimdBool SimdGetFlushToZero();
+
+    /*! @ingroup cpu_flags
+
+        \fn void SimdSetFlushToZero(SimdBool value);
+
+        \short Sets current CPU Flush-To-Zero (FTZ) flag. It is used in order to process subnormal numbers.
+
+        \param [in] value - a value of Flush-To-Zero (FTZ) flag.
+    */
+    SIMD_API void SimdSetFlushToZero(SimdBool value);
 
     /*! @ingroup hash
 
@@ -1591,7 +1652,7 @@ extern "C"
 
         \param [in] path - a path to cascade.
         \return a pointer to loaded cascade. On error it returns NULL.
-                This pointer is used in functions ::SimdDetectionInfo and ::SimdDetectionInit, and must be released with using function ::SimdDetectionFree.
+                This pointer is used in functions ::SimdDetectionInfo and ::SimdDetectionInit, and must be released with using of function ::SimdRelease.
     */
     SIMD_API void * SimdDetectionLoadA(const char * path);
 
@@ -1635,7 +1696,7 @@ extern "C"
         \return a pointer to hidden cascade. On error it returns NULL.
                 This pointer is used in functions ::SimdDetectionPrepare, ::SimdDetectionHaarDetect32fp, ::SimdDetectionHaarDetect32fi,
                 ::SimdDetectionLbpDetect32fp, ::SimdDetectionLbpDetect32fi, ::SimdDetectionLbpDetect16ip and ::SimdDetectionLbpDetect16ii.
-                It must be released with using function ::SimdDetectionFree.
+                It must be released with using of function ::SimdRelease.
     */
     SIMD_API void * SimdDetectionInit(const void * data, uint8_t * sum, size_t sumStride, size_t width, size_t height,
         uint8_t * sqsum, size_t sqsumStride, uint8_t * tilted, size_t tiltedStride, int throughColumn, int int16);
@@ -1798,17 +1859,6 @@ extern "C"
     */
     SIMD_API void SimdDetectionLbpDetect16ii(const void * hid, const uint8_t * mask, size_t maskStride,
         ptrdiff_t left, ptrdiff_t top, ptrdiff_t right, ptrdiff_t bottom, uint8_t * dst, size_t dstStride);
-
-    /*! @ingroup object_detection
-
-        \fn void SimdDetectionFree(void * ptr);
-
-        \short Frees pointers which was received with using of functions ::SimdDetectionLoadA and ::SimdDetectionInit.
-
-        \note This function is used for implementation of Simd::Detection.
-
-        \param [in] ptr - a pointer which was received with using of functions ::SimdDetectionLoadA and ::SimdDetectionInit.
-    */    SIMD_API void SimdDetectionFree(void * ptr);
 
     /*! @ingroup edge_background
 
@@ -2153,6 +2203,26 @@ extern "C"
     */
     SIMD_API void SimdSquaredDifferenceSum16f(const uint16_t * a, const uint16_t * b, size_t size, float * sum);
 
+    /*! @ingroup float16
+
+        \fn void SimdCosineDistance16f(const uint16_t * a, const uint16_t * b, size_t size, float * distance);
+
+        \short Calculates cosine distance of two 16-bit float arrays.
+
+        All arrays must have the same size.
+
+        Algorithm description:
+        \verbatim
+        distance = 1 - Sum(a[i]*b[i])/Sqrt(Sum(a[i]*a[i])*Sum(b[i]*b[i]));
+        \endverbatim
+
+        \param [in] a - a pointer to the first 16-bit float array.
+        \param [in] b - a pointer to the second 16-bit float array.
+        \param [in] size - a size of arrays.
+        \param [out] distance - a pointer to 32-bit float with cosine distance.
+    */
+    SIMD_API void SimdCosineDistance16f(const uint16_t * a, const uint16_t * b, size_t size, float * distance);
+
     /*! @ingroup other_conversion
 
         \fn void SimdFloat32ToUint8(const float * src, size_t size, const float * lower, const float * upper, uint8_t * dst);
@@ -2191,6 +2261,26 @@ extern "C"
     */
     SIMD_API void SimdUint8ToFloat32(const uint8_t * src, size_t size, const float * lower, const float * upper, float * dst);
 
+    /*! @ingroup correlation
+
+        \fn void SimdCosineDistance32f(const float * a, const float * b, size_t size, float * distance);
+
+        \short Calculates cosine distance of two 32-bit float arrays.
+
+        All arrays must have the same size.
+
+        Algorithm description:
+        \verbatim
+        distance = 1 - Sum(a[i]*b[i])/Sqrt(Sum(a[i]*a[i])*Sum(b[i]*b[i]));
+        \endverbatim
+
+        \param [in] a - a pointer to the first 32-bit float array.
+        \param [in] b - a pointer to the second 32-bit float array.
+        \param [in] size - a size of arrays.
+        \param [out] distance - a pointer to 32-bit float with cosine distance.
+    */
+    SIMD_API void SimdCosineDistance32f(const float * a, const float * b, size_t size, float * distance);
+
     /*! @ingroup other_filter
 
         \fn void SimdGaussianBlur3x3(const uint8_t * src, size_t srcStride, size_t width, size_t height, size_t channelCount, uint8_t * dst, size_t dstStride);
@@ -2218,6 +2308,30 @@ extern "C"
     */
     SIMD_API void SimdGaussianBlur3x3(const uint8_t * src, size_t srcStride, size_t width, size_t height,
         size_t channelCount, uint8_t * dst, size_t dstStride);
+
+    /*! @ingroup matrix
+
+        \fn void SimdGemm32fNN(size_t M, size_t N, size_t K, const float * alpha, const float * A, size_t lda, const float * B, size_t ldb, const float * beta, float * C, size_t ldc);
+
+        \short Performs general matrix multiplication (for 32-bit float numbers).
+
+        C(M, N) = alpha*A(M, K)*B(K, N) + beta*C(M, N);
+
+        \note This function supports multithreading (See functions ::SimdGetThreadNumber and ::SimdSetThreadNumber).
+
+        \param [in] M - a height of A and C matrices.
+        \param [in] N - a width of B and C matrices.
+        \param [in] K - a width of A and height of C matrices.
+        \param [in] alpha - a pointer to multiplier of the first term.
+        \param [in] A - a pointer to input A matrix.
+        \param [in] lda - a leading dimension of A matrix.
+        \param [in] B - a pointer to input B matrix.
+        \param [in] ldb - a leading dimension of B matrix.
+        \param [in] beta - a pointer to multiplier of the second term.
+        \param [out] C - a pointer to output C matrix.
+        \param [in] ldc - a leading dimension of C matrix.
+    */
+    SIMD_API void SimdGemm32fNN(size_t M, size_t N, size_t K, const float * alpha, const float * A, size_t lda, const float * B, size_t ldb, const float * beta, float * C, size_t ldc);
 
     /*! @ingroup gray_conversion
 
@@ -2521,7 +2635,7 @@ extern "C"
 
     /*! @ingroup hog
 
-        \fn void SimdHogLiteFilterFeatures(const float * src, size_t srcStride, size_t srcWidth, size_t srcHeight, size_t featureSize, const float * filter, size_t filterSize, const uint32_t * mask, size_t maskStride, float * dst, size_t dstStride);
+        \fn void SimdHogLiteFilterFeatures(const float * src, size_t srcStride, size_t srcWidth, size_t srcHeight, size_t featureSize, const float * filter, size_t filterWidth, size_t filterHeight, const uint32_t * mask, size_t maskStride, float * dst, size_t dstStride);
 
         \short Applies filter to lite HOG features.
 
@@ -2531,8 +2645,8 @@ extern "C"
         \verbatim
         if(mask[x, y])
             sum = 0;
-            for(dy = 0; dy < filterSize; dy++)
-                for(dx = 0; dx < filterSize*featureSize; dx++)
+            for(dy = 0; dy < filterHeight; dy++)
+                for(dx = 0; dx < filterWidth*featureSize; dx++)
                     sum += src[x*featureSize + dx, y + dy]*filter[dx, dy];
             dst[x, y] = sum;
         else
@@ -2546,15 +2660,16 @@ extern "C"
         \param [in] featureSize - a size of cell with features. It must be 8 or 16.
         \param [in] filter - a pointer to the 32-bit float array with filter values. 
                     Array must have size equal to filterSize*filterSize*featureSize.
-        \param [in] filterSize - a size (width and height) of used filter. 
-        \param [in] mask - a pointer to the 32-bit integer array with mask (0 or -1). 
+        \param [in] filterWidth - a width of used filter. 
+        \param [in] filterHeight - a height of used filter.
+        \param [in] mask - a pointer to the 32-bit integer array with mask (0 or -1).
                     Pointer can be null otherwise the array must have size greater then (srcHeight - filterSize)*(srcWidth - filterSize).
                     A function ::SimdHogLiteCreateMask is usefull in order to create this mask.
         \param [in] maskStride - a row size of mask array. 
         \param [out] dst - a pointer to output buffer with result of filtration. Array must have size greater then (srcHeight - filterSize)*(srcWidth - filterSize).
         \param [in] dstStride - a row size of the output buffer with result of filtration.
     */
-    SIMD_API void SimdHogLiteFilterFeatures(const float * src, size_t srcStride, size_t srcWidth, size_t srcHeight, size_t featureSize, const float * filter, size_t filterSize, const uint32_t * mask, size_t maskStride, float * dst, size_t dstStride);
+    SIMD_API void SimdHogLiteFilterFeatures(const float * src, size_t srcStride, size_t srcWidth, size_t srcHeight, size_t featureSize, const float * filter, size_t filterWidth, size_t filterHeight, const uint32_t * mask, size_t maskStride, float * dst, size_t dstStride);
 
     /*! @ingroup hog
 
@@ -4126,6 +4241,61 @@ extern "C"
     SIMD_API void SimdResizeBilinear(const uint8_t *src, size_t srcWidth, size_t srcHeight, size_t srcStride,
         uint8_t *dst, size_t dstWidth, size_t dstHeight, size_t dstStride, size_t channelCount);
 
+    /*! @ingroup resizing
+        Describes resized image channel types.
+    */
+    typedef enum
+    {
+        /*! 8-bit integer channel type.  */
+        SimdResizeChannelByte,
+        /*! 32-bit float channel type.  */
+        SimdResizeChannelFloat,
+    } SimdResizeChannelType;
+
+    /*! @ingroup resizing
+        Describes methods used in oreder to resize image.
+    */
+    typedef enum
+    {
+        /*! Bilinear method. */
+        SimdResizeMethodBilinear,
+        /*! caffe::interp compatible method. */
+        SimdResizeMethodCaffeInterp,
+    } SimdResizeMethodType;
+
+    /*! @ingroup resizing
+
+        \fn void * SimdResizerInit(size_t srcX, size_t srcY, size_t dstX, size_t dstY, size_t channels, SimdResizeChannelType type, SimdResizeMethodType method);
+
+        \short Creates resize context.
+
+        \param [in] srcX - a width of the input image.
+        \param [in] srcY - a height of the input image.
+        \param [in] dstX - a width of the output image.
+        \param [in] dstY - a height of the output image.
+        \param [in] channels - a channel number of input and output image.
+        \param [in] type - a type of input and output image channel.
+        \param [in] method - a method used in order to resize image.
+        \return a pointer to resize context. On error it returns NULL. 
+                This pointer is used in functions ::SimdResizerRun. 
+                It must be released with using of function ::SimdRelease.
+    */
+    SIMD_API void * SimdResizerInit(size_t srcX, size_t srcY, size_t dstX, size_t dstY, size_t channels, SimdResizeChannelType type, SimdResizeMethodType method);
+
+    /*! @ingroup resizing
+
+        \fn void SimdResizerRun(const void * resizer, const uint8_t * src, size_t srcStride, uint8_t * dst, size_t dstStride);
+
+        \short Performs image resizing.
+
+        \param [in] resizer - a resize context. It must be created by function ::SimdResizerInit and released by function ::SimdRelease.
+        \param [in] src - a pointer to pixels data of the original input image.
+        \param [in] srcStride - a row size (in bytes) of the input image.
+        \param [out] dst - a pointer to pixels data of the resized output image.
+        \param [in] dstStride - a row size (in bytes) of the output image.
+    */
+    SIMD_API void SimdResizerRun(const void * resizer, const uint8_t * src, size_t srcStride, uint8_t * dst, size_t dstStride);
+
     /*! @ingroup segmentation
 
         \fn void SimdSegmentationChangeIndex(uint8_t * mask, size_t stride, size_t width, size_t height, uint8_t oldIndex, uint8_t newIndex);
@@ -4768,8 +4938,26 @@ extern "C"
         \param [in] height - an image height.
         \param [out] sum - the result sum.
     */
+	
     SIMD_API void SimdSquareSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum);
+	
+	    /*! @ingroup other_statistic
 
+        \fn void SimdValueSquareSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * valueSum, uint64_t * squareSum);
+
+        \short Gets sum and squared sum of value of pixels for gray 8-bit image.
+
+        \note This function has a C++ wrappers: Simd::ValueSquareSum(const View<A>& src, uint64_t & valueSum, uint64_t & squareSum).
+
+        \param [in] src - a pointer to pixels data of the image.
+        \param [in] stride - a row size of the image.
+        \param [in] width - an image width.
+        \param [in] height - an image height.
+        \param [out] valueSum - the result value sum.
+		\param [out] squareSum - the result square sum.
+    */
+    SIMD_API void SimdValueSquareSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * valueSum, uint64_t * squareSum);
+	
     /*! @ingroup other_statistic
 
         \fn void SimdCorrelationSum(const uint8_t * a, size_t aStride, const uint8_t * b, size_t bStride, size_t width, size_t height, uint64_t * sum);
@@ -4839,6 +5027,137 @@ extern "C"
         \param [out] sum - a pointer to result sum.
     */
     SIMD_API void SimdSvmSumLinear(const float * x, const float * svs, const float * weights, size_t length, size_t count, float * sum);
+
+    /*! @ingroup synet
+
+        \fn void SimdSynetAddBias(const float * bias, size_t count, size_t size, float * dst);
+
+        \short Adds a bias to given vector.
+
+        Algorithm's details:
+        \verbatim
+         for(i = 0; i < count; ++i)
+            for(j = 0; j < size; ++j)
+                dst[i*size + j] += bias[i];
+        \endverbatim
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] bias - a pointer to the 32-bit float array with bias coefficients.
+        \param [in] count - a size of bias array.
+        \param [in] size - an internal size of bias addition.
+        \param [in, out] dst - a pointer to cumulative 32-bit float array. The size of the array must be equal to count*size.
+    */
+    SIMD_API void SimdSynetAddBias(const float * bias, size_t count, size_t size, float * dst);
+
+    /*! @ingroup synet
+        Describes operation type used in function ::SimdSynetEltwiseLayerForward.
+    */
+    typedef enum
+    {
+        SimdSynetEltwiseOperationProduct, /*!< Product. */
+        SimdSynetEltwiseOperationSum, /*!< Weighted sum. */
+        SimdSynetEltwiseOperationMax, /*!< Maximum. */
+    } SimdSynetEltwiseOperationType;
+
+    /*! @ingroup synet
+
+        \fn void SimdSynetEltwiseLayerForward(float const * const * src, const float * weight, size_t count, size_t size, SimdSynetEltwiseOperationType type, float * dst);
+
+        \short This function is used for forward propagation of EltwiseLayer.
+
+        Algorithm's details for ::SimdSynetEltwiseOperationProduct:
+        \verbatim
+        for(j = 0; j < size; ++j)
+            dst[j] = 1;
+        for(i = 0; i < count; ++i)
+            for(j = 0; j < size; ++j)
+                dst[j] *= src[i][j];
+        \endverbatim
+
+        Algorithm's details for ::SimdSynetEltwiseOperationSum:
+        \verbatim
+        for(j = 0; j < size; ++j)
+            dst[j] = 0;
+        for(i = 0; i < count; ++i)
+            for(j = 0; j < size; ++j)
+                dst[j] += src[i][j]*weight[i];
+        \endverbatim
+
+        Algorithm's details for ::SimdSynetEltwiseOperationMax:
+        \verbatim
+        for(j = 0; j < size; ++j)
+            dst[j] = -FLT_MAX;
+        for(i = 0; i < count; ++i)
+            for(j = 0; j < size; ++j)
+                dst[j] = max(dst[j], src[i][j]);
+        \endverbatim
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to poitres to the input 32-bit float arrays. 
+        \param [in] weight - a pointer to the 32-bit float array with sum coefficients. It is need only for ::SimdSynetEltwiseOperationSum operation type otherwise it can be NULL.
+        \param [in] count - a count of input arrays. Must be at least 2.
+        \param [in] size - a size of the input and output arrays.
+        \param [in] type - a type of operation (see ::SimdSynetEltwiseOperationType).
+        \param [out] dst - a pointer to the output 32-bit float array.
+    */
+    SIMD_API void SimdSynetEltwiseLayerForward(float const * const * src, const float * weight, size_t count, size_t size, SimdSynetEltwiseOperationType type, float * dst);
+
+    /*! @ingroup synet
+
+        \fn void SimdSynetLrnLayerCrossChannels(const float * src, size_t half, size_t count, size_t size, const float * k, float * dst);
+
+        \short This function is used for forward propagation of LrnLayer (cross channels normalization).
+
+        Algorithm's details:
+        \verbatim
+        for(i = 0; i < count; ++i)
+            for(j = 0; j < size; ++j)
+            {
+                lo = Max(0, i - half);
+                ln = Min(count, i + half + 1);
+                sum = 0;
+                for(l = lo; l < ln; ++l)
+                    sum += Square(src[l*size + j]);
+                dst[i*size + j] = src[i*size + j]*Pow(k[0] + sum*k[1], k[2]);
+            }
+        \endverbatim
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the input 32-bit float array. The size of the array must be equal to count*size.
+        \param [in] half - a local normalization half size.
+        \param [in] count - a channels count.
+        \param [in] size - an internal size of the operation.
+        \param [in] k - a pointer to the 32-bit float array with 3 coefficients (see algorithm details). 
+        \param [out] dst - a pointer to the output 32-bit float array. The size of the array must be equal to count*size.
+    */
+    SIMD_API void SimdSynetLrnLayerCrossChannels(const float * src, size_t half, size_t count, size_t size, const float * k, float * dst);
+
+    /*! @ingroup synet
+
+        \fn void SimdSynetScaleLayerForward(const float * src, const float * scale, const float * bias, size_t count, size_t size, float * dst);
+
+        \short This function is used for forward propagation of ScaleLayer.
+
+        Algorithm's details:
+        \verbatim
+        for(i = 0; i < count; ++i)
+            for(j = 0; j < size; ++j)
+                dst[i*size + j] = src[i*size + j]*scale[i] + (bias ? bias[i] : 0);
+        \endverbatim
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the input 32-bit float array. The size of the array must be equal to count*size.
+        \param [in] scale - a pointer to the 32-bit float array with scale coefficients.
+        \param [in] bias - a pointer to the 32-bit float array with bias coefficients. Can be NULL.
+        \param [in] count - a size of scale and bias arrays.
+        \param [in] size - an internal size of the operation.
+        \param [out] dst - a pointer to the output 32-bit float array. The size of the array must be equal to count*size.
+    */
+    SIMD_API void SimdSynetScaleLayerForward(const float * src, const float * scale, const float * bias, size_t count, size_t size, float * dst);
 
     /*! @ingroup texture_estimation
 

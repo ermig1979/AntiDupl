@@ -1,7 +1,8 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2018 Yermalayeu Ihar,
+*               2018-2018 Dmitry Fedorov.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -200,6 +201,28 @@ namespace Simd
             \return an OpenCV Mat which references to this image.
         */
         operator cv::Mat() const;
+#endif
+
+
+#ifdef SIMD_TENSORFLOW_ENABLE
+        /*!
+            Creates an Tensorflow Tensor which references this image.
+
+            \note You have to define SIMD_TENSORFLOW_ENABLE in order to use this functionality.
+
+            \return an Tensorflow Tensor which references to this image.
+        */
+        void ToTFTensor(tensorflow::Tensor & tensor, float shift = 0, float scale = 1) const;
+
+
+        /*!
+           Creates an Tensorflow Tensor which references this image.
+
+           \note You have to define SIMD_TENSORFLOW_ENABLE in order to use this functionality.
+
+           \return an Tensorflow Tensor which references to this image.
+       */
+        void ToTFTensor(tensorflow::Tensor & tensor, int batchIndex, float shift = 0, float scale = 0) const;
 #endif
 
         /*!
@@ -626,6 +649,92 @@ namespace Simd
     }
 #endif
 
+#ifdef SIMD_TENSORFLOW_ENABLE
+    template <template<class> class A> SIMD_INLINE void View<A>::ToTFTensor( tensorflow::Tensor & tensor, float shift, float scale) const
+    {
+        auto mapped = tensor.tensor<float, 3>();
+
+        if (format == View<A>::Bgr24)
+        {
+            for (size_t row = 0; row < height; ++row)
+            {
+                const uint8_t * bgr = data + row*stride;
+                for (size_t col = 0; col < width; ++col, bgr += 3)
+                {
+                    mapped(row, col, 0) = (bgr[0] + shift) * scale;
+                    mapped(row, col, 1) = (bgr[1] + shift) * scale;
+                    mapped(row, col, 2) = (bgr[2] + shift) * scale;
+                }
+            }
+        } else if (format == View<A>::Bgra32)
+        {
+
+            for (size_t row = 0; row < height; ++row)
+            {
+                const uint8_t * bgra = data + row*stride;
+                for (size_t col = 0; col < width; ++col, bgra += 4)
+                {
+                    mapped(row, col, 0) = (bgra[0] + shift) * scale;
+                    mapped(row, col, 1) = (bgra[1] + shift) * scale;
+                    mapped(row, col, 2) = (bgra[2] + shift) * scale;
+                }
+            }
+        } else if (format == View<A>::Gray8)
+        {
+            for (size_t row = 0; row < height; ++row)
+            {
+                const uint8_t * gray = data + row*stride;
+                for (size_t col = 0; col < width; ++col)
+                {
+                    mapped(row, col, 0) = (gray[0] + shift) * scale;
+                }
+            }
+        }
+    }
+
+    template <template<class> class A> SIMD_INLINE void View<A>::ToTFTensor( tensorflow::Tensor & tensor, int batchIndex, float shift, float scale) const
+    {
+        auto mapped = tensor.tensor<float, 4>();
+
+        if (format == View<A>::Bgr24)
+        {
+            for (size_t row = 0; row < height; ++row)
+            {
+                const uint8_t * bgr = data + row*stride;
+                for (size_t col = 0; col < width; ++col, bgr += 3)
+                {
+                    mapped(batchIndex, row, col, 0) = ((float)bgr[0] + shift) * scale;
+                    mapped(batchIndex, row, col, 1) = ((float)bgr[1] + shift) * scale;
+                    mapped(batchIndex, row, col, 2) = ((float)bgr[2] + shift) * scale;
+                }
+            }
+        } else if (format == View<A>::Bgra32)
+        {
+
+            for (size_t row = 0; row < height; ++row)
+            {
+                const uint8_t * bgra = data + row*stride;
+                for (size_t col = 0; col < width; ++col, bgra += 4)
+                {
+                    mapped(batchIndex, row, col, 0) = ((float)bgra[0] + shift) * scale;
+                    mapped(batchIndex, row, col, 1) = ((float)bgra[1] + shift) * scale;
+                    mapped(batchIndex, row, col, 2) = ((float)bgra[2] + shift) * scale;
+                }
+            }
+        } else if (format == View<A>::Gray8)
+        {
+            for (size_t row = 0; row < height; ++row)
+            {
+                const uint8_t * gray = data + row*stride;
+                for (size_t col = 0; col < width; ++col)
+                {
+                    mapped(batchIndex, row, col, 0) = ((float)gray[0] + shift) * scale;
+                }
+            }
+        }
+    }
+#endif
+
     template <template<class> class A> SIMD_INLINE View<A>::View(size_t w, size_t h, ptrdiff_t s, Format f, void * d)
         : width(w)
         , height(h)
@@ -1039,7 +1148,7 @@ namespace Simd
         if (!(format == View<A>::Gray8 || format == View<A>::Bgr24 || format == View<A>::Bgra32))
             return false;
 
-        std::ofstream ofs(path.c_str(), std::ifstream::binary);
+        std::ofstream ofs(path.c_str(), std::ofstream::binary);
         if (ofs.is_open())
         {
             if (format == View<A>::Gray8)

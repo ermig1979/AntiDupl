@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2018 Yermalayeu Ihar.
 *               2016-2016 Sintegrial Technologies.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,6 +30,16 @@
 
 namespace Simd
 {
+    SIMD_INLINE size_t AlignHiAny(size_t size, size_t align)
+    {
+        return (size + align - 1) / align * align;
+    }
+
+    SIMD_INLINE size_t AlignLoAny(size_t size, size_t align)
+    {
+        return size / align * align;
+    }
+
     SIMD_INLINE size_t AlignHi(size_t size, size_t align)
     {
         return (size + align - 1) & ~(align - 1);
@@ -90,6 +100,11 @@ namespace Simd
         free(ptr);
 #endif
     }
+
+    struct Deletable
+    {
+        virtual ~Deletable() {}
+    };
 
 #ifdef SIMD_SSE_ENABLE
     namespace Sse

@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2018 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -172,6 +172,21 @@ namespace Simd
         }
 
         const bool Enable = SupportedByCPU() && SupportedByOS();
+
+        const unsigned int SCR_FTZ = 1 << 15;
+
+        SIMD_INLINE SimdBool GetFlushToZero()
+        {
+            return _mm_getcsr() | SCR_FTZ ? SimdTrue : SimdFalse;
+        }
+
+        SIMD_INLINE void SetFlushToZero(SimdBool value)
+        {
+            if (value)
+                _mm_setcsr(_mm_getcsr() | SCR_FTZ);
+            else
+                _mm_setcsr(_mm_getcsr() & ~SCR_FTZ);
+        }
     }
 #endif
 

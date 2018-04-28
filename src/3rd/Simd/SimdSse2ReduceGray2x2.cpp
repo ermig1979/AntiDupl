@@ -1,7 +1,8 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2018 Yermalayeu Ihar,
+*               2018-2018 Kirill Matsaberydze.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -77,9 +78,9 @@ namespace Simd
                 {
                     dstOffset = dstWidth - A - (evenWidth != srcWidth ? 1 : 0);
                     srcOffset = evenWidth - DA;
-                    Store<align>((__m128i*)(dst + dstOffset), Average8(
-                        Load<align>((__m128i*)(src0 + srcOffset)), Load<align>((__m128i*)(src0 + srcOffset + A)),
-                        Load<align>((__m128i*)(src1 + srcOffset)), Load<align>((__m128i*)(src1 + srcOffset + A))));
+                    Store<false>((__m128i*)(dst + dstOffset), Average8(
+                        Load<false>((__m128i*)(src0 + srcOffset)), Load<false>((__m128i*)(src0 + srcOffset + A)),
+                        Load<false>((__m128i*)(src1 + srcOffset)), Load<false>((__m128i*)(src1 + srcOffset + A))));
                     if (evenWidth != srcWidth)
                     {
                         dst[dstWidth - 1] = Base::Average(src0[evenWidth], src1[evenWidth]);

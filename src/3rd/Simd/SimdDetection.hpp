@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2018 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -206,7 +206,7 @@ namespace Simd
         ~Detection()
         {
             for (size_t i = 0; i < _data.size(); ++i)
-                ::SimdDetectionFree(_data[i].handle);
+                ::SimdRelease(_data[i].handle);
         }
 
         /*!
@@ -383,7 +383,7 @@ namespace Simd
             ~Level()
             {
                 for (size_t i = 0; i < hids.size(); ++i)
-                    ::SimdDetectionFree(hids[i].handle);
+                    ::SimdRelease(hids[i].handle);
             }
         };
         typedef std::unique_ptr<Level> LevelPtr;

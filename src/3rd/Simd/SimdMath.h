@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2018 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -260,15 +260,6 @@ namespace Simd
             gradient[offset] += d*d;
             weight[offset] -= alpha * d / ::sqrt(gradient[offset] + epsilon);
         }
-
-        SIMD_INLINE float Pow(float basis, float exponent)
-        {
-#if defined(__GNUC__) && defined(SIMD_X86_ENABLE)
-
-#else
-            return ::expf(::logf(basis)*exponent);
-#endif
-        }
     }
 
 #ifdef SIMD_SSE_ENABLE
@@ -296,16 +287,16 @@ namespace Simd
             return _mm_or_ps(_mm_and_ps(mask, positive), _mm_andnot_ps(mask, negative));
         }
 
-        SIMD_INLINE __m128 RightNotZero(size_t count)
+        SIMD_INLINE __m128 RightNotZero(ptrdiff_t count)
         {
             const int32_t mask[DF] = { 0, 0, 0, 0, -1, -1, -1, -1 };
-            return _mm_loadu_ps((float*)(mask + count));
+            return _mm_loadu_ps((float*)(mask + Simd::RestrictRange<ptrdiff_t>(count, 0, F)));
         }
 
-        SIMD_INLINE __m128 LeftNotZero(size_t count)
+        SIMD_INLINE __m128 LeftNotZero(ptrdiff_t count)
         {
             const int32_t mask[DF] = { -1, -1, -1, -1, 0, 0, 0, 0 };
-            return _mm_loadu_ps((float*)(mask + 4 - count));
+            return _mm_loadu_ps((float*)(mask + F - Simd::RestrictRange<ptrdiff_t>(count, 0, F)));
         }
 
         template <bool condition> SIMD_INLINE __m128 Masked(const __m128 & value, const __m128 & mask);
@@ -497,7 +488,7 @@ namespace Simd
 #ifdef SIMD_SSE3_ENABLE
     namespace Sse3
     {
-#if defined(_MSC_VER) && _MSC_VER >= 1800  && _MSC_VER < 1900 // Visual Studio 2013 compiler bug       
+#if defined(_MSC_VER) && _MSC_VER >= 1700  && _MSC_VER < 1900 // Visual Studio 2012/2013 compiler bug      
         using Sse::RightNotZero;
 #endif
     }
@@ -530,7 +521,7 @@ namespace Simd
 #ifdef SIMD_SSE41_ENABLE
     namespace Sse41
     {
-#if defined(_MSC_VER) && _MSC_VER >= 1800  && _MSC_VER < 1900 // Visual Studio 2013 compiler bug       
+#if defined(_MSC_VER) && _MSC_VER >= 1700  && _MSC_VER < 1900 // Visual Studio 2012/2013 compiler bug     
         using Sse::RightNotZero;
 #endif
 
@@ -583,10 +574,16 @@ namespace Simd
             return _mm256_mul_ps(_mm256_rsqrt_ps(_mm256_max_ps(value, _mm256_set1_ps(0.00000001f))), value);
         }
 
-        SIMD_INLINE __m256 RightNotZero(size_t count)
+        SIMD_INLINE __m256 RightNotZero(ptrdiff_t count)
         {
             const int32_t mask[DF] = { 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1 };
-            return _mm256_loadu_ps((float*)(mask + count));
+            return _mm256_loadu_ps((float*)(mask + Simd::RestrictRange<ptrdiff_t>(count, 0, F)));
+        }
+
+        SIMD_INLINE __m256 LeftNotZero(ptrdiff_t count)
+        {
+            const int32_t mask[DF] = { -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0 };
+            return _mm256_loadu_ps((float*)(mask + F - Simd::RestrictRange<ptrdiff_t>(count, 0, F)));
         }
 
         SIMD_INLINE __m256 PermutedHorizontalAdd(__m256 a, __m256 b)
@@ -618,7 +615,7 @@ namespace Simd
 #ifdef SIMD_AVX2_ENABLE
     namespace Avx2
     {
-#if defined(_MSC_VER) && _MSC_VER >= 1800  && _MSC_VER < 1900 // Visual Studio 2013 compiler bug       
+#if defined(_MSC_VER) && _MSC_VER >= 1700  && _MSC_VER < 1900 // Visual Studio 2012/2013 compiler bug     
         using Avx::RightNotZero;
 #endif
 

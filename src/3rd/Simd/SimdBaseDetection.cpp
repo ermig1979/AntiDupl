@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2018 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -94,7 +94,8 @@ namespace Simd
                 tinyxml2::XMLNode * child = parent->FirstChild();
                 if (child == NULL)
                     SIMD_EX("Invalid node!");
-                std::stringstream ss(tinyxml2::XMLUtil::SkipWhiteSpace(child->Value()));
+                int curLineNum = 0;
+                std::stringstream ss(tinyxml2::XMLUtil::SkipWhiteSpace(child->Value(), &curLineNum));
                 std::vector<T> values;
                 while (!ss.eof())
                 {
@@ -899,11 +900,6 @@ namespace Simd
                 Image(hid.sum.width - 1, hid.sum.height - 1, maskStride, Image::Gray8, (uint8_t*)mask),
                 Rect(left, top, right, bottom),
                 Image(hid.sum.width - 1, hid.sum.height - 1, dstStride, Image::Gray8, dst).Ref());
-        }
-
-        void DetectionFree(void * ptr)
-        {
-            delete (Deletable*)ptr;
         }
     }
 }

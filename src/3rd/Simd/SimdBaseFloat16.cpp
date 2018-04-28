@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2018 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -145,6 +145,20 @@ namespace Simd
             for (; i < size; ++i)
                 sums[0] += SquaredDifference16f(a[i], b[i]);
             *sum = sums[0] + sums[1] + sums[2] + sums[3];
+        }
+
+        void CosineDistance16f(const uint16_t * a, const uint16_t * b, size_t size, float * distance)
+        {
+            float aa = 0, ab = 0, bb = 0;
+            for (size_t i = 0; i < size; ++i)
+            {
+                float _a = Float16ToFloat32(a[i]);
+                float _b = Float16ToFloat32(b[i]);
+                aa += _a * _a;
+                ab += _a * _b;
+                bb += _b * _b;
+            }
+            *distance = 1.0f - ab / ::sqrt(aa*bb);
         }
     }
 }

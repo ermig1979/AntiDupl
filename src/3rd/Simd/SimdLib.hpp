@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar,
+* Copyright (c) 2011-2018 Yermalayeu Ihar,
 *               2014-2016 Antonenka Mikhail.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -2592,9 +2592,9 @@ namespace Simd
         \note This function is a C++ wrapper for function ::SimdResizeBilinear.
 
         \param [in] src - an original input image.
-        \param [out] dst - a reduced output image.
+        \param [out] dst - a resized output image.
     */
-    template<template<class> class A> SIMD_INLINE void ResizeBilinear(const View<A>& src, View<A>& dst)
+    template<template<class> class A> SIMD_INLINE void ResizeBilinear(const View<A> & src, View<A> & dst)
     {
         assert(src.format == dst.format && src.ChannelSize() == 1);
 
@@ -2606,6 +2606,43 @@ namespace Simd
         {
             SimdResizeBilinear(src.data, src.width, src.height, src.stride,
                 dst.data, dst.width, dst.height, dst.stride, src.ChannelCount());
+        }
+    }
+
+    /*! @ingroup resizing
+
+        \fn void ResizeAreaGray(const View<A> & src, View<A> & dst)
+
+        \short Performs resizing of input image with using area interpolation.
+
+        All images must have the same format (8-bit gray).
+
+        \param [in] src - an original input image.
+        \param [out] dst - a resized output image.
+    */
+    template<template<class> class A> SIMD_INLINE void ResizeAreaGray(const View<A> & src, View<A> & dst)
+    {
+        assert(src.format == dst.format && src.format == View<A>::Gray8);
+
+        if (EqualSize(src, dst))
+        {
+            Copy(src, dst);
+        }
+        else
+        {
+            size_t level = 0;
+            for (; (dst.width << (level + 1)) < (size_t)src.width; level++);
+            Point<ptrdiff_t> size = src.Size() << level;
+            if (level)
+            {
+                Pyramid<A> pyramid(size, level + 1);
+                Simd::ResizeBilinear(src, pyramid[0]);
+                for (size_t i = 0; i < level; ++i)
+                    Simd::ReduceGray(pyramid.At(i), pyramid.At(i + 1), ::SimdReduce2x2);
+                Simd::Copy(pyramid[level], dst);
+            }
+            else
+                Simd::ResizeBilinear(src, dst);
         }
     }
 
@@ -3226,6 +3263,25 @@ namespace Simd
         assert(src.format == View<A>::Gray8);
 
         SimdSquareSum(src.data, src.stride, src.width, src.height, &sum);
+    }
+	
+	    /*! @ingroup other_statistic
+
+        \fn void ValueSquareSum(const View<A>& src, uint64_t & valueSum, uint64_t & squareSum)
+
+        \short Gets sum and sum of squared value of pixels for gray 8-bit image.
+
+        \note This function is a C++ wrapper for function ::SimdValueSquareSum.
+
+        \param [in] src - an input image.
+        \param [out] valueSum - a result value sum.
+		\param [out] squareSum - a result square sum.
+    */
+    template<template<class> class A> SIMD_INLINE void ValueSquareSum(const View<A>& src, uint64_t & valueSum, uint64_t & squareSum)
+    {
+        assert(src.format == View<A>::Gray8);
+
+        SimdValueSquareSum(src.data, src.stride, src.width, src.height, &valueSum, &squareSum);
     }
 
     /*! @ingroup other_statistic

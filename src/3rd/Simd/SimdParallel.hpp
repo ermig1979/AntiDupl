@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2018 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -26,21 +26,21 @@
 
 #include <thread>
 #include <future>
+#include <vector>
 
 namespace Simd
 {
-    template<class Function> inline void Parallel(size_t begin, size_t end, const Function & function, size_t threadNumber, size_t blockStepMin = 1)
+    template<class Function> inline void Parallel(size_t begin, size_t end, const Function & function, size_t threadNumber, size_t blockAlign = 1)
     {
         threadNumber = std::min<size_t>(threadNumber, std::thread::hardware_concurrency());
-        if (threadNumber <= 1)
+        if (threadNumber <= 1 || size_t(blockAlign*1.5) >= (end - begin))
             function(0, begin, end);
         else
         {
             std::vector<std::future<void>> futures;
 
             size_t blockSize = (end - begin + threadNumber - 1) / threadNumber;
-            if (blockStepMin > 1)
-                blockSize += blockSize%blockStepMin;
+            blockSize = (blockSize + blockAlign - 1) / blockAlign * blockAlign;
             size_t blockBegin = begin;
             size_t blockEnd = blockBegin + blockSize;
 

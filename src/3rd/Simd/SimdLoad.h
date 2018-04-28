@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2018 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -41,6 +41,11 @@ namespace Simd
         template <> SIMD_INLINE __m128 Load<true>(const float * p)
         {
             return _mm_load_ps(p);
+        }
+
+        SIMD_INLINE __m128 Load(const float * p0, const float * p1)
+        {
+            return _mm_loadh_pi(_mm_loadl_pi(_mm_undefined_ps(), (__m64*)p0), (__m64*)p1);
         }
     }
 #endif//SIMD_SSE_ENABLE
@@ -148,7 +153,7 @@ namespace Simd
 #ifdef SIMD_SSE3_ENABLE
     namespace Sse3
     {
-#if defined(_MSC_VER) && _MSC_VER >= 1800  && _MSC_VER < 1900 // Visual Studio 2013 compiler bug       
+#if defined(_MSC_VER) && _MSC_VER >= 1700  && _MSC_VER < 1900 // Visual Studio 2012/2013 compiler bug      
         using Sse::Load;
         using Sse2::Load;
 #endif
@@ -158,7 +163,7 @@ namespace Simd
 #ifdef SIMD_SSE41_ENABLE
     namespace Sse41
     {
-#if defined(_MSC_VER) && _MSC_VER >= 1800  && _MSC_VER < 1900 // Visual Studio 2013 compiler bug       
+#if defined(_MSC_VER) && _MSC_VER >= 1700  && _MSC_VER < 1900 // Visual Studio 2012/2013 compiler bug      
         using Sse::Load;
         using Sse2::Load;
 #endif
@@ -183,6 +188,11 @@ namespace Simd
         template<bool align> SIMD_INLINE __m256 Load(const float * p0, const float * p1)
         {
             return _mm256_insertf128_ps(_mm256_castps128_ps256(Sse::Load<align>(p0)), Sse::Load<align>(p1), 1);
+        }
+
+        SIMD_INLINE __m256 Load(const float * p0, const float * p1, const float * p2, const float * p3)
+        {
+            return _mm256_insertf128_ps(_mm256_castps128_ps256(Sse::Load(p0, p1)), Sse::Load(p2, p3), 1);
         }
     }
 #endif//SIMD_AVX_ENABLE
