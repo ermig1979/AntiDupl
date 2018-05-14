@@ -35,7 +35,6 @@ namespace ad
         static bool Supported(HGLOBAL hGlobal);
 
     private:
-        static int CodecFormat(unsigned char *data, size_t size);
         static TView* Load(unsigned char *data, size_t size);
     };
 }

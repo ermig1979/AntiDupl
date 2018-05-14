@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2002-2007, Communications and Remote Sensing Laboratory, Universite catholique de Louvain (UCL), Belgium
- * Copyright (c) 2002-2007, Professor Benoit Macq
- * Copyright (c) 2001-2003, David Janssens
- * Copyright (c) 2002-2003, Yannick Verschueren
- * Copyright (c) 2003-2007, Francois-Olivier Devaux and Antonin Descampe
- * Copyright (c) 2005, Herve Drolon, FreeImage Team
+ * The copyright in this software is being made available under the 2-clauses
+ * BSD License, included below. This software may be subject to other third
+ * party and contributor rights, including patent rights, and no such rights
+ * are granted under this license.
+ *
+ * Copyright (c) 2017, IntoPIX SA <support@intopix.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,37 +28,14 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef __FIX_H
-#define __FIX_H
+#ifndef OPJ_COMMMON_H
+#define OPJ_COMMMON_H
 
-#if defined(_MSC_VER) || defined(__BORLANDC__)
-#define int64 __int64
-#else
-#define int64 long long
-#endif
-
-/**
-@file fix.h
-@brief Implementation of operations of specific multiplication (FIX)
-
-The functions in FIX.H have for goal to realize specific multiplication.
+/*
+ ==========================================================
+   Common constants shared among several modules
+ ==========================================================
 */
+#define OPJ_COMMON_CBLK_DATA_EXTRA        2    /**< Margin for a fake FFFF marker */
 
-/** @defgroup FIX FIX - Implementation of operations of specific multiplication */
-/*@{*/
-
-/**
-Multiply two fixed-precision rational numbers.
-@param a
-@param b
-@return Returns a * b
-*/
-static INLINE int fix_mul(int a, int b) {
-    int64 temp = (int64) a * (int64) b ;
-    temp += temp & 4096;
-    return (int) (temp >> 13) ;
-}
-
-/*@}*/
-
-#endif /* __FIX_H */
+#endif /* OPJ_COMMMON_H */

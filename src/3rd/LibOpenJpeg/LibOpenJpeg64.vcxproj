@@ -25,7 +25,7 @@
       <PreprocessorDefinitions>_WINDOWS;_LIB;_CRT_SECURE_NO_DEPRECATE;OPJ_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Windows</SubSystem> 
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>

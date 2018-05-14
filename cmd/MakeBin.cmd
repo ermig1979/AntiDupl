@@ -44,4 +44,5 @@ xcopy %RELEASE_DIR%\AntiDupl64.dll %TMP_DIR%\* /y /i /s
 erase %TMP_DIR%\data\resources\strings\English.xml /q /s /f
 erase %TMP_DIR%\data\resources\strings\Russian.xml /q /s /f
 
-%RAR_EXE% a -ep1 -s -m5 -r -sfx %OUT_DIR%\AntiDupl.NET-%VERSION%.exe %TMP_DIR%
+::%RAR_EXE% a -ep1 -s -m5 -r -sfx %OUT_DIR%\AntiDupl.NET-%VERSION%.exe %TMP_DIR%
+%RAR_EXE% a -afzip -ep1 -r %OUT_DIR%\AntiDupl.NET-%VERSION%-alpha-v4.zip %TMP_DIR%

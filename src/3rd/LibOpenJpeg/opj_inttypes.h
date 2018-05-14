@@ -1,5 +1,10 @@
 /*
- * Copyright (c) 2005, Herve Drolon, FreeImage Team
+ * The copyright in this software is being made available under the 2-clauses
+ * BSD License, included below. This software may be subject to other third
+ * party and contributor rights, including patent rights, and no such rights
+ * are granted under this license.
+ *
+ * Copyright (c) 2012, Mathieu Malaterre <mathieu.malaterre@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,32 +28,21 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef __J2K_LIB_H
-#define __J2K_LIB_H
-/**
-@file j2k_lib.h
-@brief Internal functions
+#ifndef OPJ_INTTYPES_H
+#define OPJ_INTTYPES_H
 
-The functions in J2K_LIB.C are internal utilities mainly used for timing.
-*/
+#include "opj_config_private.h"
+#ifdef OPJ_HAVE_INTTYPES_H
+#include <inttypes.h>
+#else
+#if defined(_WIN32)
+#define PRId64 "I64d"
+#define PRIi64 "I64i"
+#define PRIu64 "I64u"
+#define PRIx64 "I64x"
+#else
+#error unsupported platform
+#endif
+#endif
 
-/** @defgroup MISC MISC - Miscellaneous internal functions */
-/*@{*/
-
-/** @name Exported functions */
-/*@{*/
-/* ----------------------------------------------------------------------- */
-
-/**
-Difference in successive opj_clock() calls tells you the elapsed time
-@return Returns time in seconds
-*/
-double opj_clock(void);
-
-/* ----------------------------------------------------------------------- */
-/*@}*/
-
-/*@}*/
-
-#endif /* __J2K_LIB_H */
-
+#endif /* OPJ_INTTYPES_H */

@@ -1,10 +1,10 @@
 /*
- * $Id: cidx_manager.h 897 2011-08-28 21:43:57Z Kaori.Hagihara@gmail.com $
+ * The copyright in this software is being made available under the 2-clauses
+ * BSD License, included below. This software may be subject to other third
+ * party and contributor rights, including patent rights, and no such rights
+ * are granted under this license.
  *
- * Copyright (c) 2002-2011, Communications and Remote Sensing Laboratory, Universite catholique de Louvain (UCL), Belgium
- * Copyright (c) 2002-2011, Professor Benoit Macq
- * Copyright (c) 2003-2004, Yannick Verschueren
- * Copyright (c) 2010-2011, Kaori Hagihara
+ * Copyright (c) 2016, Even Rouault
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,28 +29,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*! \file
- *  \brief Modification of jpip.h from 2KAN indexer
- */
+#ifndef OPJ_TLS_KEYS_H
+#define OPJ_TLS_KEYS_H
 
+#define OPJ_TLS_KEY_T1  0
 
-#ifndef  CIDX_MANAGER_H_
-# define CIDX_MANAGER_H_
-
-#include "openjpeg.h"
-
-
-/* 
- * Write Codestream index box (superbox)
- *
- * @param[in] offset    offset of j2k codestream
- * @param[in] cio       file output handle
- * @param[in] image     image data
- * @param[in] cstr_info codestream information
- * @param[in] j2klen    length of j2k codestream
- * @return              length of cidx box
- */
-int write_cidx( int offset, opj_cio_t *cio, opj_image_t *image, opj_codestream_info_t cstr_info, int j2klen);
-
-
-#endif      /* !CIDX_MANAGER_H_ */
+#endif /* OPJ_TLS_KEY_H */
