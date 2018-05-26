@@ -84,7 +84,7 @@
   <CorePathsForm_Text>路径</CorePathsForm_Text>
   <CorePathsForm_SearchTabPage_Text>搜索</CorePathsForm_SearchTabPage_Text>
   <CorePathsForm_IgnoreTabPage_Text>忽略</CorePathsForm_IgnoreTabPage_Text>
-  <CorePathsForm_ValidTabPage_Text>优先</CorePathsForm_ValidTabPage_Text>
+  <CorePathsForm_ValidTabPage_Text>免检</CorePathsForm_ValidTabPage_Text>
   <CorePathsForm_DeleteTabPage_Text>删除</CorePathsForm_DeleteTabPage_Text>
   <CorePathsForm_AddFolderButton_Text>添加文件夹</CorePathsForm_AddFolderButton_Text>
   <CorePathsForm_AddFilesButton_Text>添加文件</CorePathsForm_AddFilesButton_Text>
