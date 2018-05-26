@@ -1,5 +1,5 @@
 @echo off
-set DATA_DIR=%1
+set SRC_DIR=%1
 set OUT_DIR=%2
 
 if exist %OUT_DIR%\data (
@@ -12,4 +12,5 @@ echo Copy new data files:
 mkdir %OUT_DIR%\data
 mkdir %OUT_DIR%\data\resources
 
-xcopy %DATA_DIR%\resources\* %OUT_DIR%\data\resources\* /y /i /s /e
+xcopy %SRC_DIR%\data\resources\* %OUT_DIR%\data\resources\* /y /i /s /e
+xcopy %SRC_DIR%\docs\data\resources\* %OUT_DIR%\data\resources\* /y /i /s /e
