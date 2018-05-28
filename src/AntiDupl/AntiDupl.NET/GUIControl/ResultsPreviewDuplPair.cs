@@ -28,7 +28,6 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading;
 
 namespace AntiDupl.NET
@@ -304,14 +303,27 @@ namespace AntiDupl.NET
             if (!m_options.resultsOptions.HighlightAllDifferences)
             {
                 if (HighlightCompleteEvent != null)
-                    HighlightCompleteEvent((from rect in rectangles
-                        orderby rect.similarity descending
-                        select rect.rectangle).Take(m_options.resultsOptions.MaxFragmentsForHighlight).ToList());
+                {
+                    rectangles.Sort(delegate (RectanglesWithSimilarity a, RectanglesWithSimilarity b)
+                    {
+                        return a.similarity.CompareTo(b.similarity);
+                    });
+                    RectanglesWithSimilarity[] src = rectangles.ToArray();
+                    List<Rectangle> dst = new List<Rectangle>();
+                    for (int i = 0, n = Math.Min(src.Length, m_options.resultsOptions.MaxFragmentsForHighlight); i < n; ++i)
+                        dst.Add(src[i].rectangle);
+                    HighlightCompleteEvent(dst);
+                }
             }
 
             if (HighlightCompleteEvent != null)
-                HighlightCompleteEvent((from rect in rectangles
-                    select rect.rectangle).ToList());
+            {
+                RectanglesWithSimilarity[] src = rectangles.ToArray();
+                List<Rectangle> dst = new List<Rectangle>();
+                for (int i = 0; i < src.Length; ++i)
+                    dst.Add(src[i].rectangle);
+                HighlightCompleteEvent(dst);
+            }
         }
 
         private void HighlightCompleteEventHandler(List<Rectangle> rectangles)
