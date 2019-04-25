@@ -84,7 +84,7 @@ namespace AntiDuplWPF.Core
             error = String.Empty;
             if (IOHelper.IsDirectory(path))
             {
-                _path = path;
+                _path = path.TrimEnd(new [] { '\\', '/' });
                 _isDirectory = true;
                 return true;
             }

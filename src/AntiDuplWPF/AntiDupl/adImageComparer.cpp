@@ -72,7 +72,7 @@ namespace ad
             m_maxDifference = int(Simd::Square(PIXEL_MAX_DIFFERENCE)*m_mainSize);
         }
 
-        if(m_pOptions->compare.transformedImage == TRUE)
+        if(m_pOptions->compare.transformedImage)
         {
             m_pTransformedImageData = new TImageData(m_pOptions->advanced.reducedImageSize);
             m_pBuffer = (TUInt8*)SimdAllocate(m_mainSize + FAST_DATA_SIZE, SimdAlignment());
@@ -86,7 +86,7 @@ namespace ad
             SimdFree(m_pMask);
         }
 
-        if(m_pOptions->compare.transformedImage == TRUE)
+        if(m_pOptions->compare.transformedImage)
         {
             delete m_pTransformedImageData;
             SimdFree(m_pBuffer); 
@@ -96,7 +96,7 @@ namespace ad
     void TImageComparer::Accept(TImageDataPtr pImageData, bool add)
     {
         Compare(pImageData, pImageData, AD_TRANSFORM_TURN_0);
-        if(m_pOptions->compare.transformedImage == TRUE)
+        if(m_pOptions->compare.transformedImage)
         {
             *m_pTransformedImageData = *pImageData;
             for(int i_transform = AD_TRANSFORM_TURN_90; i_transform < AD_TRANSFORM_SIZE; i_transform++)
@@ -147,25 +147,25 @@ namespace ad
 	// Сравнение двух картинок
 	bool TImageComparer::IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference)
 	{
-		if(m_pOptions->compare.typeControl == TRUE && 
+		if(m_pOptions->compare.typeControl && 
 			pFirst->type != pSecond->type)
 			return false;
 
-		if(m_pOptions->compare.sizeControl == TRUE &&
+		if(m_pOptions->compare.sizeControl &&
 			(pFirst->height != pSecond->height || 
 			pFirst->width != pSecond->width))
 			return false;
 
-		if(m_pOptions->compare.ratioControl == TRUE)
+		if(m_pOptions->compare.ratioControl)
 		{
 			if(Simd::Square(pFirst->ratio - pSecond->ratio) > Simd::Square(RATIO_THRESHOLD_DIFFERENCE))
 				return false;
 		}
 
-		if(m_pOptions->compare.compareInsideOneFolder == FALSE && TPath::EqualByDirectory(pFirst->path, pSecond->path))
+		if(!m_pOptions->compare.compareInsideOneFolder && TPath::EqualByDirectory(pFirst->path, pSecond->path))
 			return false;
 
-		if(m_pOptions->compare.compareInsideOneSearchPath == FALSE && pFirst->index == pSecond->index)
+		if(!m_pOptions->compare.compareInsideOneSearchPath && pFirst->index == pSecond->index)
 			return false;
 
 		uint64_t fastDifference = 0;
@@ -332,25 +332,25 @@ namespace ad
 	// Сравнение двух картинок SSIM методом
     bool TImageComparer_SSIM::IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference)
     {
-        if(m_pOptions->compare.typeControl == TRUE && 
+        if(m_pOptions->compare.typeControl && 
             pFirst->type != pSecond->type)
             return false;
 
-        if(m_pOptions->compare.sizeControl == TRUE &&
+        if(m_pOptions->compare.sizeControl &&
             (pFirst->height != pSecond->height || 
             pFirst->width != pSecond->width))
             return false;
 
-        if(m_pOptions->compare.ratioControl == TRUE)
+        if(m_pOptions->compare.ratioControl)
         {
             if(Simd::Square(pFirst->ratio - pSecond->ratio) > Simd::Square(RATIO_THRESHOLD_DIFFERENCE))
                 return false;
         }
 
-        if(m_pOptions->compare.compareInsideOneFolder == FALSE && TPath::EqualByDirectory(pFirst->path, pSecond->path))
+        if(!m_pOptions->compare.compareInsideOneFolder && TPath::EqualByDirectory(pFirst->path, pSecond->path))
             return false;
 
-		if(m_pOptions->compare.compareInsideOneSearchPath == FALSE && pFirst->index == pSecond->index)
+		if(!m_pOptions->compare.compareInsideOneSearchPath && pFirst->index == pSecond->index)
             return false;
 
 		if (pFirst->data->average == 0)

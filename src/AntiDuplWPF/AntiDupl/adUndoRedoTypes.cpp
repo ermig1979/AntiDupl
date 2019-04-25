@@ -27,7 +27,6 @@
 #include "adResult.h"
 #include "adOptions.h"
 #include "adStatus.h"
-#include "adMistakeStorage.h"
 #include "adUndoRedoTypes.h"
 
 namespace ad
@@ -188,30 +187,27 @@ namespace ad
         return AD_OK;
     }
 
-    void TUndoRedoStage::RemoveInvalid(TStatus *pStatus, TMistakeStorage *pMistakeStorage)
+    void TUndoRedoStage::RemoveInvalid(TStatus *pStatus)
     {
         class TValidator
         {
-            TMistakeStorage *m_pMistakeStorage;
         public:
-            TValidator(TMistakeStorage *pMistakeStorage) :m_pMistakeStorage(pMistakeStorage) {}
+            TValidator() {}
             bool operator()(TImageInfo* a) const //DEFECT
             {
                 return 
                     !a->removed && 
-                    IsFileExists(a->path.Original().c_str()) &&
-                    !m_pMistakeStorage->IsHas(a);
+                    IsFileExists(a->path.Original().c_str());
             }
             bool operator()(TImageInfo* a, TImageInfo* b) const //DUPL_IMAGE_PAIR
             {
                 return 
                     (!a->removed) && (!b->removed) &&
-                    IsFileExists(a->path.Original().c_str()) && IsFileExists(b->path.Original().c_str()) &&
-                    !m_pMistakeStorage->IsHas(a, b);
+                    IsFileExists(a->path.Original().c_str()) && IsFileExists(b->path.Original().c_str()) ;
             }
         };
 
-        RemoveInvalid(TValidator(pMistakeStorage), pStatus, true);
+        RemoveInvalid(TValidator(), pStatus, true);
     }
 
     void TUndoRedoStage::RemoveDeleted(TStatus *pStatus)
@@ -225,21 +221,6 @@ namespace ad
         };
 
         RemoveInvalid(TValidator(), pStatus);
-    }
-
-    void TUndoRedoStage::RemoveMistaken(TStatus *pStatus, TMistakeStorage *pMistakeStorage)
-    {
-        class TValidator
-        {
-            TMistakeStorage *m_pMistakeStorage;
-        public:
-            TValidator(TMistakeStorage *pMistakeStorage) :m_pMistakeStorage(pMistakeStorage) {}
-            bool operator()(TImageInfo* a) const {return !m_pMistakeStorage->IsHas(a);}
-            bool operator()(TImageInfo* a, TImageInfo* b) const 
-            {return !m_pMistakeStorage->IsHas(a, b);}
-        };
-
-        RemoveInvalid(TValidator(pMistakeStorage), pStatus);
     }
 
 	void TUndoRedoStage::RemoveSkipped(TStatus *pStatus, TOptions *pOptions)

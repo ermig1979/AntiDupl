@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="../../Prop.props" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -12,28 +11,125 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{1622C4EF-06A4-4DAA-9631-5D71B32858A4}</ProjectGuid>
+    <ProjectGuid>{8F84A429-1AFD-4E16-A52D-65A120D9B561}</ProjectGuid>
+    <RootNamespace>LibOpenJpeg32</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <ProjectName>LibOpenJpeg32</ProjectName>
   </PropertyGroup>
-  <PropertyGroup Label="Configuration">
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ItemDefinitionGroup>
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>11.0.61030.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)\..\..\bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\..\..\obj\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)\..\..\bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\..\..\obj\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PreprocessorDefinitions>_WINDOWS;_LIB;_CRT_SECURE_NO_DEPRECATE;OPJ_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;OPJ_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem> 
-      <TargetMachine>MachineX86</TargetMachine>
-    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;OPJ_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat />
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include=".\*.h" />
-    <ClCompile Include=".\*.c">
-      <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
-    </ClCompile>
+    <ClCompile Include="bio.c" />
+    <ClCompile Include="cidx_manager.c" />
+    <ClCompile Include="cio.c" />
+    <ClCompile Include="dwt.c" />
+    <ClCompile Include="event.c" />
+    <ClCompile Include="image.c" />
+    <ClCompile Include="j2k.c" />
+    <ClCompile Include="j2k_lib.c" />
+    <ClCompile Include="jp2.c" />
+    <ClCompile Include="jpt.c" />
+    <ClCompile Include="mct.c" />
+    <ClCompile Include="mqc.c" />
+    <ClCompile Include="openjpeg.c" />
+    <ClCompile Include="phix_manager.c" />
+    <ClCompile Include="pi.c" />
+    <ClCompile Include="ppix_manager.c" />
+    <ClCompile Include="raw.c" />
+    <ClCompile Include="t1.c" />
+    <ClCompile Include="t2.c" />
+    <ClCompile Include="tcd.c" />
+    <ClCompile Include="tgt.c" />
+    <ClCompile Include="thix_manager.c" />
+    <ClCompile Include="tpix_manager.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="bio.h" />
+    <ClInclude Include="cidx_manager.h" />
+    <ClInclude Include="cio.h" />
+    <ClInclude Include="dwt.h" />
+    <ClInclude Include="event.h" />
+    <ClInclude Include="fix.h" />
+    <ClInclude Include="image.h" />
+    <ClInclude Include="indexbox_manager.h" />
+    <ClInclude Include="int.h" />
+    <ClInclude Include="j2k.h" />
+    <ClInclude Include="j2k_lib.h" />
+    <ClInclude Include="jp2.h" />
+    <ClInclude Include="jpt.h" />
+    <ClInclude Include="mct.h" />
+    <ClInclude Include="mqc.h" />
+    <ClInclude Include="openjpeg.h" />
+    <ClInclude Include="opj_config.h" />
+    <ClInclude Include="opj_includes.h" />
+    <ClInclude Include="opj_malloc.h" />
+    <ClInclude Include="pi.h" />
+    <ClInclude Include="raw.h" />
+    <ClInclude Include="t1.h" />
+    <ClInclude Include="t1_luts.h" />
+    <ClInclude Include="t2.h" />
+    <ClInclude Include="tcd.h" />
+    <ClInclude Include="tgt.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
 </Project>

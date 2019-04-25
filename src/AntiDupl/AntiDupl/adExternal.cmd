@@ -1,12 +1,19 @@
 @echo off
 
-echo Generate adExternal.h file:
+echo Try to estimate SVN revision:
 
-set ROOT_DIR=..\..\..
-set SOLUTION_DIR=%ROOT_DIR%\src\AntiDupl
+set SUBWCREV_EXE=SubWCRev.exe
+set TRUNK_DIR=..\..\..
+set SOLUTION_DIR=%TRUNK_DIR%\src\AntiDupl
 set PROJECT_DIR=%SOLUTION_DIR%\AntiDupl
 set EXTERNAL_FILE=%PROJECT_DIR%\adExternal.h
 set VERSION_FILE=%SOLUTION_DIR%\version.txt
+
+for %%X in (%SUBWCREV_EXE%) do (set SUBWCREV_EXE_FOUND=%%~$PATH:X)
+if not defined SUBWCREV_EXE_FOUND (
+echo Execution file "%SUBWCREV_EXE%" is not found!
+exit 0
+)
 
 if not exist %VERSION_FILE% (
 echo Can't find "%VERSION_FILE%" file!
@@ -17,9 +24,9 @@ set VERSION=
 for /f "delims=" %%i in ('type %VERSION_FILE%') do set VERSION=%%i
 
 echo /*>%EXTERNAL_FILE%
-echo * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).>>%EXTERNAL_FILE%
+echo * AntiDupl Dynamic-Link Library.>>%EXTERNAL_FILE%
 echo *>>%EXTERNAL_FILE%
-echo * Copyright (c) 2002-2018 Yermalayeu Ihar.>>%EXTERNAL_FILE%
+echo * Copyright (c) 2002-2015 Yermalayeu Ihar.>>%EXTERNAL_FILE%
 echo *>>%EXTERNAL_FILE%
 echo * Permission is hereby granted, free of charge, to any person obtaining a copy>>%EXTERNAL_FILE% 
 echo * of this software and associated documentation files (the "Software"), to deal>>%EXTERNAL_FILE%
@@ -50,9 +57,11 @@ echo.>>%EXTERNAL_FILE%
 echo #ifndef __adExternal_h__>>%EXTERNAL_FILE%
 echo #define __adExternal_h__>>%EXTERNAL_FILE%
 echo.>>%EXTERNAL_FILE%
-echo #define AD_VERSION "%VERSION%">>%EXTERNAL_FILE%
+echo #define AD_VERSION "%VERSION%.$WCREV$">>%EXTERNAL_FILE%
 echo.>>%EXTERNAL_FILE%
 echo #endif//__adExternal_h__>>%EXTERNAL_FILE%
 echo.>>%EXTERNAL_FILE%
 
+%SUBWCREV_EXE% %TRUNK_DIR% %EXTERNAL_FILE% %EXTERNAL_FILE%
+if ERRORLEVEL 1 exit 0
 

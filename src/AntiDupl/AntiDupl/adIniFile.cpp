@@ -1,7 +1,7 @@
 /*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -103,12 +103,12 @@ namespace ad
     {
         m_section = section;
         TChar buffer[MAX_PATH], defaultBuffer[MAX_PATH];
-        float result;
+        double result;
         _stprintf_s(defaultBuffer, MAX_PATH, TEXT("%g"), defaultValue);
         GetPrivateProfileString(m_section.c_str(), key, defaultBuffer, 
             buffer, MAX_PATH, m_fileName.c_str());
         if(_stscanf_s(buffer, TEXT("%g"), &result) != 1)
-            result = (float)defaultValue;
+            result = defaultValue;
         return result;
     }
 

@@ -1,7 +1,7 @@
 /*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -39,14 +39,13 @@
 
 namespace ad
 {
-    TEngine::TEngine(const TString & userPath)
-        : _userPath(userPath)
+    TEngine::TEngine()
     {
 #ifdef AD_LOGGER_ENABLE
-        TLogger::s_logger.SetFileOut(UserPath() + TEXT("\\log.txt")).c_str(), true);
+        TLogger::s_logger.SetFileOut(TString(GetApplicationDirectory() + TEXT("\\AntiDupl.log")).c_str(), true);
 #endif//AD_LOGGER_ENABLE
         m_pInit = new TInit();
-        m_pOptions = new TOptions(userPath);
+        m_pOptions = new TOptions();
         m_pStatus = new TStatus();
         m_pMistakeStorage = new TMistakeStorage(this);
         m_pImageDataStorage = new TImageDataStorage(this);

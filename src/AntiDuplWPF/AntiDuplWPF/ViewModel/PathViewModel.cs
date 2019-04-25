@@ -33,7 +33,7 @@ namespace AntiDuplWPF.ViewModel
                 {
                     if (!String.IsNullOrEmpty(path))
                     {
-                        LocationsModel.AddPath(path);
+                        LocationsModel.AddSearchPath(path);
                     }
                 }
                 LocationsModel.CopyToDll();

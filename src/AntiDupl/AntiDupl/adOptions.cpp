@@ -1,7 +1,7 @@
 /*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -67,13 +67,11 @@ namespace ad
     }
     //---------------------------------------------------------------------------
 	// Класс опций
-    TOptions::TOptions(const TString & userPath_)
-        : userPath(userPath_)
-        , statisticsPath(userPath + TEXT("\\statistics.txt"))
-        , searchPaths(TEXT("SearchPaths"), true)
-        , ignorePaths(TEXT("IgnorePaths"))
-        , validPaths(TEXT("ValidPaths"))
-        , deletePaths(TEXT("DeletePaths"))
+    TOptions::TOptions()
+        :searchPaths(TEXT("SearchPaths"), true),
+        ignorePaths(TEXT("IgnorePaths")),
+        validPaths(TEXT("ValidPaths")),
+        deletePaths(TEXT("DeletePaths"))
     {
         m_options.push_back(TOption(&search.system, TEXT("SearchOptions"), TEXT("System"), FALSE, FALSE, TRUE));
         m_options.push_back(TOption(&search.hidden, TEXT("SearchOptions"), TEXT("Hidden"), FALSE, FALSE, TRUE));

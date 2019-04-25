@@ -1,7 +1,7 @@
 ﻿/*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl.NET Program.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar, 2013-2018 Borisov Dmitry.
+* Copyright (c) 2002-2015 Yermalayeu Ihar, 2013-2015 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -479,9 +479,9 @@ namespace AntiDupl.NET
         public adVersionGet_fn adVersionGet = null;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
-        public delegate IntPtr adCreate_fn(string userPath);
+        public delegate IntPtr adCreate_fn();
         [DynamicModuleApi]
-        public adCreate_fn adCreateW = null;
+        public adCreate_fn adCreate = null;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
         public delegate Error adRelease_fn(IntPtr handle);

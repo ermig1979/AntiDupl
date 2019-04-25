@@ -35,7 +35,6 @@
 #include "adOptions.h"
 #include "adStatus.h"
 #include "adResult.h"
-#include "adMistakeStorage.h"
 #include "adImageDataStorage.h"
 #include "adEngine.h"
 #include "adImageUtils.h"
@@ -133,7 +132,48 @@ DLLAPI adError adSearch()
 {
 	CHECK_ACCESS LOCK
 
+	if (_engine->Options()->advanced.useImageDataBase)
+	{
+		const ad::TString & path = _engine->Options()->GetImageDataBasePath();
+		ad::TChar *pPath = path.size() > 0 ? (ad::TChar*)path.c_str() : NULL;
+		_engine->ImageDataStorage()->Load(pPath);
+	}
+
 	_engine->Search();
+
+	if (_engine->Options()->advanced.useImageDataBase)
+	{
+		const ad::TString & path = _engine->Options()->GetImageDataBasePath();
+		ad::TChar *pPath = path.size() > 0 ? (ad::TChar*)path.c_str() : NULL;
+		_engine->ImageDataStorage()->Save(pPath);
+		_engine->ImageDataStorage()->ClearMemory();
+	}
+
+	_engine->Result()->Sort(adSortType::AD_SORT_BY_DIFFERENCE, true);
+
+	return AD_OK;
+}
+
+DLLAPI adError adCalculateMultiImageMetric(adImageInfoW* pPointArray, int size,  WorkProgressInteropNegotiator & negotiator)
+{
+	CHECK_ACCESS LOCK
+
+	if (_engine->Options()->advanced.useImageDataBase)
+	{
+		const ad::TString & path = _engine->Options()->GetImageDataBasePath();
+		ad::TChar *pPath = path.size() > 0 ? (ad::TChar*)path.c_str() : NULL;
+		_engine->ImageDataStorage()->Load(pPath);
+	}
+	
+	_engine->CalculateHistogramPeaks(pPointArray, size, negotiator);
+
+	if (_engine->Options()->advanced.useImageDataBase)
+	{
+		const ad::TString & path = _engine->Options()->GetImageDataBasePath();
+		ad::TChar *pPath = path.size() > 0 ? (ad::TChar*)path.c_str() : NULL;
+		_engine->ImageDataStorage()->Save(pPath);
+		_engine->ImageDataStorage()->ClearMemory();
+	}
 
 	return AD_OK;
 }
@@ -151,8 +191,8 @@ template <class TChar> adError Load(adFileType fileType, const TChar *fileName, 
 	//	return _engine.Options()->Load(pPath);
 	case AD_FILE_RESULT:
 		return _engine->Result()->Load(pPath, check != FALSE);
-	case AD_FILE_MISTAKE_DATA_BASE:
-		return _engine->MistakeStorage()->Load(pPath, check != FALSE);
+	//case AD_FILE_MISTAKE_DATA_BASE:
+	//	return _engine->MistakeStorage()->Load(pPath, check != FALSE);
 	case AD_FILE_IMAGE_DATA_BASE:
 		if(check)
 			return _engine->ImageDataStorage()->ClearDatabase(pPath);
@@ -186,8 +226,8 @@ template <class TChar> adError Save(adFileType fileType, const TChar* fileName)
 	//	return _engine.Options()->Save(pPath);
 	case AD_FILE_RESULT:
 		return _engine->Result()->Save(pPath);
-	case AD_FILE_MISTAKE_DATA_BASE:
-		return _engine->MistakeStorage()->Save(pPath);
+	//case AD_FILE_MISTAKE_DATA_BASE:
+	//	return _engine->MistakeStorage()->Save(pPath);
 	case AD_FILE_IMAGE_DATA_BASE:
 		return _engine->ImageDataStorage()->Save(pPath);
 	default:
@@ -217,9 +257,9 @@ DLLAPI adError adClear(adFileType fileType)
     case AD_FILE_RESULT:
         _engine->Result()->Clear();
         break;
-    case AD_FILE_MISTAKE_DATA_BASE:
-        _engine->MistakeStorage()->Clear();
-        break;
+    //case AD_FILE_MISTAKE_DATA_BASE:
+    //    _engine->MistakeStorage()->Clear();
+    //    break;
     case AD_FILE_IMAGE_DATA_BASE:
         _engine->ImageDataStorage()->ClearMemory();
         break;
@@ -259,6 +299,28 @@ DLLAPI adError adSetSearchOptions(void * pOptions)
 
     return _engine->Options()->Import(AD_OPTIONS_SEARCH, pOptions);
 }
+
+DLLAPI adError adSetAdvancedOptions(void * pOptions)
+{
+    CHECK_ACCESS LOCK
+
+    return _engine->Options()->Import(AD_OPTIONS_ADVANCED, pOptions);
+}
+
+DLLAPI adError adSetCompareOption(void * pOptions)
+{
+    CHECK_ACCESS LOCK
+
+    return _engine->Options()->Import(AD_OPTIONS_COMPARE, pOptions);
+}
+
+DLLAPI adError adSetDefectOption(void * pOptions)
+{
+    CHECK_ACCESS LOCK
+
+    return _engine->Options()->Import(AD_OPTIONS_DEFECT, pOptions);
+}
+
 
 /*
 template <class TPathPtr> adError PathGet(adPathType pathType, TPathPtr pPath, adSizePtr pPathSize)
@@ -442,3 +504,8 @@ DLLAPI void adGetResult(adResultPtrW pResult, const unsigned int index)
 {
 	return _engine->Result()->GetResult(pResult, index);
 }	
+
+DLLAPI adError adLoadBitmapW(const adCharW* fileName, adBitmapPtr pBitmap)
+{
+    return ad::LoadBitmap(fileName, pBitmap);
+}

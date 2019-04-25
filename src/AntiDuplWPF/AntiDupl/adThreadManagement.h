@@ -102,6 +102,24 @@ namespace ad
         
         size_t GetThreadId() const;
     };
+	 //-------------------------------------------------------------------------
+    class TDctHistogramPeakManager : public TThreadManager
+    {
+    public:
+        TDctHistogramPeakManager(TEngine *pEngine);
+        ~TDctHistogramPeakManager();
+
+        void Start(size_t imageCount);
+        //virtual void Add(adImageInfoW pImageInfo);
+		virtual void Add(TImageData *pImageData);
+
+    //protected:
+    //    size_t DefaultThreadCount(size_t imageCount);
+
+    private:
+
+
+   };
     //-------------------------------------------------------------------------
 }
 #endif//__adThreadManagement_h__ 

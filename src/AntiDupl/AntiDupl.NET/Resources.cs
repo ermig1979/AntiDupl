@@ -1,7 +1,7 @@
 /*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl.NET Program.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -180,7 +180,6 @@ namespace AntiDupl.NET
 
                 try
                 {
-                    CreateIfNotExists(Path);
                     Save(StringsDefaultEnglish.Get());
                     Save(StringsDefaultRussian.Get());
                 }
@@ -215,7 +214,6 @@ namespace AntiDupl.NET
             {
                 try
                 {
-
                     TextWriter writer = new StreamWriter(GetPath(Path, strings.Name, Extension));
                     XmlSerializer xmlSerializer = new XmlSerializer(typeof(AntiDupl.NET.Strings));
                     xmlSerializer.Serialize(writer, strings);
@@ -328,23 +326,24 @@ namespace AntiDupl.NET
 
         static public class WebLinks
         {
-            public const string GithubComAntidupl = "http://ermig1979.github.io/AntiDupl";
-            public const string GithubComAntiduplEnglish = "http://ermig1979.github.io/AntiDupl/english/index.html";
-            public const string GithubComAntiduplRussian = "http://ermig1979.github.io/AntiDupl/russian/index.html";
-            public const string Version = "http://ermig1979.github.io/AntiDupl/version.xml";
+            public const string AntiduplSourceforgeNet = "http://antidupl.sourceforge.net/";
+            public const string AntiduplSourceforgeNetEnglish = "http://antidupl.sourceforge.net/english/index.html";
+            public const string AntiduplSourceforgeNetRussian = "http://antidupl.sourceforge.net/russian/index.html";
+            public const string Version = "http://antidupl.sourceforge.net/version.xml";
 
-            public const string GithubComSimd = "http://ermig1979.github.io/Simd";
+            public const string SourceforgeNetSimd = "http://sourceforge.net/projects/simd/?source=directory";
+            public const string SourceforgeNetAntidupl = "http://sourceforge.net/projects/antidupl/?source=directory";
 
             public const string OpenjpegOrg = "http://www.openjpeg.org";
 
-            public static string GithubComAntiduplCurrent
+            public static string AntiduplNarodRuCurrent
             {
                 get
                 {
                     if (Strings.IsCurrentRussianFamily())
-                        return GithubComAntiduplRussian;
+                        return AntiduplSourceforgeNetRussian;
                     else
-                        return GithubComAntiduplEnglish;
+                        return AntiduplSourceforgeNetEnglish;
                 }
             }
         }
@@ -353,8 +352,9 @@ namespace AntiDupl.NET
         {        
             static private string GetUrl(string page)
             {
-                StringBuilder builder = new StringBuilder(WebLinks.GithubComAntidupl);
-                builder.Append("/data/help");
+                Uri uri = new Uri(DataPath);
+                StringBuilder builder = new StringBuilder(uri.AbsoluteUri);
+                builder.Append("/help");
                 if (Strings.IsCurrentRussianFamily())
                     builder.Append("/russian");
                 else

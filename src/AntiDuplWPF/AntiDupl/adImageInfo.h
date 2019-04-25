@@ -36,6 +36,7 @@ namespace ad
         TImageType type;
         TUInt32 width;
         TUInt32 height;
+		TUInt32 jpegPeaks;
 		double blockiness;
 		double blurring;
 		TImageExif imageExif;

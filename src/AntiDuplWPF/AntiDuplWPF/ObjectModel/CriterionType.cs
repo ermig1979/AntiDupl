@@ -11,7 +11,7 @@ namespace AntiDuplWPF.ObjectModel
         Resolution,
         LargerFileSize,
         SmallerFileSize,
-        JpegQuality,
-        Sharpness
+        Blockiness,
+        Bluring
     }
 }

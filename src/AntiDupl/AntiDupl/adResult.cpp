@@ -1,7 +1,7 @@
 /*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar, 2013-2018 Borisov Dmitry.
+* Copyright (c) 2002-2015 Yermalayeu Ihar, 2013-2015 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -38,8 +38,7 @@ namespace ad
         transform(AD_TRANSFORM_TURN_0),
         group(AD_UNDEFINED),
 		groupSize(AD_UNDEFINED),
-        hint(AD_HINT_NONE),
-		deleteByHint(false)
+        hint(AD_HINT_NONE)
     {
     }
 
@@ -55,8 +54,7 @@ namespace ad
         transform(result.transform),
         group(result.group),
 		groupSize(result.groupSize),
-        hint(result.hint),
-		deleteByHint(result.deleteByHint)
+        hint(result.hint)
     {
     }
 

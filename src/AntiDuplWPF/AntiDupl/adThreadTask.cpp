@@ -2,6 +2,8 @@
 #include "adImageComparer.h"
 #include "adImageData.h"
 #include "adThreadManagement.h"
+#include "adDctHistogramPeaks.h"
+#include "adImage.h"
 
 namespace ad
 {
@@ -89,6 +91,25 @@ namespace ad
     {
         m_pDataCollector->Fill(pImageData);
         m_pCompareManager->Add(pImageData);
+        m_pStatus->Process(AD_THREAD_TYPE_COLLECT, Queue()->Id(), pImageData->path.Original().c_str());
+    }
+
+	//-------------------------------------------------------------------------
+    TDctHistogramPeakTask::TDctHistogramPeakTask(size_t threadId, TEngine *pEngine)
+        :TThreadTask(AD_THREAD_TYPE_COLLECT, threadId, pEngine)
+    {
+    }
+
+    TDctHistogramPeakTask::~TDctHistogramPeakTask()
+    {
+    }
+
+    void TDctHistogramPeakTask::DoOwn(TImageData *pImageData)
+    {
+		TImage *pImage = TImage::Load(pImageData->hGlobal);
+		pImageData->jpegPeaks = TDctHistogramPeaks::CalcDctHistogramPeaks(*pImage->View());
+        //m_pDataCollector->Fill(pImageData);
+        //m_pCompareManager->Add(pImageData);
         m_pStatus->Process(AD_THREAD_TYPE_COLLECT, Queue()->Id(), pImageData->path.Original().c_str());
     }
 }

@@ -33,18 +33,27 @@ namespace AntiDuplWPF.Convertor
                                 return position == PositionInDuplPair.First ? new SolidColorBrush(badColor) : new SolidColorBrush(goodColor);
                             else
                                 return position == PositionInDuplPair.Second ? new SolidColorBrush(badColor) : new SolidColorBrush(goodColor);
-                        //чем выше JpegQuality тем лучше изображение
-                        case MaxProperty.JpegQuality:
-                            if (result.FirstFile.JpegQuality == result.SecondFile.JpegQuality)
+                        //чем ниже Blockiness тем лучше изображение
+                        case MaxProperty.Blockiness:
+                            if (result.FirstFile.Blockiness == result.SecondFile.Blockiness)
                                 return new SolidColorBrush();
-                            if (result.FirstFile.JpegQuality < result.SecondFile.JpegQuality)
+                            if (result.FirstFile.Blockiness > result.SecondFile.Blockiness)
                                 return position == PositionInDuplPair.First ? new SolidColorBrush(badColor) : new SolidColorBrush(goodColor);
                             else
                                 return position == PositionInDuplPair.Second ? new SolidColorBrush(badColor) : new SolidColorBrush(goodColor);
-                        case MaxProperty.Sharpness:
-                            if (result.FirstFile.Sharpness == result.SecondFile.Sharpness)
+                            //чем ниже Bluring тем лучше изображение
+                        case MaxProperty.Bluring:
+                            if (result.FirstFile.Bluring == result.SecondFile.Bluring)
                                 return new SolidColorBrush();
-                            if (result.FirstFile.Sharpness < result.SecondFile.Sharpness)
+                            if (result.FirstFile.Bluring > result.SecondFile.Bluring)
+                                return position == PositionInDuplPair.First ? new SolidColorBrush(badColor) : new SolidColorBrush(goodColor);
+                            else
+                                return position == PositionInDuplPair.Second ? new SolidColorBrush(badColor) : new SolidColorBrush(goodColor);
+                        //чем меньше JpegPeaks, тем лучше изображение
+                        case MaxProperty.JpegPeaks:
+                            if (result.FirstFile.JpegPeaks == result.SecondFile.JpegPeaks)
+                                return new SolidColorBrush();
+                            if (result.FirstFile.JpegPeaks > result.SecondFile.JpegPeaks)
                                 return position == PositionInDuplPair.First ? new SolidColorBrush(badColor) : new SolidColorBrush(goodColor);
                             else
                                 return position == PositionInDuplPair.Second ? new SolidColorBrush(badColor) : new SolidColorBrush(goodColor);

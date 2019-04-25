@@ -30,7 +30,7 @@ namespace AntiDuplWPF.Behavior
             set { SetValue(MenuGeneratorDuplPairProperty, value); }
         }
 
-       /* public static readonly DependencyProperty MenuGeneratorDuplGroupProperty =
+        public static readonly DependencyProperty MenuGeneratorDuplGroupProperty =
              DependencyProperty.Register("MenuGeneratorDuplGroup",
              typeof(Func<DuplicateGroup, BindableMenuItem[]>),
              typeof(DataGridContextMenuItemSourceBindingOnOpenBehavior),
@@ -40,7 +40,7 @@ namespace AntiDuplWPF.Behavior
         {
             get { return (Func<DuplicateGroup, BindableMenuItem[]>)GetValue(MenuGeneratorDuplGroupProperty); }
             set { SetValue(MenuGeneratorDuplGroupProperty, value); }
-        }*/
+        }
 
         public static readonly DependencyProperty MenuGeneratorMultiDuplPairProperty =
                 DependencyProperty.Register("MenuGeneratorMultiDuplPair",
@@ -86,12 +86,12 @@ namespace AntiDuplWPF.Behavior
                         if (MenuGeneratorMultiDuplPair != null)
                             grid.ContextMenu.ItemsSource = MenuGeneratorMultiDuplPair(viewResultsOfDupl);
                     }
-                   /* else if (grid.SelectedItem is DuplicateGroup)
+                    else if (grid.SelectedItem is DuplicateGroup)
                     {
                         IList viewResults = (IList)grid.SelectedItems;
                         if (MenuGeneratorMultiDuplGroup != null)
                             grid.ContextMenu.ItemsSource = MenuGeneratorMultiDuplGroup(viewResults);
-                    }*/
+                    }
                 }
                 else
                 {
@@ -101,12 +101,12 @@ namespace AntiDuplWPF.Behavior
                         if (MenuGeneratorDuplPair != null)
                             grid.ContextMenu.ItemsSource = MenuGeneratorDuplPair(viewResultOfDupl);
                     }
-                    /*else if (grid.SelectedItem is DuplicateGroup)
+                    else if (grid.SelectedItem is DuplicateGroup)
                     {
                         DuplicateGroup duplicateGroup = (DuplicateGroup)grid.SelectedItem;
                         if (MenuGeneratorDuplGroup != null)
                             grid.ContextMenu.ItemsSource = MenuGeneratorDuplGroup(duplicateGroup);
-                    }*/
+                    }
                 }
             }
         }

@@ -111,10 +111,10 @@ namespace ad
 
 	bool TImageData::PixelDataFillingNeed(const TOptions * pOptions) const
 	{
-		return (pOptions->compare.checkOnEquality == TRUE || 
-			pOptions->defect.checkOnDefect == TRUE || 
-			pOptions->defect.checkOnBlockiness == TRUE  || 
-			pOptions->defect.checkOnBlurring == TRUE) && 
+		return (pOptions->compare.checkOnEquality || 
+			pOptions->defect.checkOnDefect || 
+			pOptions->defect.checkOnBlockiness || 
+			pOptions->defect.checkOnBlurring) && 
 			(!data->filled || blockiness < 0 || blurring < 0) &&
 			type != AD_IMAGE_NONE;
 	}
@@ -122,9 +122,9 @@ namespace ad
 	bool TImageData::DefectCheckingNeed(const TOptions * pOptions) const
 	{
 		const adDefectOptions & options = pOptions->defect;
-		return (options.checkOnDefect == TRUE && defect == AD_DEFECT_UNDEFINE) ||
-			(options.checkOnBlockiness == TRUE && (defect == AD_DEFECT_UNDEFINE || defect == AD_DEFECT_NONE) && blockiness > options.blockinessThreshold) || 
-			(options.checkOnBlurring == TRUE && (defect == AD_DEFECT_UNDEFINE || defect == AD_DEFECT_NONE) && blurring > options.blurringThreshold); 
+		return (options.checkOnDefect && defect == AD_DEFECT_UNDEFINE) ||
+			(options.checkOnBlockiness && (defect == AD_DEFECT_UNDEFINE || defect == AD_DEFECT_NONE) && blockiness > options.blockinessThreshold) || 
+			(options.checkOnBlurring && (defect == AD_DEFECT_UNDEFINE || defect == AD_DEFECT_NONE) && blurring > options.blurringThreshold);
 	}
 
 	TDefectType TImageData::GetDefect(const TOptions * pOptions) const
@@ -133,16 +133,16 @@ namespace ad
 		TUInt32 minSize = pOptions->compare.minimalImageSize;
 		if(width >= minSize && width <= maxSize && height >= minSize && height <= maxSize)
 		{
-			if(pOptions->defect.checkOnDefect == TRUE && defect > AD_DEFECT_NONE && defect < AD_DEFECT_BLOCKINESS)
+			if(pOptions->defect.checkOnDefect && defect > AD_DEFECT_NONE && defect < AD_DEFECT_BLOCKINESS)
 				return defect;
 			
-			if(pOptions->defect.checkOnBlockiness == TRUE && blockiness > pOptions->defect.blockinessThreshold)
+			if(pOptions->defect.checkOnBlockiness && blockiness > pOptions->defect.blockinessThreshold)
 			{
-				if((pOptions->defect.checkOnBlockinessOnlyNotJpeg != TRUE || type != AD_IMAGE_JPEG))
+				if((!pOptions->defect.checkOnBlockinessOnlyNotJpeg || type != AD_IMAGE_JPEG))
 					return AD_DEFECT_BLOCKINESS;
 			}
 
-			if(pOptions->defect.checkOnBlurring == TRUE && blurring > pOptions->defect.blurringThreshold)
+			if(pOptions->defect.checkOnBlurring && blurring > pOptions->defect.blurringThreshold)
 					return AD_DEFECT_BLURRING;
 		}
 		return AD_DEFECT_NONE;

@@ -11,22 +11,18 @@
         <Rectangle Stroke="#FF000000" 
                    RenderTransformOrigin="0.5,0.5" 
                    x:Name="ProgressBarBackground">
-            <Rectangle.Fill>
+            <!--<Rectangle.Fill>
                 <LinearGradientBrush EndPoint="0.5,1" 
                                      StartPoint="0.5,0">
                     <GradientStop Color="White" Offset="0" />
                     <GradientStop Color="Gray" Offset="1"/>
                 </LinearGradientBrush>
-            </Rectangle.Fill>
+            </Rectangle.Fill>-->
         </Rectangle>
         <Rectangle x:Name="ProgressBarForeground2" 
                    HorizontalAlignment="Left">
             <Rectangle.Fill>
-                <LinearGradientBrush EndPoint="0.5,1"
-                                     StartPoint="0.5,0">
-                    <GradientStop Color="#FFC17DC0" Offset="0.473"/>
-                    <GradientStop Color="#FFF6A5F7" Offset="0"/>
-                </LinearGradientBrush>
+                <SolidColorBrush  Color="DarkGreen" />
             </Rectangle.Fill>
         </Rectangle>
         <!--The progress bar foreground-->
@@ -35,11 +31,7 @@
                    x:Name="ProgressBarForeground" 
                    HorizontalAlignment="Left">
             <Rectangle.Fill>
-                <LinearGradientBrush EndPoint="0.5,1"
-                                     StartPoint="0.5,0">
-                    <GradientStop Color="#FF023501" Offset="1.0"/>
-                    <GradientStop Color="#FFB6F9B4" Offset="0"/>
-                </LinearGradientBrush>
+                <SolidColorBrush  Color="#FF01D328" />
             </Rectangle.Fill>
         </Rectangle>
         <Viewbox>
@@ -49,8 +41,7 @@
                        FontFamily="Times"
                        Foreground="Black" 
                        x:Name="ProgressText"
-                       Margin="2,2,2,2"> 0%
-            </TextBlock>
+                       Margin="2,2,2,2" /> 
         </Viewbox>
     </Grid>
 </UserControl>

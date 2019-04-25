@@ -1,7 +1,7 @@
 /*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -58,9 +58,6 @@ namespace ad
     //-------------------------------------------------------------------------
     struct TOptions
     {
-        TString userPath;
-        TString statisticsPath;
-
         TPathContainer searchPaths;
         TPathContainer ignorePaths;
         TPathContainer validPaths;
@@ -71,7 +68,7 @@ namespace ad
         adDefectOptions defect;
         adAdvancedOptions advanced;
 
-        TOptions(const TString & userPath_);
+        TOptions();
 
         void SetDefault();
         void Validate();

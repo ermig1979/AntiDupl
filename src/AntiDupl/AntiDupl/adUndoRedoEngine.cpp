@@ -1,7 +1,7 @@
 /*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,6 @@
 #include "adImageInfoStorage.h"
 #include "adUndoRedoTypes.h"
 #include "adUndoRedoEngine.h"
-#include "adStatisticsOfDeleting.h"
 
 namespace ad
 {
@@ -45,7 +44,6 @@ namespace ad
         m_pUndoDeque = new TUndoRedoStagePtrDeque();
         m_pRedoDeque = new TUndoRedoStagePtrDeque();
         m_pCurrent = new TUndoRedoStage();
-		m_pStatisticsOfDeleting = new TStatisticsOfDeleting(m_pOptions->statisticsPath);
     }
 
     TUndoRedoEngine::~TUndoRedoEngine()
@@ -110,7 +108,7 @@ namespace ad
             m_pCurrent->RemoveDeleted(m_pStatus);
 
         m_pCurrent->UpdateGroups();
-        m_pCurrent->UpdateHints(m_pOptions, false, m_pStatus);
+        m_pCurrent->UpdateHints(m_pOptions, false);
 
         m_pCurrent->change = NULL;
 
@@ -147,7 +145,7 @@ namespace ad
 
 			// Обновляем подсказки в текущей группе.
             m_pCurrent->groups.Get(pImageInfo->group)->invalidHint = true;
-            m_pCurrent->UpdateHints(m_pOptions, false, m_pStatus);
+            m_pCurrent->UpdateHints(m_pOptions, false);
 
             m_pCurrent->change = NULL;
 
@@ -462,8 +460,6 @@ namespace ad
                 pResult->first->links--;
                 if(pResult->type == AD_RESULT_DUPL_IMAGE_PAIR)
                     pResult->second->links--;
-
-				m_pStatisticsOfDeleting->Write(pResult);
             }
             TImageInfoPtrList& deletedImages = pStage->change->deletedImages;
             for(TImageInfoPtrList::iterator it = deletedImages.begin(); it != deletedImages.end(); ++it)
@@ -482,8 +478,6 @@ namespace ad
 	//private
     bool TUndoRedoEngine::ApplyTo(adLocalActionType localActionType, TResult *pResult)
     {
-		bool result;
-
         if(pResult->type == AD_RESULT_DEFECT_IMAGE)
         {
             switch(localActionType)
@@ -529,18 +523,9 @@ namespace ad
                 switch(pResult->hint)
                 {
                 case AD_HINT_DELETE_FIRST:
-					pResult->deleteByHint = true;
-					result = Delete(pResult->first);
-                    if (!result)
-						pResult->deleteByHint = false;
-					return result;
+                    return Delete(pResult->first);
                 case AD_HINT_DELETE_SECOND:
-                    //return Delete(pResult->second);
-					pResult->deleteByHint = true;
-					result = Delete(pResult->second);
-                    if (!result)
-						pResult->deleteByHint = false;
-					return result;
+                    return Delete(pResult->second);
                 case AD_HINT_RENAME_FIRST_TO_SECOND:
                     return Rename(pResult->first, pResult->second);
                 case AD_HINT_RENAME_SECOND_TO_FIRST:
@@ -642,7 +627,7 @@ namespace ad
         m_pUndoDeque->push_back(m_pCurrent->Clone());
 
         m_pCurrent->UpdateGroups();
-        m_pCurrent->UpdateHints(m_pOptions, false, m_pStatus);
+        m_pCurrent->UpdateHints(m_pOptions, false);
 
         m_pCurrent->change = NULL;
 
@@ -703,7 +688,7 @@ namespace ad
         m_pUndoDeque->push_back(m_pCurrent->Clone());
 
         m_pCurrent->UpdateGroups();
-        m_pCurrent->UpdateHints(m_pOptions, false, m_pStatus);
+        m_pCurrent->UpdateHints(m_pOptions, false);
 
         m_pCurrent->change = NULL;
 

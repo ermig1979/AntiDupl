@@ -1,7 +1,7 @@
 /*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl.NET Program.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar, 2013-2018 Borisov Dmitry.
+* Copyright (c) 2002-2015 Yermalayeu Ihar, 2014 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -49,7 +49,6 @@ namespace AntiDupl.NET
             compareOptions = new CoreCompareOptions();
             defectOptions = new CoreDefectOptions();
             advancedOptions = new CoreAdvancedOptions();
-
             searchPath = new CorePathWithSubFolder[1];
             ignorePath = new CorePathWithSubFolder[0];
             validPath = new CorePathWithSubFolder[0];
@@ -73,7 +72,6 @@ namespace AntiDupl.NET
             compareOptions = options.compareOptions.Clone();
             defectOptions = options.defectOptions.Clone();
             advancedOptions = options.advancedOptions.Clone();
-
             searchPath = PathClone(options.searchPath);
             ignorePath = PathClone(options.ignorePath);
             validPath = PathClone(options.validPath);
@@ -162,7 +160,6 @@ namespace AntiDupl.NET
             options.compareOptions = compareOptions.Clone();
             options.defectOptions = defectOptions.Clone();
             options.advancedOptions = advancedOptions.Clone();
-
             PathCopy(searchPath, ref options.searchPath);
             PathCopy(ignorePath, ref options.ignorePath);
             PathCopy(validPath, ref options.validPath);

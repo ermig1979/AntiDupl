@@ -1,7 +1,7 @@
 /*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -44,10 +44,10 @@ namespace ad
 
     //-------------------------------------------------------------------------
 
-    class TLogger::TStdOut : public TLogger::TOut //TStdOut наследуется от TOut
+    class TLogger::TStdOut : public TLogger::TOut
     {
     public:
-        virtual void Write(const TChar* message) //Переопределяем функцию
+        virtual void Write(const TChar* message)
         {
             std::cout << message;
         }
@@ -60,7 +60,7 @@ namespace ad
 
     //-------------------------------------------------------------------------
 
-    class TLogger::TFileOut : public TLogger::TOut //TFileOut наследуется от TOut
+    class TLogger::TFileOut : public TLogger::TOut
     {
         std::ofstream m_ofstream; 
     public:

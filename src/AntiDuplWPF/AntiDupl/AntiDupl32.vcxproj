@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="../../Prop.props" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -10,45 +9,208 @@
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Template|Win32">
+      <Configuration>Template</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{7C8C9359-ED04-4415-BB91-9947B59BC71E}</ProjectGuid>
+    <ProjectGuid>{38555233-DD7B-4F45-9339-F3F70E70AF60}</ProjectGuid>
+    <RootNamespace>AntiDupl32</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <ProjectName>AntiDupl32</ProjectName>
   </PropertyGroup>
-  <PropertyGroup Label="Configuration">
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ItemDefinitionGroup>
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>11.0.61030.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)\..\..\bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\..\..\obj\$(Configuration)\$(ProjectName)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)\..\..\bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\..\..\obj\$(Configuration)\$(ProjectName)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PreBuildEvent>
+      <Command />
+    </PreBuildEvent>
     <ClCompile>
-      <PreprocessorDefinitions>_WINDOWS;_USRDLL;ANTIDUPL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../../3rd;../../3rd/libwebp/src;h:\OpenCV\opencv\build\include\;d:\OpenCV\build\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;ANTIDUPL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\bin\$(Configuration)\;d:\OpenCV\build\x86\vc11\staticlib\;h:\OpenCV\opencv\build\x86\vc11\staticlib\</AdditionalLibraryDirectories>
+      <Profile>true</Profile>
     </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PreBuildEvent>
-      <Command>"$(ProjectDir)".\adExternal.cmd</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>../../3rd;../../3rd/libwebp/src;h:\OpenCV\opencv\build\include\;d:\OpenCV\build\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;ANTIDUPL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\bin\$(Configuration)\;d:\OpenCV\build\x86\vc11\staticlib\;h:\OpenCV\opencv\build\x86\vc11\staticlib\</AdditionalLibraryDirectories>
+      <Profile>true</Profile>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include=".\*.h" />
-    <ClCompile Include=".\*.cpp" />
+    <ClCompile Include="adBlurringDetector.cpp" />
+    <ClCompile Include="adDataCollector.cpp" />
+    <ClCompile Include="adDds.cpp" />
+    <ClCompile Include="adDctHistogramPeaks.cpp" />
+    <ClCompile Include="adDump.cpp" />
+    <ClCompile Include="adDuplResultFilter.cpp" />
+    <ClCompile Include="adEngine.cpp" />
+    <ClCompile Include="adFileInfo.cpp" />
+    <ClCompile Include="adFileStream.cpp" />
+    <ClCompile Include="adFileUtils.cpp" />
+    <ClCompile Include="adGdiplus.cpp" />
+    <ClCompile Include="adHintSetter.cpp" />
+    <ClCompile Include="adImage.cpp" />
+    <ClCompile Include="adImageComparer.cpp" />
+    <ClCompile Include="adImageData.cpp" />
+    <ClCompile Include="adImageDataStorage.cpp" />
+    <ClCompile Include="adImageExif.cpp" />
+    <ClCompile Include="adImageGroup.cpp" />
+    <ClCompile Include="adImageInfo.cpp" />
+    <ClCompile Include="adImageInfoStorage.cpp" />
+    <ClCompile Include="adImageUtils.cpp" />
+    <ClCompile Include="adIniFile.cpp" />
+    <ClCompile Include="adInit.cpp" />
+    <ClCompile Include="adLogger.cpp" />
+    <ClCompile Include="adOpenJpeg.cpp" />
+    <ClCompile Include="adOptions.cpp" />
+    <ClCompile Include="adPath.cpp" />
+    <ClCompile Include="adPerformance.cpp" />
+    <ClCompile Include="adPixelData.cpp" />
+    <ClCompile Include="adPsd.cpp" />
+    <ClCompile Include="adResult.cpp" />
+    <ClCompile Include="adResultStorage.cpp" />
+    <ClCompile Include="adSearcher.cpp" />
+    <ClCompile Include="adStatus.cpp" />
+    <ClCompile Include="adStrings.cpp" />
+    <ClCompile Include="adTga.cpp" />
+    <ClCompile Include="adThreadManagement.cpp" />
+    <ClCompile Include="adThreadQueue.cpp" />
+    <ClCompile Include="adThreads.cpp" />
+    <ClCompile Include="adThreadTask.cpp" />
+    <ClCompile Include="adTWebp.cpp" />
+    <ClCompile Include="adUndoRedoTypes.cpp" />
+    <ClCompile Include="AntiDupl.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\3rd\LibOpenJpeg\LibOpenJpeg32.vcxproj">
-      <Project>{1622c4ef-06a4-4daa-9631-5d71b32858a4}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\3rd\OpenNN\OpenNN32.vcxproj">
-      <Project>{44f4252d-8c3c-4981-b11b-b6008646a4ea}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\3rd\Simd\Simd32.vcxproj">
-      <Project>{1622c4ef-06a4-4daa-9631-5d71b32858a2}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\3rd\tinyxml\TinyXml32.vcxproj">
-      <Project>{1b11b527-4299-4551-8d47-6fd6191bcf48}</Project>
-    </ProjectReference>
+    <ClInclude Include="adBlurringDetector.h" />
+    <ClInclude Include="adConfig.h" />
+    <ClInclude Include="adDataCollector.h" />
+    <ClInclude Include="adDds.h" />
+    <ClInclude Include="adDctHistogramPeaks.h" />
+    <ClInclude Include="adDump.h" />
+    <ClInclude Include="adDuplResultFilter.h" />
+    <ClInclude Include="adEngine.h" />
+    <ClInclude Include="adException.h" />
+    <ClInclude Include="adFileInfo.h" />
+    <ClInclude Include="adFileStream.h" />
+    <ClInclude Include="adFileUtils.h" />
+    <ClInclude Include="adGdiplus.h" />
+    <ClInclude Include="adHintSetter.h" />
+    <ClInclude Include="adImage.h" />
+    <ClInclude Include="adImageComparer.h" />
+    <ClInclude Include="adImageData.h" />
+    <ClInclude Include="adImageDataStorage.h" />
+    <ClInclude Include="adImageExif.h" />
+    <ClInclude Include="adImageGroup.h" />
+    <ClInclude Include="adImageInfo.h" />
+    <ClInclude Include="adImageInfoStorage.h" />
+    <ClInclude Include="adImageUtils.h" />
+    <ClInclude Include="adIniFile.h" />
+    <ClInclude Include="adInit.h" />
+    <ClInclude Include="adIO.h" />
+    <ClInclude Include="adLogger.h" />
+    <ClInclude Include="adOpenJpeg.h" />
+    <ClInclude Include="adOptions.h" />
+    <ClInclude Include="adPath.h" />
+    <ClInclude Include="adPerformance.h" />
+    <ClInclude Include="adPixelData.h" />
+    <ClInclude Include="adPsd.h" />
+    <ClInclude Include="adResult.h" />
+    <ClInclude Include="adResultStorage.h" />
+    <ClInclude Include="adSearcher.h" />
+    <ClInclude Include="adStatus.h" />
+    <ClInclude Include="adStrings.h" />
+    <ClInclude Include="adTga.h" />
+    <ClInclude Include="adThreadManagement.h" />
+    <ClInclude Include="adThreadQueue.h" />
+    <ClInclude Include="adThreads.h" />
+    <ClInclude Include="adThreadTask.h" />
+    <ClInclude Include="adTWebp.h" />
+    <ClInclude Include="adUndoRedoTypes.h" />
+    <ClInclude Include="AntiDupl.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
 </Project>

@@ -1,9 +1,4 @@
 /*
- * The copyright in this software is being made available under the 2-clauses
- * BSD License, included below. This software may be subject to other third
- * party and contributor rights, including patent rights, and no such rights
- * are granted under this license.
- *
  * Copyright (c) 2005, Herve Drolon, FreeImage Team
  * Copyright (c) 2007, Callum Lerwick <seg@haxxed.com>
  * All rights reserved.
@@ -29,10 +24,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef OPJ_MALLOC_H
-#define OPJ_MALLOC_H
-
-#include <stddef.h>
+#ifndef __OPJ_MALLOC_H
+#define __OPJ_MALLOC_H
 /**
 @file opj_malloc.h
 @brief Internal functions
@@ -52,32 +45,88 @@ Allocate an uninitialized memory block
 @param size Bytes to allocate
 @return Returns a void pointer to the allocated space, or NULL if there is insufficient memory available
 */
-void * opj_malloc(size_t size);
+#ifdef ALLOC_PERF_OPT
+void * OPJ_CALLCONV opj_malloc(size_t size);
+#else
+#define opj_malloc(size) malloc(size)
+#endif
 
 /**
 Allocate a memory block with elements initialized to 0
-@param numOfElements  Blocks to allocate
-@param sizeOfElements Bytes per block to allocate
+@param num Blocks to allocate
+@param size Bytes per block to allocate
 @return Returns a void pointer to the allocated space, or NULL if there is insufficient memory available
 */
-void * opj_calloc(size_t numOfElements, size_t sizeOfElements);
+#ifdef ALLOC_PERF_OPT
+void * OPJ_CALLCONV opj_calloc(size_t _NumOfElements, size_t _SizeOfElements);
+#else
+#define opj_calloc(num, size) calloc(num, size)
+#endif
 
 /**
-Allocate memory aligned to a 16 byte boundary
+Allocate memory aligned to a 16 byte boundry
 @param size Bytes to allocate
 @return Returns a void pointer to the allocated space, or NULL if there is insufficient memory available
 */
-void * opj_aligned_malloc(size_t size);
-void * opj_aligned_realloc(void *ptr, size_t size);
-void opj_aligned_free(void* ptr);
+/* FIXME: These should be set with cmake tests, but we're currently not requiring use of cmake */
+#ifdef _WIN32
+	/* Someone should tell the mingw people that their malloc.h ought to provide _mm_malloc() */
+	#ifdef __GNUC__
+		#include <mm_malloc.h>
+		#define HAVE_MM_MALLOC
+	#else /* MSVC, Intel C++ */
+		#include <malloc.h>
+		#ifdef _mm_malloc
+			#define HAVE_MM_MALLOC
+		#endif
+	#endif
+#else /* Not _WIN32 */
+	#if defined(__sun)
+		#define HAVE_MEMALIGN
+	/* Linux x86_64 and OSX always align allocations to 16 bytes */
+	#elif !defined(__amd64__) && !defined(__APPLE__)	
+		#define HAVE_MEMALIGN
+		#include <malloc.h>			
+	#endif
+#endif
 
-/**
-Allocate memory aligned to a 32 byte boundary
-@param size Bytes to allocate
-@return Returns a void pointer to the allocated space, or NULL if there is insufficient memory available
-*/
-void * opj_aligned_32_malloc(size_t size);
-void * opj_aligned_32_realloc(void *ptr, size_t size);
+#define opj_aligned_malloc(size) malloc(size)
+#define opj_aligned_free(m) free(m)
+
+#ifdef HAVE_MM_MALLOC
+	#undef opj_aligned_malloc
+	#define opj_aligned_malloc(size) _mm_malloc(size, 16)
+	#undef opj_aligned_free
+	#define opj_aligned_free(m) _mm_free(m)
+#endif
+
+#ifdef HAVE_MEMALIGN
+	extern void* memalign(size_t, size_t);
+	#undef opj_aligned_malloc
+	#define opj_aligned_malloc(size) memalign(16, (size))
+	#undef opj_aligned_free
+	#define opj_aligned_free(m) free(m)
+#endif
+
+#ifdef HAVE_POSIX_MEMALIGN
+	#undef opj_aligned_malloc
+	extern int posix_memalign(void**, size_t, size_t);
+
+	static INLINE void* __attribute__ ((malloc)) opj_aligned_malloc(size_t size){
+		void* mem = NULL;
+		posix_memalign(&mem, 16, size);
+		return mem;
+	}
+	#undef opj_aligned_free
+	#define opj_aligned_free(m) free(m)
+#endif
+
+#ifdef ALLOC_PERF_OPT
+	#undef opj_aligned_malloc
+	#define opj_aligned_malloc(size) opj_malloc(size)
+	#undef opj_aligned_free
+	#define opj_aligned_free(m) opj_free(m)
+#endif
 
 /**
 Reallocate memory blocks.
@@ -85,15 +134,23 @@ Reallocate memory blocks.
 @param s New size in bytes
 @return Returns a void pointer to the reallocated (and possibly moved) memory block
 */
-void * opj_realloc(void * m, size_t s);
+#ifdef ALLOC_PERF_OPT
+void * OPJ_CALLCONV opj_realloc(void * m, size_t s);
+#else
+#define opj_realloc(m, s) realloc(m, s)
+#endif
 
 /**
 Deallocates or frees a memory block.
 @param m Previously allocated memory block to be freed
 */
-void opj_free(void * m);
+#ifdef ALLOC_PERF_OPT
+void OPJ_CALLCONV opj_free(void * m);
+#else
+#define opj_free(m) free(m)
+#endif
 
-#if defined(__GNUC__) && !defined(OPJ_SKIP_POISON)
+#ifdef __GNUC__
 #pragma GCC poison malloc calloc realloc free
 #endif
 
@@ -102,5 +159,5 @@ void opj_free(void * m);
 
 /*@}*/
 
-#endif /* OPJ_MALLOC_H */
+#endif /* __OPJ_MALLOC_H */
 

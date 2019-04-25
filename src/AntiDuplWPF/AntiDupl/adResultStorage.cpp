@@ -31,7 +31,6 @@
 #include "adThreads.h"
 #include "adFileUtils.h"
 #include "adImageInfoStorage.h"
-#include "adMistakeStorage.h"
 #include "adStatus.h"
 #include "adOptions.h"
 #include "adEngine.h"
@@ -50,7 +49,6 @@ namespace ad
     TResultStorage::TResultStorage(TEngine *pEngine)
         :m_pOptions(pEngine->Options()),
         m_pStatus(pEngine->Status()),
-        m_pMistakeStorage(pEngine->MistakeStorage()),
         m_nextId(0)
     {
         m_pCriticalSection = new TCriticalSection();
@@ -89,8 +87,7 @@ namespace ad
         pResult->second = m_pImageInfoStorage->Add(second);
         pResult->difference = difference;
         pResult->transform = transform;
-        if((m_pOptions->advanced.mistakeDataBase == TRUE && m_pMistakeStorage->IsHas(pResult->first, pResult->second)) ||
-           (m_pOptions->compare.transformedImage == TRUE && m_pDuplResultFilter->AlreadyHas(pResult)))
+        if(m_pOptions->compare.transformedImage && m_pDuplResultFilter->AlreadyHas(pResult))
         {
             delete pResult;
             return false;
@@ -119,12 +116,6 @@ namespace ad
         pResult->first = m_pImageInfoStorage->Add(info);
         pResult->second = m_pImageInfoStorage->GetStub();
         pResult->defect = defect;
-        if(m_pOptions->advanced.mistakeDataBase == TRUE && 
-           m_pMistakeStorage->IsHas(pResult->first))
-        {
-            delete pResult;
-            return false;
-        }
         m_pCurrent->results.push_back(pResult);
         pResult->id = m_nextId++;
         pResult->first->links++;
@@ -149,7 +140,7 @@ namespace ad
     void TResultStorage::Refresh()
     {
         //m_pUndoRedoEngine->Clear();
-        m_pCurrent->RemoveInvalid(m_pStatus, m_pMistakeStorage);
+        m_pCurrent->RemoveInvalid(m_pStatus);
 		m_pCurrent->RemoveSkipped(m_pStatus, m_pOptions); //удаляет из результатов пропускаемые
         m_pCurrent->SetGroups(m_pStatus); //очищает внутреннее хранилище групп
 		m_pCurrent->UpdateGroups(); //обновляет группы из результатов
@@ -192,16 +183,12 @@ namespace ad
 					result.second = m_pImageInfoStorage->GetStub();
 					if(!check || result.first->Actual())
 					{
-						if(m_pOptions->advanced.mistakeDataBase == FALSE ||
-							!m_pMistakeStorage->IsHas(result.first))
-						{
-							m_pStatus->AddDefectImage();
-							results.push_back(new TResult(result));
-							results.back()->id = m_nextId++;
-							results.back()->first->links++;
-							if(results.back()->first->group == AD_UNDEFINED)
-								results.back()->first->group = results.back()->group;
-						}
+						m_pStatus->AddDefectImage();
+						results.push_back(new TResult(result));
+						results.back()->id = m_nextId++;
+						results.back()->first->links++;
+						if(results.back()->first->group == AD_UNDEFINED)
+							results.back()->first->group = results.back()->group;
 					}
 				}
 				if(result.type == AD_RESULT_DUPL_IMAGE_PAIR)
@@ -210,19 +197,15 @@ namespace ad
 					result.second = m_pImageInfoStorage->Get((size_t)result.second);
 					if(!check || (result.first->Actual() && result.second->Actual()))
 					{
-						if(m_pOptions->advanced.mistakeDataBase == FALSE ||
-							!m_pMistakeStorage->IsHas(result.first, result.second))
-						{
-							m_pStatus->AddDuplImagePair();
-							results.push_back(new TResult(result));
-							results.back()->id = m_nextId++;
-							results.back()->first->links++;
-							results.back()->second->links++;
-							if(results.back()->first->group == AD_UNDEFINED)
-								results.back()->first->group = results.back()->group;
-							if(results.back()->second->group == AD_UNDEFINED)
-								results.back()->second->group = results.back()->group;
-						}
+						m_pStatus->AddDuplImagePair();
+						results.push_back(new TResult(result));
+						results.back()->id = m_nextId++;
+						results.back()->first->links++;
+						results.back()->second->links++;
+						if(results.back()->first->group == AD_UNDEFINED)
+							results.back()->first->group = results.back()->group;
+						if(results.back()->second->group == AD_UNDEFINED)
+							results.back()->second->group = results.back()->group;
 					}
 				}
 			}

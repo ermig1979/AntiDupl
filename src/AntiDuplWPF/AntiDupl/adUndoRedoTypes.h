@@ -33,7 +33,6 @@ namespace ad
 	struct TImageInfo;
 
     class TStatus;
-    class TMistakeStorage; 
 
 	typedef TResult* TResultPtr;
     typedef std::vector<TResultPtr> TResultPtrVector;
@@ -83,9 +82,8 @@ namespace ad
         adError Export(adSizePtr pStartFrom, adResultPtrA pResult, adSizePtr pResultSize) const;
         adError Export(adSizePtr pStartFrom, adResultPtrW pResult, adSizePtr pResultSize) const;
 
-        void RemoveInvalid(TStatus *pStatus, TMistakeStorage *pMistakeStorage);
+        void RemoveInvalid(TStatus *pStatus);
         void RemoveDeleted(TStatus *pStatus);
-        void RemoveMistaken(TStatus *pStatus, TMistakeStorage *pMistakeStorage);
 		void RemoveSkipped(TStatus *pStatus, TOptions *pOptions);
         
         void SetGroups(TStatus *pStatus);

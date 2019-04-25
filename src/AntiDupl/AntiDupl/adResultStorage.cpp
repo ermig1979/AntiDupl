@@ -1,7 +1,7 @@
 /*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -152,7 +152,7 @@ namespace ad
 
     void TResultStorage::SetHint()
     {
-        m_pUndoRedoEngine->Current()->UpdateHints(m_pOptions, true, m_pStatus);
+        m_pUndoRedoEngine->Current()->UpdateHints(m_pOptions, true);
     }
 
     adError TResultStorage::ApplyTo(adLocalActionType localActionType, adTargetType targetType)
@@ -231,7 +231,7 @@ namespace ad
 		m_pUndoRedoEngine->Current()->RemoveSkipped(m_pStatus, m_pOptions); //удаляет из результатов пропускаемые
         m_pUndoRedoEngine->Current()->SetGroups(m_pStatus); //очищает внутреннее хранилище групп
 		m_pUndoRedoEngine->Current()->UpdateGroups(); //обновляет группы из результатов
-        m_pUndoRedoEngine->Current()->UpdateHints(m_pOptions, true, m_pStatus);
+        m_pUndoRedoEngine->Current()->UpdateHints(m_pOptions, true);
     }
 
     bool TResultStorage::Undo()
@@ -379,7 +379,7 @@ namespace ad
 				}
 			}
 			m_pUndoRedoEngine->Current()->UpdateGroups();
-			m_pUndoRedoEngine->Current()->UpdateHints(m_pOptions, true, m_pStatus);
+			m_pUndoRedoEngine->Current()->UpdateHints(m_pOptions, true);
 		}
 		catch (TException e)
 		{

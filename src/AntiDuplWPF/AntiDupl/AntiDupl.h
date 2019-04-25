@@ -297,6 +297,7 @@ extern "C"
         AD_IMAGE_PSD = 11,
 		AD_IMAGE_DDS = 12,
 		AD_IMAGE_TGA = 13,
+		AD_IMAGE_WEBP = 14,
         AD_IMAGE_SIZE
     };
 
@@ -393,47 +394,46 @@ extern "C"
         bool PSD;
 		bool DDS;
 		bool TGA;
+		bool WEBP;
     };
     typedef adSearchOptions* adSearchOptionsPtr;
 
     struct adCompareOptions //так же должен быть определен в CoreDll.cs и похоже в CoreCompareOptions.cs
     {
-        adBool checkOnEquality;    
-        adBool transformedImage;    
-        adBool sizeControl;
-        adBool typeControl;
-        adBool ratioControl;
+        bool checkOnEquality;    
+        bool transformedImage;    
+        bool sizeControl;
+        bool typeControl;
+        bool ratioControl;
         adInt32 thresholdDifference;
         adInt32 minimalImageSize;
 		adInt32 maximalImageSize;
-        adBool compareInsideOneFolder;
-		adBool compareInsideOneSearchPath;
+        bool compareInsideOneFolder;
+		bool compareInsideOneSearchPath;
 		adAlgorithmComparing algorithmComparing;
     };
     typedef adCompareOptions* adCompareOptionsPtr;
 	
     struct adDefectOptions
     {
-        adBool checkOnDefect;
-        adBool checkOnBlockiness;
+        bool checkOnDefect;
+        bool checkOnBlockiness;
         adInt32 blockinessThreshold;
-		adBool checkOnBlockinessOnlyNotJpeg;
-        adBool checkOnBlurring;
+		bool checkOnBlockinessOnlyNotJpeg;
+        bool checkOnBlurring;
         adInt32 blurringThreshold;
     };
     typedef adDefectOptions* adDefectOptionsPtr;
 
     struct adAdvancedOptions
     {
-        adBool deleteToRecycleBin;
-        adBool mistakeDataBase;
         adInt32 ratioResolution;
         adInt32 compareThreadCount;
         adInt32 collectThreadCount;
         adInt32 reducedImageSize;
-        adInt32 undoQueueSize;
         adInt32 resultCountMax;        
         adInt32 ignoreFrameWidth;
+		bool useImageDataBase;
     };
     typedef adAdvancedOptions* adAdvancedOptionsPtr;
 
@@ -509,6 +509,7 @@ extern "C"
         adUInt32 height;
 		double blockiness;
 		double blurring;
+		adUInt32 JpegPeaks;
 		adExifInfoA exifInfo;
     };
     typedef adImageInfoA* adImageInfoPtrA;
@@ -525,6 +526,7 @@ extern "C"
         adUInt32 height;
  		double blockiness;
 		double blurring;
+		adUInt32 jpegPeaks;
 		adExifInfoW exifInfo;
    };
     typedef adImageInfoW* adImageInfoPtrW;
@@ -556,6 +558,7 @@ extern "C"
         adHintType hint;
     };
     typedef adResultW* adResultPtrW;
+	
 
 	struct adGroup
 	{
@@ -581,6 +584,14 @@ extern "C"
 		bool SearchInSubfolder;
     };
 
+	typedef bool (__stdcall *CancellationPendingCallback)();
+
+	struct DLLAPI WorkProgressInteropNegotiator 
+	{
+		CancellationPendingCallback cancellationPending;
+		bool cancel;
+	};
+
     /*------------Functions-------------------------------------------------------*/
 
     DLLAPI adError adVersionGet(adVersionType versionType, adCharA * pVersion, adSizePtr pVersionSize);
@@ -600,6 +611,9 @@ extern "C"
     DLLAPI adError adOptionsGet(adOptionsType optionsType, void* pOptions);
     DLLAPI adError adOptionsSet(adOptionsType optionsType, void* pOptions);
 	DLLAPI adError adSetSearchOptions(void * pOptions);
+	DLLAPI adError adSetAdvancedOptions(void * pOptions);
+	DLLAPI adError adSetCompareOption(void * pOptions);
+	DLLAPI adError adSetDefectOption(void * pOptions);
 
 	/*DLLAPI adError adPathWithSubFolderSetW(adPathType pathType, adPathWSFPtr pPaths, adSize pathSize);
     DLLAPI adError adPathGetA(adPathType pathType, adPathPtrA pPath, adSizePtr pPathSize);
@@ -636,12 +650,14 @@ extern "C"
 	DLLAPI adError adImageInfoRenameA(adSize groupId, adSize index, const adCharA* newFileName);
 	DLLAPI adError adImageInfoRenameW(adSize groupId, adSize index, const adCharW* newFileName);
 
-    DLLAPI adError adLoadBitmapA(const adCharA* fileName, adBitmapPtr pBitmap);
+    //DLLAPI adError adLoadBitmapA(const adCharA* fileName, adBitmapPtr pBitmap);
     DLLAPI adError adLoadBitmapW(const adCharW* fileName, adBitmapPtr pBitmap);
 
 
 	DLLAPI unsigned int * adGetResultSize();
 	DLLAPI void adGetResult(adResultPtrW pResult, const unsigned int index);
+
+	DLLAPI adError adCalculateMultiImageMetric(adImageInfoW* pPointArray, int size, WorkProgressInteropNegotiator & negotiator);
 
     /*------------Unicode/Ansi defines-------------------------------------------*/
 

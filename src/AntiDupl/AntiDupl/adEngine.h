@@ -1,7 +1,7 @@
 /*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
 #ifndef __adEngine_h__
 #define __adEngine_h__
 
-#include "adStrings.h"
+#include "adConfig.h"
 
 namespace ad
 {
@@ -51,12 +51,11 @@ namespace ad
     {
         friend class TImageComparer;
     public:
-        TEngine(const TString & userPath); 
+        TEngine(); 
         ~TEngine();
 
         void Search();
 
-        const TString & UserPath() const { return _userPath; }
         TStatus* Status() {return m_pStatus;}
         TOptions* Options() {return m_pOptions;};
         TImageDataStorage* ImageDataStorage() {return m_pImageDataStorage;}
@@ -66,7 +65,6 @@ namespace ad
         TRecycleBin* RecycleBin() {return m_pRecycleBin;}
 
     private:
-        TString _userPath;
         TImageDataPtrs *m_pImageDataPtrs;
         TCompareManager *m_pCompareManager;
         TCollectManager *m_pCollectManager;

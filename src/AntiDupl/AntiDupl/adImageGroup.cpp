@@ -1,7 +1,7 @@
 /*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -256,18 +256,11 @@ namespace ad
 		UpdateVector();
 	}
 
-	void TImageGroupStorage::UpdateHints(TOptions *pOptions, bool force, TStatus * pStatus)
-	//void TImageGroupStorage::UpdateHints(TOptions *pOptions, bool force)
+	void TImageGroupStorage::UpdateHints(TOptions *pOptions, bool force)
 	{
-		pStatus->SetProgress(0, 0);
-		size_t current = 0, total = m_map.size();
-		//THintSetter hintSetter(pOptions);
-		//m_hintSetter_pointer = GetHintSetterPointer(pOptions);
-		THintSetter *hintSetter_pointer = THintSetterStorage::GetHintSetterPointer(pOptions);
-		//hintSetter_pointer->Load();
+		THintSetter hintSetter(pOptions);
 		for(TMap::iterator groupIt = m_map.begin(); groupIt != m_map.end(); ++groupIt)
 		{
-			pStatus->SetProgress(current++, total);
 			TImageGroupPtr pImageGroup = groupIt->second;
 			if(force || pImageGroup->invalidHint)
 			{
@@ -275,13 +268,13 @@ namespace ad
 				for(TResultPtrList::iterator resultIt = results.begin(); resultIt != results.end(); ++resultIt)
 				{
 					TResultPtr pResult = *resultIt;
-					hintSetter_pointer->Execute(pResult, results.size() == 1);
+					hintSetter.Execute(pResult, results.size() == 1);
 				}
 			}
 			pImageGroup->invalidHint = false;
 		}
-		pStatus->Reset();
 	}
+
 	
 	void TImageGroupStorage::SetGroupSize(TResultPtrVector & results)
 	{

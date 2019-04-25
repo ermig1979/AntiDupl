@@ -1,7 +1,7 @@
 /*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar, 2013-2018 Borisov Dmitry.
+* Copyright (c) 2002-2015 Yermalayeu Ihar, 2014 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ namespace ad
 {
 	class TEngine;
 }
-typedef ad::TEngine* adEngineHandle;
+typedef ad::TEngine* adHandle;
 
 #define __AD_HANDLE__
 
@@ -112,21 +112,14 @@ DLLAPI adError adVersionGet(adVersionType versionType, adCharA * pVersion, adSiz
 	return AD_OK;
 }
 
-DLLAPI adEngineHandle adCreateA(const adCharA * userPath)
+DLLAPI adHandle adCreate()
 {
     ad::DumpInit();
 
-    return new ad::TEngine(ad::TString(userPath));
+	return new ad::TEngine();
 }
 
-DLLAPI adEngineHandle adCreateW(const adCharW * userPath)
-{
-    ad::DumpInit();
-
-    return new ad::TEngine(ad::TString(userPath));
-}
-
-DLLAPI adError adRelease(adEngineHandle handle)
+DLLAPI adError adRelease(adHandle handle)
 {
     CHECK_HANDLE CHECK_ACCESS
 
@@ -135,7 +128,7 @@ DLLAPI adError adRelease(adEngineHandle handle)
     return AD_OK;
 }
 
-DLLAPI adError adStop(adEngineHandle handle)
+DLLAPI adError adStop(adHandle handle)
 {
     CHECK_HANDLE
 
@@ -147,7 +140,7 @@ DLLAPI adError adStop(adEngineHandle handle)
     return AD_OK;
 }
 
-DLLAPI adError adSearch(adEngineHandle handle)
+DLLAPI adError adSearch(adHandle handle)
 {
 	CHECK_HANDLE CHECK_ACCESS LOCK
 
@@ -156,7 +149,7 @@ DLLAPI adError adSearch(adEngineHandle handle)
 	return AD_OK;
 }
 
-template <class TChar> adError Load(adEngineHandle handle, adFileType fileType, const TChar *fileName, adBool check)
+template <class TChar> adError Load(adHandle handle, adFileType fileType, const TChar *fileName, adBool check)
 {
 	CHECK_HANDLE CHECK_ACCESS LOCK
 
@@ -181,17 +174,17 @@ template <class TChar> adError Load(adEngineHandle handle, adFileType fileType, 
 	}
 }
 
-DLLAPI adError adLoadA(adEngineHandle handle, adFileType fileType, const adCharA* fileName, adBool check)
+DLLAPI adError adLoadA(adHandle handle, adFileType fileType, const adCharA* fileName, adBool check)
 {
 	return Load(handle, fileType, fileName, check);
 }
 
-DLLAPI adError adLoadW(adEngineHandle handle, adFileType fileType, const adCharW* fileName, adBool check)
+DLLAPI adError adLoadW(adHandle handle, adFileType fileType, const adCharW* fileName, adBool check)
 {
 	return Load(handle, fileType, fileName, check);
 }
 
-template <class TChar> adError Save(adEngineHandle handle, adFileType fileType, const TChar* fileName)
+template <class TChar> adError Save(adHandle handle, adFileType fileType, const TChar* fileName)
 {
 	CHECK_HANDLE CHECK_ACCESS LOCK
 
@@ -213,17 +206,17 @@ template <class TChar> adError Save(adEngineHandle handle, adFileType fileType, 
 	}
 }
 
-DLLAPI adError adSaveA(adEngineHandle handle, adFileType fileType, const adCharA* fileName)
+DLLAPI adError adSaveA(adHandle handle, adFileType fileType, const adCharA* fileName)
 {
 	return Save(handle, fileType, fileName);
 }
 
-DLLAPI adError adSaveW(adEngineHandle handle, adFileType fileType, const adCharW* fileName)
+DLLAPI adError adSaveW(adHandle handle, adFileType fileType, const adCharW* fileName)
 {
 	return Save(handle, fileType, fileName);
 }
 
-DLLAPI adError adClear(adEngineHandle handle, adFileType fileType)
+DLLAPI adError adClear(adHandle handle, adFileType fileType)
 {
     CHECK_HANDLE CHECK_ACCESS LOCK
 
@@ -251,14 +244,14 @@ DLLAPI adError adClear(adEngineHandle handle, adFileType fileType)
     return AD_OK;
 }
 
-DLLAPI adError adOptionsGet(adEngineHandle handle, adOptionsType optionsType, void* pOptions)
+DLLAPI adError adOptionsGet(adHandle handle, adOptionsType optionsType, void* pOptions)
 {
     CHECK_HANDLE CHECK_ACCESS LOCK
 
     return handle->Options()->Export(optionsType, pOptions);
 }
 
-DLLAPI adError adOptionsSet(adEngineHandle handle, adOptionsType optionsType, void* pOptions)
+DLLAPI adError adOptionsSet(adHandle handle, adOptionsType optionsType, void* pOptions)
 {
     CHECK_HANDLE CHECK_ACCESS LOCK
 
@@ -271,7 +264,7 @@ DLLAPI adError adOptionsSet(adEngineHandle handle, adOptionsType optionsType, vo
         return handle->Options()->Import(optionsType, pOptions);
 }
 
-template <class TPathPtr> adError PathGet(adEngineHandle handle, adPathType pathType, TPathPtr pPath, adSizePtr pPathSize)
+template <class TPathPtr> adError PathGet(adHandle handle, adPathType pathType, TPathPtr pPath, adSizePtr pPathSize)
 {
 	CHECK_HANDLE CHECK_ACCESS LOCK
 
@@ -291,17 +284,17 @@ template <class TPathPtr> adError PathGet(adEngineHandle handle, adPathType path
 	}
 }
 
-DLLAPI adError adPathGetA(adEngineHandle handle, adPathType pathType, adPathPtrA pPath, adSizePtr pPathSize)
+DLLAPI adError adPathGetA(adHandle handle, adPathType pathType, adPathPtrA pPath, adSizePtr pPathSize)
 {
 	return PathGet(handle, pathType, pPath, pPathSize);
 }
 
-DLLAPI adError adPathGetW(adEngineHandle handle, adPathType pathType, adPathPtrW pPath, adSizePtr pPathSize)
+DLLAPI adError adPathGetW(adHandle handle, adPathType pathType, adPathPtrW pPath, adSizePtr pPathSize)
 {
 	return PathGet(handle, pathType, pPath, pPathSize);
 }
 
-template <class TPathPtr> adError PathSet(adEngineHandle handle, adPathType pathType, TPathPtr pPath, adSize pathSize)
+template <class TPathPtr> adError PathSet(adHandle handle, adPathType pathType, TPathPtr pPath, adSize pathSize)
 {
 	CHECK_HANDLE CHECK_ACCESS LOCK
 
@@ -321,18 +314,18 @@ template <class TPathPtr> adError PathSet(adEngineHandle handle, adPathType path
 	}
 }
 
-DLLAPI adError adPathSetA(adEngineHandle handle, adPathType pathType, adPathPtrA pPath, adSize pathSize)
+DLLAPI adError adPathSetA(adHandle handle, adPathType pathType, adPathPtrA pPath, adSize pathSize)
 {
 	return PathSet(handle, pathType, pPath, pathSize);
 }
 
-DLLAPI adError adPathSetW(adEngineHandle handle, adPathType pathType, adPathPtrW pPath, adSize pathSize)
+DLLAPI adError adPathSetW(adHandle handle, adPathType pathType, adPathPtrW pPath, adSize pathSize)
 {
 	return PathSet(handle, pathType, pPath, pathSize);
 }
 
 // pathType - тип пути, pPaths - указатель на переменную пути, pathSize - количество путей
-DLLAPI adError adPathWithSubFolderSetW(adEngineHandle handle, adPathType pathType, adPathWSFPtr pPaths, adSize pathSize)
+DLLAPI adError adPathWithSubFolderSetW(adHandle handle, adPathType pathType, adPathWSFPtr pPaths, adSize pathSize)
 {
 	CHECK_HANDLE CHECK_ACCESS LOCK
 
@@ -352,42 +345,42 @@ DLLAPI adError adPathWithSubFolderSetW(adEngineHandle handle, adPathType pathTyp
 	}
 }
 
-DLLAPI adError adStatisticGet(adEngineHandle handle, adStatisticPtr pStatistic)
+DLLAPI adError adStatisticGet(adHandle handle, adStatisticPtr pStatistic)
 {
     CHECK_HANDLE
 
     return handle->Status()->Export(pStatistic);
 }
 
-DLLAPI adError adStatusGetA(adEngineHandle handle, adThreadType threadType, adSize threadId, adStatusPtrA pStatus)
+DLLAPI adError adStatusGetA(adHandle handle, adThreadType threadType, adSize threadId, adStatusPtrA pStatus)
 {
     CHECK_HANDLE
 
     return handle->Status()->Export(threadType, threadId, pStatus);
 }
 
-DLLAPI adError adStatusGetW(adEngineHandle handle, adThreadType threadType, adSize threadId, adStatusPtrW pStatus)
+DLLAPI adError adStatusGetW(adHandle handle, adThreadType threadType, adSize threadId, adStatusPtrW pStatus)
 {
     CHECK_HANDLE
 
     return handle->Status()->Export(threadType, threadId, pStatus);
 }
 
-DLLAPI adError adResultGetA(adEngineHandle handle, adSizePtr pStartFrom, adResultPtrA pResult, adSizePtr pResultSize)
+DLLAPI adError adResultGetA(adHandle handle, adSizePtr pStartFrom, adResultPtrA pResult, adSizePtr pResultSize)
 {
     CHECK_HANDLE CHECK_ACCESS LOCK
 
     return handle->Result()->Export(pStartFrom, pResult, pResultSize);
 }
 
-DLLAPI adError adResultGetW(adEngineHandle handle, adSizePtr pStartFrom, adResultPtrW pResult, adSizePtr pResultSize)
+DLLAPI adError adResultGetW(adHandle handle, adSizePtr pStartFrom, adResultPtrW pResult, adSizePtr pResultSize)
 {
     CHECK_HANDLE CHECK_ACCESS LOCK
 
     return handle->Result()->Export(pStartFrom, pResult, pResultSize);
 }
 
-DLLAPI adError adResultSort(adEngineHandle handle, adSortType sortType, adBool increasing)
+DLLAPI adError adResultSort(adHandle handle, adSortType sortType, adBool increasing)
 {
     if(sortType < 0 || sortType >= AD_SORT_SIZE)
         return AD_ERROR_INVALID_SORT_TYPE;
@@ -399,7 +392,7 @@ DLLAPI adError adResultSort(adEngineHandle handle, adSortType sortType, adBool i
     return AD_OK;
 }
 
-DLLAPI adError adResultApply(adEngineHandle handle, adGlobalActionType globalActionType)
+DLLAPI adError adResultApply(adHandle handle, adGlobalActionType globalActionType)
 {
     CHECK_HANDLE CHECK_ACCESS LOCK
 
@@ -426,14 +419,14 @@ DLLAPI adError adResultApply(adEngineHandle handle, adGlobalActionType globalAct
     return AD_OK;
 }
 
-DLLAPI adError adResultApplyTo(adEngineHandle handle, adLocalActionType localActionType, adTargetType targetType)
+DLLAPI adError adResultApplyTo(adHandle handle, adLocalActionType localActionType, adTargetType targetType)
 {
     CHECK_HANDLE CHECK_ACCESS LOCK
 
     return handle->Result()->ApplyTo(localActionType, targetType);
 }
 
-DLLAPI adError adCanApply(adEngineHandle handle, adActionEnableType actionEnableType, adBoolPtr pEnable)
+DLLAPI adError adCanApply(adHandle handle, adActionEnableType actionEnableType, adBoolPtr pEnable)
 {
     CHECK_HANDLE CHECK_ACCESS LOCK
 
@@ -448,119 +441,119 @@ DLLAPI adError adCanApply(adEngineHandle handle, adActionEnableType actionEnable
     return AD_OK;
 }
 
-DLLAPI adError adRenameCurrentA(adEngineHandle handle, adRenameCurrentType renameCurrentType, const adCharA* newFileName)
+DLLAPI adError adRenameCurrentA(adHandle handle, adRenameCurrentType renameCurrentType, const adCharA* newFileName)
 {
     CHECK_HANDLE CHECK_ACCESS LOCK CHECK_POINTER(newFileName) 
 
     return handle->Result()->RenameCurrent(renameCurrentType, newFileName);
 }
 
-DLLAPI adError adRenameCurrentW(adEngineHandle handle, adRenameCurrentType renameCurrentType, const adCharW* newFileName)
+DLLAPI adError adRenameCurrentW(adHandle handle, adRenameCurrentType renameCurrentType, const adCharW* newFileName)
 {
     CHECK_HANDLE CHECK_ACCESS LOCK CHECK_POINTER(newFileName) 
 
     return handle->Result()->RenameCurrent(renameCurrentType, newFileName);
 }
 
-DLLAPI adError adMoveCurrentGroupW(adEngineHandle handle, const adCharW* directory)
+DLLAPI adError adMoveCurrentGroupW(adHandle handle, const adCharW* directory)
 {
     CHECK_HANDLE CHECK_ACCESS LOCK CHECK_POINTER(directory) 
 
     return handle->Result()->MoveCurrentGroup(directory);
 }
 
-DLLAPI adError adRenameCurrentGroupAsW(adEngineHandle handle, const adCharW* fileName)
+DLLAPI adError adRenameCurrentGroupAsW(adHandle handle, const adCharW* fileName)
 {
     CHECK_HANDLE CHECK_ACCESS LOCK CHECK_POINTER(fileName) 
 
     return handle->Result()->RenameCurrentGroupAs(fileName);
 }
 
-DLLAPI adError adSelectionSet(adEngineHandle handle, adSizePtr pStartFrom, adSize size, adBool value)
+DLLAPI adError adSelectionSet(adHandle handle, adSizePtr pStartFrom, adSize size, adBool value)
 {
     CHECK_HANDLE CHECK_ACCESS LOCK
 
     return handle->Result()->SetSelection(pStartFrom, size, value);
 }
 
-DLLAPI adError adSelectionGet(adEngineHandle handle, adSizePtr pStartFrom, adBoolPtr pSelection, adSizePtr pSelectionSize)
+DLLAPI adError adSelectionGet(adHandle handle, adSizePtr pStartFrom, adBoolPtr pSelection, adSizePtr pSelectionSize)
 {
     CHECK_HANDLE CHECK_ACCESS LOCK
 
     return handle->Result()->GetSelection(pStartFrom, pSelection, pSelectionSize);
 }
 
-DLLAPI adError adCurrentSet(adEngineHandle handle, adSize index)
+DLLAPI adError adCurrentSet(adHandle handle, adSize index)
 {
     CHECK_HANDLE CHECK_ACCESS LOCK
 
     return handle->Result()->SetCurrent(index);
 }
 
-DLLAPI adError adCurrentGet(adEngineHandle handle, adSizePtr pIndex)
+DLLAPI adError adCurrentGet(adHandle handle, adSizePtr pIndex)
 {
     CHECK_HANDLE CHECK_ACCESS LOCK
 
     return handle->Result()->GetCurrent(pIndex);
 }
 
-DLLAPI adError adGroupGet(adEngineHandle handle, adSizePtr pStartFrom, adGroupPtr pGroup, adSizePtr pGroupSize)
+DLLAPI adError adGroupGet(adHandle handle, adSizePtr pStartFrom, adGroupPtr pGroup, adSizePtr pGroupSize)
 {
 	CHECK_HANDLE CHECK_ACCESS LOCK
 
 	return handle->Result()->Export(pStartFrom, pGroup, pGroupSize);
 }
 
-DLLAPI adError adImageInfoGetA(adEngineHandle handle, adSize groupId, adSizePtr pStartFrom, adImageInfoPtrA pImageInfo, adSizePtr pImageInfoSize)
+DLLAPI adError adImageInfoGetA(adHandle handle, adSize groupId, adSizePtr pStartFrom, adImageInfoPtrA pImageInfo, adSizePtr pImageInfoSize)
 {
 	CHECK_HANDLE CHECK_ACCESS LOCK
 
 	return handle->Result()->Export(groupId, pStartFrom, pImageInfo, pImageInfoSize);
 }
 
-DLLAPI adError adImageInfoGetW(adEngineHandle handle, adSize groupId, adSizePtr pStartFrom, adImageInfoPtrW pImageInfo, adSizePtr pImageInfoSize)
+DLLAPI adError adImageInfoGetW(adHandle handle, adSize groupId, adSizePtr pStartFrom, adImageInfoPtrW pImageInfo, adSizePtr pImageInfoSize)
 {
 	CHECK_HANDLE CHECK_ACCESS LOCK
 
 	return handle->Result()->Export(groupId, pStartFrom, pImageInfo, pImageInfoSize);
 }
 
-DLLAPI adError adImageInfoSelectionSet(adEngineHandle handle, adSize groupId, adSize index, adSelectionType selectionType)
+DLLAPI adError adImageInfoSelectionSet(adHandle handle, adSize groupId, adSize index, adSelectionType selectionType)
 {
 	CHECK_HANDLE CHECK_ACCESS LOCK
 
 	return handle->Result()->SetSelection(groupId, index, selectionType);
 }
 
-DLLAPI adError adImageInfoSelectionGet(adEngineHandle handle, adSize groupId, adSizePtr pStartFrom, adBoolPtr pSelection, adSizePtr pSelectionSize)
+DLLAPI adError adImageInfoSelectionGet(adHandle handle, adSize groupId, adSizePtr pStartFrom, adBoolPtr pSelection, adSizePtr pSelectionSize)
 {
 	CHECK_HANDLE CHECK_ACCESS LOCK
 
 	return handle->Result()->GetSelection(groupId, pStartFrom, pSelection, pSelectionSize);
 }
 
-DLLAPI adError adImageInfoRenameA(adEngineHandle handle, adSize groupId, adSize index, const adCharA* newFileName)
+DLLAPI adError adImageInfoRenameA(adHandle handle, adSize groupId, adSize index, const adCharA* newFileName)
 {
     CHECK_HANDLE CHECK_ACCESS LOCK CHECK_POINTER(newFileName) 
 
     return handle->Result()->Rename(groupId, index, newFileName);
 }
 
-DLLAPI adError adImageInfoRenameW(adEngineHandle handle, adSize groupId, adSize index, const adCharW* newFileName)
+DLLAPI adError adImageInfoRenameW(adHandle handle, adSize groupId, adSize index, const adCharW* newFileName)
 {
     CHECK_HANDLE CHECK_ACCESS LOCK CHECK_POINTER(newFileName) 
 
     return handle->Result()->Rename(groupId, index, newFileName);
 }
 
-DLLAPI adError adLoadBitmapA(adEngineHandle handle, const adCharA* fileName, adBitmapPtr pBitmap)
+DLLAPI adError adLoadBitmapA(adHandle handle, const adCharA* fileName, adBitmapPtr pBitmap)
 {
     CHECK_HANDLE CHECK_POINTER(fileName) 
 
     return ad::LoadBitmap(fileName, pBitmap);
 }
 
-DLLAPI adError adLoadBitmapW(adEngineHandle handle, const adCharW* fileName, adBitmapPtr pBitmap)
+DLLAPI adError adLoadBitmapW(adHandle handle, const adCharW* fileName, adBitmapPtr pBitmap)
 {
     CHECK_HANDLE CHECK_POINTER(fileName)
 

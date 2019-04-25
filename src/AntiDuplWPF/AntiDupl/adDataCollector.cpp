@@ -33,6 +33,7 @@
 #include "adPixelData.h"
 #include "adBlurringDetector.h"
 
+
 namespace ad
 {
     TDataCollector::TDataCollector(TEngine *pEngine)
@@ -76,6 +77,9 @@ namespace ad
             pImageData->height = (TUInt32)pImage->View()->height; 
             pImageData->width = (TUInt32)pImage->View()->width;
             pImageData->type = (TImageType)pImage->Format();
+
+			
+			//pImageData->jpegPeaks = TDoubleJpegCompression::CalcDoubleJpegCompressionPeaks(*pImage->View());
 
 			TView gray(pImage->View()->width, pImage->View()->height, TView::Gray8, NULL);
 			Simd::BgraToGray(*pImage->View(), gray);

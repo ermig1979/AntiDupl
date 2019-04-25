@@ -51,8 +51,8 @@
 
     <v:String x:Key="mainwindow_tooltip_FileSize">Размер файла</v:String>
     <v:String x:Key="mainwindow_tooltip_Resolution">Разрешение</v:String>
-    <v:String x:Key="mainwindow_tooltip_JpegQuality">Качество JPEG</v:String>
-    <v:String x:Key="mainwindow_tooltip_Sharpness">Резкость</v:String>
+    <v:String x:Key="mainwindow_tooltip_Blockiness">Блочность 8x8</v:String>
+    <v:String x:Key="mainwindow_tooltip_Bluring">Размытие</v:String>
     <v:String x:Key="mainwindow_tooltip_Delete">Удалить</v:String>
     <v:String x:Key="mainwindow_tooltip_MoveFirstToNeighbourDirectory">Переместить первый файл в директорию соседа</v:String>
     <v:String x:Key="mainwindow_tooltip_MoveSecondToNeighbourDirectory">Переместить второй файл в директорию соседа</v:String>
@@ -92,7 +92,7 @@
     <v:String x:Key="criterion_Resolution">Разрешение</v:String>
     <v:String x:Key="criterion_LargerFileSize">Больший размер файла</v:String>
     <v:String x:Key="criterion_SmallerFileSize">Меньший размер файла</v:String>
-    <v:String x:Key="criterion_JpegQuality">Блочность JPEG</v:String>
-    <v:String x:Key="criterion_Sharpness">Резкость</v:String>
+    <v:String x:Key="criterion_Blockiness">Блочность 8x8</v:String>
+    <v:String x:Key="criterion_Bluring">Размытие</v:String>
 
 </ResourceDictionary>

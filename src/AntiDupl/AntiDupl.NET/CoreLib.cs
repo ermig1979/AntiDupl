@@ -1,7 +1,7 @@
 /*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl.NET Program.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,7 @@ namespace AntiDupl.NET
 
         //-----------Public functions----------------------------------------------
 
-        public CoreLib(string userPath)
+        public CoreLib()
         {
             try
             {
@@ -51,7 +51,7 @@ namespace AntiDupl.NET
             }
             if (Version.Compatible(GetVersion(CoreDll.VersionType.AntiDupl)))
             {
-                m_handle = m_dll.adCreateW(userPath);
+                m_handle = m_dll.adCreate();
             }
             else
                 throw new Exception("Incompatible core library version!");
@@ -496,8 +496,6 @@ namespace AntiDupl.NET
 
         //-----------Public properties----------------------------------------------
 
-        #region Public properties
-
         public CoreSearchOptions searchOptions
         {
             get
@@ -609,11 +607,9 @@ namespace AntiDupl.NET
                 SetPath(CoreDll.PathType.Delete, value);
             }
         }
-
-        #endregion
+       
 
         //-----------Private functions:--------------------------------------------
-        #region private
 
         static private string BufferToString(char[] buffer, int startIndex, int maxSize)
         {
@@ -669,7 +665,5 @@ namespace AntiDupl.NET
                 Marshal.UnsafeAddrOfPinnedArrayElement(buffer, 0),
                 new IntPtr(path.Length)) == CoreDll.Error.Ok;
         }
-
-        #endregion
     };
 }

@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
-  <Import Project="$(SolutionDir)\..\Prop.csproj" />
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -20,8 +19,7 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -41,6 +39,9 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
+    <OutputPath>..\..\..\bin\Debug</OutputPath>
+    <BaseIntermediateOutputPath>..\..\..\obj\Debug\$(AssemblyName)</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -51,6 +52,9 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
+    <OutputPath>..\..\..\bin\Release</OutputPath>
+    <BaseIntermediateOutputPath>..\..\..\obj\Release\$(AssemblyName)</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -67,7 +71,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>$(SolutionDir)\..\..\cmd\CopyData.cmd $(SolutionDir)\..\.. $(SolutionDir)\..\..\bin\$(ConfigurationName)</PostBuildEvent>
+    <PostBuildEvent>$(SolutionDir)\..\..\data\CopyData.cmd $(SolutionDir)\..\..\data $(SolutionDir)\..\..\bin\$(ConfigurationName)</PostBuildEvent>
     <PreBuildEvent>$(SolutionDir)\Antidupl.NET\External.cmd $(SolutionDir)\Antidupl.NET</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
@@ -81,16 +85,16 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form\AboutProgramForm.cs">
+    <Compile Include="AboutProgramForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GUIControl\AboutProgramPanel.cs">
+    <Compile Include="AboutProgramPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ClipboardContentBuilder.cs" />
     <Compile Include="ComparableBitmap.cs" />
     <Compile Include="Comparator.cs" />
-    <Compile Include="GUIControl\ComplexProgressBar.cs">
+    <Compile Include="ComplexProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CoreAdvancedOptions.cs" />
@@ -108,125 +112,125 @@
     <Compile Include="DynamicModule.cs" />
     <Compile Include="External.cs" />
     <Compile Include="FolderOpener.cs" />
-    <Compile Include="GUIControl\LabeledNumericUpDown.cs">
+    <Compile Include="LabeledNumericUpDown.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GUIControl\ThumbnailGroupTable.cs">
+    <Compile Include="ThumbnailGroupTable.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GUIControl\ThumbnailPreview.cs">
+    <Compile Include="ThumbnailPreview.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GUIControl\RaisedPanel.cs">
+    <Compile Include="RaisedPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GUIControl\ThumbnailGroupPanel.cs">
+    <Compile Include="ThumbnailGroupPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GUIControl\ImagePreviewContextMenu.cs">
+    <Compile Include="ImagePreviewContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GUIControl\PictureBoxPanel.cs">
+    <Compile Include="PictureBoxPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Form\ProgressForm.cs">
+    <Compile Include="ProgressForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ProgressUtils.cs" />
     <Compile Include="StringsDefaultRussian.cs" />
     <Compile Include="CoreOptions.cs" />
-    <Compile Include="Form\CoreOptionsForm.cs">
+    <Compile Include="CoreOptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form\CorePathsForm.cs">
+    <Compile Include="CorePathsForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CoreLib.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="DataGridViewCustomRow.cs" />
     <Compile Include="HotKeyOptions.cs" />
-    <Compile Include="GUIControl\ImagePreviewPanel.cs">
+    <Compile Include="ImagePreviewPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GUIControl\LabeledComboBox.cs">
+    <Compile Include="LabeledComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="DataGridViewDoubleTextBoxCell.cs" />
     <Compile Include="InitFactory.cs" />
-    <Compile Include="GUIControl\LabeledIntegerEdit.cs">
+    <Compile Include="LabeledIntegerEdit.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GUIControl\LanguageMenuItem.cs">
+    <Compile Include="LanguageMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Form\MainForm.cs">
+    <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainFormOptions.cs" />
-    <Compile Include="GUIControl\MainMenu.cs">
+    <Compile Include="MainMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GUIControl\MainToolStrip.cs">
+    <Compile Include="MainToolStrip.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GUIControl\NewVersionMenuItem.cs">
+    <Compile Include="NewVersionMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Options.cs" />
-    <Compile Include="GUIControl\ThumbnailPanel.cs">
+    <Compile Include="ThumbnailPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GUIControl\ThumbnailPreviewContextMenu.cs">
+    <Compile Include="ThumbnailPreviewContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ThumbnailStorage.cs" />
-    <Compile Include="GUIControl\ViewModeMenuItem.cs">
+    <Compile Include="ViewModeMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="ResultRowSetter.cs" />
-    <Compile Include="GUIControl\MainSplitContainer.cs">
+    <Compile Include="MainSplitContainer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GUIControl\ResultsListView.cs">
+    <Compile Include="ResultsListView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GUIControl\ResultsListViewContextMenu.cs">
+    <Compile Include="ResultsListViewContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GUIControl\MainStatusStrip.cs">
+    <Compile Include="MainStatusStrip.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ResultsOptions.cs" />
-    <Compile Include="GUIControl\ResultsPreviewBase.cs">
+    <Compile Include="ResultsPreviewBase.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GUIControl\ResultsPreviewContainer.cs">
+    <Compile Include="ResultsPreviewContainer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GUIControl\ResultsPreviewDefect.cs">
+    <Compile Include="ResultsPreviewDefect.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GUIControl\ResultsPreviewDuplPair.cs">
+    <Compile Include="ResultsPreviewDuplPair.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Form\SearchExecuterForm.cs">
+    <Compile Include="SearchExecuterForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GUIControl\ProgressPanel.cs">
+    <Compile Include="ProgressPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Form\SelectHorizontalColumnsForm.cs">
+    <Compile Include="SelectHorizontalColumnsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form\SelectHotKeysForm.cs">
+    <Compile Include="SelectHotKeysForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form\SelectVerticalColumnsForm.cs">
+    <Compile Include="SelectVerticalColumnsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form\StartFinishForm.cs">
+    <Compile Include="StartFinishForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Strings.cs" />
@@ -262,8 +266,5 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
   </ItemGroup>
 </Project>

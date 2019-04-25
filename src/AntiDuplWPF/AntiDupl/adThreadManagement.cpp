@@ -131,7 +131,7 @@ namespace ad
     size_t TCompareManager::DefaultThreadCount(size_t imageCount)
     {
         size_t threadCountMax = GetProcessorCount();
-        if(imageCount > (size_t)LARGE_IMAGE_COLLECTION_SIZE_MIN || m_pOptions->compare.transformedImage == TRUE)
+        if(imageCount > (size_t)LARGE_IMAGE_COLLECTION_SIZE_MIN || m_pOptions->compare.transformedImage)
             return threadCountMax;
         else
             return Simd::Max((size_t)1, threadCountMax/2);
@@ -141,7 +141,7 @@ namespace ad
     {
 		const adCompareOptions & compare = m_pOptions->compare;
         return 
-            compare.checkOnEquality == TRUE && pImageData->type > AD_IMAGE_NONE &&
+            compare.checkOnEquality && pImageData->type > AD_IMAGE_NONE &&
             pImageData->width >= (TUInt32)compare.minimalImageSize && pImageData->width <= (TUInt32)compare.maximalImageSize &&
             pImageData->height >= (TUInt32)compare.minimalImageSize && pImageData->height <= (TUInt32)compare.maximalImageSize;
     }
@@ -221,5 +221,72 @@ namespace ad
         }
         return threadId;
     }
+	//-------------------------------------------------------------------------
+    TDctHistogramPeakManager::TDctHistogramPeakManager(TEngine *pEngine)
+        :TThreadManager(pEngine)
+    {
+    }
+
+    TDctHistogramPeakManager::~TDctHistogramPeakManager()
+    {
+    }
+
+    void TDctHistogramPeakManager::Start(size_t imageCount)
+    {
+        size_t threadCount = GetProcessorCount();
+
+        m_pThreads = new std::vector<TThread>(threadCount);
+        m_pEngine->Status()->SetThreadCount(AD_THREAD_TYPE_COLLECT, threadCount);
+
+        for(size_t i = 0; i < threadCount; i++)
+        {
+            TThread& thread = m_pThreads->at(i);
+            thread.task = new TDctHistogramPeakTask(i, m_pEngine);
+            thread.thread = new ad::TThread(thread.task);
+            thread.thread->Resume();
+        }
+
+        m_addCounter = 0;
+    }	 
+
+	void TDctHistogramPeakManager::Add(TImageData *pImageData)
+    {
+		 if(pImageData->jpegPeaks == 0)
+        {
+            pImageData->hGlobal = LoadFileToMemory(pImageData->path.Original().c_str());
+            size_t threadId = m_addCounter%m_pThreads->size();
+            m_pThreads->at(threadId).task->Queue()->Push(pImageData, threadId);
+            m_pEngine->Status()->Assign(AD_THREAD_TYPE_COLLECT, threadId);
+        }
+        else
+        {
+			TDefectType defect = pImageData->GetDefect(m_pOptions);
+			if(defect > AD_DEFECT_NONE)
+				m_pEngine->Result()->AddDefectImage(pImageData, defect);
+            //pImageData->FillOther(m_pOptions);
+            //m_pCompareManager->Add(pImageData);
+        }
+	}
+
+   // void TDctHistogramPeakManager::Add(adImageInfoW pImageInfo)
+   // {
+   //     if(NeedCompute(pImageInfo))
+   //     {
+   //         pImageData->hGlobal = LoadFileToMemory(pImageInfo->path.Original().c_str());
+   //         size_t threadId = GetThreadId();
+   //         m_pThreads->at(threadId).task->Queue()->Push(pImageData, threadId);
+   //         m_pEngine->Status()->Assign(AD_THREAD_TYPE_COLLECT, threadId);
+   //     }
+   //     else
+   //     {
+			//TDefectType defect = pImageData->GetDefect(m_pOptions);
+			//if(defect > AD_DEFECT_NONE)
+			//	m_pEngine->Result()->AddDefectImage(pImageData, defect);
+   //         pImageData->FillOther(m_pOptions);
+   //         m_pCompareManager->Add(pImageData);
+   //     }
+   // }
+
+
     //-------------------------------------------------------------------------
 }

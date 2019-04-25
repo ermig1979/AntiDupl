@@ -1,7 +1,7 @@
 /*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -276,9 +276,9 @@ namespace ad
 		groups.Update(results);
     }
 
-    void TUndoRedoStage::UpdateHints(TOptions *pOptions, bool force, TStatus *pStatus)
+    void TUndoRedoStage::UpdateHints(TOptions *pOptions, bool force)
     {
-		groups.UpdateHints(pOptions, force, pStatus);
+		groups.UpdateHints(pOptions, force);
     }
 
     void TUndoRedoStage::UpdateCurrentIndex()
@@ -294,7 +294,7 @@ namespace ad
         }
     }
 
-	// Удаление неправильных результатов из списка результатов и сохранение состояния.
+	// Удаление неправильных результатов из списка результатов.
     template <class TValidator> void TUndoRedoStage::RemoveInvalid(const TValidator &validator, TStatus *pStatus, bool canCancel)
     {
         pStatus->SetProgress(0, 0);

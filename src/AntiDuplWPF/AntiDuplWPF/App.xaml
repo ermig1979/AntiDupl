@@ -2,6 +2,12 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Style\Default.xaml" />
+                <!--<ResourceDictionary Source="pack://application:,,,/AntiDuplWPF;component/Style/Default.xaml"/>-->
+                <ResourceDictionary Source="/AntiDuplWPF;component/Control/SearchControlTheme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

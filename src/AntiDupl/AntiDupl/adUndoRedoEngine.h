@@ -1,7 +1,7 @@
 /*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,6 @@ namespace ad
     class TStatus;
     class TMistakeStorage;
     class TImageInfoStorage;
-	class TStatisticsOfDeleting;
 
     typedef TUndoRedoStage* TUndoRedoStagePtr;
     typedef std::deque<TUndoRedoStagePtr> TUndoRedoStagePtrDeque;
@@ -56,7 +55,7 @@ namespace ad
         bool Undo();
         bool Redo();
 
-        bool UndoEnable() const {return !m_pUndoDeque->empty();} // A read-only function
+        bool UndoEnable() const {return !m_pUndoDeque->empty();}
         bool RedoEnable() const {return !m_pRedoDeque->empty();}
 
         void Clear();
@@ -87,7 +86,6 @@ namespace ad
         TStatus *m_pStatus;
         TMistakeStorage *m_pMistakeStorage;
         TImageInfoStorage *m_pImageInfoStorage;
-		TStatisticsOfDeleting *m_pStatisticsOfDeleting;
 
         TUndoRedoStagePtrDeque *m_pUndoDeque;
         TUndoRedoStagePtrDeque *m_pRedoDeque;

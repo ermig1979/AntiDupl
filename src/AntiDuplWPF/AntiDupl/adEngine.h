@@ -38,10 +38,10 @@ namespace ad
     class TStatus;
     class TResultStorage;
     class TImageDataStorage;
-    class TMistakeStorage;
     class TImageDataPtrList;
     class TCompareManager;
     class TCollectManager;
+	class TDctHistogramPeakManager;
     class TSearcher;
 	class TCriticalSection;
 
@@ -55,11 +55,11 @@ namespace ad
         ~TEngine();
 
         void Search();
+		void CalculateHistogramPeaks(adImageInfoW* pPointArray, int size, WorkProgressInteropNegotiator & negotiator);
 
         TStatus* Status() {return m_pStatus;}
         TOptions* Options() {return m_pOptions;};
         TImageDataStorage* ImageDataStorage() {return m_pImageDataStorage;}
-        TMistakeStorage* MistakeStorage() {return m_pMistakeStorage;}
         TResultStorage* Result() {return m_pResult;}
         TCriticalSection* CriticalSection() {return m_pCriticalSection;}
 
@@ -67,11 +67,11 @@ namespace ad
         TImageDataPtrs *m_pImageDataPtrs;
         TCompareManager *m_pCompareManager;
         TCollectManager *m_pCollectManager;
+		TDctHistogramPeakManager *m_pDctHistogramPeakManager;
         TStatus *m_pStatus;
         TOptions *m_pOptions;
         TResultStorage *m_pResult;
         TImageDataStorage *m_pImageDataStorage;
-        TMistakeStorage *m_pMistakeStorage;
         TCriticalSection *m_pCriticalSection;
         TInit *m_pInit;
         TSearcher *m_pSearcher;

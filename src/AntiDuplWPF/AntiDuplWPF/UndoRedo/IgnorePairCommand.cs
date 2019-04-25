@@ -17,16 +17,17 @@ namespace AntiDuplWPF.UndoRedo
         IEditableCollectionView _collectionView;
 
         DuplPairViewModel _ignoredResult;
-        int _index;
+        //int _index;
+        int _currentPosition;
         string _description;
 
         public IgnorePairCommand(ObservableCollection<DuplPairViewModel> resultList, IEditableCollectionView collectionView,
-            List<DuplPairViewModel> ignoreList, int index)
+            List<DuplPairViewModel> ignoreList)
         {
             _resultList = resultList;
             _collectionView = collectionView;
             _ignoreList = ignoreList;
-            _index = index;
+            //_index = index;
             //_dispatcher = dispatcher;
         }
 
@@ -34,10 +35,11 @@ namespace AntiDuplWPF.UndoRedo
         {
             // _index = ((ICollectionView)_collectionView).CurrentPosition;
             //_collectionView.EditItem(_resultList[_index]);
-            _ignoredResult = _resultList[_index];
+            _currentPosition = ((ICollectionView)_collectionView).CurrentPosition;
+            _ignoredResult = _resultList[_currentPosition];
             //_dispatcher.Invoke(() =>
             //{
-            _resultList.RemoveAt(_index);
+            _resultList.RemoveAt(_currentPosition);
             //});
             _ignoreList.Add(_ignoredResult);
             //_collectionView.Refresh();
@@ -52,9 +54,9 @@ namespace AntiDuplWPF.UndoRedo
         public bool UnExecute()
         {
             //_collectionView
-            _resultList.Insert(_index, _ignoredResult);
+            _resultList.Insert(_currentPosition, _ignoredResult);
             _ignoreList.Remove(_ignoredResult);
-            ((ICollectionView)_collectionView).MoveCurrentToPosition(_index);
+            ((ICollectionView)_collectionView).MoveCurrentToPosition(_currentPosition);
             //_collectionView.CommitEdit();
             //_collectionView.CommitNew();
             //_collectionView.Refresh();

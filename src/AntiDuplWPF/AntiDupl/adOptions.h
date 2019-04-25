@@ -77,6 +77,7 @@ namespace ad
         adError Export(adOptionsType optionsType, void* pOptions) const;
 
         int GetIgnoreWidthFrame() const;
+		const ad::TString GetImageDataBasePath() const;
 
     private:
         typedef std::list<TOption> TOptionsList;

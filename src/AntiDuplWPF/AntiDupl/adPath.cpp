@@ -167,10 +167,14 @@ namespace ad
 		}
 		if(*p1 == 0 && *p2 == 0)
 			return EQUAL; 
+		//if(*p1 == 0 && *p2 != 0 && path1.m_enableSubFolder == true)
+		//	return SECOND; //второй путь входит в первый
+		//if(*p2 == 0 && *p1 != 0 && path2.m_enableSubFolder == true)
+		//	return FIRST;  //первый путь входит во второй
 		if(*p1 == 0 && *p2 == DELIMETER && path1.m_enableSubFolder == true) //если второй начинается со слеша и включены субдиректории
 			return SECOND; //второй путь входит в первый
 		if(*p2 == 0 && *p1 == DELIMETER && path2.m_enableSubFolder == true)
-			return FIRST;  //первая входит во вторую
+			return FIRST;  //первый путь входит во второй
 		return NONE;
 	}
 

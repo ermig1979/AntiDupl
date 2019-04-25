@@ -28,7 +28,7 @@ namespace AntiDuplWPF.ViewModel
         ObservableCollection<DuplPairViewModel> _resultList;
         IEditableCollectionView _collectionView;
 
-        WindowService _windowService;
+        IWindowService _windowService;
         IUndoRedoEngine _undoRedoEngine;
 
         LinkedList<ImageInfoClass> _list;
@@ -43,7 +43,7 @@ namespace AntiDuplWPF.ViewModel
             get { return _configuration; }
         }
 
-        public ComparatorViewModel(IUndoRedoEngine undoRedoEngine, WindowService windowService,
+        public ComparatorViewModel(IUndoRedoEngine undoRedoEngine, IWindowService windowService,
            IConfigurationModel configuration)
         {
             _undoRedoEngine = undoRedoEngine;
@@ -52,7 +52,7 @@ namespace AntiDuplWPF.ViewModel
         }
 
         public ComparatorViewModel(DuplicateGroup group, ObservableCollection<DuplicateGroup> groups,
-            ICollectionView groupsView, IUndoRedoEngine undoRedoEngine, WindowService windowService,
+            ICollectionView groupsView, IUndoRedoEngine undoRedoEngine, IWindowService windowService,
             IConfigurationModel configuration)
             : this(undoRedoEngine, windowService, configuration)
         {
@@ -68,7 +68,7 @@ namespace AntiDuplWPF.ViewModel
         }
 
         public ComparatorViewModel(DuplPairViewModel result, ObservableCollection<DuplPairViewModel> resultList,
-            IEditableCollectionView collectionView, IUndoRedoEngine undoRedoEngine, WindowService windowService,
+            IEditableCollectionView collectionView, IUndoRedoEngine undoRedoEngine, IWindowService windowService,
             IConfigurationModel configuration)
             : this(undoRedoEngine, windowService, configuration)
         {

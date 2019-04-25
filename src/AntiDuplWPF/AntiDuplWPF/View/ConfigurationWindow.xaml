@@ -1,7 +1,36 @@
 ﻿<Window x:Class="AntiDuplWPF.View.ConfigurationWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:behavior="clr-namespace:AntiDuplWPF.Behavior"
+        xmlns:core="clr-namespace:AntiDuplWPF.Core"
         Title="ConfigurationWindow" Height="300" Width="300">
+
+    <Window.Resources>
+        <ObjectDataProvider x:Key="algorithms" 
+                            MethodName="GetValues"
+                            ObjectType="{x:Type system:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="core:AlgorithmComparing"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+        <Style x:Key="SomeButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid Background="{TemplateBinding Background}">
+                            <ContentPresenter />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+
     <TabControl >
         <TabItem Header="Main">
             <StackPanel>
@@ -11,6 +40,23 @@
                 <TextBox Text="{Binding Configuration.MaxCachedThumbnail, UpdateSourceTrigger=PropertyChanged}"/>
                 <CheckBox Content="{DynamicResource configurationWindow_SaveResultInCurrentFile}"
                     IsChecked="{Binding Configuration.SaveResultInCurrentFile, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Content="{DynamicResource configurationWindow_GoodColor}" />
+                <Button Height="20"
+                        Command="{Binding ChangeGoodColorCommand}"                        
+                        Style="{StaticResource SomeButtonStyle}">
+                    <Button.Background>
+                        <SolidColorBrush Color="{Binding Configuration.GoodColor, UpdateSourceTrigger=PropertyChanged}" />
+                    </Button.Background>
+                </Button>
+                <Label Content="{DynamicResource configurationWindow_BadColor}" />
+                <Button Height="20"
+                        Command="{Binding ChangeBadColorCommand}"                        
+                        Style="{StaticResource SomeButtonStyle}">
+                    <Button.Background>
+                        <SolidColorBrush Color="{Binding Configuration.BadColor, UpdateSourceTrigger=PropertyChanged}" />
+                    </Button.Background>
+                </Button>
             </StackPanel>
         </TabItem>
         <TabItem Header="SearchOption">
@@ -22,7 +68,115 @@
         <TabItem Header="CompareOption">
             <StackPanel>
                 <CheckBox Content="CheckOnEquality" IsChecked="{Binding Option.CompareOptions.CheckOnEquality}"/>
-                <CheckBox Content="hidden" IsChecked="{Binding Option.SearchOptions.Hidden}"/>
+                <CheckBox Content="TransformedImage" IsChecked="{Binding Option.CompareOptions.TransformedImage}"/>
+                <CheckBox Content="SizeControl" IsChecked="{Binding Option.CompareOptions.SizeControl}"/>
+                <CheckBox Content="TypeControl" IsChecked="{Binding Option.CompareOptions.TypeControl}"/>
+                <CheckBox Content="RatioControl" IsChecked="{Binding Option.CompareOptions.RatioControl}"/>
+                <ComboBox ItemsSource="{Binding Source={StaticResource algorithms}}"
+                                  SelectedItem="{Binding Path=Option.CompareOptions.AlgorithmComparing}" />
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="ThresholdDifference" />
+                    <TextBox Text="{Binding Option.CompareOptions.ThresholdDifference, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Behaviors>
+                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="3" />
+                        </i:Interaction.Behaviors>
+                    </TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="MinimalImageSize" />
+                    <TextBox Text="{Binding Option.CompareOptions.MinimalImageSize, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Behaviors>
+                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
+                        </i:Interaction.Behaviors>
+                    </TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="MaximalImageSize" />
+                    <TextBox Text="{Binding Option.CompareOptions.MaximalImageSize, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Behaviors>
+                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
+                        </i:Interaction.Behaviors>
+                    </TextBox>
+                </StackPanel>
+                <CheckBox Content="CompareInsideOneFolder" IsChecked="{Binding Option.CompareOptions.CompareInsideOneFolder}"/>
+                <CheckBox Content="CompareInsideOneSearchPath" IsChecked="{Binding Option.CompareOptions.CompareInsideOneSearchPath}"/>
+            </StackPanel>
+        </TabItem>
+        <TabItem Header="AdvancedOption">
+            <StackPanel>
+                <CheckBox Content="UseImageDataBase" IsChecked="{Binding Option.AdvancedOptions.UseImageDataBase}"/>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="RatioResolution" />
+                    <TextBox Text="{Binding Option.AdvancedOptions.RatioResolution, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Behaviors>
+                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
+                        </i:Interaction.Behaviors>
+                    </TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="CompareThreadCount" />
+                    <TextBox Text="{Binding Option.AdvancedOptions.CompareThreadCount, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Behaviors>
+                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
+                        </i:Interaction.Behaviors>
+                    </TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="CollectThreadCount" />
+                    <TextBox Text="{Binding Option.AdvancedOptions.CollectThreadCount, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Behaviors>
+                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
+                        </i:Interaction.Behaviors>
+                    </TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="ReducedImageSize" />
+                    <TextBox Text="{Binding Option.AdvancedOptions.ReducedImageSize, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Behaviors>
+                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
+                        </i:Interaction.Behaviors>
+                    </TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="ResultCountMax" />
+                    <TextBox Text="{Binding Option.AdvancedOptions.ResultCountMax, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Behaviors>
+                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
+                        </i:Interaction.Behaviors>
+                    </TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="IgnoreFrameWidth" />
+                    <TextBox Text="{Binding Option.AdvancedOptions.IgnoreFrameWidth, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Behaviors>
+                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
+                        </i:Interaction.Behaviors>
+                    </TextBox>
+                </StackPanel>                
+            </StackPanel>
+        </TabItem>
+        <TabItem Header="DefectOption">
+            <StackPanel>
+                <CheckBox Content="CheckOnDefect" IsChecked="{Binding Option.DefectOptions.CheckOnDefect}"/>
+                <CheckBox Content="CheckOnBlockiness" IsChecked="{Binding Option.DefectOptions.CheckOnBlockiness}"/>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="BlockinessThreshold" />
+                    <TextBox Text="{Binding Option.DefectOptions.BlockinessThreshold, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Behaviors>
+                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="3" />
+                        </i:Interaction.Behaviors>
+                    </TextBox>
+                </StackPanel>
+                <CheckBox Content="CheckOnBlockinessOnlyNotJpeg" IsChecked="{Binding Option.DefectOptions.CheckOnBlockinessOnlyNotJpeg}"/>
+                <CheckBox Content="CheckOnBlurring" IsChecked="{Binding Option.DefectOptions.CheckOnBlurring}"/>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="BlurringThreshold" />
+                    <TextBox Text="{Binding Option.DefectOptions.BlurringThreshold, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Behaviors>
+                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="3" />
+                        </i:Interaction.Behaviors>
+                    </TextBox>
+                </StackPanel>
             </StackPanel>
         </TabItem>
     </TabControl>

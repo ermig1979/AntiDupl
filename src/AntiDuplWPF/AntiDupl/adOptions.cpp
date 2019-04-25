@@ -25,6 +25,8 @@
 #include "adFileUtils.h"
 #include "adOptions.h"
 
+#include <strsafe.h>
+
 namespace ad
 {
     //----------------Default values:--------------------------------------------
@@ -84,32 +86,32 @@ namespace ad
         m_options.push_back(TOption(&search.JP2, TEXT("SearchOptions"), TEXT("JP2"), TRUE, FALSE, TRUE));
         m_options.push_back(TOption(&search.PSD, TEXT("SearchOptions"), TEXT("PSD"), TRUE, FALSE, TRUE));*/
 
-        m_options.push_back(TOption(&compare.checkOnEquality, TEXT("CompareOptions"), TEXT("CheckOnEquality"), TRUE, FALSE, TRUE));
-        m_options.push_back(TOption(&compare.transformedImage, TEXT("CompareOptions"), TEXT("TransformedImage"), FALSE, FALSE, TRUE));
-        m_options.push_back(TOption(&compare.sizeControl, TEXT("CompareOptions"), TEXT("SizeControl"), FALSE, FALSE, TRUE));
-        m_options.push_back(TOption(&compare.typeControl, TEXT("CompareOptions"), TEXT("TypeControl"), FALSE, FALSE, TRUE));
-        m_options.push_back(TOption(&compare.ratioControl, TEXT("CompareOptions"), TEXT("RatioControl"), TRUE, FALSE, TRUE));
+        //m_options.push_back(TOption(&compare.checkOnEquality, TEXT("CompareOptions"), TEXT("CheckOnEquality"), TRUE, FALSE, TRUE));
+        //m_options.push_back(TOption(&compare.transformedImage, TEXT("CompareOptions"), TEXT("TransformedImage"), FALSE, FALSE, TRUE));
+        //m_options.push_back(TOption(&compare.sizeControl, TEXT("CompareOptions"), TEXT("SizeControl"), FALSE, FALSE, TRUE));
+        //m_options.push_back(TOption(&compare.typeControl, TEXT("CompareOptions"), TEXT("TypeControl"), FALSE, FALSE, TRUE));
+        //m_options.push_back(TOption(&compare.ratioControl, TEXT("CompareOptions"), TEXT("RatioControl"), TRUE, FALSE, TRUE));
         m_options.push_back(TOption(&compare.thresholdDifference, TEXT("CompareOptions"), TEXT("ThresholdDifference"), 5, 0, 50));
         m_options.push_back(TOption(&compare.minimalImageSize, TEXT("CompareOptions"), TEXT("MinimalImageSize"), 64, 0, INT_MAX));
 		m_options.push_back(TOption(&compare.maximalImageSize, TEXT("CompareOptions"), TEXT("MaximalImageSize"), 8196, 0, INT_MAX));
-        m_options.push_back(TOption(&compare.compareInsideOneFolder, TEXT("CompareOptions"), TEXT("CompareInsideOneFolder"), TRUE, FALSE, TRUE));
-		m_options.push_back(TOption(&compare.compareInsideOneSearchPath, TEXT("CompareOptions"), TEXT("CompareInsideOneSearchPath"), TRUE, FALSE, TRUE));
+        //m_options.push_back(TOption(&compare.compareInsideOneFolder, TEXT("CompareOptions"), TEXT("CompareInsideOneFolder"), TRUE, FALSE, TRUE));
+		//m_options.push_back(TOption(&compare.compareInsideOneSearchPath, TEXT("CompareOptions"), TEXT("CompareInsideOneSearchPath"), TRUE, FALSE, TRUE));
 		m_options.push_back(TOption((int*)&compare.algorithmComparing, TEXT("CompareOptions"), TEXT("AlgorithmOfComparing"), AD_COMPARING_SQUARED_SUM, 0, AD_COMPARING_SIZE));
 
-        m_options.push_back(TOption(&defect.checkOnDefect, TEXT("DefectOptions"), TEXT("CheckOnDefect"), TRUE, FALSE, TRUE));
-        m_options.push_back(TOption(&defect.checkOnBlockiness, TEXT("DefectOptions"), TEXT("CheckOnBlockiness"), FALSE, FALSE, TRUE));
+        //m_options.push_back(TOption(&defect.checkOnDefect, TEXT("DefectOptions"), TEXT("CheckOnDefect"), TRUE, FALSE, TRUE));
+        //m_options.push_back(TOption(&defect.checkOnBlockiness, TEXT("DefectOptions"), TEXT("CheckOnBlockiness"), FALSE, FALSE, TRUE));
         m_options.push_back(TOption(&defect.blockinessThreshold, TEXT("DefectOptions"), TEXT("BlockinessThreshold"), 10, 0, 100));
-		m_options.push_back(TOption(&defect.checkOnBlockinessOnlyNotJpeg, TEXT("DefectOptions"), TEXT("CheckOnBlockinessOnlyNotJpeg"), FALSE, FALSE, TRUE));
-        m_options.push_back(TOption(&defect.checkOnBlurring, TEXT("DefectOptions"), TEXT("CheckOnBlurring"), FALSE, FALSE, TRUE));
+		//m_options.push_back(TOption(&defect.checkOnBlockinessOnlyNotJpeg, TEXT("DefectOptions"), TEXT("CheckOnBlockinessOnlyNotJpeg"), FALSE, FALSE, TRUE));
+        //m_options.push_back(TOption(&defect.checkOnBlurring, TEXT("DefectOptions"), TEXT("CheckOnBlurring"), FALSE, FALSE, TRUE));
         m_options.push_back(TOption(&defect.blurringThreshold, TEXT("DefectOptions"), TEXT("BlurringThreshold"), 4, 0, 128));
 
-        m_options.push_back(TOption(&advanced.deleteToRecycleBin, TEXT("AdvancedOptions"), TEXT("DeleteToRecycleBin"), TRUE, FALSE, TRUE));
-        m_options.push_back(TOption(&advanced.mistakeDataBase, TEXT("AdvancedOptions"), TEXT("MistakeDataBase"), TRUE, FALSE, TRUE));
+        //m_options.push_back(TOption(&advanced.deleteToRecycleBin, TEXT("AdvancedOptions"), TEXT("DeleteToRecycleBin"), TRUE, FALSE, TRUE));
+        //m_options.push_back(TOption(&advanced.mistakeDataBase, TEXT("AdvancedOptions"), TEXT("MistakeDataBase"), TRUE, FALSE, TRUE));
         m_options.push_back(TOption(&advanced.ratioResolution, TEXT("AdvancedOptions"), TEXT("RatioResolution"), 32, 8, 128));
         m_options.push_back(TOption(&advanced.compareThreadCount, TEXT("AdvancedOptions"), TEXT("CompareThreadCount"), 0, 0, 256));
         m_options.push_back(TOption(&advanced.collectThreadCount, TEXT("AdvancedOptions"), TEXT("CollectThreadCount"), 0, 0, 256));
         m_options.push_back(TOption(&advanced.reducedImageSize, TEXT("AdvancedOptions"), TEXT("ReducedImageSize"), 32, REDUCED_IMAGE_SIZE_MIN, INITIAL_REDUCED_IMAGE_SIZE >> 1));
-        m_options.push_back(TOption(&advanced.undoQueueSize, TEXT("AdvancedOptions"), TEXT("UndoQueueSize"), 10, 0, 16));
+        //m_options.push_back(TOption(&advanced.undoQueueSize, TEXT("AdvancedOptions"), TEXT("UndoQueueSize"), 10, 0, 16));
         m_options.push_back(TOption(&advanced.resultCountMax, TEXT("AdvancedOptions"), TEXT("ResultCountMax"), 100000, 1, INT_MAX));
         m_options.push_back(TOption(&advanced.ignoreFrameWidth, TEXT("AdvancedOptions"), TEXT("IgnoreFrameWidth"), 0, 0, 12));
 
@@ -200,5 +202,38 @@ namespace ad
     {
         return (int)ceil(advanced.reducedImageSize*advanced.ignoreFrameWidth/double(DENOMINATOR));
     }
+
+	
+	TCHAR * GetProgramPath(TCHAR *buffer, int maxlen)
+    {
+        assert(buffer != NULL);
+        int len;
+        if ((len = GetModuleFileName(NULL, buffer, maxlen)) == 0)
+            return NULL;
+        if (len == maxlen)
+            return NULL;
+        while (buffer[--len] != '\\');
+        buffer[len] = '\0';
+        return buffer;
+    }
+
+	const ad::TString TOptions::GetImageDataBasePath() const
+	{
+		TCHAR tszFileName[MAX_PATH] = {0};
+        TCHAR tszPath[MAX_PATH] = {0};
+        GetProgramPath(tszPath, MAX_PATH);
+
+        StringCbPrintf(tszFileName, 
+            _countof(tszFileName), 
+            _T("%s\\images\\%02dx%02d"), 
+            tszPath, 
+            advanced.reducedImageSize, 
+            advanced.reducedImageSize);
+
+		CreatePathTo(tszFileName);
+
+		return tszFileName;
+	}
+
     //---------------------------------------------------------------------------
 }

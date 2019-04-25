@@ -31,6 +31,7 @@ namespace ad
         type = AD_IMAGE_UNDEFINE;
         width = 0;
         height = 0;
+		jpegPeaks = 0;
 		blockiness = -1.0;
 		blurring = -1.0;
 		imageExif;
@@ -53,6 +54,7 @@ namespace ad
         type = imageInfo.type;
         width = imageInfo.width;
         height = imageInfo.height;
+		jpegPeaks = imageInfo.jpegPeaks;
 		blockiness = imageInfo.blockiness;
 		blurring = imageInfo.blurring;
 		imageExif = imageInfo.imageExif;
@@ -99,6 +101,7 @@ namespace ad
         pImageInfo->height = height;
 		pImageInfo->blockiness = blockiness;
 		pImageInfo->blurring = blurring;
+		pImageInfo->jpegPeaks = jpegPeaks;
 		imageExif.Export(&pImageInfo->exifInfo);
 
         return true;

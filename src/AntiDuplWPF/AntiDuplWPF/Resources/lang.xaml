@@ -51,8 +51,8 @@
 
     <v:String x:Key="mainwindow_tooltip_FileSize">File size</v:String>
     <v:String x:Key="mainwindow_tooltip_Resolution">Resolution</v:String>
-    <v:String x:Key="mainwindow_tooltip_JpegQuality">Jpeg quality</v:String>
-    <v:String x:Key="mainwindow_tooltip_Sharpness">Sharpness</v:String>
+    <v:String x:Key="mainwindow_tooltip_Blockiness">Blockiness</v:String>
+    <v:String x:Key="mainwindow_tooltip_Bluring">Bluring</v:String>
     <v:String x:Key="mainwindow_tooltip_Delete">Delete</v:String>
     <v:String x:Key="mainwindow_tooltip_MoveFirstToNeighbourDirectory">Move first file to neighbour directory</v:String>
     <v:String x:Key="mainwindow_tooltip_MoveSecondToNeighbourDirectory">Move second file to neighbour directory</v:String>
@@ -92,6 +92,6 @@
     <v:String x:Key="criterion_Resolution">Resolution</v:String>
     <v:String x:Key="criterion_LargerFileSize">LargerFileSize</v:String>
     <v:String x:Key="criterion_SmallerFileSize">SmallerFileSize</v:String>
-    <v:String x:Key="criterion_JpegQuality">JpegQuality</v:String>
-    <v:String x:Key="criterion_Sharpness">Sharpness</v:String>
+    <v:String x:Key="criterion_Blockiness">Blockiness</v:String>
+    <v:String x:Key="criterion_Bluring">Bluring</v:String>
 </ResourceDictionary>

@@ -24,5 +24,6 @@ namespace AntiDuplWPF.Model
         Brush AlternateBrush { get; }
 
         void Save();
+        ObservableCollection<Criterion> GetDefaultCriterions();
     }
 }

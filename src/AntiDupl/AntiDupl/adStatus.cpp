@@ -1,7 +1,7 @@
 /*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -125,6 +125,10 @@ namespace ad
         if(threadType < AD_THREAD_TYPE_MAIN || threadType >= AD_THREAD_TYPE_SIZE)            
             return AD_ERROR_INVALID_THREAD_TYPE;
 
+        if((threadType == AD_THREAD_TYPE_COLLECT || threadId >= m_collectThreadStatuses.size()) ||
+           (threadType == AD_THREAD_TYPE_COMPARE || threadId >= m_compareThreadStatuses.size()))
+            return AD_ERROR_INVALID_THREAD_ID;
+
         TCriticalSection::TLocker locker(&m_criticalSection);
 
         switch(threadType)
@@ -136,9 +140,9 @@ namespace ad
             pStatus->total = m_total;
             break;
         case AD_THREAD_TYPE_COLLECT:
-            return threadId < m_collectThreadStatuses.size() ? m_collectThreadStatuses[threadId].Export(pStatus) : AD_ERROR_INVALID_THREAD_ID;
+            return m_collectThreadStatuses[threadId].Export(pStatus);
         case AD_THREAD_TYPE_COMPARE:
-            return threadId < m_compareThreadStatuses.size() ? m_compareThreadStatuses[threadId].Export(pStatus) : AD_ERROR_INVALID_THREAD_ID;
+            return m_compareThreadStatuses[threadId].Export(pStatus);
         }
 
         return AD_OK;
@@ -152,6 +156,10 @@ namespace ad
         if(threadType < AD_THREAD_TYPE_MAIN || threadType >= AD_THREAD_TYPE_SIZE)            
             return AD_ERROR_INVALID_THREAD_TYPE;
 
+        if( (threadType == AD_THREAD_TYPE_COLLECT && threadId >= m_collectThreadStatuses.size()) ||
+            (threadType == AD_THREAD_TYPE_COMPARE && threadId >= m_compareThreadStatuses.size()))
+            return AD_ERROR_INVALID_THREAD_ID;
+
         TCriticalSection::TLocker locker(&m_criticalSection);
 
         switch(threadType)
@@ -163,9 +171,9 @@ namespace ad
             pStatus->total = m_total;
             break;
         case AD_THREAD_TYPE_COLLECT:
-            return threadId < m_collectThreadStatuses.size() ? m_collectThreadStatuses[threadId].Export(pStatus) : AD_ERROR_INVALID_THREAD_ID;
+            return m_collectThreadStatuses[threadId].Export(pStatus);
         case AD_THREAD_TYPE_COMPARE:
-            return threadId < m_compareThreadStatuses.size() ? m_compareThreadStatuses[threadId].Export(pStatus) : AD_ERROR_INVALID_THREAD_ID;
+            return m_compareThreadStatuses[threadId].Export(pStatus);
         }
 
         return AD_OK;

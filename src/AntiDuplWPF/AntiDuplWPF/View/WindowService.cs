@@ -21,6 +21,8 @@ namespace AntiDuplWPF.View
             }
         }
 
+        //public Window MainWindow { get; set; }
+
         public ProgressDialogViewModel OpenProgressWindow(ProgressDialogViewModel vm)
         {
             //var vm = new ProgressDialogViewModel(mainViewModel);
@@ -29,25 +31,36 @@ namespace AntiDuplWPF.View
 
             bool? result = null;
 
-            Window activeWindow = ActiveWindow;
-            if (activeWindow == null)
+            if (ActiveWindow == null)
                 throw new NullReferenceException("ActiveWindow");
 
-            //Application.Current.Dispatcher.Invoke(() =>
+            Window activeWindow = ActiveWindow;
+            if (activeWindow != null)
+            {
+                //throw new NullReferenceException("ActiveWindow");
+
+                //Application.Current.Dispatcher.Invoke(() =>
+                //{
+                //Window activeWindow2 = ActiveWindow;
+
+                _viewOfProgress = new ProgressDialog();
+                _viewOfProgress.Owner = activeWindow;
+                _viewOfProgress.DataContext = vm;
+                _viewOfProgress.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                ApplyEffect(_viewOfProgress.Owner);
+                result = _viewOfProgress.ShowDialog();
+                ClearEffect(_viewOfProgress.Owner);
+                //}, DispatcherPriority.Normal);
+
+                //view.Activated += (a, b) => { vm.Load(); };
+                //view.Closed += (a, b) => { vm.Dispose(); };
+            }
+            //else
             //{
-            //Window activeWindow2 = ActiveWindow;
-
-            _viewOfProgress = new ProgressDialog();
-            _viewOfProgress.Owner = activeWindow;
-            _viewOfProgress.DataContext = vm;
-            _viewOfProgress.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            ApplyEffect(_viewOfProgress.Owner);
-            result = _viewOfProgress.ShowDialog();
-            ClearEffect(_viewOfProgress.Owner);
-            //}, DispatcherPriority.Normal);
-
-            //view.Activated += (a, b) => { vm.Load(); };
-            //view.Closed += (a, b) => { vm.Dispose(); };
+            //    _viewOfProgress = new ProgressDialog();
+            //    _viewOfProgress.DataContext = vm;
+            //    result = _viewOfProgress.ShowDialog();
+            //}
 
             return result == true ? vm : null;
         }
@@ -114,6 +127,31 @@ namespace AntiDuplWPF.View
             ClearEffect(view.Owner);
         }
 
+        public bool? ShowDialogWindow<T>(CloseableViewModel dataContext) where T : Window, new()
+        {
+            bool? result = null;
+
+            Window activeWindow = ActiveWindow;
+            if (activeWindow == null)
+                throw new NullReferenceException("ActiveWindow");
+
+            var view = new T();
+            view.Owner = activeWindow;
+            view.DataContext = dataContext;
+            view.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            dataContext.ClosingRequest += (sender, e) =>
+            {
+                view.DialogResult = e.DialogResult;
+                view.Close();
+            };
+            view.Closing += new System.ComponentModel.CancelEventHandler(dataContext.OnClosing);
+            ApplyEffect(view.Owner);
+            result = view.ShowDialog();
+            ClearEffect(view.Owner);
+            return result;
+        }
+                    
+
         public void OpenComparatorWindow(ComparatorViewModel vm)
         {
             bool? result = null;
@@ -139,5 +177,24 @@ namespace AntiDuplWPF.View
             }
         }
 
+        public void ShowPleaseWait()
+        {
+            Window activeWindow = ActiveWindow;
+            if (activeWindow != null)
+                ApplyEffect(activeWindow);
+        }
+
+        public void ClosePleaseWait()
+        {
+            Window activeWindow = ActiveWindow;
+            if (activeWindow != null)
+               ClearEffect(activeWindow);
+        }
+
+
+        public void ShowMessage(string message)
+        {
+            MessageBox.Show(message, "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
     }
 }

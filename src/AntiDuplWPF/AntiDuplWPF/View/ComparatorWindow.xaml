@@ -1,13 +1,24 @@
 ﻿<Window x:Class="AntiDuplWPF.View.ComparatorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:control="clr-namespace:AntiDuplWPF.Control"
         xmlns:convertor="clr-namespace:AntiDuplWPF.Convertor"
+        xmlns:behavior="clr-namespace:AntiDuplWPF.Behavior"
         Title="ComparatorWindow">
     <Window.Resources>
         <convertor:ListToBackgroundMultiValueConverter x:Key="listToBackgroundMultiValueConverter"/>
         <convertor:FileSizeConverter x:Key="fileSizeConverter"/>
     </Window.Resources>
+
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding PreviousCommand}" Key="Left" />
+        <KeyBinding Command="{Binding NextCommand}" Key="Right" />
+    </Window.InputBindings>
+
+    <i:Interaction.Behaviors>
+        <behavior:WindowCloseOnEscBehavior />
+    </i:Interaction.Behaviors>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -19,6 +30,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
+        <Button Visibility="Collapsed" IsCancel="True"></Button>
         <!--<Image Grid.Row="0" Source="{Binding Image}" Stretch="Uniform" />-->
         <control:CgsImageViewer x:Name="cgsImageViewer" Grid.Row="0"
                                  CurrentImage="{Binding Image}"/>
@@ -78,30 +90,45 @@
                 </TextBox.Background>
             </TextBox>
 
-            <!--<Label>JPEGQua</Label>-->
-            <TextBox Text="{Binding CurrentInfo.JpegQuality, Mode=OneWay, StringFormat=G3}" 
+            <Label>Blockiness</Label>
+            <TextBox Text="{Binding CurrentInfo.Blockiness, Mode=OneWay, StringFormat=G3}" 
                      IsReadOnly="True" 
-                     ToolTip="JpegQuality">
+                     ToolTip="Blockiness">
                 <TextBox.Background>
                     <MultiBinding Converter="{StaticResource listToBackgroundMultiValueConverter}" 
-                                  ConverterParameter="{x:Static convertor:MaxProperty.JpegQuality}" >
+                                  ConverterParameter="{x:Static convertor:MaxProperty.Blockiness}" >
                         <Binding Path="ImageInfos" Mode="OneWay" />
-                        <Binding Path="CurrentInfo.JpegQuality" Mode="OneWay" />
+                        <Binding Path="CurrentInfo.Blockiness" Mode="OneWay" />
                         <Binding Path="Configuration.GoodColor" Mode="OneWay" />
                         <Binding Path="Configuration.BadColor" Mode="OneWay" />
                     </MultiBinding>
                 </TextBox.Background>
             </TextBox>
 
-            <!--<Label>Sharp</Label>-->
-            <TextBox Text="{Binding CurrentInfo.Sharpness, Mode=OneWay, StringFormat=G2}" 
+            <Label>Bluring</Label>
+            <TextBox Text="{Binding CurrentInfo.Bluring, Mode=OneWay, StringFormat=G2}" 
                      IsReadOnly="True" 
-                     ToolTip="Sharpness">
+                     ToolTip="Bluring">
                 <TextBox.Background>
                     <MultiBinding Converter="{StaticResource listToBackgroundMultiValueConverter}" 
-                                  ConverterParameter="{x:Static convertor:MaxProperty.Sharpness}" >
+                                  ConverterParameter="{x:Static convertor:MaxProperty.Bluring}" >
                         <Binding Path="ImageInfos" Mode="OneWay" />
-                        <Binding Path="CurrentInfo.Sharpness" Mode="OneWay" />
+                        <Binding Path="CurrentInfo.Bluring" Mode="OneWay" />
+                        <Binding Path="Configuration.GoodColor" Mode="OneWay" />
+                        <Binding Path="Configuration.BadColor" Mode="OneWay" />
+                    </MultiBinding>
+                </TextBox.Background>
+            </TextBox>
+
+            <Label>JpegPeaks</Label>
+            <TextBox Text="{Binding CurrentInfo.JpegPeaks, Mode=OneWay, StringFormat=G2}" 
+                     IsReadOnly="True" 
+                     ToolTip="JpegPeaks">
+                <TextBox.Background>
+                    <MultiBinding Converter="{StaticResource listToBackgroundMultiValueConverter}" 
+                                  ConverterParameter="{x:Static convertor:MaxProperty.JpegPeaks}" >
+                        <Binding Path="ImageInfos" Mode="OneWay" />
+                        <Binding Path="CurrentInfo.JpegPeaks" Mode="OneWay" />
                         <Binding Path="Configuration.GoodColor" Mode="OneWay" />
                         <Binding Path="Configuration.BadColor" Mode="OneWay" />
                     </MultiBinding>

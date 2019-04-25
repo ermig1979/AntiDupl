@@ -59,4 +59,16 @@ namespace ad
 		TDataCollector* m_pDataCollector;
 		TCompareManager *m_pCompareManager;
 	};
+	//-------------------------------------------------------------------------
+	class TDctHistogramPeakTask : public TThreadTask
+	{
+	public:
+		TDctHistogramPeakTask(size_t threadId, TEngine *pEngine);
+		~TDctHistogramPeakTask();
+
+	protected:
+		virtual void DoOwn(TImageData *pImageData);
+		virtual void DoOther(TImageData *pImageData) {};
+		
+	};
 }

@@ -1,7 +1,7 @@
 /*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -26,43 +26,21 @@
 
 #include "adConfig.h"
 
-
 namespace ad
 {
     struct TOptions;
     struct TResult;
     //-------------------------------------------------------------------------
-	// Общий класс установшика подсказок
     class THintSetter
     {
-	protected:
         TOptions *m_pOptions;
-	public:
-        THintSetter(TOptions *pOptions);
-        virtual void Execute(TResult *pResult, bool canRename) const; //можно переопределить в наследнике
-    };
-
-	//-------------------------------------------------------------------------
-    class THintSetter_Algorithm : public THintSetter
-    {
-	private:
         double m_autoDeleteThresholdDifference;
 		adInt32 m_blockinessThreshold;
     public:
-		THintSetter_Algorithm(TOptions *pOptions);
-		virtual void Execute(TResult *pResult, bool canRename) const; //переопределяем
-	};
+        THintSetter(TOptions *pOptions);
 
-    //-------------------------------------------------------------------------
-	class THintSetterStorage
-    {
-	private:
-		static THintSetter* m_hintSetter_pointer; //its just a declaration, not a definition!
-    public:
-		static THintSetter* GetHintSetterPointer(TOptions *pOptions);
-	};
-
-    //-------------------------------------------------------------------------
+        void Execute(TResult *pResult, bool canRename) const;
+    };
 }
 
 #endif/*__adHintSetter_h__*/

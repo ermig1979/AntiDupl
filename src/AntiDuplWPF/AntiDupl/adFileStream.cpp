@@ -143,6 +143,8 @@ namespace ad
 			Load(imageInfo.blurring); 
 		if(m_version > 3)
 			Load(imageInfo.imageExif);
+		if(m_version > 4)
+			Load(imageInfo.jpegPeaks);
 	}
 
 	// Считываем эскиз изображения
@@ -273,6 +275,7 @@ namespace ad
 		Save(imageInfo.blockiness); 
 		Save(imageInfo.blurring); 
 		Save(imageInfo.imageExif);
+		Save(imageInfo.jpegPeaks);
 	}
 
 	// Сохраняем пиксели изображения

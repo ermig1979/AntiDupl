@@ -1,7 +1,7 @@
 /*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -74,7 +74,7 @@ namespace ad
 		void Assign(const TImageGroupStorage & storage);
 		void Set(TResultPtrVector & results, TStatus * pStatus);
 		void Update(TResultPtrVector & results);
-		void UpdateHints(TOptions *pOptions, bool force, TStatus *pStatus);
+		void UpdateHints(TOptions *pOptions, bool force);
 
 		adError Export(adSizePtr pStartFrom, adGroupPtr pGroup, adSizePtr pGroupSize) const;
 		adError Export(adSize groupId, adSizePtr pStartFrom, adImageInfoPtrA pImageInfo, adSizePtr pImageInfoSize) const;

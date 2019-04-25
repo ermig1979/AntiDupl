@@ -1,7 +1,7 @@
 /*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar, 2013-2018 Borisov Dmitry.
+* Copyright (c) 2002-2015 Yermalayeu Ihar, 2013-2015 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -24,33 +24,19 @@
 #include "adHintSetter.h"
 #include "adOptions.h"
 #include "adResult.h"
-#include "adException.h"
-
 
 namespace ad
 {
     THintSetter::THintSetter(TOptions *pOptions)
-        : m_pOptions(pOptions)
-	{
-
-    }
-
-	void THintSetter::Execute(TResult *pResult, bool canRename) const
-    {
-		throw TException(adError::AD_ERROR_UNKNOWN);
-	}
-
-	//-------------------------------------------------------------------------
-	THintSetter_Algorithm::THintSetter_Algorithm(TOptions *pOptions)
-		:THintSetter(pOptions)
+        :m_pOptions(pOptions)
     {
         m_autoDeleteThresholdDifference = std::min(double(AUTO_DELETE_DIFFERENCE_MAX),
-            double(m_pOptions->compare.thresholdDifference) / AUTO_DELETE_DIFFERENCE_FACTOR);
+            double(m_pOptions->compare.thresholdDifference)/AUTO_DELETE_DIFFERENCE_FACTOR);
 
 		m_blockinessThreshold = m_pOptions->defect.blockinessThreshold;
-	}
+    }
 
-	void THintSetter_Algorithm::Execute(TResult *pResult, bool canRename) const
+    void THintSetter::Execute(TResult *pResult, bool canRename) const
     {
         if(pResult->type == AD_RESULT_NONE || pResult->transform != AD_TRANSFORM_TURN_0)
         {
@@ -146,15 +132,4 @@ namespace ad
 
         pResult->hint = AD_HINT_NONE;
     }
-
-	//-------------------------------------------------------------------------
-	// static
-	THintSetter *THintSetterStorage::m_hintSetter_pointer; //its a definition
-
-	THintSetter* THintSetterStorage::GetHintSetterPointer(TOptions *pOptions)
-	{
-		if (m_hintSetter_pointer == NULL)
-			m_hintSetter_pointer = new THintSetter_Algorithm(pOptions);
-		return m_hintSetter_pointer;
-	}
 }

@@ -14,7 +14,7 @@ namespace AntiDuplWPF.Service
         //public int MaxCachedThumbnail = 400;
 
         private List<string> _keyList = new List<string>(); //Keylist for managing the oldest to newest image
-        private Dictionary<string, BitmapImage> _thumbnailDict = new Dictionary<string, BitmapImage>(); //Hashtable for storing images
+        private Dictionary<string, BitmapSource> _thumbnailDict = new Dictionary<string, BitmapSource>(); //Hashtable for storing images
         private IConfigurationModel _configuration;
 
         public ThumbnailCache(IConfigurationModel configuration)
@@ -23,7 +23,7 @@ namespace AntiDuplWPF.Service
         }
 
         /// <summary>Get thumbnail</summary>
-        public BitmapImage GetThumbnail(string path)
+        public BitmapSource GetThumbnail(string path)
         {
             lock (_thumbnailDict)
             {
@@ -42,7 +42,7 @@ namespace AntiDuplWPF.Service
         }
 
         /// <summary>Add thumbnail to thumbnail dict</summary>
-        public void AddThumbnail(string key, BitmapImage thumbnail)
+        public void AddThumbnail(string key, BitmapSource thumbnail)
         {
             //Delete the oldest thumbnail
             lock (_thumbnailDict)

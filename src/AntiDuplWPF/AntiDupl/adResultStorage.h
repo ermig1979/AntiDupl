@@ -36,7 +36,6 @@ namespace ad
     struct TResult;
 
     class TEngine;
-    class TMistakeStorage; 
     class TImageInfoStorage; 
     class TDuplResultFilter;
 	class TCriticalSection;
@@ -79,7 +78,6 @@ namespace ad
         TCriticalSection *m_pCriticalSection;
         TOptions *m_pOptions;
         TStatus *m_pStatus;
-        TMistakeStorage *m_pMistakeStorage;
         TDuplResultFilter *m_pDuplResultFilter;
         size_t m_nextId;
 		// Текущее состояние результатов вектор структур TResult

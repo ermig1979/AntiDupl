@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="../../Prop.props" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -12,76 +11,472 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{1622C4EF-06A4-4DAA-9631-5D71B32858A2}</ProjectGuid>
+    <ProjectGuid>{0DC3E870-30E7-45A3-982F-75EB38ED88EE}</ProjectGuid>
+    <RootNamespace>Simd32</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <ProjectName>Simd32</ProjectName>
   </PropertyGroup>
-  <PropertyGroup Label="Configuration">
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ItemDefinitionGroup>
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>11.0.61030.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)\..\..\bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\..\..\obj\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)\..\..\bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\..\..\obj\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PreprocessorDefinitions>_WINDOWS;_LIB;SIMD_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..;d:\OpenCV\build\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;SIMD_STATIC;SIMD_OPENCV_ENABLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <TargetMachine>MachineX86</TargetMachine>
-    </Link>
+    <Lib>
+      <AdditionalOptions>/ignore:4221  %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalLibraryDirectories>d:\OpenCV\build\x86\vc11\staticlib\</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB; SIMD_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat />
+    </ClCompile>
+    <Lib>
+      <AdditionalOptions>/ignore:4221  %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include=".\Simd*.h" />
-    <ClInclude Include=".\Simd*.hpp" />
-    <ClCompile Include=".\SimdLib.cpp">
-      <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
+    <ClInclude Include="SimdAvx2.h" />
+    <ClInclude Include="SimdBase.h" />
+    <ClInclude Include="SimdSse2.h" />
+    <ClInclude Include="SimdSse42.h" />
+    <ClInclude Include="SimdLib.h" />
+    <ClInclude Include="SimdCompare.h" />
+    <ClInclude Include="SimdConfig.h" />
+    <ClInclude Include="SimdConst.h" />
+    <ClInclude Include="SimdConversion.h" />
+    <ClInclude Include="SimdDefs.h" />
+    <ClInclude Include="SimdEnable.h" />
+    <ClInclude Include="SimdExtract.h" />
+    <ClInclude Include="SimdHelp.h" />
+    <ClInclude Include="SimdInit.h" />
+    <ClInclude Include="SimdLoad.h" />
+    <ClInclude Include="SimdLog.h" />
+    <ClInclude Include="SimdMath.h" />
+    <ClInclude Include="SimdMemory.h" />
+    <ClInclude Include="SimdSet.h" />
+    <ClInclude Include="SimdStore.h" />
+    <ClInclude Include="SimdVersion.h" />
+    <ClInclude Include="SimdAllocator.hpp" />
+    <ClInclude Include="SimdLib.hpp" />
+    <ClInclude Include="SimdPixel.hpp" />
+    <ClInclude Include="SimdPoint.hpp" />
+    <ClInclude Include="SimdRectangle.hpp" />
+    <ClInclude Include="SimdView.hpp" />
+    <ClInclude Include="SimdSse41.h" />
+    <ClInclude Include="SimdSsse3.h" />
+    <ClInclude Include="SimdAvx1.h" />
+    <ClInclude Include="SimdSse1.h" />
+    <ClInclude Include="SimdVsx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="SimdAvx2AbsDifferenceSum.cpp" />
+    <ClCompile Include="SimdAvx2AbsGradientSaturatedSum.cpp" />
+    <ClCompile Include="SimdAvx2AddFeatureDifference.cpp" />
+    <ClCompile Include="SimdAvx2AlphaBlending.cpp" />
+    <ClCompile Include="SimdAvx2Background.cpp" />
+    <ClCompile Include="SimdAvx2BgraToGray.cpp" />
+    <ClCompile Include="SimdAvx2BgraToYuv.cpp" />
+    <ClCompile Include="SimdAvx2BgrToBgra.cpp" />
+    <ClCompile Include="SimdAvx2BgrToGray.cpp" />
+    <ClCompile Include="SimdAvx2BgrToYuv.cpp" />
+    <ClCompile Include="SimdAvx2Binarization.cpp" />
+    <ClCompile Include="SimdAvx2Conditional.cpp" />
+    <ClCompile Include="SimdAvx2DeinterleaveUv.cpp" />
+    <ClCompile Include="SimdAvx2EdgeBackground.cpp" />
+    <ClCompile Include="SimdAvx2Fill.cpp" />
+    <ClCompile Include="SimdAvx2GaussianBlur3x3.cpp" />
+    <ClCompile Include="SimdAvx2GrayToBgr.cpp" />
+    <ClCompile Include="SimdAvx2GrayToBgra.cpp" />
+    <ClCompile Include="SimdAvx2Histogram.cpp" />
+    <ClCompile Include="SimdAvx2Hog.cpp" />
+    <ClCompile Include="SimdAvx2Interference.cpp" />
+    <ClCompile Include="SimdAvx2Lbp.cpp" />
+    <ClCompile Include="SimdAvx2MedianFilter.cpp" />
+    <ClCompile Include="SimdAvx2Operation.cpp" />
+    <ClCompile Include="SimdAvx2ReduceGray2x2.cpp" />
+    <ClCompile Include="SimdAvx2ReduceGray3x3.cpp" />
+    <ClCompile Include="SimdAvx2ReduceGray4x4.cpp" />
+    <ClCompile Include="SimdAvx2ReduceGray5x5.cpp" />
+    <ClCompile Include="SimdAvx2Reorder.cpp" />
+    <ClCompile Include="SimdAvx2ResizeBilinear.cpp" />
+    <ClCompile Include="SimdAvx2Segmentation.cpp" />
+    <ClCompile Include="SimdAvx2ShiftBilinear.cpp" />
+    <ClCompile Include="SimdAvx2Sobel.cpp" />
+    <ClCompile Include="SimdAvx2SquaredDifferenceSum.cpp" />
+    <ClCompile Include="SimdAvx2Statistic.cpp" />
+    <ClCompile Include="SimdAvx2StretchGray2x2.cpp" />
+    <ClCompile Include="SimdAvx2Texture.cpp" />
+    <ClCompile Include="SimdAvx2YuvToBgr.cpp" />
+    <ClCompile Include="SimdAvx2YuvToBgra.cpp" />
+    <ClCompile Include="SimdAvx2YuvToHue.cpp" />
+    <ClCompile Include="SimdBaseAbsDifferenceSum.cpp" />
+    <ClCompile Include="SimdBaseAbsGradientSaturatedSum.cpp" />
+    <ClCompile Include="SimdBaseAddFeatureDifference.cpp" />
+    <ClCompile Include="SimdBaseAlphaBlending.cpp" />
+    <ClCompile Include="SimdBaseBackground.cpp" />
+    <ClCompile Include="SimdBaseBayerToBgr.cpp" />
+    <ClCompile Include="SimdBaseBayerToBgra.cpp" />
+    <ClCompile Include="SimdBaseBgraToBayer.cpp" />
+    <ClCompile Include="SimdBaseBgraToBgr.cpp" />
+    <ClCompile Include="SimdBaseBgraToGray.cpp" />
+    <ClCompile Include="SimdBaseBgraToYuv.cpp" />
+    <ClCompile Include="SimdBaseBgrToBayer.cpp" />
+    <ClCompile Include="SimdBaseBgrToBgra.cpp" />
+    <ClCompile Include="SimdBaseBgrToGray.cpp" />
+    <ClCompile Include="SimdBaseBgrToHsl.cpp" />
+    <ClCompile Include="SimdBaseBgrToHsv.cpp" />
+    <ClCompile Include="SimdBaseBgrToYuv.cpp" />
+    <ClCompile Include="SimdBaseBinarization.cpp" />
+    <ClCompile Include="SimdBaseConditional.cpp" />
+    <ClCompile Include="SimdBaseCopy.cpp" />
+    <ClCompile Include="SimdBaseCrc32.cpp" />
+    <ClCompile Include="SimdBaseDeinterleaveUv.cpp" />
+    <ClCompile Include="SimdBaseEdgeBackground.cpp" />
+    <ClCompile Include="SimdBaseFill.cpp" />
+    <ClCompile Include="SimdBaseGaussianBlur3x3.cpp" />
+    <ClCompile Include="SimdBaseGrayToBgr.cpp" />
+    <ClCompile Include="SimdBaseGrayToBgra.cpp" />
+    <ClCompile Include="SimdBaseHistogram.cpp" />
+    <ClCompile Include="SimdBaseHog.cpp" />
+    <ClCompile Include="SimdBaseIntegral.cpp" />
+    <ClCompile Include="SimdBaseInterference.cpp" />
+    <ClCompile Include="SimdBaseLbp.cpp" />
+    <ClCompile Include="SimdBaseMedianFilter.cpp" />
+    <ClCompile Include="SimdBaseOperation.cpp" />
+    <ClCompile Include="SimdBaseReduceGray2x2.cpp" />
+    <ClCompile Include="SimdBaseReduceGray3x3.cpp" />
+    <ClCompile Include="SimdBaseReduceGray4x4.cpp" />
+    <ClCompile Include="SimdBaseReduceGray5x5.cpp" />
+    <ClCompile Include="SimdBaseReorder.cpp" />
+    <ClCompile Include="SimdBaseResizeBilinear.cpp" />
+    <ClCompile Include="SimdBaseSegmentation.cpp" />
+    <ClCompile Include="SimdBaseShiftBilinear.cpp" />
+    <ClCompile Include="SimdBaseSobel.cpp" />
+    <ClCompile Include="SimdBaseSquaredDifferenceSum.cpp" />
+    <ClCompile Include="SimdBaseStatistic.cpp" />
+    <ClCompile Include="SimdBaseStretchGray2x2.cpp" />
+    <ClCompile Include="SimdBaseSvm.cpp" />
+    <ClCompile Include="SimdBaseTexture.cpp" />
+    <ClCompile Include="SimdBaseYuvToBgr.cpp" />
+    <ClCompile Include="SimdBaseYuvToBgra.cpp" />
+    <ClCompile Include="SimdBaseYuvToHsl.cpp" />
+    <ClCompile Include="SimdBaseYuvToHsv.cpp" />
+    <ClCompile Include="SimdBaseYuvToHue.cpp" />
+    <ClCompile Include="SimdSse2AbsDifferenceSum.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdBase*.cpp">
-      <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
+    <ClCompile Include="SimdSse2AbsGradientSaturatedSum.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdSse1*.cpp">
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+    <ClCompile Include="SimdSse2AddFeatureDifference.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdSse2*.cpp">
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    <ClCompile Include="SimdSse2AlphaBlending.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdSse3*.cpp">
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    <ClCompile Include="SimdSse2Background.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdSsse3*.cpp">
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    <ClCompile Include="SimdSse2BgraToGray.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdSse41*.cpp">
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    <ClCompile Include="SimdSse2BgraToYuv.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdSse42*.cpp">
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    <ClCompile Include="SimdSse2BgrToBgra.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdAvx1*.cpp">
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+    <ClCompile Include="SimdSse2BgrToGray.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdAvx2*.cpp">
-	  <EnableEnhancedInstructionSet Condition="'$(PlatformToolset)'=='v140'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-	  <EnableEnhancedInstructionSet Condition="'$(PlatformToolset)'=='v141'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <EnableEnhancedInstructionSet Condition="'$(PlatformToolset)'=='v120'">AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+    <ClCompile Include="SimdSse2Binarization.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
-	<ClCompile Include=".\SimdAvx512f*.cpp">
-      <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
+    <ClCompile Include="SimdSse2Conditional.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdAvx512bw*.cpp">
-      <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
+    <ClCompile Include="SimdSse2DeinterleaveUv.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".SimdVmx*.cpp">
-      <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
+    <ClCompile Include="SimdSse2EdgeBackground.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdVsx*.cpp">
-      <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
+    <ClCompile Include="SimdSse2Fill.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdNeon*.cpp">
-      <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
+    <ClCompile Include="SimdSse2GaussianBlur3x3.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdMsa*.cpp">
-      <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
+    <ClCompile Include="SimdSse2GrayToBgra.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
+    <ClCompile Include="SimdSse2Histogram.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse2Hog.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse2Interference.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse2Lbp.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse2MedianFilter.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse2Operation.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse2ReduceGray2x2.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse2ReduceGray3x3.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse2ReduceGray4x4.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse2ReduceGray5x5.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse2Reorder.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse2ResizeBilinear.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse2Segmentation.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse2ShiftBilinear.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse2Sobel.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse2SquaredDifferenceSum.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse2Statistic.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse2StretchGray2x2.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse2Texture.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse2YuvToBgra.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse2YuvToHue.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse42Crc32.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdLib.cpp" />
+    <ClCompile Include="SimdSse41Segmentation.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSsse3AlphaBlending.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSsse3BgraToBayer.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSsse3BgraToBgr.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSsse3BgraToYuv.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSsse3BgrToBayer.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSsse3BgrToBgra.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSsse3BgrToGray.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSsse3BgrToYuv.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSsse3GrayToBgr.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSsse3ReduceGray2x2.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSsse3Reorder.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSsse3Sobel.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSsse3YuvToBgr.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdAvx1SquaredDifferenceSum.cpp" />
+    <ClCompile Include="SimdAvx1Svm.cpp" />
+    <ClCompile Include="SimdSse1SquaredDifferenceSum.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdSse1Svm.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="SimdVsxAbsDifferenceSum.cpp" />
+    <ClCompile Include="SimdVsxAbsGradientSaturatedSum.cpp" />
+    <ClCompile Include="SimdVsxAddFeatureDifference.cpp" />
+    <ClCompile Include="SimdVsxAlphaBlending.cpp" />
+    <ClCompile Include="SimdVsxBackground.cpp" />
+    <ClCompile Include="SimdVsxBgraToBayer.cpp" />
+    <ClCompile Include="SimdVsxBgraToBgr.cpp" />
+    <ClCompile Include="SimdVsxBgraToGray.cpp" />
+    <ClCompile Include="SimdVsxBgraToYuv.cpp" />
+    <ClCompile Include="SimdVsxBgrToBayer.cpp" />
+    <ClCompile Include="SimdVsxBgrToBgra.cpp" />
+    <ClCompile Include="SimdVsxBgrToGray.cpp" />
+    <ClCompile Include="SimdVsxBgrToYuv.cpp" />
+    <ClCompile Include="SimdVsxBinarization.cpp" />
+    <ClCompile Include="SimdVsxConditional.cpp" />
+    <ClCompile Include="SimdVsxDeinterleaveUv.cpp" />
+    <ClCompile Include="SimdVsxEdgeBackground.cpp" />
+    <ClCompile Include="SimdVsxFill.cpp" />
+    <ClCompile Include="SimdVsxGaussianBlur3x3.cpp" />
+    <ClCompile Include="SimdVsxGrayToBgr.cpp" />
+    <ClCompile Include="SimdVsxGrayToBgra.cpp" />
+    <ClCompile Include="SimdVsxHistogram.cpp" />
+    <ClCompile Include="SimdVsxHog.cpp" />
+    <ClCompile Include="SimdVsxInterference.cpp" />
+    <ClCompile Include="SimdVsxLbp.cpp" />
+    <ClCompile Include="SimdVsxMedianFilter.cpp" />
+    <ClCompile Include="SimdVsxOperation.cpp" />
+    <ClCompile Include="SimdVsxReduceGray2x2.cpp" />
+    <ClCompile Include="SimdVsxReduceGray3x3.cpp" />
+    <ClCompile Include="SimdVsxReduceGray4x4.cpp" />
+    <ClCompile Include="SimdVsxReduceGray5x5.cpp" />
+    <ClCompile Include="SimdVsxReorder.cpp" />
+    <ClCompile Include="SimdVsxResizeBilinear.cpp" />
+    <ClCompile Include="SimdVsxSegmentation.cpp" />
+    <ClCompile Include="SimdVsxShiftBilinear.cpp" />
+    <ClCompile Include="SimdVsxSobel.cpp" />
+    <ClCompile Include="SimdVsxSquaredDifferenceSum.cpp" />
+    <ClCompile Include="SimdVsxStatistic.cpp" />
+    <ClCompile Include="SimdVsxStretchGray2x2.cpp" />
+    <ClCompile Include="SimdVsxSvm.cpp" />
+    <ClCompile Include="SimdVsxTexture.cpp" />
+    <ClCompile Include="SimdVsxYuvToBgr.cpp" />
+    <ClCompile Include="SimdVsxYuvToBgra.cpp" />
+    <ClCompile Include="SimdVsxYuvToHue.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
 </Project>

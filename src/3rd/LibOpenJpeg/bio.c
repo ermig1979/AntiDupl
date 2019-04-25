@@ -1,15 +1,9 @@
 /*
- * The copyright in this software is being made available under the 2-clauses
- * BSD License, included below. This software may be subject to other third
- * party and contributor rights, including patent rights, and no such rights
- * are granted under this license.
- *
- * Copyright (c) 2002-2014, Universite catholique de Louvain (UCL), Belgium
- * Copyright (c) 2002-2014, Professor Benoit Macq
+ * Copyright (c) 2002-2007, Communications and Remote Sensing Laboratory, Universite catholique de Louvain (UCL), Belgium
+ * Copyright (c) 2002-2007, Professor Benoit Macq
  * Copyright (c) 2001-2003, David Janssens
  * Copyright (c) 2002-2003, Yannick Verschueren
- * Copyright (c) 2003-2007, Francois-Olivier Devaux
- * Copyright (c) 2003-2014, Antonin Descampe
+ * Copyright (c) 2003-2007, Francois-Olivier Devaux and Antonin Descampe
  * Copyright (c) 2005, Herve Drolon, FreeImage Team
  * All rights reserved.
  *
@@ -48,170 +42,146 @@ Write a bit
 @param bio BIO handle
 @param b Bit to write (0 or 1)
 */
-static void opj_bio_putbit(opj_bio_t *bio, OPJ_UINT32 b);
+static void bio_putbit(opj_bio_t *bio, int b);
 /**
 Read a bit
 @param bio BIO handle
 @return Returns the read bit
 */
-static OPJ_UINT32 opj_bio_getbit(opj_bio_t *bio);
+static int bio_getbit(opj_bio_t *bio);
 /**
 Write a byte
 @param bio BIO handle
-@return Returns OPJ_TRUE if successful, returns OPJ_FALSE otherwise
+@return Returns 0 if successful, returns 1 otherwise
 */
-static OPJ_BOOL opj_bio_byteout(opj_bio_t *bio);
+static int bio_byteout(opj_bio_t *bio);
 /**
 Read a byte
 @param bio BIO handle
-@return Returns OPJ_TRUE if successful, returns OPJ_FALSE otherwise
+@return Returns 0 if successful, returns 1 otherwise
 */
-static OPJ_BOOL opj_bio_bytein(opj_bio_t *bio);
+static int bio_bytein(opj_bio_t *bio);
 
 /*@}*/
 
 /*@}*/
 
-/*
+/* 
 ==========================================================
    local functions
 ==========================================================
 */
 
-static OPJ_BOOL opj_bio_byteout(opj_bio_t *bio)
-{
-    bio->buf = (bio->buf << 8) & 0xffff;
-    bio->ct = bio->buf == 0xff00 ? 7 : 8;
-    if ((OPJ_SIZE_T)bio->bp >= (OPJ_SIZE_T)bio->end) {
-        return OPJ_FALSE;
-    }
-    *bio->bp++ = (OPJ_BYTE)(bio->buf >> 8);
-    return OPJ_TRUE;
+static int bio_byteout(opj_bio_t *bio) {
+	bio->buf = (bio->buf << 8) & 0xffff;
+	bio->ct = bio->buf == 0xff00 ? 7 : 8;
+	if (bio->bp >= bio->end) {
+		return 1;
+	}
+	*bio->bp++ = bio->buf >> 8;
+	return 0;
 }
 
-static OPJ_BOOL opj_bio_bytein(opj_bio_t *bio)
-{
-    bio->buf = (bio->buf << 8) & 0xffff;
-    bio->ct = bio->buf == 0xff00 ? 7 : 8;
-    if ((OPJ_SIZE_T)bio->bp >= (OPJ_SIZE_T)bio->end) {
-        return OPJ_FALSE;
-    }
-    bio->buf |= *bio->bp++;
-    return OPJ_TRUE;
+static int bio_bytein(opj_bio_t *bio) {
+	bio->buf = (bio->buf << 8) & 0xffff;
+	bio->ct = bio->buf == 0xff00 ? 7 : 8;
+	if (bio->bp >= bio->end) {
+		return 1;
+	}
+	bio->buf |= *bio->bp++;
+	return 0;
 }
 
-static void opj_bio_putbit(opj_bio_t *bio, OPJ_UINT32 b)
-{
-    if (bio->ct == 0) {
-        opj_bio_byteout(
-            bio); /* MSD: why not check the return value of this function ? */
-    }
-    bio->ct--;
-    bio->buf |= b << bio->ct;
+static void bio_putbit(opj_bio_t *bio, int b) {
+	if (bio->ct == 0) {
+		bio_byteout(bio);
+	}
+	bio->ct--;
+	bio->buf |= b << bio->ct;
 }
 
-static OPJ_UINT32 opj_bio_getbit(opj_bio_t *bio)
-{
-    if (bio->ct == 0) {
-        opj_bio_bytein(
-            bio); /* MSD: why not check the return value of this function ? */
-    }
-    bio->ct--;
-    return (bio->buf >> bio->ct) & 1;
+static int bio_getbit(opj_bio_t *bio) {
+	if (bio->ct == 0) {
+		bio_bytein(bio);
+	}
+	bio->ct--;
+	return (bio->buf >> bio->ct) & 1;
 }
 
-/*
+/* 
 ==========================================================
    Bit Input/Output interface
 ==========================================================
 */
 
-opj_bio_t* opj_bio_create(void)
-{
-    opj_bio_t *bio = (opj_bio_t*)opj_malloc(sizeof(opj_bio_t));
-    return bio;
+opj_bio_t* bio_create(void) {
+	opj_bio_t *bio = (opj_bio_t*)opj_malloc(sizeof(opj_bio_t));
+	return bio;
 }
 
-void opj_bio_destroy(opj_bio_t *bio)
-{
-    if (bio) {
-        opj_free(bio);
-    }
+void bio_destroy(opj_bio_t *bio) {
+	if(bio) {
+		opj_free(bio);
+	}
 }
 
-ptrdiff_t opj_bio_numbytes(opj_bio_t *bio)
-{
-    return (bio->bp - bio->start);
+int bio_numbytes(opj_bio_t *bio) {
+	return (int)(bio->bp - bio->start);
 }
 
-void opj_bio_init_enc(opj_bio_t *bio, OPJ_BYTE *bp, OPJ_UINT32 len)
-{
-    bio->start = bp;
-    bio->end = bp + len;
-    bio->bp = bp;
-    bio->buf = 0;
-    bio->ct = 8;
+void bio_init_enc(opj_bio_t *bio, unsigned char *bp, int len) {
+	bio->start = bp;
+	bio->end = bp + len;
+	bio->bp = bp;
+	bio->buf = 0;
+	bio->ct = 8;
 }
 
-void opj_bio_init_dec(opj_bio_t *bio, OPJ_BYTE *bp, OPJ_UINT32 len)
-{
-    bio->start = bp;
-    bio->end = bp + len;
-    bio->bp = bp;
-    bio->buf = 0;
-    bio->ct = 0;
+void bio_init_dec(opj_bio_t *bio, unsigned char *bp, int len) {
+	bio->start = bp;
+	bio->end = bp + len;
+	bio->bp = bp;
+	bio->buf = 0;
+	bio->ct = 0;
 }
 
-void opj_bio_write(opj_bio_t *bio, OPJ_UINT32 v, OPJ_UINT32 n)
-{
-    OPJ_INT32 i;
-
-    assert((n > 0U) && (n <= 32U));
-    for (i = (OPJ_INT32)n - 1; i >= 0; i--) {
-        opj_bio_putbit(bio, (v >> i) & 1);
-    }
+void bio_write(opj_bio_t *bio, int v, int n) {
+	int i;
+	for (i = n - 1; i >= 0; i--) {
+		bio_putbit(bio, (v >> i) & 1);
+	}
 }
 
-OPJ_UINT32 opj_bio_read(opj_bio_t *bio, OPJ_UINT32 n)
-{
-    OPJ_INT32 i;
-    OPJ_UINT32 v;
-
-    assert((n > 0U) /* && (n <= 32U)*/);
-#ifdef OPJ_UBSAN_BUILD
-    /* This assert fails for some corrupted images which are gracefully rejected */
-    /* Add this assert only for ubsan build. */
-    /* This is the condition for overflow not to occur below which is needed because of OPJ_NOSANITIZE */
-    assert(n <= 32U);
-#endif
-    v = 0U;
-    for (i = (OPJ_INT32)n - 1; i >= 0; i--) {
-        v |= opj_bio_getbit(bio) <<
-             i; /* can't overflow, opj_bio_getbit returns 0 or 1 */
-    }
-    return v;
+int bio_read(opj_bio_t *bio, int n) {
+	int i, v;
+	v = 0;
+	for (i = n - 1; i >= 0; i--) {
+		v += bio_getbit(bio) << i;
+	}
+	return v;
 }
 
-OPJ_BOOL opj_bio_flush(opj_bio_t *bio)
-{
-    if (! opj_bio_byteout(bio)) {
-        return OPJ_FALSE;
-    }
-    if (bio->ct == 7) {
-        if (! opj_bio_byteout(bio)) {
-            return OPJ_FALSE;
-        }
-    }
-    return OPJ_TRUE;
+int bio_flush(opj_bio_t *bio) {
+	bio->ct = 0;
+	if (bio_byteout(bio)) {
+		return 1;
+	}
+	if (bio->ct == 7) {
+		bio->ct = 0;
+		if (bio_byteout(bio)) {
+			return 1;
+		}
+	}
+	return 0;
 }
 
-OPJ_BOOL opj_bio_inalign(opj_bio_t *bio)
-{
-    if ((bio->buf & 0xff) == 0xff) {
-        if (! opj_bio_bytein(bio)) {
-            return OPJ_FALSE;
-        }
-    }
-    bio->ct = 0;
-    return OPJ_TRUE;
+int bio_inalign(opj_bio_t *bio) {
+	bio->ct = 0;
+	if ((bio->buf & 0xff) == 0xff) {
+		if (bio_bytein(bio)) {
+			return 1;
+		}
+		bio->ct = 0;
+	}
+	return 0;
 }

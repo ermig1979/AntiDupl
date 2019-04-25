@@ -1,7 +1,7 @@
 /*
-* AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
+* AntiDupl Dynamic-Link Library.
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2015 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -225,161 +225,92 @@ namespace ad
         return NULL;
     }
 
-    static CODEC_FORMAT OpenJpegCodecFormat(unsigned char *data, size_t size)
-    {
-        unsigned char j2k[2] = {0xff, 0x4f};
-        unsigned char jp2[4] = {0x6a, 0x50, 0x20, 0x20};
-        if(size >= 2 && memcmp(data, j2k, sizeof(j2k)) == 0)
-            return OPJ_CODEC_J2K;
-        if(size >= 8 && memcmp(data + 4, jp2, sizeof(jp2)) == 0)
-            return OPJ_CODEC_JP2;
-        return OPJ_CODEC_UNKNOWN;
-    }
-
     bool TOpenJpeg::Supported(HGLOBAL hGlobal)
     {
         if(hGlobal)
         {
-            CODEC_FORMAT codecFormat = OpenJpegCodecFormat((unsigned char*)::GlobalLock(hGlobal), ::GlobalSize(hGlobal));
+            int codecFormat = CodecFormat((unsigned char*)::GlobalLock(hGlobal), ::GlobalSize(hGlobal));
             ::GlobalUnlock(hGlobal);
-            return codecFormat != OPJ_CODEC_UNKNOWN;
+            return codecFormat != CODEC_UNKNOWN;
         }
         return false;
     }
 
-    struct Blob
+    int TOpenJpeg::CodecFormat(unsigned char *data, size_t size)
     {
-        unsigned char * data;
-        OPJ_SIZE_T size, pos;
-    };
-
-    static OPJ_SIZE_T ReadFromBlob(void * buffer, OPJ_SIZE_T size, Blob * blob)
-    {
-        OPJ_SIZE_T read = std::min(blob->pos + size, blob->size) - blob->pos;
-        memcpy(buffer, blob->data + blob->pos, read);
-        blob->pos += read;
-        return read ? read : (OPJ_SIZE_T)-1;
+        unsigned char j2k[2] = {0xff, 0x4f};
+        unsigned char jp2[4] = {0x6a, 0x50, 0x20, 0x20};
+        if(size >= 2 && memcmp(data, j2k, sizeof(j2k)) == 0)
+            return CODEC_J2K;
+        if(size >= 8 && memcmp(data + 4, jp2, sizeof(jp2)) == 0)
+            return CODEC_JP2;
+        return CODEC_UNKNOWN;
     }
 
-    static OPJ_UINT64 GetBlobLength(Blob * blob)
-    {
-        return (OPJ_UINT64)blob->size;
-    }
-
-    static OPJ_SIZE_T WriteToBlob(void * buffer, OPJ_SIZE_T size, Blob * blob)
-    {
-        assert(0);
-        return (OPJ_SIZE_T)-1;
-    }
-
-    static OPJ_OFF_T SkipFromBlob(OPJ_OFF_T skip, Blob * blob)
-    {
-        OPJ_SIZE_T pos = blob->pos + (OPJ_SIZE_T)skip;
-        if (pos >= blob->size)
-            return -1;
-        blob->pos += (OPJ_SIZE_T)skip;
-        return skip;
-    }
-
-    static OPJ_BOOL SeekInBlob(OPJ_OFF_T offset, Blob * blob)
-    {
-        OPJ_SIZE_T pos = (OPJ_SIZE_T)offset;
-        if (pos >= blob->size)
-            return OPJ_FALSE;
-        blob->pos = (OPJ_SIZE_T)offset;
-        return OPJ_TRUE;
-    }
-
-    opj_stream_t * OPJ_CALLCONV ÑreateBlobStream(unsigned char * data, OPJ_SIZE_T size)
-    {
-        opj_stream_t * stream = opj_stream_default_create(OPJ_TRUE);
-        if (!stream)
-            return NULL;
-        Blob * blob = (Blob*)malloc(sizeof(Blob));
-        if (!blob)
-        {
-            opj_stream_destroy(stream);
-            return NULL;
-        }
-        blob->data = data;
-        blob->size = size;
-        blob->pos = 0;
-        opj_stream_set_user_data(stream, blob, (opj_stream_free_user_data_fn)free);
-        opj_stream_set_user_data_length(stream, size);
-        opj_stream_set_read_function(stream, (opj_stream_read_fn)ReadFromBlob);
-        opj_stream_set_write_function(stream, (opj_stream_write_fn)WriteToBlob);
-        opj_stream_set_skip_function(stream, (opj_stream_skip_fn)SkipFromBlob);
-        opj_stream_set_seek_function(stream, (opj_stream_seek_fn)SeekInBlob);
-        return stream;
-    }
-
-    TView* TOpenJpeg::Load(unsigned char * data, size_t size)
+    TView* TOpenJpeg::Load(unsigned char *data, size_t size)
     {
         AD_FUNCTION_PERFORMANCE_TEST
         TView *pView = NULL;
-        opj_codec_t * codec = opj_create_decompress(OpenJpegCodecFormat(data, size));
-        if(codec)
+        opj_dinfo_t *dinfo = opj_create_decompress((OPJ_CODEC_FORMAT)CodecFormat(data, size));
+        if(dinfo)
         {
             opj_dparameters_t parameters;
             opj_set_default_decoder_parameters(&parameters);
-            opj_setup_decoder(codec, &parameters);
-            opj_stream_t * stream = ÑreateBlobStream(data, size);
-            if(stream)
+            opj_setup_decoder(dinfo, &parameters);
+            opj_cio_t *cio = opj_cio_open((opj_common_ptr)dinfo, data, (int)size);
+            if(cio)
             {
-                opj_image_t  * image; 
-                if (opj_read_header(stream, codec, &image))
+                opj_image_t *image = opj_decode(dinfo, cio);
+                if(image)
                 {
-                    if(opj_decode(codec, stream, image))
+                    size_t width = image->x1 - image->x0;
+                    size_t height = image->y1 - image->y0;
+                    if(image->color_space != CLRSPC_UNKNOWN && width > 0 && width <= SHRT_MAX && 
+                        height > 0 && height <= SHRT_MAX && image->numcomps > 0)
                     {
-                        size_t width = image->x1 - image->x0;
-                        size_t height = image->y1 - image->y0;
-                        if(image->color_space != OPJ_CLRSPC_UNKNOWN && width > 0 && width <= SHRT_MAX &&
-                            height > 0 && height <= SHRT_MAX && image->numcomps > 0)
+                        opj_image_comp_t &c0 = image->comps[0];
+                        if(image->numcomps >= 3)
                         {
-                            opj_image_comp_t &c0 = image->comps[0];
-                            if(image->numcomps >= 3)
+                            opj_image_comp_t &c1 = image->comps[1];
+                            opj_image_comp_t &c2 = image->comps[2];
+                            if(image->color_space == CLRSPC_SRGB || image->color_space == CLRSPC_UNSPECIFIED)
                             {
-                                opj_image_comp_t &c1 = image->comps[1];
-                                opj_image_comp_t &c2 = image->comps[2];
-                                if(image->color_space == OPJ_CLRSPC_SRGB || image->color_space == OPJ_CLRSPC_UNSPECIFIED)
+                                if(c0.prec >= 8 && c0.dx == 1 && c1.dx == 1 && c2.dx == 1 && c0.dy == 1 && c1.dy == 1 && c2.dy == 1)
                                 {
-                                    if(c0.prec >= 8 && c0.dx == 1 && c1.dx == 1 && c2.dx == 1 && c0.dy == 1 && c1.dy == 1 && c2.dy == 1)
-                                    {
-                                        pView = new TView(width, height, width*TView::PixelSize(TView::Bgra32), TView::Bgra32, NULL);
-                                        InterleaveBgra(pView->data, width*height, 
-                                            c2.data, c2.prec, c2.sgnd != 0, c1.data, c1.prec, c1.sgnd != 0, c0.data, c0.prec, c0.sgnd != 0, 0xFF);
-                                    }
-                                }
-                                else if (image->color_space == OPJ_CLRSPC_SYCC)
-                                { 
-                                    if(c0.prec >= 8 && (c1.dx == 1 || c1.dx == 2) && (c1.dy == 1 || c1.dy == 2) 
-                                        && (c1.dy != 1 || c1.dx != 2) && width%c1.dx == 0 && height%c1.dy == 0)
-                                    {
-                                        pView = new TView(width, height, width*TView::PixelSize(TView::Bgra32), TView::Bgra32, NULL);
-                                        YuvToBgra(pView->data, width, height, pView->stride,
-                                            c0.data, c1.data, c2.data, c1.dx, c1.dy, c0.prec, 0xFF);
-                                    }
+                                    pView = new TView(width, height, width*TView::PixelSize(TView::Bgra32), TView::Bgra32, NULL);
+                                    InterleaveBgra(pView->data, width*height, 
+                                        c2.data, c2.prec, c2.sgnd != 0, c1.data, c1.prec, c1.sgnd != 0, c0.data, c0.prec, c0.sgnd != 0, 0xFF);
                                 }
                             }
-                            else
-                            {
-                                if(image->color_space == OPJ_CLRSPC_GRAY || image->color_space == OPJ_CLRSPC_UNSPECIFIED)
+                            else if (image->color_space == CLRSPC_SYCC)
+                            { 
+                                if(c0.prec >= 8 && (c1.dx == 1 || c1.dx == 2) && (c1.dy == 1 || c1.dy == 2) 
+                                    && (c1.dy != 1 || c1.dx != 2) && width%c1.dx == 0 && height%c1.dy == 0)
                                 {
-                                    if(c0.prec >= 8 && c0.dx == 1 && c0.dy == 1)
-                                    {
-                                        pView = new TView(width, height, width*TView::PixelSize(TView::Bgra32), TView::Bgra32, NULL);
-                                        InterleaveBgra(pView->data, width*height, c0.data, c0.prec, c0.sgnd != 0, 0xFF);
-                                    }
+                                    pView = new TView(width, height, width*TView::PixelSize(TView::Bgra32), TView::Bgra32, NULL);
+                                    YuvToBgra(pView->data, width, height, pView->stride,
+                                        c0.data, c1.data, c2.data, c1.dx, c1.dy, c0.prec, 0xFF);
                                 }
                             }
-                            AD_PERFORMANCE_TEST_SET_SIZE(width*height)
                         }
+                        else
+                        {
+                            if(image->color_space == CLRSPC_GRAY || image->color_space == CLRSPC_UNSPECIFIED)
+                            {
+                                if(c0.prec >= 8 && c0.dx == 1 && c0.dy == 1)
+                                {
+                                    pView = new TView(width, height, width*TView::PixelSize(TView::Bgra32), TView::Bgra32, NULL);
+                                    InterleaveBgra(pView->data, width*height, c0.data, c0.prec, c0.sgnd != 0, 0xFF);
+                                }
+                            }
+                        }
+                        AD_PERFORMANCE_TEST_SET_SIZE(width*height)
                     }
-                    opj_image_destroy(image);
+                    opj_image_destroy(image); 
                 }
-                opj_stream_destroy(stream);
+                opj_cio_close(cio);
             }
-            opj_destroy_codec(codec);
+            opj_destroy_decompress(dinfo);
         }
         return pView;
     }
