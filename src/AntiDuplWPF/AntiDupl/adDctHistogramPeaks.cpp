@@ -195,9 +195,9 @@ namespace ad
 			for each (Mat dct in qDCT)
 			{
 				subtract(dct, meanMat, sub);
-				Mat conv;
-				sub.convertTo(conv, CV_32S);
-				subAll.push_back(conv);
+				//Mat conv;
+				sub.convertTo(sub, CV_32S);
+				subAll.push_back(sub);
 			}
 
 
