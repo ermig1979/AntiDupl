@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using AntiDuplWPF.Command;
 using AntiDuplWPF.DragDrop;
 using AntiDuplWPF.Model;
+using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace AntiDuplWPF.ViewModel
 {
@@ -41,5 +45,61 @@ namespace AntiDuplWPF.ViewModel
         }
 
         #endregion
+
+        ICommand _selectDirectoryCommand;
+        public ICommand SelectDirectoryCommand
+        {
+            get
+            {
+                return _selectDirectoryCommand ?? (_selectDirectoryCommand = new RelayCommand(arg =>
+                {
+                    var dlg = new CommonOpenFileDialog();
+                    //dlg.Title = "My Title";
+                    dlg.IsFolderPicker = true;
+
+                    dlg.AddToMostRecentlyUsedList = false;
+                    dlg.AllowNonFileSystemItems = false;
+                    dlg.EnsureFileExists = true;
+                    dlg.EnsurePathExists = true;
+                    dlg.EnsureReadOnly = false;
+                    dlg.EnsureValidNames = true;
+                    dlg.Multiselect = true;
+                    dlg.ShowPlacesList = true;
+
+                    if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+                    {
+                        //var folder = dlg.FileName;
+                        foreach (var item in dlg.FileNames)
+                        {
+                            LocationsModel.AddSearchPath(item);
+                        }
+                        LocationsModel.CopyToDll();
+                    }
+                }));
+            }
+        }
+
+        ICommand _selectImagesCommand;
+        public ICommand SelectImagesCommand
+        {
+            get
+            {
+                return _selectImagesCommand ?? (_selectImagesCommand = new RelayCommand(arg =>
+                {
+                    OpenFileDialog openFileDialog = new OpenFileDialog();
+                    openFileDialog.Multiselect = true;
+                    //openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+                    //openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    if (openFileDialog.ShowDialog() == true)
+                    {
+                        foreach (var item in openFileDialog.FileNames)
+                        {
+                            LocationsModel.AddSearchPath(item);
+                        }
+                        LocationsModel.CopyToDll();
+                    }
+                }));
+            }
+        }
     }
 }
