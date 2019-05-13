@@ -131,6 +131,7 @@
     <Compile Include="Core\Location.cs" />
     <Compile Include="Core\SearchOption.cs" />
     <Compile Include="DragDrop\IDropable.cs" />
+    <Compile Include="Helper\DataGridColumnChooserHelper.cs" />
     <Compile Include="Helper\DiffrenceHelper.cs" />
     <Compile Include="Helper\DirectoryHelper.cs" />
     <Compile Include="Helper\GroupHelper.cs" />
