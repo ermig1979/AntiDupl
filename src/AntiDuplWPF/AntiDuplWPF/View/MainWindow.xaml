@@ -6,9 +6,14 @@
         xmlns:control="clr-namespace:AntiDuplWPF.Control"
         xmlns:convertor="clr-namespace:AntiDuplWPF.Convertor"
         xmlns:objectModel="clr-namespace:AntiDuplWPF.ObjectModel"
-        Title="{Binding Title, Mode=OneWay}" 
-        Height="350" Width="625">
-
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        xmlns:viewModel="clr-namespace:AntiDuplWPF.ViewModel"
+        xmlns:helper="clr-namespace:AntiDuplWPF.Helper"
+        Title="{Binding Title, Mode=OneWay}"
+        Height="350" Width="625"
+        d:DataContext="{d:DesignInstance viewModel:MainViewModel, IsDesignTimeCreatable=False}">
     <Window.Resources>
         <convertor:DuplResultMultiValueConverter x:Key="duplResultMultiValueConverter"/>
         <convertor:FileSizeConverter x:Key="fileSizeConverter"/>
@@ -135,7 +140,8 @@
                         ItemsSource="{Binding Result}" 
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
-                  IsSynchronizedWithCurrentItem="True">
+                  IsSynchronizedWithCurrentItem="True"
+                        helper:DataGridColumnChooserHelper.IsEnabled="True">
                         <!--SelectedIndex="{Binding SelectedResultIndex}"-->
                         <i:Interaction.Behaviors>
                             <behavior:DataGridContextMenuItemSourceBindingOnOpenBehavior 
