@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using AntiDuplWPF.Core;
 using AntiDuplWPF.Model;
@@ -15,10 +10,7 @@ using TinyIoC;
 
 namespace AntiDuplWPF
 {
-    /// <summary>
-    /// Логика взаимодействия для App.xaml
-    /// </summary>
-    public partial class App : Application
+    public partial class App
     {
         public App()
         {
@@ -46,6 +38,8 @@ namespace AntiDuplWPF
 
             ThumbnailProvider thumbnailProvider = new ThumbnailProvider(imageLoader);
             TinyIoC.TinyIoCContainer.Current.Register<IThumbnailProvider>(thumbnailProvider);
+
+            TinyIoC.TinyIoCContainer.Current.Register<IIconSetThemeService>(new IconSetThemeService());
 
             //IWindowService windowService = new WindowService();
             MainViewModel viewModel = TinyIoCContainer.Current.Resolve<MainViewModel>();

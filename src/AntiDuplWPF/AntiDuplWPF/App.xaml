@@ -7,6 +7,7 @@
                 <ResourceDictionary Source="Style\Default.xaml" />
                 <!--<ResourceDictionary Source="pack://application:,,,/AntiDuplWPF;component/Style/Default.xaml"/>-->
                 <ResourceDictionary Source="/AntiDuplWPF;component/Control/SearchControlTheme.xaml" />
+                <ResourceDictionary Source="/AntiDuplWPF;component/Themes/WindowsMetro.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

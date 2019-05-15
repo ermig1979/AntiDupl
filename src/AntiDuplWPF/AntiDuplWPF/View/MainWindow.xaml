@@ -11,9 +11,11 @@
         mc:Ignorable="d"
         xmlns:viewModel="clr-namespace:AntiDuplWPF.ViewModel"
         xmlns:helper="clr-namespace:AntiDuplWPF.Helper"
+        xmlns:service="clr-namespace:AntiDuplWPF.Service"
         Title="{Binding Title, Mode=OneWay}"
         Height="350" Width="625"
-        d:DataContext="{d:DesignInstance viewModel:MainViewModel, IsDesignTimeCreatable=False}">
+        d:DataContext="{d:DesignInstance viewModel:MainViewModel, IsDesignTimeCreatable=False}"
+        UseLayoutRounding="True">
     <Window.Resources>
         <convertor:DuplResultMultiValueConverter x:Key="duplResultMultiValueConverter"/>
         <convertor:FileSizeConverter x:Key="fileSizeConverter"/>
@@ -44,9 +46,9 @@
                         <Setter Property="Header" Value="{Binding Title}" />
                         <Setter Property="IsCheckable" Value="True" />
 
-                        <Setter Property="IsChecked" Value="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <Setter Property="IsChecked" Value="{Binding Path=(viewModel:LanguageViewModel.IsChecked), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <Setter Property="Command" Value="{Binding DataContext.LanguageSelectedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type MenuItem}}}" />
-                        <Setter Property="CommandParameter" Value="{Binding Enum}" />
+                        <Setter Property="CommandParameter" Value="{Binding Path=(viewModel:LanguageViewModel.Enum)}" />
                     </Style>
                 </MenuItem.ItemContainerStyle>
             </MenuItem>
@@ -59,6 +61,20 @@
                               Header="{DynamicResource mainwindow_menu_view_toDuplPair}" 
                               IsCheckable="true" 
                               Command="{Binding ConvertToDuplPairCommand}" />
+                <Separator />
+
+                <MenuItem Header="Icon set" DataContext="{Binding Path=IconSetThemeService}">
+                    <MenuItem Header="Windows Metro (Win8)"
+                              Command="{Binding ChangeIconSetCmd}"
+                              CommandParameter="{x:Static service:IconSet.WindowsMetro}" />
+                    <MenuItem Header="Windows 10"
+                              Command="{Binding ChangeIconSetCmd}"
+                              CommandParameter="{x:Static service:IconSet.Windows10}" />
+                    <MenuItem Header="Color"
+                              Command="{Binding ChangeIconSetCmd}"
+                              CommandParameter="{x:Static service:IconSet.Color}" />
+                </MenuItem>
+
                 <i:Interaction.Behaviors>
                     <behavior:MenuItemButtonGroupBehavior></behavior:MenuItemButtonGroupBehavior>
                 </i:Interaction.Behaviors>
@@ -66,30 +82,47 @@
         </Menu>
 
         <ToolBar DockPanel.Dock="Top">
-            <Button Command="{Binding UndoCommand}" 
-                    ToolTip="{Binding UndoTooltip, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" >
-                <Image Source ="/AntiDuplWPF;component/Image/undo-3-32.png" MaxHeight="16" 
-                       behavior:GrayoutImageBehavior.GrayOutOnDisabled="True" />
+            <ToolBar.Resources>
+                <Style TargetType="{x:Type Image}">
+                    <Setter Property="RenderOptions.BitmapScalingMode" Value="NearestNeighbor" />
+                    <Setter Property="Stretch" Value="None" />
+                    <Style.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.2" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ToolBar.Resources>
+            <Button Command="{Binding UndoCommand}"
+                    ToolTip="{Binding UndoTooltip, Mode=OneWay}">
+                <Image Source="{DynamicResource UndoImg}" />
             </Button>
-            <Menu>
+            <Menu Height="26" HorizontalContentAlignment="Center">
                 <MenuItem Header="Menu">
-                    <MenuItem Header="Undo all"
-                              Command="{Binding UndoAllCommand}"/>
+                    <MenuItem Header="Undo all" Command="{Binding UndoAllCommand}" />
                 </MenuItem>
             </Menu>
             <Button Command="{Binding RedoCommand}">
-                <Image Source ="/AntiDuplWPF;component/Image/redo-3-32.png" MaxHeight="16"  
-                       behavior:GrayoutImageBehavior.GrayOutOnDisabled="True" />
+                <Image Source="{DynamicResource RedoImg}" />
             </Button>
-            <Separator></Separator>
-            <Button Command="{Binding OpenConfigurationCommand}" Content="{DynamicResource toolBar_Configuration}"/>
-            <Button Content="{DynamicResource toolBar_setSaati}" 
-                Command="{Binding SetPrioritiesCommand}" />
-            <Separator></Separator>
-            <Button Command="{Binding OpenPathCommand}" Content="Path"/>
-            <Button Content="Search" Command="{Binding SearchCommand}" />
+            <Separator />
+            <Button Command="{Binding OpenConfigurationCommand}" ToolTip="Configuration">
+                <Image Source="{DynamicResource SettingsImg}" />
+            </Button>
+            <Button ToolTip="{DynamicResource toolBar_setSaati}"
+                    Command="{Binding SetPrioritiesCommand}">
+                <Image Source="{DynamicResource MaintenanceImg}" />
+            </Button>
+            <Separator />
+            <Button Command="{Binding OpenPathCommand}" ToolTip="Path">
+                <Image Source="{DynamicResource PathsSetupImg}" />
+            </Button>
+            <Button ToolTip="Search" Command="{Binding SearchCommand}">
+                <Image Source="{DynamicResource RunSearchImg}" />
+            </Button>
             <Button Content="Configurable action" Command="{Binding ConfigurableActionCommand}" />
-            <Button Content="Calculate histogram peaks for DCT coefficient" Command="{Binding CalculateHistogramPeaksCommand}" />
+            <Button Content="Calculate histogram peaks for DCT coefficient"
+                    Command="{Binding CalculateHistogramPeaksCommand}" />
             <Button Content="Refresh" Command="{Binding RefreshCommand}" />
         </ToolBar>
 

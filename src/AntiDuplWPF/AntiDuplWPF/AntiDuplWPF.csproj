@@ -191,6 +191,7 @@
     <Compile Include="ObjectModel\FilterCondition.cs" />
     <Compile Include="ObjectModel\SerializableCultureInfo.cs" />
     <Compile Include="ObjectModel\ViewMode.cs" />
+    <Compile Include="Service\IconSetThemeService.cs" />
     <Compile Include="Service\IImageLoader.cs" />
     <Compile Include="Service\ILanguageService.cs" />
     <Compile Include="Service\ImageLoader.cs" />
@@ -284,7 +285,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Themes\Color.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Windows10.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\WindowsMetro.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -411,6 +424,50 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\Modern\undo-26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\Modern\settings-26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\Modern\redo-26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\Modern\maintenance-26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\Modern\documents-folder-26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\Modern\search-26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\Win10\documents-folder-32.png" />
+    <Resource Include="Image\Win10\search-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\Win10\maintenance-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\Win10\settings-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\Win10\undo-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\Win10\redo-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\Color\documents-folder-48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\Color\maintenance-48.png" />
+    <Resource Include="Image\Color\redo-48.png" />
+    <Resource Include="Image\Color\search-48.png" />
+    <Resource Include="Image\Color\settings-48.png" />
+    <Resource Include="Image\Color\undo-48.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
