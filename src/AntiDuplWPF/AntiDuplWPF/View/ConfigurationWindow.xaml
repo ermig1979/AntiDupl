@@ -5,14 +5,19 @@
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:behavior="clr-namespace:AntiDuplWPF.Behavior"
         xmlns:core="clr-namespace:AntiDuplWPF.Core"
-        Title="ConfigurationWindow" Height="300" Width="300">
-
+        Title="ConfigurationWindow"
+        Height="450" Width="350"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModel="clr-namespace:AntiDuplWPF.ViewModel"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance viewModel:ConfigurationViewModel, IsDesignTimeCreatable=False}">
     <Window.Resources>
-        <ObjectDataProvider x:Key="algorithms" 
+        <ObjectDataProvider x:Key="algorithms"
                             MethodName="GetValues"
                             ObjectType="{x:Type system:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="core:AlgorithmComparing"/>
+                <x:Type TypeName="core:AlgorithmComparing" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
 
@@ -103,57 +108,69 @@
             </StackPanel>
         </TabItem>
         <TabItem Header="AdvancedOption">
-            <StackPanel>
-                <CheckBox Content="UseImageDataBase" IsChecked="{Binding Option.AdvancedOptions.UseImageDataBase}"/>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="RatioResolution" />
-                    <TextBox Text="{Binding Option.AdvancedOptions.RatioResolution, UpdateSourceTrigger=PropertyChanged}">
-                        <i:Interaction.Behaviors>
-                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
-                        </i:Interaction.Behaviors>
-                    </TextBox>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="CompareThreadCount" />
-                    <TextBox Text="{Binding Option.AdvancedOptions.CompareThreadCount, UpdateSourceTrigger=PropertyChanged}">
-                        <i:Interaction.Behaviors>
-                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
-                        </i:Interaction.Behaviors>
-                    </TextBox>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="CollectThreadCount" />
-                    <TextBox Text="{Binding Option.AdvancedOptions.CollectThreadCount, UpdateSourceTrigger=PropertyChanged}">
-                        <i:Interaction.Behaviors>
-                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
-                        </i:Interaction.Behaviors>
-                    </TextBox>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="ReducedImageSize" />
-                    <TextBox Text="{Binding Option.AdvancedOptions.ReducedImageSize, UpdateSourceTrigger=PropertyChanged}">
-                        <i:Interaction.Behaviors>
-                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
-                        </i:Interaction.Behaviors>
-                    </TextBox>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="ResultCountMax" />
-                    <TextBox Text="{Binding Option.AdvancedOptions.ResultCountMax, UpdateSourceTrigger=PropertyChanged}">
-                        <i:Interaction.Behaviors>
-                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
-                        </i:Interaction.Behaviors>
-                    </TextBox>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="IgnoreFrameWidth" />
-                    <TextBox Text="{Binding Option.AdvancedOptions.IgnoreFrameWidth, UpdateSourceTrigger=PropertyChanged}">
-                        <i:Interaction.Behaviors>
-                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
-                        </i:Interaction.Behaviors>
-                    </TextBox>
-                </StackPanel>                
-            </StackPanel>
+            <Grid DataContext="{Binding Option.AdvancedOptions}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="50" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <CheckBox Grid.Column="0" Grid.Row="0" Content="UseImageDataBase"
+                          IsChecked="{Binding UseImageDataBase}" />
+
+                <TextBlock Grid.Column="0" Grid.Row="1" Text="RatioResolution" />
+                <TextBox Grid.Column="1" Grid.Row="1"
+                         Text="{Binding RatioResolution, UpdateSourceTrigger=PropertyChanged}">
+                    <i:Interaction.Behaviors>
+                        <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
+                    </i:Interaction.Behaviors>
+                </TextBox>
+
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="CompareThreadCount" />
+                <TextBox Grid.Column="1" Grid.Row="2"
+                         Text="{Binding CompareThreadCount, UpdateSourceTrigger=PropertyChanged}">
+                    <i:Interaction.Behaviors>
+                        <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
+                    </i:Interaction.Behaviors>
+                </TextBox>
+
+                <TextBlock Grid.Column="0" Grid.Row="3" Text="CollectThreadCount" />
+                <TextBox Grid.Column="1" Grid.Row="3"
+                         Text="{Binding CollectThreadCount, UpdateSourceTrigger=PropertyChanged}">
+                    <i:Interaction.Behaviors>
+                        <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
+                    </i:Interaction.Behaviors>
+                </TextBox>
+                <TextBlock Grid.Column="0" Grid.Row="4" Text="ReducedImageSize" />
+                <TextBox Grid.Column="1" Grid.Row="4"
+                         Text="{Binding ReducedImageSize, UpdateSourceTrigger=PropertyChanged}">
+                    <i:Interaction.Behaviors>
+                        <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
+                    </i:Interaction.Behaviors>
+                </TextBox>
+                <TextBlock Grid.Column="0" Grid.Row="5" Text="ResultCountMax" />
+                <TextBox Grid.Column="1" Grid.Row="5"
+                         Text="{Binding ResultCountMax, UpdateSourceTrigger=PropertyChanged}">
+                    <i:Interaction.Behaviors>
+                        <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
+                    </i:Interaction.Behaviors>
+                </TextBox>
+                <TextBlock Grid.Column="0" Grid.Row="6" Text="IgnoreFrameWidth" />
+                <TextBox Grid.Column="1" Grid.Row="6"
+                         Text="{Binding IgnoreFrameWidth, UpdateSourceTrigger=PropertyChanged}">
+                    <i:Interaction.Behaviors>
+                        <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
+                    </i:Interaction.Behaviors>
+                </TextBox>
+            </Grid>
         </TabItem>
         <TabItem Header="DefectOption">
             <StackPanel>
