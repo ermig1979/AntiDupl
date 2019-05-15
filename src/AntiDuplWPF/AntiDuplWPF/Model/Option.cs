@@ -1,24 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AntiDuplWPF.Core;
+﻿using AntiDuplWPF.Core;
 
 namespace AntiDuplWPF.Model
 {
     public class Option
     {
-        private ICoreLib _core;
+        private readonly ICoreLib _core;
 
-        public SearchOption SearchOptions { get; set; }
-        public CompareOption CompareOptions { get; set; }
-        public AdvancedOption AdvancedOptions { get; set; }
-        public DefectOption DefectOptions { get; set; }
+        public SearchOption SearchOptions { get; private set; }
+        public CompareOption CompareOptions { get; private set; }
+        public AdvancedOption AdvancedOptions { get; private set; }
+        public DefectOption DefectOptions { get; private set; }
 
         public Option(ICoreLib core)
         {
-            this._core = core;
+            _core = core;
 
             SearchOptions = new SearchOption();
             CompareOptions = new CompareOption();
@@ -33,6 +28,5 @@ namespace AntiDuplWPF.Model
             _core.SetCompareOptions(CompareOptions);
             _core.SetDefectOptions(DefectOptions);
         }
-
     }
 }

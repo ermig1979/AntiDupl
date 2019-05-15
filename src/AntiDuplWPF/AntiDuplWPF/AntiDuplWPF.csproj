@@ -109,6 +109,7 @@
     <Compile Include="Control\RenameImageTextBox.cs" />
     <Compile Include="Control\RenameTextBox.cs" />
     <Compile Include="Control\SearchControl.cs" />
+    <Compile Include="Convertor\ColorToSolidColorBrushConverter.cs" />
     <Compile Include="Convertor\DeleteBackgroundValueConverter.cs" />
     <Compile Include="Convertor\DifferenceValueConverter.cs" />
     <Compile Include="Convertor\DuplResultMultiValueConverter.cs" />
