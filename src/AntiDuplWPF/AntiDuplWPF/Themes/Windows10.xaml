@@ -6,4 +6,6 @@
     <BitmapImage x:Key="SettingsImg" UriSource="../Image/Win10/settings-32.png" />
     <BitmapImage x:Key="UndoImg" UriSource="../Image/Win10/undo-32.png" />
     <BitmapImage x:Key="RedoImg" UriSource="../Image/Win10/redo-32.png" />
+    <BitmapImage x:Key="RefreshImg" UriSource="../Image/Win10/refresh-32.png" />
+    <BitmapImage x:Key="PasteSpecialImg" UriSource="../Image/Win10/paste-special-32.png" />
 </ResourceDictionary>

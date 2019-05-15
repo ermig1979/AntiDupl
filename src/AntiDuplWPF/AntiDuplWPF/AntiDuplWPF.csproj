@@ -469,6 +469,16 @@
     <Resource Include="Image\Color\settings-48.png" />
     <Resource Include="Image\Color\undo-48.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\Color\refresh-48.png" />
+    <Resource Include="Image\Modern\refresh-26.png" />
+    <Resource Include="Image\Win10\refresh-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\Color\paste-special-48.png" />
+    <Resource Include="Image\Modern\paste-special-26.png" />
+    <Resource Include="Image\Win10\paste-special-32.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -109,10 +109,18 @@
             <Button Command="{Binding OpenConfigurationCommand}" ToolTip="Configuration">
                 <Image Source="{DynamicResource SettingsImg}" />
             </Button>
-            <Button ToolTip="{DynamicResource toolBar_setSaati}"
-                    Command="{Binding SetPrioritiesCommand}">
-                <Image Source="{DynamicResource MaintenanceImg}" />
-            </Button>
+            <Menu>
+                <MenuItem ToolTip="Tuning">
+                    <MenuItem.Header>
+                        <Image Source="{DynamicResource MaintenanceImg}" />
+                    </MenuItem.Header>
+                    <MenuItem Header="{DynamicResource toolBar_setSaati}"
+                              Command="{Binding SetPrioritiesCommand}" />
+                    <MenuItem Header="Calculate histogram peaks for DCT coefficient"
+                              Command="{Binding CalculateHistogramPeaksCommand}" />
+                </MenuItem>
+            </Menu>
+            
             <Separator />
             <Button Command="{Binding OpenPathCommand}" ToolTip="Path">
                 <Image Source="{DynamicResource PathsSetupImg}" />
@@ -120,10 +128,13 @@
             <Button ToolTip="Search" Command="{Binding SearchCommand}">
                 <Image Source="{DynamicResource RunSearchImg}" />
             </Button>
-            <Button Content="Configurable action" Command="{Binding ConfigurableActionCommand}" />
-            <Button Content="Calculate histogram peaks for DCT coefficient"
-                    Command="{Binding CalculateHistogramPeaksCommand}" />
-            <Button Content="Refresh" Command="{Binding RefreshCommand}" />
+            <Button ToolTip="Configurable action" Command="{Binding ConfigurableActionCommand}">
+                <Image Source="{DynamicResource PasteSpecialImg}" />
+            </Button>
+
+            <Button ToolTip="Refresh" Command="{Binding RefreshCommand}">
+                <Image Source="{DynamicResource RefreshImg}" />
+            </Button>
         </ToolBar>
 
         <StatusBar DockPanel.Dock="Bottom" >

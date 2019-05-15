@@ -6,4 +6,6 @@
     <BitmapImage x:Key="SettingsImg" UriSource="../Image/Modern/settings-26.png" />
     <BitmapImage x:Key="UndoImg" UriSource="../Image/Modern/undo-26.png" />
     <BitmapImage x:Key="RedoImg" UriSource="../Image/Modern/redo-26.png" />
+    <BitmapImage x:Key="RefreshImg" UriSource="../Image/Modern/refresh-26.png" />
+    <BitmapImage x:Key="PasteSpecialImg" UriSource="../Image/Modern/paste-special-26.png" />
 </ResourceDictionary>
