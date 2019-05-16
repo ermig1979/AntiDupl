@@ -63,18 +63,6 @@
                               Command="{Binding ConvertToDuplPairCommand}" />
                 <Separator />
 
-                <MenuItem Header="Icon set" DataContext="{Binding Path=IconSetThemeService}">
-                    <MenuItem Header="Windows Metro (Win8)"
-                              Command="{Binding ChangeIconSetCmd}"
-                              CommandParameter="{x:Static service:IconSet.WindowsMetro}" />
-                    <MenuItem Header="Windows 10"
-                              Command="{Binding ChangeIconSetCmd}"
-                              CommandParameter="{x:Static service:IconSet.Windows10}" />
-                    <MenuItem Header="Color"
-                              Command="{Binding ChangeIconSetCmd}"
-                              CommandParameter="{x:Static service:IconSet.Color}" />
-                </MenuItem>
-
                 <i:Interaction.Behaviors>
                     <behavior:MenuItemButtonGroupBehavior></behavior:MenuItemButtonGroupBehavior>
                 </i:Interaction.Behaviors>
@@ -84,8 +72,10 @@
         <ToolBar DockPanel.Dock="Top">
             <ToolBar.Resources>
                 <Style TargetType="{x:Type Image}">
-                    <Setter Property="RenderOptions.BitmapScalingMode" Value="NearestNeighbor" />
-                    <Setter Property="Stretch" Value="None" />
+                    <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
+                    <Setter Property="Stretch" Value="Fill" />
+                    <Setter Property="Height" Value="32" />
+                    <Setter Property="Width" Value="32" />
                     <Style.Triggers>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value="0.2" />
@@ -95,7 +85,7 @@
             </ToolBar.Resources>
             <Button Command="{Binding UndoCommand}"
                     ToolTip="{Binding UndoTooltip, Mode=OneWay}">
-                <Image Source="{DynamicResource UndoImg}" />
+                <Image Source="../Image/undo-3-32.png" />
             </Button>
             <Menu Height="26" HorizontalContentAlignment="Center">
                 <MenuItem Header="Menu">
@@ -103,17 +93,14 @@
                 </MenuItem>
             </Menu>
             <Button Command="{Binding RedoCommand}">
-                <Image Source="{DynamicResource RedoImg}" />
+                <Image Source="../Image/redo-3-32.png" />
             </Button>
             <Separator />
             <Button Command="{Binding OpenConfigurationCommand}" ToolTip="Configuration">
-                <Image Source="{DynamicResource SettingsImg}" />
+                <Image Source="../Image/img/OptionsButton.png" />
             </Button>
             <Menu>
-                <MenuItem ToolTip="Tuning">
-                    <MenuItem.Header>
-                        <Image Source="{DynamicResource MaintenanceImg}" />
-                    </MenuItem.Header>
+                <MenuItem Header="Tuning">
                     <MenuItem Header="{DynamicResource toolBar_setSaati}"
                               Command="{Binding SetPrioritiesCommand}" />
                     <MenuItem Header="Calculate histogram peaks for DCT coefficient"
@@ -123,17 +110,15 @@
             
             <Separator />
             <Button Command="{Binding OpenPathCommand}" ToolTip="Path">
-                <Image Source="{DynamicResource PathsSetupImg}" />
+                <Image Source="../Image/img/PathsButton.png" />
             </Button>
             <Button ToolTip="Search" Command="{Binding SearchCommand}">
-                <Image Source="{DynamicResource RunSearchImg}" />
+                <Image Source="../Image/img/StartButton.png" />
             </Button>
-            <Button ToolTip="Configurable action" Command="{Binding ConfigurableActionCommand}">
-                <Image Source="{DynamicResource PasteSpecialImg}" />
-            </Button>
+            <Button Content="Configurable action" Command="{Binding ConfigurableActionCommand}" />
 
             <Button ToolTip="Refresh" Command="{Binding RefreshCommand}">
-                <Image Source="{DynamicResource RefreshImg}" />
+                <Image Source="../Image/img/RefreshButton.png" />
             </Button>
         </ToolBar>
 

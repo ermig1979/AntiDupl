@@ -55,7 +55,6 @@ namespace AntiDuplWPF.ViewModel
         //    get { return _configuration; }
         //}
         public IConfigurationModel Configuration { get; private set; }
-        public IIconSetThemeService IconSetThemeService { get; private set; }
         IgnoreStorage _ignoreStorage;
         ILanguageService _languageService;
 
@@ -99,8 +98,7 @@ namespace AntiDuplWPF.ViewModel
             ILanguageService languageService,
             IConfigurationModel configuration,
             ICoreLib coreLib,
-            IThumbnailProvider thumbnailProvider,
-            IIconSetThemeService iconSetThemeService)
+            IThumbnailProvider thumbnailProvider)
         {
             _languageService = languageService;
             //_windowService = windowService;
@@ -115,7 +113,6 @@ namespace AntiDuplWPF.ViewModel
 
             //_configuration = TinyIoCContainer.Current.Resolve<IConfigurationModel>();
             Configuration = configuration;
-            IconSetThemeService = iconSetThemeService;
             Configuration.PropertyChanged += OnConfigurationPropertyChanged;
 
             UndoRedoEngine undoRedoEngine = new UndoRedoEngine(Configuration);

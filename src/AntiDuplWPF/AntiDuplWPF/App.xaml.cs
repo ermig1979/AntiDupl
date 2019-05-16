@@ -39,8 +39,6 @@ namespace AntiDuplWPF
             ThumbnailProvider thumbnailProvider = new ThumbnailProvider(imageLoader);
             TinyIoC.TinyIoCContainer.Current.Register<IThumbnailProvider>(thumbnailProvider);
 
-            TinyIoC.TinyIoCContainer.Current.Register<IIconSetThemeService>(new IconSetThemeService());
-
             //IWindowService windowService = new WindowService();
             MainViewModel viewModel = TinyIoCContainer.Current.Resolve<MainViewModel>();
             //var viewModel = new MainViewModel(languageService);
