@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -1169,6 +1168,12 @@ namespace AntiDuplWPF.ViewModel
                 }, arg => _resultList != null));
             }
         }
-       
+
+        private ICommand _closeCmd;
+
+        public ICommand CloseCmd
+        {
+            get { return _closeCmd ?? (_closeCmd = new RelayCommand(arg => { Application.Current.Shutdown(); })); }
+        }
     }
 }

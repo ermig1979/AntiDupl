@@ -8,12 +8,29 @@
     <v:String x:Key="desc_deleteOtherFromPair">Delete all from pair except {0}</v:String>
     <v:String x:Key="desc_deleteFiles">Deleted {0} files</v:String>
 
+    <v:String x:Key="mainwindow_menu_file">File</v:String>
+    <v:String x:Key="mainwindow_menu_file_open_search_profile">Open search profile</v:String>
+    <v:String x:Key="mainwindow_menu_file_save_search_profile_as">Save search profile as</v:String>
+    <v:String x:Key="mainwindow_menu_file_load_on_open">Load profile on loading</v:String>
+    <v:String x:Key="mainwindow_menu_file_save_on_close">Save profile on closing</v:String>
+    <v:String x:Key="mainwindow_menu_file_exit">Close</v:String>
+
+    <v:String x:Key="mainwindow_menu_edit">Edit</v:String>
+    <v:String x:Key="mainwindow_menu_edit_undo">Undo</v:String>
+    <v:String x:Key="mainwindow_menu_edit_undo_all">Undo all</v:String>
+    <v:String x:Key="mainwindow_menu_edit_redo">Redo</v:String>
+    <v:String x:Key="mainwindow_menu_edit_select_all">Select all</v:String>
+
     <v:String x:Key="mainwindow_menu_result">Results</v:String>
     <v:String x:Key="mainwindow_menu_result_load">Load</v:String>
     <v:String x:Key="mainwindow_menu_result_save">Save</v:String>
+
     <v:String x:Key="mainwindow_menu_view">View</v:String>
+    <v:String x:Key="mainwindow_menu_view_language">Language</v:String>
+    <v:String x:Key="mainwindow_menu_view_mode">View mode</v:String>
     <v:String x:Key="mainwindow_menu_view_toGroup">To group</v:String>
     <v:String x:Key="mainwindow_menu_view_toDuplPair">To dupl pair</v:String>
+
     <v:String x:Key="mainwindow_contextmenu_IgnorePair">Ignore pair</v:String>
     <v:String x:Key="mainwindow_contextmenu_IgnorePairs">Ignore selected pairs ({0})</v:String>
     <v:String x:Key="mainwindow_contextmenu_OpenСomparator">Open comparator</v:String>
