@@ -191,7 +191,6 @@
     <Compile Include="ObjectModel\FilterCondition.cs" />
     <Compile Include="ObjectModel\SerializableCultureInfo.cs" />
     <Compile Include="ObjectModel\ViewMode.cs" />
-    <Compile Include="Service\IconSetThemeService.cs" />
     <Compile Include="Service\IImageLoader.cs" />
     <Compile Include="Service\ILanguageService.cs" />
     <Compile Include="Service\ImageLoader.cs" />
@@ -285,19 +284,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Themes\Color.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Themes\Generic.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Themes\Windows10.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Themes\WindowsMetro.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -426,58 +413,115 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Image\Modern\undo-26.png" />
+    <Resource Include="Image\img\PathsButton.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Image\Modern\settings-26.png" />
+    <Resource Include="Image\img\BlockinessIcon.png" />
+    <Resource Include="Image\img\BlurringIcon.png" />
+    <Resource Include="Image\img\DefectIcon.png" />
+    <Resource Include="Image\img\DeleteBothesHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteBothesHorizontalMenu.png" />
+    <Resource Include="Image\img\DeleteBothesVerticalButton.png" />
+    <Resource Include="Image\img\DeleteBothesVerticalMenu.png" />
+    <Resource Include="Image\img\DeleteBothHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteBothVerticalButton.png" />
+    <Resource Include="Image\img\DeleteDefectHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteDefectIcon.png" />
+    <Resource Include="Image\img\DeleteDefectsHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteDefectsHorizontalMenu.png" />
+    <Resource Include="Image\img\DeleteDefectsVerticalButton.png" />
+    <Resource Include="Image\img\DeleteDefectsVerticalMenu.png" />
+    <Resource Include="Image\img\DeleteDefectVerticalButton.png" />
+    <Resource Include="Image\img\DeleteFirstHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteFirstHorizontalIcon.png" />
+    <Resource Include="Image\img\DeleteFirstsHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteFirstsHorizontalMenu.png" />
+    <Resource Include="Image\img\DeleteFirstsVerticalButton.png" />
+    <Resource Include="Image\img\DeleteFirstsVerticalMenu.png" />
+    <Resource Include="Image\img\DeleteFirstVerticalButton.png" />
+    <Resource Include="Image\img\DeleteFirstVerticalIcon.png" />
+    <Resource Include="Image\img\DeleteSecondHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteSecondHorizontalIcon.png" />
+    <Resource Include="Image\img\DeleteSecondsHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteSecondsHorizontalMenu.png" />
+    <Resource Include="Image\img\DeleteSecondsVerticalButton.png" />
+    <Resource Include="Image\img\DeleteSecondsVerticalMenu.png" />
+    <Resource Include="Image\img\DeleteSecondVerticalButton.png" />
+    <Resource Include="Image\img\DeleteSecondVerticalIcon.png" />
+    <Resource Include="Image\img\DuplPairHorizontalIcon.png" />
+    <Resource Include="Image\img\DuplPairVerticalIcon.png" />
+    <Resource Include="Image\img\HelpButton.png" />
+    <Resource Include="Image\img\HelpMenu.png" />
+    <Resource Include="Image\img\JpegEndMarkerIsAbsentIcon.png" />
+    <Resource Include="Image\img\MirrorTurn_0_Icon.png" />
+    <Resource Include="Image\img\MirrorTurn_180_Icon.png" />
+    <Resource Include="Image\img\MirrorTurn_270_Icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Image\Modern\redo-26.png" />
+    <Resource Include="Image\img\MirrorTurn_90_Icon.png" />
+    <Resource Include="Image\img\MistakeButton.png" />
+    <Resource Include="Image\img\MistakesButton.png" />
+    <Resource Include="Image\img\MistakesMenu.png" />
+    <Resource Include="Image\img\MoveFirstToSecondHorizontalButton.png" />
+    <Resource Include="Image\img\MoveFirstToSecondHorizontalMenu.png" />
+    <Resource Include="Image\img\MoveFirstToSecondVerticalButton.png" />
+    <Resource Include="Image\img\MoveFirstToSecondVerticalMenu.png" />
+    <Resource Include="Image\img\MoveSecondToFirstHorizontalButton.png" />
+    <Resource Include="Image\img\MoveSecondToFirstHorizontalMenu.png" />
+    <Resource Include="Image\img\MoveSecondToFirstVerticalButton.png" />
+    <Resource Include="Image\img\MoveSecondToFirstVerticalMenu.png" />
+    <Resource Include="Image\img\NextButton.png" />
+    <Resource Include="Image\img\OptionsButton.png" />
+    <Resource Include="Image\img\OptionsMenu.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Image\Modern\maintenance-26.png" />
+    <Resource Include="Image\img\PathsMenu.png" />
+    <Resource Include="Image\img\PerformHintButton.png" />
+    <Resource Include="Image\img\PerformHintMenu.png" />
+    <Resource Include="Image\img\PreviousButton.png" />
+    <Resource Include="Image\img\ProfileOpenButton.png" />
+    <Resource Include="Image\img\ProfileOpenMenu.png" />
+    <Resource Include="Image\img\ProfileSaveAsButton.png" />
+    <Resource Include="Image\img\ProfileSaveAsMenu.png" />
+    <Resource Include="Image\img\RedoButton.png" />
+    <Resource Include="Image\img\RedoMenu.png" />
+    <Resource Include="Image\img\RefreshButton.png" />
+    <Resource Include="Image\img\RefreshMenu.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Image\Modern\documents-folder-26.png" />
+    <Resource Include="Image\img\RenameFirstLikeSecondHorizontalButton.png" />
+    <Resource Include="Image\img\RenameFirstLikeSecondHorizontalMenu.png" />
+    <Resource Include="Image\img\RenameFirstLikeSecondVerticalButton.png" />
+    <Resource Include="Image\img\RenameFirstLikeSecondVerticalMenu.png" />
+    <Resource Include="Image\img\RenameFirstToSecondHorizontalButton.png" />
+    <Resource Include="Image\img\RenameFirstToSecondHorizontalIcon.png" />
+    <Resource Include="Image\img\RenameFirstToSecondHorizontalMenu.png" />
+    <Resource Include="Image\img\RenameFirstToSecondVerticalButton.png" />
+    <Resource Include="Image\img\RenameFirstToSecondVerticalIcon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Image\Modern\search-26.png" />
+    <Resource Include="Image\img\RenameFirstToSecondVerticalMenu.png" />
+    <Resource Include="Image\img\RenameSecondLikeFirstHorizontalButton.png" />
+    <Resource Include="Image\img\RenameSecondLikeFirstHorizontalMenu.png" />
+    <Resource Include="Image\img\RenameSecondLikeFirstVerticalButton.png" />
+    <Resource Include="Image\img\RenameSecondLikeFirstVerticalMenu.png" />
+    <Resource Include="Image\img\RenameSecondToFirstHorizontalButton.png" />
+    <Resource Include="Image\img\RenameSecondToFirstHorizontalIcon.png" />
+    <Resource Include="Image\img\RenameSecondToFirstHorizontalMenu.png" />
+    <Resource Include="Image\img\RenameSecondToFirstVerticalButton.png" />
+    <Resource Include="Image\img\RenameSecondToFirstVerticalIcon.png" />
+    <Resource Include="Image\img\RenameSecondToFirstVerticalMenu.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Image\Win10\documents-folder-32.png" />
-    <Resource Include="Image\Win10\search-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Image\Win10\maintenance-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Image\Win10\settings-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Image\Win10\undo-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Image\Win10\redo-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Image\Color\documents-folder-48.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Image\Color\maintenance-48.png" />
-    <Resource Include="Image\Color\redo-48.png" />
-    <Resource Include="Image\Color\search-48.png" />
-    <Resource Include="Image\Color\settings-48.png" />
-    <Resource Include="Image\Color\undo-48.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Image\Color\refresh-48.png" />
-    <Resource Include="Image\Modern\refresh-26.png" />
-    <Resource Include="Image\Win10\refresh-32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Image\Color\paste-special-48.png" />
-    <Resource Include="Image\Modern\paste-special-26.png" />
-    <Resource Include="Image\Win10\paste-special-32.png" />
+    <Resource Include="Image\img\StartButton.png" />
+    <Resource Include="Image\img\StartMenu.png" />
+    <Resource Include="Image\img\Turn_0_Icon.png" />
+    <Resource Include="Image\img\Turn_180_Icon.png" />
+    <Resource Include="Image\img\Turn_270_Icon.png" />
+    <Resource Include="Image\img\Turn_90_Icon.png" />
+    <Resource Include="Image\img\UndoButton.png" />
+    <Resource Include="Image\img\UndoMenu.png" />
+    <Resource Include="Image\img\UnknownDefectIcon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

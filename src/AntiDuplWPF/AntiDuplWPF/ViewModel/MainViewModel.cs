@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -55,7 +54,6 @@ namespace AntiDuplWPF.ViewModel
         //    get { return _configuration; }
         //}
         public IConfigurationModel Configuration { get; private set; }
-        public IIconSetThemeService IconSetThemeService { get; private set; }
         IgnoreStorage _ignoreStorage;
         ILanguageService _languageService;
 
@@ -99,8 +97,7 @@ namespace AntiDuplWPF.ViewModel
             ILanguageService languageService,
             IConfigurationModel configuration,
             ICoreLib coreLib,
-            IThumbnailProvider thumbnailProvider,
-            IIconSetThemeService iconSetThemeService)
+            IThumbnailProvider thumbnailProvider)
         {
             _languageService = languageService;
             //_windowService = windowService;
@@ -115,7 +112,6 @@ namespace AntiDuplWPF.ViewModel
 
             //_configuration = TinyIoCContainer.Current.Resolve<IConfigurationModel>();
             Configuration = configuration;
-            IconSetThemeService = iconSetThemeService;
             Configuration.PropertyChanged += OnConfigurationPropertyChanged;
 
             UndoRedoEngine undoRedoEngine = new UndoRedoEngine(Configuration);
@@ -1172,6 +1168,12 @@ namespace AntiDuplWPF.ViewModel
                 }, arg => _resultList != null));
             }
         }
-       
+
+        private ICommand _closeCmd;
+
+        public ICommand CloseCmd
+        {
+            get { return _closeCmd ?? (_closeCmd = new RelayCommand(arg => { Application.Current.Shutdown(); })); }
+        }
     }
 }

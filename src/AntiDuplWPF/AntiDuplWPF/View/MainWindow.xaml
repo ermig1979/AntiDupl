@@ -11,7 +11,6 @@
         mc:Ignorable="d"
         xmlns:viewModel="clr-namespace:AntiDuplWPF.ViewModel"
         xmlns:helper="clr-namespace:AntiDuplWPF.Helper"
-        xmlns:service="clr-namespace:AntiDuplWPF.Service"
         Title="{Binding Title, Mode=OneWay}"
         Height="350" Width="625"
         d:DataContext="{d:DesignInstance viewModel:MainViewModel, IsDesignTimeCreatable=False}"
@@ -25,77 +24,112 @@
         <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
         <convertor:DeleteBackgroundValueConverter x:Key="deleteBackgroundValueConverter"/>
         <convertor:DifferenceValueConverter x:Key="differenceValueConverter"/>
+
+        <Style TargetType="{x:Type Image}">
+            <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
+            <Setter Property="Stretch" Value="Fill" />
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.2" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
 
     <DockPanel>
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="{DynamicResource mainwindow_menu_result}">
-                <MenuItem x:Name="item3" Header="{DynamicResource mainwindow_menu_result_load}"
-                          Command="{Binding LoadResultsCommand}" />
-                <MenuItem x:Name="item4" Header="{DynamicResource mainwindow_menu_result_save}" 
-                          Command="{Binding SaveResultsCommand}" />
+            <Menu.Resources>
+                <Style TargetType="{x:Type Image}" BasedOn="{StaticResource {x:Type Image}}">
+                    <Setter Property="Height" Value="16" />
+                    <Setter Property="Width" Value="16" />
+                </Style>
+            </Menu.Resources>
+            <MenuItem Header="{DynamicResource mainwindow_menu_file}">
+                <MenuItem Header="{DynamicResource mainwindow_menu_file_open_search_profile}"
+                          Command="{Binding LoadResultsCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="../Image/img/ProfileOpenMenu.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{DynamicResource mainwindow_menu_file_save_search_profile_as}"
+                          Command="{Binding SaveResultsCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="../Image/img/ProfileSaveAsMenu.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="{DynamicResource mainwindow_menu_file_load_on_open}" />
+                <MenuItem Header="{DynamicResource mainwindow_menu_file_save_on_close}" />
+                <Separator />
+                <MenuItem Header="{DynamicResource mainwindow_menu_file_exit}"
+                          Command="{Binding CloseCmd}" />
             </MenuItem>
-            <MenuItem Header="Language" ItemsSource="{Binding Path=LanguageCollection}">
-                <!--<MenuItem Header="English" IsCheckable="true" Command="{Binding SwithLanguageCommand}" Checked="" />
-                <MenuItem Header="Русский" IsCheckable="true" Command="{Binding SwithLanguageCommand}" CommandParameter="{x:Static convertors:MaxProperty.Resolution}}" />
-                <i:Interaction.Behaviors>
-                    <behavior:MenuItemButtonGroupBehavior></behavior:MenuItemButtonGroupBehavior>
-                </i:Interaction.Behaviors>-->
-                <MenuItem.ItemContainerStyle>
-                    <Style TargetType="MenuItem">
-                        <Setter Property="Header" Value="{Binding Title}" />
-                        <Setter Property="IsCheckable" Value="True" />
 
-                        <Setter Property="IsChecked" Value="{Binding Path=(viewModel:LanguageViewModel.IsChecked), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <Setter Property="Command" Value="{Binding DataContext.LanguageSelectedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type MenuItem}}}" />
-                        <Setter Property="CommandParameter" Value="{Binding Path=(viewModel:LanguageViewModel.Enum)}" />
-                    </Style>
-                </MenuItem.ItemContainerStyle>
+            <MenuItem Header="{DynamicResource mainwindow_menu_edit}">
+                <MenuItem Header="{DynamicResource mainwindow_menu_edit_undo}"
+                          Command="{Binding UndoCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="../Image/img/UndoMenu.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{DynamicResource mainwindow_menu_edit_undo_all}"
+                          Command="{Binding UndoAllCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="../Image/img/UndoMenu.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{DynamicResource mainwindow_menu_edit_redo}"
+                          Command="{Binding RedoCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="../Image/img/RedoMenu.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="{DynamicResource mainwindow_menu_edit_select_all}" />
             </MenuItem>
+
             <MenuItem Header="{DynamicResource mainwindow_menu_view}">
-                <MenuItem x:Name="toGroup" 
-                              Header="{DynamicResource mainwindow_menu_view_toGroup}" 
+                <MenuItem Header="{DynamicResource mainwindow_menu_view_language}" ItemsSource="{Binding Path=LanguageCollection}">
+                    <MenuItem.ItemContainerStyle>
+                        <Style TargetType="MenuItem">
+                            <Setter Property="Header" Value="{Binding Title}" />
+                            <Setter Property="IsCheckable" Value="True" />
+
+                            <Setter Property="IsChecked"
+                                    Value="{Binding Path=(viewModel:LanguageViewModel.IsChecked), Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <Setter Property="Command"
+                                    Value="{Binding DataContext.LanguageSelectedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type MenuItem}}}" />
+                            <Setter Property="CommandParameter"
+                                    Value="{Binding Path=(viewModel:LanguageViewModel.Enum)}" />
+                        </Style>
+                    </MenuItem.ItemContainerStyle>
+                </MenuItem>
+                <MenuItem Header="{DynamicResource mainwindow_menu_view_mode}">
+                    <MenuItem Header="{DynamicResource mainwindow_menu_view_toGroup}"
                               IsCheckable="true"
                               Command="{Binding ConvertToGroupCommand}" />
-                <MenuItem x:Name="toDuplPair" 
-                              Header="{DynamicResource mainwindow_menu_view_toDuplPair}" 
-                              IsCheckable="true" 
+                    <MenuItem Header="{DynamicResource mainwindow_menu_view_toDuplPair}"
+                              IsCheckable="true"
                               Command="{Binding ConvertToDuplPairCommand}" />
-                <Separator />
+                    <Separator />
 
-                <MenuItem Header="Icon set" DataContext="{Binding Path=IconSetThemeService}">
-                    <MenuItem Header="Windows Metro (Win8)"
-                              Command="{Binding ChangeIconSetCmd}"
-                              CommandParameter="{x:Static service:IconSet.WindowsMetro}" />
-                    <MenuItem Header="Windows 10"
-                              Command="{Binding ChangeIconSetCmd}"
-                              CommandParameter="{x:Static service:IconSet.Windows10}" />
-                    <MenuItem Header="Color"
-                              Command="{Binding ChangeIconSetCmd}"
-                              CommandParameter="{x:Static service:IconSet.Color}" />
+                    <i:Interaction.Behaviors>
+                        <behavior:MenuItemButtonGroupBehavior />
+                    </i:Interaction.Behaviors>
                 </MenuItem>
-
-                <i:Interaction.Behaviors>
-                    <behavior:MenuItemButtonGroupBehavior></behavior:MenuItemButtonGroupBehavior>
-                </i:Interaction.Behaviors>
             </MenuItem>
         </Menu>
 
         <ToolBar DockPanel.Dock="Top">
             <ToolBar.Resources>
-                <Style TargetType="{x:Type Image}">
-                    <Setter Property="RenderOptions.BitmapScalingMode" Value="NearestNeighbor" />
-                    <Setter Property="Stretch" Value="None" />
-                    <Style.Triggers>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Opacity" Value="0.2" />
-                        </Trigger>
-                    </Style.Triggers>
+                <Style TargetType="{x:Type Image}" BasedOn="{StaticResource {x:Type Image}}">
+                    <Setter Property="Height" Value="32" />
+                    <Setter Property="Width" Value="32" />
                 </Style>
             </ToolBar.Resources>
             <Button Command="{Binding UndoCommand}"
                     ToolTip="{Binding UndoTooltip, Mode=OneWay}">
-                <Image Source="{DynamicResource UndoImg}" />
+                <Image Source="../Image/undo-3-32.png" />
             </Button>
             <Menu Height="26" HorizontalContentAlignment="Center">
                 <MenuItem Header="Menu">
@@ -103,17 +137,14 @@
                 </MenuItem>
             </Menu>
             <Button Command="{Binding RedoCommand}">
-                <Image Source="{DynamicResource RedoImg}" />
+                <Image Source="../Image/redo-3-32.png" />
             </Button>
             <Separator />
             <Button Command="{Binding OpenConfigurationCommand}" ToolTip="Configuration">
-                <Image Source="{DynamicResource SettingsImg}" />
+                <Image Source="../Image/img/OptionsButton.png" />
             </Button>
             <Menu>
-                <MenuItem ToolTip="Tuning">
-                    <MenuItem.Header>
-                        <Image Source="{DynamicResource MaintenanceImg}" />
-                    </MenuItem.Header>
+                <MenuItem Header="Tuning">
                     <MenuItem Header="{DynamicResource toolBar_setSaati}"
                               Command="{Binding SetPrioritiesCommand}" />
                     <MenuItem Header="Calculate histogram peaks for DCT coefficient"
@@ -123,17 +154,15 @@
             
             <Separator />
             <Button Command="{Binding OpenPathCommand}" ToolTip="Path">
-                <Image Source="{DynamicResource PathsSetupImg}" />
+                <Image Source="../Image/img/PathsButton.png" />
             </Button>
             <Button ToolTip="Search" Command="{Binding SearchCommand}">
-                <Image Source="{DynamicResource RunSearchImg}" />
+                <Image Source="../Image/img/StartButton.png" />
             </Button>
-            <Button ToolTip="Configurable action" Command="{Binding ConfigurableActionCommand}">
-                <Image Source="{DynamicResource PasteSpecialImg}" />
-            </Button>
+            <Button Content="Configurable action" Command="{Binding ConfigurableActionCommand}" />
 
             <Button ToolTip="Refresh" Command="{Binding RefreshCommand}">
-                <Image Source="{DynamicResource RefreshImg}" />
+                <Image Source="../Image/img/RefreshButton.png" />
             </Button>
         </ToolBar>
 

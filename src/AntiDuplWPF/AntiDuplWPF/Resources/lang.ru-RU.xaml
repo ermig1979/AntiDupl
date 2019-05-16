@@ -8,12 +8,29 @@
     <v:String x:Key="desc_deleteOtherFromPair">Удалено все из пары кроме {0}</v:String>
     <v:String x:Key="desc_deleteFiles">Удалено {0} файлов</v:String>
 
+    <v:String x:Key="mainwindow_menu_file">Файл</v:String>
+    <v:String x:Key="mainwindow_menu_file_open_search_profile">Открыть профиль поиска</v:String>
+    <v:String x:Key="mainwindow_menu_file_save_search_profile_as">Сохранить профиль поиска как</v:String>
+    <v:String x:Key="mainwindow_menu_file_load_on_open">Загружать профиль при загрузке</v:String>
+    <v:String x:Key="mainwindow_menu_file_save_on_close">Сохранять профиль при закрытии</v:String>
+    <v:String x:Key="mainwindow_menu_file_exit">Выход</v:String>
+
+    <v:String x:Key="mainwindow_menu_edit">Правка</v:String>
+    <v:String x:Key="mainwindow_menu_edit_undo">Отменить (Ctrl-Z)</v:String>
+    <v:String x:Key="mainwindow_menu_edit_undo_all">Отменить все</v:String>
+    <v:String x:Key="mainwindow_menu_edit_redo">Повторить (Ctrl-Y)</v:String>
+    <v:String x:Key="mainwindow_menu_edit_select_all">Выделить все (Ctrl-A)</v:String>
+
     <v:String x:Key="mainwindow_menu_result">Результаты</v:String>
     <v:String x:Key="mainwindow_menu_result_load">Загрузить</v:String>
     <v:String x:Key="mainwindow_menu_result_save">Сохранить</v:String>
+
     <v:String x:Key="mainwindow_menu_view">Вид</v:String>
+    <v:String x:Key="mainwindow_menu_view_language">Язык</v:String>
+    <v:String x:Key="mainwindow_menu_view_mode">Режим просмотра результатов</v:String>
     <v:String x:Key="mainwindow_menu_view_toGroup">В группы</v:String>
     <v:String x:Key="mainwindow_menu_view_toDuplPair">В пары дубликатов</v:String>
+
     <v:String x:Key="mainwindow_contextmenu_IgnorePair">Игнорировать пару</v:String>
     <v:String x:Key="mainwindow_contextmenu_IgnorePairs">Игнорировать выделенные пары ({0})</v:String>
     <v:String x:Key="mainwindow_contextmenu_OpenСomparator">Открыть сравнитель</v:String>
