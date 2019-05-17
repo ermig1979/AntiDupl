@@ -105,10 +105,12 @@
                     </MenuItem.ItemContainerStyle>
                 </MenuItem>
                 <MenuItem Header="{DynamicResource mainwindow_menu_view_mode}">
-                    <MenuItem Header="{DynamicResource mainwindow_menu_view_toGroup}"
+                    <MenuItem x:Name="toGroup"
+                              Header="{DynamicResource mainwindow_menu_view_toGroup}"
                               IsCheckable="true"
                               Command="{Binding ConvertToGroupCommand}" />
-                    <MenuItem Header="{DynamicResource mainwindow_menu_view_toDuplPair}"
+                    <MenuItem x:Name="toDuplPair"
+                              Header="{DynamicResource mainwindow_menu_view_toDuplPair}"
                               IsCheckable="true"
                               Command="{Binding ConvertToDuplPairCommand}" />
                     <Separator />
