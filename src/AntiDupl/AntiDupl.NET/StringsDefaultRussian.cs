@@ -75,6 +75,7 @@ namespace AntiDupl.NET
             s.CoreOptionsForm_PsdCheckBox_Text = "PSD";
             s.CoreOptionsForm_DdsCheckBox_Text = "DDS";
             s.CoreOptionsForm_TgaCheckBox_Text = "TGA";
+            s.CoreOptionsForm_WebpCheckBox_Text = "WEBP";
             s.CoreOptionsForm_SearchSystemCheckBox_Text = "Искать системные каталоги/файлы";
             s.CoreOptionsForm_SearchHiddenCheckBox_Text = "Искать скрытые каталоги/файлы";
 

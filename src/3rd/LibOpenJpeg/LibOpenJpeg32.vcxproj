@@ -15,6 +15,7 @@
     <ProjectGuid>{1622C4EF-06A4-4DAA-9631-5D71B32858A4}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <ProjectName>LibOpenJpeg32</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -25,7 +26,7 @@
       <PreprocessorDefinitions>_WINDOWS;_LIB;_CRT_SECURE_NO_DEPRECATE;OPJ_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem> 
+      <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>

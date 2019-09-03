@@ -303,6 +303,7 @@ extern "C"
         AD_IMAGE_PSD = 11,
 		AD_IMAGE_DDS = 12,
 		AD_IMAGE_TGA = 13,
+		AD_IMAGE_WEBP = 14,
         AD_IMAGE_SIZE
     };
 
@@ -399,6 +400,7 @@ extern "C"
         adBool PSD;
 		adBool DDS;
 		adBool TGA;
+		adBool WEBP;
     };
     typedef adSearchOptions* adSearchOptionsPtr;
 

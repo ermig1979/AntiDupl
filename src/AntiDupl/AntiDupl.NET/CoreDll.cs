@@ -235,6 +235,7 @@ namespace AntiDupl.NET
             Psd = 11,
             Dds = 12,
             Tga = 13,
+            webp = 14
         }
 
         public enum DefectType : int
@@ -322,6 +323,7 @@ namespace AntiDupl.NET
             public int PSD;
             public int DDS;
             public int TGA;
+            public int WEBP;
         }
 
         [StructLayout(LayoutKind.Sequential)]

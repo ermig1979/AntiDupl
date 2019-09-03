@@ -28,6 +28,7 @@
 #include "adPsd.h"
 #include "adDds.h"
 #include "adTga.h"
+#include "adTWebp.h"
 
 namespace ad
 {
@@ -48,6 +49,7 @@ namespace ad
         {TEXT("PSD") , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Psd = 11
 		{TEXT("DDS") , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Dds = 12
 		{TEXT("TGA") , TEXT("TPIC"), 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Tga = 13
+		{TEXT("WEBP"), 0,			 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Webp = 14
     };
     //-------------------------------------------------------------------------
 
@@ -92,6 +94,8 @@ namespace ad
 			return TDds::Load(hGlobal);
 		else if(TTga::Supported(hGlobal))
 			return TTga::Load(hGlobal);
+		else if (TWebp::Supported(hGlobal))
+			return TWebp::Load(hGlobal);
         else
             return TGdiplus::Load(hGlobal);
     }

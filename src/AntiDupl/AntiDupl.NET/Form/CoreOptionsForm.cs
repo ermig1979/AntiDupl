@@ -93,6 +93,7 @@ namespace AntiDupl.NET
         private CheckBox m_psdCheckBox;
         private CheckBox m_ddsCheckBox;
         private CheckBox m_tgaCheckBox;
+        private CheckBox m_webpCheckBox;
         private CheckBox m_searchSystemCheckBox;
         private CheckBox m_searchHiddenCheckBox;
 
@@ -335,6 +336,9 @@ namespace AntiDupl.NET
             m_tgaCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
             searchFileTypeTableLayoutPanel.Controls.Add(m_tgaCheckBox, 2, 2);
 
+            m_webpCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
+            searchFileTypeTableLayoutPanel.Controls.Add(m_webpCheckBox, 2, 3);
+
             m_searchSystemCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
             searchTableLayoutPanel.Controls.Add(m_searchSystemCheckBox, 0, 1);
 
@@ -559,6 +563,7 @@ namespace AntiDupl.NET
             m_psdCheckBox.Checked = m_newCoreOptions.searchOptions.PSD;
             m_ddsCheckBox.Checked = m_newCoreOptions.searchOptions.DDS;
             m_tgaCheckBox.Checked = m_newCoreOptions.searchOptions.TGA;
+            m_webpCheckBox.Checked = m_newCoreOptions.searchOptions.WEBP;
             m_searchSystemCheckBox.Checked = m_newCoreOptions.searchOptions.system;
             m_searchHiddenCheckBox.Checked = m_newCoreOptions.searchOptions.hidden;
 
@@ -610,6 +615,7 @@ namespace AntiDupl.NET
             m_newCoreOptions.searchOptions.PSD = m_psdCheckBox.Checked;
             m_newCoreOptions.searchOptions.DDS = m_ddsCheckBox.Checked;
             m_newCoreOptions.searchOptions.TGA = m_tgaCheckBox.Checked;
+            m_newCoreOptions.searchOptions.WEBP = m_webpCheckBox.Checked;
             m_newCoreOptions.searchOptions.system = m_searchSystemCheckBox.Checked;
             m_newCoreOptions.searchOptions.hidden = m_searchHiddenCheckBox.Checked;
 
@@ -669,6 +675,7 @@ namespace AntiDupl.NET
             m_psdCheckBox.Text = s.CoreOptionsForm_PsdCheckBox_Text;
             m_ddsCheckBox.Text = s.CoreOptionsForm_DdsCheckBox_Text;
             m_tgaCheckBox.Text = s.CoreOptionsForm_TgaCheckBox_Text;
+            m_webpCheckBox.Text = s.CoreOptionsForm_WebpCheckBox_Text;
             m_searchSystemCheckBox.Text = s.CoreOptionsForm_SearchSystemCheckBox_Text;
             m_searchHiddenCheckBox.Text = s.CoreOptionsForm_SearchHiddenCheckBox_Text;
 
@@ -725,7 +732,8 @@ namespace AntiDupl.NET
               m_newCoreOptions.searchOptions.JP2 ||
               m_newCoreOptions.searchOptions.PSD ||
               m_newCoreOptions.searchOptions.DDS ||
-              m_newCoreOptions.searchOptions.TGA))
+              m_newCoreOptions.searchOptions.TGA ||
+              m_newCoreOptions.searchOptions.WEBP))
             {
                 m_inited = false;
                 m_newCoreOptions.searchOptions.JPEG = true;

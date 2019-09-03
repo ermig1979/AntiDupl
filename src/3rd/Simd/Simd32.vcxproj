@@ -15,6 +15,7 @@
     <ProjectGuid>{1622C4EF-06A4-4DAA-9631-5D71B32858A2}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <ProjectName>Simd32</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -60,11 +61,11 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <ClCompile Include=".\SimdAvx2*.cpp">
-	  <EnableEnhancedInstructionSet Condition="'$(PlatformToolset)'=='v140'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-	  <EnableEnhancedInstructionSet Condition="'$(PlatformToolset)'=='v141'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(PlatformToolset)'=='v140'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(PlatformToolset)'=='v141'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <EnableEnhancedInstructionSet Condition="'$(PlatformToolset)'=='v120'">AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
-	<ClCompile Include=".\SimdAvx512f*.cpp">
+    <ClCompile Include=".\SimdAvx512f*.cpp">
       <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <ClCompile Include=".\SimdAvx512bw*.cpp">

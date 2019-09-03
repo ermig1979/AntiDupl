@@ -332,6 +332,8 @@ namespace AntiDupl.NET
                 builder.Append("*.jp2;*.j2k;*.j2c;*.jpc;*.jpf;*.jpx;");
             if (m_newCoreOptions.searchOptions.PSD)
                 builder.Append("*.psd;");
+            if (m_newCoreOptions.searchOptions.WEBP)
+                builder.Append("*.webp;");
             return builder.ToString();
         }
 

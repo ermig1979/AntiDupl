@@ -15,6 +15,7 @@
     <ProjectGuid>{7C8C9359-ED04-4415-BB91-9947B59BC71E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <ProjectName>AntiDupl32</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -39,6 +40,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\3rd\LibOpenJpeg\LibOpenJpeg32.vcxproj">
       <Project>{1622c4ef-06a4-4daa-9631-5d71b32858a4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\3rd\libwebp\libwebp32.vcxproj">
+      <Project>{f47c9627-b344-44b1-9509-a3c9908a5a66}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\3rd\Simd\Simd32.vcxproj">
       <Project>{1622c4ef-06a4-4daa-9631-5d71b32858a2}</Project>
