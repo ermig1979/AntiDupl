@@ -15,6 +15,11 @@ namespace AntiDuplWPF.UndoRedo
         string _deletedFilePathWithTempExtension;
         //string _movedFileOriginalPath;
 
+        /// <summary>
+        /// Заменяет файл <paramref name="replaced"/> на <paramref name="forReplace"/>
+        /// </summary>
+        /// <param name="replaced"></param>
+        /// <param name="forReplace"></param>
         public Replace2Command(ObjectModel.ImageInfoClass replaced, ObjectModel.ImageInfoClass forReplace)
         {
             this._replaced = replaced;

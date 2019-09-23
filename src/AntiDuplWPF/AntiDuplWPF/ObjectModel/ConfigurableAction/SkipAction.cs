@@ -31,5 +31,15 @@ namespace AntiDuplWPF.ObjectModel.ConfigurableAction
         {
             return true;
         }
+
+        public string BestImage
+        {
+            get { return String.Empty; }
+        }
+
+        public string BestByPath
+        {
+            get { return String.Empty; }
+        }
     }
 }

@@ -138,11 +138,14 @@ namespace AntiDuplWPF.ViewModel
             LocationsModel.Save();
             Configuration.Save();
             _undoRedoEngine.Clear();
+
+			if (Configuration.SaveResultOnClose && !String.IsNullOrEmpty(Configuration.LastResultFile))
+				SerializeHelper<DuplPairViewModel[]>.Save(_resultList.ToArray(), Configuration.LastResultFile);
         }
 
         public void OnLoaded(object sender, RoutedEventArgs e)
         {
-            if (!String.IsNullOrEmpty(Configuration.LastResultFile))
+            if (Configuration.LoadResultOnOpen && !String.IsNullOrEmpty(Configuration.LastResultFile))
                 LoadResults(Configuration.LastResultFile);
         }
 
@@ -498,7 +501,7 @@ namespace AntiDuplWPF.ViewModel
                             _undoRedoEngine.ExecuteCommand(ignoreUCommand);
                         }, arg => ignoreUCommand != null);*/
 
-                        BindableMenuItem[] menu = new BindableMenuItem[2];
+                        BindableMenuItem[] menu = new BindableMenuItem[1];
                         /*menu[0] = new BindableMenuItem();
                         menu[0].Name = Application.Current.Resources["mainwindow_contextmenu_IgnoreGroup"] as string;
                         menu[0].Command = ignoreCommand;*/
@@ -509,9 +512,9 @@ namespace AntiDuplWPF.ViewModel
                                 _undoRedoEngine, _windowService, Configuration);
                             _windowService.OpenComparatorWindow(vm);
                         }, arg => _windowService != null);
-                        menu[1] = new BindableMenuItem();
-                        menu[1].Name = Application.Current.Resources["mainwindow_contextmenu_OpenСomparator"] as string;
-                        menu[1].Command = openComparatorCommand;
+                        menu[0] = new BindableMenuItem();
+                        menu[0].Name = Application.Current.Resources["mainwindow_contextmenu_OpenСomparator"] as string;
+                        menu[0].Command = openComparatorCommand;
                         return menu;
                     }
                     return null;
@@ -691,18 +694,14 @@ namespace AntiDuplWPF.ViewModel
                 {
                     _windowService.ShowPleaseWait();
                     _groups.Clear();
-                    Task.Factory.StartNew(() =>
-                    {
-                        GroupHelper.ConvertToGroup(_groups, _resultList);
-                    })
-                    .ContinueWith(t => 
-                    {
-                        if (GroupsCollection == null)
-                            GroupsCollection = CollectionViewSource.GetDefaultView(_groups);
-                        _resultList.Clear();
-                        SelectedTabPageIndex = 1;
-                        _windowService.ClosePleaseWait();
-                    },TaskScheduler.FromCurrentSynchronizationContext());
+
+                    GroupHelper.ConvertToGroup(_groups, _resultList);
+
+                    if (GroupsCollection == null)
+                        GroupsCollection = CollectionViewSource.GetDefaultView(_groups);
+                    _resultList.Clear();
+                    SelectedTabPageIndex = 1;
+                    _windowService.ClosePleaseWait();
                 }, arg => _resultList != null && _resultList.Any()));
             }
         }
@@ -716,18 +715,14 @@ namespace AntiDuplWPF.ViewModel
                 {
                     _resultList.Clear();
                     _windowService.ShowPleaseWait();
-                    Task.Factory.StartNew(() =>
-                    {
-                        GroupHelper.GroupToList(_groups, _resultList);
-                    })
-                    .ContinueWith(t => 
-                    {
-                        var res = CollectionViewSource.GetDefaultView(_resultList);
-                        Result = (IEditableCollectionView)res;
-                        _groups.Clear();
-                        SelectedTabPageIndex = 0;
-                        _windowService.ClosePleaseWait();
-                    },TaskScheduler.FromCurrentSynchronizationContext());
+
+                    GroupHelper.GroupToList(_groups, _resultList);
+
+                    var res = CollectionViewSource.GetDefaultView(_resultList);
+                    Result = (IEditableCollectionView)res;
+                    _groups.Clear();
+                    SelectedTabPageIndex = 0;
+                    _windowService.ClosePleaseWait();
                 }, arg => _groups != null && _groups.Any()));
             }
         }
@@ -1112,22 +1107,22 @@ namespace AntiDuplWPF.ViewModel
                         
                             try
                             {
-                        foreach (var item in _resultList)
-                        {
-                            progressDialogViewModel.ProgressMessage = item.FirstFile.FileName;
-                            //Debug.WriteLine("{0} width {1}, {2} width {3}",
-                            //item.FirstFile.FileName, item.FirstFile.Width, item.SecondFile.FileName, item.SecondFile.Width);
-                            //if (item.FirstFile.FileName == "15441_6PRej_D3Mp0.jpg")
-                            //    Debugger.Break();
+								foreach (var item in _resultList)
+								{
+									progressDialogViewModel.ProgressMessage = item.FirstFile.FileName;
+									//Debug.WriteLine("{0} width {1}, {2} width {3}",
+									//item.FirstFile.FileName, item.FirstFile.Width, item.SecondFile.FileName, item.SecondFile.Width);
+									//if (item.FirstFile.FileName == "15441_6PRej_D3Mp0.jpg")
+									//    Debugger.Break();
 
-                            if (!item.CheckAllExist())
-                                 forDelete.Add(item);
+									if (!item.CheckAllExist())
+										 forDelete.Add(item);
 
 
-                            progressDialogViewModel.Progress++;
-                            if (progressDialogViewModel.IsCancelled)
-                                break;
-                        }
+									progressDialogViewModel.Progress++;
+									if (progressDialogViewModel.IsCancelled)
+										break;
+								}
                             }
                             catch (Exception ex)
                             {
@@ -1170,10 +1165,10 @@ namespace AntiDuplWPF.ViewModel
         }
 
         private ICommand _closeCmd;
-
         public ICommand CloseCmd
         {
             get { return _closeCmd ?? (_closeCmd = new RelayCommand(arg => { Application.Current.Shutdown(); })); }
         }
+
     }
 }

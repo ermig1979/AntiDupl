@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,6 @@ namespace AntiDuplWPF.ObjectModel.ConfigurableAction
     class DeleteOtherAction : IConfigurableAction
     {
         private ImageInfoClass _bestsByPath;
-        private DuplicateGroup _group;
         IEnumerable<ImageInfoClass> _forDelete;
         IUndoRedoEngine _undoRedoEngine;
 
@@ -20,7 +20,6 @@ namespace AntiDuplWPF.ObjectModel.ConfigurableAction
         {
             // TODO: Complete member initialization
             this._bestsByPath = bestsByPath;
-            this._group = group;
             _undoRedoEngine = undoRedoEngine;
 
             _forDelete = group.FileList.Where(f => f.FileName != _bestsByPath.FileName);
@@ -40,11 +39,32 @@ namespace AntiDuplWPF.ObjectModel.ConfigurableAction
                 || _forDelete.Any(i => !File.Exists(i.Path)))
                         return false;
 
-            IUCommand deleteImageUndoCommand = new DeleteOtherFromGroup2Command(_bestsByPath, _forDelete, _group);
+            IUCommand deleteImageUndoCommand = new DeleteOtherCommand(_bestsByPath, _forDelete);
 
             _undoRedoEngine.ExecuteCommand(deleteImageUndoCommand);
 
+            List<ImageInfoClass> removed = new List<ImageInfoClass>(_forDelete);
+            removed.Add(_bestsByPath);
+            var forDeletePuplPair = resultList.Where(d => removed.Any(r => r.Path == d.FirstFile.Path)
+                && removed.Any(r => r.Path == d.SecondFile.Path)).ToList();
+            foreach (var item in forDeletePuplPair)
+            {
+                resultList.Remove(item);
+            }
+            //((ICollectionView)resultCollectionView).Refresh();
+
             return true;
+        }
+
+
+        public string BestImage
+        {
+            get { return _bestsByPath.FileName; }
+        }
+
+        public string BestByPath
+        {
+            get { return _bestsByPath.FileName; }
         }
     }
 }

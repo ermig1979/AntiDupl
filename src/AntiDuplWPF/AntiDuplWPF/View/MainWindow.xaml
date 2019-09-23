@@ -58,8 +58,12 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="{DynamicResource mainwindow_menu_file_load_on_open}" />
-                <MenuItem Header="{DynamicResource mainwindow_menu_file_save_on_close}" />
+                <MenuItem Header="{DynamicResource mainwindow_menu_file_load_on_open}" 
+                          IsCheckable="True"
+                          IsChecked="{Binding Configuration.LoadResultOnOpen}"/>
+                <MenuItem Header="{DynamicResource mainwindow_menu_file_save_on_close}"
+                          IsCheckable="True"
+                          IsChecked="{Binding Configuration.SaveResultOnClose}"/>
                 <Separator />
                 <MenuItem Header="{DynamicResource mainwindow_menu_file_exit}"
                           Command="{Binding CloseCmd}" />

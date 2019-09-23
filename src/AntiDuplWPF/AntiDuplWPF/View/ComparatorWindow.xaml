@@ -33,8 +33,13 @@
         <Button Visibility="Collapsed" IsCancel="True"></Button>
         <!--<Image Grid.Row="0" Source="{Binding Image}" Stretch="Uniform" />-->
         <control:CgsImageViewer x:Name="cgsImageViewer" Grid.Row="0"
-                                 CurrentImage="{Binding Image}"/>
-        <Grid Grid.Row="1">
+                                 CurrentImage="{Binding Image}">
+            <i:Interaction.Behaviors>
+                <behavior:MouseEnterBehaviour MouseLeaveCommand="{Binding PreviousCommand}"
+                                              MouseEnterCommand="{Binding NextCommand}"/>
+            </i:Interaction.Behaviors>
+        </control:CgsImageViewer>
+            <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.5*"/>
                 <ColumnDefinition Width="Auto"/>

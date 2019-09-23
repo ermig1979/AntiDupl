@@ -87,6 +87,7 @@
     <Compile Include="Behavior\GrayoutImageBehavior.cs" />
     <Compile Include="Behavior\ImagePropertyBehavior.cs" />
     <Compile Include="Behavior\MenuItemButtonGroupBehavior.cs" />
+    <Compile Include="Behavior\MouseEnterBehaviour.cs" />
     <Compile Include="Behavior\WindowCloseOnEscBehavior.cs" />
     <Compile Include="Command\CalculateHistogramPeaksCommand.cs" />
     <Compile Include="Command\ConvertToDuplPairCommand.cs" />
@@ -153,8 +154,11 @@
     <Compile Include="Model\ViewModeModel.cs" />
     <Compile Include="ObjectModel\ActionCondition.cs" />
     <Compile Include="ObjectModel\ActionGenerator\AllBestGenerator.cs" />
+    <Compile Include="ObjectModel\ActionGenerator\BlockinesBluringGenerator.cs" />
     <Compile Include="ObjectModel\ActionGenerator\FileSizePeakBluringGenerator.cs" />
     <Compile Include="ObjectModel\ActionGenerator\FileSizePeakGenerator.cs" />
+    <Compile Include="ObjectModel\ActionGenerator\LittleDifferenceGenerator.cs" />
+    <Compile Include="ObjectModel\ActionGenerator\LittleDifferenceGenerator2.cs" />
     <Compile Include="ObjectModel\ActionOnDuplPair.cs" />
     <Compile Include="ObjectModel\BindableMenuItem.cs" />
     <Compile Include="ObjectModel\ByImageProperty\BestConditionParametr.cs" />
@@ -203,7 +207,7 @@
     <Compile Include="UndoRedo\DeleteCurrentImageCommand.cs" />
     <Compile Include="UndoRedo\DeleteImageCommand.cs" />
     <Compile Include="UndoRedo\DeleteMultiCommand.cs" />
-    <Compile Include="UndoRedo\DeleteOtherFromGroup2Command.cs" />
+    <Compile Include="UndoRedo\DeleteOtherCommand.cs" />
     <Compile Include="UndoRedo\DeleteOtherFromGroupCommand.cs" />
     <Compile Include="UndoRedo\DeleteOtherFromPairCommand.cs" />
     <Compile Include="UndoRedo\IgnoreMultiPairCommand.cs" />

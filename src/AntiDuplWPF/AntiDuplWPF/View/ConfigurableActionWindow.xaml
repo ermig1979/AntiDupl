@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:objectModel="clr-namespace:AntiDuplWPF.ObjectModel"
-                xmlns:convertor="clr-namespace:AntiDuplWPF.Convertor"
+        xmlns:convertor="clr-namespace:AntiDuplWPF.Convertor"
         Title="ConfigurableActionWindow" 
         Height="600" 
         Width="500">
@@ -580,10 +580,16 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>-->
 
+                <DataGridTextColumn Binding="{Binding ConfigurableAction.BestImage, Mode=OneWay}"
+                                    Header="Best image" />
+
+                <DataGridTextColumn Binding="{Binding ConfigurableAction.BestByPath, Mode=OneWay}"
+                                    Header="Best by path" />
+
                 <DataGridTextColumn Binding="{Binding ConfigurableAction.Name, Mode=OneWay}"
                                     Header="ConfigurableAction" />
-                            
-                        </DataGrid.Columns>
+
+            </DataGrid.Columns>
                     </DataGrid>
 
         <StackPanel Grid.Row="3">

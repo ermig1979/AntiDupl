@@ -16,8 +16,11 @@ namespace AntiDuplWPF.ObjectModel
         BlurringDifference,
         //BlurringDifferenceInPercent,
         Resolution,
+
+		//ValueUint
         ResolutionDifference,
         ResolutionDifferenceInPercent,
+
         FileSizeDifferenceInPercent,
         NoTransformType,
         //SameDirectory,

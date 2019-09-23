@@ -70,6 +70,7 @@ namespace AntiDuplWPF.Behavior
                 }
             }
         }
+
         #endregion
     }
 }

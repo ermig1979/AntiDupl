@@ -23,6 +23,9 @@ namespace AntiDuplWPF.Model
         Color AlternateColor { get; set; }
         Brush AlternateBrush { get; }
 
+		bool LoadResultOnOpen { get; set; }
+		bool SaveResultOnClose { get; set; }
+
         void Save();
         ObservableCollection<Criterion> GetDefaultCriterions();
     }

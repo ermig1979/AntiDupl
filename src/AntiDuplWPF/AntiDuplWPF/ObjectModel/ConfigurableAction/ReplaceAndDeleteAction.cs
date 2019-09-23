@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AntiDuplWPF.UndoRedo;
+using AntiDuplWPF.ViewModel;
 
 namespace AntiDuplWPF.ObjectModel.ConfigurableAction
 {
@@ -43,7 +44,7 @@ namespace AntiDuplWPF.ObjectModel.ConfigurableAction
         }
 
         public bool Excute(UndoRedo.IUndoRedoEngine undoRedoEngine, 
-            ObservableCollection<ViewModel.DuplPairViewModel> resultList, 
+            ObservableCollection<DuplPairViewModel> resultList, 
             IEditableCollectionView resultCollectionView)
         {
             if (!File.Exists(_bestsByPath.Path)
@@ -57,7 +58,29 @@ namespace AntiDuplWPF.ObjectModel.ConfigurableAction
             IUCommand deleteMulti = new DeleteMultiCommand(_forDelete);
             _undoRedoEngine.ExecuteCommand(deleteMulti);
 
+            List<ImageInfoClass> removed = new List<ImageInfoClass>(_forDelete);
+            removed.Add(_bestsByPath);
+            removed.Add(_forReplace);
+            var forDeletePuplPair = resultList.Where(d => removed.Any(r => r.Path == d.FirstFile.Path)
+                && removed.Any(r => r.Path == d.SecondFile.Path)).ToList();
+            foreach (var item in forDeletePuplPair)
+            {
+                resultList.Remove(item);
+            }
+            //((ICollectionView)resultCollectionView).Refresh();
+
             return true;
+        }
+
+
+        public string BestImage
+        {
+            get { return _forReplace.FileName; }
+        }
+
+        public string BestByPath
+        {
+            get { return _bestsByPath.FileName; }
         }
     }
 }

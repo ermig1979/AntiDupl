@@ -157,6 +157,28 @@ namespace AntiDuplWPF.Model
             }
         }
 
+		bool _loadResultOnOpen;
+		public bool LoadResultOnOpen
+		{
+			get { return _loadResultOnOpen; }
+			set
+			{
+				_loadResultOnOpen = value;
+				RaisePropertyChangedEvent("LoadResultOnOpen");
+			}
+		}
+
+		bool _saveResultOnClose;
+		public bool SaveResultOnClose
+		{
+			get { return _saveResultOnClose; }
+			set
+			{
+				_saveResultOnClose = value;
+				RaisePropertyChangedEvent("SaveResultOnClose");
+			}
+		}
+
         public Brush AlternateBrush
         {
             get { return new SolidColorBrush(_alternateColor); }

@@ -8,21 +8,18 @@ using AntiDuplWPF.Helper;
 
 namespace AntiDuplWPF.UndoRedo
 {
-    class DeleteOtherFromGroup2Command : IUCommand
+    class DeleteOtherCommand : IUCommand
     {
         private ObjectModel.ImageInfoClass _bestsByPath;
         private IEnumerable<ObjectModel.ImageInfoClass> _forDelete;
-        private ObjectModel.DuplicateGroup _group;
 
         List<RenamedImage> _renamedList = new List<RenamedImage>();
 
-        public DeleteOtherFromGroup2Command(ObjectModel.ImageInfoClass bestsByPath, 
-            IEnumerable<ObjectModel.ImageInfoClass> forDelete, 
-            ObjectModel.DuplicateGroup group)
+        public DeleteOtherCommand(ObjectModel.ImageInfoClass bestsByPath, 
+            IEnumerable<ObjectModel.ImageInfoClass> forDelete)
         {
             this._bestsByPath = bestsByPath;
             this._forDelete = forDelete;
-            this._group = group;
         }
 
         public bool Execute()

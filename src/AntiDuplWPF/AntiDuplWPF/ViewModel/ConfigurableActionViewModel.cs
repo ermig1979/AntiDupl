@@ -86,9 +86,18 @@ namespace AntiDuplWPF.ViewModel
                 BestSelectingByPathList, AllDirectoryFilters, _undoRedoEngine);
             FileSizePeakGenerator fileSizePeakGenerator = new FileSizePeakGenerator(AlgorithmsOfGettingNumberFromFileName,
                 BestSelectingByPathList, AllDirectoryFilters, _undoRedoEngine);
+			BlockinesBluringGenerator bockinesBluringGenerator = new BlockinesBluringGenerator(AlgorithmsOfGettingNumberFromFileName,
+				BestSelectingByPathList, AllDirectoryFilters, _undoRedoEngine);
+			LittleDifferenceGenerator littleDifferenceGenerator = new LittleDifferenceGenerator(AlgorithmsOfGettingNumberFromFileName,
+					BestSelectingByPathList, AllDirectoryFilters, _undoRedoEngine);
+			LittleDifferenceGenerator2 littleDifferenceGenerator2 = new LittleDifferenceGenerator2(AlgorithmsOfGettingNumberFromFileName,
+					BestSelectingByPathList, AllDirectoryFilters, _undoRedoEngine);
 
             Actions = new ObservableCollection<ConfigurableActionGenerator>();
             Actions.Add(allBestGenerator);
+			Actions.Add(bockinesBluringGenerator);
+			Actions.Add(littleDifferenceGenerator);
+			Actions.Add(littleDifferenceGenerator2);
             Actions.Add(fileSizeAndPeakGenerator);
             Actions.Add(fileSizePeakGenerator);
             Actions.Add(new ConfigurableActionGenerator(_undoRedoEngine) { Name = "Empty" });
@@ -182,31 +191,31 @@ namespace AntiDuplWPF.ViewModel
                     {
 
 
-                    Debug.WriteLine(String.Format("resultList = {0}", _resultList.Count));
-                    filtered = _groups.Where(group => ConfigurableAction.AlgorithmOfGettingNumberFromFileName.ContainNumber(group));
-                    //filtered = filtered.Where(result => SelectConditions.All(cond => cond.IsSelect(result)));
-                    Debug.WriteLine(String.Format("After AlgorithmOfGettingNumberFromFileName.ContainNumber = {0}", filtered.Count()));
+                        Debug.WriteLine(String.Format("resultList = {0}", _resultList.Count));
+                        filtered = _groups.Where(group => ConfigurableAction.AlgorithmOfGettingNumberFromFileName.ContainNumber(group));
+                        //filtered = filtered.Where(result => SelectConditions.All(cond => cond.IsSelect(result)));
+                        Debug.WriteLine(String.Format("After AlgorithmOfGettingNumberFromFileName.ContainNumber = {0}", filtered.Count()));
 
-                    filtered = _groups.Where(group => ConfigurableAction.BestByPath.ExistBest(group, ConfigurableAction.AlgorithmOfGettingNumberFromFileName));
-                    Debug.WriteLine(String.Format("After BestByPath.ExistBest = {0}", filtered.Count()));
+                        filtered = _groups.Where(group => ConfigurableAction.BestByPath.ExistBest(group, ConfigurableAction.AlgorithmOfGettingNumberFromFileName));
+                        Debug.WriteLine(String.Format("After BestByPath.ExistBest = {0}", filtered.Count()));
 
-                    //filtered = filtered.Where(group => ConfigurableAction.BestSelectingByImagePropertyes.ExistBest(group));
-                    //Debug.WriteLine(String.Format("After BestSelectingByImagePropertyes.ExistBest = {0}", filtered.Count()));
+                        //filtered = filtered.Where(group => ConfigurableAction.BestSelectingByImagePropertyes.ExistBest(group));
+                        //Debug.WriteLine(String.Format("After BestSelectingByImagePropertyes.ExistBest = {0}", filtered.Count()));
 
-                    filtered = filtered.Where(group => ConfigurableAction.SelectingBestImageByProperty.ExistBest(group));
-                    Debug.WriteLine(String.Format("After ConditionsOfSelectingBestImageByProperty.ExistBest = {0}", filtered.Count()));
+                        filtered = filtered.Where(group => ConfigurableAction.SelectingBestImageByProperty.ExistBest(group));
+                        Debug.WriteLine(String.Format("After ConditionsOfSelectingBestImageByProperty.ExistBest = {0}", filtered.Count()));
 
-                    filtered = filtered.Where(g => ConfigurableAction.DirectoryFilter.IsSelect(g));
-                    Debug.WriteLine(String.Format("After DirectoryFilter = {0}", filtered.Count()));
-                    foreach (var item in ConfigurableAction.FilterConditions)
-                    {
-                        filtered = filtered.Where(r => item.IsSelect(r));
-                        Debug.WriteLine(String.Format("After {0} = {1}", item.Parametr, filtered.Count()));
-                    }
-                    foreach (var item in filtered)
-                    {
-                        item.ConfigurableAction = ConfigurableAction.GetAction(item);
-                    }
+                        filtered = filtered.Where(g => ConfigurableAction.DirectoryFilter.IsSelect(g));
+                        Debug.WriteLine(String.Format("After DirectoryFilter = {0}", filtered.Count()));
+                        foreach (var item in ConfigurableAction.FilterConditions)
+                        {
+                            filtered = filtered.Where(r => item.IsSelect(r));
+                            Debug.WriteLine(String.Format("After {0} = {1}", item.Parametr, filtered.Count()));
+                        }
+                        foreach (var item in filtered)
+                        {
+                            item.ConfigurableAction = ConfigurableAction.GetAction(item);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -328,9 +337,8 @@ namespace AntiDuplWPF.ViewModel
                         action.ConfigurableAction.Excute(_undoRedoEngine, _resultList, _resultCollectionView);
                     }
                     FilteredResults.Clear();
-                    //GroupHelper.GroupToList(_groups, _resultList);
-                    //_resultList.RemoveAt(0);
-                    
+					_groups.Clear();
+					GroupHelper.ConvertToGroup(_groups, _resultList);
                 }, arg => _resultList != null
                     && ConfigurableAction != null
                     && ConfigurableAction.AlgorithmOfGettingNumberFromFileName != null
