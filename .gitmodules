@@ -1,0 +1,3 @@
+[submodule "src/3rd.git/Simd"]
+	path = src/3rd.git/Simd
+	url = https://github.com/ermig1979/Simd

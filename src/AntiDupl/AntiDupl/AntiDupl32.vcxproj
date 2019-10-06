@@ -43,7 +43,7 @@
     <ProjectReference Include="..\..\3rd\libwebp\libwebp32.vcxproj">
       <Project>{f47c9627-b344-44b1-9509-a3c9908a5a66}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\3rd\Simd\Simd32.vcxproj">
+    <ProjectReference Include="..\..\3rd\Simd32.vcxproj">
       <Project>{1622c4ef-06a4-4daa-9631-5d71b32858a2}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\3rd\TurboJpeg\TurboJpeg32.vcxproj">
