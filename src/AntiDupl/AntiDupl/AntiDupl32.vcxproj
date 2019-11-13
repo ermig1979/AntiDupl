@@ -15,7 +15,6 @@
     <ProjectGuid>{7C8C9359-ED04-4415-BB91-9947B59BC71E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <ProjectName>AntiDupl32</ProjectName>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
