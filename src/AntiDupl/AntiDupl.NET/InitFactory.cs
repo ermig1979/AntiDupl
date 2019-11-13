@@ -171,6 +171,7 @@ namespace AntiDupl.NET
                 checkBox.SelectedIndexChanged += new EventHandler(selectedIndexChanged);
                 checkBox.DoubleClick += new EventHandler(doubleClick);
                 checkBox.ItemCheck += new ItemCheckEventHandler(itemCheck);
+                checkBox.CheckOnClick = false;
                 return checkBox;
             }
         };

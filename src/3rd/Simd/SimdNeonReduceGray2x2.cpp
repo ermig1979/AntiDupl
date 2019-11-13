@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2019 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -104,7 +104,7 @@ namespace Simd
                 {
                     size_t dstOffset = dstWidth - A - (evenWidth != srcWidth ? 1 : 0);
                     size_t srcOffset = evenWidth - DA;
-                    ReduceGray2x2<align>(src0 + srcOffset, src1 + srcOffset, dst + dstOffset);
+                    ReduceGray2x2<false>(src0 + srcOffset, src1 + srcOffset, dst + dstOffset);
                     if (evenWidth != srcWidth)
                         dst[dstWidth - 1] = Base::Average(src0[evenWidth], src1[evenWidth]);
                 }

@@ -1,7 +1,9 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2019 Yermalayeu Ihar,
+*               2014-2019 Antonenka Mikhail,
+*               2019-2019 Artur Voronkov.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -144,6 +146,14 @@ namespace Simd
             \return a pointer to the new Frame structure. The user must free this pointer after usage.
         */
         Frame * Clone() const;
+
+        /*!
+            Gets a copy of current frame using buffer as a storage.
+
+            \param [in, out] buffer - an external frame as a buffer.
+            \return a pointer to the new Frame structure (not owner). The user must free this pointer after usage.
+        */
+        Frame * Clone(Frame & buffer) const;
 
         /*!
             Creates reference to other Frame structure.
@@ -438,6 +448,24 @@ namespace Simd
         Copy(*this, *clone);
         return clone;
     }
+
+    /*! \cond */
+    template <template<class> class A> SIMD_INLINE Frame<A> * Frame<A>::Clone(Frame<A> & buffer) const
+    {
+        for (size_t i = 0; i < PlaneCount(); ++i)
+        {
+            if (buffer.planes[i].width < planes[i].width || buffer.planes[i].height < planes[i].height)
+                buffer.planes[i].Recreate(planes[i].Size(), planes[i].format);
+        }
+        Frame<A> * clone = new Frame<A>(width, height, format,
+                                        buffer.planes[0].data, buffer.planes[0].stride,
+                                        buffer.planes[1].data, buffer.planes[1].stride,
+                                        buffer.planes[2].data, buffer.planes[2].stride,
+                                        flipped, timestamp);
+        Copy(*this, *clone);
+        return clone;
+    }
+    /*! \endcond */
 
     template <template<class> class A> SIMD_INLINE Frame<A> & Frame<A>::operator = (const Frame<A> & frame)
     {
@@ -757,6 +785,7 @@ namespace Simd
             case Frame<A>::Nv12:
                 Copy(src.planes[0], dst.planes[0]);
                 Fill(dst.planes[1], 128);
+                break;
             case Frame<A>::Yuv420p:
                 Copy(src.planes[0], dst.planes[0]);
                 Fill(dst.planes[1], 128);

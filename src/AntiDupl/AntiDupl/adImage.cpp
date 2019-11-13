@@ -28,7 +28,8 @@
 #include "adPsd.h"
 #include "adDds.h"
 #include "adTga.h"
-#include "adTWebp.h"
+#include "adWebp.h"
+#include "adTurboJpeg.h"
 
 namespace ad
 {
@@ -96,6 +97,10 @@ namespace ad
 			return TTga::Load(hGlobal);
 		else if (TWebp::Supported(hGlobal))
 			return TWebp::Load(hGlobal);
+#ifdef AD_TURBO_JPEG_ENABLE
+        if (TTurboJpeg::Supported(hGlobal))
+            return TTurboJpeg::Load(hGlobal);
+#endif//AD_TURBO_JPEG_ENABLE
         else
             return TGdiplus::Load(hGlobal);
     }

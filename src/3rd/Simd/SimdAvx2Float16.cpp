@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2018 Yermalayeu Ihar.
+* Copyright (c) 2011-2019 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,8 @@
 #include "Simd/SimdMemory.h"
 #include "Simd/SimdExtract.h"
 #include "Simd/SimdStore.h"
+#include "Simd/SimdArray.h"
+#include "Simd/SimdCpu.h"
 
 namespace Simd
 {
@@ -209,6 +211,251 @@ namespace Simd
                 CosineDistance16f<true>(a, b, size, distance);
             else
                 CosineDistance16f<false>(a, b, size, distance);
+        }
+
+        static void Squares(size_t M, size_t K, const uint16_t * const * A, float * squares)
+        {
+            size_t M4 = AlignLo(M, 4);
+            size_t KF = AlignLo(K, F);
+            __m256 mask = RightNotZero(K - KF);
+            size_t i = 0;
+            for (; i < M4; i += 4)
+            {
+                __m256 sums[4] = { _mm256_setzero_ps(), _mm256_setzero_ps(), _mm256_setzero_ps(), _mm256_setzero_ps() };
+                for (size_t k = 0; k < KF; k += F)
+                {
+                    __m256 a0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[i + 0] + k)));
+                    __m256 a1 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[i + 1] + k)));
+                    __m256 a2 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[i + 2] + k)));
+                    __m256 a3 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[i + 3] + k)));
+                    sums[0] = _mm256_fmadd_ps(a0, a0, sums[0]);
+                    sums[1] = _mm256_fmadd_ps(a1, a1, sums[1]);
+                    sums[2] = _mm256_fmadd_ps(a2, a2, sums[2]);
+                    sums[3] = _mm256_fmadd_ps(a3, a3, sums[3]);
+                }
+                if (KF < K)
+                {
+                    size_t k = K - F;
+                    __m256 a0 = _mm256_and_ps(mask, _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[i + 0] + k))));
+                    __m256 a1 = _mm256_and_ps(mask, _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[i + 1] + k))));
+                    __m256 a2 = _mm256_and_ps(mask, _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[i + 2] + k))));
+                    __m256 a3 = _mm256_and_ps(mask, _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[i + 3] + k))));
+                    sums[0] = _mm256_fmadd_ps(a0, a0, sums[0]);
+                    sums[1] = _mm256_fmadd_ps(a1, a1, sums[1]);
+                    sums[2] = _mm256_fmadd_ps(a2, a2, sums[2]);
+                    sums[3] = _mm256_fmadd_ps(a3, a3, sums[3]);
+                }
+                _mm_storeu_ps(squares + i, Extract4Sums(sums));
+            }
+            for (; i < M; i += 1)
+            {
+                __m256 sum = _mm256_setzero_ps();
+                for (size_t k = 0; k < KF; k += F)
+                {
+                    __m256 a = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[i] + k)));
+                    sum = _mm256_fmadd_ps(a, a, sum);
+                }
+                if (KF < K)
+                {
+                    size_t k = K - F;
+                    __m256 a = _mm256_and_ps(mask, _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[i] + k))));
+                    sum = _mm256_fmadd_ps(a, a, sum);
+                }
+                squares[i] = Avx::ExtractSum(sum);
+            }
+        }
+
+        SIMD_INLINE __m256 Tail(size_t tail)
+        {
+            const int32_t mask[DF] = { 0, 0, 0, 0, 0, 0, 0, 0 , -1, -1, -1, -1, -1, -1, -1, -1 };
+            return _mm256_loadu_ps((float*)(mask + tail));
+        }
+
+        static void MicroCosineDistances3x4(size_t K, const uint16_t * const * A, const uint16_t * const * B, const float * aa, const float * bb, float * distances, size_t stride)
+        {
+            size_t K8 = K & (~7);
+            __m256 c00 = _mm256_setzero_ps();
+            __m256 c01 = _mm256_setzero_ps();
+            __m256 c02 = _mm256_setzero_ps();
+            __m256 c03 = _mm256_setzero_ps();
+            __m256 c10 = _mm256_setzero_ps();
+            __m256 c11 = _mm256_setzero_ps();
+            __m256 c12 = _mm256_setzero_ps();
+            __m256 c13 = _mm256_setzero_ps();
+            __m256 c20 = _mm256_setzero_ps();
+            __m256 c21 = _mm256_setzero_ps();
+            __m256 c22 = _mm256_setzero_ps();
+            __m256 c23 = _mm256_setzero_ps();
+            __m256 a0, a1, a2, b0;
+            for (size_t k = 0; k < K8; k += 8)
+            {
+                a0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[0] + k)));
+                a1 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[1] + k)));
+                a2 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[2] + k)));
+                b0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(B[0] + k)));
+                c00 = _mm256_fmadd_ps(a0, b0, c00);
+                c10 = _mm256_fmadd_ps(a1, b0, c10);
+                c20 = _mm256_fmadd_ps(a2, b0, c20);
+                b0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(B[1] + k)));
+                c01 = _mm256_fmadd_ps(a0, b0, c01);
+                c11 = _mm256_fmadd_ps(a1, b0, c11);
+                c21 = _mm256_fmadd_ps(a2, b0, c21);
+                b0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(B[2] + k)));
+                c02 = _mm256_fmadd_ps(a0, b0, c02);
+                c12 = _mm256_fmadd_ps(a1, b0, c12);
+                c22 = _mm256_fmadd_ps(a2, b0, c22);
+                b0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(B[3] + k)));
+                c03 = _mm256_fmadd_ps(a0, b0, c03);
+                c13 = _mm256_fmadd_ps(a1, b0, c13);
+                c23 = _mm256_fmadd_ps(a2, b0, c23);
+            }
+            if (K8 < K)
+            {
+                size_t k = K - 8;
+                __m256 tail = Tail(K - K8);
+                a0 = _mm256_and_ps(tail, _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[0] + k))));
+                a1 = _mm256_and_ps(tail, _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[1] + k))));
+                a2 = _mm256_and_ps(tail, _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[2] + k))));
+                b0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(B[0] + k)));
+                c00 = _mm256_fmadd_ps(a0, b0, c00);
+                c10 = _mm256_fmadd_ps(a1, b0, c10);
+                c20 = _mm256_fmadd_ps(a2, b0, c20);
+                b0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(B[1] + k)));
+                c01 = _mm256_fmadd_ps(a0, b0, c01);
+                c11 = _mm256_fmadd_ps(a1, b0, c11);
+                c21 = _mm256_fmadd_ps(a2, b0, c21);
+                b0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(B[2] + k)));
+                c02 = _mm256_fmadd_ps(a0, b0, c02);
+                c12 = _mm256_fmadd_ps(a1, b0, c12);
+                c22 = _mm256_fmadd_ps(a2, b0, c22);
+                b0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(B[3] + k)));
+                c03 = _mm256_fmadd_ps(a0, b0, c03);
+                c13 = _mm256_fmadd_ps(a1, b0, c13);
+                c23 = _mm256_fmadd_ps(a2, b0, c23);
+            }
+            __m128 _bb = _mm_loadu_ps(bb);
+            __m128 _1 = _mm_set1_ps(1.0f);
+            _mm_storeu_ps(distances + 0 * stride, _mm_fnmadd_ps(_mm_rsqrt_ps(_mm_mul_ps(_bb, _mm_set1_ps(aa[0]))), Extract4Sums(c00, c01, c02, c03), _1));
+            _mm_storeu_ps(distances + 1 * stride, _mm_fnmadd_ps(_mm_rsqrt_ps(_mm_mul_ps(_bb, _mm_set1_ps(aa[1]))), Extract4Sums(c10, c11, c12, c13), _1));
+            _mm_storeu_ps(distances + 2 * stride, _mm_fnmadd_ps(_mm_rsqrt_ps(_mm_mul_ps(_bb, _mm_set1_ps(aa[2]))), Extract4Sums(c20, c21, c22, c23), _1));
+        }
+
+        static void MicroCosineDistances3x1(size_t K, const uint16_t * const * A, const uint16_t * const * B, const float * aa, const float * bb, float * distances, size_t stride)
+        {
+            size_t K8 = K & (~7);
+            __m256 c00 = _mm256_setzero_ps();
+            __m256 c10 = _mm256_setzero_ps();
+            __m256 c20 = _mm256_setzero_ps();
+            __m256 a0, b0;
+            for (size_t k = 0; k < K8; k += 8)
+            {
+                b0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(B[0] + k)));
+                a0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[0] + k)));
+                c00 = _mm256_fmadd_ps(a0, b0, c00);
+                a0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[1] + k)));
+                c10 = _mm256_fmadd_ps(a0, b0, c10);
+                a0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[2] + k)));
+                c20 = _mm256_fmadd_ps(a0, b0, c20);
+            }
+            if (K8 < K)
+            {
+                size_t k = K - 8;
+                __m256 tail = Tail(K - K8);
+                b0 = _mm256_and_ps(tail, _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(B[0] + k))));
+                a0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[0] + k)));
+                c00 = _mm256_fmadd_ps(a0, b0, c00);
+                a0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[1] + k)));
+                c10 = _mm256_fmadd_ps(a0, b0, c10);
+                a0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[2] + k)));
+                c20 = _mm256_fmadd_ps(a0, b0, c20);
+            }
+            distances[0 * stride] = 1.0f - Avx::ExtractSum(c00) / sqrt(bb[0] * aa[0]);
+            distances[1 * stride] = 1.0f - Avx::ExtractSum(c10) / sqrt(bb[0] * aa[1]);
+            distances[2 * stride] = 1.0f - Avx::ExtractSum(c20) / sqrt(bb[0] * aa[2]);
+        }
+
+        static void MicroCosineDistances1x4(size_t K, const uint16_t * const * A, const uint16_t * const * B, const float * aa, const float * bb, float * distances, size_t stride)
+        {
+            size_t K8 = K & (~7);
+            __m256 c00 = _mm256_setzero_ps();
+            __m256 c01 = _mm256_setzero_ps();
+            __m256 c02 = _mm256_setzero_ps();
+            __m256 c03 = _mm256_setzero_ps();
+            __m256 a0, b0;
+            for (size_t k = 0; k < K8; k += 8)
+            {
+                a0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[0] + k)));
+                b0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(B[0] + k)));
+                c00 = _mm256_fmadd_ps(a0, b0, c00);
+                b0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(B[1] + k)));
+                c01 = _mm256_fmadd_ps(a0, b0, c01);
+                b0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(B[2] + k)));
+                c02 = _mm256_fmadd_ps(a0, b0, c02);
+                b0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(B[3] + k)));
+                c03 = _mm256_fmadd_ps(a0, b0, c03);
+            }
+            if (K8 < K)
+            {
+                size_t k = K - 8;
+                __m256 tail = Tail(K - K8);
+                a0 = _mm256_and_ps(tail, _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(A[0] + k))));
+                b0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(B[0] + k)));
+                c00 = _mm256_fmadd_ps(a0, b0, c00);
+                b0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(B[1] + k)));
+                c01 = _mm256_fmadd_ps(a0, b0, c01);
+                b0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(B[2] + k)));
+                c02 = _mm256_fmadd_ps(a0, b0, c02);
+                b0 = _mm256_cvtph_ps(_mm_loadu_si128((__m128i*)(B[3] + k)));
+                c03 = _mm256_fmadd_ps(a0, b0, c03);
+            }
+            __m128 _bb = _mm_loadu_ps(bb);
+            __m128 _1 = _mm_set1_ps(1.0f);
+            _mm_storeu_ps(distances + 0 * stride, _mm_fnmadd_ps(_mm_rsqrt_ps(_mm_mul_ps(_bb, _mm_set1_ps(aa[0]))), Extract4Sums(c00, c01, c02, c03), _1));
+        }
+
+        static void MacroCosineDistances(size_t M, size_t N, size_t K, const uint16_t * const * A, const uint16_t * const * B, const float * aa, const float * bb, float * distances, size_t stride)
+        {
+            size_t M3 = AlignLoAny(M, 3);
+            size_t N4 = AlignLo(N, 4);
+            size_t i = 0;
+            for (; i < M3; i += 3)
+            {
+                size_t j = 0;
+                for (; j < N4; j += 4)
+                    MicroCosineDistances3x4(K, A + i, B + j, aa + i, bb + j, distances + j, stride);
+                for (; j < N; j += 1)
+                    MicroCosineDistances3x1(K, A + i, B + j, aa + i, bb + j, distances + j, stride);
+                distances += 3 * stride;
+            }
+            for (; i < M; i++)
+            {
+                size_t j = 0;
+                for (; j < N4; j += 4)
+                    MicroCosineDistances1x4(K, A + i, B + j, aa + i, bb + j, distances + j, stride);
+                for (; j < N; j += 1)
+                    CosineDistance16f(A[i], B[j], K, distances + j);
+                distances += 1 * stride;
+            }
+        }
+
+        void CosineDistancesMxNa16f(size_t M, size_t N, size_t K, const uint16_t * const * A, const uint16_t * const * B, float * distances)
+        {
+            const size_t L2 = Base::AlgCacheL2();
+            size_t mN = AlignLoAny(L2 / 2 / K, 4);
+            size_t mM = AlignLoAny(L2 / 2 / K, 3);
+            Array32f aa(M), bb(N);
+            for (size_t i = 0; i < M; i += mM)
+            {
+                size_t dM = Simd::Min(M, i + mM) - i;
+                Squares(dM, K, A + i, aa.data + i);
+                for (size_t j = 0; j < N; j += mN)
+                {
+                    size_t dN = Simd::Min(N, j + mN) - j;
+                    if(i == 0)
+                        Squares(dN, K, B + j, bb.data + j);
+                    MacroCosineDistances(dM, dN, K, A + i, B + j, aa.data + i, bb.data + j, distances + i * N + j, N);
+                }
+            }
         }
     }
 #endif// SIMD_AVX2_ENABLE

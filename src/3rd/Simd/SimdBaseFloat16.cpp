@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2018 Yermalayeu Ihar.
+* Copyright (c) 2011-2019 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -159,6 +159,13 @@ namespace Simd
                 bb += _b * _b;
             }
             *distance = 1.0f - ab / ::sqrt(aa*bb);
+        }
+
+        void CosineDistancesMxNa16f(size_t M, size_t N, size_t K, const uint16_t * const * A, const uint16_t * const * B, float * distances)
+        {
+            for (size_t i = 0; i < M; ++i)
+                for (size_t j = 0; j < N; ++j)
+                    CosineDistance16f(A[i], B[j], K, distances + i * N + j);
         }
     }
 }

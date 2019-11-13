@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2019 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -99,6 +99,10 @@
 #define SIMD_AVX512BW_ENABLE
 #endif
 
+#if defined(NDEBUG) && _MSC_VER == 1914
+#define SIMD_MASKZ_LOAD_ERROR
+#endif
+
 #endif//defined(SIMD_X64_ENABLE) || defined(SIMD_X86_ENABLE)
 
 #if defined(SIMD_ARM_ENABLE)
@@ -112,6 +116,16 @@
 #if _MSC_VER >= 1900
 #define SIMD_CPP_2011_ENABLE
 #endif
+
+#if _MSVC_LANG >= 201402L
+#define SIMD_CPP_2014_ENABLE
+#endif
+
+#if _MSVC_LANG >= 201703L
+#define SIMD_CPP_2017_ENABLE
+#endif
+
+#define SIMD_FUNCTION __FUNCTION__
 
 #elif defined(__GNUC__)
 
@@ -235,9 +249,19 @@
 #define SIMD_CPP_2011_ENABLE
 #endif
 
+#if __cplusplus >= 201402L
+#define SIMD_CPP_2014_ENABLE
+#endif
+
+#if __cplusplus >= 201703L
+#define SIMD_CPP_2017_ENABLE
+#endif
+
 #if defined(__clang__)
 #define SIMD_CLANG_AVX2_BGR_TO_BGRA_ERROR
 #endif
+
+#define SIMD_FUNCTION __PRETTY_FUNCTION__
 
 #else
 
@@ -318,5 +342,8 @@
 #define SIMD_ZMM_COUNT 8
 #endif
 #endif
+
+#define SIMD_CAT_DO(a, b) a##b
+#define SIMD_CAT(a, b) SIMD_CAT_DO(a, b)
 
 #endif//__SimdDefs_h__

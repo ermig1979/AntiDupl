@@ -1,7 +1,8 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2019 Yermalayeu Ihar,
+*               2014-2019 Antonenka Mikhail.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -137,6 +138,10 @@ namespace Simd
             }
         }
 
+#if defined(__GNUC__) && (defined(SIMD_X86_ENABLE) || defined(SIMD_X64_ENABLE))
+#pragma GCC push_options
+#pragma GCC optimize ("O2")
+#endif
         void FillBgra(uint8_t * dst, size_t stride, size_t width, size_t height, uint8_t blue, uint8_t green, uint8_t red, uint8_t alpha)
         {
 #ifdef SIMD_BIG_ENDIAN
@@ -179,10 +184,11 @@ namespace Simd
             size_t alignedWidth = AlignLo(width, 4);
             for (size_t row = 0; row < height; ++row)
             {
-                for (size_t col = 0; col < alignedWidth; col += 4)
+                size_t col = 0;
+                for (; col < alignedWidth; col += 4)
                     *((uint64_t*)((uint16_t*)dst + col)) = uv64;
-                if (width != alignedWidth)
-                    ((uint16_t*)dst)[width - 1] = uv16;
+                for (; col < width; col += 1)
+                    ((uint16_t*)dst)[col] = uv16;
                 dst += stride;
             }
 #else
@@ -190,14 +196,18 @@ namespace Simd
             size_t alignedWidth = AlignLo(width, 2);
             for (size_t row = 0; row < height; ++row)
             {
-                for (size_t col = 0; col < alignedWidth; col += 2)
+                size_t col = 0;
+                for (; col < alignedWidth; col += 2)
                     *((uint32_t*)((uint16_t*)dst + col)) = uv32;
-                if (width != alignedWidth)
-                    ((uint16_t*)dst)[width - 1] = uv16;
+                for (; col < width; col += 1)
+                    ((uint16_t*)dst)[col] = uv16;
                 dst += stride;
-        }
+            }
 #endif        
         }
+#if defined(__GNUC__) && (defined(SIMD_X86_ENABLE) || defined(SIMD_X64_ENABLE))
+#pragma GCC pop_options
+#endif
 
         void FillPixel(uint8_t * dst, size_t stride, size_t width, size_t height, const uint8_t * pixel, size_t pixelSize)
         {
@@ -217,6 +227,18 @@ namespace Simd
                 break;
             default:
                 assert(0);
+            }
+        }
+
+        void Fill32f(float * dst, size_t size, const float * value)
+        {
+            if (value == 0 || value[0] == 0)
+                memset(dst, 0, size*sizeof(float));
+            else
+            {
+                float v = value[0];
+                for (; size; --size)
+                    *dst++ = v;
             }
         }
     }

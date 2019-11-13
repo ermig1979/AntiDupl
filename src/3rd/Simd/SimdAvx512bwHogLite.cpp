@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2018 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -473,7 +473,7 @@ namespace Simd
             template <bool align> void Filter8(const float * src, size_t srcStride, size_t dstWidth, size_t dstHeight, const float * filter, size_t filterWidth, size_t filterHeight, float * dst, size_t dstStride)
             {
                 size_t filterStride = 8 * filterWidth;
-                size_t alignedDstWidth = AlignLo(dstWidth, 8);
+                size_t alignedDstWidth = AlignLo(dstWidth, 4);
                 size_t alignedFilterStride = AlignLo(filterStride, DF);
                 for (size_t dstRow = 0; dstRow < dstHeight; ++dstRow)
                 {
@@ -489,7 +489,7 @@ namespace Simd
                             for (; filterCol < alignedFilterStride; filterCol += DF)
                                 ProductSum4x4x8<align>(pSrc + filterCol, pFilter + filterCol, sums);
                             for (; filterCol < filterStride; filterCol += HF)
-                                ProductSum1x4x8<align>(pSrc + filterCol, pFilter + filterCol, sums);
+                                ProductSum1x4x8<false>(pSrc + filterCol, pFilter + filterCol, sums);
                             pSrc += srcStride;
                             pFilter += filterStride;
                         }
@@ -541,7 +541,7 @@ namespace Simd
                                 for (; filterCol < alignedFilterStride; filterCol += DF)
                                     ProductSum4x4x8<align>(pSrc + filterCol, pFilter + filterCol, sums);
                                 for (; filterCol < filterStride; filterCol += HF)
-                                    ProductSum1x4x8<align>(pSrc + filterCol, pFilter + filterCol, sums);
+                                    ProductSum1x4x8<false>(pSrc + filterCol, pFilter + filterCol, sums);
                                 pSrc += srcStride;
                                 pFilter += filterStride;
                             }
@@ -907,7 +907,7 @@ namespace Simd
             if (align)
                 assert(Aligned(src) && Aligned(pca) && Aligned(dst));
 
-            SIMD_ALIGNED(32) float pca2[128];
+            SIMD_ALIGNED(64) float pca2[128];
             for (size_t i = 0; i < 8; ++i)
             {
                 for (size_t j = 0; j < 8; ++j)
@@ -918,7 +918,6 @@ namespace Simd
             __m512 _pca[8];
             for (size_t i = 0; i < 8; ++i)
                 _pca[i] = Avx512f::Load<true>(pca2 + i * F);
-
             for (size_t row = 0; row < height; ++row)
             {
                 const float * s = src;
@@ -966,7 +965,7 @@ namespace Simd
             void Init(size_t srcWidth, size_t srcHeight, size_t hSize, size_t vSize)
             {
                 _dstWidth = srcWidth - hSize + 1;
-                _dstStride = AlignHi(_dstWidth, Avx::F);
+                _dstStride = AlignHi(_dstWidth, Avx512f::F);
                 _dstHeight = srcHeight - vSize + 1;
                 _buffer.Resize(_dstStride*srcHeight);
             }
@@ -1148,7 +1147,6 @@ namespace Simd
 
                 size_t alignedWidth = AlignLo(width, F);
                 __mmask16 tailMask = TailMask16(width - alignedWidth);
-
                 for (size_t row = 0; row < height; ++row)
                 {
                     size_t col = 0;

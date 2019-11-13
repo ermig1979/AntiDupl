@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2018 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -350,30 +350,39 @@ namespace Simd
             if (align)
                 assert(Aligned(src) && Aligned(dst));
             float s = slope[0];
-            assert(s >= 0.0f && s <= 1.0f);
             size_t alignedSize = Simd::AlignLo(size, F);
             size_t i = 0;
+             __m128 _s = _mm_set1_ps(s);
             if (s == 0)
             {
-                __m128 _0 = _mm_set1_ps(0.0f);
                 for (; i < alignedSize; i += F)
                 {
                     __m128 _src = Load<align>(src + i);
-                    Store<align>(dst + i, _mm_max_ps(_0, _src));
+                    Store<align>(dst + i, _mm_max_ps(_s, _src));
                 }
                 for (; i < size; ++i)
-                    dst[i] = Simd::Max(0.0f, src[i]);
+                    dst[i] = Simd::Max(s, src[i]);
             }
-            else
+            else if (s > 0.0f && s < 1.0f)
             {
-                __m128 _s = _mm_set1_ps(s);
                 for (; i < alignedSize; i += F)
                 {
                     __m128 _src = Load<align>(src + i);
                     Store<align>(dst + i, _mm_max_ps(_mm_mul_ps(_s, _src), _src));
                 }
                 for (; i < size; ++i)
-                    dst[i] = Simd::Max(src[i] * s, src[i]);
+                    dst[i] = Simd::Max(s*src[i], src[i]);
+            }
+            else
+            {
+                __m128 _0 = _mm_set1_ps(0.0f);
+                for (; i < alignedSize; i += F)
+                {
+                    __m128 _src = Load<align>(src + i);
+                    Store<align>(dst + i, _mm_add_ps(_mm_max_ps(_0, _src), _mm_mul_ps(_s, _mm_min_ps(_0, _src))));
+                }
+                for (; i < size; ++i)
+                    dst[i] = Simd::Max(0.0f, src[i]) + s * Simd::Min(src[i], 0.0f);
             }
         }
 

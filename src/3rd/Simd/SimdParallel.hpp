@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2018 Yermalayeu Ihar.
+* Copyright (c) 2011-2019 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -25,13 +25,18 @@
 #define __SimdParallel_hpp__
 
 #include <thread>
-#include <future>
 #include <vector>
+#ifndef SIMD_FUTURE_DISABLE
+#include <future>
+#endif
 
 namespace Simd
 {
     template<class Function> inline void Parallel(size_t begin, size_t end, const Function & function, size_t threadNumber, size_t blockAlign = 1)
     {
+#ifdef SIMD_FUTURE_DISABLE
+        function(0, begin, end);
+#else
         threadNumber = std::min<size_t>(threadNumber, std::thread::hardware_concurrency());
         if (threadNumber <= 1 || size_t(blockAlign*1.5) >= (end - begin))
             function(0, begin, end);
@@ -54,6 +59,7 @@ namespace Simd
             for (size_t i = 0; i < futures.size(); ++i)
                 futures[i].wait();
         }
+#endif
     }
 }
 

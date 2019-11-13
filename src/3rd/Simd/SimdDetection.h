@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2018 Yermalayeu Ihar.
+* Copyright (c) 2011-2019 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -324,6 +324,8 @@ namespace Simd
             const typename Hid::Leave * leaves = hid.leaves.data();
             const typename Hid::Node * nodes = hid.nodes.data();
             const typename Hid::Stage * stages = hid.stages.data();
+            if (startStage >= (int)hid.stages.size())
+                return 1;
             int nodeOffset = stages[startStage].first;
             int leafOffset = 2 * nodeOffset;
             for (int i_stage = startStage, n_stages = (int)hid.stages.size(); i_stage < n_stages; i_stage++)

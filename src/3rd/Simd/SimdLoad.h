@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2018 Yermalayeu Ihar.
+* Copyright (c) 2011-2019 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,14 @@
 
 namespace Simd
 {
+    enum PadType
+    {
+        PadNose1,
+        PadNone,
+        PadTail1,
+        PadTail2,
+    };
+
 #ifdef SIMD_SSE_ENABLE
     namespace Sse
     {
@@ -45,7 +53,31 @@ namespace Simd
 
         SIMD_INLINE __m128 Load(const float * p0, const float * p1)
         {
-            return _mm_loadh_pi(_mm_loadl_pi(_mm_undefined_ps(), (__m64*)p0), (__m64*)p1);
+            return _mm_loadh_pi(_mm_loadl_pi(_mm_setzero_ps(), (__m64*)p0), (__m64*)p1);
+        }
+
+        SIMD_INLINE __m128 LoadPadZeroNose1(const float * p)
+        {
+            SIMD_ALIGNED(16) const int32_t m[F] = { 0, -1, -1, -1 };
+            __m128 a = _mm_loadu_ps(p + 1);
+            __m128 b = _mm_shuffle_ps(a, a, 0x90);
+            return _mm_and_ps(b, _mm_load_ps((float*)m));
+        }
+
+        SIMD_INLINE __m128 LoadPadZeroTail1(const float * p)
+        {
+            SIMD_ALIGNED(16) const int32_t m[F] = { -1, -1, -1, 0 };
+            __m128 a = _mm_loadu_ps(p - 1);
+            __m128 b = _mm_shuffle_ps(a, a, 0xF9);
+            return _mm_and_ps(b, _mm_load_ps((float*)m));
+        }
+
+        SIMD_INLINE __m128 LoadPadZeroTail2(const float * p)
+        {
+            SIMD_ALIGNED(16) const int32_t m[F] = { -1, -1, 0, 0 };
+            __m128 a = _mm_loadu_ps(p - 2);
+            __m128 b = _mm_shuffle_ps(a, a, 0xFE);
+            return _mm_and_ps(b, _mm_load_ps((float*)m));
         }
     }
 #endif//SIMD_SSE_ENABLE
@@ -417,6 +449,34 @@ namespace Simd
         {
             return _mm512_maskz_load_ps(m, p);
         }
+
+        template<bool align> SIMD_INLINE __m512 Load(const float * p0, const float * p1)
+        {
+            return _mm512_castpd_ps(_mm512_insertf64x4(_mm512_castps_pd(_mm512_castps256_ps512(Avx::Load<align>(p0))), _mm256_castps_pd(Avx::Load<align>(p1)), 1));
+        }
+
+        template<bool align> SIMD_INLINE __m512 Load(const float * p0, const float * p1, const float * p2, const float * p3)
+        {
+            return _mm512_insertf32x4(_mm512_insertf32x4(_mm512_insertf32x4(_mm512_castps128_ps512(Sse::Load<align>(p0)), Sse::Load<align>(p1), 1), Sse::Load<align>(p2), 2), Sse::Load<align>(p3), 3);
+        }
+
+        const __m512i K32_GATHER_ANY = SIMD_MM512_SET1_EPI32(1);
+        const __m512i K32_GATHER_3A = SIMD_MM512_SETR_EPI32(0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 0, 0, 0, 0, 0);
+        const __m512i K32_GATHER_3B = SIMD_MM512_SETR_EPI32(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4, 7, 10, 13);
+
+
+        template<int period> SIMD_INLINE __m512 Gather(const float * ptr)
+        {
+            return _mm512_i32gather_ps(K32_GATHER_ANY, ptr, sizeof(float)*period);
+        }
+
+        template<> SIMD_INLINE __m512 Gather<3>(const float * ptr)
+        {
+            __m512 s0 = _mm512_loadu_ps(ptr + 0 * F);
+            __m512 s1 = _mm512_loadu_ps(ptr + 1 * F);
+            __m512 s2 = _mm512_loadu_ps(ptr + 2 * F);
+            return _mm512_mask_permutexvar_ps(_mm512_maskz_permutex2var_ps(0xFFFF, s0, K32_GATHER_3A, s1), 0xF800, K32_GATHER_3B, s2);
+        }
     }
 #endif//SIMD_AVX512F_ENABLE
 
@@ -444,12 +504,20 @@ namespace Simd
 
         template <> SIMD_INLINE __m512i Load<false, true>(const uint8_t * p, __mmask64 m)
         {
+#if defined (SIMD_MASKZ_LOAD_ERROR)
+            return _mm512_mask_mov_epi8(K_ZERO, m, _mm512_maskz_loadu_epi8(m, p));
+#else
             return _mm512_maskz_loadu_epi8(m, p);
+#endif
         }
 
         template <> SIMD_INLINE __m512i Load<true, true>(const uint8_t * p, __mmask64 m)
         {
+#if defined (SIMD_MASKZ_LOAD_ERROR)
+            return _mm512_mask_mov_epi8(K_ZERO, m, _mm512_maskz_loadu_epi8(m, p));
+#else
             return _mm512_maskz_loadu_epi8(m, p);
+#endif
         }
 
         template <bool align, bool mask> SIMD_INLINE __m512i Load(const int16_t * p, __mmask32 m)
@@ -876,6 +944,11 @@ namespace Simd
             return (uint16x8_t)Load<align>((const uint8_t*)p);
         }
 
+        template <bool align> SIMD_INLINE int32x4_t Load(const int32_t * p)
+        {
+            return (int32x4_t)Load<align>((const uint8_t*)p);
+        }
+
         template <bool align> SIMD_INLINE uint32x4_t Load(const uint32_t * p)
         {
             return (uint32x4_t)Load<align>((const uint8_t*)p);
@@ -1006,6 +1079,56 @@ namespace Simd
 #endif
         }
 
+        template <bool align> SIMD_INLINE float32x4x2_t Load2(const float * p);
+
+        template <> SIMD_INLINE float32x4x2_t Load2<false>(const float * p)
+        {
+#if defined(__GNUC__) && SIMD_NEON_PREFECH_SIZE
+            __builtin_prefetch(p + SIMD_NEON_PREFECH_SIZE);
+#endif
+            return vld2q_f32(p);
+        }
+
+        template <> SIMD_INLINE float32x4x2_t Load2<true>(const float * p)
+        {
+#if defined(__GNUC__)
+#if SIMD_NEON_PREFECH_SIZE
+            __builtin_prefetch(p + SIMD_NEON_PREFECH_SIZE);
+#endif
+            float * _p = (float *)__builtin_assume_aligned(p, 16);
+            return vld2q_f32(_p);
+#elif defined(_MSC_VER)
+            return vld2q_f32_ex(p, 128);
+#else
+            return vld2q_f32(p);
+#endif
+        }
+
+        template <bool align> SIMD_INLINE float32x4x3_t Load3(const float * p);
+
+        template <> SIMD_INLINE float32x4x3_t Load3<false>(const float * p)
+        {
+#if defined(__GNUC__) && SIMD_NEON_PREFECH_SIZE
+            __builtin_prefetch(p + SIMD_NEON_PREFECH_SIZE);
+#endif
+            return vld3q_f32(p);
+        }
+
+        template <> SIMD_INLINE float32x4x3_t Load3<true>(const float * p)
+        {
+#if defined(__GNUC__)
+#if SIMD_NEON_PREFECH_SIZE
+            __builtin_prefetch(p + SIMD_NEON_PREFECH_SIZE);
+#endif
+            float * _p = (float *)__builtin_assume_aligned(p, 16);
+            return vld3q_f32(_p);
+#elif defined(_MSC_VER)
+            return vld3q_f32_ex(p, 128);
+#else
+            return vld3q_f32(p);
+#endif
+        }
+
         template <bool align> SIMD_INLINE float32x4x4_t Load4(const float * p);
 
         template <> SIMD_INLINE float32x4x4_t Load4<false>(const float * p)
@@ -1083,6 +1206,31 @@ namespace Simd
             return vld1_f32_ex(p, 64);
 #else
             return vld1_f32(p);
+#endif
+        }
+
+        template <bool align> SIMD_INLINE uint8x8x2_t LoadHalf2(const uint8_t * p);
+
+        template <> SIMD_INLINE uint8x8x2_t LoadHalf2<false>(const uint8_t * p)
+        {
+#if defined(__GNUC__) && SIMD_NEON_PREFECH_SIZE
+            __builtin_prefetch(p + SIMD_NEON_PREFECH_SIZE);
+#endif
+            return vld2_u8(p);
+        }
+
+        template <> SIMD_INLINE uint8x8x2_t LoadHalf2<true>(const uint8_t * p)
+        {
+#if defined(__GNUC__)
+#if SIMD_NEON_PREFECH_SIZE
+            __builtin_prefetch(p + SIMD_NEON_PREFECH_SIZE);
+#endif
+            uint8_t * _p = (uint8_t *)__builtin_assume_aligned(p, 8);
+            return vld2_u8(_p);
+#elif defined(_MSC_VER)
+            return vld2_u8_ex(p, 64);
+#else
+            return vld2_u8(p);
 #endif
         }
 
@@ -1244,6 +1392,36 @@ namespace Simd
         {
             a[0] = vld1q_u8(p - 1);
             a[2] = LoadAfterLast<1>(vld1q_u8(p));
+        }
+
+        template <size_t count> SIMD_INLINE uint8x8_t LoadBeforeFirst(uint8x8_t first)
+        {
+            return vext_u8(vext_u8(first, first, count), first, 8 - count);
+        }
+
+        template <size_t count> SIMD_INLINE uint8x8_t LoadAfterLast(uint8x8_t last)
+        {
+            return vext_u8(last, vext_u8(last, last, 8 - count), count);
+        }
+
+        SIMD_INLINE float32x4_t Load(const  float * p0, const  float * p1)
+        {
+            return vcombine_f32(vld1_f32(p0), vld1_f32(p1));
+        }
+
+        SIMD_INLINE float32x4_t LoadPadZeroNose1(const float * p)
+        {
+            return vextq_f32(vdupq_n_f32(0.0f), Load<false>(p + 1), 3);
+        }
+
+        SIMD_INLINE float32x4_t LoadPadZeroTail1(const float * p)
+        {
+            return vextq_f32(Load<false>(p - 1), vdupq_n_f32(0.0f), 1);
+        }
+
+        SIMD_INLINE float32x4_t LoadPadZeroTail2(const float * p)
+        {
+            return vextq_f32(Load<false>(p - 2), vdupq_n_f32(0.0f), 2);
         }
     }
 #endif//SIMD_NEON_ENABLE

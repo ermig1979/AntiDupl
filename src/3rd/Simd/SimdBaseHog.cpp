@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2019 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -212,8 +212,8 @@ namespace Simd
                     float dy = (float)(src2[col] - src0[col]);
                     float dx = (float)(src1[col + 1] - src1[col - 1]);
                     float value = (float)::sqrt(dx*dx + dy * dy);
-                    float ady = std::abs(dy);
-                    float adx = std::abs(dx);
+                    float ady = Simd::Abs(dy);
+                    float adx = Simd::Abs(dx);
 
                     float bestDot = 0;
                     int index = 0;
@@ -314,8 +314,8 @@ namespace Simd
                         float dy = (float)(src2[col] - src0[col]);
                         float dx = (float)(src1[col + 1] - src1[col - 1]);
                         float value = (float)::sqrt(dx*dx + dy * dy);
-                        float ady = std::abs(dy);
-                        float adx = std::abs(dx);
+                        float ady = Simd::Abs(dy);
+                        float adx = Simd::Abs(dx);
 
                         float bestDot = 0;
                         int index = 0;

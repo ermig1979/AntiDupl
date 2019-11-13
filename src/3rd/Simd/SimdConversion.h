@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar,
+* Copyright (c) 2011-2019 Yermalayeu Ihar,
 *               2014-2015 Antonenka Mikhail.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -88,107 +88,6 @@ namespace Simd
             bgra[1] = YuvToGreen(y, u, v);
             bgra[2] = YuvToRed(y, v);
             bgra[3] = alpha;
-        }
-
-        SIMD_INLINE uint8_t BayerToGreen(uint8_t greenLeft, uint8_t greenTop, uint8_t greenRight, uint8_t greenBottom,
-            uint8_t blueOrRedLeft, uint8_t blueOrRedTop, uint8_t blueOrRedRight, uint8_t blueOrRedBottom)
-        {
-            int verticalAbsDifference = AbsDifference(blueOrRedTop, blueOrRedBottom);
-            int horizontalAbsDifference = AbsDifference(blueOrRedLeft, blueOrRedRight);
-            if (verticalAbsDifference < horizontalAbsDifference)
-                return Average(greenTop, greenBottom);
-            else if (verticalAbsDifference > horizontalAbsDifference)
-                return Average(greenRight, greenLeft);
-            else
-                return Average(greenLeft, greenTop, greenRight, greenBottom);
-        }
-
-        template <SimdPixelFormatType bayerFormat> void BayerToBgr(const uint8_t * src[6],
-            size_t col0, size_t col1, size_t col2, size_t col3, size_t col4, size_t col5,
-            uint8_t * dst00, uint8_t * dst01, uint8_t * dst10, uint8_t * dst11);
-
-        template <> SIMD_INLINE void BayerToBgr<SimdPixelFormatBayerGrbg>(const uint8_t * src[6],
-            size_t col0, size_t col1, size_t col2, size_t col3, size_t col4, size_t col5,
-            uint8_t * dst00, uint8_t * dst01, uint8_t * dst10, uint8_t * dst11)
-        {
-            dst00[0] = Average(src[1][col2], src[3][col2]);
-            dst00[1] = src[2][col2];
-            dst00[2] = Average(src[2][col1], src[2][col3]);
-
-            dst01[0] = Average(src[1][col2], src[1][col4], src[3][col2], src[3][col4]);
-            dst01[1] = BayerToGreen(src[2][col2], src[1][col3], src[2][col4], src[3][col3], src[2][col1], src[0][col3], src[2][col5], src[4][col3]);
-            dst01[2] = src[2][col3];
-
-            dst10[0] = src[3][col2];
-            dst10[1] = BayerToGreen(src[3][col1], src[2][col2], src[3][col3], src[4][col2], src[3][col0], src[1][col2], src[3][col4], src[5][col2]);
-            dst10[2] = Average(src[2][col1], src[2][col3], src[4][col1], src[4][col3]);
-
-            dst11[0] = Average(src[3][col2], src[3][col4]);
-            dst11[1] = src[3][col3];
-            dst11[2] = Average(src[2][col3], src[4][col3]);
-        }
-
-        template <> SIMD_INLINE void BayerToBgr<SimdPixelFormatBayerGbrg>(const uint8_t * src[6],
-            size_t col0, size_t col1, size_t col2, size_t col3, size_t col4, size_t col5,
-            uint8_t * dst00, uint8_t * dst01, uint8_t * dst10, uint8_t * dst11)
-        {
-            dst00[0] = Average(src[2][col1], src[2][col3]);
-            dst00[1] = src[2][col2];
-            dst00[2] = Average(src[1][col2], src[3][col2]);
-
-            dst01[0] = src[2][col3];
-            dst01[1] = BayerToGreen(src[2][col2], src[1][col3], src[2][col4], src[3][col3], src[2][col1], src[0][col3], src[2][col5], src[4][col3]);
-            dst01[2] = Average(src[1][col2], src[1][col4], src[3][col2], src[3][col4]);
-
-            dst10[0] = Average(src[2][col1], src[2][col3], src[4][col1], src[4][col3]);
-            dst10[1] = BayerToGreen(src[3][col1], src[2][col2], src[3][col3], src[4][col2], src[3][col0], src[1][col2], src[3][col4], src[5][col2]);
-            dst10[2] = src[3][col2];
-
-            dst11[0] = Average(src[2][col3], src[4][col3]);
-            dst11[1] = src[3][col3];
-            dst11[2] = Average(src[3][col2], src[3][col4]);
-        }
-
-        template <> SIMD_INLINE void BayerToBgr<SimdPixelFormatBayerRggb>(const uint8_t * src[6],
-            size_t col0, size_t col1, size_t col2, size_t col3, size_t col4, size_t col5,
-            uint8_t * dst00, uint8_t * dst01, uint8_t * dst10, uint8_t * dst11)
-        {
-            dst00[0] = Average(src[1][col1], src[1][col3], src[3][col1], src[3][col3]);
-            dst00[1] = BayerToGreen(src[2][col1], src[1][col2], src[2][col3], src[3][col2], src[2][col0], src[0][col2], src[2][col4], src[4][col2]);
-            dst00[2] = src[2][col2];
-
-            dst01[0] = Average(src[1][col3], src[3][col3]);
-            dst01[1] = src[2][col3];
-            dst01[2] = Average(src[2][col2], src[2][col4]);
-
-            dst10[0] = Average(src[3][col1], src[3][col3]);
-            dst10[1] = src[3][col2];
-            dst10[2] = Average(src[2][col2], src[4][col2]);
-
-            dst11[0] = src[3][col3];
-            dst11[1] = BayerToGreen(src[3][col2], src[2][col3], src[3][col4], src[4][col3], src[3][col1], src[1][col3], src[3][col5], src[5][col3]);
-            dst11[2] = Average(src[2][col2], src[2][col4], src[4][col2], src[4][col4]);
-        }
-
-        template <> SIMD_INLINE void BayerToBgr<SimdPixelFormatBayerBggr>(const uint8_t * src[6],
-            size_t col0, size_t col1, size_t col2, size_t col3, size_t col4, size_t col5,
-            uint8_t * dst00, uint8_t * dst01, uint8_t * dst10, uint8_t * dst11)
-        {
-            dst00[0] = src[2][col2];
-            dst00[1] = BayerToGreen(src[2][col1], src[1][col2], src[2][col3], src[3][col2], src[2][col0], src[0][col2], src[2][col4], src[4][col2]);
-            dst00[2] = Average(src[1][col1], src[1][col3], src[3][col1], src[3][col3]);
-
-            dst01[0] = Average(src[2][col2], src[2][col4]);
-            dst01[1] = src[2][col3];
-            dst01[2] = Average(src[1][col3], src[3][col3]);
-
-            dst10[0] = Average(src[2][col2], src[4][col2]);
-            dst10[1] = src[3][col2];
-            dst10[2] = Average(src[3][col1], src[3][col3]);
-
-            dst11[0] = Average(src[2][col2], src[2][col4], src[4][col2], src[4][col4]);
-            dst11[1] = BayerToGreen(src[3][col2], src[2][col3], src[3][col4], src[4][col3], src[3][col1], src[1][col3], src[3][col5], src[5][col3]);
-            dst11[2] = src[3][col3];
         }
 
         SIMD_INLINE void BgrToHsv(int blue, int green, int red, uint8_t * hsv)
@@ -811,6 +710,18 @@ namespace Simd
         template<> SIMD_INLINE __m256i BgrToBgra<true>(const __m256i & bgr, const __m256i & alpha)
         {
             return _mm256_or_si256(_mm256_shuffle_epi8(_mm256_permute4x64_epi64(bgr, 0xE9), K8_BGRA_TO_BGR_SHUFFLE), alpha);
+        }
+
+        template<bool tail> __m256i RgbToBgra(const __m256i & rgb, const __m256i & alpha);
+
+        template<> SIMD_INLINE __m256i RgbToBgra<false>(const __m256i & rgb, const __m256i & alpha)
+        {
+            return _mm256_or_si256(_mm256_shuffle_epi8(_mm256_permute4x64_epi64(rgb, 0x94), K8_BGRA_TO_RGB_SHUFFLE), alpha);
+        }
+
+        template<> SIMD_INLINE __m256i RgbToBgra<true>(const __m256i & rgb, const __m256i & alpha)
+        {
+            return _mm256_or_si256(_mm256_shuffle_epi8(_mm256_permute4x64_epi64(rgb, 0xE9), K8_BGRA_TO_RGB_SHUFFLE), alpha);
         }
     }
 #endif// SIMD_AVX2_ENABLE

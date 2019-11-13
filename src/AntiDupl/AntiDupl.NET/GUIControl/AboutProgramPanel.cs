@@ -100,7 +100,7 @@ namespace AntiDupl.NET
 
         private Control CreateInfoTable(Font font)
         {
-            TableLayoutPanel table = InitFactory.Layout.Create(2, 4, 0, 0);
+            TableLayoutPanel table = InitFactory.Layout.Create(2, 6, 0, 0);
             table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             table.CellBorderStyle = TableLayoutPanelCellBorderStyle.Inset;
@@ -120,6 +120,12 @@ namespace AntiDupl.NET
 
             table.Controls.Add(CreateLinkLabel("OpenJPEG", Resources.WebLinks.OpenjpegOrg, font), 0, 3);
             table.Controls.Add(CreateLabel(m_core.GetVersion(CoreDll.VersionType.OpenJpeg).ToString(), font), 1, 3);
+
+            table.Controls.Add(CreateLinkLabel("libwebp", Resources.WebLinks.OpenjpegOrg, font), 0, 4);
+            table.Controls.Add(CreateLabel(m_core.GetVersion(CoreDll.VersionType.Webp).ToString(), font), 1, 4);
+
+            table.Controls.Add(CreateLinkLabel("libjpeg-turbo", Resources.WebLinks.OpenjpegOrg, font), 0, 5);
+            table.Controls.Add(CreateLabel(m_core.GetVersion(CoreDll.VersionType.TurboJpeg).ToString(), font), 1, 5);
 
             return table;
         }

@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2019 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -40,9 +40,9 @@
 
 //#define SIMD_AVX2_DISABLE
 
-//#define SIMD_AVX512F_DISABLE
+#define SIMD_AVX512F_DISABLE
 
-//#define SIMD_AVX512BW_DISABLE
+#define SIMD_AVX512BW_DISABLE
 
 //#define SIMD_VMX_DISABLE
 
@@ -58,7 +58,11 @@
 
 #define SIMD_LOG_ENABLE
 
+#define SIMD_ALLOCATE_ERROR_MESSAGE
+
 #define SIMD_ALLOCATE_ASSERT
+
+#define SIMD_NO_MANS_LAND 64
 
 #define SIMD_NEON_RCP_ITER -1
 
@@ -67,5 +71,11 @@
 #define SIMD_NEON_PREFECH_SIZE 384
 
 //#define SIMD_OPENCV_ENABLE
+
+//#define SIMD_PERFORMANCE_STATISTIC
+
+//#define SIMD_RUNTIME_STATISTIC
+
+//#define SIMD_FUTURE_DISABLE
 
 #endif//__SimdConfig_h__

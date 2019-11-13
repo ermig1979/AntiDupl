@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2019 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -335,27 +335,6 @@ namespace Simd
                 size_t i = size - DA;
                 InterpolateY<false>(buffer.bx[0] + i, buffer.bx[1] + i, a, dst + i / 2);
             }
-        }
-
-        const __m256i K8_SHUFFLE_0 = SIMD_MM256_SETR_EPI8(
-            0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70,
-            0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0);
-
-        const __m256i K8_SHUFFLE_1 = SIMD_MM256_SETR_EPI8(
-            0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0,
-            0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70);
-
-        SIMD_INLINE const __m256i Shuffle(const __m256i & value, const __m256i & shuffle)
-        {
-            return _mm256_or_si256(_mm256_shuffle_epi8(value, _mm256_add_epi8(shuffle, K8_SHUFFLE_0)),
-                _mm256_shuffle_epi8(_mm256_permute4x64_epi64(value, 0x4E), _mm256_add_epi8(shuffle, K8_SHUFFLE_1)));
-        }
-
-        SIMD_INLINE void LoadGray(const uint8_t * src, const Index & index, uint8_t * dst)
-        {
-            __m256i _src = _mm256_loadu_si256((__m256i*)(src + index.src));
-            __m256i _shuffle = _mm256_loadu_si256((__m256i*)&index.shuffle);
-            _mm256_storeu_si256((__m256i*)(dst + index.dst), Shuffle(_src, _shuffle));
         }
 
         SIMD_INLINE void LoadGrayIntrepolated(const uint8_t * src, const Index & index, const uint8_t * alpha, uint8_t * dst)

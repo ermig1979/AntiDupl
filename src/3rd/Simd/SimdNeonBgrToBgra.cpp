@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2019 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -32,10 +32,16 @@ namespace Simd
         const size_t A3 = A * 3;
         const size_t A4 = A * 4;
 
-        template <bool align> SIMD_INLINE void BgrToBgra(const uint8_t * bgr, uint8_t * bgra, uint8x16x4_t & _bgra)
+        union Bgra
         {
-            *(uint8x16x3_t*)&_bgra = Load3<align>(bgr);
-            Store4<align>(bgra, _bgra);
+            uint8x16x4_t bgra;
+            uint8x16x3_t bgr;
+        };
+
+        template <bool align> SIMD_INLINE void BgrToBgra(const uint8_t * bgr, uint8_t * bgra, Bgra & _bgra)
+        {
+            _bgra.bgr = Load3<align>(bgr);
+            Store4<align>(bgra, _bgra.bgra);
         }
 
         template <bool align> void BgrToBgra(const uint8_t * bgr, size_t width, size_t height, size_t bgrStride, uint8_t * bgra, size_t bgraStride, uint8_t alpha)
@@ -46,8 +52,8 @@ namespace Simd
 
             size_t alignedWidth = AlignLo(width, A);
 
-            uint8x16x4_t _bgra;
-            _bgra.val[3] = vdupq_n_u8(alpha);
+            Bgra _bgra;
+            _bgra.bgra.val[3] = vdupq_n_u8(alpha);
 
             for (size_t row = 0; row < height; ++row)
             {

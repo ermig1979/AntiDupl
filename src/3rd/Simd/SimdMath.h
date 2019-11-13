@@ -1,7 +1,8 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2018 Yermalayeu Ihar.
+* Copyright (c) 2011-2019 Yermalayeu Ihar,
+*               2018-2019 Radchenko Andrey.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -395,6 +396,11 @@ namespace Simd
             return _mm_sub_epi8(_mm_max_epu8(a, b), _mm_min_epu8(a, b));
         }
 
+        SIMD_INLINE __m128i AbsDifferenceI16(__m128i a, __m128i b)
+        {
+            return _mm_sub_epi16(_mm_max_epi16(a, b), _mm_min_epi16(a, b));
+        }
+
         SIMD_INLINE __m128i MulU8(__m128i a, __m128i b)
         {
             __m128i lo = _mm_mullo_epi16(_mm_unpacklo_epi8(a, K_ZERO), _mm_unpacklo_epi8(b, K_ZERO));
@@ -439,6 +445,18 @@ namespace Simd
             return _mm_unpackhi_epi8(a, b);
         }
 
+        template <int index> __m128i U8To16(__m128i a);
+
+        template <> SIMD_INLINE __m128i U8To16<0>(__m128i a)
+        {
+            return _mm_and_si128(a, K16_00FF);
+        }
+
+        template <> SIMD_INLINE __m128i U8To16<1>(__m128i a)
+        {
+            return _mm_and_si128(_mm_srli_si128(a, 1), K16_00FF);
+        }
+
         template <int part> SIMD_INLINE __m128i UnpackU16(__m128i a, __m128i b = K_ZERO);
 
         template <> SIMD_INLINE __m128i UnpackU16<0>(__m128i a, __m128i b)
@@ -481,6 +499,16 @@ namespace Simd
         template<int imm> SIMD_INLINE __m128 Shuffle32f(__m128 a)
         {
             return _mm_castsi128_ps(_mm_shuffle_epi32(_mm_castps_si128(a), imm));
+        }
+
+        SIMD_INLINE __m128i Average16(const __m128i & a, const __m128i & b, const __m128i & c, const __m128i & d)
+        {
+            return _mm_srli_epi16(_mm_add_epi16(_mm_add_epi16(_mm_add_epi16(a, b), _mm_add_epi16(c, d)), K16_0002), 2);
+        }
+
+        SIMD_INLINE __m128i Merge16(const __m128i & even, __m128i odd)
+        {
+            return _mm_or_si128(_mm_slli_si128(odd, 1), even);
         }
     }
 #endif// SIMD_SSE2_ENABLE
@@ -651,6 +679,11 @@ namespace Simd
             return _mm256_sub_epi8(_mm256_max_epu8(a, b), _mm256_min_epu8(a, b));
         }
 
+        SIMD_INLINE __m256i AbsDifferenceI16(__m256i a, __m256i b)
+        {
+            return _mm256_sub_epi16(_mm256_max_epi16(a, b), _mm256_min_epi16(a, b));
+        }
+
         SIMD_INLINE __m256i MulU8(__m256i a, __m256i b)
         {
             __m256i lo = _mm256_mullo_epi16(_mm256_unpacklo_epi8(a, K_ZERO), _mm256_unpacklo_epi8(b, K_ZERO));
@@ -690,6 +723,18 @@ namespace Simd
         template <> SIMD_INLINE __m256i UnpackU8<1>(__m256i a, __m256i b)
         {
             return _mm256_unpackhi_epi8(a, b);
+        }
+
+        template <int index> __m256i U8To16(__m256i a);
+
+        template <> SIMD_INLINE __m256i U8To16<0>(__m256i a)
+        {
+            return _mm256_and_si256(a, K16_00FF);
+        }
+
+        template <> SIMD_INLINE __m256i U8To16<1>(__m256i a)
+        {
+            return _mm256_and_si256(_mm256_srli_si256(a, 1), K16_00FF);
         }
 
         template<int part> SIMD_INLINE __m256i SubUnpackedU8(__m256i a, __m256i b)
@@ -732,6 +777,22 @@ namespace Simd
         template <int index> SIMD_INLINE __m256 Broadcast(__m256 a)
         {
             return _mm256_castsi256_ps(_mm256_shuffle_epi32(_mm256_castps_si256(a), index * 0x55));
+        }
+
+        SIMD_INLINE __m256i Average16(const __m256i & a, const __m256i & b, const __m256i & c, const __m256i & d)
+        {
+            return _mm256_srli_epi16(_mm256_add_epi16(_mm256_add_epi16(_mm256_add_epi16(a, b), _mm256_add_epi16(c, d)), K16_0002), 2);
+        }
+
+        SIMD_INLINE __m256i Merge16(const __m256i & even, __m256i odd)
+        {
+            return _mm256_or_si256(_mm256_slli_si256(odd, 1), even);
+        }
+
+        SIMD_INLINE const __m256i Shuffle(const __m256i & value, const __m256i & shuffle)
+        {
+            return _mm256_or_si256(_mm256_shuffle_epi8(value, _mm256_add_epi8(shuffle, K8_SHUFFLE_0)),
+                _mm256_shuffle_epi8(_mm256_permute4x64_epi64(value, 0x4E), _mm256_add_epi8(shuffle, K8_SHUFFLE_1)));
         }
     }
 #endif// SIMD_AVX2_ENABLE
@@ -818,7 +879,7 @@ namespace Simd
 
         SIMD_INLINE __m512 Rcp14(const __m512 & a)
         {
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && _MSC_VER<1922
             return _mm512_maskz_rcp14_ps(_MM_K0_REG, a);
 #else
             return _mm512_rcp14_ps(a);
@@ -827,7 +888,7 @@ namespace Simd
 
         SIMD_INLINE __m512 Rsqrt14(const __m512 & a)
         {
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && _MSC_VER<1922
             return _mm512_maskz_rsqrt14_ps(_MM_K0_REG, a);
 #else
             return _mm512_rsqrt14_ps(a);
@@ -864,6 +925,30 @@ namespace Simd
         template<int shift, bool mask> SIMD_INLINE __m512 Alignr(const __m512 & lo, const __m512 & hi, __mmask16 m)
         {
             return Mask<mask>(Alignr<shift>(lo, hi), m);
+        }
+
+        template <int part> SIMD_INLINE __m512 Interleave(const __m512 & a, const __m512 & b);
+
+        template <> SIMD_INLINE __m512 Interleave<0>(const __m512 & a, const __m512 & b)
+        {
+            return _mm512_permutex2var_ps(a, K32_INTERLEAVE_0, b);
+        }
+
+        template <> SIMD_INLINE __m512 Interleave<1>(const __m512 & a, const __m512 & b)
+        {
+            return _mm512_permutex2var_ps(a, K32_INTERLEAVE_1, b);
+        }
+
+        template <int odd> SIMD_INLINE __m512 Deinterleave(const __m512 & a, const __m512 & b);
+
+        template <> SIMD_INLINE __m512 Deinterleave<0>(const __m512 & a, const __m512 & b)
+        {
+            return _mm512_permutex2var_ps(a, K32_DEINTERLEAVE_0, b);
+        }
+
+        template <> SIMD_INLINE __m512 Deinterleave<1>(const __m512 & a, const __m512 & b)
+        {
+            return _mm512_permutex2var_ps(a, K32_DEINTERLEAVE_1, b);
         }
     }
 #endif //SIMD_AVX512F_ENABLE
@@ -952,6 +1037,18 @@ namespace Simd
             return _mm512_unpackhi_epi8(a, b);
         }
 
+        template <int index> __m512i U8To16(__m512i a);
+
+        template <> SIMD_INLINE __m512i U8To16<0>(__m512i a)
+        {
+            return _mm512_and_si512(a, K16_00FF);
+        }
+
+        template <> SIMD_INLINE __m512i U8To16<1>(__m512i a)
+        {
+            return _mm512_shuffle_epi8(a, K8_SUFFLE_BGRA_TO_G0A0);
+        }
+
         template <int part> SIMD_INLINE __m512i UnpackU16(__m512i a, __m512i b = K_ZERO);
 
         template <> SIMD_INLINE __m512i UnpackU16<0>(__m512i a, __m512i b)
@@ -974,6 +1071,11 @@ namespace Simd
             return _mm512_sub_epi8(_mm512_max_epu8(a, b), _mm512_min_epu8(a, b));
         }
 
+        SIMD_INLINE __m512i AbsDifferenceI16(__m512i a, __m512i b)
+        {
+            return _mm512_sub_epi16(_mm512_max_epi16(a, b), _mm512_min_epi16(a, b));
+        }
+
         SIMD_INLINE __m512i Saturate16iTo8u(__m512i value)
         {
             return _mm512_min_epi16(K16_00FF, _mm512_max_epi16(value, K_ZERO));
@@ -988,8 +1090,8 @@ namespace Simd
 
         SIMD_INLINE __m512i Hadd32(__m512i a, __m512i b)
         {
-            __m512i ab0 = _mm512_permutex2var_epi32(a, K32_PERMUTE_FOR_HADD_0, b);
-            __m512i ab1 = _mm512_permutex2var_epi32(a, K32_PERMUTE_FOR_HADD_1, b);
+            __m512i ab0 = _mm512_permutex2var_epi32(a, K32_DEINTERLEAVE_0, b);
+            __m512i ab1 = _mm512_permutex2var_epi32(a, K32_DEINTERLEAVE_1, b);
             return _mm512_add_epi32(ab0, ab1);
         }
 
@@ -1050,6 +1152,20 @@ namespace Simd
             return _mm512_castsi512_ps(_mm512_permutex_epi64(_mm512_castps_si512(a), imm));
         }
 
+        SIMD_INLINE __m512i Average16(const __m512i & a, const __m512i & b)
+        {
+            return _mm512_avg_epu16(a, b);
+        }
+
+        SIMD_INLINE __m512i Average16(const __m512i & a, const __m512i & b, const __m512i & c, const __m512i & d)
+        {
+            return _mm512_srli_epi16(_mm512_add_epi16(_mm512_add_epi16(_mm512_add_epi16(a, b), _mm512_add_epi16(c, d)), K16_0002), 2);
+        }
+
+        SIMD_INLINE __m512i Merge16(const __m512i & even, __m512i odd)
+        {
+            return _mm512_or_si512(_mm512_slli_epi16(odd, 8), even);
+        }
     }
 #endif //SIMD_AVX512BW_ENABLE
 
@@ -1224,6 +1340,18 @@ namespace Simd
             return vget_high_s16(a);
         }
 
+        template <int part> SIMD_INLINE uint32x2_t Half(uint32x4_t a);
+
+        template <> SIMD_INLINE uint32x2_t Half<0>(uint32x4_t a)
+        {
+            return vget_low_u32(a);
+        }
+
+        template <> SIMD_INLINE uint32x2_t Half<1>(uint32x4_t a)
+        {
+            return vget_high_u32(a);
+        }
+
         template <int part> SIMD_INLINE float32x2_t Half(float32x4_t a);
 
         template <> SIMD_INLINE float32x2_t Half<0>(float32x4_t a)
@@ -1239,6 +1367,11 @@ namespace Simd
         template <int part> SIMD_INLINE uint16x8_t UnpackU8(uint8x16_t a)
         {
             return vmovl_u8(Half<part>(a));
+        }
+
+        template <int part> SIMD_INLINE int16x8_t UnpackU8s(uint8x16_t a)
+        {
+            return (int16x8_t)vmovl_u8(Half<part>(a));
         }
 
         template <int part> SIMD_INLINE uint32x4_t UnpackU16(uint16x8_t a)
@@ -1406,7 +1539,13 @@ namespace Simd
         SIMD_INLINE float32x4_t RightNotZero(size_t count)
         {
             const int32_t mask[DF] = { 0, 0, 0, 0, -1, -1, -1, -1 };
-            return vld1q_f32((float*)(mask + count));
+            return vld1q_f32((float*)(mask + Simd::RestrictRange<ptrdiff_t>(count, 0, F)));
+        }
+
+        SIMD_INLINE float32x4_t LeftNotZero(ptrdiff_t count)
+        {
+            const int32_t mask[DF] = { -1, -1, -1, -1, 0, 0, 0, 0 };
+            return vld1q_f32((float*)(mask + F - Simd::RestrictRange<ptrdiff_t>(count, 0, F)));
         }
 
         SIMD_INLINE float32x4_t And(float32x4_t a, float32x4_t b)
@@ -1414,14 +1553,41 @@ namespace Simd
             return (float32x4_t)vandq_u32((uint32x4_t)a, (uint32x4_t)b);
         }
 
+        SIMD_INLINE float32x4_t Or(float32x4_t a, float32x4_t b)
+        {
+            return (float32x4_t)vorrq_u32((uint32x4_t)a, (uint32x4_t)b);
+        }
+
         template <int index> SIMD_INLINE float32x4_t Broadcast(float32x4_t a)
         {
             return vdupq_lane_f32(Half<index / 2>(a), index & 1);
         }
 
+        SIMD_INLINE uint16x8_t Hadd(uint16x8_t a, uint16x8_t b)
+        {
+            return vcombine_u16(vpadd_u16(Half<0>(a), Half<1>(a)), vpadd_u16(Half<0>(b), Half<1>(b)));
+        }
+
         SIMD_INLINE float32x4_t Hadd(float32x4_t a, float32x4_t b)
         {
             return vcombine_f32(vpadd_f32(Half<0>(a), Half<1>(a)), vpadd_f32(Half<0>(b), Half<1>(b)));
+        }
+
+        template <bool condition> SIMD_INLINE float32x4_t Masked(const float32x4_t & value, const float32x4_t & mask);
+
+        template <> SIMD_INLINE float32x4_t Masked<false>(const float32x4_t & value, const float32x4_t & mask)
+        {
+            return value;
+        }
+
+        template <> SIMD_INLINE float32x4_t Masked<true>(const float32x4_t & value, const float32x4_t & mask)
+        {
+            return And(value, mask);
+        }
+
+        SIMD_INLINE bool TestZ(uint32x4_t a)
+        {
+            return !(vgetq_lane_u32(a, 0) | vgetq_lane_u32(a, 1) | vgetq_lane_u32(a, 2) | vgetq_lane_u32(a, 3));
         }
     }
 #endif//SIMD_NEON_ENABLE

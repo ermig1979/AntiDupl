@@ -286,6 +286,8 @@ namespace AntiDupl.NET
             AntiDupl = 0,
             Simd = 1,
             OpenJpeg = 2,
+            Webp = 3,
+            TurboJpeg = 4,
         }
 
         public enum SelectionType : int

@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2018 Yermalayeu Ihar.
+* Copyright (c) 2011-2019 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -24,57 +24,168 @@
 #include "Simd/SimdMemory.h"
 #include "Simd/SimdStore.h"
 #include "Simd/SimdExtract.h"
+#include "Simd/SimdSynet.h"
+#include "Simd/SimdBase.h"
+#include "Simd/SimdSse1.h"
+#include "Simd/SimdAvx1.h"
 
 namespace Simd
 {
 #ifdef SIMD_AVX_ENABLE    
     namespace Avx
     {
-        template <bool align> SIMD_INLINE void SynetAddBias(const __m256 & bias, float * dst)
+        template <bool align> SIMD_INLINE void SynetAddBias(const float * bias, float * dst)
+        {
+            Store<align>(dst, _mm256_add_ps(Load<align>(dst), Load<align>(bias)));
+        }
+
+        template <bool align> SIMD_INLINE void SynetAddBias(__m256 bias, float * dst)
         {
             Store<align>(dst, _mm256_add_ps(Load<align>(dst), bias));
         }
 
-        template <bool align> SIMD_INLINE void SynetAddBias(const float * bias, size_t count, size_t size, float * dst)
+        template <bool align> void SynetAddBiasNchw(const float * bias, size_t channels, size_t spatial, float * dst)
         {
-            size_t aligned = AlignLo(size, QF);
-            size_t partial = AlignLo(size, F);     
-            for (size_t i = 0; i < count; ++i)
+            if (align)
+                assert(Aligned(spatial, F) && Aligned(dst));
+
+            size_t aligned = AlignLo(spatial, QF);
+            size_t partial = AlignLo(spatial, F);
+            for (size_t c = 0; c < channels; ++c)
             {
-                size_t j = 0;
+                size_t s = 0;
                 if (partial)
                 {
-                    __m256 _bias = _mm256_set1_ps(bias[i]);
-                    for (; j < aligned; j += QF)
+                    __m256 _bias = _mm256_set1_ps(bias[c]);
+                    for (; s < aligned; s += QF)
                     {
-                        SynetAddBias<align>(_bias, dst + j + F * 0);
-                        SynetAddBias<align>(_bias, dst + j + F * 1);
-                        SynetAddBias<align>(_bias, dst + j + F * 2);
-                        SynetAddBias<align>(_bias, dst + j + F * 3);
+                        SynetAddBias<align>(_bias, dst + s + F * 0);
+                        SynetAddBias<align>(_bias, dst + s + F * 1);
+                        SynetAddBias<align>(_bias, dst + s + F * 2);
+                        SynetAddBias<align>(_bias, dst + s + F * 3);
                     }
-                    for (; j < partial; j += F)
-                        SynetAddBias<align>(_bias, dst + j);
+                    for (; s < partial; s += F)
+                        SynetAddBias<align>(_bias, dst + s);
                 }
-                for (; j < size; ++j)
-                    dst[j] += bias[i];
-                dst += size;
+                for (; s < spatial; ++s)
+                    dst[s] += bias[c];
+                dst += spatial;
             }
         }
 
-        void SynetAddBias(const float * bias, size_t count, size_t size, float * dst)
+        SIMD_INLINE void SynetAddBiasNchw(const float * bias, size_t channels, size_t spatial, float * dst)
         {
-            if (Aligned(dst) && Aligned(size))
-                SynetAddBias<true>(bias, count, size, dst);
+            if (Aligned(spatial, F) && Aligned(dst))
+                SynetAddBiasNchw<true>(bias, channels, spatial, dst);
             else
-                SynetAddBias<false>(bias, count, size, dst);
+                SynetAddBiasNchw<false>(bias, channels, spatial, dst);
         }
 
-        template <bool align> void SynetEltwiseLayerForwardProduct(const float * src0, const float * src1, float * dst, size_t offset)
+        template <bool align> void SynetAddBiasNhwc(const float * bias, size_t channels, size_t spatial, float * dst)
         {
-            Store<align>(dst + offset, _mm256_mul_ps(Load<align>(src0 + offset), Load<align>(src1 + offset)));
+            if (align)
+                assert(Aligned(channels, F) && Aligned(bias) && Aligned(dst));
+
+            size_t aligned = AlignLo(channels, QF);
+            size_t partial = AlignLo(channels, F);
+            for (size_t s = 0; s < spatial; ++s)
+            {
+                size_t c = 0;
+                if (partial)
+                {
+                    for (; c < aligned; c += QF)
+                    {
+                        SynetAddBias<align>(bias + c + F * 0, dst + c + F * 0);
+                        SynetAddBias<align>(bias + c + F * 1, dst + c + F * 1);
+                        SynetAddBias<align>(bias + c + F * 2, dst + c + F * 2);
+                        SynetAddBias<align>(bias + c + F * 3, dst + c + F * 3);
+                    }
+                    for (; c < partial; c += F)
+                        SynetAddBias<align>(bias + c, dst + c);
+                }
+                for (; c < channels; ++c)
+                    dst[c] += bias[c];
+                dst += channels;
+            }
         }
 
-        template <bool align> void SynetEltwiseLayerForwardProduct(float const * const * src, size_t count, size_t size, float * dst)
+        SIMD_INLINE void SynetAddBiasNhwc(const float * bias, size_t channels, size_t spatial, float * dst)
+        {
+            if (Aligned(bias) && Aligned(channels, F) && Aligned(dst))
+                SynetAddBiasNhwc<true>(bias, channels, spatial, dst);
+            else
+                SynetAddBiasNhwc<false>(bias, channels, spatial, dst);
+        }
+
+        template <bool align> void SynetAddBiasNchw8c(const float * bias, size_t channels, size_t spatial, float * dst)
+        {
+            if (align)
+                assert(Aligned(dst));
+
+            size_t spatial4 = AlignLo(spatial, 4);
+            for (size_t c = 0; c < channels; c += F)
+            {
+                __m256 _bias = Load<false>(bias + c);
+                size_t s = 0;
+                for (; s < spatial4; s += 4, dst += 4 * F)
+                {
+                    SynetAddBias<align>(_bias, dst + 0 * F);
+                    SynetAddBias<align>(_bias, dst + 1 * F);
+                    SynetAddBias<align>(_bias, dst + 2 * F);
+                    SynetAddBias<align>(_bias, dst + 3 * F);
+                }
+                for (; s < spatial; ++s, dst += F)
+                    SynetAddBias<align>(_bias, dst);
+            }
+        }
+
+        SIMD_INLINE void SynetAddBiasNchw8c(const float * bias, size_t channels, size_t spatial, float * dst)
+        {
+            if (Aligned(dst))
+                SynetAddBiasNchw8c<true>(bias, channels, spatial, dst);
+            else
+                SynetAddBiasNchw8c<false>(bias, channels, spatial, dst);
+        }
+
+        void SynetAddBias(const float * bias, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format)
+        {
+            if (Base::NchwCompatible(channels, spatial, format))
+                SynetAddBiasNchw(bias, channels, spatial, dst);
+            else if (Base::NhwcCompatible(channels, spatial, format))
+                SynetAddBiasNhwc(bias, channels, spatial, dst);
+            else if (format == SimdTensorFormatNchw4c)
+                Sse::SynetAddBias(bias, channels, spatial, dst, format);
+            else if (format == SimdTensorFormatNchw8c)
+                SynetAddBiasNchw8c(bias, channels, spatial, dst);
+            else
+                Base::SynetAddBias(bias, channels, spatial, dst, format);
+        }
+
+        //---------------------------------------------------------------------
+
+        template <SimdSynetEltwiseOperationType type> __m256 SynetEltwiseLayerForward(__m256 src0, __m256 src1);
+
+        template <> SIMD_INLINE __m256 SynetEltwiseLayerForward<SimdSynetEltwiseOperationProduct>(__m256 src0, __m256 src1)
+        {
+            return _mm256_mul_ps(src0, src1);
+        }
+
+        template <> SIMD_INLINE __m256 SynetEltwiseLayerForward<SimdSynetEltwiseOperationMax>(__m256 src0, __m256 src1)
+        {
+            return _mm256_max_ps(src0, src1);
+        }
+
+        template <> SIMD_INLINE __m256 SynetEltwiseLayerForward<SimdSynetEltwiseOperationMin>(__m256 src0, __m256 src1)
+        {
+            return _mm256_min_ps(src0, src1);
+        }
+
+        template <SimdSynetEltwiseOperationType type, bool align> SIMD_INLINE void SynetEltwiseLayerForward(const float * src0, const float * src1, float * dst, size_t offset)
+        {
+            Store<align>(dst + offset, SynetEltwiseLayerForward<type>(Load<align>(src0 + offset), Load<align>(src1 + offset)));
+        }
+
+        template <SimdSynetEltwiseOperationType type, bool align> void SynetEltwiseLayerForward(float const * const * src, size_t count, size_t size, float * dst)
         {
             size_t aligned = AlignLo(size, QF);
             size_t partial = AlignLo(size, F);
@@ -85,16 +196,16 @@ namespace Simd
             {
                 for (; j < aligned; j += QF)
                 {
-                    SynetEltwiseLayerForwardProduct<align>(src0, src1, dst, j + F * 0);
-                    SynetEltwiseLayerForwardProduct<align>(src0, src1, dst, j + F * 1);
-                    SynetEltwiseLayerForwardProduct<align>(src0, src1, dst, j + F * 2);
-                    SynetEltwiseLayerForwardProduct<align>(src0, src1, dst, j + F * 3);
+                    SynetEltwiseLayerForward<type, align>(src0, src1, dst, j + F * 0);
+                    SynetEltwiseLayerForward<type, align>(src0, src1, dst, j + F * 1);
+                    SynetEltwiseLayerForward<type, align>(src0, src1, dst, j + F * 2);
+                    SynetEltwiseLayerForward<type, align>(src0, src1, dst, j + F * 3);
                 }
                 for (; j < partial; j += F)
-                    SynetEltwiseLayerForwardProduct<align>(src0, src1, dst, j);
+                    SynetEltwiseLayerForward<type, align>(src0, src1, dst, j);
             }
             for (; j < size; ++j)
-                dst[j] = src0[j] * src1[j];
+                dst[j] = Base::SynetEltwiseLayerForward<type>(src0[j], src1[j]);
             for (size_t i = 2; i < count; ++i)
             {
                 const float * srci = src[i];
@@ -103,16 +214,16 @@ namespace Simd
                 {
                     for (; j < aligned; j += QF)
                     {
-                        SynetEltwiseLayerForwardProduct<align>(dst, srci, dst, j + F * 0);
-                        SynetEltwiseLayerForwardProduct<align>(dst, srci, dst, j + F * 1);
-                        SynetEltwiseLayerForwardProduct<align>(dst, srci, dst, j + F * 2);
-                        SynetEltwiseLayerForwardProduct<align>(dst, srci, dst, j + F * 3);
+                        SynetEltwiseLayerForward<type, align>(dst, srci, dst, j + F * 0);
+                        SynetEltwiseLayerForward<type, align>(dst, srci, dst, j + F * 1);
+                        SynetEltwiseLayerForward<type, align>(dst, srci, dst, j + F * 2);
+                        SynetEltwiseLayerForward<type, align>(dst, srci, dst, j + F * 3);
                     }
                     for (; j < partial; j += F)
-                        SynetEltwiseLayerForwardProduct<align>(dst, srci, dst, j);
+                        SynetEltwiseLayerForward<type, align>(dst, srci, dst, j);
                 }
                 for (; j < size; ++j)
-                    dst[j] *= srci[j];
+                    dst[j] = Base::SynetEltwiseLayerForward<type>(dst[j], srci[j]);
             }
         }
 
@@ -171,65 +282,21 @@ namespace Simd
             }
         }
 
-        template <bool align> void SynetEltwiseLayerForwardMax(const float * src0, const float * src1, float * dst, size_t offset)
-        {
-            Store<align>(dst + offset, _mm256_max_ps(Load<align>(src0 + offset), Load<align>(src1 + offset)));
-        }
-
-        template <bool align> void SynetEltwiseLayerForwardMax(float const * const * src, size_t count, size_t size, float * dst)
-        {
-            size_t aligned = AlignLo(size, QF);
-            size_t partial = AlignLo(size, F);
-            const float * src0 = src[0];
-            const float * src1 = src[1];
-            size_t j = 0;
-            if (partial)
-            {
-                for (; j < aligned; j += QF)
-                {
-                    SynetEltwiseLayerForwardMax<align>(src0, src1, dst, j + F * 0);
-                    SynetEltwiseLayerForwardMax<align>(src0, src1, dst, j + F * 1);
-                    SynetEltwiseLayerForwardMax<align>(src0, src1, dst, j + F * 2);
-                    SynetEltwiseLayerForwardMax<align>(src0, src1, dst, j + F * 3);
-                }
-                for (; j < partial; j += F)
-                    SynetEltwiseLayerForwardMax<align>(src0, src1, dst, j);
-            }
-            for (; j < size; ++j)
-                dst[j] = Simd::Max(src0[j], src1[j]);
-            for (size_t i = 2; i < count; ++i)
-            {
-                const float * srci = src[i];
-                size_t j = 0;
-                if (partial)
-                {
-                    for (; j < aligned; j += QF)
-                    {
-                        SynetEltwiseLayerForwardMax<align>(dst, srci, dst, j + F * 0);
-                        SynetEltwiseLayerForwardMax<align>(dst, srci, dst, j + F * 1);
-                        SynetEltwiseLayerForwardMax<align>(dst, srci, dst, j + F * 2);
-                        SynetEltwiseLayerForwardMax<align>(dst, srci, dst, j + F * 3);
-                    }
-                    for (; j < partial; j += F)
-                        SynetEltwiseLayerForwardMax<align>(dst, srci, dst, j);
-                }
-                for (; j < size; ++j)
-                    dst[j] = Simd::Max(dst[j], srci[j]);
-            }
-        }
-
         template <bool align> void SynetEltwiseLayerForward(float const * const * src, const float * weight, size_t count, size_t size, SimdSynetEltwiseOperationType type, float * dst)
         {
             switch (type)
             {
             case SimdSynetEltwiseOperationProduct:
-                SynetEltwiseLayerForwardProduct<align>(src, count, size, dst);
+                SynetEltwiseLayerForward<SimdSynetEltwiseOperationProduct, align>(src, count, size, dst);
                 break;
             case SimdSynetEltwiseOperationSum:
                 SynetEltwiseLayerForwardSum<align>(src, weight, count, size, dst);
                 break;
             case SimdSynetEltwiseOperationMax:
-                SynetEltwiseLayerForwardMax<align>(src, count, size, dst);
+                SynetEltwiseLayerForward<SimdSynetEltwiseOperationMax, align>(src, count, size, dst);
+                break;
+            case SimdSynetEltwiseOperationMin:
+                SynetEltwiseLayerForward<SimdSynetEltwiseOperationMin, align>(src, count, size, dst);
                 break;
             default:
                 assert(0);
@@ -248,6 +315,302 @@ namespace Simd
                 SynetEltwiseLayerForward<false>(src, weight, count, size, type, dst);
         }
 
+        //---------------------------------------------------------------------
+
+        SIMD_INLINE __m256 Tail(size_t tail)
+        {
+            const int32_t mask[DF] = { 0, 0, 0, 0, 0, 0, 0, 0 , -1, -1, -1, -1, -1, -1, -1, -1 };
+            return _mm256_loadu_ps((float*)(mask + tail));
+        }
+
+        void SynetInnerProductLayerForward1(const float * S0, const float * W, const float * B, size_t K, float * D)
+        {
+            size_t K8 = K & (~7);
+            size_t K32 = K & (~31);
+            const float * W0 = W + 0 * K;
+            __m256 d00, d01, d02, d03;
+            __m256 s0, s1, s2, s3, w0, w1, w2, w3;
+            size_t k = 0;
+            d00 = _mm256_setzero_ps();
+            if (K32)
+            {
+                d01 = _mm256_setzero_ps();
+                d02 = _mm256_setzero_ps();
+                d03 = _mm256_setzero_ps();
+                for (; k < K32; k += 32)
+                {
+                    s0 = _mm256_loadu_ps(S0 + k + 0 * F);
+                    s1 = _mm256_loadu_ps(S0 + k + 1 * F);
+                    w0 = _mm256_loadu_ps(W0 + k + 0 * F);
+                    w1 = _mm256_loadu_ps(W0 + k + 1 * F);
+                    d00 = _mm256_add_ps(_mm256_mul_ps(s0, w0), d00);
+                    d01 = _mm256_add_ps(_mm256_mul_ps(s1, w1), d01);
+                    s2 = _mm256_loadu_ps(S0 + k + 2 * F);
+                    s3 = _mm256_loadu_ps(S0 + k + 3 * F);
+                    w2 = _mm256_loadu_ps(W0 + k + 2 * F);
+                    w3 = _mm256_loadu_ps(W0 + k + 3 * F);
+                    d02 = _mm256_add_ps(_mm256_mul_ps(s2, w2), d02);
+                    d03 = _mm256_add_ps(_mm256_mul_ps(s3, w3), d03);
+                }
+                d00 = _mm256_add_ps(_mm256_add_ps(d00, d01), _mm256_add_ps(d02, d03));
+            }
+            for (; k < K8; k += 8)
+            {
+                s0 = _mm256_loadu_ps(S0 + k);
+                w0 = _mm256_loadu_ps(W0 + k);
+                d00 = _mm256_add_ps(_mm256_mul_ps(s0, w0), d00);
+            }
+            if (K8 < K)
+            {
+                size_t k = K - 8;
+                __m256 tail = Tail(K - K8);
+                s0 = _mm256_and_ps(tail, _mm256_loadu_ps(S0 + k));
+                w0 = _mm256_loadu_ps(W0 + k);
+                d00 = _mm256_add_ps(_mm256_mul_ps(s0, w0), d00);
+            }
+            D[0] = Avx::ExtractSum(d00) + B[0];
+        }
+
+        void SynetInnerProductLayerForward4(const float * S0, const float * W, const float * B, size_t K, float * D)
+        {
+            size_t K8 = K & (~7);
+            size_t K16 = K & (~15);
+            const float * W0 = W + 0 * K;
+            const float * W1 = W + 1 * K;
+            const float * W2 = W + 2 * K;
+            const float * W3 = W + 3 * K;
+            __m256 d00, d01, d10, d11, d20, d21, d30, d31;
+            __m256 s0, s1, w0, w1;
+            size_t k = 0;
+            d00 = _mm256_setzero_ps();
+            d10 = _mm256_setzero_ps();
+            d20 = _mm256_setzero_ps();
+            d30 = _mm256_setzero_ps();
+            if (K16)
+            {
+                d01 = _mm256_setzero_ps();
+                d11 = _mm256_setzero_ps();
+                d21 = _mm256_setzero_ps();
+                d31 = _mm256_setzero_ps();
+                for (; k < K16; k += 16)
+                {
+                    s0 = _mm256_loadu_ps(S0 + k + 0 * F);
+                    s1 = _mm256_loadu_ps(S0 + k + 1 * F);
+                    w0 = _mm256_loadu_ps(W0 + k + 0 * F);
+                    w1 = _mm256_loadu_ps(W0 + k + 1 * F);
+                    d00 = _mm256_add_ps(_mm256_mul_ps(s0, w0), d00);
+                    d01 = _mm256_add_ps(_mm256_mul_ps(s1, w1), d01);
+                    w0 = _mm256_loadu_ps(W1 + k + 0 * F);
+                    w1 = _mm256_loadu_ps(W1 + k + 1 * F);
+                    d10 = _mm256_add_ps(_mm256_mul_ps(s0, w0), d10);
+                    d11 = _mm256_add_ps(_mm256_mul_ps(s1, w1), d11);
+                    w0 = _mm256_loadu_ps(W2 + k + 0 * F);
+                    w1 = _mm256_loadu_ps(W2 + k + 1 * F);
+                    d20 = _mm256_add_ps(_mm256_mul_ps(s0, w0), d20);
+                    d21 = _mm256_add_ps(_mm256_mul_ps(s1, w1), d21);
+                    w0 = _mm256_loadu_ps(W3 + k + 0 * F);
+                    w1 = _mm256_loadu_ps(W3 + k + 1 * F);
+                    d30 = _mm256_add_ps(_mm256_mul_ps(s0, w0), d30);
+                    d31 = _mm256_add_ps(_mm256_mul_ps(s1, w1), d31);
+                }
+                d00 = _mm256_add_ps(d00, d01);
+                d10 = _mm256_add_ps(d10, d11);
+                d20 = _mm256_add_ps(d20, d21);
+                d30 = _mm256_add_ps(d30, d31);
+            }
+            for (; k < K8; k += 8)
+            {
+                s0 = _mm256_loadu_ps(S0 + k + 0 * F);
+                w0 = _mm256_loadu_ps(W0 + k + 0 * F);
+                d00 = _mm256_add_ps(_mm256_mul_ps(s0, w0), d00);
+                w0 = _mm256_loadu_ps(W1 + k + 0 * F);
+                d10 = _mm256_add_ps(_mm256_mul_ps(s0, w0), d10);
+                w0 = _mm256_loadu_ps(W2 + k + 0 * F);
+                d20 = _mm256_add_ps(_mm256_mul_ps(s0, w0), d20);
+                w0 = _mm256_loadu_ps(W3 + k + 0 * F);
+                d30 = _mm256_add_ps(_mm256_mul_ps(s0, w0), d30);
+            }
+            if (K8 < K)
+            {
+                size_t k = K - 8;
+                __m256 tail = Tail(K - K8);
+                s0 = _mm256_and_ps(tail, _mm256_loadu_ps(S0 + k));
+                w0 = _mm256_loadu_ps(W0 + k + 0 * F);
+                d00 = _mm256_add_ps(_mm256_mul_ps(s0, w0), d00);
+                w0 = _mm256_loadu_ps(W1 + k + 0 * F);
+                d10 = _mm256_add_ps(_mm256_mul_ps(s0, w0), d10);
+                w0 = _mm256_loadu_ps(W2 + k + 0 * F);
+                d20 = _mm256_add_ps(_mm256_mul_ps(s0, w0), d20);
+                w0 = _mm256_loadu_ps(W3 + k + 0 * F);
+                d30 = _mm256_add_ps(_mm256_mul_ps(s0, w0), d30);
+            }
+            _mm_storeu_ps(D, _mm_add_ps(Extract4Sums(d00, d10, d20, d30), _mm_loadu_ps(B)));
+        }
+
+        void SynetInnerProductLayerForward(const float * src, const float * weight, const float * bias, size_t count, size_t size, float * dst)
+        {
+            float _bias[4] = { 0, 0, 0, 0 };
+            size_t count4 = AlignLo(count, 4);
+            size_t i = 0;
+            for (; i < count4; i += 4)
+                SynetInnerProductLayerForward4(src, weight + i * size, (bias ? bias + i : _bias), size, dst + i);
+            for (; i < count; ++i)
+                SynetInnerProductLayerForward1(src, weight + i * size, (bias ? bias + i : _bias), size, dst + i);
+        }
+
+        //---------------------------------------------------------------------
+
+        template <bool align> SIMD_INLINE void SynetPreluLayerForward(const float * src, const float * slope, float * dst, size_t offset)
+        {
+            __m256 _src = Load<align>(src + offset);
+            __m256 _slope = Load<align>(slope + offset);
+            __m256 pos = _mm256_max_ps(_mm256_setzero_ps(), _src);
+            __m256 neg = _mm256_min_ps(_mm256_setzero_ps(), _src);
+            Store<align>(dst + offset, _mm256_add_ps(pos, _mm256_mul_ps(_slope, neg)));
+        }
+
+        template <bool align> SIMD_INLINE void SynetPreluLayerForward(const float * src, __m256 slope, float * dst, size_t offset)
+        {
+            __m256 _src = Load<align>(src + offset);
+            __m256 pos = _mm256_max_ps(_mm256_setzero_ps(), _src);
+            __m256 neg = _mm256_min_ps(_mm256_setzero_ps(), _src);
+            Store<align>(dst + offset, _mm256_add_ps(pos, _mm256_mul_ps(slope, neg)));
+        }
+
+        template <bool align> void SynetPreluLayerForwardNchw(const float * src, const float * slope, size_t channels, size_t spatial, float * dst)
+        {
+            if (align)
+                assert(Aligned(src) && Aligned(spatial, F) && Aligned(dst));
+
+            size_t aligned = AlignLo(spatial, QF);
+            size_t partial = AlignLo(spatial, F);
+            for (size_t c = 0; c < channels; ++c)
+            {
+                size_t s = 0;
+                if (partial)
+                {
+                    __m256 _slope = _mm256_set1_ps(slope[c]);
+                    for (; s < aligned; s += QF)
+                    {
+                        SynetPreluLayerForward<align>(src, _slope, dst, s + F * 0);
+                        SynetPreluLayerForward<align>(src, _slope, dst, s + F * 1);
+                        SynetPreluLayerForward<align>(src, _slope, dst, s + F * 2);
+                        SynetPreluLayerForward<align>(src, _slope, dst, s + F * 3);
+                    }
+                    for (; s < partial; s += F)
+                        SynetPreluLayerForward<align>(src, _slope, dst, s);
+                }
+                for (; s < spatial; ++s)
+                    dst[s] = Base::SynetPreluLayerForward(src[s], slope[c]);
+                src += spatial;
+                dst += spatial;
+            }
+        }
+
+        SIMD_INLINE void SynetPreluLayerForwardNchw(const float * src, const float * slope, size_t channels, size_t spatial, float * dst)
+        {
+            if (Aligned(src) && Aligned(spatial, F) && Aligned(dst))
+                SynetPreluLayerForwardNchw<true>(src, slope, channels, spatial, dst);
+            else
+                SynetPreluLayerForwardNchw<false>(src, slope, channels, spatial, dst);
+        }
+
+        template <bool align> void SynetPreluLayerForwardNhwc(const float * src, const float * slope, size_t channels, size_t spatial, float * dst)
+        {
+            if (align)
+                assert(Aligned(src) && Aligned(slope) && Aligned(channels, F) && Aligned(dst));
+
+            size_t aligned = AlignLo(channels, QF);
+            size_t partial = AlignLo(channels, F);
+            for (size_t s = 0; s < spatial; ++s)
+            {
+                size_t c = 0;
+                if (partial)
+                {
+                    for (; c < aligned; c += QF)
+                    {
+                        SynetPreluLayerForward<align>(src, slope, dst, c + F * 0);
+                        SynetPreluLayerForward<align>(src, slope, dst, c + F * 1);
+                        SynetPreluLayerForward<align>(src, slope, dst, c + F * 2);
+                        SynetPreluLayerForward<align>(src, slope, dst, c + F * 3);
+                    }
+                    for (; c < partial; c += F)
+                        SynetPreluLayerForward<align>(src, slope, dst, c);
+                }
+                for (; c < channels; ++c)
+                    dst[c] = Base::SynetPreluLayerForward(src[c], slope[c]);
+                src += channels;
+                dst += channels;
+            }
+        }
+
+        SIMD_INLINE void SynetPreluLayerForwardNhwc(const float * src, const float * slope, size_t channels, size_t spatial, float * dst)
+        {
+            if (Aligned(src) && Aligned(slope) && Aligned(channels, F) && Aligned(dst))
+                SynetPreluLayerForwardNhwc<true>(src, slope, channels, spatial, dst);
+            else
+                SynetPreluLayerForwardNhwc<false>(src, slope, channels, spatial, dst);
+        }
+
+        template <bool align> void SynetPreluLayerForwardNchw8c(const float * src, const float * slope, size_t channels, size_t spatial, float * dst)
+        {
+            if (align)
+                assert(Aligned(src) && Aligned(dst));
+
+            size_t spatialF = spatial * F;
+            size_t spatial4F = AlignLo(spatial, 4)*F;
+            for (size_t c = 0; c < channels; c += F)
+            {
+                __m256 _slope = Load<false>(slope + c);
+                size_t s = 0;
+                for (; s < spatial4F; s += 4 * F)
+                {
+                    SynetPreluLayerForward<align>(src, _slope, dst, s + F * 0);
+                    SynetPreluLayerForward<align>(src, _slope, dst, s + F * 1);
+                    SynetPreluLayerForward<align>(src, _slope, dst, s + F * 2);
+                    SynetPreluLayerForward<align>(src, _slope, dst, s + F * 3);
+                }
+                for (; s < spatialF; s += F)
+                    SynetPreluLayerForward<align>(src, _slope, dst, s);
+                src += spatialF;
+                dst += spatialF;
+            }
+        }
+
+        SIMD_INLINE void SynetPreluLayerForwardNchw8c(const float * src, const float * slope, size_t channels, size_t spatial, float * dst)
+        {
+            if (Aligned(src) && Aligned(dst))
+                SynetPreluLayerForwardNchw8c<true>(src, slope, channels, spatial, dst);
+            else
+                SynetPreluLayerForwardNchw8c<false>(src, slope, channels, spatial, dst);
+        }
+
+        void SynetPreluLayerForward(const float * src, const float * slope, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format)
+        {
+            if (Base::NchwCompatible(channels, spatial, format))
+                SynetPreluLayerForwardNchw(src, slope, channels, spatial, dst);
+            else if (Base::NhwcCompatible(channels, spatial, format))
+                SynetPreluLayerForwardNhwc(src, slope, channels, spatial, dst);
+            else if (format == SimdTensorFormatNchw4c)
+                Sse::SynetPreluLayerForward(src, slope, channels, spatial, dst, format);
+            else if (format == SimdTensorFormatNchw8c)
+                SynetPreluLayerForwardNchw8c(src, slope, channels, spatial, dst);
+            else
+                Base::SynetPreluLayerForward(src, slope, channels, spatial, dst, format);
+        }
+
+        //---------------------------------------------------------------------
+
+        template <bool align> SIMD_INLINE void SynetScaleLayerForward(const float * src, const float * scale, const float * bias, float * dst, size_t offset)
+        {
+            Store<align>(dst + offset, _mm256_add_ps(_mm256_mul_ps(Load<align>(src + offset), Load<align>(scale + offset)), Load<align>(bias + offset)));
+        }
+
+        template <bool align> SIMD_INLINE void SynetScaleLayerForward(const float * src, const float * scale, float * dst, size_t offset)
+        {
+            Store<align>(dst + offset, _mm256_mul_ps(Load<align>(src + offset), Load<align>(scale + offset)));
+        }
+
         template <bool align> SIMD_INLINE void SynetScaleLayerForward(const float * src, const __m256 & scale, const __m256 & bias, float * dst, size_t offset)
         {
             Store<align>(dst + offset, _mm256_add_ps(_mm256_mul_ps(Load<align>(src + offset), scale), bias));
@@ -258,67 +621,356 @@ namespace Simd
             Store<align>(dst + offset, _mm256_mul_ps(Load<align>(src + offset), scale));
         }
 
-        template <bool align> SIMD_INLINE void SynetScaleLayerForward(const float * src, const float * scale, const float * bias, size_t count, size_t size, float * dst)
+        template <bool align> void SynetScaleLayerForwardNchw(const float * src, const float * scale, const float * bias, size_t channels, size_t spatial, float * dst)
         {
-            size_t aligned = AlignLo(size, QF);
-            size_t partial = AlignLo(size, F);
+            if (align)
+                assert(Aligned(src) && Aligned(spatial, F) && Aligned(dst));
+
+            size_t aligned = AlignLo(spatial, QF);
+            size_t partial = AlignLo(spatial, F);
             if (bias)
             {
-                for (size_t i = 0; i < count; ++i)
+                for (size_t c = 0; c < channels; ++c)
                 {
-                    size_t j = 0;
+                    size_t s = 0;
                     if (partial)
                     {
-                        __m256 _scale = _mm256_set1_ps(scale[i]);
-                        __m256 _bias = _mm256_set1_ps(bias[i]);
-                        for (; j < aligned; j += QF)
+                        __m256 _scale = _mm256_set1_ps(scale[c]);
+                        __m256 _bias = _mm256_set1_ps(bias[c]);
+                        for (; s < aligned; s += QF)
                         {
-                            SynetScaleLayerForward<align>(src, _scale, _bias, dst, j + F * 0);
-                            SynetScaleLayerForward<align>(src, _scale, _bias, dst, j + F * 1);
-                            SynetScaleLayerForward<align>(src, _scale, _bias, dst, j + F * 2);
-                            SynetScaleLayerForward<align>(src, _scale, _bias, dst, j + F * 3);
+                            SynetScaleLayerForward<align>(src, _scale, _bias, dst, s + F * 0);
+                            SynetScaleLayerForward<align>(src, _scale, _bias, dst, s + F * 1);
+                            SynetScaleLayerForward<align>(src, _scale, _bias, dst, s + F * 2);
+                            SynetScaleLayerForward<align>(src, _scale, _bias, dst, s + F * 3);
                         }
-                        for (; j < partial; j += F)
-                            SynetScaleLayerForward<align>(src, _scale, _bias, dst, j);
+                        for (; s < partial; s += F)
+                            SynetScaleLayerForward<align>(src, _scale, _bias, dst, s);
                     }
-                    for (; j < size; ++j)
-                        dst[j] = src[j] * scale[i] + bias[i];
-                    src += size;
-                    dst += size;
+                    for (; s < spatial; ++s)
+                        dst[s] = src[s] * scale[c] + bias[c];
+                    src += spatial;
+                    dst += spatial;
                 }
             }
             else
             {
-                for (size_t i = 0; i < count; ++i)
+                for (size_t c = 0; c < channels; ++c)
                 {
-                    size_t j = 0;
+                    size_t s = 0;
                     if (partial)
                     {
-                        __m256 _scale = _mm256_set1_ps(scale[i]);
-                        for (; j < aligned; j += QF)
+                        __m256 _scale = _mm256_set1_ps(scale[c]);
+                        for (; s < aligned; s += QF)
                         {
-                            SynetScaleLayerForward<align>(src, _scale, dst, j + F * 0);
-                            SynetScaleLayerForward<align>(src, _scale, dst, j + F * 1);
-                            SynetScaleLayerForward<align>(src, _scale, dst, j + F * 2);
-                            SynetScaleLayerForward<align>(src, _scale, dst, j + F * 3);
+                            SynetScaleLayerForward<align>(src, _scale, dst, s + F * 0);
+                            SynetScaleLayerForward<align>(src, _scale, dst, s + F * 1);
+                            SynetScaleLayerForward<align>(src, _scale, dst, s + F * 2);
+                            SynetScaleLayerForward<align>(src, _scale, dst, s + F * 3);
                         }
-                        for (; j < partial; j += F)
-                            SynetScaleLayerForward<align>(src, _scale, dst, j);
+                        for (; s < partial; s += F)
+                            SynetScaleLayerForward<align>(src, _scale, dst, s);
                     }
-                    for (; j < size; ++j)
-                        dst[j] = src[j] * scale[i];
-                    src += size;
-                    dst += size;
+                    for (; s < spatial; ++s)
+                        dst[s] = src[s] * scale[c];
+                    src += spatial;
+                    dst += spatial;
                 }
             }
         }
 
-        void SynetScaleLayerForward(const float * src, const float * scale, const float * bias, size_t count, size_t size, float * dst)
+        SIMD_INLINE void SynetScaleLayerForwardNchw(const float * src, const float * scale, const float * bias, size_t channels, size_t spatial, float * dst)
         {
-            if (Aligned(dst) && Aligned(size))
-                SynetScaleLayerForward<true>(src, scale, bias, count, size, dst);
+            if (Aligned(src) && Aligned(spatial, F) && Aligned(dst))
+                SynetScaleLayerForwardNchw<true>(src, scale, bias, channels, spatial, dst);
             else
-                SynetScaleLayerForward<false>(src, scale, bias, count, size, dst);
+                SynetScaleLayerForwardNchw<false>(src, scale, bias, channels, spatial, dst);
+        }
+
+        template <bool align> void SynetScaleLayerForwardNhwc(const float * src, const float * scale, const float * bias, size_t channels, size_t spatial, float * dst)
+        {
+            if (align)
+                assert(Aligned(src) && Aligned(scale) && Aligned(bias) && Aligned(channels, F) && Aligned(dst));
+
+            size_t aligned = AlignLo(channels, QF);
+            size_t partial = AlignLo(channels, F);
+            if (bias)
+            {
+                for (size_t s = 0; s < spatial; ++s)
+                {
+                    size_t c = 0;
+                    if (partial)
+                    {
+                        for (; c < aligned; c += QF)
+                        {
+                            SynetScaleLayerForward<align>(src, scale, bias, dst, c + F * 0);
+                            SynetScaleLayerForward<align>(src, scale, bias, dst, c + F * 1);
+                            SynetScaleLayerForward<align>(src, scale, bias, dst, c + F * 2);
+                            SynetScaleLayerForward<align>(src, scale, bias, dst, c + F * 3);
+                        }
+                        for (; c < partial; c += F)
+                            SynetScaleLayerForward<align>(src, scale, bias, dst, c);
+                    }
+                    for (; c < channels; ++c)
+                        dst[c] = src[c] * scale[c] + bias[c];
+                    src += channels;
+                    dst += channels;
+                }
+            }
+            else
+            {
+                for (size_t s = 0; s < spatial; ++s)
+                {
+                    size_t c = 0;
+                    if (partial)
+                    {
+                        for (; c < aligned; c += QF)
+                        {
+                            SynetScaleLayerForward<align>(src, scale, dst, c + F * 0);
+                            SynetScaleLayerForward<align>(src, scale, dst, c + F * 1);
+                            SynetScaleLayerForward<align>(src, scale, dst, c + F * 2);
+                            SynetScaleLayerForward<align>(src, scale, dst, c + F * 3);
+                        }
+                        for (; c < partial; c += F)
+                            SynetScaleLayerForward<align>(src, scale, dst, c);
+                    }
+                    for (; c < channels; ++c)
+                        dst[c] = src[c] * scale[c];
+                    src += channels;
+                    dst += channels;
+                }
+            }
+        }
+
+        template <bool align> void SynetScaleLayerForwardNhwc3(const float * src, const float * scale, const float * bias, size_t spatial, float * dst)
+        {
+            if (align)
+                assert(Aligned(src) && Aligned(dst));
+
+            size_t spatial3 = spatial * 3;
+            size_t spatialF3 = AlignLo(spatial, F) * 3;
+            if (bias)
+            {
+                size_t s = 0;
+                if (spatialF3)
+                {
+                    float _scale[F * 3], _bias[F * 3];
+                    for (size_t i = 0; i < F; ++i)
+                        for (size_t c = 0; c < 3; ++c)
+                            _scale[i * 3 + c] = scale[c], _bias[i * 3 + c] = bias[c];
+                    __m256 _scale0 = Load<false>(_scale + 0 * F);
+                    __m256 _scale1 = Load<false>(_scale + 1 * F);
+                    __m256 _scale2 = Load<false>(_scale + 2 * F);
+                    __m256 _bias0 = Load<false>(_bias + 0 * F);
+                    __m256 _bias1 = Load<false>(_bias + 1 * F);
+                    __m256 _bias2 = Load<false>(_bias + 2 * F);
+                    for (; s < spatialF3; s += F * 3)
+                    {
+                        SynetScaleLayerForward<align>(src, _scale0, _bias0, dst, s + F * 0);
+                        SynetScaleLayerForward<align>(src, _scale1, _bias1, dst, s + F * 1);
+                        SynetScaleLayerForward<align>(src, _scale2, _bias2, dst, s + F * 2);
+                    }
+                }
+                for (; s < spatial3; s += 3)
+                {
+                    dst[s + 0] = src[s + 0] * scale[0] + bias[0];
+                    dst[s + 1] = src[s + 1] * scale[1] + bias[1];
+                    dst[s + 2] = src[s + 2] * scale[2] + bias[2];
+                }
+            }
+            else
+            {
+                size_t s = 0;
+                if (spatialF3)
+                {
+                    float _scale[F * 3];
+                    for (size_t i = 0; i < F; ++i)
+                        for (size_t c = 0; c < 3; ++c)
+                            _scale[i * 3 + c] = scale[c];
+                    __m256 _scale0 = Load<false>(_scale + 0 * F);
+                    __m256 _scale1 = Load<false>(_scale + 1 * F);
+                    __m256 _scale2 = Load<false>(_scale + 2 * F);
+                    for (; s < spatialF3; s += F * 3)
+                    {
+                        SynetScaleLayerForward<align>(src, _scale0, dst, s + F * 0);
+                        SynetScaleLayerForward<align>(src, _scale1, dst, s + F * 1);
+                        SynetScaleLayerForward<align>(src, _scale2, dst, s + F * 2);
+                    }
+                }
+                for (; s < spatial3; s += 3)
+                {
+                    dst[s + 0] = src[s + 0] * scale[0];
+                    dst[s + 1] = src[s + 1] * scale[1];
+                    dst[s + 2] = src[s + 2] * scale[2];
+                }
+            }
+        }
+
+        SIMD_INLINE void SynetScaleLayerForwardNhwc(const float * src, const float * scale, const float * bias, size_t channels, size_t spatial, float * dst)
+        {
+            if (channels == 3)
+            {
+                if (Aligned(src) && Aligned(dst))
+                    SynetScaleLayerForwardNhwc3<true>(src, scale, bias, spatial, dst);
+                else
+                    SynetScaleLayerForwardNhwc3<false>(src, scale, bias, spatial, dst);
+            }
+            else
+            {
+                if (Aligned(src) && Aligned(scale) && Aligned(bias) && Aligned(channels, F) && Aligned(dst))
+                    SynetScaleLayerForwardNhwc<true>(src, scale, bias, channels, spatial, dst);
+                else
+                    SynetScaleLayerForwardNhwc<false>(src, scale, bias, channels, spatial, dst);
+            }
+        }
+
+        template <bool align> void SynetScaleLayerForwardNchw8c(const float * src, const float * scale, const float * bias, size_t channels, size_t spatial, float * dst)
+        {
+            if (align)
+                assert(Aligned(src) && Aligned(dst));
+
+            size_t spatialF = spatial * F;
+            size_t spatial4F = AlignLo(spatial, 4)*F;
+            if (bias)
+            {
+                for (size_t c = 0; c < channels; c += F)
+                {
+                    __m256 _scale = Load<false>(scale + c);
+                    __m256 _bias = Load<false>(bias + c);
+                    size_t s = 0;
+                    for (; s < spatial4F; s += 4 * F)
+                    {
+                        SynetScaleLayerForward<align>(src, _scale, _bias, dst, s + F * 0);
+                        SynetScaleLayerForward<align>(src, _scale, _bias, dst, s + F * 1);
+                        SynetScaleLayerForward<align>(src, _scale, _bias, dst, s + F * 2);
+                        SynetScaleLayerForward<align>(src, _scale, _bias, dst, s + F * 3);
+                    }
+                    for (; s < spatialF; s += F)
+                        SynetScaleLayerForward<align>(src, _scale, _bias, dst, s);
+                    src += spatialF;
+                    dst += spatialF;
+                }
+            }
+            else
+            {
+                for (size_t c = 0; c < channels; c += F)
+                {
+                    __m256 _scale = Load<false>(scale + c);
+                    size_t s = 0;
+                    for (; s < spatial4F; s += 4 * F)
+                    {
+                        SynetScaleLayerForward<align>(src, _scale, dst, s + F * 0);
+                        SynetScaleLayerForward<align>(src, _scale, dst, s + F * 1);
+                        SynetScaleLayerForward<align>(src, _scale, dst, s + F * 2);
+                        SynetScaleLayerForward<align>(src, _scale, dst, s + F * 3);
+                    }
+                    for (; s < spatialF; s += F)
+                        SynetScaleLayerForward<align>(src, _scale, dst, s);
+                    src += spatialF;
+                    dst += spatialF;
+                }
+            }
+        }
+
+        SIMD_INLINE void SynetScaleLayerForwardNchw8c(const float * src, const float * scale, const float * bias, size_t channels, size_t spatial, float * dst)
+        {
+            if (Aligned(src) && Aligned(dst))
+                SynetScaleLayerForwardNchw8c<true>(src, scale, bias, channels, spatial, dst);
+            else
+                SynetScaleLayerForwardNchw8c<false>(src, scale, bias, channels, spatial, dst);
+        }
+
+        void SynetScaleLayerForward(const float * src, const float * scale, const float * bias, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format)
+        {
+            if (Base::NchwCompatible(channels, spatial, format))
+                SynetScaleLayerForwardNchw(src, scale, bias, channels, spatial, dst);
+            else if (Base::NhwcCompatible(channels, spatial, format))
+                SynetScaleLayerForwardNhwc(src, scale, bias, channels, spatial, dst);
+            else if (format == SimdTensorFormatNchw4c)
+                Sse::SynetScaleLayerForward(src, scale, bias, channels, spatial, dst, format);
+            else if (format == SimdTensorFormatNchw8c)
+                SynetScaleLayerForwardNchw8c(src, scale, bias, channels, spatial, dst);
+            else
+                Base::SynetScaleLayerForward(src, scale, bias, channels, spatial, dst, format);
+        }
+
+        //---------------------------------------------------------------------
+
+#define SIMD_USE_HALF_LOAD
+
+        void SynetShuffleLayerForward(const float* src0, size_t srcC0, const float* src1, size_t srcC1, size_t spatial, float* dst0, float* dst1, size_t dstC, SimdTensorFormatType format)
+        {
+            if (format == SimdTensorFormatNchw)
+                Base::SynetShuffleLayerForward(src0, srcC0, src1, srcC1, spatial, dst0, dst1, dstC, format);
+            else if (format == SimdTensorFormatNhwc)
+            {
+                size_t srcC0F = AlignLo(srcC0, F);
+                size_t srcC0DF = AlignLo(srcC0, DF);
+                size_t srcC1F = AlignLo(srcC1, F);
+                size_t srcC1DF = AlignLo(srcC1, DF);
+                for (size_t s = 0; s < spatial; ++s)
+                {
+                    size_t cd = 0, cs0 = 0, cs1 = 0;
+                    for (; cs0 < srcC0DF; cs0 += DF, cd += F)
+                    {
+#ifdef SIMD_USE_HALF_LOAD
+                        __m256 p0 = Avx::Load<false>(src0 + cs0 + 0 * HF, src0 + cs0 + 2 * HF);
+                        __m256 p1 = Avx::Load<false>(src0 + cs0 + 1 * HF, src0 + cs0 + 3 * HF);
+#else
+                        __m256 s0 = _mm256_loadu_ps(src0 + cs0 + 0);
+                        __m256 s1 = _mm256_loadu_ps(src0 + cs0 + F);
+                        __m256 p0 = _mm256_permute2f128_ps(s0, s1, 0x20);
+                        __m256 p1 = _mm256_permute2f128_ps(s0, s1, 0x31);
+#endif
+                        _mm256_storeu_ps(dst0 + cd, _mm256_shuffle_ps(p0, p1, 0x88));
+                        _mm256_storeu_ps(dst1 + cd, _mm256_shuffle_ps(p0, p1, 0xDD));
+                    }
+                    for (; cs0 < srcC0F; cs0 += F, cd += HF)
+                    {
+                        __m128 s0 = _mm_loadu_ps(src0 + cs0 + 00);
+                        __m128 s1 = _mm_loadu_ps(src0 + cs0 + HF);
+                        _mm_storeu_ps(dst0 + cd, _mm_shuffle_ps(s0, s1, 0x88));
+                        _mm_storeu_ps(dst1 + cd, _mm_shuffle_ps(s0, s1, 0xDD));
+                    }
+                    for (; cs0 < srcC0; cs0 += 2, cd += 1)
+                    {
+                        dst0[cd] = src0[cs0 + 0];
+                        dst1[cd] = src0[cs0 + 1];
+                    }
+                    for (; cs1 < srcC1DF; cs1 += DF, cd += F)
+                    {
+#ifdef SIMD_USE_HALF_LOAD
+                        __m256 p0 = Avx::Load<false>(src1 + cs1 + 0 * HF, src1 + cs1 + 2 * HF);
+                        __m256 p1 = Avx::Load<false>(src1 + cs1 + 1 * HF, src1 + cs1 + 3 * HF);
+#else
+                        __m256 s0 = _mm256_loadu_ps(src1 + cs1 + 0);
+                        __m256 s1 = _mm256_loadu_ps(src1 + cs1 + F);
+                        __m256 p0 = _mm256_permute2f128_ps(s0, s1, 0x20);
+                        __m256 p1 = _mm256_permute2f128_ps(s0, s1, 0x31);
+#endif
+                        _mm256_storeu_ps(dst0 + cd, _mm256_shuffle_ps(p0, p1, 0x88));
+                        _mm256_storeu_ps(dst1 + cd, _mm256_shuffle_ps(p0, p1, 0xDD));
+                    }
+                    for (; cs1 < srcC1F; cs1 += F, cd += HF)
+                    {
+                        __m128 s0 = _mm_loadu_ps(src1 + cs1 + 00);
+                        __m128 s1 = _mm_loadu_ps(src1 + cs1 + HF);
+                        _mm_storeu_ps(dst0 + cd, _mm_shuffle_ps(s0, s1, 0x88));
+                        _mm_storeu_ps(dst1 + cd, _mm_shuffle_ps(s0, s1, 0xDD));
+                    }
+                    for (; cs1 < srcC1; cs1 += 2, cd += 1)
+                    {
+                        dst0[cd] = src1[cs1 + 0];
+                        dst1[cd] = src1[cs1 + 1];
+                    }
+                    src0 += srcC0;
+                    src1 += srcC1;
+                    dst0 += dstC;
+                    dst1 += dstC;
+                }
+            }
+            else
+                assert(0);
         }
     }
 #endif// SIMD_AVX_ENABLE

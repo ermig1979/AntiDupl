@@ -1,8 +1,9 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2018 Yermalayeu Ihar,
-*               2014-2016 Antonenka Mikhail.
+* Copyright (c) 2011-2019 Yermalayeu Ihar,
+*               2014-2016 Antonenka Mikhail,
+*               2019-2019 Facundo Galan.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -36,6 +37,9 @@ namespace Simd
         void SetThreadNumber(size_t threadNumber);
 
         uint32_t Crc32c(const void * src, size_t size);
+
+        void AbsDifference(const uint8_t *a, size_t aStride, const uint8_t *b, size_t bStride, uint8_t *c, size_t cStride,
+            size_t width, size_t height);
 
         void AbsDifferenceSum(const uint8_t *a, size_t aStride, const uint8_t *b, size_t bStride,
             size_t width, size_t height, uint64_t * sum);
@@ -105,6 +109,9 @@ namespace Simd
 
         void BgraToYuv444p(const uint8_t * bgra, size_t width, size_t height, size_t bgraStride, uint8_t * y, size_t yStride, uint8_t * u, size_t uStride, uint8_t * v, size_t vStride);
 
+        void BgraToYuva420p(const uint8_t * bgra, size_t bgraStride, size_t width, size_t height,
+            uint8_t * y, size_t yStride, uint8_t * u, size_t uStride, uint8_t * v, size_t vStride, uint8_t * a, size_t aStride);
+
         void BgrToBayer(const uint8_t * bgr, size_t width, size_t height, size_t bgrStride, uint8_t * bayer, size_t bayerStride, SimdPixelFormatType bayerFormat);
 
         void BgrToBgra(const uint8_t * bgr, size_t size, uint8_t * bgra, bool fillAlpha, bool lastRow, uint8_t alpha);
@@ -119,6 +126,8 @@ namespace Simd
         void BgrToHsl(const uint8_t * bgr, size_t width, size_t height, size_t bgrStride, uint8_t * hsl, size_t hslStride);
 
         void BgrToHsv(const uint8_t * bgr, size_t width, size_t height, size_t bgrStride, uint8_t * hsv, size_t hsvStride);
+
+        void BgrToRgb(const uint8_t * bgr, size_t bgrStride, size_t width, size_t height, uint8_t * rgb, size_t rgbStride);
 
         void BgrToYuv420p(const uint8_t * bgr, size_t width, size_t height, size_t bgrStride, uint8_t * y, size_t yStride, uint8_t * u, size_t uStride, uint8_t * v, size_t vStride);
 
@@ -164,6 +173,8 @@ namespace Simd
         void DeinterleaveBgra(const uint8_t * bgra, size_t bgraStride, size_t width, size_t height,
             uint8_t * b, size_t bStride, uint8_t * g, size_t gStride, uint8_t * r, size_t rStride, uint8_t * a, size_t aStride);
 
+        void * DetectionLoadStringXml(char * xml, const char * path = NULL);
+
         void * DetectionLoadA(const char * path);
 
         void DetectionInfo(const void * data, size_t * width, size_t * height, SimdDetectionInfoFlags * flags);
@@ -190,8 +201,6 @@ namespace Simd
 
         void DetectionLbpDetect16ii(const void * hid, const uint8_t * mask, size_t maskStride,
             ptrdiff_t left, ptrdiff_t top, ptrdiff_t right, ptrdiff_t bottom, uint8_t * dst, size_t dstStride);
-
-        void DetectionFree(void * ptr);
 
         void EdgeBackgroundGrowRangeSlow(const uint8_t * value, size_t valueStride, size_t width, size_t height,
             uint8_t * background, size_t backgroundStride);
@@ -225,6 +234,8 @@ namespace Simd
 
         void FillPixel(uint8_t * dst, size_t stride, size_t width, size_t height, const uint8_t * pixel, size_t pixelSize);
 
+        void Fill32f(float * dst, size_t size, const float * value);
+
         void Float32ToFloat16(const float * src, size_t size, uint16_t * dst);
 
         void Float16ToFloat32(const uint16_t * src, size_t size, float * dst);
@@ -232,6 +243,8 @@ namespace Simd
         void SquaredDifferenceSum16f(const uint16_t * a, const uint16_t * b, size_t size, float * sum);
 
         void CosineDistance16f(const uint16_t * a, const uint16_t * b, size_t size, float * distance);
+
+        void CosineDistancesMxNa16f(size_t M, size_t N, size_t K, const uint16_t * const * A, const uint16_t * const * B, float * distances);
 
         void Float32ToUint8(const float * src, size_t size, const float * lower, const float * upper, uint8_t * dst);
 
@@ -243,6 +256,8 @@ namespace Simd
             size_t channelCount, uint8_t * dst, size_t dstStride);
 
         void Gemm32fNN(size_t M, size_t N, size_t K, const float * alpha, const float * A, size_t lda, const float * B, size_t ldb, const float * beta, float * C, size_t ldc);
+
+        void Gemm32fNT(size_t M, size_t N, size_t K, const float * alpha, const float * A, size_t lda, const float * B, size_t ldb, const float * beta, float * C, size_t ldc);
 
         void GrayToBgr(const uint8_t *gray, size_t width, size_t height, size_t grayStride, uint8_t *bgr, size_t bgrStride);
 
@@ -413,6 +428,9 @@ namespace Simd
 
         void VectorProduct(const uint8_t * vertical, const uint8_t * horizontal, uint8_t * dst, size_t stride, size_t width, size_t height);
 
+        void ReduceColor2x2(const uint8_t * src, size_t srcWidth, size_t srcHeight, size_t srcStride,
+            uint8_t * dst, size_t dstWidth, size_t dstHeight, size_t dstStride, size_t channelCount);
+
         void ReduceGray2x2(const uint8_t *src, size_t srcWidth, size_t srcHeight, size_t srcStride,
             uint8_t *dst, size_t dstWidth, size_t dstHeight, size_t dstStride);
 
@@ -494,6 +512,9 @@ namespace Simd
         void GetMoments(const uint8_t * mask, size_t stride, size_t width, size_t height, uint8_t index,
             uint64_t * area, uint64_t * x, uint64_t * y, uint64_t * xx, uint64_t * xy, uint64_t * yy);
 
+        void GetObjectMoments(const uint8_t * src, size_t srcStride, size_t width, size_t height, const uint8_t * mask, size_t maskStride, uint8_t index,
+            uint64_t * n, uint64_t * s, uint64_t * sx, uint64_t * sy, uint64_t * sxx, uint64_t * sxy, uint64_t * syy);
+
         void GetRowSums(const uint8_t * src, size_t stride, size_t width, size_t height, uint32_t * sums);
 
         void GetColSums(const uint8_t * src, size_t stride, size_t width, size_t height, uint32_t * sums);
@@ -505,7 +526,7 @@ namespace Simd
         void ValueSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum);
 
         void SquareSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum);
-		
+
         void ValueSquareSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * valueSum, uint64_t * squareSum);
 
         void CorrelationSum(const uint8_t * a, size_t aStride, const uint8_t * b, size_t bStride, size_t width, size_t height, uint64_t * sum);
@@ -515,13 +536,58 @@ namespace Simd
 
         void SvmSumLinear(const float * x, const float * svs, const float * weights, size_t length, size_t count, float * sum);
 
-        void SynetAddBias(const float * bias, size_t count, size_t size, float * dst);
+        void SynetAddBias(const float * bias, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
+
+        void SynetConvertImage(size_t batch, size_t channels, size_t spatial, const float * src, SimdTensorFormatType srcFormat, float * dst, SimdTensorFormatType dstFormat);
+
+        void SynetConvertFilter(size_t output, size_t input, size_t kernel, const float * src, SimdTensorFormatType srcFormat, float * dst, SimdTensorFormatType dstFormat);
 
         void SynetEltwiseLayerForward(float const * const * src, const float * weight, size_t count, size_t size, SimdSynetEltwiseOperationType type, float * dst);
 
-        void SynetLrnLayerCrossChannels(const float * src, size_t half, size_t count, size_t size, const float * k, float * dst);
+        void SynetElu32f(const float * src, size_t size, const float * alpha, float * dst);
 
-        void SynetScaleLayerForward(const float * src, const float * scale, const float * bias, size_t count, size_t size, float * dst);
+        void SynetFusedLayerForward0(const float * src, const float * bias, const float * scale, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
+
+        void SynetFusedLayerForward1(const float * src, const float * bias0, const float * scale1, const float * bias1, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
+
+        void SynetFusedLayerForward2(const float * src, const float * scale, const float * bias, size_t channels, size_t spatial, const float * slope, float * dst, SimdTensorFormatType format);
+
+        void SynetFusedLayerForward3(const float * src, const float * bias, const float * scale, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
+
+        void SynetFusedLayerForward4(const float * src, const float * bias0, const float * scale1, const float * bias1, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
+
+        void SynetFusedLayerForward8(const float * src0, const float * src1, const float * src2, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
+
+        void SynetFusedLayerForward9(const float * src0, const float * src1, const float * scale, const float * bias, size_t channels0, size_t channels1, size_t spatial, float * dst0, float * dst1, SimdTensorFormatType format);
+
+        void SynetHswish32f(const float * src, size_t size, const float * shift, const float * scale, float * dst);
+
+        void SynetInnerProductLayerForward(const float * src, const float * weight, const float * bias, size_t count, size_t size, float * dst);
+
+        void SynetLrnLayerCrossChannels(const float * src, size_t half, size_t channels, size_t spatial, const float * k, float * dst, SimdTensorFormatType format);
+
+        void SynetPoolingForwardAverage(const float * src, size_t srcC, size_t srcH, size_t srcW, size_t kernelY, size_t kernelX,
+            size_t strideY, size_t strideX, size_t padY, size_t padX, float* dst, size_t dstH, size_t dstW, SimdBool excludePad, SimdTensorFormatType format);
+
+        void SynetPoolingForwardMax(const float * src, size_t srcC, size_t srcH, size_t srcW, size_t kernelY, size_t kernelX,
+            size_t strideY, size_t strideX, size_t padY, size_t padX, float * dst, size_t dstH, size_t dstW, SimdBool trans);
+
+        void SynetPreluLayerForward(const float * src, const float * slope, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
+
+        void SynetRestrictRange32f(const float * src, size_t size, const float * lower, const float * upper, float * dst);
+
+        void SynetScaleLayerForward(const float * src, const float * scale, const float * bias, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
+
+        void SynetSetInput(const uint8_t * src, size_t width, size_t height, size_t stride, SimdPixelFormatType srcFormat, 
+            const float * lower, const float * upper, float * dst, size_t channels, SimdTensorFormatType dstFormat);
+
+        void SynetShuffleLayerForward(const float* src0, size_t srcC0, const float* src1, size_t srcC1, size_t spatial, float* dst0, float* dst1, size_t dstC, SimdTensorFormatType format);
+
+        void SynetSoftmaxLayerForward(const float * src, size_t outer, size_t size, size_t inner, float * dst);
+
+        SimdTensorFormatType SynetSpecifyTensorFormat(SimdTensorFormatType format);
+
+        size_t SynetTensorAlignment(SimdTensorFormatType format);
 
         void TextureBoostedSaturatedGradient(const uint8_t * src, size_t srcStride, size_t width, size_t height,
             uint8_t saturation, uint8_t boost, uint8_t * dx, size_t dxStride, uint8_t * dy, size_t dyStride);
@@ -534,6 +600,29 @@ namespace Simd
 
         void TexturePerformCompensation(const uint8_t * src, size_t srcStride, size_t width, size_t height,
             int shift, uint8_t * dst, size_t dstStride);
+
+        void TransformImage(const uint8_t * src, size_t srcStride, size_t width, size_t height, size_t pixelSize, SimdTransformType transform, uint8_t * dst, size_t dstStride);
+
+        void Winograd2x3SetFilter(const float * src, size_t size, float * dst, SimdBool trans);
+
+        void Winograd2x3SetInput(const float * src, size_t srcChannels, size_t srcHeight, size_t srcWidth, float * dst, size_t dstStride, SimdBool pad, SimdBool trans);
+
+        void Winograd2x3SetOutput(const float * src, size_t srcStride, float * dst, size_t dstChannels, size_t dstHeight, size_t dstWidth, SimdBool trans);
+
+        void Winograd3x3SetFilter(const float * src, size_t size, float * dst, SimdBool trans);
+
+        void Winograd3x3SetInput(const float * src, size_t srcChannels, size_t srcHeight, size_t srcWidth, float * dst, size_t dstStride, SimdBool pad, SimdBool trans);
+
+        void Winograd3x3SetOutput(const float * src, size_t srcStride, float * dst, size_t dstChannels, size_t dstHeight, size_t dstWidth, SimdBool trans);
+
+        void Winograd4x3SetFilter(const float * src, size_t size, float * dst, SimdBool trans);
+
+        void Winograd4x3SetInput(const float * src, size_t srcChannels, size_t srcHeight, size_t srcWidth, float * dst, size_t dstStride, SimdBool pad, SimdBool trans);
+
+        void Winograd4x3SetOutput(const float * src, size_t srcStride, float * dst, size_t dstChannels, size_t dstHeight, size_t dstWidth, SimdBool trans);
+
+        void Yuva420pToBgra(const uint8_t * y, size_t yStride, const uint8_t * u, size_t uStride, const uint8_t * v, size_t vStride,
+            const uint8_t * a, size_t aStride, size_t width, size_t height, uint8_t * bgra, size_t bgraStride);
 
         void Yuv420pToBgr(const uint8_t * y, size_t yStride, const uint8_t * u, size_t uStride, const uint8_t * v, size_t vStride,
             size_t width, size_t height, uint8_t * bgr, size_t bgrStride);

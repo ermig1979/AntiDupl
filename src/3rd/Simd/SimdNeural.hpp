@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2018 Yermalayeu Ihar.
+* Copyright (c) 2011-2019 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -1617,7 +1617,15 @@ namespace Simd
                 for (size_t i = 0; i < index.size(); ++i)
                     index[i] = i;
                 if (options.shuffle)
+                {
+#ifdef SIMD_CPP_2017_ENABLE
+                    std::random_device device;
+                    std::minstd_rand generator(device());
+                    std::shuffle(index.begin(), index.end(), generator);
+#else
                     std::random_shuffle(index.begin(), index.end());
+#endif
+                }
 
                 for (size_t epoch = options.epochStart; epoch < options.epochFinish; ++epoch)
                 {

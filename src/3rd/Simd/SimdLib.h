@@ -1,8 +1,9 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2018 Yermalayeu Ihar,
-*               2014-2016 Antonenka Mikhail.
+* Copyright (c) 2011-2019 Yermalayeu Ihar,
+*               2014-2019 Antonenka Mikhail,
+*               2019-2019 Facundo Galan.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +31,7 @@
 
 #include <stddef.h>
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) || defined(__CODEGEARC__)
 
 #define SIMD_INLINE __forceinline
 
@@ -44,7 +45,7 @@
 
 #endif
 
-#if defined(__GNUC__) || (defined(_MSC_VER) && (_MSC_VER >= 1600))
+#if defined(__GNUC__) || (defined(_MSC_VER) && (_MSC_VER >= 1600)) || (defined(__CODEGEARC__) && (__CODEGEARC__ >= 1840))
 #include <stdint.h>
 #else
 #  if (_MSC_VER < 1300)
@@ -76,27 +77,6 @@ typedef enum
 } SimdBool;
 
 /*! @ingroup c_types
-    Describes types of SIMD extensions which supported by current CPU and Simd Library (see function ::SimdCpuInfo).
-*/
-typedef enum
-{
-    SimdCpuInfoSse = 0, /*!< SSE (x86). */
-    SimdCpuInfoSse2, /*!< SSE2 (x86). */
-    SimdCpuInfoSse3, /*!< SSE3 (x86). */
-    SimdCpuInfoSsse3, /*!< SSSE3 (x86). */
-    SimdCpuInfoSse41, /*!< SSE4.1 (x86). */
-    SimdCpuInfoSse42, /*!< SSE4.2 (x86). */
-    SimdCpuInfoAvx, /*!< AVX (x86). */
-    SimdCpuInfoAvx2, /*!< AVX2 (x86). */
-    SimdCpuInfoAvx512f, /*!< AVX-512F (x86). */
-    SimdCpuInfoAvx512bw, /*!< AVX-512BW (x86). */
-    SimdCpuInfoVmx, /*!< VMX or Altivec (PowerPC). */
-    SimdCpuInfoVsx, /*!< VSX (PowerPC). */
-    SimdCpuInfoNeon, /*!< NEON (ARM). */
-    SimdCpuInfoMsa, /*!< MSA (MIPS). */
-} SimdCpuInfoFlags;
-
-/*! @ingroup c_types
     Describes types of compare operation.
     Operation compare(a, b) is
 */
@@ -115,6 +95,109 @@ typedef enum
     /*! equal to: a <= b */
     SimdCompareLesserOrEqual,
 } SimdCompareType;
+
+/*! @ingroup synet
+    Describes type of activation function. It is used in ::SimdSynetConvolution32fInit, ::SimdSynetConvolution8iInit, ::SimdSynetDeconvolution32fInit and ::SimdSynetMergedConvolution32fInit.
+*/
+typedef enum
+{
+    /*!
+        Identity (activation function is absent).
+    */
+    SimdConvolutionActivationIdentity = 0,
+    /*!
+        ReLU activation function.
+        \verbatim
+        dst[i] = Max(0, src[i]);
+        \endverbatim
+    */
+    SimdConvolutionActivationRelu,
+    /*!
+        Leaky ReLU activation function.
+        It has one parameter: slope (params[0]).
+        \verbatim
+        dst[i] = src[i] > 0 ? src[i] : slope*src[i];
+        \endverbatim
+    */
+    SimdConvolutionActivationLeakyRelu,
+    /*!
+        The activation function restricts range.
+        It has two parameters: lower (params[0]) and upper (params[1]) bound.
+        \verbatim
+        dst[i] = Min(Max(lower, src[i]), upper);
+        \endverbatim
+    */
+    SimdConvolutionActivationRestrictRange,
+    /*!
+        Leaky PReLU activation function.
+        It has m parameters: slopes[m] (m = dstC, n = dstH*dstW).
+        \verbatim
+        dst[i*n + j] = src[i*n + j] > 0 ? src[i*n + j] : slopes[i]*src[i*n + j];
+        \endverbatim
+    */
+    SimdConvolutionActivationPrelu,
+    /*!
+        Leaky ELU activation function.
+        It has one parameter: alpha (params[0]).
+        \verbatim
+        dst[i] = src[i] >= 0 ? src[i] : alpha*(Exp(src[i]) - 1);
+        \endverbatim
+    */
+    SimdConvolutionActivationElu,
+    /*!
+        H-Swish (https://arxiv.org/pdf/1905.02244.pdf) activation function.
+        It has two parameters: shift (params[0]) and scale (params[1]).
+        \verbatim
+        dst[i] = Max(Min(src[i], shift) + shift, 0)*scale*src[i];
+        \endverbatim
+    */
+    SimdConvolutionActivationHswish,
+} SimdConvolutionActivationType;
+
+/*! @ingroup c_types
+    Describes type of information which can return function ::SimdCpuInfo.
+*/
+typedef enum
+{
+    SimdCpuInfoSockets,/*!< A number of sockets. */
+    SimdCpuInfoCores, /*!< A number of psysical CPU cores. */
+    SimdCpuInfoThreads, /*!< A number of logical CPU cores. */
+    SimdCpuInfoCacheL1, /*!< A size of level 1 data cache. */
+    SimdCpuInfoCacheL2, /*!< A size of level 2 cache. */
+    SimdCpuInfoCacheL3, /*!< A size of level 3 cache. */
+    SimdCpuInfoSse, /*!< Availability of SSE (x86). */
+    SimdCpuInfoSse2, /*!< Availability of SSE2 (x86). */
+    SimdCpuInfoSse3, /*!< Availability of SSE3 (x86). */
+    SimdCpuInfoSsse3, /*!< Availability of SSSE3 (x86). */
+    SimdCpuInfoSse41, /*!< Availability of SSE4.1 (x86). */
+    SimdCpuInfoSse42, /*!< Availability of SSE4.2 (x86). */
+    SimdCpuInfoAvx, /*!< Availability of AVX (x86). */
+    SimdCpuInfoAvx2, /*!< Availability of AVX2 (x86). */
+    SimdCpuInfoAvx512f, /*!< Availability of AVX-512F (x86). */
+    SimdCpuInfoAvx512bw, /*!< Availability of AVX-512BW (x86). */
+    SimdCpuInfoVmx, /*!< Availability of VMX or Altivec (PowerPC). */
+    SimdCpuInfoVsx, /*!< Availability of VSX (PowerPC). */
+    SimdCpuInfoNeon, /*!< Availability of NEON (ARM). */
+    SimdCpuInfoMsa, /*!< Availability of MSA (MIPS). */
+} SimdCpuInfoType;
+
+/*! @ingroup c_types
+    Describes types and flags to get information about classifier cascade with using function ::SimdDetectionInfo.
+    \note This type is used for implementation of Simd::Detection.
+*/
+typedef enum
+{
+    /*! A HAAR cascade classifier type. */
+    SimdDetectionInfoFeatureHaar = 0,
+    /*! A LBP cascade classifier type. */
+    SimdDetectionInfoFeatureLbp,
+    /*! A mask to select cascade classifier type. */
+    SimdDetectionInfoFeatureMask = 3,
+    /*! A flag which defines existence of tilted features in the HAAR cascade. */
+    SimdDetectionInfoHasTilted = 4,
+    /*! A flag which defines possibility to use 16-bit integers for calculation. */
+    SimdDetectionInfoCanInt16 = 8,
+} SimdDetectionInfoFlags;
 
 /*! @ingroup c_types
     Describes types of binary operation between two images performed by function ::SimdOperationBinary8u.
@@ -189,25 +272,9 @@ typedef enum
     SimdPixelFormatHsv24,
     /*! A 24-bit (3 8-bit channels) HSL (Hue, Saturation, Lightness) pixel format. */
     SimdPixelFormatHsl24,
+    /*! A 24-bit (3 8-bit channels) RGB (Red, Green, Blue) pixel format. */
+    SimdPixelFormatRgb24,
 } SimdPixelFormatType;
-
-/*! @ingroup c_types
-    Describes types and flags to get information about classifier cascade with using function ::SimdDetectionInfo.
-    \note This type is used for implementation of Simd::Detection.
-*/
-typedef enum
-{
-    /*! A HAAR cascade classifier type. */
-    SimdDetectionInfoFeatureHaar = 0,
-    /*! A LBP cascade classifier type. */
-    SimdDetectionInfoFeatureLbp,
-    /*! A mask to select cascade classifier type. */
-    SimdDetectionInfoFeatureMask = 3,
-    /*! A flag which defines existence of tilted features in the HAAR cascade. */
-    SimdDetectionInfoHasTilted = 4,
-    /*! A flag which defines possibility to use 16-bit integers for calculation. */
-    SimdDetectionInfoCanInt16 = 8,
-} SimdDetectionInfoFlags;
 
 /*! @ingroup c_types
     Describes type of algorithm used for image reducing (downscale in 2 times) (see function Simd::ReduceGray).
@@ -219,6 +286,206 @@ enum SimdReduceType
     SimdReduce4x4, /*!< Using of function ::SimdReduceGray4x4 for image reducing. */
     SimdReduce5x5, /*!< Using of function ::SimdReduceGray5x5 for image reducing. */
 };
+
+/*! @ingroup resizing
+    Describes resized image channel types.
+*/
+typedef enum
+{
+    /*! 8-bit integer channel type.  */
+    SimdResizeChannelByte,
+    /*! 32-bit float channel type.  */
+    SimdResizeChannelFloat,
+} SimdResizeChannelType;
+
+/*! @ingroup resizing
+    Describes methods used in oreder to resize image.
+*/
+typedef enum
+{
+    /*! Bilinear method. */
+    SimdResizeMethodBilinear,
+    /*! caffe::interp compatible method. */
+    SimdResizeMethodCaffeInterp,
+    /*! Area method. */
+    SimdResizeMethodArea,
+} SimdResizeMethodType;
+
+/*! @ingroup synet
+    Describes operation type used in function ::SimdSynetEltwiseLayerForward.
+*/
+typedef enum
+{
+    SimdSynetEltwiseOperationProduct, /*!< Product. */
+    SimdSynetEltwiseOperationSum, /*!< Weighted sum. */
+    SimdSynetEltwiseOperationMax, /*!< Maximum. */
+    SimdSynetEltwiseOperationMin, /*!< Minimum. */
+} SimdSynetEltwiseOperationType;
+
+/*! @ingroup synet
+    Describes <a href="http://github.com/ermig1979/Synet">Synet Framework</a> 4D-tensor format type.
+*/
+typedef enum
+{
+    SimdTensorFormatUnknown = -1, /*!< Unknown tensor format. */
+    SimdTensorFormatNchw, /*!< NCHW (N - batch, C - channels, H - height, W - width) 4D-tensor format of (input/output) image. */
+    SimdTensorFormatNhwc, /*!< NHWC (N - batch, H - height, W - width, C - channels) 4D-tensor format of (input/output) image. */
+    SimdTensorFormatNchw4c, /*!< NCHW4c (N - batch, C - (channels + 3) / 4, H - height, W - width, 4c - channels gropped by 4) special 5D-tensor format of (input/output) image optimized for SSE and NEON. */
+    SimdTensorFormatNchw8c, /*!< NCHW8c (N - batch, C - (channels + 7) / 8, H - height, W - width, 8c - channels gropped by 8) special 5D-tensor format of (input/output) image optimized for AVX and AVX2. */
+    SimdTensorFormatNchw16c, /*!< NCHW16c (N - batch, C - (channels + 15) / 16, H - height, W - width, 16c - channels gropped by 16) special 5D-tensor format of (input/output) image optimized for AVX-512. */
+    SimdTensorFormatNchwXc, /*!< Unspecified hardware optimized 5D-tensor format of (input/output) image. Specific format (::SimdTensorFormatNchw4c, ::SimdTensorFormatNchw8c or ::SimdTensorFormatNchw16c) is determinated by function ::SimdSynetSpecifyTensorFormat. */
+    SimdTensorFormatOiyx, /*!< OIYX (O - output channels, I - input channels, Y - kernel height, X - kernel width) 4D-tensor format of 2D-convolution filter. */
+    SimdTensorFormatYxio, /*!< YXIO (Y - kernel height, X - kernel width, I - input channels, O - output channels) 4D-tensor format of 2D-convolution filter. */
+    SimdTensorFormatOyxi4o, /*!< OYXI4o (O - (output channels + 3)/4, Y - kernel height, X - kernel width, I - input channels, 4o - output channels gropped by 4) special 5D-tensor format of 2D-convolution filter optimized for SSE and NEON. */
+    SimdTensorFormatOyxi8o, /*!< OYXI8o (O - (output channels + 7)/8, Y - kernel height, X - kernel width, I - input channels, 8o - output channels gropped by 8) special 5D-tensor format of 2D-convolution filter optimized for AVX and AVX2. */
+    SimdTensorFormatOyxi16o, /*!< OYXI16o (O - (output channels + 15)/16, Y - kernel height, X - kernel width, I - input channels, 16o - output channels gropped by 16) special 5D-tensor format of 2D-convolution filter optimized for AVX-512. */
+    SimdTensorFormatOyxiXo, /*!< Unspecified hardware optimized 5D-tensor format of 2D-convolution filter. Specific format (::SimdTensorFormatOyxi4o, ::SimdTensorFormatOyxi8o or ::SimdTensorFormatOyxi16o) is determinated by function ::SimdSynetSpecifyTensorFormat. */
+} SimdTensorFormatType;
+
+/*! @ingroup synet
+    Describes <a href="http://github.com/ermig1979/Synet">Synet Framework</a> tensor data type.
+*/
+typedef enum
+{
+    SimdTensorDataUnknown = -1, /*!< Unknown tensor data type. */
+    SimdTensorData32f, /*!< 32-bit float point. */
+    SimdTensorData32i, /*!< 32-bit signed integer. */
+    SimdTensorData8i, /*!< 8-bit signed integer. */
+    SimdTensorData8u, /*!< 8-bit unsigned integer. */
+} SimdTensorDataType;
+
+/*! @ingroup transform
+    Describes transform type used in function ::SimdTransformImage in order to describe result of transformation.
+*/
+typedef enum
+{
+    SimdTransformRotate0 = 0, /*!< An original image. The output image has the same size as input image.*/
+    SimdTransformRotate90, /*!< Image rotated 90 degrees counterclockwise. The output width and height are equal to the input height and widht. */
+    SimdTransformRotate180, /*!< Image rotated 180 degrees counterclockwise. The output image has the same size as input image. */
+    SimdTransformRotate270, /*!< Image rotated 270 degrees counterclockwise. The output width and height are equal to the input height and widht. */
+    SimdTransformTransposeRotate0, /*!< Transposed image. The output width and height are equal to the input height and widht. */
+    SimdTransformTransposeRotate90, /*!< Image transposed and rotated 90 degrees counterclockwise. It is equal to horizontal mirroring of image. The output image has the same size as input image.*/
+    SimdTransformTransposeRotate180, /*!< Image transposed and rotated 180 degrees counterclockwise. The output width and height are equal to the input height and widht. */
+    SimdTransformTransposeRotate270, /*!< Image transposed and rotated 270 degrees counterclockwise. It is equal to vertical mirroring of image. The output image has the same size as input image.*/
+} SimdTransformType;
+
+/*! @ingroup synet
+    \brief Callback function type "SimdGemm32fNNPtr";
+
+    The function has to perform general matrix multiplication (for 32-bit float numbers).
+
+    \verbatim
+    C(M, N) = alpha*A(M, K)*B(K, N) + beta*C(M, N);
+    \endverbatim
+
+    \param [in] M - a height of A and height of C matrices.
+    \param [in] N - a width of B and width of C matrices.
+    \param [in] K - a width of A and height of B matrices.
+    \param [in] alpha - a pointer to multiplier of the first term.
+    \param [in] A - a pointer to input A matrix.
+    \param [in] lda - a leading dimension of A matrix.
+    \param [in] B - a pointer to input B matrix.
+    \param [in] ldb - a leading dimension of B matrix.
+    \param [in] beta - a pointer to multiplier of the second term.
+    \param [out] C - a pointer to output C matrix.
+    \param [in] ldc - a leading dimension of C matrix.
+*/
+typedef void(*SimdGemm32fNNPtr)(size_t M, size_t N, size_t K, const float * alpha, const float * A, size_t lda, const float * B, size_t ldb, const float * beta, float * C, size_t ldc);
+
+/*! @ingroup synet
+    Describes convolution (deconvolution) parameters. It is used in ::SimdSynetConvolution32fInit, ::SimdSynetConvolution8iInit, ::SimdSynetDeconvolution32fInit and ::SimdSynetMergedConvolution32fInit.
+*/
+typedef struct SimdConvolutionParameters
+{
+    /*!
+        A number of input tensor channels.
+    */
+    size_t srcC;
+    /*!
+        An input tensor height.
+    */
+    size_t srcH;
+    /*!
+        An input tensor width.
+    */
+    size_t srcW;
+    /*!
+        An input tensor data type.
+    */
+    SimdTensorDataType srcT;
+    /*!
+        An input tensor data format.
+    */
+    SimdTensorFormatType srcF;
+    /*!
+        A number of output tensor channels.
+    */
+    size_t dstC;
+    /*!
+        An output tensor height.
+    */
+    size_t dstH;
+    /*!
+        An output tensor width.
+    */
+    size_t dstW;
+    /*!
+        An output tensor data type.
+    */
+    SimdTensorDataType dstT;
+    /*!
+        An output tensor data format.
+    */
+    SimdTensorFormatType dstF;
+    /*!
+        A convolution (deconvolution) kernel window height.
+    */
+    size_t kernelY;
+    /*!
+        A convolution (deconvolution) kernel window width.
+    */
+    size_t kernelX;
+    /*!
+        A convolution (deconvolution) dilation along Y-axis.
+    */
+    size_t dilationY;
+    /*!
+        A convolution (deconvolution) dilation along X-axis.
+    */
+    size_t dilationX;
+    /*!
+        A convolution (deconvolution) stride along Y-axis.
+    */
+    size_t strideY;
+    /*!
+        A convolution (deconvolution) stride along X-axis.
+    */
+    size_t strideX;
+    /*!
+        An additional zero padding of input image at the beginning of Y-axis.
+    */
+    size_t padY;
+    /*!
+        An additional zero padding of input image at the beginning of X-axis.
+    */
+    size_t padX;
+    /*!
+        An additional zero padding of input image at the end of Y-axis.
+    */
+    size_t padH;
+    /*!
+        An additional zero padding of input image at the end of X-axis.
+    */
+    size_t padW;
+    /*!
+        A number of convolution (deconvolution) groups.
+    */
+    size_t group;
+    /*!
+        An activation function type used after convolution (deconvolution).
+    */
+    SimdConvolutionActivationType activation;
+} SimdConvolutionParameters;
 
 #if defined(WIN32) && !defined(SIMD_STATIC)
 #  ifdef SIMD_EXPORTS
@@ -247,11 +514,11 @@ extern "C"
 
     /*! @ingroup info
 
-        \fn int SimdCpuInfo();
+        \fn size_t SimdCpuInfo(SimdCpuInfoType type);
 
-        \short Gets info about SIMD extensions supported by CPU and %Simd Library.
+        \short Gets info about CPU and %Simd Library.
 
-        \note See enumeration ::SimdCpuInfoFlags.
+        \note See enumeration ::SimdCpuInfoType.
 
         Using example:
         \verbatim
@@ -260,28 +527,46 @@ extern "C"
 
         int main()
         {
-            int info = SimdCpuInfo();
-            std::cout << "SSE: " << (info&(1 << SimdCpuInfoSse) ? "Yes" : "No") << std::endl;
-            std::cout << "SSE2: " << (info&(1 << SimdCpuInfoSse2) ? "Yes" : "No") << std::endl;
-            std::cout << "SSE3: " << (info&(1 << SimdCpuInfoSse3) ? "Yes" : "No") << std::endl;
-            std::cout << "SSSE3: " << (info&(1 << SimdCpuInfoSsse3) ? "Yes" : "No") << std::endl;
-            std::cout << "SSE4.1: " << (info&(1 << SimdCpuInfoSse41) ? "Yes" : "No") << std::endl;
-            std::cout << "SSE4.2: " << (info&(1 << SimdCpuInfoSse42) ? "Yes" : "No") << std::endl;
-            std::cout << "AVX: " << (info&(1 << SimdCpuInfoAvx) ? "Yes" : "No") << std::endl;
-            std::cout << "AVX2: " << (info&(1 << SimdCpuInfoAvx2) ? "Yes" : "No") << std::endl;
-            std::cout << "AVX-512F: " << (info&(1 << SimdCpuInfoAvx512f) ? "Yes" : "No") << std::endl;
-            std::cout << "AVX-512BW: " << (info&(1 << SimdCpuInfoAvx512bw) ? "Yes" : "No") << std::endl;
-            std::cout << "PowerPC-Altivec: " << (info&(1 << SimdCpuInfoVmx) ? "Yes" : "No") << std::endl;
-            std::cout << "PowerPC-VSX: " << (info&(1 << SimdCpuInfoVsx) ? "Yes" : "No") << std::endl;
-            std::cout << "ARM-NEON: " << (info&(1 << SimdCpuInfoNeon) ? "Yes" : "No") << std::endl;
-            std::cout << "MIPS-MSA: " << (info&(1 << SimdCpuInfoMsa) ? "Yes" : "No") << std::endl;
+            std::cout << "Sockets : " << SimdCpuInfo(SimdCpuInfoSockets) << std::endl;
+            std::cout << "Cores : " << SimdCpuInfo(SimdCpuInfoCores) << std::endl;
+            std::cout << "Threads : " << SimdCpuInfo(SimdCpuInfoThreads) << std::endl;
+            std::cout << "L1D Cache : " << SimdCpuInfo(SimdCpuInfoCacheL1) / 1024  << " KB" << std::endl;
+            std::cout << "L2 Cache : " << SimdCpuInfo(SimdCpuInfoCacheL2) / 1024  << " KB" << std::endl;
+            std::cout << "L3 Cache : " << SimdCpuInfo(SimdCpuInfoCacheL3) / 1024  << " KB" << std::endl;
+            std::cout << "SSE: " << (SimdCpuInfo(SimdCpuInfoSse) ? "Yes" : "No") << std::endl;
+            std::cout << "SSE2: " << (SimdCpuInfo(SimdCpuInfoSse2) ? "Yes" : "No") << std::endl;
+            std::cout << "SSE3: " << (SimdCpuInfo(SimdCpuInfoSse3) ? "Yes" : "No") << std::endl;
+            std::cout << "SSSE3: " << (SimdCpuInfo(SimdCpuInfoSsse3) ? "Yes" : "No") << std::endl;
+            std::cout << "SSE4.1: " << (SimdCpuInfo(SimdCpuInfoSse41) ? "Yes" : "No") << std::endl;
+            std::cout << "SSE4.2: " << (SimdCpuInfo(SimdCpuInfoSse42) ? "Yes" : "No") << std::endl;
+            std::cout << "AVX: " << (SimdCpuInfo(SimdCpuInfoAvx) ? "Yes" : "No") << std::endl;
+            std::cout << "AVX2: " << (SimdCpuInfo(SimdCpuInfoAvx2) ? "Yes" : "No") << std::endl;
+            std::cout << "AVX-512F: " << (SimdCpuInfo(SimdCpuInfoAvx512f) ? "Yes" : "No") << std::endl;
+            std::cout << "AVX-512BW: " << (SimdCpuInfo(SimdCpuInfoAvx512bw) ? "Yes" : "No") << std::endl;
+            std::cout << "PowerPC-Altivec: " << (SimdCpuInfo(SimdCpuInfoVmx) ? "Yes" : "No") << std::endl;
+            std::cout << "PowerPC-VSX: " << (SimdCpuInfo(SimdCpuInfoVsx) ? "Yes" : "No") << std::endl;
+            std::cout << "ARM-NEON: " << (SimdCpuInfo(SimdCpuInfoNeon) ? "Yes" : "No") << std::endl;
+            std::cout << "MIPS-MSA: " << (SimdCpuInfo(SimdCpuInfoMsa) ? "Yes" : "No") << std::endl;
             return 0;
         }
         \endverbatim
 
-        \return an integer value which bits contains information about SIMD extensions supported by CPU and %Simd Library.
+        \param [in] type - a type of required information.
+        \return a value which contains information about CPU and %Simd Library.
     */
-    SIMD_API int SimdCpuInfo();
+    SIMD_API size_t SimdCpuInfo(SimdCpuInfoType type);
+
+    /*! @ingroup info
+
+        \fn const char *SimdPerformanceStatistic();
+
+        \short Gets internal performance statistics of %Simd Library.
+
+        \note %Simd Library have to be build with defined SIMD_PERFORMANCE_STATISTIC macro.
+
+        \return string with internal performance statistics of %Simd Library.
+    */
+    SIMD_API const char * SimdPerformanceStatistic();
 
     /*! @ingroup memory
 
@@ -367,23 +652,23 @@ extern "C"
 
     /*! @ingroup cpu_flags
 
-        \fn SimdBool SimdGetFlushToZero();
+        \fn SimdBool SimdGetFastMode();
 
-        \short Gets current CPU Flush-To-Zero (FTZ) flag. It is used in order to process subnormal numbers.
+        \short Gets current CPU Flush-To-Zero (FTZ) and Denormals-Are-Zero (DAZ) flags. It is used in order to process subnormal numbers.
 
-        \return current FTZ flag.
+        \return current 'fast' mode.
     */
-    SIMD_API SimdBool SimdGetFlushToZero();
+    SIMD_API SimdBool SimdGetFastMode();
 
     /*! @ingroup cpu_flags
 
-        \fn void SimdSetFlushToZero(SimdBool value);
+        \fn void SimdSetFastMode(SimdBool value);
 
-        \short Sets current CPU Flush-To-Zero (FTZ) flag. It is used in order to process subnormal numbers.
+        \short Sets current CPU Flush-To-Zero (FTZ) and Denormals-Are-Zero (DAZ) flags. It is used in order to process subnormal numbers.
 
-        \param [in] value - a value of Flush-To-Zero (FTZ) flag.
+        \param [in] value - a value of 'fast' mode.
     */
-    SIMD_API void SimdSetFlushToZero(SimdBool value);
+    SIMD_API void SimdSetFastMode(SimdBool value);
 
     /*! @ingroup hash
 
@@ -398,6 +683,27 @@ extern "C"
         \return 32-bit cyclic redundancy check (CRC32c).
     */
     SIMD_API uint32_t SimdCrc32c(const void * src, size_t size);
+
+    /*! @ingroup correlation
+
+        \fn void SimdAbsDifference(const uint8_t * a, size_t aStride, const uint8_t * b, size_t bStride, uint8_t * c, size_t cStride, size_t width, size_t height);
+
+        \short Gets absolute difference of two gray 8-bit images, pyxel by pixel.
+
+        The three images must have the same width and height.
+
+        \note This function has a C++ wrapper Simd::AbsDifference(const View<A> & a, const View<A> & b, View<A> & c).
+
+        \param [in] a - a pointer to pixels data of first image.
+        \param [in] aStride - a row size of first image.
+        \param [in] b - a pointer to pixels data of second image.
+        \param [in] bStride - a row size of second image.
+        \param [out] c - a pointer to pixels data of destination image.
+        \param [in] cStride - a row size of destination image.
+        \param [in] width - an image width.
+        \param [in] height - an image height.
+    */
+    SIMD_API void SimdAbsDifference(const uint8_t * a, size_t aStride, const uint8_t * b, size_t bStride, uint8_t * c, size_t cStride, size_t width, size_t height);
 
     /*! @ingroup correlation
 
@@ -417,8 +723,7 @@ extern "C"
         \param [in] height - an image height.
         \param [out] sum - the result sum of absolute difference of two images.
     */
-    SIMD_API void SimdAbsDifferenceSum(const uint8_t * a, size_t aStride, const uint8_t * b, size_t bStride,
-        size_t width, size_t height, uint64_t * sum);
+    SIMD_API void SimdAbsDifferenceSum(const uint8_t * a, size_t aStride, const uint8_t * b, size_t bStride, size_t width, size_t height, uint64_t * sum);
 
     /*! @ingroup correlation
 
@@ -1076,6 +1381,33 @@ extern "C"
     */
     SIMD_API void SimdBgraToYuv444p(const uint8_t * bgra, size_t width, size_t height, size_t bgraStride, uint8_t * y, size_t yStride, uint8_t * u, size_t uStride, uint8_t * v, size_t vStride);
 
+    /*! @ingroup bgra_conversion
+
+        \fn void SimdBgraToYuva420p(const uint8_t * bgra, size_t bgraStride, size_t width, size_t height, uint8_t * y, size_t yStride, uint8_t * u, size_t uStride, uint8_t * v, size_t vStride, uint8_t * a, size_t aStride);
+
+        \short Converts 32-bit BGRA image to YUVA420P.
+
+        The input BGRA and output Y and A images must have the same width and height.
+        The input U and V images must have the same width and height (half size relative to Y component).
+
+        \note This function has a C++ wrapper Simd::BgraToYuva420p(const View<A> & bgra, View<A> & y, View<A> & u, View<A> & v, View<A> & a).
+
+        \param [in] bgra - a pointer to pixels data of input 32-bit BGRA image.
+        \param [in] bgraStride - a row size of the BGRA image.
+        \param [in] width - an image width.
+        \param [in] height - an image height.
+        \param [out] y - a pointer to pixels data of output 8-bit image with Y color plane.
+        \param [in] yStride - a row size of the y image.
+        \param [out] u - a pointer to pixels data of output 8-bit image with U color plane.
+        \param [in] uStride - a row size of the u image.
+        \param [out] v - a pointer to pixels data of output 8-bit image with V color plane.
+        \param [in] vStride - a row size of the v image.
+        \param [out] a - a pointer to pixels data of output 8-bit image with alpha plane.
+        \param [in] aStride - a row size of the a image.
+    */
+    SIMD_API void SimdBgraToYuva420p(const uint8_t * bgra, size_t bgraStride, size_t width, size_t height, 
+        uint8_t * y, size_t yStride, uint8_t * u, size_t uStride, uint8_t * v, size_t vStride, uint8_t * a, size_t aStride);
+
     /*! @ingroup bgr_conversion
 
         \fn void SimdBgrToBayer(const uint8_t * bgr, size_t width, size_t height, size_t bgrStride, uint8_t * bayer, size_t bayerStride, SimdPixelFormatType bayerFormat);
@@ -1197,6 +1529,25 @@ extern "C"
         \param [in] hsvStride - a row size of the hsv image.
     */
     SIMD_API void SimdBgrToHsv(const uint8_t * bgr, size_t width, size_t height, size_t bgrStride, uint8_t * hsv, size_t hsvStride);
+
+    /*! @ingroup bgr_conversion
+
+        \fn void SimdBgrToRgb(const uint8_t * bgr, size_t bgrStride, size_t width, size_t height, uint8_t * rgb, size_t rgbStride);
+
+        \short Converts 24-bit BGR image to 24-bit RGB image (also it performs backward conversion).
+
+        All images must have the same width and height.
+
+        \note This function has a C++ wrapper Simd::BgrToRgb(const View<A> & bgr, View<A> & rgb).
+
+        \param [in] bgr - a pointer to pixels data of input 24-bit BGR image.
+        \param [in] bgrStride - a row size of the bgr image.
+        \param [in] width - an image width.
+        \param [in] height - an image height.
+        \param [out] rgb - a pointer to pixels data of output 24-bit RGB image.
+        \param [in] rgbStride - a row size of the rgb image.
+    */
+    SIMD_API void SimdBgrToRgb(const uint8_t * bgr, size_t bgrStride, size_t width, size_t height, uint8_t * rgb, size_t rgbStride);
 
     /*! @ingroup bgr_conversion
 
@@ -1655,6 +2006,23 @@ extern "C"
                 This pointer is used in functions ::SimdDetectionInfo and ::SimdDetectionInit, and must be released with using of function ::SimdRelease.
     */
     SIMD_API void * SimdDetectionLoadA(const char * path);
+
+    /*! @ingroup object_detection
+
+        \fn void * SimdDetectionLoadStringXml(char * xml);
+
+        \short Loads a classifier cascade from a string.
+
+        This function supports OpenCV HAAR and LBP cascades type.
+        Tree based cascades and old cascade formats are not supported.
+
+        \note This function is used for implementation of Simd::Detection.
+
+        \param [in,out] xml - A string with the xml of a classifier cascade.
+        \return a pointer to loaded cascade. On error it returns NULL.
+                This pointer is used in functions ::SimdDetectionInfo and ::SimdDetectionInit, and must be released with using of function ::SimdRelease.
+    */
+    SIMD_API void * SimdDetectionLoadStringXml(char * xml);
 
     /*! @ingroup object_detection
 
@@ -2159,6 +2527,18 @@ extern "C"
     */
     SIMD_API void SimdFillPixel(uint8_t * dst, size_t stride, size_t width, size_t height, const uint8_t * pixel, size_t pixelSize);
 
+    /*! @ingroup filling
+
+        \fn void SimdFill32f(float * dst, size_t size, const float * value);
+
+        \short Fills 32-bit float array by given value.
+
+        \param [out] dst - a pointer to 32-bit float array.
+        \param [in] size - a size of the array.
+        \param [in] value - a pointer to value to fill. Can be NULL (filling value is assumed to be equal to zero).
+    */
+    SIMD_API void SimdFill32f(float * dst, size_t size, const float * value);
+
     /*! @ingroup float16
 
         \fn void SimdFloat32ToFloat16(const float * src, size_t size, uint16_t * dst);
@@ -2222,6 +2602,26 @@ extern "C"
         \param [out] distance - a pointer to 32-bit float with cosine distance.
     */
     SIMD_API void SimdCosineDistance16f(const uint16_t * a, const uint16_t * b, size_t size, float * distance);
+
+    /*! @ingroup float16
+
+        \fn void SimdCosineDistancesMxNa16f(size_t M, size_t N, size_t K, const uint16_t * const * A, const uint16_t * const * B, float * distances);
+
+        \short Calculates mutual cosine distance of two arrays of 16-bit float arrays.
+
+        Algorithm description:
+        \verbatim
+        distances[i, j] = 1 - Sum(A[i][k]*B[j][k])/Sqrt(Sum(A[i][k]*A[i][k])*Sum(B[j][k]*B[j][k]));
+        \endverbatim
+
+        \param [in] M - a number of A arrays.
+        \param [in] N - a number of B arrays.
+        \param [in] K - a size of A and B arrays.
+        \param [in] A - a pointer to the first array with pointers to 16-bit float arrays.
+        \param [in] B - a pointer to the second array with pointers to 16-bit float arrays.
+        \param [out] distances - a pointer to result 32-bit float array with cosine distances. It size must be M*N.
+    */
+    SIMD_API void SimdCosineDistancesMxNa16f(size_t M, size_t N, size_t K, const uint16_t * const * A, const uint16_t * const * B, float * distances);
 
     /*! @ingroup other_conversion
 
@@ -2315,13 +2715,15 @@ extern "C"
 
         \short Performs general matrix multiplication (for 32-bit float numbers).
 
+        \verbatim
         C(M, N) = alpha*A(M, K)*B(K, N) + beta*C(M, N);
+        \endverbatim
 
         \note This function supports multithreading (See functions ::SimdGetThreadNumber and ::SimdSetThreadNumber).
 
-        \param [in] M - a height of A and C matrices.
-        \param [in] N - a width of B and C matrices.
-        \param [in] K - a width of A and height of C matrices.
+        \param [in] M - a height of A and height of C matrices.
+        \param [in] N - a width of B and width of C matrices.
+        \param [in] K - a width of A and height of B matrices.
         \param [in] alpha - a pointer to multiplier of the first term.
         \param [in] A - a pointer to input A matrix.
         \param [in] lda - a leading dimension of A matrix.
@@ -2332,6 +2734,32 @@ extern "C"
         \param [in] ldc - a leading dimension of C matrix.
     */
     SIMD_API void SimdGemm32fNN(size_t M, size_t N, size_t K, const float * alpha, const float * A, size_t lda, const float * B, size_t ldb, const float * beta, float * C, size_t ldc);
+
+    /*! @ingroup matrix
+
+        \fn void SimdGemm32fNT(size_t M, size_t N, size_t K, const float * alpha, const float * A, size_t lda, const float * B, size_t ldb, const float * beta, float * C, size_t ldc);
+
+        \short Performs general matrix multiplication (for 32-bit float numbers).
+
+        \verbatim
+        C(M, N) = alpha*A(M, K)*Trans(B(N, K)) + beta*C(M, N);
+        \endverbatim
+
+        \note This function supports multithreading (See functions ::SimdGetThreadNumber and ::SimdSetThreadNumber).
+
+        \param [in] M - a height of A and height of C matrices.
+        \param [in] N - a height of B and width of C matrices.
+        \param [in] K - a width of A and width of B matrices.
+        \param [in] alpha - a pointer to multiplier of the first term.
+        \param [in] A - a pointer to input A matrix.
+        \param [in] lda - a leading dimension of A matrix.
+        \param [in] B - a pointer to input B matrix.
+        \param [in] ldb - a leading dimension of B matrix.
+        \param [in] beta - a pointer to multiplier of the second term.
+        \param [out] C - a pointer to output C matrix.
+        \param [in] ldc - a leading dimension of C matrix.
+    */
+    SIMD_API void SimdGemm32fNT(size_t M, size_t N, size_t K, const float * alpha, const float * A, size_t lda, const float * B, size_t ldb, const float * beta, float * C, size_t ldc);
 
     /*! @ingroup gray_conversion
 
@@ -2490,7 +2918,13 @@ extern "C"
 
         \short Changes colors for 8-bit gray image with using of color map.
 
-        The input and output 8-bit gray images must have the same size. 
+        The input and output 8-bit gray images must have the same size.
+        Algorithm description:
+        \verbatim
+        for(y = 0; y < height; ++y)
+            for(x = 0; x < width; ++x)
+                dst[x, y] = colors[src[x, y]];
+        \endverbatim
 
         \note This function has a C++ wrapper Simd::ChangeColors(const View<A> & src, const uint8_t * colors, View<A> & dst).
 
@@ -4031,6 +4465,34 @@ extern "C"
 
     /*! @ingroup resizing
 
+        \fn void SimdReduceColor2x2(const uint8_t * src, size_t srcWidth, size_t srcHeight, size_t srcStride, uint8_t * dst, size_t dstWidth, size_t dstHeight, size_t dstStride, size_t channelCount);
+
+        \short Performs reducing and Gaussian blurring (in two time) a 8-bit channel color image with using window 2x2.
+
+        For input and output image must be performed: dstWidth = (srcWidth + 1)/2,  dstHeight = (srcHeight + 1)/2.
+
+        For all points:
+        \verbatim
+        dst[x, y, c] = (src[2*x, 2*y, c] + src[2*x, 2*y + 1, c] + src[2*x + 1, 2*y, c] + src[2*x + 1, 2*y + 1, c] + 2)/4;
+        \endverbatim
+
+        \note This function has a C++ wrappers: Simd::Reduce2x2(const View<A> & src, View<A> & dst).
+
+        \param [in] src - a pointer to pixels data of the original input image.
+        \param [in] srcWidth - a width of the input image.
+        \param [in] srcHeight - a height of the input image.
+        \param [in] srcStride - a row size of the input image.
+        \param [out] dst - a pointer to pixels data of the reduced output image.
+        \param [in] dstWidth - a width of the output image.
+        \param [in] dstHeight - a height of the output image.
+        \param [in] dstStride - a row size of the output image.
+        \param [in] channelCount - a nmber of channels for input and output images.
+    */
+    SIMD_API void SimdReduceColor2x2(const uint8_t * src, size_t srcWidth, size_t srcHeight, size_t srcStride,
+        uint8_t * dst, size_t dstWidth, size_t dstHeight, size_t dstStride, size_t channelCount);
+
+    /*! @ingroup resizing
+
         \fn void SimdReduceGray2x2(const uint8_t * src, size_t srcWidth, size_t srcHeight, size_t srcStride, uint8_t * dst, size_t dstWidth, size_t dstHeight, size_t dstStride);
 
         \short Performs reducing and Gaussian blurring (in two time) a 8-bit gray image with using window 2x2.
@@ -4240,28 +4702,6 @@ extern "C"
     */
     SIMD_API void SimdResizeBilinear(const uint8_t *src, size_t srcWidth, size_t srcHeight, size_t srcStride,
         uint8_t *dst, size_t dstWidth, size_t dstHeight, size_t dstStride, size_t channelCount);
-
-    /*! @ingroup resizing
-        Describes resized image channel types.
-    */
-    typedef enum
-    {
-        /*! 8-bit integer channel type.  */
-        SimdResizeChannelByte,
-        /*! 32-bit float channel type.  */
-        SimdResizeChannelFloat,
-    } SimdResizeChannelType;
-
-    /*! @ingroup resizing
-        Describes methods used in oreder to resize image.
-    */
-    typedef enum
-    {
-        /*! Bilinear method. */
-        SimdResizeMethodBilinear,
-        /*! caffe::interp compatible method. */
-        SimdResizeMethodCaffeInterp,
-    } SimdResizeMethodType;
 
     /*! @ingroup resizing
 
@@ -4812,6 +5252,49 @@ extern "C"
     SIMD_API void SimdGetMoments(const uint8_t * mask, size_t stride, size_t width, size_t height, uint8_t index,
         uint64_t * area, uint64_t * x, uint64_t * y, uint64_t * xx, uint64_t * xy, uint64_t * yy);
 
+    /*! @ingroup other_statistic
+
+        \fn void SimdGetObjectMoments(const uint8_t * src, size_t srcStride, size_t width, size_t height, const uint8_t * mask, size_t maskStride, uint8_t index, uint64_t * n, uint64_t * s,  uint64_t * sx, uint64_t * sy, uint64_t * sxx, uint64_t * sxy, uint64_t * syy);
+
+        \short Calculate statistical characteristics (moments) of given object.
+
+        The images must has 8-bit gray format and equal size. One of them can be empty.
+
+        For every point:
+        \verbatim
+        if(mask[X, Y] == index || mask == 0)
+        {
+            S = src ? src[X, Y] : 1;
+            n += 1.
+            s += S;
+            sx += S*X.
+            sy += S*Y.
+            sxx += S*X*X.
+            sxy += S*X*Y.
+            syy += S*Y*Y.
+        }
+        \endverbatim
+
+        \note This function has a C++ wrappers: Simd::GetObjectMoments(const View<A> & src, const View<A> & mask, uint8_t index, uint64_t & n, uint64_t & s,  uint64_t & sx, uint64_t & sy, uint64_t & sxx, uint64_t & sxy, uint64_t & syy).
+
+        \param [in] src - a pointer to pixels data of the input image. Can be NULL (its behaviour is equal to function SimdGetMoments).
+        \param [in] srcStride - a row size of the input image.
+        \param [in] width - an image width.
+        \param [in] height - an image height.
+        \param [in] mask - a pointer to pixels data of the mask image. Can be NULL (the moments will be collected over whole image).
+        \param [in] maskStride - a row size of the mask image.
+        \param [in] index - a mask index.
+        \param [out] n - a pointer to unsigned 64-bit integer value with found area of given object.
+        \param [out] s - a pointer to unsigned 64-bit integer value with sum of image values of given object.
+        \param [out] sx - a pointer to unsigned 64-bit integer value with found first-order moment x of given object.
+        \param [out] sy - a pointer to unsigned 64-bit integer value with found first-order moment y of given object.
+        \param [out] sxx - a pointer to unsigned 64-bit integer value with found second-order moment xx of given object.
+        \param [out] sxy - a pointer to unsigned 64-bit integer value with found second-order moment xy of given object.
+        \param [out] syy - a pointer to unsigned 64-bit integer value with found second-order moment yy of given object.
+    */
+    SIMD_API void SimdGetObjectMoments(const uint8_t * src, size_t srcStride, size_t width, size_t height, const uint8_t * mask, size_t maskStride, uint8_t index,
+        uint64_t * n, uint64_t * s,  uint64_t * sx, uint64_t * sy, uint64_t * sxx, uint64_t * sxy, uint64_t * syy);
+
     /*! @ingroup row_statistic
 
         \fn void SimdGetRowSums(const uint8_t * src, size_t stride, size_t width, size_t height, uint32_t * sums);
@@ -4938,10 +5421,10 @@ extern "C"
         \param [in] height - an image height.
         \param [out] sum - the result sum.
     */
-	
+    
     SIMD_API void SimdSquareSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * sum);
-	
-	    /*! @ingroup other_statistic
+    
+        /*! @ingroup other_statistic
 
         \fn void SimdValueSquareSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * valueSum, uint64_t * squareSum);
 
@@ -4954,10 +5437,10 @@ extern "C"
         \param [in] width - an image width.
         \param [in] height - an image height.
         \param [out] valueSum - the result value sum.
-		\param [out] squareSum - the result square sum.
+        \param [out] squareSum - the result square sum.
     */
     SIMD_API void SimdValueSquareSum(const uint8_t * src, size_t stride, size_t width, size_t height, uint64_t * valueSum, uint64_t * squareSum);
-	
+    
     /*! @ingroup other_statistic
 
         \fn void SimdCorrelationSum(const uint8_t * a, size_t aStride, const uint8_t * b, size_t bStride, size_t width, size_t height, uint64_t * sum);
@@ -5030,35 +5513,250 @@ extern "C"
 
     /*! @ingroup synet
 
-        \fn void SimdSynetAddBias(const float * bias, size_t count, size_t size, float * dst);
+        \fn void SimdSynetAddBias(const float * bias, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
 
         \short Adds a bias to given vector.
 
-        Algorithm's details:
+        Algorithm's details (example for NCHW tensor format):
         \verbatim
-         for(i = 0; i < count; ++i)
-            for(j = 0; j < size; ++j)
-                dst[i*size + j] += bias[i];
+        for(c = 0; c < channels; ++c)
+            for(j = 0; j < spatial; ++j)
+                 dst[c*spatial + s] += bias[c];
         \endverbatim
 
         \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
 
-        \param [in] bias - a pointer to the 32-bit float array with bias coefficients.
-        \param [in] count - a size of bias array.
-        \param [in] size - an internal size of bias addition.
-        \param [in, out] dst - a pointer to cumulative 32-bit float array. The size of the array must be equal to count*size.
+        \param [in] bias - a pointer to the 32-bit float array with bias coefficients. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)).
+        \param [in] channels - a number of channels in the image tensor.
+        \param [in] spatial - a spatial size of image tensor.
+        \param [in, out] dst - a pointer to cumulative 32-bit image tensor. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] format - a format of image tensor.
     */
-    SIMD_API void SimdSynetAddBias(const float * bias, size_t count, size_t size, float * dst);
+    SIMD_API void SimdSynetAddBias(const float * bias, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
+
+    /*! @ingroup synet_conversion
+
+        \fn void SimdSynetConvertImage(size_t batch, size_t channels, size_t spatial, const float * src, SimdTensorFormatType srcFormat, float * dst, SimdTensorFormatType dstFormat);
+
+        \short Converts (input/output) image between different formats of 4D-tensor.
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>. Conversion between ::SimdTensorFormatNchw4c, ::SimdTensorFormatNchw8c, ::SimdTensorFormatNchw16c is not supported.
+
+        \param [in] batch - a batch (number of images in the batch).
+        \param [in] channels - a number of image channels.
+        \param [in] spatial - a spatial size (height*width) of image.
+        \param [in] src - a pointer to input image data.
+        \param [in] srcFormat - a format of input image. It can be ::SimdTensorFormatNchw, ::SimdTensorFormatNhwc, ::SimdTensorFormatNchw4c, ::SimdTensorFormatNchw8c, ::SimdTensorFormatNchw16c.
+        \param [out] dst - a pointer to output image data.
+        \param [in] dstFormat - a format of output image. It can be ::SimdTensorFormatNchw, ::SimdTensorFormatNhwc, ::SimdTensorFormatNchw4c, ::SimdTensorFormatNchw8c, ::SimdTensorFormatNchw16c.
+    */
+    SIMD_API void SimdSynetConvertImage(size_t batch, size_t channels, size_t spatial, const float * src, SimdTensorFormatType srcFormat, float * dst, SimdTensorFormatType dstFormat);
+
+    /*! @ingroup synet_conversion
+
+        \fn void SimdSynetConvertFilter(size_t output, size_t input, size_t kernel, const float * src, SimdTensorFormatType srcFormat, float * dst, SimdTensorFormatType dstFormat);
+
+        \short Converts 2d-convolution filter weight between different formats of 4D-tensor.
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>. Conversion between ::SimdTensorFormatOyxi4o, ::SimdTensorFormatOyxi8o, ::SimdTensorFormatOyxi16o is not supported.
+
+        \param [in] output - a number of output channels in filter.
+        \param [in] input - a number of intput channels in filter.
+        \param [in] kernel - a size (width*height) of filter kernel.
+        \param [in] src - a pointer to input filter data.  
+        \param [in] srcFormat - a format of input filter. It can be ::SimdTensorFormatOiyx, ::SimdTensorFormatYxio, ::SimdTensorFormatOyxi4o, ::SimdTensorFormatOyxi8o, ::SimdTensorFormatOyxi16o.
+        \param [out] dst - a pointer to output filter data.
+        \param [in] dstFormat - a format of output filter. It can be SimdTensorFormatOiyx, ::SimdTensorFormatYxio, ::SimdTensorFormatOyxi4o, ::SimdTensorFormatOyxi8o, ::SimdTensorFormatOyxi16o. 
+    */
+    SIMD_API void SimdSynetConvertFilter(size_t output, size_t input, size_t kernel, const float * src, SimdTensorFormatType srcFormat, float * dst, SimdTensorFormatType dstFormat);
+
+    /*! @ingroup synet_convolution
+
+        \fn void * SimdSynetConvolution32fInit(size_t batch, const SimdConvolutionParameters * conv, SimdGemm32fNNPtr gemm);
+
+        \short Initilizes FP32 convolution algorithm.
+
+        \param [in] batch - a batch size.
+        \param [in] conv - a pointer to convolution parameters.
+        \param [in] gemm - a pointer to external function of matrix multiplication. Can be NULL.
+        \return a pointer to FP32 convolution context. On error it returns NULL. It must be released with using of function ::SimdRelease.
+            This pointer is used in functions ::SimdSynetConvolution32fExternalBufferSize, ::SimdSynetConvolution32fInternalBufferSize, ::SimdSynetConvolution32fSetParams and ::SimdSynetConvolution32fForward.
+    */
+    SIMD_API void * SimdSynetConvolution32fInit(size_t batch, const SimdConvolutionParameters * conv, SimdGemm32fNNPtr gemm);
+
+    /*! @ingroup synet_convolution
+
+        \fn size_t SimdSynetConvolution32fExternalBufferSize(const void * context);
+
+        \short Gets size of external temporary buffer required for FP32 convolution algorithm.
+
+        \param [in] context - a pointer to FP32 convolution context. It must be created by function ::SimdSynetConvolution32fInit and released by function ::SimdRelease.
+        \return size of external temporary buffer required for FP32 convolution algorithm.
+    */
+    SIMD_API size_t SimdSynetConvolution32fExternalBufferSize(const void * context);
+
+    /*! @ingroup synet_convolution
+
+        \fn size_t SimdSynetConvolution32fInternalBufferSize(const void * context);
+
+        \short Gets size of internal buffer used inside FP32 convolution algorithm.
+
+        \param [in] context - a pointer to FP32 convolution context. It must be created by function ::SimdSynetConvolution32fInit and released by function ::SimdRelease.
+        \return size of internal buffer used inside FP32 convolution algorithm.
+    */
+    SIMD_API size_t SimdSynetConvolution32fInternalBufferSize(const void * context);
+
+    /*! @ingroup synet_convolution
+
+        \fn void SimdSynetConvolution32fSetParams(void * context, const float * weight, SimdBool * internal, const float * bias, const float * params);
+
+        \short Sets weights, beases and parameters of activation function required for FP32 convolution algorithm.
+
+        \param [in, out] context - a pointer to FP32 convolution context. It must be created by function ::SimdSynetConvolution32fInit and released by function ::SimdRelease.
+        \param [in] weight - a pointer to convolution weights.
+        \param [out] internal - a flag signalized that weight is stored in the internal buffer. Can be NULL.
+        \param [in] bias - a pointer to bias. Can be NULL.
+        \param [in] params - a pointer to parameters of activation functions (see ::SimdConvolutionActivationType). Can be NULL.
+    */
+    SIMD_API void SimdSynetConvolution32fSetParams(void * context, const float * weight, SimdBool * internal, const float * bias, const float * params);
+
+    /*! @ingroup synet_convolution
+
+        \fn void SimdSynetConvolution32fForward(void * context, const float * src, float * buf, float * dst);
+
+        \short Performs forward propagation of FP32 convolution algorithm.
+
+        \param [in] context - a pointer to FP32 convolution context. It must be created by function ::SimdSynetConvolution32fInit and released by function ::SimdRelease.
+        \param [in] src - a pointer to input tensor.
+        \param [out] buf - a pointer to external temporary buffer. The size of the external temporary buffer is determined by function ::SimdSynetConvolution32fExternalBufferSize. Can be NULL (it causes usage of internal buffer).
+        \param [out] dst - a pointer to output tensor.
+    */
+    SIMD_API void SimdSynetConvolution32fForward(void * context, const float * src, float * buf, float * dst);
+
+    /*! @ingroup synet_convolution
+
+        \fn void * SimdSynetConvolution8iInit(size_t batch, const SimdConvolutionParameters * conv);
+
+        \short Initilizes INT8 convolution algorithm.
+
+        \param [in] batch - a batch size.
+        \param [in] conv - a pointer to convolution parameters.
+        \return a pointer to INT8 convolution context. On error it returns NULL. It must be released with using of function ::SimdRelease.
+            This pointer is used in functions ::SimdSynetConvolution8iExternalBufferSize, ::SimdSynetConvolution8iInternalBufferSize, ::SimdSynetConvolution8iSetParams and ::SimdSynetConvolution8iForward.
+    */
+    SIMD_API void * SimdSynetConvolution8iInit(size_t batch, const SimdConvolutionParameters * conv);
+
+    /*! @ingroup synet_convolution
+
+        \fn size_t SimdSynetConvolution8iExternalBufferSize(const void * context);
+
+        \short Gets size in bytes of external temporary buffer required for INT8 convolution algorithm.
+
+        \param [in] context - a pointer to INT8 convolution context. It must be created by function ::SimdSynetConvolution8iInit and released by function ::SimdRelease.
+        \return size of external temporary buffer required for INT8 convolution algorithm.
+    */
+    SIMD_API size_t SimdSynetConvolution8iExternalBufferSize(const void * context);
+
+    /*! @ingroup synet_convolution
+
+        \fn size_t SimdSynetConvolution8iInternalBufferSize(const void * context);
+
+        \short Gets size of internal buffer used inside INT8 convolution algorithm.
+
+        \param [in] context - a pointer to INT8 convolution context. It must be created by function ::SimdSynetConvolution8iInit and released by function ::SimdRelease.
+        \return size of internal buffer used inside INT8 convolution algorithm.
+    */
+    SIMD_API size_t SimdSynetConvolution8iInternalBufferSize(const void * context);
+
+    /*! @ingroup synet_convolution
+
+        \fn void SimdSynetConvolution8iSetParams(void * context, const float * weight, const float * bias, const float * params, const float * const stats);
+
+        \short Sets weights, beases, parameters of activation function, input/output tensor statistics required for INT8 convolution algorithm.
+
+        \param [in, out] context - a pointer to INT8 convolution context. It must be created by function ::SimdSynetConvolution8iInit and released by function ::SimdRelease.
+        \param [in] weight - a pointer to original (32-bit float point) convolution weights.
+        \param [in] bias - a pointer to original (32-bit float point) bias. Can be NULL.
+        \param [in] params - a pointer to original (32-bit float point) parameters of activation functions (see ::SimdConvolutionActivationType). Can be NULL.
+        \param [in] stats - a pointer to pointers with statistics of input(min - stats[0], max - stats[1]) and output(min - stats[2], max - stats[3]) tensors.
+    */
+    SIMD_API void SimdSynetConvolution8iSetParams(void * context, const float * weight, const float * bias, const float * params, const float * const stats);
+
+    /*! @ingroup synet_convolution
+
+        \fn void SimdSynetConvolution8iForward(void * context, const uint8_t * src, uint8_t * buf, uint8_t * dst);
+
+        \short Performs forward propagation of INT8 convolution algorithm.
+
+        \param [in] context - a pointer to INT8 convolution context. It must be created by function ::SimdSynetConvolution8iInit and released by function ::SimdRelease.
+        \param [in] src - a pointer to input tensor.
+        \param [out] buf - a pointer to external temporary buffer. The size of the external temporary buffer is determined by function ::SimdSynetConvolution8iExternalBufferSize. Can be NULL (it causes usage of internal buffer).
+        \param [out] dst - a pointer to output tensor.
+    */
+    SIMD_API void SimdSynetConvolution8iForward(void * context, const uint8_t * src, uint8_t * buf, uint8_t * dst);
 
     /*! @ingroup synet
-        Describes operation type used in function ::SimdSynetEltwiseLayerForward.
+
+        \fn void * SimdSynetDeconvolution32fInit(size_t batch, const SimdConvolutionParameters * conv, SimdGemm32fNNPtr gemm);
+
+        \short Initilizes FP32 deconvolution algorithm.
+
+        \param [in] batch - a batch size.
+        \param [in] conv - a pointer to deconvolution parameters.
+        \param [in] gemm - a pointer to external function of matrix multiplication. Can be NULL.
+        \return a pointer to FP32 deconvolution context. On error it returns NULL. It must be released with using of function ::SimdRelease.
+        This pointer is used in functions ::SimdSynetDeconvolution32fExternalBufferSize, ::SimdSynetDeconvolution32fInternalBufferSize, ::SimdSynetDeconvolution32fSetParams and ::SimdSynetDeconvolution32fForward.
     */
-    typedef enum
-    {
-        SimdSynetEltwiseOperationProduct, /*!< Product. */
-        SimdSynetEltwiseOperationSum, /*!< Weighted sum. */
-        SimdSynetEltwiseOperationMax, /*!< Maximum. */
-    } SimdSynetEltwiseOperationType;
+    SIMD_API void * SimdSynetDeconvolution32fInit(size_t batch, const SimdConvolutionParameters * conv, SimdGemm32fNNPtr gemm);
+
+    /*! @ingroup synet
+
+        \fn size_t SimdSynetDeconvolution32fExternalBufferSize(const void * context);
+
+        \short Gets size of external temporary buffer required for FP32 deconvolution algorithm.
+
+        \param [in] context - a pointer to FP32 deconvolution context. It must be created by function ::SimdSynetDeconvolution32fInit and released by function ::SimdRelease.
+        \return size of external temporary buffer required for FP32 deconvolution algorithm.
+    */
+    SIMD_API size_t SimdSynetDeconvolution32fExternalBufferSize(const void * context);
+
+    /*! @ingroup synet
+
+        \fn size_t SimdSynetDeconvolution32fInternalBufferSize(const void * context);
+
+        \short Gets size of internal buffer used inside FP32 deconvolution algorithm.
+
+        \param [in] context - a pointer to FP32 deconvolution context. It must be created by function ::SimdSynetDeconvolution32fInit and released by function ::SimdRelease.
+        \return size of internal buffer used inside FP32 deconvolution algorithm.
+    */
+    SIMD_API size_t SimdSynetDeconvolution32fInternalBufferSize(const void * context);
+
+    /*! @ingroup synet
+
+        \fn void SimdSynetDeconvolution32fSetParams(void * context, const float * weight, SimdBool * internal, const float * bias, const float * params);
+
+        \short Sets weights, beases and parameters of activation function required for FP32 deconvolution algorithm.
+
+        \param [in, out] context - a pointer to FP32 deconvolution context. It must be created by function ::SimdSynetDeconvolution32fInit and released by function ::SimdRelease.
+        \param [in] weight - a pointer to deconvolution weights.
+        \param [out] internal - a flag signalized that weight is stored in the internal buffer. Can be NULL.
+        \param [in] bias - a pointer to bias. Can be NULL.
+        \param [in] params - a pointer to parameters of activation functions (see ::SimdConvolutionActivationType). Can be NULL.
+    */
+    SIMD_API void SimdSynetDeconvolution32fSetParams(void * context, const float * weight, SimdBool * internal, const float * bias, const float * params);
+
+    /*! @ingroup synet
+
+        \fn void SimdSynetDeconvolution32fForward(void * context, const float * src, float * buf, float * dst);
+
+        \short Performs forward propagation of FP32 deconvolution algorithm.
+
+        \param [in] context - a pointer to FP32 deconvolution context. It must be created by function ::SimdSynetDeconvolution32fInit and released by function ::SimdRelease.
+        \param [in] src - a pointer to input tensor.
+        \param [out] buf - a pointer to external temporary buffer. The size of the external temporary buffer is determined by function ::SimdSynetDeconvolution32fExternalBufferSize. Can be NULL (it causes usage of internal buffer).
+        \param [out] dst - a pointer to output tensor.
+    */
+    SIMD_API void SimdSynetDeconvolution32fForward(void * context, const float * src, float * buf, float * dst);
 
     /*! @ingroup synet
 
@@ -5090,7 +5788,16 @@ extern "C"
             dst[j] = -FLT_MAX;
         for(i = 0; i < count; ++i)
             for(j = 0; j < size; ++j)
-                dst[j] = max(dst[j], src[i][j]);
+                dst[j] = Max(dst[j], src[i][j]);
+        \endverbatim
+
+        Algorithm's details for ::SimdSynetEltwiseOperationMin:
+        \verbatim
+        for(j = 0; j < size; ++j)
+            dst[j] = FLT_MAX;
+        for(i = 0; i < count; ++i)
+            for(j = 0; j < size; ++j)
+                dst[j] = Min(dst[j], src[i][j]);
         \endverbatim
 
         \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
@@ -5104,60 +5811,607 @@ extern "C"
     */
     SIMD_API void SimdSynetEltwiseLayerForward(float const * const * src, const float * weight, size_t count, size_t size, SimdSynetEltwiseOperationType type, float * dst);
 
-    /*! @ingroup synet
+    /*! @ingroup synet_activation
 
-        \fn void SimdSynetLrnLayerCrossChannels(const float * src, size_t half, size_t count, size_t size, const float * k, float * dst);
+        \fn void SimdSynetElu32f(const float * src, size_t size, const float * alpha, float * dst);
 
-        \short This function is used for forward propagation of LrnLayer (cross channels normalization).
+        \short Calculates ELU activation function for 32-bit float array.
+
+        The input and output arrays must have the same size.
 
         Algorithm's details:
         \verbatim
-        for(i = 0; i < count; ++i)
-            for(j = 0; j < size; ++j)
+        for(i = 0; i < size; ++i)
+            dst[i] = src[i] >= 0 ? src[i] : alpha*(Exp(src[i]) - 1);
+        \endverbatim
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the input 32-bit float array.
+        \param [in] size - a size of input and output arrays.
+        \param [in] alpha - a pointer to alpha parameter.
+        \param [out] dst - a pointer to the output 32-bit float array.
+    */
+    SIMD_API void SimdSynetElu32f(const float * src, size_t size, const float * alpha, float * dst);
+
+    /*! @ingroup synet
+
+        \fn void SimdSynetFusedLayerForward0(const float * src, const float * bias, const float * scale, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
+
+        \short This function is used for forward propagation of FusedLayer (type 0).
+
+        Algorithm's details (example for NCHW tensor format):
+        \verbatim
+        for(c = 0; c < channels; ++c)
+            for(s = 0; s < spatial; ++s)
             {
-                lo = Max(0, i - half);
-                ln = Min(count, i + half + 1);
-                sum = 0;
-                for(l = lo; l < ln; ++l)
-                    sum += Square(src[l*size + j]);
-                dst[i*size + j] = src[i*size + j]*Pow(k[0] + sum*k[1], k[2]);
+                o = c*spatial + s;
+                x = src[o] + bias[c];
+                dst[o] = (x - abs(x))*scale[c] + max(0, x);
             }
         \endverbatim
 
         \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
 
-        \param [in] src - a pointer to the input 32-bit float array. The size of the array must be equal to count*size.
-        \param [in] half - a local normalization half size.
-        \param [in] count - a channels count.
-        \param [in] size - an internal size of the operation.
-        \param [in] k - a pointer to the 32-bit float array with 3 coefficients (see algorithm details). 
-        \param [out] dst - a pointer to the output 32-bit float array. The size of the array must be equal to count*size.
+        \param [in] src - a pointer to the 32-bit float array with input image tensor. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] bias - a pointer to the 32-bit float array with bias coefficients. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)).
+        \param [in] scale - a pointer to the 32-bit float array with scale coefficients. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)).
+        \param [in] channels - a number of channels in the (input/output) image tensor.
+        \param [in] spatial - a spatial size of (input/output) image tensor.
+        \param [out] dst - a pointer to the 32-bit float array with output image tensor. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] format - a format of (input/output) image tensor.
     */
-    SIMD_API void SimdSynetLrnLayerCrossChannels(const float * src, size_t half, size_t count, size_t size, const float * k, float * dst);
+    SIMD_API void SimdSynetFusedLayerForward0(const float * src, const float * bias, const float * scale, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
 
     /*! @ingroup synet
 
-        \fn void SimdSynetScaleLayerForward(const float * src, const float * scale, const float * bias, size_t count, size_t size, float * dst);
+        \fn void SimdSynetFusedLayerForward1(const float * src, const float * bias0, const float * scale1, const float * bias1, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
 
-        \short This function is used for forward propagation of ScaleLayer.
+        \short This function is used for forward propagation of FusedLayer (type 1).
 
-        Algorithm's details:
+        Algorithm's details (example for NCHW tensor format):
         \verbatim
-        for(i = 0; i < count; ++i)
-            for(j = 0; j < size; ++j)
-                dst[i*size + j] = src[i*size + j]*scale[i] + (bias ? bias[i] : 0);
+        for(c = 0; c < channels; ++c)
+            for(s = 0; s < spatial; ++s)
+            {
+                o = c*spatial + s;
+                x = src[o] + bias0[c];
+                dst[o] = max(0, -x)*scale1[c] + bias1[c] + max(0, x);
+            }
         \endverbatim
 
         \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
 
-        \param [in] src - a pointer to the input 32-bit float array. The size of the array must be equal to count*size.
-        \param [in] scale - a pointer to the 32-bit float array with scale coefficients.
-        \param [in] bias - a pointer to the 32-bit float array with bias coefficients. Can be NULL.
-        \param [in] count - a size of scale and bias arrays.
-        \param [in] size - an internal size of the operation.
-        \param [out] dst - a pointer to the output 32-bit float array. The size of the array must be equal to count*size.
+        \param [in] src - a pointer to the 32-bit float array with input image tensor. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] bias0 - a pointer to the 32-bit float array with bias0 coefficients. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)).
+        \param [in] scale1 - a pointer to the 32-bit float array with scale1 coefficients. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)).
+        \param [in] bias1 - a pointer to the 32-bit float array with bias1 coefficients. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)).
+        \param [in] channels - a number of channels in the (input/output) image tensor.
+        \param [in] spatial - a spatial size of (input/output) image tensor.
+        \param [out] dst - a pointer to the 32-bit float array with output image tensor. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] format - a format of (input/output) image tensor.
+        */
+    SIMD_API void SimdSynetFusedLayerForward1(const float * src, const float * bias0, const float * scale1, const float * bias1, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
+
+    /*! @ingroup synet
+
+        \fn void SimdSynetFusedLayerForward2(const float * src, const float * scale, const float * bias, size_t channels, size_t spatial, const float * slope, float * dst, SimdTensorFormatType format);
+
+        \short This function is used for forward propagation of FusedLayer (type 2).
+
+        Algorithm's details (example for NCHW tensor format):
+        \verbatim
+        for(c = 0; c < channels; ++c)
+            for(s = 0; s < spatial; ++s)
+            {
+                o = c*spatial + s;
+                x = src[o]*scale[c]  + bias[c];
+                dst[o] = max(0, x) + min(0, x)*slope[0];
+            }
+        \endverbatim
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the 32-bit float array with input image tensor. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] scale - a pointer to the 32-bit float array with scale coefficients. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)).
+        \param [in] bias - a pointer to the 32-bit float array with bias coefficients. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)).
+        \param [in] channels - a number of channels in the (input/output) image tensor.
+        \param [in] spatial - a spatial size of (input/output) image tensor.
+        \param [in] slope - a pointer to the 32-bit float slope coefficient.
+        \param [out] dst - a pointer to the 32-bit float array with output image tensor. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] format - a format of (input/output) image tensor.
+        */
+    SIMD_API void SimdSynetFusedLayerForward2(const float * src, const float * scale, const float * bias, size_t channels, size_t spatial, const float * slope, float * dst, SimdTensorFormatType format);
+
+    /*! @ingroup synet
+
+        \fn void SimdSynetFusedLayerForward3(const float * src, const float * scale, const float * bias, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
+
+        \short This function is used for forward propagation of FusedLayer (type 3).
+
+        Algorithm's details (example for NCHW tensor format):
+        \verbatim
+        for(c = 0; c < channels; ++c)
+            for(s = 0; s < spatial; ++s)
+            {
+                o = c*spatial + s;
+                x = src[o] + bias[c];
+                dst[o] = max(0, x) + min(0, x)*scale[c];
+            }
+        \endverbatim
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the 32-bit float array with input image tensor. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] bias - a pointer to the 32-bit float array with bias coefficients. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)).
+        \param [in] scale - a pointer to the 32-bit float array with scale coefficients. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)).
+        \param [in] channels - a number of channels in the (input/output) image tensor.
+        \param [in] spatial - a spatial size of (input/output) image tensor.
+        \param [out] dst - a pointer to the 32-bit float array with output image tensor. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] format - a format of (input/output) image tensor.
+        */
+    SIMD_API void SimdSynetFusedLayerForward3(const float * src, const float * scale, const float * bias, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
+
+    /*! @ingroup synet
+
+        \fn void SimdSynetFusedLayerForward4(const float * src, const float * bias0, const float * scale1, const float * bias1, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
+
+        \short This function is used for forward propagation of FusedLayer (type 4).
+
+        Algorithm's details (example for NCHW tensor format):
+        \verbatim
+        for(c = 0; c < channels; ++c)
+            for(s = 0; s < spatial; ++s)
+            {
+                x = src[c*spatial + s] + bias0[c];
+                dst[c*spatial + s] = std::max((T)0, x);
+                dst[(c + channels)*spatial + s] = std::max((T)0, x*scale1[0] + bias1[0]);
+            }
+        \endverbatim
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the 32-bit float array with input image tensor. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] bias0 - a pointer to the 32-bit float array with bias0 coefficients. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)).
+        \param [in] scale1 - a pointer to the 32-bit float array with scale1 coefficients. The size of the array is 1.
+        \param [in] bias1 - a pointer to the 32-bit float array with bias1 coefficients. The size of the array is 1.
+        \param [in] channels - a number of channels in the input image tensor. Output image tensor has 2 * channels.
+        \param [in] spatial - a spatial size of (input/output) image tensor.
+        \param [out] dst - a pointer to the 32-bit float array with output image tensor. The size of the array is ::SimdAlign (2 * channels, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] format - a format of (input/output) image tensor.
+        */
+    SIMD_API void SimdSynetFusedLayerForward4(const float * src, const float * bias0, const float * scale1, const float * bias1, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
+
+    /*! @ingroup synet
+
+        \fn void SimdSynetFusedLayerForward8(const float * src0, const float * src1, const float * src2, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
+
+        \short This function is used for forward propagation of FusedLayer (type 8).
+
+        Algorithm's details (example for NCHW tensor format):
+        \verbatim
+        for(c = 0; c < channels; ++c)
+            for(s = 0; s < spatial; ++s)
+            {
+                o = c*spatial + s;
+                dst[o] = src0[o] + src1[o]*src2[c];
+            }
+        \endverbatim
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src0 - a pointer to the first input 32-bit float array. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] src1 - a pointer to the second input 32-bit float array. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] src2 - a pointer to the third input 32-bit float array. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)).
+        \param [in] channels - a number of channels in the (input/output) image tensor. 
+        \param [in] spatial - a spatial size of (input/output) image tensor.
+        \param [out] dst - a pointer to the output 32-bit float array. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] format - a format of (input/output) image tensor.
+        */
+    SIMD_API void SimdSynetFusedLayerForward8(const float * src0, const float * src1, const float * src2, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
+
+    /*! @ingroup synet
+
+        \fn void SimdSynetFusedLayerForward9(const float * src0, const float * src1, const float * scale, const float * bias, size_t channels0, size_t channels1, size_t spatial, float * dst0, float * dst1, SimdTensorFormatType format);
+
+        \short This function is used for forward propagation of FusedLayer (type 9).
+
+        Algorithm's details (example for NCHW tensor format):
+        \verbatim
+        for(c = 0; c < channels0; ++c)
+            for(s = 0; s < spatial; ++s)
+            {
+                dst0[c*spatial + s] = max(0, src0[c*spatial + s]*scale[c] + bias[c]);
+                if(dst1)
+                    dst1[c*spatial + s] = src0[c*spatial + s];
+            }
+        for(c = 0; c < channels1; ++c)
+            for(s = 0; s < spatial; ++s)
+            {
+                dst0[(c + channels0)*spatial + s] = max(0, src1[c*spatial + s]*scale[channels0 + c] + bias[channels0 + c]);
+                if(dst1)
+                    dst1[(c + channels0)*spatial + s] = src1[c*spatial + s];
+            }
+        \endverbatim
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src0 - a pointer to the first input 32-bit float array. The size of the array is ::SimdAlign (channels0, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] src1 - a pointer to the second input 32-bit float array. The size of the array is ::SimdAlign (channels1, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] scale - a pointer to the 32-bit float array with scale coefficients. The size of the array is ::SimdAlign (channels0 + channels1, ::SimdSynetTensorAlignment (format)).
+        \param [in] bias - a pointer to the 32-bit float array with bias coefficients. The size of the array is ::SimdAlign (channels0 + channels1, ::SimdSynetTensorAlignment (format)).
+        \param [in] channels0 - a number of channels in the first input image tensor.
+        \param [in] channels1 - a number of channels in the second input image tensor.
+        \param [in] spatial - a spatial size of (input/output) image tensor.
+        \param [out] dst0 - a pointer to the first output 32-bit float array. The size of the array is ::SimdAlign (channels0 + channels1, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [out] dst1 - a pointer to the second output 32-bit float array. The size of the array is ::SimdAlign (channels0 + channels1, ::SimdSynetTensorAlignment (format)) * spatial. The pointer can be NULL.
+        \param [in] format - a format of (input/output) image tensor.
     */
-    SIMD_API void SimdSynetScaleLayerForward(const float * src, const float * scale, const float * bias, size_t count, size_t size, float * dst);
+    SIMD_API void SimdSynetFusedLayerForward9(const float * src0, const float * src1, const float * scale, const float * bias, size_t channels0, size_t channels1, size_t spatial, float * dst0, float * dst1, SimdTensorFormatType format);
+
+    /*! @ingroup synet_activation
+
+        \fn void SimdSynetHswish32f(const float * src, size_t size, const float * shift, const float * scale, float * dst);
+
+        \short Calculates H-Swish activation function (https://arxiv.org/pdf/1905.02244.pdf) for 32-bit float array.
+
+        Input and output arrays must have the same size.
+
+        Algorithm's details:
+        \verbatim
+        for(i = 0; i < size; ++i)
+            dst[i] = Max(Min(src[i], shift) + shift, 0)*scale*src[i];
+        \endverbatim
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the input 32-bit float array.
+        \param [in] size - a size of input and output arrays.
+        \param [in] shift - a pointer to shift parameter. It is equal to 3 in original paper.
+        \param [in] scale - a pointer to scale parameter. It is equal to 1/6 in original paper.
+        \param [out] dst - a pointer to the output 32-bit float array.
+    */
+    SIMD_API void SimdSynetHswish32f(const float * src, size_t size, const float * shift, const float * scale, float * dst);
+
+    /*! @ingroup synet
+
+        \fn void SimdSynetInnerProductLayerForward(const float * src, const float * weight, const float * bias, size_t count, size_t size, float * dst);
+
+        \short This function is used for forward propagation of InnerProductLayer.
+
+        Algorithm's details:
+        \verbatim
+        for(i = 0; i < count; ++i)
+        {
+            dst[i] = (bias ? bias[i] : 0);
+            for(j = 0; j < size; ++j)
+               dst[i] += src[j]*weight[i*size + j];
+        }
+        \endverbatim
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the input 32-bit float array. The size of the array must be equal to size.
+        \param [in] weight - a pointer to the 32-bit float array with weight coefficients. The size of the array must be equal to count*size.
+        \param [in] bias - a pointer to the 32-bit float array with bias coefficients. The size of the array must be equal to count. Can be NULL. 
+        \param [in] count - a size of output array.
+        \param [in] size - a size of input array.
+        \param [out] dst - a pointer to the output 32-bit float array. The size of the array must be equal to count.
+    */
+    SIMD_API void SimdSynetInnerProductLayerForward(const float * src, const float * weight, const float * bias, size_t count, size_t size, float * dst);
+
+    /*! @ingroup synet
+
+        \fn void SimdSynetLrnLayerCrossChannels(const float * src, size_t half, size_t channels, size_t spatial, const float * k, float * dst, SimdTensorFormatType format);
+
+        \short This function is used for forward propagation of LrnLayer (cross channels normalization).
+
+        Algorithm's details (example for NCHW tensor format):
+        \verbatim
+        for(c = 0; c < channels; ++c)
+            for(s = 0; s < spatial; ++s)
+            {
+                lo = Max(0, c - half);
+                hi = Min(channels, c + half + 1);
+                sum = 0;
+                for(i = lo; i < ln; ++i)
+                    sum += Square(src[i*spatial + s]);
+                dst[c*spatial + s] = src[c*spatial + s]*Pow(k[0] + sum*k[1], k[2]);
+            }
+        \endverbatim
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the 32-bit float array with input image tensor. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] half - a local normalization half size.
+        \param [in] channels - a number of channels in the (input/output) image tensor
+        \param [in] spatial - a spatial size of (input/output) image tensor.
+        \param [in] k - a pointer to the 32-bit float array with 3 coefficients (see algorithm details). 
+        \param [out] dst - a pointer to the 32-bit float array with output image tensor. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] format - a format of (input/output) image tensor.
+    */
+    SIMD_API void SimdSynetLrnLayerCrossChannels(const float * src, size_t half, size_t channels, size_t spatial, const float * k, float * dst, SimdTensorFormatType format);
+
+    /*! @ingroup synet
+
+        \fn void * SimdSynetMergedConvolution32fInit(size_t batch, const SimdConvolutionParameters * convs, size_t count, SimdBool add);
+
+        \short Initilizes FP32 merged convolution algorithm.
+
+        \param [in] batch - a batch size.
+        \param [in] convs - an array with convolutions parameters.
+        \param [in] count - a number of merged convolutions.
+        \param [in] add - a flag that signilizes if we need to add output to source value.
+        \return a pointer to FP32 merged convolution context. On error it returns NULL. It must be released with using of function ::SimdRelease.
+            This pointer is used in functions ::SimdSynetMergedConvolution32fExternalBufferSize, ::SimdSynetMergedConvolution32fInternalBufferSize, ::SimdSynetMergedConvolution32fSetParams and ::SimdSynetMergedConvolution32fForward.
+    */
+    SIMD_API void * SimdSynetMergedConvolution32fInit(size_t batch, const SimdConvolutionParameters * convs, size_t count, SimdBool add);
+
+    /*! @ingroup synet
+
+        \fn size_t SimdSynetMergedConvolution32fExternalBufferSize(const void * context);
+
+        \short Gets size of external temporary buffer required for FP32 merged convolution algorithm.
+
+        \param [in] context - a pointer to FP32 merged convolution context. It must be created by function ::SimdSynetMergedConvolution32fInit and released by function ::SimdRelease.
+        \return size of external temporary buffer required for FP32 merged convolution algorithm.
+    */
+    SIMD_API size_t SimdSynetMergedConvolution32fExternalBufferSize(const void * context);
+
+    /*! @ingroup synet
+
+        \fn size_t SimdSynetMergedConvolution32fInternalBufferSize(const void * context);
+
+        \short Gets size of internal buffer used inside FP32 merged convolution algorithm.
+
+        \param [in] context - a pointer to FP32 merged convolution context. It must be created by function ::SimdSynetMergedConvolution32fInit and released by function ::SimdRelease.
+        \return size of internal buffer used inside FP32 merged convolution algorithm.
+    */
+    SIMD_API size_t SimdSynetMergedConvolution32fInternalBufferSize(const void * context);
+
+    /*! @ingroup synet
+
+        \fn void SimdSynetMergedConvolution32fSetParams(void * context, const float * const * weight, SimdBool * internal, const float * const * bias, const float * const * params);
+
+        \short Sets weights, beases and parameters of activation function required for FP32 merged convolution algorithm.
+
+        \param [in, out] context - a pointer to FP32 merged convolution context. It must be created by function ::SimdSynetMergedConvolution32fInit and released by function ::SimdRelease.
+        \param [in] weight - a pointer to the array with pointers to convolution weights. The array size is determined by number of merged convolutions.
+        \param [out] internal - a ponter to the array of flags signalized that weights are stored in the internal buffer. The array size is determined by number of merged convolutions. Can be NULL.
+        \param [in] bias - a pointer to the array with pointers to bias. The array size is determined by number of merged convolutions. Can be NULL.
+        \param [in] params - a pointer to the array with pointers to parameters of the activation functions (see ::SimdConvolutionActivationType). The array size is determined by number of merged convolutions. Can be NULL.
+    */
+    SIMD_API void SimdSynetMergedConvolution32fSetParams(void * context, const float * const * weight, SimdBool * internal, const float * const * bias, const float * const * params);
+
+    /*! @ingroup synet
+
+        \fn void SimdSynetMergedConvolution32fForward(void * context, const float * src, float * buf, float * dst);
+
+        \short Performs forward propagation of FP32 merged convolution algorithm.
+
+        \param [in] context - a pointer to FP32 merged convolution context. It must be created by function ::SimdSynetMergedConvolution32fInit and released by function ::SimdRelease.
+        \param [in] src - a pointer to input image.
+        \param [out] buf - a pointer to external temporary buffer. The size of the external temporary buffer is determined by function ::SimdSynetMergedConvolution32fExternalBufferSize. Can be NULL (it causes usage of internal buffer).
+        \param [out] dst - a pointer to output image.
+    */
+    SIMD_API void SimdSynetMergedConvolution32fForward(void * context, const float * src, float * buf, float * dst);
+
+    /*! @ingroup synet
+
+        \fn void SimdSynetPoolingForwardAverage(const float * src, size_t srcC, size_t srcH, size_t srcW, size_t kernelY, size_t kernelX, size_t strideY, size_t strideX, size_t padY, size_t padX, float * dst, size_t dstH, size_t dstW, SimdBool excludePad, SimdTensorFormatType format);
+
+        \short This function is used for forward propagation of PoolingLayer (AveragePooling).
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the input 32-bit float array. The size of the array must be equal to srcC*srcH*srcW.
+        \param [in] srcC - a number of input and output channels.
+        \param [in] srcH - an input height.
+        \param [in] srcW - an input width.
+        \param [in] kernelY - a height of the pooling kernel.
+        \param [in] kernelX - a width of the pooling kernel.
+        \param [in] strideY - a y-stride of the pooling.
+        \param [in] strideX - a x-stride of the pooling.
+        \param [in] padY - a pad to the top of the input image.
+        \param [in] padX - a pad to the left of the input image.
+        \param [out] dst - a pointer to the output 32-bit float array. The size of the array must be equal to srcC*dstH*dstW.
+        \param [in] dstH - an output height.
+        \param [in] dstW - an output width.
+        \param [in] excludePad - a flag of exclude pad from average value calculation.
+        \param [in] format - a format of (input/output) image tensor.
+    */
+    SIMD_API void SimdSynetPoolingForwardAverage(const float * src, size_t srcC, size_t srcH, size_t srcW, size_t kernelY, size_t kernelX,
+        size_t strideY, size_t strideX, size_t padY, size_t padX, float * dst, size_t dstH, size_t dstW, SimdBool excludePad, SimdTensorFormatType format);
+
+    /*! @ingroup synet
+
+        \fn void SimdSynetPoolingForwardMax(const float * src, size_t srcC, size_t srcH, size_t srcW, size_t kernelY, size_t kernelX, size_t strideY, size_t strideX, size_t padY, size_t padX, float * dst, size_t dstH, size_t dstW, SimdBool trans);
+
+        \short This function is used for forward propagation of PoolingLayer (MaxPooling).
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the input 32-bit float array. The size of the array must be equal to srcC*srcH*srcW.
+        \param [in] srcC - a number of input and output channels.
+        \param [in] srcH - an input height.
+        \param [in] srcW - an input width.
+        \param [in] kernelY - a height of the pooling kernel.
+        \param [in] kernelX - a width of the pooling kernel.
+        \param [in] strideY - a y-stride of the pooling.
+        \param [in] strideX - a x-stride of the pooling.
+        \param [in] padY - a pad to the top of the input image.
+        \param [in] padX - a pad to the left of the input image.
+        \param [out] dst - a pointer to the output 32-bit float array. The size of the array must be equal to srcC*dstH*dstW.
+        \param [in] dstH - an output height.
+        \param [in] dstW - an output width.
+        \param [in] trans - a flag of transposed input and output data (::SimdFalse - NCHW order, ::SimdTrue - NHWC order).
+    */
+    SIMD_API void SimdSynetPoolingForwardMax(const float * src, size_t srcC, size_t srcH, size_t srcW, size_t kernelY, size_t kernelX, 
+        size_t strideY, size_t strideX, size_t padY, size_t padX, float * dst, size_t dstH, size_t dstW, SimdBool trans);
+
+    /*! @ingroup synet_activation
+
+        \fn void SimdSynetPreluLayerForward(const float * src, const float * slope, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
+
+        \short This function is used for forward propagation of PreluLayer (PReLU).
+
+        Algorithm's details (example for NCHW tensor format):
+        \verbatim
+        for(c = 0; c < channels; ++c)
+            for(s = 0; s < spatial; ++s)
+                dst[c*spatial + s] = src[c*spatial + s] > 0 ? src[c*spatial + s] : slope[c]*src[c*spatial + s];
+        \endverbatim
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the 32-bit float array with input image tensor. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] slope - a pointer to the 32-bit float array with slope coefficients. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format).
+        \param [in] channels - a number of channels in the (input/output) image tensor
+        \param [in] spatial - a spatial size of (input/output) image tensor.
+        \param [out] dst - a pointer to the 32-bit float array with output image tensor. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] format - a format of (input/output) image tensor.
+    */
+    SIMD_API void SimdSynetPreluLayerForward(const float * src, const float * slope, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
+
+    /*! @ingroup synet_activation
+
+        \fn void SimdSynetRestrictRange32f(const float * src, size_t size, const float * lower, const float * upper, float * dst);
+
+        \short This function is used in order to restrict range for given array.
+
+        Algorithm's details:
+        \verbatim
+        for(i = 0; i < size; ++i)
+            dst[i] = Min(Max(lower, src[i]), upper);
+        }
+        \endverbatim
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the input 32-bit float array.
+        \param [in] size - a size of input and output arrays.
+        \param [in] lower - a pointer to lower restrict bound.
+        \param [in] upper - a pointer to upper restrict bound.
+        \param [out] dst - a pointer to the output 32-bit float array.
+    */
+    SIMD_API void SimdSynetRestrictRange32f(const float * src, size_t size, const float * lower, const float * upper, float * dst);
+
+    /*! @ingroup synet
+
+        \fn void SimdSynetScaleLayerForward(const float * src, const float * scale, const float * bias, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
+
+        \short This function is used for forward propagation of ScaleLayer.
+
+        Algorithm's details (example for NCHW tensor format):
+        \verbatim
+        for(c = 0; c < channels; ++c)
+            for(s = 0; s < spatial; ++s)
+                dst[c*spatial + s] = src[c*spatial + s]*scale[c] + (bias ? bias[c] : 0);
+        \endverbatim
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the 32-bit float array with input image tensor. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] scale - a pointer to the 32-bit float array with scale coefficients. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)).
+        \param [in] bias - a pointer to the 32-bit float array with bias coefficients. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)). Can be NULL.
+        \param [in] channels - a number of channels in the (input/output) image tensor.
+        \param [in] spatial - a spatial size of (input/output) image tensor.
+        \param [out] dst - a pointer to the 32-bit float array with output image tensor. The size of the array is ::SimdAlign (channels, ::SimdSynetTensorAlignment (format)) * spatial.
+        \param [in] format - a format of (input/output) image tensor.
+        */
+    SIMD_API void SimdSynetScaleLayerForward(const float * src, const float * scale, const float * bias, size_t channels, size_t spatial, float * dst, SimdTensorFormatType format);
+
+    /*! @ingroup synet_conversion
+
+        \fn void void SimdSynetSetInput(const uint8_t * src, size_t width, size_t height, size_t stride, SimdPixelFormatType srcFormat, const float * lower, const float * upper, float * dst, size_t channels, SimdTensorFormatType dstFormat);
+
+        \short Sets image to the input of neural network of <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        Algorithm's details (example for BGRA pixel format and NCHW tensor format):
+        \verbatim
+        for(c = 0; c < channels; ++c)
+            for(y = 0; y < height; ++y)
+                for(x = 0; x < width; ++x)
+                    dst[(c*height + y)*width + x] = src[stride*y + width*4 + c]*(upper[c] - lower[c])/255 + lower[c];
+        \endverbatim
+
+        \note This function has a C++ wrappers: Simd::SynetSetInput(const View<A> & src, const float * lower, const float * upper, float * dst, size_t channels, SimdTensorFormatType format).
+
+        \param [in] src - a pointer to pixels data of input image.
+        \param [in] width - a width of input image and output image tensor.
+        \param [in] height - a height of input image and output image tensor.
+        \param [in] stride - a row size of input image.
+        \param [in] srcFormat - a pixel format of input image. There are supported following pixel formats: ::SimdPixelFormatGray8, ::SimdPixelFormatBgr24, ::SimdPixelFormatBgra32, ::SimdPixelFormatRgb24.
+        \param [in] lower - a pointer to the array with lower bound of values of the output tensor. The size of the array have to correspond number of channels in the output image tensor.
+        \param [in] upper - a pointer to the array with upper bound of values of the output tensor. The size of the array have to correspond number of channels in the output image tensor.
+        \param [out] dst - a pointer to the output 32-bit float image tensor.
+        \param [in] channels - a number of channels in the output image tensor. It can be 1 or 3.
+        \param [in] dstFormat - a format of output image tensor. There are supported following tensor formats: ::SimdTensorFormatNchw, ::SimdTensorFormatNhwc.
+    */
+    SIMD_API void SimdSynetSetInput(const uint8_t * src, size_t width, size_t height, size_t stride, SimdPixelFormatType srcFormat, 
+        const float * lower, const float * upper, float * dst, size_t channels, SimdTensorFormatType dstFormat);
+
+    /*! @ingroup synet
+
+        \fn void SimdSynetShuffleLayerForward(const float * src0, size_t srcC0, const float * src1, size_t srcC1, size_t spatial, float * dst0, float * dst1, size_t dstC, SimdTensorFormatType format);
+
+        \short This function is used for forward propagation of ShuffleLayer.
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src0 - a pointer to the32-bit float array with the first input image tensor.
+        \param [in] srcC0 - a number of channels in the first input image tensor. It must be even number.
+        \param [in] src1 - a pointer to the32-bit float array with the second input image tensor.
+        \param [in] srcC1 - a number of channels in the second input image tensor. It must be even number.
+        \param [in] spatial - a spatial size of (input/output) image tensors.
+        \param [out] dst0 - a pointer to the 32-bit float array with the first output image tensor.
+        \param [out] dst1 - a pointer to the 32-bit float array with the second output image tensor.
+        \param [in] dstC - a number of channels in the first and the second output image tensors.
+        \param [in] format - a format of (input/output) image tensors.
+    */
+    SIMD_API void SimdSynetShuffleLayerForward(const float * src0, size_t srcC0, const float * src1, size_t srcC1, size_t spatial, float * dst0, float * dst1, size_t dstC, SimdTensorFormatType format);
+
+    /*! @ingroup synet
+
+        \fn void SimdSynetSoftmaxLayerForward(const float * src, size_t outer, size_t count, size_t inner, float * dst);
+
+        \short This function is used for forward propagation of SoftmaxLayer.
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the input 32-bit float array. The size of the array must be equal to outer*count*inner.
+        \param [in] outer - an outer size of input and output arrays.
+        \param [in] count - a size of softmax dimmension.
+        \param [in] inner - an inner size of input and output arrays.
+        \param [out] dst - a pointer to the output 32-bit float array. The size of the array must be equal to outer*count*inner.
+    */
+    SIMD_API void SimdSynetSoftmaxLayerForward(const float * src, size_t outer, size_t count, size_t inner, float * dst);
+
+    /*! @ingroup synet
+
+        \fn SimdTensorFormatType SimdSynetSpecifyTensorFormat(SimdTensorFormatType format);
+
+        \short Specifies hardware optimized tensor format of 5D-tensor for (input/output) image or 2D-convolution filter.
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>. 
+
+        \param [in] format - an unspecified hardware optimized 5D-tensor format of (input/output) image or 2D-convolution filter. It can be ::SimdTensorFormatNchwXc or ::SimdTensorFormatOyxiXo.
+        \return specified hardware optimized 5D-tensor format. 
+    */
+    SIMD_API SimdTensorFormatType SimdSynetSpecifyTensorFormat(SimdTensorFormatType format);
+
+    /*! @ingroup synet
+
+        \fn size_t SimdSynetTensorAlignment(SimdTensorFormatType format);
+
+        \short Gets alignment requred for current tensor format.
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] format - a tensor format.
+        \return alignment requred for current tensor format.
+    */
+    SIMD_API size_t SimdSynetTensorAlignment(SimdTensorFormatType format);
 
     /*! @ingroup texture_estimation
 
@@ -5275,6 +6529,208 @@ extern "C"
     */
     SIMD_API void SimdTexturePerformCompensation(const uint8_t * src, size_t srcStride, size_t width, size_t height,
         int32_t shift, uint8_t * dst, size_t dstStride);
+
+    /*! @ingroup transform
+
+        \fn void SimdTransformImage(const uint8_t * src, size_t srcStride, size_t width, size_t height, size_t pixelSize, SimdTransformType transform, uint8_t * dst, size_t dstStride);
+
+        \short Performs transformation of input image. The type of transformation is defined by ::SimdTransformType enumeration.
+
+        \note This function has a C++ wrappers: Simd::TransformImage(const View<A> & src, ::SimdTransformType transform, View<A> & dst).
+
+        \param [in] src - a pointer to pixels data of input image.
+        \param [in] srcStride - a row size of input image.
+        \param [in] width - an input image width. 
+        \param [in] height - an input image height.
+        \param [in] pixelSize - a pixel size in input and output images. It can be 1, 2, 3, 4.
+        \param [in] transform - a type of image transformation.
+        \param [out] dst - a pointer to pixels data of output image.
+        \param [in] dstStride - a row size of output image.
+    */
+    SIMD_API void SimdTransformImage(const uint8_t * src, size_t srcStride, size_t width, size_t height, size_t pixelSize, SimdTransformType transform, uint8_t * dst, size_t dstStride);
+
+    /*! @ingroup synet
+
+        \fn void SimdWinograd2x3SetFilter(const float * src, size_t size, float * dst, SimdBool trans);
+
+        \short This function is used for filter conversion in Winograd 2x3 convolution algorithm.
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the input 32-bit float array with filter weights.
+        \param [in] size - (number of input channels)*(number of output channels).
+        \param [out] dst - a pointer to the output 32-bit float array with filter weights.
+        \param [in] trans - a flag of transposed data.
+    */
+    SIMD_API void SimdWinograd2x3SetFilter(const float * src, size_t size, float * dst, SimdBool trans);
+
+    /*! @ingroup synet
+
+        \fn void SimdWinograd2x3SetInput(const float * src, size_t srcChannels, size_t srcHeight, size_t srcWidth, float * dst, size_t dstStride, SimdBool pad, SimdBool trans);
+
+        \short This function is used for input image conversion in Winograd 2x3 convolution algorithm.
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the input image.
+        \param [in] srcChannels - a number of input channels.
+        \param [in] srcHeight - a height of input image.
+        \param [in] srcWidth - a width of input image.
+        \param [out] dst - a pointer to the output array with converted image.
+        \param [in] dstStride - a stride of output image.
+        \param [in] pad - a flag to signalize padding.
+        \param [in] trans - a flag of transposed data.
+    */
+    SIMD_API void SimdWinograd2x3SetInput(const float * src, size_t srcChannels, size_t srcHeight, size_t srcWidth, float * dst, size_t dstStride, SimdBool pad, SimdBool trans);
+
+    /*! @ingroup synet
+
+        \fn void SimdWinograd2x3SetOutput(const float * src, size_t srcStride, float * dst, size_t dstChannels, size_t dstHeight, size_t dstWidth, SimdBool trans);
+
+        \short This function is used for output image conversion in Winograd 2x3 convolution algorithm.
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the input image.
+        \param [in] srcStride - a stride of input image.
+        \param [out] dst - a pointer to the output image.
+        \param [in] dstChannels - a number of output channels.
+        \param [in] dstHeight - a height of output image.
+        \param [in] dstWidth - a width of output image.
+        \param [in] trans - a flag of transposed data.
+    */
+    SIMD_API void SimdWinograd2x3SetOutput(const float * src, size_t srcStride, float * dst, size_t dstChannels, size_t dstHeight, size_t dstWidth, SimdBool trans);
+
+    /*! @ingroup synet
+
+        \fn void SimdWinograd3x3SetFilter(const float * src, size_t size, float * dst);
+
+        \short This function is used for filter conversion in Winograd 3x3 convolution algorithm.
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the input 32-bit float array with filter weights.
+        \param [in] size - (number of input channels)*(number of output channels).
+        \param [out] dst - a pointer to the output 32-bit float array with filter weights.
+        \param [in] trans - a flag of transposed data.
+    */
+    SIMD_API void SimdWinograd3x3SetFilter(const float * src, size_t size, float * dst, SimdBool trans);
+
+    /*! @ingroup synet
+
+        \fn void SimdWinograd3x3SetInput(const float * src, size_t srcChannels, size_t srcHeight, size_t srcWidth, float * dst, size_t dstStride, SimdBool pad, SimdBool trans);
+
+        \short This function is used for input image conversion in Winograd 3x3 convolution algorithm.
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the input image.
+        \param [in] srcChannels - a number of input channels.
+        \param [in] srcHeight - a height of input image.
+        \param [in] srcWidth - a width of input image.
+        \param [out] dst - a pointer to the output array with converted image.
+        \param [in] dstStride - a stride of output image.
+        \param [in] pad - a flag to signalize padding.
+        \param [in] trans - a flag of transposed data.
+    */
+    SIMD_API void SimdWinograd3x3SetInput(const float * src, size_t srcChannels, size_t srcHeight, size_t srcWidth, float * dst, size_t dstStride, SimdBool pad, SimdBool trans);
+
+    /*! @ingroup synet
+
+        \fn void SimdWinograd3x3SetOutput(const float * src, size_t srcStride, float * dst, size_t dstChannels, size_t dstHeight, size_t dstWidth, SimdBool trans);
+
+        \short This function is used for output image conversion in Winograd 3x3 convolution algorithm.
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the input image.
+        \param [in] srcStride - a stride of input image.
+        \param [out] dst - a pointer to the output image.
+        \param [in] dstChannels - a number of output channels.
+        \param [in] dstHeight - a height of output image.
+        \param [in] dstWidth - a width of output image.
+        \param [in] trans - a flag of transposed data.
+    */
+    SIMD_API void SimdWinograd3x3SetOutput(const float * src, size_t srcStride, float * dst, size_t dstChannels, size_t dstHeight, size_t dstWidth, SimdBool trans);
+
+    /*! @ingroup synet
+
+        \fn void SimdWinograd4x3SetFilter(const float * src, size_t size, float * dst);
+
+        \short This function is used for filter conversion in Winograd 4x3 convolution algorithm.
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the input 32-bit float array with filter weights.
+        \param [in] size - (number of input channels)*(number of output channels).
+        \param [out] dst - a pointer to the output 32-bit float array with filter weights.
+        \param [in] trans - a flag of transposed data.
+    */
+    SIMD_API void SimdWinograd4x3SetFilter(const float * src, size_t size, float * dst, SimdBool trans);
+
+    /*! @ingroup synet
+
+        \fn void SimdWinograd4x3SetInput(const float * src, size_t srcChannels, size_t srcHeight, size_t srcWidth, float * dst, size_t dstStride, SimdBool pad, SimdBool trans);
+
+        \short This function is used for input image conversion in Winograd 4x3 convolution algorithm.
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the input image.
+        \param [in] srcChannels - a number of input channels.
+        \param [in] srcHeight - a height of input image.
+        \param [in] srcWidth - a width of input image.
+        \param [out] dst - a pointer to the output array with converted image.
+        \param [in] dstStride - a stride of output image.
+        \param [in] pad - a flag to signalize padding.
+        \param [in] trans - a flag of transposed data.
+    */
+    SIMD_API void SimdWinograd4x3SetInput(const float * src, size_t srcChannels, size_t srcHeight, size_t srcWidth, float * dst, size_t dstStride, SimdBool pad, SimdBool trans);
+
+    /*! @ingroup synet
+
+        \fn void SimdWinograd4x3SetOutput(const float * src, size_t srcStride, float * dst, size_t dstChannels, size_t dstHeight, size_t dstWidth, SimdBool trans);
+
+        \short This function is used for output image conversion in Winograd 4x3 convolution algorithm.
+
+        \note This function is used in <a href="http://github.com/ermig1979/Synet">Synet Framework</a>.
+
+        \param [in] src - a pointer to the input image.
+        \param [in] srcStride - a stride of input image.
+        \param [out] dst - a pointer to the output image.
+        \param [in] dstChannels - a number of output channels.
+        \param [in] dstHeight - a height of output image.
+        \param [in] dstWidth - a width of output image.
+        \param [in] trans - a flag of transposed data.
+    */
+    SIMD_API void SimdWinograd4x3SetOutput(const float * src, size_t srcStride, float * dst, size_t dstChannels, size_t dstHeight, size_t dstWidth, SimdBool trans);
+
+    /*! @ingroup yuv_conversion
+
+        \fn void SimdYuva420pToBgra(const uint8_t * y, size_t yStride, const uint8_t * u, size_t uStride, const uint8_t * v, size_t vStride, const uint8_t * a, size_t aStride, size_t width, size_t height, uint8_t * bgra, size_t bgraStride);
+
+        \short Converts YUVA420P image to 32-bit BGRA image.
+
+        The input Y, A and output BGRA images must have the same width and height.
+        The input U and V images must have the same width and height (half size relative to Y component).
+
+        \note This function has a C++ wrappers: Simd::Yuva420pToBgra(const View<A>& y, const View<A>& u, const View<A>& v, const View<A> & a, View<A>& bgra).
+
+        \param [in] y - a pointer to pixels data of input 8-bit image with Y color plane.
+        \param [in] yStride - a row size of the y image.
+        \param [in] u - a pointer to pixels data of input 8-bit image with U color plane.
+        \param [in] uStride - a row size of the u image.
+        \param [in] v - a pointer to pixels data of input 8-bit image with V color plane.
+        \param [in] vStride - a row size of the v image.
+        \param [in] a - a pointer to pixels data of input 8-bit image with alpha channel.
+        \param [in] aStride - a row size of the a image.
+        \param [in] width - an image width.
+        \param [in] height - an image height.
+        \param [out] bgra - a pointer to pixels data of output 32-bit BGRA image.
+        \param [in] bgraStride - a row size of the bgra image.
+    */
+    SIMD_API void SimdYuva420pToBgra(const uint8_t * y, size_t yStride, const uint8_t * u, size_t uStride, const uint8_t * v, size_t vStride, 
+        const uint8_t * a, size_t aStride, size_t width, size_t height, uint8_t * bgra, size_t bgraStride);
 
     /*! @ingroup yuv_conversion
 

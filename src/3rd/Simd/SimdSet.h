@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2018 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -53,6 +53,16 @@ namespace Simd
         }
     }
 #endif// SIMD_SSE2_ENABLE
+
+#ifdef SIMD_AVX_ENABLE
+    namespace Avx
+    {
+        SIMD_INLINE __m256 Set(__m128 a0, __m128 a1)
+        {
+            return _mm256_insertf128_ps(_mm256_castps128_ps256(a0), a1, 1);
+        }
+    }
+#endif// SIMD_AVX_ENABLE
 
 #ifdef SIMD_AVX2_ENABLE
     namespace Avx2

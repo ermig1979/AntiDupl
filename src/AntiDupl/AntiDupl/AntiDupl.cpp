@@ -25,6 +25,10 @@
 #define OPJ_STATIC
 #include "LibOpenJpeg/openjpeg.h"
 
+#include "libwebp\src\webp\decode.h"
+
+#include "TurboJpeg/inc/jconfig.h"
+
 #include <windows.h>
 
 namespace ad
@@ -50,6 +54,9 @@ typedef ad::TEngine* adEngineHandle;
 #include "adRecycleBin.h"
 #include "adExternal.h"
 #include "adDump.h"
+
+#define AD_STRINGIFY(X) AD_STRINGIFY_DO(X)    
+#define AD_STRINGIFY_DO(X) #X
 
 #define CHECK_HANDLE \
     if(handle == NULL) \
@@ -86,6 +93,7 @@ DLLAPI adError adVersionGet(adVersionType versionType, adCharA * pVersion, adSiz
 	CHECK_POINTER(pVersionSize);
 
 	std::string version;
+    int v;
 	switch(versionType)
 	{
 	case AD_VERSION_TYPE_ANTIDUPL:
@@ -97,6 +105,13 @@ DLLAPI adError adVersionGet(adVersionType versionType, adCharA * pVersion, adSiz
 	case AD_VERSION_TYPE_OPENJPEG:
 		version = opj_version();
 		break;
+    case AD_VERSION_TYPE_WEBP:
+        v = WebPGetDecoderVersion();
+        version = std::to_string((v >> 16) & 255) + "." + std::to_string((v >> 8) & 255) + "." + std::to_string(v & 255);
+        break;
+    case AD_VERSION_TYPE_TURBOJPEG:
+        version = AD_STRINGIFY(LIBJPEG_TURBO_VERSION);
+        break;
 	default:
 		return AD_ERROR_INVALID_VERSION_TYPE;
 	}

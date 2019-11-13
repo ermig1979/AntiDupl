@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2019 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -69,7 +69,7 @@ namespace Simd
             if (height == _currentSize.y)
                 return true;
 
-            if (height < 4u || height > (size_t)_originalSize.y)
+            if (height < 4u || height > (size_t)_originalSize.y*4)
                 return false;
 
             _currentSize.y = height;
@@ -155,7 +155,8 @@ namespace Simd
             Rect canvasRect, alphaRect;
             CreateAlpha(text, Rect(canvas.Size()), position, alpha, canvasRect, alphaRect);
 
-            Simd::AlphaFilling(canvas.Region(canvasRect).Ref(), color, alpha.Region(alphaRect));
+            if(alpha.Area())
+                Simd::AlphaFilling(canvas.Region(canvasRect).Ref(), color, alpha.Region(alphaRect));
 
             return true;
         }
@@ -271,7 +272,7 @@ namespace Simd
                 _originalIndent.x = LoadValue(data, size);
                 _originalIndent.y = LoadValue(data, size);
                 _originalSymbols.resize(_symbolMax - _symbolMin);
-                for (size_t s = _symbolMin; s < _symbolMax; ++s)
+                for (char s = _symbolMin; s < _symbolMax; ++s)
                 {
                     Symbol & symbol = _originalSymbols[s - _symbolMin];
                     symbol.value = LoadValue(data, size);

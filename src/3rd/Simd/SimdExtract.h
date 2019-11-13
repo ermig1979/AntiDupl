@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2019 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -127,6 +127,12 @@ namespace Simd
             __m256 b = _mm256_hadd_ps(_mm256_hadd_ps(a[0], a[1]), _mm256_hadd_ps(a[2], a[3]));
             return _mm_add_ps(_mm256_castps256_ps128(b), _mm256_extractf128_ps(b, 1));
         }
+
+        SIMD_INLINE __m128 Extract4Sums(const __m256 & a0, const __m256 & a1, const __m256 & a2, const __m256 & a3)
+        {
+            __m256 b = _mm256_hadd_ps(_mm256_hadd_ps(a0, a1), _mm256_hadd_ps(a2, a3));
+            return _mm_add_ps(_mm256_castps256_ps128(b), _mm256_extractf128_ps(b, 1));
+        }
     }
 #endif//SIMD_AVX_ENABLE
 
@@ -192,6 +198,16 @@ namespace Simd
             __m256 b1 = _mm512_castps512_ps256(_mm512_add_ps(a[1], Alignr<8>(a[1], a[1])));
             __m256 b2 = _mm512_castps512_ps256(_mm512_add_ps(a[2], Alignr<8>(a[2], a[2])));
             __m256 b3 = _mm512_castps512_ps256(_mm512_add_ps(a[3], Alignr<8>(a[3], a[3])));
+            __m256 c = _mm256_hadd_ps(_mm256_hadd_ps(b0, b1), _mm256_hadd_ps(b2, b3));
+            return _mm_add_ps(_mm256_castps256_ps128(c), _mm256_extractf128_ps(c, 1));
+        }
+
+        SIMD_INLINE __m128 Extract4Sums(const __m512 & a0, const __m512 & a1, const __m512 & a2, const __m512 & a3)
+        {
+            __m256 b0 = _mm512_castps512_ps256(_mm512_add_ps(a0, Alignr<8>(a0, a0)));
+            __m256 b1 = _mm512_castps512_ps256(_mm512_add_ps(a1, Alignr<8>(a1, a1)));
+            __m256 b2 = _mm512_castps512_ps256(_mm512_add_ps(a2, Alignr<8>(a2, a2)));
+            __m256 b3 = _mm512_castps512_ps256(_mm512_add_ps(a3, Alignr<8>(a3, a3)));
             __m256 c = _mm256_hadd_ps(_mm256_hadd_ps(b0, b1), _mm256_hadd_ps(b2, b3));
             return _mm_add_ps(_mm256_castps256_ps128(c), _mm256_extractf128_ps(c, 1));
         }
@@ -266,6 +282,24 @@ namespace Simd
         SIMD_INLINE float ExtractSum32f(const float32x4_t & a)
         {
             return vgetq_lane_f32(a, 0) + vgetq_lane_f32(a, 1) + vgetq_lane_f32(a, 2) + vgetq_lane_f32(a, 3);
+        }
+
+        SIMD_INLINE float32x4_t Extract4Sums(const float32x4_t a[4])
+        {
+            float32x4x2_t b0 = vzipq_f32(a[0], a[2]);
+            float32x4x2_t b1 = vzipq_f32(a[1], a[3]);
+            float32x4x2_t c0 = vzipq_f32(b0.val[0], b1.val[0]);
+            float32x4x2_t c1 = vzipq_f32(b0.val[1], b1.val[1]);
+            return vaddq_f32(vaddq_f32(c0.val[0], c0.val[1]), vaddq_f32(c1.val[0], c1.val[1]));
+        }
+
+        SIMD_INLINE float32x4_t Extract4Sums(const float32x4_t & a0, const float32x4_t & a1, const float32x4_t & a2, const float32x4_t & a3)
+        {
+            float32x4x2_t b0 = vzipq_f32(a0, a2);
+            float32x4x2_t b1 = vzipq_f32(a1, a3);
+            float32x4x2_t c0 = vzipq_f32(b0.val[0], b1.val[0]);
+            float32x4x2_t c1 = vzipq_f32(b0.val[1], b1.val[1]);
+            return vaddq_f32(vaddq_f32(c0.val[0], c0.val[1]), vaddq_f32(c1.val[0], c1.val[1]));
         }
     }
 #endif// SIMD_NEON_ENABLE

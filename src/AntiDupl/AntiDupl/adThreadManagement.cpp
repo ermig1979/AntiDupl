@@ -336,7 +336,11 @@ namespace ad
     size_t TCollectManager::DefaultThreadCount()
     {
         size_t threadCountMax = GetProcessorCount();
+#ifdef AD_TURBO_JPEG_ENABLE
+        return Simd::Max((size_t)1, threadCountMax / 2);
+#else
         return Simd::Min(Simd::Max((size_t)2, threadCountMax - 1), threadCountMax);
+#endif
     }
     
     size_t TCollectManager::GetThreadId() const

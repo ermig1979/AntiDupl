@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2018 Yermalayeu Ihar,
+* Copyright (c) 2011-2019 Yermalayeu Ihar,
 *               2014-2015 Antonenka Mikhail.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -138,6 +138,7 @@ namespace Simd
         const __m128i K32_0000FFFF = SIMD_MM_SET1_EPI32(0x0000FFFF);
         const __m128i K32_00010000 = SIMD_MM_SET1_EPI32(0x00010000);
         const __m128i K32_01000000 = SIMD_MM_SET1_EPI32(0x01000000);
+        const __m128i K32_00FFFFFF = SIMD_MM_SET1_EPI32(0x00FFFFFF);
         const __m128i K32_FFFFFF00 = SIMD_MM_SET1_EPI32(0xFFFFFF00);
 
         const __m128i K64_00000000FFFFFFFF = SIMD_MM_SET2_EPI32(0xFFFFFFFF, 0);
@@ -310,6 +311,14 @@ namespace Simd
 
         const __m256i K16_DIVISION_BY_9_FACTOR = SIMD_MM256_SET1_EPI16(Base::DIVISION_BY_9_FACTOR);
 
+        const __m256i K8_SHUFFLE_0 = SIMD_MM256_SETR_EPI8(
+            0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70,
+            0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0);
+
+        const __m256i K8_SHUFFLE_1 = SIMD_MM256_SETR_EPI8(
+            0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0, 0xF0,
+            0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70, 0x70);
+
         const __m256i K8_SHUFFLE_GRAY_TO_BGR0 = SIMD_MM256_SETR_EPI8(
             0x0, 0x0, 0x0, 0x1, 0x1, 0x1, 0x2, 0x2, 0x2, 0x3, 0x3, 0x3, 0x4, 0x4, 0x4, 0x5,
             0x5, 0x5, 0x6, 0x6, 0x6, 0x7, 0x7, 0x7, 0x8, 0x8, 0x8, 0x9, 0x9, 0x9, 0xA, 0xA);
@@ -383,6 +392,12 @@ namespace Simd
         const __m256i K8_BGRA_TO_BGR_SHUFFLE = SIMD_MM256_SETR_EPI8(
             0x0, 0x1, 0x2, -1, 0x3, 0x4, 0x5, -1, 0x6, 0x7, 0x8, -1, 0x9, 0xA, 0xB, -1,
             0x4, 0x5, 0x6, -1, 0x7, 0x8, 0x9, -1, 0xA, 0xB, 0xC, -1, 0xD, 0xE, 0xF, -1);
+
+        const __m256i K8_BGRA_TO_RGB_SHUFFLE = SIMD_MM256_SETR_EPI8(
+            0x2, 0x1, 0x0, -1, 0x5, 0x4, 0x3, -1, 0x8, 0x7, 0x6, -1, 0xB, 0xA, 0x9, -1,
+            0x6, 0x5, 0x4, -1, 0x9, 0x8, 0x7, -1, 0xC, 0xB, 0xA, -1, 0xF, 0xE, 0xD, -1);
+
+        const __m256i K32_TWO_UNPACK_PERMUTE = SIMD_MM256_SETR_EPI32(0, 2, 4, 6, 1, 3, 5, 7);
     }
 #endif// SIMD_AVX2_ENABLE
 
@@ -393,6 +408,15 @@ namespace Simd
         const size_t DF = 2 * F;
         const size_t QF = 4 * F;
         const size_t HF = F / 2;
+
+        const __m512i K32_INTERLEAVE_0 = SIMD_MM512_SETR_EPI32(0x00, 0x10, 0x01, 0x11, 0x02, 0x12, 0x03, 0x13, 0x04, 0x14, 0x05, 0x15, 0x06, 0x16, 0x07, 0x17);
+        const __m512i K32_INTERLEAVE_1 = SIMD_MM512_SETR_EPI32(0x08, 0x18, 0x09, 0x19, 0x0A, 0x1A, 0x0B, 0x1B, 0x0C, 0x1C, 0x0D, 0x1D, 0x0E, 0x1E, 0x0F, 0x1F);
+
+        const __m512i K32_DEINTERLEAVE_0 = SIMD_MM512_SETR_EPI32(0x00, 0x02, 0x04, 0x06, 0x08, 0x0A, 0x0C, 0x0E, 0x10, 0x12, 0x14, 0x16, 0x18, 0x1A, 0x1C, 0x1E);
+        const __m512i K32_DEINTERLEAVE_1 = SIMD_MM512_SETR_EPI32(0x01, 0x03, 0x05, 0x07, 0x09, 0x0B, 0x0D, 0x0F, 0x11, 0x13, 0x15, 0x17, 0x19, 0x1B, 0x1D, 0x1F);
+
+        const __m512i K32_PERMUTE_FOR_PACK = SIMD_MM512_SETR_EPI32(0, 1, 4, 5, 8, 9, 12, 13, 2, 3, 6, 7, 10, 11, 14, 15);
+        const __m512i K32_PERMUTE_FOR_UNPACK = SIMD_MM512_SETR_EPI32(0, 1, 8, 9, 2, 3, 10, 11, 4, 5, 12, 13, 6, 7, 14, 15);
     }
 #endif// SIMD_AVX512F_ENABLE
 
@@ -425,11 +449,13 @@ namespace Simd
         const __m512i K16_0008 = SIMD_MM512_SET1_EPI16(0x0008);
         const __m512i K16_0010 = SIMD_MM512_SET1_EPI16(0x0010);
         const __m512i K16_0020 = SIMD_MM512_SET1_EPI16(0x0020);
+        const __m512i K16_0038 = SIMD_MM512_SET1_EPI16(0x0038);
         const __m512i K16_0080 = SIMD_MM512_SET1_EPI16(0x0080);
         const __m512i K16_00FF = SIMD_MM512_SET1_EPI16(0x00FF);
         const __m512i K16_FF00 = SIMD_MM512_SET1_EPI16(0xFF00);
 
         const __m512i K32_00000001 = SIMD_MM512_SET1_EPI32(0x00000001);
+        const __m512i K32_000000FF = SIMD_MM512_SET1_EPI32(0x000000FF);
         const __m512i K32_0000FFFF = SIMD_MM512_SET1_EPI32(0x0000FFFF);
         const __m512i K32_00010000 = SIMD_MM512_SET1_EPI32(0x00010000);
         const __m512i K32_FFFFFF00 = SIMD_MM512_SET1_EPI32(0xFFFFFF00);
@@ -462,6 +488,12 @@ namespace Simd
             0x1, -1, -1, -1, 0x5, -1, -1, -1, 0x9, -1, -1, -1, 0xD, -1, -1, -1,
             0x1, -1, -1, -1, 0x5, -1, -1, -1, 0x9, -1, -1, -1, 0xD, -1, -1, -1,
             0x1, -1, -1, -1, 0x5, -1, -1, -1, 0x9, -1, -1, -1, 0xD, -1, -1, -1);
+
+        const __m512i K8_SUFFLE_BGRA_TO_A000 = SIMD_MM512_SETR_EPI8(
+            0x3, -1, -1, -1, 0x7, -1, -1, -1, 0xB, -1, -1, -1, 0xF, -1, -1, -1,
+            0x3, -1, -1, -1, 0x7, -1, -1, -1, 0xB, -1, -1, -1, 0xF, -1, -1, -1,
+            0x3, -1, -1, -1, 0x7, -1, -1, -1, 0xB, -1, -1, -1, 0xF, -1, -1, -1,
+            0x3, -1, -1, -1, 0x7, -1, -1, -1, 0xB, -1, -1, -1, 0xF, -1, -1, -1);
 
         const __m512i K8_SUFFLE_BGR_TO_B0R0 = SIMD_MM512_SETR_EPI8(
             0x0, -1, 0x2, -1, 0x3, -1, 0x5, -1, 0x6, -1, 0x8, -1, 0x9, -1, 0xB, -1,
@@ -505,9 +537,6 @@ namespace Simd
             0x21, 0x23, 0x25, 0x27, 0x29, 0x2B, 0x2D, 0x2F, 0x31, 0x33, 0x35, 0x37, 0x39, 0x3B, 0x3D, 0x3F);
 
         const __m512i K32_PERMUTE_FOR_TWO_UNPACK = SIMD_MM512_SETR_EPI32(0x0, 0x4, 0x8, 0xC, 0x1, 0x5, 0x9, 0xD, 0x2, 0x6, 0xA, 0xE, 0x3, 0x7, 0xB, 0xF);
-
-        const __m512i K32_PERMUTE_FOR_HADD_0 = SIMD_MM512_SETR_EPI32(0x00, 0x02, 0x04, 0x06, 0x08, 0x0A, 0x0C, 0x0E, 0x10, 0x12, 0x14, 0x16, 0x18, 0x1A, 0x1C, 0x1E);
-        const __m512i K32_PERMUTE_FOR_HADD_1 = SIMD_MM512_SETR_EPI32(0x01, 0x03, 0x05, 0x07, 0x09, 0x0B, 0x0D, 0x0F, 0x11, 0x13, 0x15, 0x17, 0x19, 0x1B, 0x1D, 0x1F);
 
         const __m512i K64_PERMUTE_FOR_PACK = SIMD_MM512_SETR_EPI64(0, 2, 4, 6, 1, 3, 5, 7);
         const __m512i K64_PERMUTE_FOR_UNPACK = SIMD_MM512_SETR_EPI64(0, 4, 1, 5, 2, 6, 3, 7);
@@ -588,6 +617,11 @@ namespace Simd
         const size_t QA = 4 * A;
         const size_t OA = 8 * A;
         const size_t HA = A / 2;
+
+        const size_t F = sizeof(v128_f32) / sizeof(float);
+        const size_t DF = 2 * F;
+        const size_t QF = 4 * F;
+        const size_t HF = F / 2;
 
         const v128_u8 K8_00 = SIMD_VEC_SET1_EPI8(0x00);
         const v128_u8 K8_01 = SIMD_VEC_SET1_EPI8(0x01);
@@ -702,7 +736,9 @@ namespace Simd
         const uint8x16_t K8_00 = SIMD_VEC_SET1_EPI8(0x00);
         const uint8x16_t K8_01 = SIMD_VEC_SET1_EPI8(0x01);
         const uint8x16_t K8_02 = SIMD_VEC_SET1_EPI8(0x02);
+        const uint8x16_t K8_03 = SIMD_VEC_SET1_EPI8(0x03);
         const uint8x16_t K8_04 = SIMD_VEC_SET1_EPI8(0x04);
+        const uint8x16_t K8_07 = SIMD_VEC_SET1_EPI8(0x07);
         const uint8x16_t K8_08 = SIMD_VEC_SET1_EPI8(0x08);
         const uint8x16_t K8_10 = SIMD_VEC_SET1_EPI8(0x10);
         const uint8x16_t K8_20 = SIMD_VEC_SET1_EPI8(0x20);
@@ -729,7 +765,9 @@ namespace Simd
         const uint32x4_t K32_00000000 = SIMD_VEC_SET1_EPI32(0x00000000);
         const uint32x4_t K32_00000001 = SIMD_VEC_SET1_EPI32(0x00000001);
         const uint32x4_t K32_00000002 = SIMD_VEC_SET1_EPI32(0x00000002);
+        const uint32x4_t K32_00000003 = SIMD_VEC_SET1_EPI32(0x00000003);
         const uint32x4_t K32_00000004 = SIMD_VEC_SET1_EPI32(0x00000004);
+        const uint32x4_t K32_00000005 = SIMD_VEC_SET1_EPI32(0x00000005);
         const uint32x4_t K32_00000008 = SIMD_VEC_SET1_EPI32(0x00000008);
         const uint32x4_t K32_00000010 = SIMD_VEC_SET1_EPI32(0x00000010);
         const uint32x4_t K32_000000FF = SIMD_VEC_SET1_EPI32(0x000000FF);
@@ -738,6 +776,8 @@ namespace Simd
         const uint32x4_t K32_01000000 = SIMD_VEC_SET1_EPI32(0x01000000);
         const uint32x4_t K32_08080800 = SIMD_VEC_SET1_EPI32(0x08080800);
         const uint32x4_t K32_FFFFFF00 = SIMD_VEC_SET1_EPI32(0xFFFFFF00);
+        const uint32x4_t K32_FFFFFFFF = SIMD_VEC_SET1_EPI32(0xFFFFFFFF);
+        const uint32x4_t K32_0123 = SIMD_VEC_SETR_EPI32(0, 1, 2, 3);
 
         const uint64x2_t K64_0000000000000000 = SIMD_VEC_SET1_EPI64(0x0000000000000000);
 

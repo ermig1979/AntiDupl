@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2019 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,6 @@
 #define __SimdArray_h__
 
 #include "Simd/SimdMemory.h"
-#include "Simd/SimdEnable.h"
 
 namespace Simd
 {
@@ -52,7 +51,10 @@ namespace Simd
             if (size_ != size)
             {
                 if (data)
+                {
                     Simd::Free(data);
+                    *(T**)&data = 0;
+                }
                 *(size_t*)&size = size_;
                 if (size_)
                     *(T**)&data = (T*)Simd::Allocate(size * sizeof(T), align);
@@ -77,6 +79,9 @@ namespace Simd
         }
     };
 
+    typedef Array<uint8_t> Array8u;
+    typedef Array<int16_t> Array16i;
+    typedef Array<uint16_t> Array16u;
     typedef Array<int32_t> Array32i;
     typedef Array<float> Array32f;
 
@@ -103,6 +108,13 @@ namespace Simd
     namespace Avx512f
     {
         typedef Array<__m512> Array512f;
+    }
+#endif
+
+#ifdef SIMD_NEON_ENABLE
+    namespace Neon
+    {
+        typedef Array<float32x4_t> Array128f;
     }
 #endif
 

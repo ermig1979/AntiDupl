@@ -1,7 +1,7 @@
 /*
 * Simd Library (http://ermig1979.github.io/Simd).
 *
-* Copyright (c) 2011-2017 Yermalayeu Ihar.
+* Copyright (c) 2011-2018 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -173,6 +173,15 @@ namespace Simd
             \return a new point with shifted coordinates.
         */
         Point operator >> (ptrdiff_t shift) const;
+
+#ifdef SIMD_OPENCV_ENABLE
+        /*!
+            Casts simd point to OpenCV Point2f
+
+            \note You have to define SIMD_OPENCV_ENABLE in order to use this functionality.
+        */
+        operator cv::Point2f() const;
+#endif
     };
 
     /*! @ingroup cpp_point_functions
@@ -468,6 +477,14 @@ namespace Simd
     {
         return Point<T>(x >> shift, y >> shift);
     }
+
+#ifdef SIMD_OPENCV_ENABLE
+    template<typename T>
+    SIMD_INLINE Simd::Point<T>::operator cv::Point2f() const
+    {
+        return cv::Point2f(x, y);
+    }
+#endif //SIMD_OPENCV_ENABLE
 
     // Point<T> utilities implementation:
 
