@@ -41,7 +41,7 @@ namespace ad
 			int height;
 			result = WebPGetInfo(data, data_size, &width, &height);
             ::GlobalUnlock(hGlobal);
-			return result;
+			return result != 0;
 		}
         return false;
     }

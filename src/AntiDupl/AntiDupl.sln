@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27205.2004
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Simd32", "..\3rd\Simd\Simd32.vcxproj", "{1622C4EF-06A4-4DAA-9631-5D71B32858A2}"
 EndProject
@@ -108,8 +108,7 @@ Global
 		{F47C9627-B344-44B1-9509-A3C9908A5A66}.Debug|x86.ActiveCfg = Debug|Win32
 		{F47C9627-B344-44B1-9509-A3C9908A5A66}.Debug|x86.Build.0 = Debug|Win32
 		{F47C9627-B344-44B1-9509-A3C9908A5A66}.Release|Any CPU.ActiveCfg = Release|Win32
-		{F47C9627-B344-44B1-9509-A3C9908A5A66}.Release|x64.ActiveCfg = Release|x64
-		{F47C9627-B344-44B1-9509-A3C9908A5A66}.Release|x64.Build.0 = Release|x64
+		{F47C9627-B344-44B1-9509-A3C9908A5A66}.Release|x64.ActiveCfg = Release|Win32
 		{F47C9627-B344-44B1-9509-A3C9908A5A66}.Release|x86.ActiveCfg = Release|Win32
 		{F47C9627-B344-44B1-9509-A3C9908A5A66}.Release|x86.Build.0 = Release|Win32
 		{8398EC77-8B40-4616-82CC-EFBF76138461}.Debug|Any CPU.ActiveCfg = Debug|x64

@@ -115,16 +115,16 @@ namespace AntiDupl.NET
             table.Controls.Add(CreateLinkLabel(Application.ProductName, Resources.WebLinks.GithubComAntidupl, font), 0, 1);
             table.Controls.Add(CreateLabel(m_core.GetVersion(CoreDll.VersionType.AntiDupl).ToString(), font), 1, 1);
 
-            table.Controls.Add(CreateLinkLabel("Simd", Resources.WebLinks.GithubComSimd, font), 0, 2);
+            table.Controls.Add(CreateLinkLabel("Simd", Resources.WebLinks.Simd, font), 0, 2);
             table.Controls.Add(CreateLabel(m_core.GetVersion(CoreDll.VersionType.Simd).ToString(), font), 1, 2);
 
-            table.Controls.Add(CreateLinkLabel("OpenJPEG", Resources.WebLinks.OpenjpegOrg, font), 0, 3);
+            table.Controls.Add(CreateLinkLabel("OpenJPEG", Resources.WebLinks.OpenJpeg, font), 0, 3);
             table.Controls.Add(CreateLabel(m_core.GetVersion(CoreDll.VersionType.OpenJpeg).ToString(), font), 1, 3);
 
-            table.Controls.Add(CreateLinkLabel("libwebp", Resources.WebLinks.OpenjpegOrg, font), 0, 4);
+            table.Controls.Add(CreateLinkLabel("libwebp", Resources.WebLinks.LibWebp, font), 0, 4);
             table.Controls.Add(CreateLabel(m_core.GetVersion(CoreDll.VersionType.Webp).ToString(), font), 1, 4);
 
-            table.Controls.Add(CreateLinkLabel("libjpeg-turbo", Resources.WebLinks.OpenjpegOrg, font), 0, 5);
+            table.Controls.Add(CreateLinkLabel("libjpeg-turbo", Resources.WebLinks.LibJpegTurbo, font), 0, 5);
             table.Controls.Add(CreateLabel(m_core.GetVersion(CoreDll.VersionType.TurboJpeg).ToString(), font), 1, 5);
 
             return table;

@@ -333,9 +333,10 @@ namespace AntiDupl.NET
             public const string GithubComAntiduplRussian = "http://ermig1979.github.io/AntiDupl/russian/index.html";
             public const string Version = "http://ermig1979.github.io/AntiDupl/version.xml";
 
-            public const string GithubComSimd = "http://ermig1979.github.io/Simd";
-
-            public const string OpenjpegOrg = "http://www.openjpeg.org";
+            public const string Simd = "http://ermig1979.github.io/Simd";
+            public const string OpenJpeg = "http://www.openjpeg.org";
+            public const string LibWebp = "https://github.com/webmproject/libwebp";
+            public const string LibJpegTurbo = "http://www.libjpeg-turbo.org";
 
             public static string GithubComAntiduplCurrent
             {

@@ -235,7 +235,7 @@ namespace AntiDupl.NET
             Psd = 11,
             Dds = 12,
             Tga = 13,
-            webp = 14
+            Webp = 14,
         }
 
         public enum DefectType : int
