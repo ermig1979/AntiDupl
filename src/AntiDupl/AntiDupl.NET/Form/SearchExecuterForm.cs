@@ -30,6 +30,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Threading;
 using System.Diagnostics;
+using System.IO;
 
 namespace AntiDupl.NET
 {
@@ -166,6 +167,7 @@ namespace AntiDupl.NET
             m_core.Clear(CoreDll.FileType.ImageDataBase);
             m_core.SortResult((CoreDll.SortType)m_options.resultsOptions.sortTypeDefault, m_options.resultsOptions.increasingDefault);
             m_state = State.Finish;
+            LogPerformance(DateTime.Now - m_startDateTime, m_core.GetStatistic());
         }
 
         public void Execute()
@@ -412,6 +414,38 @@ namespace AntiDupl.NET
             {
                 e.Handled = true;
             }
+        }
+
+        private void LogPerformance(TimeSpan time, CoreStatistic statistic)
+        {
+            StreamWriter writer = File.AppendText(Resources.Logs.Performance);
+
+            writer.WriteLine("---------------------------------------------------------------");
+            writer.WriteLine(string.Format("Search start time: {0}", m_startDateTime.ToString()));
+            writer.WriteLine(string.Format("Elapsed time: {0}", time.ToString()));
+            writer.WriteLine(string.Format("Found {0} of {1} images in {2} folders.", MemoryString(statistic.searchedImageSize), statistic.searchedImageNumber, statistic.scanedFolderNumber));
+            writer.WriteLine(string.Format("Processed {0} images.", statistic.comparedImageNumber));
+            writer.WriteLine(string.Format("Found {0} defects and {1} duples.", statistic.defectImageNumber, statistic.duplImagePairNumber));
+            writer.WriteLine(string.Format("Used {0} load and {1} compare theads.", statistic.collectThreadCount, statistic.compareThreadCount));
+            writer.WriteLine(string.Format("Use image database: {0}.", m_options.useImageDataBase));
+            writer.WriteLine(string.Format("Use libjpeg-turbo: {0}.", m_coreOptions.advancedOptions.useLibJpegTurbo));
+
+            writer.Close();
+        }
+
+        private string MemoryString(ulong size)
+        {
+            const ulong KB = 1024;
+            const ulong MB = 1024 * 1024;
+            const ulong GB = 1024 * 1024 * 1024;
+            if (size > GB * 0.977)
+                return string.Format("{0:F1} GB", (double)(size) / GB);
+            else if (size > MB * 0.977)
+                return string.Format("{0:F1} MB", (double)(size) / MB);
+            else if (size > KB * 0.977)
+                return string.Format("{0:F1} KB", (double)(size) / KB);
+            else 
+                return string.Format("{0} B", size);
         }
     }
 }

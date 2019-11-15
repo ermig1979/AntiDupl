@@ -70,7 +70,7 @@ namespace ad
     void TDataCollector::FillPixelData(TImageData* pImageData)
     {
         AD_FUNCTION_PERFORMANCE_TEST
-        TImage *pImage = TImage::Load(pImageData->hGlobal);
+        TImage *pImage = TImage::Load(pImageData->hGlobal, m_pOptions);
         if(pImage)
         {
             pImageData->height = (TUInt32)pImage->View()->height; 

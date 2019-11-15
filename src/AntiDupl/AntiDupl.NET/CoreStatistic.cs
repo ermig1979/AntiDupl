@@ -31,6 +31,7 @@ namespace AntiDupl.NET
     {
         public uint scanedFolderNumber;
         public uint searchedImageNumber;
+        public UInt64 searchedImageSize;
         public uint collectedImageNumber;
         public uint comparedImageNumber;
         public uint collectThreadCount;
@@ -45,6 +46,7 @@ namespace AntiDupl.NET
         {
             scanedFolderNumber = statistic.scanedFolderNumber.ToUInt32();
             searchedImageNumber = statistic.searchedImageNumber.ToUInt32();
+            searchedImageSize = statistic.searchedImageSize;
             collectedImageNumber = statistic.collectedImageNumber.ToUInt32();
             comparedImageNumber = statistic.comparedImageNumber.ToUInt32();
             collectThreadCount = statistic.collectThreadCount.ToUInt32();

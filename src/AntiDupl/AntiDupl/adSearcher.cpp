@@ -34,16 +34,18 @@
 namespace ad
 {
     TSearcher::TSearcher(TEngine *pEngine, TImageDataPtrs *pImageDataPtrs)
-        :m_pImageDataPtrs(pImageDataPtrs),
-        m_pStatus(pEngine->Status()),
-        m_pOptions(pEngine->Options()),
-        m_pImageDataStorage(pEngine->ImageDataStorage())
+        : m_pImageDataPtrs(pImageDataPtrs)
+        , m_pStatus(pEngine->Status())
+        , m_pOptions(pEngine->Options())
+        , m_pImageDataStorage(pEngine->ImageDataStorage())
+        , m_searchedImageSize(0)
     {
     }
 
     void TSearcher::SearchImages()
     {
-        AD_FUNCTION_PERFORMANCE_TEST
+        AD_FUNCTION_PERFORMANCE_TEST;
+        m_searchedImageSize = 0;
         InitExtensions();
         if(!m_extensions.empty())
         {
@@ -61,7 +63,7 @@ namespace ad
                     m_pImageDataPtrs->push_back(m_pImageDataStorage->Get(TFileInfo(m_pOptions->searchPaths[i].Original())));
                 }
             }
-            m_pStatus->Search(NULL, m_pImageDataPtrs->size());
+            m_pStatus->Search(NULL, m_pImageDataPtrs->size(), m_searchedImageSize);
         }
     }
 
@@ -98,14 +100,14 @@ namespace ad
                 }
                 else if(IsWanted(path.c_str()) && m_pOptions->ignorePaths.IsHasPath(path) == AD_IS_NOT_EXIST)
                 {
-                    m_pImageDataPtrs->push_back(m_pImageDataStorage->Get(TFileInfo(path,
-                        findData.nFileSizeLow + findData.nFileSizeHigh*0x100000000, 
-                        *(TUInt64*)&findData.ftLastWriteTime)));
+                    adUInt64 imageSize = adUInt64(findData.nFileSizeLow) + adUInt64(findData.nFileSizeHigh) * adUInt64(0x100000000);
+                    m_pImageDataPtrs->push_back(m_pImageDataStorage->Get(TFileInfo(path, imageSize, *(TUInt64*)&findData.ftLastWriteTime)));
+                    m_searchedImageSize += imageSize;
                 }
             } while(FindNextFile(hFind, &findData) != 0 && !m_pStatus->Stopped()); 
             FindClose(hFind);
         }
-        m_pStatus->Search(directory.c_str(), m_pImageDataPtrs->size());
+        m_pStatus->Search(directory.c_str(), m_pImageDataPtrs->size(), m_searchedImageSize);
     }
 
     bool TSearcher::IsForbidden(const TString& path)

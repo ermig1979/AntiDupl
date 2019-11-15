@@ -120,6 +120,7 @@ namespace ad
         m_options.push_back(TOption(&advanced.undoQueueSize, TEXT("AdvancedOptions"), TEXT("UndoQueueSize"), 10, 0, 16));
         m_options.push_back(TOption(&advanced.resultCountMax, TEXT("AdvancedOptions"), TEXT("ResultCountMax"), 100000, 1, INT_MAX));
         m_options.push_back(TOption(&advanced.ignoreFrameWidth, TEXT("AdvancedOptions"), TEXT("IgnoreFrameWidth"), 0, 0, 12));
+        m_options.push_back(TOption(&advanced.useLibJpegTurbo, TEXT("AdvancedOptions"), TEXT("UseLibJpegTurbo"), TRUE, FALSE, TRUE));
 
         SetDefault();
     }

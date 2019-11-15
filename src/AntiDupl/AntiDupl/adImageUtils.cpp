@@ -28,7 +28,7 @@
 
 namespace ad
 {
-    adError LoadBitmap(const TString& fileName, adBitmapPtr pBitmap)
+    adError LoadBitmap(const TString & fileName, adBitmapPtr pBitmap, const TOptions * pOptions)
     {
         if(pBitmap == NULL)
             return AD_ERROR_INVALID_POINTER;
@@ -46,7 +46,7 @@ namespace ad
         HGLOBAL hGlobal = LoadFileToMemory(fileName.c_str());
         if(hGlobal)
         {
-            TImage *pImage = TImage::Load(hGlobal);
+            TImage *pImage = TImage::Load(hGlobal, pOptions);
             if(pImage)
             {
                 TView::Format format = TView::None;

@@ -21,6 +21,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
+#include "adOptions.h"
 #include "adFileUtils.h"
 #include "adImage.h"
 #include "adGdiplus.h"
@@ -85,7 +86,7 @@ namespace ad
     }
 
 	// Вызывается из adDataCollector.cpp
-    TImage* TImage::Load(HGLOBAL hGlobal)
+    TImage* TImage::Load(HGLOBAL hGlobal, const TOptions * pOptions)
     {
         if(TOpenJpeg::Supported(hGlobal))
             return TOpenJpeg::Load(hGlobal);
@@ -98,20 +99,20 @@ namespace ad
 		else if (TWebp::Supported(hGlobal))
 			return TWebp::Load(hGlobal);
 #ifdef AD_TURBO_JPEG_ENABLE
-        if (TTurboJpeg::Supported(hGlobal))
+        if (pOptions->advanced.useLibJpegTurbo && TTurboJpeg::Supported(hGlobal))
             return TTurboJpeg::Load(hGlobal);
 #endif//AD_TURBO_JPEG_ENABLE
         else
             return TGdiplus::Load(hGlobal);
     }
     
-    TImage* TImage::Load(const TChar * fileName)
+    TImage* TImage::Load(const TChar * fileName, const TOptions* pOptions)
     {
         TImage *pImage = NULL;
         HGLOBAL hGlobal = LoadFileToMemory(fileName);
         if(hGlobal)
         {
-            pImage = Load(hGlobal);
+            pImage = Load(hGlobal, pOptions);
             ::GlobalFree(hGlobal);
         }
         return pImage;

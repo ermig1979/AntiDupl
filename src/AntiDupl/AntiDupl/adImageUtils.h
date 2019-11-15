@@ -28,7 +28,11 @@
 
 namespace ad
 {
-    adError LoadBitmap(const TString& fileName, adBitmapPtr pBitmap);
+    struct TOptions;
+
+    //-------------------------------------------------------------------------
+
+    adError LoadBitmap(const TString& fileName, adBitmapPtr pBitmap, const TOptions * pOptions);
 }
 #endif//__adImages_h__
 

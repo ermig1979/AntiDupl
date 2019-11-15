@@ -69,7 +69,7 @@ namespace ad
 
         void ClearStatistic();
 
-        void Search(const TChar* folder, size_t searchedImageNumber);
+        void Search(const TChar* folder, size_t searchedImageNumber, adUInt64 searchedImageSize);
 
         void SetThreadCount(TThreadType threadType, size_t count);
         void Assign(TThreadType threadType, size_t threadId);

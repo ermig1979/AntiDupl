@@ -29,6 +29,10 @@
 
 namespace ad
 {
+    struct TOptions;
+
+    //-------------------------------------------------------------------------
+
     class TImage
     {
     public:
@@ -63,8 +67,8 @@ namespace ad
         TView* View() const {return m_pView;}
         
         static TStrings Extensions(TFormat format);
-        static TImage* Load(HGLOBAL hGlobal);
-        static TImage* Load(const TChar * fileName);
+        static TImage* Load(HGLOBAL hGlobal, const TOptions * opOptions);
+        static TImage* Load(const TChar * fileName, const TOptions* pOptions);
 
     protected:
         TImage();

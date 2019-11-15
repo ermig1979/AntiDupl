@@ -38,7 +38,8 @@ namespace AntiDupl.NET
         public int undoQueueSize;
         public int resultCountMax;
         public int ignoreFrameWidth;
-        
+        public bool useLibJpegTurbo;
+
         public CoreAdvancedOptions()
         {
         }
@@ -54,6 +55,7 @@ namespace AntiDupl.NET
             undoQueueSize = advancedOptions.undoQueueSize;
             resultCountMax = advancedOptions.resultCountMax;
             ignoreFrameWidth = advancedOptions.ignoreFrameWidth;
+            useLibJpegTurbo = advancedOptions.useLibJpegTurbo;
         }
 
         public CoreAdvancedOptions(ref CoreDll.adAdvancedOptions advancedOptions)
@@ -67,6 +69,7 @@ namespace AntiDupl.NET
             undoQueueSize = advancedOptions.undoQueueSize;
             resultCountMax = advancedOptions.resultCountMax;
             ignoreFrameWidth = advancedOptions.ignoreFrameWidth;
+            useLibJpegTurbo = advancedOptions.useLibJpegTurbo != CoreDll.FALSE;
         }
 
         public void ConvertTo(ref CoreDll.adAdvancedOptions advancedOptions)
@@ -80,6 +83,7 @@ namespace AntiDupl.NET
             advancedOptions.undoQueueSize = undoQueueSize;
             advancedOptions.resultCountMax = resultCountMax;
             advancedOptions.ignoreFrameWidth = ignoreFrameWidth;
+            advancedOptions.useLibJpegTurbo = useLibJpegTurbo ? CoreDll.TRUE : CoreDll.FALSE;
         }
 
         public CoreAdvancedOptions Clone()
@@ -98,7 +102,8 @@ namespace AntiDupl.NET
                 reducedImageSize == advancedOptions.reducedImageSize &&
                 undoQueueSize == advancedOptions.undoQueueSize &&
                 resultCountMax == advancedOptions.resultCountMax &&
-                ignoreFrameWidth == advancedOptions.ignoreFrameWidth;
+                ignoreFrameWidth == advancedOptions.ignoreFrameWidth &&
+                useLibJpegTurbo == advancedOptions.useLibJpegTurbo;
         }
     }
 }

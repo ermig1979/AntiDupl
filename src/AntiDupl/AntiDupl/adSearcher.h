@@ -58,6 +58,7 @@ namespace ad
         TOptions *m_pOptions;
         TImageDataStorage *m_pImageDataStorage;
         TStrings m_extensions;
+        adUInt64 m_searchedImageSize;
     };
     //-------------------------------------------------------------------------
 }

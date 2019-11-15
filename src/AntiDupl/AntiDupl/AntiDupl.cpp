@@ -572,13 +572,13 @@ DLLAPI adError adLoadBitmapA(adEngineHandle handle, const adCharA* fileName, adB
 {
     CHECK_HANDLE CHECK_POINTER(fileName) 
 
-    return ad::LoadBitmap(fileName, pBitmap);
+    return ad::LoadBitmap(fileName, pBitmap, handle->Options());
 }
 
 DLLAPI adError adLoadBitmapW(adEngineHandle handle, const adCharW* fileName, adBitmapPtr pBitmap)
 {
     CHECK_HANDLE CHECK_POINTER(fileName)
 
-    return ad::LoadBitmap(fileName, pBitmap);
+    return ad::LoadBitmap(fileName, pBitmap, handle->Options());
 }
 

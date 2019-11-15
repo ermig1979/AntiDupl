@@ -444,6 +444,7 @@ extern "C"
         adInt32 undoQueueSize;
         adInt32 resultCountMax;        
         adInt32 ignoreFrameWidth;
+        adBool useLibJpegTurbo;
     };
     typedef adAdvancedOptions* adAdvancedOptionsPtr;
 
@@ -451,6 +452,7 @@ extern "C"
     {
         adSize scanedFolderNumber;
         adSize searchedImageNumber;
+        adUInt64 searchedImageSize;
         adSize collectedImageNumber;
         adSize comparedImageNumber;
         adSize collectThreadCount;

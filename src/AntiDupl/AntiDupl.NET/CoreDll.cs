@@ -367,6 +367,7 @@ namespace AntiDupl.NET
             public int undoQueueSize;
             public int resultCountMax;
             public int ignoreFrameWidth;
+            public int useLibJpegTurbo;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -374,6 +375,7 @@ namespace AntiDupl.NET
         {
             public UIntPtr scanedFolderNumber;
             public UIntPtr searchedImageNumber;
+            public ulong searchedImageSize;
             public UIntPtr collectedImageNumber;
             public UIntPtr comparedImageNumber;
             public UIntPtr collectThreadCount;

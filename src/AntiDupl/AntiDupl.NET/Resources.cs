@@ -420,5 +420,11 @@ namespace AntiDupl.NET
             static public string Paths { get { return GetUrl("paths.html"); } }
             static public string HotKeys { get { return GetUrl("hotkeys.html"); } }
         }
+
+        static public class Logs
+        {
+            static public string Performance { get { return string.Format("{0}\\performance.txt", Resources.UserPath); } }
+        }
     }
 }
+

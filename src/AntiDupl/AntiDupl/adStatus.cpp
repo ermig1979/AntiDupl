@@ -176,7 +176,7 @@ namespace ad
         ZeroMemory((void*)&m_statistic, sizeof(adStatistic));
     }
 
-    void TStatus::Search(const TChar* folder, size_t searchedImageNumber)
+    void TStatus::Search(const TChar* folder, size_t searchedImageNumber, adUInt64 searchedImageSize)
     {
         TCriticalSection::TLocker locker(&m_criticalSection);
 
@@ -189,6 +189,7 @@ namespace ad
         else
             m_path.clear();
         m_statistic.searchedImageNumber = searchedImageNumber;
+        m_statistic.searchedImageSize = searchedImageSize;
         m_current = 0;
         m_total = m_statistic.searchedImageNumber;
     }
