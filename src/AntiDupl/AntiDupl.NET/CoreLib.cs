@@ -155,20 +155,19 @@ namespace AntiDupl.NET
 
         public CoreStatus StatusGet(CoreDll.ThreadType threadType, int threadId)
         {
-            object statusObject = new CoreDll.adStatusW();
-            byte[] status = new byte[Marshal.SizeOf(statusObject)];
-            IntPtr pStatus = Marshal.UnsafeAddrOfPinnedArrayElement(status, 0);
-            if (m_dll.adStatusGetW(m_handle, threadType, new IntPtr(threadId), pStatus) == CoreDll.Error.Ok)
+            try 
             {
-                CoreDll.adStatusW statusW = (CoreDll.adStatusW)Marshal.PtrToStructure(pStatus, statusObject.GetType());
-                try
+                object statusObject = new CoreDll.adStatusW();
+                byte[] status = new byte[Marshal.SizeOf(statusObject)];
+                IntPtr pStatus = Marshal.UnsafeAddrOfPinnedArrayElement(status, 0);
+                if (m_dll.adStatusGetW(m_handle, threadType, new IntPtr(threadId), pStatus) == CoreDll.Error.Ok)
                 {
-                    return new CoreStatus(ref statusW);                
+                    CoreDll.adStatusW statusW = (CoreDll.adStatusW)Marshal.PtrToStructure(pStatus, statusObject.GetType());
+                    return new CoreStatus(ref statusW);
                 }
-                catch (Exception)
-                {
-                    return null;
-                }
+            }
+            catch(Exception)
+            {
             }
             return null;
         }
@@ -496,7 +495,7 @@ namespace AntiDupl.NET
 
         //-----------Public properties----------------------------------------------
 
-        #region Public properties
+#region Public properties
 
         public CoreSearchOptions searchOptions
         {
@@ -610,10 +609,10 @@ namespace AntiDupl.NET
             }
         }
 
-        #endregion
+#endregion
 
         //-----------Private functions:--------------------------------------------
-        #region private
+#region private
 
         static private string BufferToString(char[] buffer, int startIndex, int maxSize)
         {
@@ -670,6 +669,6 @@ namespace AntiDupl.NET
                 new IntPtr(path.Length)) == CoreDll.Error.Ok;
         }
 
-        #endregion
+#endregion
     };
 }
