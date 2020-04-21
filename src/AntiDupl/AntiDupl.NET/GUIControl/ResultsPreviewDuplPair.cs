@@ -33,7 +33,7 @@ using System.Threading;
 namespace AntiDupl.NET
 {
     /// <summary>
-    /// Панель которая включает в себя две панели с просмотра изображений и панель инструментов для работы с дубликатами изображений.
+    /// РџР°РЅРµР»СЊ РєРѕС‚РѕСЂР°СЏ РІРєР»СЋС‡Р°РµС‚ РІ СЃРµР±СЏ РґРІРµ РїР°РЅРµР»Рё СЃ РїСЂРѕСЃРјРѕС‚СЂР° РёР·РѕР±СЂР°Р¶РµРЅРёР№ Рё РїР°РЅРµР»СЊ РёРЅСЃС‚СЂСѓРјРµРЅС‚РѕРІ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РґСѓР±Р»РёРєР°С‚Р°РјРё РёР·РѕР±СЂР°Р¶РµРЅРёР№.
     /// </summary>
     public class ResultsPreviewDuplPair : ResultsPreviewBase
     {
@@ -121,7 +121,7 @@ namespace AntiDupl.NET
             m_renameSecondToFirstButton.ToolTipText = GetToolTip(s.ResultsPreviewDuplPair_RenameSecondToFirstButton_ToolTip_Text, HotKeyOptions.Action.CurrentDuplPairRenameSecondToFirst);
             m_mistakeButton.ToolTipText = GetToolTip(s.ResultsPreviewDefect_MistakeButton_ToolTip_Text, HotKeyOptions.Action.CurrentMistake);
 
-            // Для обновления EXIF.
+            // Р”Р»СЏ РѕР±РЅРѕРІР»РµРЅРёСЏ EXIF.
             if (m_currentSearchResult != null)
             {
                 m_firstImagePreviewPanel.UpdateExifTooltip(m_currentSearchResult);
@@ -328,7 +328,7 @@ namespace AntiDupl.NET
 
         private void HighlightCompleteEventHandler(List<Rectangle> rectangles)
         {
-            if (InvokeRequired) // Проверяем в этом ли потоке нахождится созданый обьект 
+            if (InvokeRequired) // РџСЂРѕРІРµСЂСЏРµРј РІ СЌС‚РѕРј Р»Рё РїРѕС‚РѕРєРµ РЅР°С…РѕР¶РґРёС‚СЃСЏ СЃРѕР·РґР°РЅС‹Р№ РѕР±СЊРµРєС‚ 
             {
                 object[] eventArgs = { rectangles };
                 Invoke(new HighlightCompleteDelegate(HighlightCompleteEventHandler), eventArgs);

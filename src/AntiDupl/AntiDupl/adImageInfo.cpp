@@ -1,4 +1,4 @@
-/*
+п»ї/*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
 * Copyright (c) 2002-2018 Yermalayeu Ihar, 2013-2018 Borisov Dmitry.
@@ -65,7 +65,7 @@ namespace ad
         return *this;
     }
 
-	// Экспортируем информацию об изображение в переданный указатель.
+	// РЃРєСЃРїРѕСЂС‚РёСЂСѓРµРј РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± РёР·РѕР±СЂР°Р¶РµРЅРёРµ РІ РїРµСЂРµРґР°РЅРЅС‹Р№ СѓРєР°Р·Р°С‚РµР»СЊ.
     bool TImageInfo::Export(adImageInfoPtrA pImageInfo) const
     {
         if(pImageInfo == NULL)

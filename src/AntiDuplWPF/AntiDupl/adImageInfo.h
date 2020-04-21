@@ -30,7 +30,7 @@
 
 namespace ad
 {
-	// Структура информации о изображение
+	// РЎС‚СЂСѓРєС‚СѓСЂР° РёРЅС„РѕСЂРјР°С†РёРё Рѕ РёР·РѕР±СЂР°Р¶РµРЅРёРµ
     struct TImageInfo : public TFileInfo
     {
         TImageType type;

@@ -47,7 +47,7 @@ namespace AntiDupl.NET
 
         private CoreDll.RenameCurrentType m_renameCurrentType;
         /// <summary>
-        /// Переименовывать первую или вторую картинку.
+        /// РџРµСЂРµРёРјРµРЅРѕРІС‹РІР°С‚СЊ РїРµСЂРІСѓСЋ РёР»Рё РІС‚РѕСЂСѓСЋ РєР°СЂС‚РёРЅРєСѓ.
         /// </summary>
         public CoreDll.RenameCurrentType RenameCurrentType {get{return m_renameCurrentType;}}
         
@@ -60,7 +60,7 @@ namespace AntiDupl.NET
 
         private int m_group;
         /// <summary>
-        /// Группа дубликатов.
+        /// Р“СЂСѓРїРїР° РґСѓР±Р»РёРєР°С‚РѕРІ.
         /// </summary>
         public int Group { get { return m_group; } }
         
@@ -88,7 +88,7 @@ namespace AntiDupl.NET
             SetPosition(position);
         }
         
-        // Запускается инициализация один раз при создание формы.
+        // Р—Р°РїСѓСЃРєР°РµС‚СЃСЏ РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РѕРґРёРЅ СЂР°Р· РїСЂРё СЃРѕР·РґР°РЅРёРµ С„РѕСЂРјС‹.
         private void InitializeComponents()
         {
             Strings s = Resources.Strings.Current;
@@ -165,23 +165,23 @@ namespace AntiDupl.NET
             m_toolTip.ShowAlways = true;
             m_toolTip.SetToolTip(m_imageBlocknessLabel, s.ResultsListView_Blockiness_Column_Text);
             m_toolTip.SetToolTip(m_imageBlurringLabel, s.ResultsListView_Blurring_Column_Text);
-            // Свойство AutomaticDelay позволяет установить одно значение задержки, которое затем используется для установки значений свойствAutoPopDelay, InitialDelay и ReshowDelay. Каждый раз при установке свойства AutomaticDelay устанавливаются следующие значения по умолчанию.
+            // РЎРІРѕР№СЃС‚РІРѕ AutomaticDelay РїРѕР·РІРѕР»СЏРµС‚ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РѕРґРЅРѕ Р·РЅР°С‡РµРЅРёРµ Р·Р°РґРµСЂР¶РєРё, РєРѕС‚РѕСЂРѕРµ Р·Р°С‚РµРј РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ СѓСЃС‚Р°РЅРѕРІРєРё Р·РЅР°С‡РµРЅРёР№ СЃРІРѕР№СЃС‚РІAutoPopDelay, InitialDelay Рё ReshowDelay. РљР°Р¶РґС‹Р№ СЂР°Р· РїСЂРё СѓСЃС‚Р°РЅРѕРІРєРµ СЃРІРѕР№СЃС‚РІР° AutomaticDelay СѓСЃС‚Р°РЅР°РІР»РёРІР°СЋС‚СЃСЏ СЃР»РµРґСѓСЋС‰РёРµ Р·РЅР°С‡РµРЅРёСЏ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ.
             //m_toolTip.AutomaticDelay = 500;
-            // Интервал времени, в миллисекундах, в течение которого указатель мыши должен оставаться в границах элемента управления, прежде чем появится окно всплывающей подсказки.
-            // Равно значению свойства AutomaticDelay. 
+            // РРЅС‚РµСЂРІР°Р» РІСЂРµРјРµРЅРё, РІ РјРёР»Р»РёСЃРµРєСѓРЅРґР°С…, РІ С‚РµС‡РµРЅРёРµ РєРѕС‚РѕСЂРѕРіРѕ СѓРєР°Р·Р°С‚РµР»СЊ РјС‹С€Рё РґРѕР»Р¶РµРЅ РѕСЃС‚Р°РІР°С‚СЊСЃСЏ РІ РіСЂР°РЅРёС†Р°С… СЌР»РµРјРµРЅС‚Р° СѓРїСЂР°РІР»РµРЅРёСЏ, РїСЂРµР¶РґРµ С‡РµРј РїРѕСЏРІРёС‚СЃСЏ РѕРєРЅРѕ РІСЃРїР»С‹РІР°СЋС‰РµР№ РїРѕРґСЃРєР°Р·РєРё.
+            // Р Р°РІРЅРѕ Р·РЅР°С‡РµРЅРёСЋ СЃРІРѕР№СЃС‚РІР° AutomaticDelay. 
             m_toolTip.InitialDelay = 500;
-            // Получает или задает интервал времени, который должен пройти перед появлением окна очередной всплывающей подсказки при перемещении указателя мыши с одного элемента управления на другой.
-            // Одна пятая значения свойства AutomaticDelay. 
+            // РџРѕР»СѓС‡Р°РµС‚ РёР»Рё Р·Р°РґР°РµС‚ РёРЅС‚РµСЂРІР°Р» РІСЂРµРјРµРЅРё, РєРѕС‚РѕСЂС‹Р№ РґРѕР»Р¶РµРЅ РїСЂРѕР№С‚Рё РїРµСЂРµРґ РїРѕСЏРІР»РµРЅРёРµРј РѕРєРЅР° РѕС‡РµСЂРµРґРЅРѕР№ РІСЃРїР»С‹РІР°СЋС‰РµР№ РїРѕРґСЃРєР°Р·РєРё РїСЂРё РїРµСЂРµРјРµС‰РµРЅРёРё СѓРєР°Р·Р°С‚РµР»СЏ РјС‹С€Рё СЃ РѕРґРЅРѕРіРѕ СЌР»РµРјРµРЅС‚Р° СѓРїСЂР°РІР»РµРЅРёСЏ РЅР° РґСЂСѓРіРѕР№.
+            // РћРґРЅР° РїСЏС‚Р°СЏ Р·РЅР°С‡РµРЅРёСЏ СЃРІРѕР№СЃС‚РІР° AutomaticDelay. 
             m_toolTip.ReshowDelay = 1;
-            // Период времени, в миллисекундах, ToolTip остается видимыми, когда указатель неподвижн на элементе управления. Значение по умолчанию - 5000. 
-            // В десять раз больше, чем значение свойства AutomaticDelay. 
+            // РџРµСЂРёРѕРґ РІСЂРµРјРµРЅРё, РІ РјРёР»Р»РёСЃРµРєСѓРЅРґР°С…, ToolTip РѕСЃС‚Р°РµС‚СЃСЏ РІРёРґРёРјС‹РјРё, РєРѕРіРґР° СѓРєР°Р·Р°С‚РµР»СЊ РЅРµРїРѕРґРІРёР¶РЅ РЅР° СЌР»РµРјРµРЅС‚Рµ СѓРїСЂР°РІР»РµРЅРёСЏ. Р—РЅР°С‡РµРЅРёРµ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ - 5000. 
+            // Р’ РґРµСЃСЏС‚СЊ СЂР°Р· Р±РѕР»СЊС€Рµ, С‡РµРј Р·РЅР°С‡РµРЅРёРµ СЃРІРѕР№СЃС‚РІР° AutomaticDelay. 
             // you cannot set the AutoPopDelay time higher than an Int16.MaxValue (i.e. 32767) and have it working. Using the tooltip Show() method leads to the same result. Any value higher than 32767 leads the timer to be reset to 5000ms.
             m_toolTip.AutoPopDelay = Int16.MaxValue;
         }
 
         /// <summary>
         /// Set information in image panel.
-        /// Установка информации в панели изображения.
+        /// РЈСЃС‚Р°РЅРѕРІРєР° РёРЅС„РѕСЂРјР°С†РёРё РІ РїР°РЅРµР»Рё РёР·РѕР±СЂР°Р¶РµРЅРёСЏ.
         /// </summary>
         private void SetImageInfo(CoreImageInfo currentImageInfo, CoreImageInfo neighbourImageInfo)
         {
@@ -215,7 +215,7 @@ namespace AntiDupl.NET
                 else
                     m_imageExifLabel.Visible = false;
                 m_pathLabel.Text = m_currentImageInfo.path;
-                if (m_neighbourImageInfo != null) //подсветка highlight
+                if (m_neighbourImageInfo != null) //РїРѕРґСЃРІРµС‚РєР° highlight
                 {
                     m_imageSizeLabel.ForeColor =
                             m_currentImageInfo.height * m_currentImageInfo.width < m_neighbourImageInfo.height * m_neighbourImageInfo.width ?
@@ -258,7 +258,7 @@ namespace AntiDupl.NET
         }
 
         /// <summary>
-        /// Проверяет, нужно ли обновление текущей информации об изображении.
+        /// РџСЂРѕРІРµСЂСЏРµС‚, РЅСѓР¶РЅРѕ Р»Рё РѕР±РЅРѕРІР»РµРЅРёРµ С‚РµРєСѓС‰РµР№ РёРЅС„РѕСЂРјР°С†РёРё РѕР± РёР·РѕР±СЂР°Р¶РµРЅРёРё.
         /// </summary>
         static private bool UpdateImageInfo(ref CoreImageInfo oldImageInfo, CoreImageInfo newImageInfo)
         {
@@ -302,7 +302,7 @@ namespace AntiDupl.NET
         
         /// <summary>
         /// Adding controls in panel
-        /// Добавление контролеров на панель
+        /// Р”РѕР±Р°РІР»РµРЅРёРµ РєРѕРЅС‚СЂРѕР»РµСЂРѕРІ РЅР° РїР°РЅРµР»СЊ
         /// </summary>
         public void SetPosition(Position position)
         {
@@ -451,7 +451,7 @@ namespace AntiDupl.NET
         }
 
         /// <summary>
-        /// Устанавливает значение подсказки tooltip для надписи EXIF.
+        /// РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ Р·РЅР°С‡РµРЅРёРµ РїРѕРґСЃРєР°Р·РєРё tooltip РґР»СЏ РЅР°РґРїРёСЃРё EXIF.
         /// </summary>
         private void SetExifTooltip(CoreImageInfo currentImageInfo)
         {
@@ -474,7 +474,7 @@ namespace AntiDupl.NET
         }
 
         /// <summary>
-        /// Изменение подсказки EXIF при смене языка.
+        /// РР·РјРµРЅРµРЅРёРµ РїРѕРґСЃРєР°Р·РєРё EXIF РїСЂРё СЃРјРµРЅРµ СЏР·С‹РєР°.
         /// </summary>
         /// <param name="result"></param>
         public void UpdateExifTooltip(CoreResult result)
@@ -498,7 +498,7 @@ namespace AntiDupl.NET
         }
 
         /// <summary>
-        /// Проверка равны ли Exif.
+        /// РџСЂРѕРІРµСЂРєР° СЂР°РІРЅС‹ Р»Рё Exif.
         /// </summary>
         private bool ExifEqual(CoreDll.adImageExifW imageExif1, CoreDll.adImageExifW imageExif2)
         {

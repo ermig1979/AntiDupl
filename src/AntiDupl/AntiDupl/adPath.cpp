@@ -151,17 +151,17 @@ namespace ad
 	{
 		const TChar *p1 = path1.m_compare.directory.first;
 		const TChar *p2 = path2.m_compare.directory.first;
-		while(*p1 != 0 && *p2 != 0 && *p1 == *p2) //если символы равны удаляем их
+		while(*p1 != 0 && *p2 != 0 && *p1 == *p2) //РµСЃР»Рё СЃРёРјРІРѕР»С‹ СЂР°РІРЅС‹ СѓРґР°Р»СЏРµРј РёС…
 		{
 			p1++;
 			p2++;
 		}
 		if(*p1 == 0 && *p2 == 0)
 			return EQUAL; 
-		if(*p1 == 0 && *p2 == DELIMETER && path1.m_enableSubFolder == true) //если второй начинается со слеша и включены субдиректории
-			return SECOND; //второй путь входит в первый
+		if(*p1 == 0 && *p2 == DELIMETER && path1.m_enableSubFolder == true) //РµСЃР»Рё РІС‚РѕСЂРѕР№ РЅР°С‡РёРЅР°РµС‚СЃСЏ СЃРѕ СЃР»РµС€Р° Рё РІРєР»СЋС‡РµРЅС‹ СЃСѓР±РґРёСЂРµРєС‚РѕСЂРёРё
+			return SECOND; //РІС‚РѕСЂРѕР№ РїСѓС‚СЊ РІС…РѕРґРёС‚ РІ РїРµСЂРІС‹Р№
 		if(*p2 == 0 && *p1 == DELIMETER && path2.m_enableSubFolder == true)
-			return FIRST;  //первая входит во вторую
+			return FIRST;  //РїРµСЂРІР°СЏ РІС…РѕРґРёС‚ РІРѕ РІС‚РѕСЂСѓСЋ
 		return NONE;
 	}
 
@@ -299,7 +299,7 @@ namespace ad
             if(pPath == NULL)
                 return AD_ERROR_INVALID_POINTER;
 
-			//разбиваем путь на папки
+			//СЂР°Р·Р±РёРІР°РµРј РїСѓС‚СЊ РЅР° РїР°РїРєРё
             TPathVector tmp(pathCount);
             for(size_t i = 0; i < pathCount; i++)
 			{
@@ -372,7 +372,7 @@ namespace ad
         return AD_OK;
     }
 
-	//проверяет содержится ли в наших путях m_paths переданный path
+	//РїСЂРѕРІРµСЂСЏРµС‚ СЃРѕРґРµСЂР¶РёС‚СЃСЏ Р»Рё РІ РЅР°С€РёС… РїСѓС‚СЏС… m_paths РїРµСЂРµРґР°РЅРЅС‹Р№ path
     size_t TPathContainer::IsHasPath(const TPath& path) const
     {
         const_iterator i = std::lower_bound(m_paths.begin(), m_paths.end(), path, TPath::LesserByPath);
@@ -400,7 +400,7 @@ namespace ad
         return AD_IS_NOT_EXIST;
     }
 
-	//Проверка на вхождение путей друг в друга
+	//РџСЂРѕРІРµСЂРєР° РЅР° РІС…РѕР¶РґРµРЅРёРµ РїСѓС‚РµР№ РґСЂСѓРі РІ РґСЂСѓРіР°
     void TPathContainer::Set(const TPathContainer::TPathVector& tmp)
     {
         m_paths.clear();
@@ -422,9 +422,9 @@ namespace ad
                 case TPath::NONE:
                     m_paths.push_back(*i_tmp);
                     break;
-                case TPath::FIRST: //уже есть в списке, не добавляем
+                case TPath::FIRST: //СѓР¶Рµ РµСЃС‚СЊ РІ СЃРїРёСЃРєРµ, РЅРµ РґРѕР±Р°РІР»СЏРµРј
                     break;
-                case TPath::SECOND: //добавляем директорию которая включает ту что уже в списке, оставляем эту, ту стираем
+                case TPath::SECOND: //РґРѕР±Р°РІР»СЏРµРј РґРёСЂРµРєС‚РѕСЂРёСЋ РєРѕС‚РѕСЂР°СЏ РІРєР»СЋС‡Р°РµС‚ С‚Сѓ С‡С‚Рѕ СѓР¶Рµ РІ СЃРїРёСЃРєРµ, РѕСЃС‚Р°РІР»СЏРµРј СЌС‚Сѓ, С‚Сѓ СЃС‚РёСЂР°РµРј
                     *i_main = i_tmp->Original();
                     break;
                 case TPath::EQUAL:

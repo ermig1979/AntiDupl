@@ -431,7 +431,7 @@ namespace ad
 	}
 
 	//--------------------------------------------------------------------------
-	// Возвращает длину числа, переведенного в строку.
+	// Р’РѕР·РІСЂР°С‰Р°РµС‚ РґР»РёРЅСѓ С‡РёСЃР»Р°, РїРµСЂРµРІРµРґРµРЅРЅРѕРіРѕ РІ СЃС‚СЂРѕРєСѓ.
 	size_t LengthOfLong(const __int64 digit)
 	{
 		char buffer[65];
@@ -441,22 +441,22 @@ namespace ad
 			return 0;
 	}
 
-	// Ищет цифры в имени файла с конца.
+	// РС‰РµС‚ С†РёС„СЂС‹ РІ РёРјРµРЅРё С„Р°Р№Р»Р° СЃ РєРѕРЅС†Р°.
 	__int64 GetDigitInFileName(const TPath &path, TString & nameWithoutDigit, size_t & leadingZeros)
 	{
 		TString name = path.GetName(false);
 		size_t length = name.length();
-        //Находим первый не числовой символ с конца
+        //РќР°С…РѕРґРёРј РїРµСЂРІС‹Р№ РЅРµ С‡РёСЃР»РѕРІРѕР№ СЃРёРјРІРѕР» СЃ РєРѕРЅС†Р°
         bool canRename;
         size_t digitPos = length;
 
 		for (ptrdiff_t i = length - 1; i >= 0; digitPos = i, i-- )
         {
-            if (!iswdigit(name[i])) //если не цифра выходим
+            if (!iswdigit(name[i])) //РµСЃР»Рё РЅРµ С†РёС„СЂР° РІС‹С…РѕРґРёРј
                 break;
         }
 
-        if (digitPos <= length - 1) //если цифра найдена
+        if (digitPos <= length - 1) //РµСЃР»Рё С†РёС„СЂР° РЅР°Р№РґРµРЅР°
             canRename = true;
         else
             canRename = false;
@@ -467,7 +467,7 @@ namespace ad
         {
 			TString forParsing = name.substr(digitPos, length - digitPos);
 			result = _wtoi64(forParsing.c_str());
-			if (result == _I64_MAX) //слишком длинный
+			if (result == _I64_MAX) //СЃР»РёС€РєРѕРј РґР»РёРЅРЅС‹Р№
 			{
 				digitPos = 0;
 				result = -1;
@@ -482,7 +482,7 @@ namespace ad
         return result;
 	}
 
-	// Перименовываем, добавляя _2 к имени файла.
+	// РџРµСЂРёРјРµРЅРѕРІС‹РІР°РµРј, РґРѕР±Р°РІР»СЏСЏ _2 Рє РёРјРµРЅРё С„Р°Р№Р»Р°.
 	TString GetNewNameForFileAdd(const TPath &oldPath)
     {
 		TString uniquePath;
@@ -520,7 +520,7 @@ namespace ad
         return uniquePath;
     }
 
-	// Перименовываем, увеличивая число в имени файла.
+	// РџРµСЂРёРјРµРЅРѕРІС‹РІР°РµРј, СѓРІРµР»РёС‡РёРІР°СЏ С‡РёСЃР»Рѕ РІ РёРјРµРЅРё С„Р°Р№Р»Р°.
 	TString GetNewNameForFileDigit(const TPath &oldPath, const TString &nameWithoutDigit, __int64 & counter, size_t & leadingZeros)
     {
 		TString pathWithDigit;
@@ -531,7 +531,7 @@ namespace ad
 		counter++;
 		if (leadingZeros > 0)
 		{
-			if (LengthOfLong(counter) > LengthOfLong(counter - 1)) //если цифра удленилась
+			if (LengthOfLong(counter) > LengthOfLong(counter - 1)) //РµСЃР»Рё С†РёС„СЂР° СѓРґР»РµРЅРёР»Р°СЃСЊ
                leadingZeros--;
 			for (size_t i = 0; i < leadingZeros; i++)
 				leadingZeroString.push_back('0');
@@ -540,7 +540,7 @@ namespace ad
 		if (_i64toa_s(counter, buffer, BUFFER_SIZE, 10) == 0)
 		{
 			pathWithDigit = CreatePath(oldPath.GetDirectory(), nameWithoutDigit + leadingZeroString + TString(buffer) + oldPath.GetExtension());
-			if (IsFileExists(pathWithDigit.c_str())) //если такой файл уже есть, то не увеличиваем номер, а добавляем _2
+			if (IsFileExists(pathWithDigit.c_str())) //РµСЃР»Рё С‚Р°РєРѕР№ С„Р°Р№Р» СѓР¶Рµ РµСЃС‚СЊ, С‚Рѕ РЅРµ СѓРІРµР»РёС‡РёРІР°РµРј РЅРѕРјРµСЂ, Р° РґРѕР±Р°РІР»СЏРµРј _2
 				return GetNewNameForFileAdd(oldPath);
 		}
 		else
@@ -558,7 +558,7 @@ namespace ad
 		counter++;
 		if (leadingZeros > 0)
 		{
-			if (LengthOfLong(counter) > LengthOfLong(counter - 1)) //если цифра удленилась
+			if (LengthOfLong(counter) > LengthOfLong(counter - 1)) //РµСЃР»Рё С†РёС„СЂР° СѓРґР»РµРЅРёР»Р°СЃСЊ
                leadingZeros--;
 			for (size_t i = 0; i < leadingZeros; i++)
 				leadingZeroString.push_back('0');
@@ -569,7 +569,7 @@ namespace ad
 			pathWithDigit = CreatePath(oldPath.GetDirectory(), nameWithoutDigit + leadingZeroString + TString(buffer) + oldPath.GetExtension());
 			if(TPath::EqualByNameWithExtension(pathWithDigit, pathForRename))
 				return pathForRename.Original();
-			if (IsFileExists(pathWithDigit.c_str())) //если такой файл уже есть, то не увеличиваем номер, а добавляем _2
+			if (IsFileExists(pathWithDigit.c_str())) //РµСЃР»Рё С‚Р°РєРѕР№ С„Р°Р№Р» СѓР¶Рµ РµСЃС‚СЊ, С‚Рѕ РЅРµ СѓРІРµР»РёС‡РёРІР°РµРј РЅРѕРјРµСЂ, Р° РґРѕР±Р°РІР»СЏРµРј _2
 				return GetNewNameForFileAdd(oldPath);
 		}
 		else
@@ -577,7 +577,7 @@ namespace ad
 		return pathWithDigit;
     }
 
-	// Возврашает имя файла похожое на переданное.
+	// Р’РѕР·РІСЂР°С€Р°РµС‚ РёРјСЏ С„Р°Р№Р»Р° РїРѕС…РѕР¶РѕРµ РЅР° РїРµСЂРµРґР°РЅРЅРѕРµ.
 	TString GetSimilarPath(const TPath &path)
 	{
 		__int64 digit;
@@ -594,7 +594,7 @@ namespace ad
                                     leadingZeros);
 	}
 
-	// Возврашает имя файла похожое на переданное, не переименовывая существующий
+	// Р’РѕР·РІСЂР°С€Р°РµС‚ РёРјСЏ С„Р°Р№Р»Р° РїРѕС…РѕР¶РѕРµ РЅР° РїРµСЂРµРґР°РЅРЅРѕРµ, РЅРµ РїРµСЂРµРёРјРµРЅРѕРІС‹РІР°СЏ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№
 	TString GetSimilarPath(const TPath &path, const TPath &pathForRename)
 	{
 		__int64 digit;

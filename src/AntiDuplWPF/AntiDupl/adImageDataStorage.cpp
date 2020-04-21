@@ -95,11 +95,11 @@ namespace ad
 		m_pStatus->Reset();
 	}
 
-	// Загружает в хранилише m_storage переданный файл
+	// Р—Р°РіСЂСѓР¶Р°РµС‚ РІ С…СЂР°РЅРёР»РёС€Рµ m_storage РїРµСЂРµРґР°РЅРЅС‹Р№ С„Р°Р№Р»
 	TImageDataPtr TImageDataStorage::Get(const TFileInfo& fileInfo)
 	{
 		TStorage::iterator it = Find(fileInfo);
-		// Если файл найден в хранилише
+		// Р•СЃР»Рё С„Р°Р№Р» РЅР°Р№РґРµРЅ РІ С…СЂР°РЅРёР»РёС€Рµ
 		if(it != m_storage.end())
 		{
 			if(it->second->size != fileInfo.size || it->second->time != fileInfo.time)
@@ -235,7 +235,7 @@ namespace ad
 		}
 	}
 
-	// Если файлы есть в путях поиска то оставляем в базе.
+	// Р•СЃР»Рё С„Р°Р№Р»С‹ РµСЃС‚СЊ РІ РїСѓС‚СЏС… РїРѕРёСЃРєР° С‚Рѕ РѕСЃС‚Р°РІР»СЏРµРј РІ Р±Р°Р·Рµ.
 	void TImageDataStorage::SetOld(TIndex & index, bool allLoad) const
 	{
 		for(TIndex::iterator it = index.begin(); it != index.end(); ++it)
@@ -259,14 +259,14 @@ namespace ad
 		}
 	}
 
-	// Заполняем TData данные для хранения
+	// Р—Р°РїРѕР»РЅСЏРµРј TData РґР°РЅРЅС‹Рµ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ
 	void TImageDataStorage::UpdateIndex(TIndex & index) const
 	{
 		const size_t dataSizeMax = IMAGE_DATA_FILE_SIZE_MAX/
 			Simd::Square(m_pOptions->advanced.reducedImageSize/REDUCED_IMAGE_SIZE_MIN);
 
 		TVector sorted;
-		CreateSorted(sorted); //создание вектора из заполненных значений в m_storage
+		CreateSorted(sorted); //СЃРѕР·РґР°РЅРёРµ РІРµРєС‚РѕСЂР° РёР· Р·Р°РїРѕР»РЅРµРЅРЅС‹С… Р·РЅР°С‡РµРЅРёР№ РІ m_storage
 
 		short key = 0;
 		for(size_t i = 0; i < sorted.size(); i += dataSizeMax)
@@ -274,7 +274,7 @@ namespace ad
 			size_t begin = i;
 			size_t end = std::min(i + dataSizeMax, sorted.size());
 
-			while(index.count(key)) //находим свободный номер индекса
+			while(index.count(key)) //РЅР°С…РѕРґРёРј СЃРІРѕР±РѕРґРЅС‹Р№ РЅРѕРјРµСЂ РёРЅРґРµРєСЃР°
 				key++;
 
 			TData & data = index[key];
@@ -287,7 +287,7 @@ namespace ad
 		}
 	}
 
-	//удаляем старый файл хранилища изображений
+	//СѓРґР°Р»СЏРµРј СЃС‚Р°СЂС‹Р№ С„Р°Р№Р» С…СЂР°РЅРёР»РёС‰Р° РёР·РѕР±СЂР°Р¶РµРЅРёР№
 	void TImageDataStorage::DeleteOldIndex(TIndex & index, const TChar *path) const
 	{
 		for(TIndex::const_iterator it = index.begin(); it != index.end(); ++it)
@@ -310,7 +310,7 @@ namespace ad
 		return ss.str();
 	}
 
-	// Сохранение данных в файл
+	// РЎРѕС…СЂР°РЅРµРЅРёРµ РґР°РЅРЅС‹С… РІ С„Р°Р№Р»
 	bool TImageDataStorage::SaveIndex(const TIndex & index, const TChar *path) const
 	{
 		size_t size = 0, dataSize = 0;
@@ -329,7 +329,7 @@ namespace ad
 		try
 		{
 			TString fileName = CreatePath(path, TString(INDEX_FILE_NAME) + FILE_EXTENSION);
-			// Файл индекса
+			// Р¤Р°Р№Р» РёРЅРґРµРєСЃР°
 			TOutputFileStream outputFile(fileName.c_str(), INDEX_CONTROL_BYTES);
 
 			outputFile.Save(m_pOptions->advanced.reducedImageSize);
@@ -362,7 +362,7 @@ namespace ad
 		return dataSaveResult;
 	}
 
-	// Сохранение данных о картинках в 0000.adi
+	// РЎРѕС…СЂР°РЅРµРЅРёРµ РґР°РЅРЅС‹С… Рѕ РєР°СЂС‚РёРЅРєР°С… РІ 0000.adi
 	bool TImageDataStorage::SaveData(const TData & data, const TChar *path) const
 	{
 		try
@@ -374,7 +374,7 @@ namespace ad
 			outputFile.Save(data.key);
 			outputFile.Save(data.first);
 			outputFile.Save(data.last);
-			// Сохраняем количество изображений
+			// РЎРѕС…СЂР°РЅСЏРµРј РєРѕР»РёС‡РµСЃС‚РІРѕ РёР·РѕР±СЂР°Р¶РµРЅРёР№
 			outputFile.SaveSize(data.size); 
 			for(size_t i = 0; i < data.data.size(); ++i)
 				outputFile.Save(*data.data[i]);
@@ -415,7 +415,7 @@ namespace ad
 		return true;
 	}
 
-	//key - номер файла индекса 0001.adi - 1
+	//key - РЅРѕРјРµСЂ С„Р°Р№Р»Р° РёРЅРґРµРєСЃР° 0001.adi - 1
 	bool TImageDataStorage::LoadData(TData & data, const TChar *path, short key)
 	{
 		try

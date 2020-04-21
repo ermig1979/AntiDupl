@@ -1,4 +1,4 @@
-/*
+п»ї/*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
 * Copyright (c) 2013-2018 Borisov Dmitry.
@@ -34,7 +34,7 @@ namespace ad
 	{
 	}
 
-	// Экспортируем в структуры для передачи из dll
+	// РЃРєСЃРїРѕСЂС‚РёСЂСѓРµРј РІ СЃС‚СЂСѓРєС‚СѓСЂС‹ РґР»В¤ РїРµСЂРµРґР°С‡Рё РёР· dll
 	bool TImageExif::Export(adExifInfoA * pExifInfo) const
     {
         if(pExifInfo == NULL)

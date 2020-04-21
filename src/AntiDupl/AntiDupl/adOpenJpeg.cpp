@@ -1,4 +1,4 @@
-/*
+ï»¿/*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
 * Copyright (c) 2002-2018 Yermalayeu Ihar.
@@ -290,7 +290,7 @@ namespace ad
         return OPJ_TRUE;
     }
 
-    opj_stream_t * OPJ_CALLCONV ÑreateBlobStream(unsigned char * data, OPJ_SIZE_T size)
+    opj_stream_t * OPJ_CALLCONV Ð¡reateBlobStream(unsigned char * data, OPJ_SIZE_T size)
     {
         opj_stream_t * stream = opj_stream_default_create(OPJ_TRUE);
         if (!stream)
@@ -323,7 +323,7 @@ namespace ad
             opj_dparameters_t parameters;
             opj_set_default_decoder_parameters(&parameters);
             opj_setup_decoder(codec, &parameters);
-            opj_stream_t * stream = ÑreateBlobStream(data, size);
+            opj_stream_t * stream = Ð¡reateBlobStream(data, size);
             if(stream)
             {
                 opj_image_t  * image; 

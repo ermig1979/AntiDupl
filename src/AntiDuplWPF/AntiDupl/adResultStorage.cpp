@@ -150,9 +150,9 @@ namespace ad
     {
         //m_pUndoRedoEngine->Clear();
         m_pCurrent->RemoveInvalid(m_pStatus, m_pMistakeStorage);
-		m_pCurrent->RemoveSkipped(m_pStatus, m_pOptions); //óäàëÿåò èç ðåçóëüòàòîâ ïðîïóñêàåìûå
-        m_pCurrent->SetGroups(m_pStatus); //î÷èùàåò âíóòðåííåå õðàíèëèùå ãðóïï
-		m_pCurrent->UpdateGroups(); //îáíîâëÿåò ãðóïïû èç ðåçóëüòàòîâ
+		m_pCurrent->RemoveSkipped(m_pStatus, m_pOptions); //ÑƒÐ´Ð°Ð»ÑÐµÑ‚ Ð¸Ð· Ñ€ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð°Ñ‚Ð¾Ð² Ð¿Ñ€Ð¾Ð¿ÑƒÑÐºÐ°ÐµÐ¼Ñ‹Ðµ
+        m_pCurrent->SetGroups(m_pStatus); //Ð¾Ñ‡Ð¸Ñ‰Ð°ÐµÑ‚ Ð²Ð½ÑƒÑ‚Ñ€ÐµÐ½Ð½ÐµÐµ Ñ…Ñ€Ð°Ð½Ð¸Ð»Ð¸Ñ‰Ðµ Ð³Ñ€ÑƒÐ¿Ð¿
+		m_pCurrent->UpdateGroups(); //Ð¾Ð±Ð½Ð¾Ð²Ð»ÑÐµÑ‚ Ð³Ñ€ÑƒÐ¿Ð¿Ñ‹ Ð¸Ð· Ñ€ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð°Ñ‚Ð¾Ð²
         m_pCurrent->UpdateHints(m_pOptions, true);
     }
 

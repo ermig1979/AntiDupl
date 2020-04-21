@@ -1,4 +1,4 @@
-/*
+п»ї/*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
 * Copyright (c) 2002-2018 Yermalayeu Ihar, 2013-2018 Borisov Dmitry.
@@ -113,7 +113,7 @@ namespace AntiDupl.NET
         }
 
         /// <summary>
-        /// Устанавливает опции в ядре из текущих, для передачи в dll.
+        /// РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РѕРїС†РёРё РІ СЏРґСЂРµ РёР· С‚РµРєСѓС‰РёС…, РґР»СЏ РїРµСЂРµРґР°С‡Рё РІ dll.
         /// </summary>
         /// <param name="core"></param>
         /// <param name="onePath"></param>

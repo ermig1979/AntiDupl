@@ -40,16 +40,16 @@ namespace ad
 
 	typedef TImageInfo * TImageInfoPtr;
 	typedef std::vector<TImageInfoPtr> TImageInfoPtrVector;
-	// Контейнер указателей на информацию об изображение.
+	// РљРѕРЅС‚РµР№РЅРµСЂ СѓРєР°Р·Р°С‚РµР»РµР№ РЅР° РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± РёР·РѕР±СЂР°Р¶РµРЅРёРµ.
 	typedef std::set<TImageInfoPtr> TImageInfoPtrSet;
 	//-------------------------------------------------------------------------
 	struct TImageGroup
 	{
 		TSize id;
 
-		// Список изображений входящих в группу.
+		// РЎРїРёСЃРѕРє РёР·РѕР±СЂР°Р¶РµРЅРёР№ РІС…РѕРґСЏС‰РёС… РІ РіСЂСѓРїРїСѓ.
 		TImageInfoPtrVector images;
-		// Список результатов
+		// РЎРїРёСЃРѕРє СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ
 		TResultPtrList results;
 
 		bool invalidHint;
@@ -92,9 +92,9 @@ namespace ad
 		typedef std::map<size_t, TImageGroupPtr> TMap;
 		typedef std::vector<TImageGroupPtr> TVector;
 		
-		// Хранилище групп в виде структур в карте. (ID, Группа)
+		// РҐСЂР°РЅРёР»РёС‰Рµ РіСЂСѓРїРї РІ РІРёРґРµ СЃС‚СЂСѓРєС‚СѓСЂ РІ РєР°СЂС‚Рµ. (ID, Р“СЂСѓРїРїР°)
 		TMap m_map;
-		// Хранилище групп в виде структур в векторе.
+		// РҐСЂР°РЅРёР»РёС‰Рµ РіСЂСѓРїРї РІ РІРёРґРµ СЃС‚СЂСѓРєС‚СѓСЂ РІ РІРµРєС‚РѕСЂРµ.
 		TVector m_vector;
 	};
 }

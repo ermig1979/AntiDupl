@@ -30,7 +30,7 @@ using System.Drawing;
 namespace AntiDupl.NET
 {
     /// <summary>
-    /// Панель содеражшая или превью дефекта или дубликатов.
+    /// РџР°РЅРµР»СЊ СЃРѕРґРµСЂР°Р¶С€Р°СЏ РёР»Рё РїСЂРµРІСЊСЋ РґРµС„РµРєС‚Р° РёР»Рё РґСѓР±Р»РёРєР°С‚РѕРІ.
     /// </summary>
     public class ResultsPreviewContainer : Panel
     {
@@ -98,7 +98,7 @@ namespace AntiDupl.NET
                 m_state = state;
 
                 m_mainSplitContainer.OnCurrentResultChanged -= new MainSplitContainer.CurrentResultChangedHandler(CurrentResultChanged);
-                Controls.Clear(); //Очишаем панель
+                Controls.Clear(); //РћС‡РёС€Р°РµРј РїР°РЅРµР»СЊ
                 m_mainSplitContainer.OnCurrentResultChanged += new MainSplitContainer.CurrentResultChangedHandler(CurrentResultChanged);
 
                 switch (m_state)

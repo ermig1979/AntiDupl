@@ -1,4 +1,4 @@
-/*
+п»ї/*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
 * Copyright (c) 2002-2018 Yermalayeu Ihar.
@@ -51,7 +51,7 @@ namespace ad
         if(m_pOptions->advanced.undoQueueSize)
         {
             TMap::iterator it = m_map.find(pImageInfo);
-			// Если в карте не найдено переданное изображение, то созлаем запись и удаляем файл
+			// Р•СЃР»Рё РІ РєР°СЂС‚Рµ РЅРµ РЅР°Р№РґРµРЅРѕ РїРµСЂРµРґР°РЅРЅРѕРµ РёР·РѕР±СЂР°Р¶РµРЅРёРµ, С‚Рѕ СЃРѕР·Р»Р°РµРј Р·Р°РїРёСЃСЊ Рё СѓРґР°Р»СЏРµРј С„Р°Р№Р»
             if(it == m_map.end())
             {
                 TRecord *pRecord = new TRecord();
@@ -123,7 +123,7 @@ namespace ad
         m_map.clear();
     }
 
-	// Создает иникальное имя для временного хранения удаленного файла, например: F:\Dupli\~~adt00000000~~seehofer.jpg
+	// РЎРѕР·РґР°РµС‚ РёРЅРёРєР°Р»СЊРЅРѕРµ РёРјСЏ РґР»СЏ РІСЂРµРјРµРЅРЅРѕРіРѕ С…СЂР°РЅРµРЅРёСЏ СѓРґР°Р»РµРЅРЅРѕРіРѕ С„Р°Р№Р»Р°, РЅР°РїСЂРёРјРµСЂ: F:\Dupli\~~adt00000000~~seehofer.jpg
     TString TRecycleBin::GetUniquePath(const TPath &path)
     {
         TString uniquePath;

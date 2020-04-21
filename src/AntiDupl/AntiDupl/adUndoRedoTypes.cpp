@@ -100,7 +100,7 @@ namespace ad
         return AD_OK;
     }
 
-	// Возврашает текущий индекс
+	// Р’РѕР·РІСЂР°С€Р°РµС‚ С‚РµРєСѓС‰РёР№ РёРЅРґРµРєСЃ
     adError TUndoRedoStage::GetCurrent(adSizePtr pCurrentIndex)
     {
         if(pCurrentIndex == NULL)
@@ -166,7 +166,7 @@ namespace ad
         return AD_OK;
     }
 
-	// Эскпортириет список результатов из хранилища.
+	// Р­СЃРєРїРѕСЂС‚РёСЂРёРµС‚ СЃРїРёСЃРѕРє СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РёР· С…СЂР°РЅРёР»РёС‰Р°.
     adError TUndoRedoStage::Export(adSizePtr pStartFrom, adResultPtrW pResult, adSizePtr pResultSize) const
     {
         if(pResult == NULL || pResultSize == NULL || pStartFrom == NULL)
@@ -254,8 +254,8 @@ namespace ad
 				return !((m_pOptions->ignorePaths.IsHasPath(a->path.Original()) != AD_IS_NOT_EXIST) ||
 						 (m_pOptions->ignorePaths.IsHasPath(a->path.GetDirectory()) != AD_IS_NOT_EXIST));
 			} 
-            bool operator()(TImageInfo* a, TImageInfo* b) const  //DUPL_IMAGE_PAIR true - оставлять, false- удалять
-            {	// != AD_IS_NOT_EXIST - есть в каталоге пропуска (удалить), == AD_IS_NOT_EXIST - нету в каталоге пропуска
+            bool operator()(TImageInfo* a, TImageInfo* b) const  //DUPL_IMAGE_PAIR true - РѕСЃС‚Р°РІР»СЏС‚СЊ, false- СѓРґР°Р»СЏС‚СЊ
+            {	// != AD_IS_NOT_EXIST - РµСЃС‚СЊ РІ РєР°С‚Р°Р»РѕРіРµ РїСЂРѕРїСѓСЃРєР° (СѓРґР°Р»РёС‚СЊ), == AD_IS_NOT_EXIST - РЅРµС‚Сѓ РІ РєР°С‚Р°Р»РѕРіРµ РїСЂРѕРїСѓСЃРєР°
 				return !((m_pOptions->ignorePaths.IsHasPath(a->path.Original()) != AD_IS_NOT_EXIST) ||
 					   (m_pOptions->ignorePaths.IsHasPath(a->path.GetDirectory()) != AD_IS_NOT_EXIST) ||
 					   (m_pOptions->ignorePaths.IsHasPath(b->path.Original()) != AD_IS_NOT_EXIST) ||
@@ -294,7 +294,7 @@ namespace ad
         }
     }
 
-	// Удаление неправильных результатов из списка результатов и сохранение состояния.
+	// РЈРґР°Р»РµРЅРёРµ РЅРµРїСЂР°РІРёР»СЊРЅС‹С… СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РёР· СЃРїРёСЃРєР° СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ Рё СЃРѕС…СЂР°РЅРµРЅРёРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ.
     template <class TValidator> void TUndoRedoStage::RemoveInvalid(const TValidator &validator, TStatus *pStatus, bool canCancel)
     {
         pStatus->SetProgress(0, 0);
@@ -335,7 +335,7 @@ namespace ad
                     }
                     break;
                 case AD_RESULT_DUPL_IMAGE_PAIR:
-                    if(validator(pResult->first, pResult->second)) //если хоть одна удалена
+                    if(validator(pResult->first, pResult->second)) //РµСЃР»Рё С…РѕС‚СЊ РѕРґРЅР° СѓРґР°Р»РµРЅР°
                     {
                         validList.push_back(pResult);
                         if(searchValidCurrent)

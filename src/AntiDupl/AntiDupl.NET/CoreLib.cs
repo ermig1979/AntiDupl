@@ -333,7 +333,7 @@ namespace AntiDupl.NET
         }
 
         /// <summary>
-        /// Возврашает общее количество групп.
+        /// Р’РѕР·РІСЂР°С€Р°РµС‚ РѕР±С‰РµРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РіСЂСѓРїРї.
         /// </summary>
         /// <returns></returns>
         public uint GetGroupSize()
@@ -349,7 +349,7 @@ namespace AntiDupl.NET
         }
 
         /// <summary>
-        /// Возврашает массив CoreImageInfo содержащихся в переданной группе.
+        /// Р’РѕР·РІСЂР°С€Р°РµС‚ РјР°СЃСЃРёРІ CoreImageInfo СЃРѕРґРµСЂР¶Р°С‰РёС…СЃСЏ РІ РїРµСЂРµРґР°РЅРЅРѕР№ РіСЂСѓРїРїРµ.
         /// </summary>
         /// <param name="groupId"></param>
         /// <param name="startFrom"></param>
@@ -393,7 +393,7 @@ namespace AntiDupl.NET
         }
 
         /// <summary>
-        /// Возвращает количество изображений в переданной группе.
+        /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ РёР·РѕР±СЂР°Р¶РµРЅРёР№ РІ РїРµСЂРµРґР°РЅРЅРѕР№ РіСЂСѓРїРїРµ.
         /// </summary>
         /// <param name="groupId"></param>
         /// <returns></returns>
@@ -478,7 +478,7 @@ namespace AntiDupl.NET
         }
 
         /// <summary>
-        /// Возврашает загруженное изображение по заланному пути и заданного размера.
+        /// Р’РѕР·РІСЂР°С€Р°РµС‚ Р·Р°РіСЂСѓР¶РµРЅРЅРѕРµ РёР·РѕР±СЂР°Р¶РµРЅРёРµ РїРѕ Р·Р°Р»Р°РЅРЅРѕРјСѓ РїСѓС‚Рё Рё Р·Р°РґР°РЅРЅРѕРіРѕ СЂР°Р·РјРµСЂР°.
         /// </summary>
         /// <param name="size"></param>
         /// <param name="path"></param>
@@ -555,8 +555,8 @@ namespace AntiDupl.NET
             }
             set
             {
-                CoreDll.adAdvancedOptions[] options = new CoreDll.adAdvancedOptions[1]; //создаем массив из одного значения
-                value.ConvertTo(ref options[0]); //конвертируем переданный класс
+                CoreDll.adAdvancedOptions[] options = new CoreDll.adAdvancedOptions[1]; //СЃРѕР·РґР°РµРј РјР°СЃСЃРёРІ РёР· РѕРґРЅРѕРіРѕ Р·РЅР°С‡РµРЅРёСЏ
+                value.ConvertTo(ref options[0]); //РєРѕРЅРІРµСЂС‚РёСЂСѓРµРј РїРµСЂРµРґР°РЅРЅС‹Р№ РєР»Р°СЃСЃ
                 m_dll.adOptionsSet(m_handle, CoreDll.OptionsType.Advanced, Marshal.UnsafeAddrOfPinnedArrayElement(options, 0));
             }
         }

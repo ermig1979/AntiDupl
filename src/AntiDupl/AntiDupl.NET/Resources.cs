@@ -1,4 +1,4 @@
-/*
+п»ї/*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
 * Copyright (c) 2002-2018 Yermalayeu Ihar.
@@ -147,7 +147,7 @@ namespace AntiDupl.NET
         {
             public delegate void CurrentChangeHandler();
             /// <summary>
-            /// Событие вызываемое при смене языка
+            /// РЎРѕР±С‹С‚РёРµ РІС‹Р·С‹РІР°РµРјРѕРµ РїСЂРё СЃРјРµРЅРµ СЏР·С‹РєР°
             /// </summary>
             public static event CurrentChangeHandler OnCurrentChange;
 

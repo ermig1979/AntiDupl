@@ -92,7 +92,7 @@ extern "C"
     typedef wchar_t adCharW;
     typedef char adCharA;
     typedef adCharW adPathW[MAX_PATH_EX];
-	typedef adCharW adPathWSF[MAX_PATH_EX + 1]; // 1 - для хранения bool subfolder
+	typedef adCharW adPathWSF[MAX_PATH_EX + 1]; // 1 - РґР»СЏ С…СЂР°РЅРµРЅРёСЏ bool subfolder
     typedef adCharA adPathA[MAX_PATH];
     typedef adPathW* adPathPtrW;
     typedef adPathA* adPathPtrA;
@@ -225,7 +225,7 @@ extern "C"
         AD_GLOBAL_ACTION_SIZE
     };
 
-    enum adLocalActionType : adInt32	//то же что и в CoreDll.cs
+    enum adLocalActionType : adInt32	//С‚Рѕ Р¶Рµ С‡С‚Рѕ Рё РІ CoreDll.cs
     {
         AD_LOCAL_ACTION_DELETE_DEFECT = 0,
         AD_LOCAL_ACTION_DELETE_FIRST = 1,
@@ -406,7 +406,7 @@ extern "C"
     };
     typedef adSearchOptions* adSearchOptionsPtr;
 
-    struct adCompareOptions //так же должен быть определен в CoreDll.cs и похоже в CoreCompareOptions.cs
+    struct adCompareOptions //С‚Р°Рє Р¶Рµ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РѕРїСЂРµРґРµР»РµРЅ РІ CoreDll.cs Рё РїРѕС…РѕР¶Рµ РІ CoreCompareOptions.cs
     {
         adBool checkOnEquality;    
         adBool transformedImage;    
@@ -525,7 +525,7 @@ extern "C"
     };
     typedef adImageInfoA* adImageInfoPtrA;
 
-	// Структура для взаимодействия dll, передает нужные параметры из структуры TImageInfo
+	// РЎС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ РІР·Р°РёРјРѕРґРµР№СЃС‚РІРёСЏ dll, РїРµСЂРµРґР°РµС‚ РЅСѓР¶РЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹ РёР· СЃС‚СЂСѓРєС‚СѓСЂС‹ TImageInfo
     struct adImageInfoW
     {
         adSize id;

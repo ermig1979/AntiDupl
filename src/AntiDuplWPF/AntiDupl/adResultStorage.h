@@ -82,7 +82,7 @@ namespace ad
         TMistakeStorage *m_pMistakeStorage;
         TDuplResultFilter *m_pDuplResultFilter;
         size_t m_nextId;
-		// Текущее состояние результатов вектор структур TResult
+		// РўРµРєСѓС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РІРµРєС‚РѕСЂ СЃС‚СЂСѓРєС‚СѓСЂ TResult
         TUndoRedoStage * m_pCurrent;
     };
 }

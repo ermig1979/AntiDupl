@@ -49,7 +49,7 @@ namespace ad
             delete m_pGrayBuffers[i];
     }
     
-	// Собирание информации об изображение из переданной TImageData
+	// РЎРѕР±РёСЂР°РЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё РѕР± РёР·РѕР±СЂР°Р¶РµРЅРёРµ РёР· РїРµСЂРµРґР°РЅРЅРѕР№ TImageData
     void TDataCollector::Fill(TImageData* pImageData)
     {
         AD_FUNCTION_PERFORMANCE_TEST
@@ -66,7 +66,7 @@ namespace ad
         pImageData->FreeGlobal();
     }
 
-	// Заполняем переданный TImageData из TImage хранящейся в глобальном хуке pImageData, создание уменьшенного изображения
+	// Р—Р°РїРѕР»РЅСЏРµРј РїРµСЂРµРґР°РЅРЅС‹Р№ TImageData РёР· TImage С…СЂР°РЅСЏС‰РµР№СЃСЏ РІ РіР»РѕР±Р°Р»СЊРЅРѕРј С…СѓРєРµ pImageData, СЃРѕР·РґР°РЅРёРµ СѓРјРµРЅСЊС€РµРЅРЅРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ
     void TDataCollector::FillPixelData(TImageData* pImageData)
     {
         AD_FUNCTION_PERFORMANCE_TEST

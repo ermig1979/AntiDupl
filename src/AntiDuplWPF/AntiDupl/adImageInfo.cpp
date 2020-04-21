@@ -65,7 +65,7 @@ namespace ad
         return *this;
     }
 
-	// Экспортируем информацию об изображение в переданный указатель.
+	// Р­РєСЃРїРѕСЂС‚РёСЂСѓРµРј РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± РёР·РѕР±СЂР°Р¶РµРЅРёРµ РІ РїРµСЂРµРґР°РЅРЅС‹Р№ СѓРєР°Р·Р°С‚РµР»СЊ.
     bool TImageInfo::Export(adImageInfoPtrA pImageInfo) const
     {
         if(pImageInfo == NULL)

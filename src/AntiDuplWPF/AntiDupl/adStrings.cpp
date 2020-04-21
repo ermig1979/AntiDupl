@@ -55,7 +55,7 @@ namespace ad
 	}
 	//-------------------------------------------------------------------------
 #ifdef UNICODE
-	// Ñîçäàåò TString èç char * è ðàçìåðà
+	// Ð¡Ð¾Ð·Ð´Ð°ÐµÑ‚ TString Ð¸Ð· char * Ð¸ Ñ€Ð°Ð·Ð¼ÐµÑ€Ð°
 	TString::TString(const char *str, size_t size)
 	{
 		this->resize(size);
@@ -68,7 +68,7 @@ namespace ad
 	{
 	}
 
-	// Ñîçäàåò TString èç ôðàãìåíòà char * îò first äî last
+	// Ð¡Ð¾Ð·Ð´Ð°ÐµÑ‚ TString Ð¸Ð· Ñ„Ñ€Ð°Ð³Ð¼ÐµÐ½Ñ‚Ð° char * Ð¾Ñ‚ first Ð´Ð¾ last
 	TString::TString(const char *first, const char *last)
 	{
 		size_t size = last - first;
@@ -82,7 +82,7 @@ namespace ad
 	{
 	}
 
-	// Ñîçäàåò TString èç char * è ðàçìåðà
+	// Ð¡Ð¾Ð·Ð´Ð°ÐµÑ‚ TString Ð¸Ð· char * Ð¸ Ñ€Ð°Ð·Ð¼ÐµÑ€Ð°
 	TString::TString(const char *str)
 	{
 		size_t size = strlen(str);
@@ -116,19 +116,19 @@ namespace ad
 		return result;
 	}
 
-	// Îáðåçàåò íà÷àëüíûå è êîíöåâûå ïðîáåëû.
+	// ÐžÐ±Ñ€ÐµÐ·Ð°ÐµÑ‚ Ð½Ð°Ñ‡Ð°Ð»ÑŒÐ½Ñ‹Ðµ Ð¸ ÐºÐ¾Ð½Ñ†ÐµÐ²Ñ‹Ðµ Ð¿Ñ€Ð¾Ð±ÐµÐ»Ñ‹.
 	void TString::Trim()
 	{
 		if (this->length() > 0)
 		{
-			// Íàõîäèì íà÷àëî áåç ïðîáåëîâ.
+			// ÐÐ°Ñ…Ð¾Ð´Ð¸Ð¼ Ð½Ð°Ñ‡Ð°Ð»Ð¾ Ð±ÐµÐ· Ð¿Ñ€Ð¾Ð±ÐµÐ»Ð¾Ð².
 			TString::const_iterator it = this->begin();
 			while (it != this->end() && iswspace(*it))
 				it++;
 
 			it = this->erase(this->begin(), it);
 
-			// Íàõîäèì êîíåö áåç ïðîáåëîâ.
+			// ÐÐ°Ñ…Ð¾Ð´Ð¸Ð¼ ÐºÐ¾Ð½ÐµÑ† Ð±ÐµÐ· Ð¿Ñ€Ð¾Ð±ÐµÐ»Ð¾Ð².
 			TString::const_reverse_iterator rit = this->rbegin();
 			while (rit.base() != it && iswspace(*rit))
 				rit++;
@@ -155,7 +155,7 @@ namespace ad
 		return false;
 	}
 
-	// Êîïèðîâàòü â áóôåð. Ïåðåäàåòñÿ áóôåð è ðàçìåð áóôåðà.
+	// ÐšÐ¾Ð¿Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ Ð² Ð±ÑƒÑ„ÐµÑ€. ÐŸÐµÑ€ÐµÐ´Ð°ÐµÑ‚ÑÑ Ð±ÑƒÑ„ÐµÑ€ Ð¸ Ñ€Ð°Ð·Ð¼ÐµÑ€ Ð±ÑƒÑ„ÐµÑ€Ð°.
 	bool TString::CopyTo(wchar_t *buffer, size_t size) const
 	{
 		if(length() >= size)

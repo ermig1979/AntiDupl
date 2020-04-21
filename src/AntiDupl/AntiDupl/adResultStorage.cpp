@@ -163,7 +163,7 @@ namespace ad
         if(targetType < 0 && targetType >= AD_TARGET_SIZE)
             return AD_ERROR_INVALID_TARGET_TYPE;
 
-		// Çàïðåøåíà çàìåíà âûäåëííûõ
+		// Ð—Ð°Ð¿Ñ€ÐµÑˆÐµÐ½Ð° Ð·Ð°Ð¼ÐµÐ½Ð° Ð²Ñ‹Ð´ÐµÐ»Ð½Ð½Ñ‹Ñ…
         /*if(targetType == AD_TARGET_SELECTED &&
            (localActionType == AD_LOCAL_ACTION_RENAME_FIRST_TO_SECOND || localActionType == AD_LOCAL_ACTION_RENAME_SECOND_TO_FIRST))
             return AD_ERROR_INVALID_PARAMETER_COMBINATION;*/
@@ -199,7 +199,7 @@ namespace ad
             return AD_ERROR_ZERO_TARGET;
 
         TResult *pResult = pCurrent->results[pCurrent->currentIndex];
-		// Äåôåêòíûå èçîáðàæåíèÿ íå ïåðåìåùàåì.
+		// Ð”ÐµÑ„ÐµÐºÑ‚Ð½Ñ‹Ðµ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ñ Ð½Ðµ Ð¿ÐµÑ€ÐµÐ¼ÐµÑ‰Ð°ÐµÐ¼.
         if(pResult->type == AD_RESULT_DEFECT_IMAGE)
             return AD_ERROR_ZERO_TARGET;
 
@@ -216,7 +216,7 @@ namespace ad
             return AD_ERROR_ZERO_TARGET;
 
         TResult *pResult = pCurrent->results[pCurrent->currentIndex];
-		// Äåôåêòíûå èçîáðàæåíèÿ íå ïåðåèìåíîâûâàåì.
+		// Ð”ÐµÑ„ÐµÐºÑ‚Ð½Ñ‹Ðµ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ñ Ð½Ðµ Ð¿ÐµÑ€ÐµÐ¸Ð¼ÐµÐ½Ð¾Ð²Ñ‹Ð²Ð°ÐµÐ¼.
         if(pResult->type == AD_RESULT_DEFECT_IMAGE)
             return AD_ERROR_ZERO_TARGET;
 
@@ -228,9 +228,9 @@ namespace ad
     {
         m_pUndoRedoEngine->Clear();
         m_pUndoRedoEngine->Current()->RemoveInvalid(m_pStatus, m_pMistakeStorage);
-		m_pUndoRedoEngine->Current()->RemoveSkipped(m_pStatus, m_pOptions); //óäàëÿåò èç ðåçóëüòàòîâ ïðîïóñêàåìûå
-        m_pUndoRedoEngine->Current()->SetGroups(m_pStatus); //î÷èùàåò âíóòðåííåå õðàíèëèùå ãðóïï
-		m_pUndoRedoEngine->Current()->UpdateGroups(); //îáíîâëÿåò ãðóïïû èç ðåçóëüòàòîâ
+		m_pUndoRedoEngine->Current()->RemoveSkipped(m_pStatus, m_pOptions); //ÑƒÐ´Ð°Ð»ÑÐµÑ‚ Ð¸Ð· Ñ€ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð°Ñ‚Ð¾Ð² Ð¿Ñ€Ð¾Ð¿ÑƒÑÐºÐ°ÐµÐ¼Ñ‹Ðµ
+        m_pUndoRedoEngine->Current()->SetGroups(m_pStatus); //Ð¾Ñ‡Ð¸Ñ‰Ð°ÐµÑ‚ Ð²Ð½ÑƒÑ‚Ñ€ÐµÐ½Ð½ÐµÐµ Ñ…Ñ€Ð°Ð½Ð¸Ð»Ð¸Ñ‰Ðµ Ð³Ñ€ÑƒÐ¿Ð¿
+		m_pUndoRedoEngine->Current()->UpdateGroups(); //Ð¾Ð±Ð½Ð¾Ð²Ð»ÑÐµÑ‚ Ð³Ñ€ÑƒÐ¿Ð¿Ñ‹ Ð¸Ð· Ñ€ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð°Ñ‚Ð¾Ð²
         m_pUndoRedoEngine->Current()->UpdateHints(m_pOptions, true, m_pStatus);
     }
 
@@ -284,7 +284,7 @@ namespace ad
 		return m_pUndoRedoEngine->Current()->groups.Export(groupId, pStartFrom, pImageInfo, pImageInfoSize);
 	}
 
-	// Âûçûâàåòñÿ ïðè çàïðîñå èíôîðìàöèè î ðàçìåðàõ ãðóïï.
+	// Ð’Ñ‹Ð·Ñ‹Ð²Ð°ÐµÑ‚ÑÑ Ð¿Ñ€Ð¸ Ð·Ð°Ð¿Ñ€Ð¾ÑÐµ Ð¸Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸Ð¸ Ð¾ Ñ€Ð°Ð·Ð¼ÐµÑ€Ð°Ñ… Ð³Ñ€ÑƒÐ¿Ð¿.
 	adError TResultStorage::Export(adSize groupId, adSizePtr pStartFrom, adImageInfoPtrW pImageInfo, adSizePtr pImageInfoSize) const
 	{
 		return m_pUndoRedoEngine->Current()->groups.Export(groupId, pStartFrom, pImageInfo, pImageInfoSize);
@@ -300,7 +300,7 @@ namespace ad
 		return m_pUndoRedoEngine->Current()->groups.GetSelection(groupId, pStartFrom, pSelection, pSelectionSize);
 	}
 	
-	// Ïåðåèìåíîâûâàåò ôàéë ñ çàäàííîé ãðóïïîé è èíäåêñîì â ñïèñêå ðåçóëüòàòîâ.
+	// ÐŸÐµÑ€ÐµÐ¸Ð¼ÐµÐ½Ð¾Ð²Ñ‹Ð²Ð°ÐµÑ‚ Ñ„Ð°Ð¹Ð» Ñ Ð·Ð°Ð´Ð°Ð½Ð½Ð¾Ð¹ Ð³Ñ€ÑƒÐ¿Ð¿Ð¾Ð¹ Ð¸ Ð¸Ð½Ð´ÐµÐºÑÐ¾Ð¼ Ð² ÑÐ¿Ð¸ÑÐºÐµ Ñ€ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð°Ñ‚Ð¾Ð².
     adError TResultStorage::Rename(adSize groupId, adSize index, const TString & newFileName)
     {
         TImageGroupPtr pImageGroup = m_pUndoRedoEngine->Current()->groups.Get(groupId, false);

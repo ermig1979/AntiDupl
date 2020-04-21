@@ -81,7 +81,7 @@ namespace ad
 		FreeGlobal();
 	}
 
-	// Копируем TImageData
+	// РљРѕРїРёСЂСѓРµРј TImageData
 	TImageData& TImageData::operator = (const TImageData& imageData)
 	{
 		*(static_cast<TImageInfo*>(this)) = imageData;
@@ -148,7 +148,7 @@ namespace ad
 		return AD_DEFECT_NONE;
 	}
 
-	// Создание сильно уменьшенного изображения
+	// РЎРѕР·РґР°РЅРёРµ СЃРёР»СЊРЅРѕ СѓРјРµРЅСЊС€РµРЅРЅРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ
 	void TImageData::FillOther(TOptions *pOptions)
 	{
 		if(type > AD_IMAGE_NONE)
@@ -168,7 +168,7 @@ namespace ad
 			valid = pOptions->validPaths.IsHasSubPath(path) != AD_IS_NOT_EXIST || 
 				pOptions->validPaths.IsHasPath(path) != AD_IS_NOT_EXIST;
 
-			//узнаем в каком из путей содержится и записываем индекс путя.
+			//СѓР·РЅР°РµРј РІ РєР°РєРѕРј РёР· РїСѓС‚РµР№ СЃРѕРґРµСЂР¶РёС‚СЃСЏ Рё Р·Р°РїРёСЃС‹РІР°РµРј РёРЅРґРµРєСЃ РїСѓС‚СЏ.
 			index = pOptions->searchPaths.IsHasSubPath(path);
 		}
 	}

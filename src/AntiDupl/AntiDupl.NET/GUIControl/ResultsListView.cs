@@ -33,7 +33,7 @@ namespace AntiDupl.NET
 {
     /// <summary>
     /// Class output result in ListView.
-    /// Класс вывода результатов в ListView.
+    /// РљР»Р°СЃСЃ РІС‹РІРѕРґР° СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РІ ListView.
     /// </summary>
     public class ResultsListView : DataGridView
     {
@@ -251,10 +251,10 @@ namespace AntiDupl.NET
         }
 
         /// <summary>
-        /// Меняет путь у текущей картинки на заданный.
+        /// РњРµРЅСЏРµС‚ РїСѓС‚СЊ Сѓ С‚РµРєСѓС‰РµР№ РєР°СЂС‚РёРЅРєРё РЅР° Р·Р°РґР°РЅРЅС‹Р№.
         /// </summary>
         /// <param name="renameCurrentType"></param>
-        /// <param name="newFileName">Новый путь</param>
+        /// <param name="newFileName">РќРѕРІС‹Р№ РїСѓС‚СЊ</param>
         public void RenameCurrent(CoreDll.RenameCurrentType renameCurrentType, string newFileName)
         {
             m_makeAction = true;
@@ -264,7 +264,7 @@ namespace AntiDupl.NET
         }
 
         /// <summary>
-        /// Перенести текущую группу в папку.
+        /// РџРµСЂРµРЅРµСЃС‚Рё С‚РµРєСѓС‰СѓСЋ РіСЂСѓРїРїСѓ РІ РїР°РїРєСѓ.
         /// </summary>
         /// <param name="directory"></param>
         public void MoveCurrentGroupToDirectory(string directory)

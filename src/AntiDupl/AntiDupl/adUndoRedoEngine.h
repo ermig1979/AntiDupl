@@ -91,7 +91,7 @@ namespace ad
 
         TUndoRedoStagePtrDeque *m_pUndoDeque;
         TUndoRedoStagePtrDeque *m_pRedoDeque;
-		// Текущее состояние результатов вектор структур TResult
+		// РўРµРєСѓС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РІРµРєС‚РѕСЂ СЃС‚СЂСѓРєС‚СѓСЂ TResult
         TUndoRedoStagePtr m_pCurrent;
     };
 }

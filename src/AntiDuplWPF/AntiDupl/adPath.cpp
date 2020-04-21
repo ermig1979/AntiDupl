@@ -160,17 +160,17 @@ namespace ad
 	{
 		const TChar *p1 = path1.m_compare.directory.first;
 		const TChar *p2 = path2.m_compare.directory.first;
-		while(*p1 != 0 && *p2 != 0 && *p1 == *p2) //åñëè ñèìâîëû ðàâíû óäàëÿåì èõ
+		while(*p1 != 0 && *p2 != 0 && *p1 == *p2) //ÐµÑÐ»Ð¸ ÑÐ¸Ð¼Ð²Ð¾Ð»Ñ‹ Ñ€Ð°Ð²Ð½Ñ‹ ÑƒÐ´Ð°Ð»ÑÐµÐ¼ Ð¸Ñ…
 		{
 			p1++;
 			p2++;
 		}
 		if(*p1 == 0 && *p2 == 0)
 			return EQUAL; 
-		if(*p1 == 0 && *p2 == DELIMETER && path1.m_enableSubFolder == true) //åñëè âòîðîé íà÷èíàåòñÿ ñî ñëåøà è âêëþ÷åíû ñóáäèðåêòîðèè
-			return SECOND; //âòîðîé ïóòü âõîäèò â ïåðâûé
+		if(*p1 == 0 && *p2 == DELIMETER && path1.m_enableSubFolder == true) //ÐµÑÐ»Ð¸ Ð²Ñ‚Ð¾Ñ€Ð¾Ð¹ Ð½Ð°Ñ‡Ð¸Ð½Ð°ÐµÑ‚ÑÑ ÑÐ¾ ÑÐ»ÐµÑˆÐ° Ð¸ Ð²ÐºÐ»ÑŽÑ‡ÐµÐ½Ñ‹ ÑÑƒÐ±Ð´Ð¸Ñ€ÐµÐºÑ‚Ð¾Ñ€Ð¸Ð¸
+			return SECOND; //Ð²Ñ‚Ð¾Ñ€Ð¾Ð¹ Ð¿ÑƒÑ‚ÑŒ Ð²Ñ…Ð¾Ð´Ð¸Ñ‚ Ð² Ð¿ÐµÑ€Ð²Ñ‹Ð¹
 		if(*p2 == 0 && *p1 == DELIMETER && path2.m_enableSubFolder == true)
-			return FIRST;  //ïåðâàÿ âõîäèò âî âòîðóþ
+			return FIRST;  //Ð¿ÐµÑ€Ð²Ð°Ñ Ð²Ñ…Ð¾Ð´Ð¸Ñ‚ Ð²Ð¾ Ð²Ñ‚Ð¾Ñ€ÑƒÑŽ
 		return NONE;
 	}
 
@@ -214,7 +214,7 @@ namespace ad
 		return AD_OK;
 	}
 
-	//ïðîâåðÿåò ñîäåðæèòñÿ ëè â íàøèõ ïóòÿõ m_paths ïåðåäàííûé path
+	//Ð¿Ñ€Ð¾Ð²ÐµÑ€ÑÐµÑ‚ ÑÐ¾Ð´ÐµÑ€Ð¶Ð¸Ñ‚ÑÑ Ð»Ð¸ Ð² Ð½Ð°ÑˆÐ¸Ñ… Ð¿ÑƒÑ‚ÑÑ… m_paths Ð¿ÐµÑ€ÐµÐ´Ð°Ð½Ð½Ñ‹Ð¹ path
     size_t TPathContainer::IsHasPath(const TPath& path) const
     {
         const_iterator i = std::lower_bound(m_paths.begin(), m_paths.end(), path, TPath::LesserByPath);
@@ -242,7 +242,7 @@ namespace ad
         return AD_IS_NOT_EXIST;
     }
 
-	//Ïðîâåðêà íà âõîæäåíèå ïóòåé äðóã â äðóãà
+	//ÐŸÑ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð½Ð° Ð²Ñ…Ð¾Ð¶Ð´ÐµÐ½Ð¸Ðµ Ð¿ÑƒÑ‚ÐµÐ¹ Ð´Ñ€ÑƒÐ³ Ð² Ð´Ñ€ÑƒÐ³Ð°
     void TPathContainer::Set(const TPathContainer::TPathVector& tmp)
     {
         m_paths.clear();
@@ -264,9 +264,9 @@ namespace ad
                 case TPath::NONE:
                     m_paths.push_back(*i_tmp);
                     break;
-                case TPath::FIRST: //óæå åñòü â ñïèñêå, íå äîáàâëÿåì
+                case TPath::FIRST: //ÑƒÐ¶Ðµ ÐµÑÑ‚ÑŒ Ð² ÑÐ¿Ð¸ÑÐºÐµ, Ð½Ðµ Ð´Ð¾Ð±Ð°Ð²Ð»ÑÐµÐ¼
                     break;
-                case TPath::SECOND: //äîáàâëÿåì äèðåêòîðèþ êîòîðàÿ âêëþ÷àåò òó ÷òî óæå â ñïèñêå, îñòàâëÿåì ýòó, òó ñòèðàåì
+                case TPath::SECOND: //Ð´Ð¾Ð±Ð°Ð²Ð»ÑÐµÐ¼ Ð´Ð¸Ñ€ÐµÐºÑ‚Ð¾Ñ€Ð¸ÑŽ ÐºÐ¾Ñ‚Ð¾Ñ€Ð°Ñ Ð²ÐºÐ»ÑŽÑ‡Ð°ÐµÑ‚ Ñ‚Ñƒ Ñ‡Ñ‚Ð¾ ÑƒÐ¶Ðµ Ð² ÑÐ¿Ð¸ÑÐºÐµ, Ð¾ÑÑ‚Ð°Ð²Ð»ÑÐµÐ¼ ÑÑ‚Ñƒ, Ñ‚Ñƒ ÑÑ‚Ð¸Ñ€Ð°ÐµÐ¼
                     *i_main = i_tmp->Original();
                     break;
                 case TPath::EQUAL:

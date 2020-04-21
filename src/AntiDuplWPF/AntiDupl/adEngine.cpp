@@ -84,7 +84,7 @@ namespace ad
         m_pStatus->SetProgress(0, 0);
         m_pResult->Clear();
 
-		//заполняет m_pImageDataPtrs
+		//Р·Р°РїРѕР»РЅСЏРµС‚ m_pImageDataPtrs
         m_pSearcher->SearchImages();
 
         if(m_pOptions->compare.checkOnEquality == TRUE)

@@ -39,8 +39,8 @@ namespace AntiDupl.NET
 
         private CoreLib m_core;
         private Options m_options;
-        private CoreOptions m_oldCoreOptions; //опции до изменения
-        private CoreOptions m_newCoreOptions; //опции после изменения
+        private CoreOptions m_oldCoreOptions; //РѕРїС†РёРё РґРѕ РёР·РјРµРЅРµРЅРёСЏ
+        private CoreOptions m_newCoreOptions; //РѕРїС†РёРё РїРѕСЃР»Рµ РёР·РјРµРЅРµРЅРёСЏ
 
         private Button m_okButton;
         private Button m_cancelButton;
@@ -338,10 +338,10 @@ namespace AntiDupl.NET
         }
 
         /// <summary>
-        /// Обновляет содержимое ListBox
+        /// РћР±РЅРѕРІР»СЏРµС‚ СЃРѕРґРµСЂР¶РёРјРѕРµ ListBox
         /// </summary>
-        /// <param name="path">Пути для обновления</param>
-        /// <param name="box">Обновляемый ListBox</param>
+        /// <param name="path">РџСѓС‚Рё РґР»СЏ РѕР±РЅРѕРІР»РµРЅРёСЏ</param>
+        /// <param name="box">РћР±РЅРѕРІР»СЏРµРјС‹Р№ ListBox</param>
         static private void UpdatePath(string[] path, ListBox box)
         {
             int selectedIndex = box.SelectedIndex;
@@ -567,7 +567,7 @@ namespace AntiDupl.NET
         private CorePathWithSubFolder[] GetActualPath(string[] path)
         {
             List<CorePathWithSubFolder> actualPath = new List<CorePathWithSubFolder>();
-            string[] actualExtensions = m_oldCoreOptions.searchOptions.GetActualExtensions(); //список поддерживаемых расширений
+            string[] actualExtensions = m_oldCoreOptions.searchOptions.GetActualExtensions(); //СЃРїРёСЃРѕРє РїРѕРґРґРµСЂР¶РёРІР°РµРјС‹С… СЂР°СЃС€РёСЂРµРЅРёР№
             for (int i = 0; i < path.Length; ++i)
             {
                 if (Directory.Exists(path[i]))
@@ -585,7 +585,7 @@ namespace AntiDupl.NET
                         string extension = fileInfo.Extension.ToUpper().Substring(1);
                         for (int j = 0; j < actualExtensions.Length; ++j)
                         {
-                            if (extension == actualExtensions[j]) //если расширение из списка поддерживаемых
+                            if (extension == actualExtensions[j]) //РµСЃР»Рё СЂР°СЃС€РёСЂРµРЅРёРµ РёР· СЃРїРёСЃРєР° РїРѕРґРґРµСЂР¶РёРІР°РµРјС‹С…
                             {
                                 CorePathWithSubFolder sfPath = new CorePathWithSubFolder();
                                 sfPath.path = path[i];

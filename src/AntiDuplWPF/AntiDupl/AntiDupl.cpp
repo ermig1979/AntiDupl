@@ -321,7 +321,7 @@ DLLAPI adError adPathSetW(adPathType pathType, adPathPtrW pPath, adSize pathSize
 	return PathSet(pathType, pPath, pathSize);
 }
 
-// pathType - тип пути, pPaths - указатель на переменную пути, pathSize - количество путей
+// pathType - С‚РёРї РїСѓС‚Рё, pPaths - СѓРєР°Р·Р°С‚РµР»СЊ РЅР° РїРµСЂРµРјРµРЅРЅСѓСЋ РїСѓС‚Рё, pathSize - РєРѕР»РёС‡РµСЃС‚РІРѕ РїСѓС‚РµР№
 DLLAPI adError adPathWithSubFolderSetW(adPathType pathType, adPathWSFPtr pPaths, adSize pathSize)
 {
 	CHECK_ACCESS LOCK

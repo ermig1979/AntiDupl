@@ -37,14 +37,14 @@ namespace ad
 	class TImageDataStorage;
     typedef TImageData* TImageDataPtr;
     //-------------------------------------------------------------------------
-	// Общий класс движка
+	// РћР±С‰РёР№ РєР»Р°СЃСЃ РґРІРёР¶РєР°
     class TImageComparer
     {
     protected:
         typedef std::list<TImageDataPtr> TImageDataPtrList;
         struct Set
         {
-            TImageDataPtrList valid; //проверенные
+            TImageDataPtrList valid; //РїСЂРѕРІРµСЂРµРЅРЅС‹Рµ
             TImageDataPtrList other;
         };
         typedef std::vector<Set> Sets;
@@ -60,7 +60,7 @@ namespace ad
     protected:
         virtual void Add(TImageDataPtr pImageData) = 0; // pure virtual or abstract function and requires to be overwritten in an derived class
         virtual void Compare(TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform) = 0;
-		virtual bool IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference); //виртуальная функция, но не обязательно ее переопределять
+		virtual bool IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference); //РІРёСЂС‚СѓР°Р»СЊРЅР°СЏ С„СѓРЅРєС†РёСЏ, РЅРѕ РЅРµ РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ РµРµ РїРµСЂРµРѕРїСЂРµРґРµР»СЏС‚СЊ
 
         void AddToSet(Set &set, TImageDataPtr pImageData);
         void CompareWithSet(const Set &set, TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform);
@@ -80,7 +80,7 @@ namespace ad
     class TImageComparer_0D : public TImageComparer 
     {
     public:
-        TImageComparer_0D(TEngine *pEngine); //конструктор
+        TImageComparer_0D(TEngine *pEngine); //РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
 
     protected:
         virtual void Add(TImageDataPtr pImageData);
@@ -106,7 +106,7 @@ namespace ad
     //-------------------------------------------------------------------------
     class TImageComparer_3D : public TImageComparer
     {
-		// Многомерные индексы
+		// РњРЅРѕРіРѕРјРµСЂРЅС‹Рµ РёРЅРґРµРєСЃС‹
         struct TIndex
         {
             int s;//total sum of fast data pixels;
@@ -131,7 +131,7 @@ namespace ad
     class TImageComparer_SSIM : public TImageComparer 
     {
     public:
-        TImageComparer_SSIM(TEngine *pEngine); //конструктор
+        TImageComparer_SSIM(TEngine *pEngine); //РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
 
     protected:
         virtual void Add(TImageDataPtr pImageData);

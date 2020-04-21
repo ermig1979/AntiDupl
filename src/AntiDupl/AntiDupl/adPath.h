@@ -1,4 +1,4 @@
-/*
+п»ї/*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
 * Copyright (c) 2002-2018 Yermalayeu Ihar, 2013-2018 Borisov Dmitry.
@@ -93,7 +93,7 @@ namespace ad
 		static TIsSubPath IsSubPath(const TPath& path1, const TPath& path2);
 		bool IsSubPath(const TPath& path) const {return IsSubPath(*this, path) == SECOND;}
 
-		// Подсчет crc для пути.
+		// РџРѕРґСЃС‡РµС‚ crc РґР»СЏ РїСѓС‚Рё.
 		inline unsigned __int32 GetCrc32() const 
 		{
 			return SimdCrc32c(m_compare.string.c_str(), m_compare.string.length()*sizeof(TChar));
@@ -115,7 +115,7 @@ namespace ad
 		}
 
 		//-----------------------------------------------------------------------------
-		// Статические функции класса.
+		// РЎС‚Р°С‚РёС‡РµСЃРєРёРµ С„СѓРЅРєС†РёРё РєР»Р°СЃСЃР°.
 
 		static inline int CompareByPath(const TPath& path1, const TPath& path2) 
 		{

@@ -32,7 +32,7 @@ namespace AntiDupl.NET
 {
     /// <summary>
     /// Set table of out defect and dublicate pair.
-    /// Установка таблицы вывода дефектов и дубликатов.
+    /// РЈСЃС‚Р°РЅРѕРІРєР° С‚Р°Р±Р»РёС†С‹ РІС‹РІРѕРґР° РґРµС„РµРєС‚РѕРІ Рё РґСѓР±Р»РёРєР°С‚РѕРІ.
     /// </summary>
     public class ResultRowSetter
     {
@@ -250,7 +250,7 @@ namespace AntiDupl.NET
 
         /// <summary>
         /// Set cell defect in vertical mode.
-        /// Установка яйчейки дефектов в вертикальном режиме.
+        /// РЈСЃС‚Р°РЅРѕРІРєР° СЏР№С‡РµР№РєРё РґРµС„РµРєС‚РѕРІ РІ РІРµСЂС‚РёРєР°Р»СЊРЅРѕРј СЂРµР¶РёРјРµ.
         /// </summary>
         private void SetDefectToRowVertical(DataGridViewCellCollection cells, CoreResult result)
         {
@@ -275,7 +275,7 @@ namespace AntiDupl.NET
 
         /// <summary>
         /// Set cell defect in horizontal mode.
-        /// Установка яйчейки дефектов в горизонтальном режиме.
+        /// РЈСЃС‚Р°РЅРѕРІРєР° СЏР№С‡РµР№РєРё РґРµС„РµРєС‚РѕРІ РІ РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅРѕРј СЂРµР¶РёРјРµ.
         /// </summary>
         private void SetDefectToRowHorizontal(DataGridViewCellCollection cells, CoreResult result)
         {
@@ -402,7 +402,7 @@ namespace AntiDupl.NET
 
         /// <summary>
         /// Set cell duplicate pair in vertical mode.
-        /// Установка яйчеек пар дубликатов в вертикальном режиме.
+        /// РЈСЃС‚Р°РЅРѕРІРєР° СЏР№С‡РµРµРє РїР°СЂ РґСѓР±Р»РёРєР°С‚РѕРІ РІ РІРµСЂС‚РёРєР°Р»СЊРЅРѕРј СЂРµР¶РёРјРµ.
         /// </summary>
         private void SetDuplPairToRowVertical(DataGridViewCellCollection cells, CoreResult result)
         {
@@ -451,7 +451,7 @@ namespace AntiDupl.NET
             cells[(int)ResultsListView.ColumnsTypeVertical.FileSize].Style.Alignment = DataGridViewContentAlignment.MiddleRight;
 
             doubleCell = new DataGridViewDoubleTextBoxCell(result.first.GetBlockinessString(), result.second.GetBlockinessString());
-            if (result.first.blockiness > result.second.blockiness) //подсветка highlight
+            if (result.first.blockiness > result.second.blockiness) //РїРѕРґСЃРІРµС‚РєР° highlight
                 doubleCell.markType = DataGridViewDoubleTextBoxCell.MarkType.First;
             else if (result.first.blockiness < result.second.blockiness)
                 doubleCell.markType = DataGridViewDoubleTextBoxCell.MarkType.Second;
@@ -515,7 +515,7 @@ namespace AntiDupl.NET
             cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileSize].Style.Alignment = DataGridViewContentAlignment.MiddleRight;
             cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileTime].Value = result.second.GetFileTimeString();
 
-            if (result.first.height * result.first.width > result.second.height * result.second.width) //подсветка highlight
+            if (result.first.height * result.first.width > result.second.height * result.second.width) //РїРѕРґСЃРІРµС‚РєР° highlight
             {
                 cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageSize].Style.ForeColor = m_dataGridView.DefaultCellStyle.ForeColor;
                 cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageSize].Style.ForeColor = Color.Red;

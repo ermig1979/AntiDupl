@@ -1,4 +1,4 @@
-/*
+п»ї/*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
 * Copyright (c) 2002-2018 Yermalayeu Ihar.
@@ -31,7 +31,7 @@ using System.Diagnostics;
 namespace AntiDupl.NET
 {
     /// <summary>
-    /// Панель которая включает в себя панель с просмотра изображеня и панель инструментов для работы с дефектными изображенями.
+    /// РџР°РЅРµР»СЊ РєРѕС‚РѕСЂР°СЏ РІРєР»СЋС‡Р°РµС‚ РІ СЃРµР±СЏ РїР°РЅРµР»СЊ СЃ РїСЂРѕСЃРјРѕС‚СЂР° РёР·РѕР±СЂР°Р¶РµРЅСЏ Рё РїР°РЅРµР»СЊ РёРЅСЃС‚СЂСѓРјРµРЅС‚РѕРІ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РґРµС„РµРєС‚РЅС‹РјРё РёР·РѕР±СЂР°Р¶РµРЅСЏРјРё.
     /// </summary>
     public class ResultsPreviewDefect : ResultsPreviewBase
     {

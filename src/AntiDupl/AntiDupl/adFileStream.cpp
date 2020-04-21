@@ -129,7 +129,7 @@ namespace ad
 			throw TException(AD_ERROR_INVALID_FILE_FORMAT);
 	}
 
-	// Загружаем данные изображения
+	// Р—Р°РіСЂСѓР¶Р°РµРј РґР°РЅРЅС‹Рµ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ
 	void TInputFileStream::Load(TImageInfo & imageInfo) const
 	{
 		imageInfo = TImageInfo();
@@ -145,7 +145,7 @@ namespace ad
 			Load(imageInfo.imageExif);
 	}
 
-	// Считываем эскиз изображения
+	// РЎС‡РёС‚С‹РІР°РµРј СЌСЃРєРёР· РёР·РѕР±СЂР°Р¶РµРЅРёСЏ
 	void TInputFileStream::Load(TPixelData & pixelData) const
 	{
 		size_t side = LoadSize();
@@ -182,7 +182,7 @@ namespace ad
 		Load(result.hint);
 	}
 
-	// Загружаем Exif
+	// Р—Р°РіСЂСѓР¶Р°РµРј Exif
 	void TInputFileStream::Load(TImageExif & imageExif) const
 	{
 		Load(imageExif.isEmpty);
@@ -222,7 +222,7 @@ namespace ad
 		Save<TUInt64>(size); 
 	}
 
-	// Сохраняем Exif
+	// РЎРѕС…СЂР°РЅСЏРµРј Exif
 	void TOutputFileStream::Save(const TImageExif & imageExif) const
 	{
 		Save(imageExif.isEmpty);
@@ -235,7 +235,7 @@ namespace ad
 		Save(imageExif.userComment);
 	}
 
-	// Записываем данные любого типа заданого размера
+	// Р—Р°РїРёСЃС‹РІР°РµРј РґР°РЅРЅС‹Рµ Р»СЋР±РѕРіРѕ С‚РёРїР° Р·Р°РґР°РЅРѕРіРѕ СЂР°Р·РјРµСЂР°
 	void TOutputFileStream::Save(const void * buffer, size_t size) const
 	{
 		DWORD byte_was_write; 
@@ -263,7 +263,7 @@ namespace ad
 		Save(fileInfo.hash);
 	}
 
-	// Сохраняем данные изображения
+	// РЎРѕС…СЂР°РЅСЏРµРј РґР°РЅРЅС‹Рµ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ
 	void TOutputFileStream::Save(const TImageInfo & imageInfo) const
 	{
 		Save((const TFileInfo&)imageInfo);
@@ -275,18 +275,18 @@ namespace ad
 		Save(imageInfo.imageExif);
 	}
 
-	// Сохраняем пиксели изображения
+	// РЎРѕС…СЂР°РЅСЏРµРј РїРёРєСЃРµР»Рё РёР·РѕР±СЂР°Р¶РµРЅРёСЏ
 	void TOutputFileStream::Save(const TPixelData & pixelData) const
 	{
-		// сначала сохраняем размер сторны квадрата эскиза
+		// СЃРЅР°С‡Р°Р»Р° СЃРѕС…СЂР°РЅСЏРµРј СЂР°Р·РјРµСЂ СЃС‚РѕСЂРЅС‹ РєРІР°РґСЂР°С‚Р° СЌСЃРєРёР·Р°
 		SaveSize(pixelData.side);
-		// записываем эскиз
+		// Р·Р°РїРёСЃС‹РІР°РµРј СЌСЃРєРёР·
 		Save(pixelData.main, pixelData.size);
 		Save(pixelData.average);
 		Save(pixelData.varianceSquare);
 	}
 
-	// Сохранение в потоке изображения
+	// РЎРѕС…СЂР°РЅРµРЅРёРµ РІ РїРѕС‚РѕРєРµ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ
 	void TOutputFileStream::Save(const TImageData & imageData) const
 	{
 		Save((const TImageInfo&)imageData);
