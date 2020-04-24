@@ -1,4 +1,4 @@
-/*
+﻿/*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
 * Copyright (c) 2002-2018 Yermalayeu Ihar, 2013-2015 Borisov Dmitry.
