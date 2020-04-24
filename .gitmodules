@@ -1,3 +1,6 @@
 [submodule "src/3rd.git/Simd"]
 	path = src/3rd.git/Simd
 	url = https://github.com/ermig1979/Simd
+[submodule "src/3rd.git/libwebp"]
+	path = src/3rd.git/libwebp
+	url = https://github.com/webmproject/libwebp
