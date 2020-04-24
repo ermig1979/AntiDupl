@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Strings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Name>Español [CO]</Name>
-  <OriginalLanguageName>Español Colombia</OriginalLanguageName>
+  <Name>Español Colombia</Name>
+  <OriginalLanguageName>Español CO</OriginalLanguageName>
   <OkButton_Text>Aceptar</OkButton_Text>
   <CancelButton_Text>Cancelar</CancelButton_Text>
   <StopButton_Text>Detener</StopButton_Text>
@@ -13,13 +13,13 @@
   <AboutProgramPanel_ComponentLabel_Text>Componentes</AboutProgramPanel_ComponentLabel_Text>
   <AboutProgramPanel_VersionLabel_Text>Versión</AboutProgramPanel_VersionLabel_Text>
   <AboutProgramForm_Text>Sobre el programa...</AboutProgramForm_Text>
-  <StartFinishForm_LoadImages_Text>Cargar imágenes</StartFinishForm_LoadImages_Text>
-  <StartFinishForm_LoadMistakes_Text>Cargar errores</StartFinishForm_LoadMistakes_Text>
-  <StartFinishForm_LoadResults_Text>Cargar resultados</StartFinishForm_LoadResults_Text>
-  <StartFinishForm_SaveImages_Text>Guardar imágenes</StartFinishForm_SaveImages_Text>
-  <StartFinishForm_SaveMistakes_Text>Guardar errores</StartFinishForm_SaveMistakes_Text>
-  <StartFinishForm_SaveResults_Text>Guardar resultados</StartFinishForm_SaveResults_Text>
-  <StartFinishForm_ClearTemporary_Text>Eliminar temporales</StartFinishForm_ClearTemporary_Text>
+  <StartFinishForm_LoadImages_Text>Cargando imágenes</StartFinishForm_LoadImages_Text>
+  <StartFinishForm_LoadMistakes_Text>Cargando errores</StartFinishForm_LoadMistakes_Text>
+  <StartFinishForm_LoadResults_Text>Cargando resultados</StartFinishForm_LoadResults_Text>
+  <StartFinishForm_SaveImages_Text>Guardando imágenes</StartFinishForm_SaveImages_Text>
+  <StartFinishForm_SaveMistakes_Text>Guardando errores</StartFinishForm_SaveMistakes_Text>
+  <StartFinishForm_SaveResults_Text>Guardando resultados</StartFinishForm_SaveResults_Text>
+  <StartFinishForm_ClearTemporary_Text>Eliminando temporales</StartFinishForm_ClearTemporary_Text>
   <CoreOptionsForm_Text>Opciones</CoreOptionsForm_Text>
   <CoreOptionsForm_SearchTabPage_Text>Búsqueda</CoreOptionsForm_SearchTabPage_Text>
   <CoreOptionsForm_SearchFileTypeGroupBox_Text>Tipos de archivo:</CoreOptionsForm_SearchFileTypeGroupBox_Text>
@@ -83,7 +83,7 @@
   <CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text>Cantidad de fragmentos en Y</CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text>
   <CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text>Tamaño normal de imagen</CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text>
   <CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text>Grosor del lápiz</CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text>
-  <CorePathsForm_Text>Rutas</CorePathsForm_Text>
+  <CorePathsForm_Text>Carpetas</CorePathsForm_Text>
   <CorePathsForm_SearchTabPage_Text>Buscar</CorePathsForm_SearchTabPage_Text>
   <CorePathsForm_IgnoreTabPage_Text>Ignorar</CorePathsForm_IgnoreTabPage_Text>
   <CorePathsForm_ValidTabPage_Text>Validar</CorePathsForm_ValidTabPage_Text>
@@ -110,7 +110,7 @@
   <ProgressForm_Undo>Deshaciendo...</ProgressForm_Undo>
   <ProgressForm_Redo>Rehaciendo...</ProgressForm_Redo>
   <SearchExecuterForm_Result>Procesamiento de resultados</SearchExecuterForm_Result>
-  <SearchExecuterForm_Search>Buscar</SearchExecuterForm_Search>
+  <SearchExecuterForm_Search>Buscando</SearchExecuterForm_Search>
   <SearchExecuterForm_Stopped>Búsqueda detenida</SearchExecuterForm_Stopped>
   <SearchExecuterForm_MinimizeToTaskbarButton_Text>Minimizar</SearchExecuterForm_MinimizeToTaskbarButton_Text>
   <SearchExecuterForm_MinimizeToSystrayButton_Text>A segundo plano</SearchExecuterForm_MinimizeToSystrayButton_Text>
@@ -211,7 +211,7 @@
   <MainMenu_Search_StartMenuItem_Text>Iniciar búsqueda</MainMenu_Search_StartMenuItem_Text>
   <MainMenu_Search_RefreshResultsMenuItem_Text>Actualizar resultados</MainMenu_Search_RefreshResultsMenuItem_Text>
   <MainMenu_Search_RefreshImagesMenuItem_Text>Eliminar registros irrelevantes de la base de datos de imagen</MainMenu_Search_RefreshImagesMenuItem_Text>
-  <MainMenu_Search_PathsMenuItem_Text>Rutas</MainMenu_Search_PathsMenuItem_Text>
+  <MainMenu_Search_PathsMenuItem_Text>Carpetas</MainMenu_Search_PathsMenuItem_Text>
   <MainMenu_Search_OptionsMenuItem_Text>Opciones</MainMenu_Search_OptionsMenuItem_Text>
   <MainMenu_Search_OnePathMenuItem_Text>Ruta única de búsqueda</MainMenu_Search_OnePathMenuItem_Text>
   <MainMenu_Search_UseImageDataBaseMenuItem_Text>Utilizar base de datos de imagen</MainMenu_Search_UseImageDataBaseMenuItem_Text>
