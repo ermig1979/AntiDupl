@@ -47,7 +47,7 @@ namespace ad
         *m_pValue = m_default;
     }
 
-	// Если значение опции меньше минимальной или больше макимальной, то устанавливаем ее дефолтной
+	// Р•СЃР»Рё Р·РЅР°С‡РµРЅРёРµ РѕРїС†РёРё РјРµРЅСЊС€Рµ РјРёРЅРёРјР°Р»СЊРЅРѕР№ РёР»Рё Р±РѕР»СЊС€Рµ РјР°РєРёРјР°Р»СЊРЅРѕР№, С‚Рѕ СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј РµРµ РґРµС„РѕР»С‚РЅРѕР№
     void TOption::Validate()
     {
         if(*m_pValue < m_min || *m_pValue > m_max)
@@ -66,7 +66,7 @@ namespace ad
         return iniFile.WriteInteger(m_key.c_str(), *m_pValue);
     }
     //---------------------------------------------------------------------------
-	// Класс опций
+	// РљР»Р°СЃСЃ РѕРїС†РёР№
     TOptions::TOptions()
         :searchPaths(true), ignorePaths(), validPaths(), deletePaths()
     {
@@ -137,7 +137,7 @@ namespace ad
             }
         }
 
-		// некрасиво сделано, можно вообще убрать эту проверку
+		// РЅРµРєСЂР°СЃРёРІРѕ СЃРґРµР»Р°РЅРѕ, РјРѕР¶РЅРѕ РІРѕРѕР±С‰Рµ СѓР±СЂР°С‚СЊ СЌС‚Сѓ РїСЂРѕРІРµСЂРєСѓ
 		if (compare.algorithmComparing == AD_COMPARING_SQUARED_SUM && compare.thresholdDifference > 15)
 			compare.thresholdDifference = 5;
     }

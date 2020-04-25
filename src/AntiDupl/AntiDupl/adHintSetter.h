@@ -32,14 +32,14 @@ namespace ad
     struct TOptions;
     struct TResult;
     //-------------------------------------------------------------------------
-	// Общий класс установшика подсказок
+	// РћР±С‰РёР№ РєР»Р°СЃСЃ СѓСЃС‚Р°РЅРѕРІС€РёРєР° РїРѕРґСЃРєР°Р·РѕРє
     class THintSetter
     {
 	protected:
         TOptions *m_pOptions;
 	public:
         THintSetter(TOptions *pOptions);
-        virtual void Execute(TResult *pResult, bool canRename) const; //можно переопределить в наследнике
+        virtual void Execute(TResult *pResult, bool canRename) const; //РјРѕР¶РЅРѕ РїРµСЂРµРѕРїСЂРµРґРµР»РёС‚СЊ РІ РЅР°СЃР»РµРґРЅРёРєРµ
     };
 
 	//-------------------------------------------------------------------------
@@ -50,7 +50,7 @@ namespace ad
 		adInt32 m_blockinessThreshold;
     public:
 		THintSetter_Algorithm(TOptions *pOptions);
-		virtual void Execute(TResult *pResult, bool canRename) const; //переопределяем
+		virtual void Execute(TResult *pResult, bool canRename) const; //РїРµСЂРµРѕРїСЂРµРґРµР»СЏРµРј
 	};
 
     //-------------------------------------------------------------------------

@@ -35,17 +35,17 @@ namespace ad
 	*/
 	struct TImageExif
     {
-		// False, если заполнено хоть одно значение.
+		// False, РµСЃР»Рё Р·Р°РїРѕР»РЅРµРЅРѕ С…РѕС‚СЊ РѕРґРЅРѕ Р·РЅР°С‡РµРЅРёРµ.
 		bool isEmpty;
 
 		TString imageDescription;
 
-		// Камера, изготовитель
+		// РљР°РјРµСЂР°, РёР·РіРѕС‚РѕРІРёС‚РµР»СЊ
 		// manufacturer of the equipment.
 		TString equipMake;
 
 		/// model name or model number of the equipment.
-		// Камера, модель
+		// РљР°РјРµСЂР°, РјРѕРґРµР»СЊ
 		TString equipModel;
 
 		TString softwareUsed;

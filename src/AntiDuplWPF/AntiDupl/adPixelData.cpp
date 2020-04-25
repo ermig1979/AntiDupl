@@ -64,7 +64,7 @@ namespace ad
         SimdFree((void*)fast);
     }
 
-	// Делаем очень уменьшенное изображение (4x4) для быстрого сравнения.
+	// Р”РµР»Р°РµРј РѕС‡РµРЅСЊ СѓРјРµРЅСЊС€РµРЅРЅРѕРµ РёР·РѕР±СЂР°Р¶РµРЅРёРµ (4x4) РґР»СЏ Р±С‹СЃС‚СЂРѕРіРѕ СЃСЂР°РІРЅРµРЅРёСЏ.
     void TPixelData::FillFast(int ignoreFrameWidth)
     {
         size_t step = (side - 2*ignoreFrameWidth)/FAST_IMAGE_SIZE;

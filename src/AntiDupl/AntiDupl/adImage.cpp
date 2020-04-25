@@ -1,4 +1,4 @@
-/*
+п»ї/*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
 * Copyright (c) 2002-2018 Yermalayeu Ihar.
@@ -85,7 +85,7 @@ namespace ad
         return extensions;
     }
 
-	// Вызывается из adDataCollector.cpp
+	// Р’С‹Р·С‹РІР°РµС‚СЃСЏ РёР· adDataCollector.cpp
     TImage* TImage::Load(HGLOBAL hGlobal, const TOptions * pOptions)
     {
         if(TOpenJpeg::Supported(hGlobal))

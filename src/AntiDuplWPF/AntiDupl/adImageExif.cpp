@@ -34,7 +34,7 @@ namespace ad
 	{
 	}
 
-	// Экспортируем в структуры для передачи из dll
+	// Р­РєСЃРїРѕСЂС‚РёСЂСѓРµРј РІ СЃС‚СЂСѓРєС‚СѓСЂС‹ РґР»СЏ РїРµСЂРµРґР°С‡Рё РёР· dll
 	bool TImageExif::Export(adExifInfoA * pExifInfo) const
     {
         if(pExifInfo == NULL)

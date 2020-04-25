@@ -1,4 +1,4 @@
-/*
+п»ї/*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
 * Copyright (c) 2002-2018 Yermalayeu Ihar, 2013-2018 Borisov Dmitry.
@@ -32,36 +32,36 @@ namespace AntiDupl.NET
         static public void CopyTo(Strings s)
         {
             s.Name = "Russian";
-            s.OriginalLanguageName = "Русский";
+            s.OriginalLanguageName = "Р СѓСЃСЃРєРёР№";
             
             s.OkButton_Text = "OK";
-            s.CancelButton_Text = "Отмена";
-            s.StopButton_Text = "Стоп";
-            s.SetDefaultButton_Text = "По умолчанию";
+            s.CancelButton_Text = "РћС‚РјРµРЅР°";
+            s.StopButton_Text = "РЎС‚РѕРї";
+            s.SetDefaultButton_Text = "РџРѕ СѓРјРѕР»С‡Р°РЅРёСЋ";
 
-            s.ErrorMessage_FileAlreadyExists = "Невозможно переименовать файл, так как файл с таким именем уже существует!";
+            s.ErrorMessage_FileAlreadyExists = "РќРµРІРѕР·РјРѕР¶РЅРѕ РїРµСЂРµРёРјРµРЅРѕРІР°С‚СЊ С„Р°Р№Р», С‚Р°Рє РєР°Рє С„Р°Р№Р» СЃ С‚Р°РєРёРј РёРјРµРЅРµРј СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚!";
 
-            s.WarningMessage_ChangeFileExtension = "Вы действительно хотите изменить расширение файла?";
+            s.WarningMessage_ChangeFileExtension = "Р’С‹ РґРµР№СЃС‚РІРёС‚РµР»СЊРЅРѕ С…РѕС‚РёС‚Рµ РёР·РјРµРЅРёС‚СЊ СЂР°СЃС€РёСЂРµРЅРёРµ С„Р°Р№Р»Р°?";
 
-            s.AboutProgramPanel_CopyrightLabel0_Text = "Copyright (c) 2002-2020 Ермолаев Игорь,";
-            s.AboutProgramPanel_CopyrightLabel1_Text = "2013-2020 Борисов Дмитрий.";
-            s.AboutProgramPanel_ComponentLabel_Text = "Компонент";
-            s.AboutProgramPanel_VersionLabel_Text = "Версия";
+            s.AboutProgramPanel_CopyrightLabel0_Text = "Copyright (c) 2002-2020 Р•СЂРјРѕР»Р°РµРІ РРіРѕСЂСЊ,";
+            s.AboutProgramPanel_CopyrightLabel1_Text = "2013-2020 Р‘РѕСЂРёСЃРѕРІ Р”РјРёС‚СЂРёР№.";
+            s.AboutProgramPanel_ComponentLabel_Text = "РљРѕРјРїРѕРЅРµРЅС‚";
+            s.AboutProgramPanel_VersionLabel_Text = "Р’РµСЂСЃРёСЏ";
 
-            s.AboutProgramForm_Text = "О программе...";
+            s.AboutProgramForm_Text = "Рћ РїСЂРѕРіСЂР°РјРјРµ...";
 
-            s.StartFinishForm_LoadImages_Text = "Загрузка файла картинок";
-            s.StartFinishForm_LoadMistakes_Text = "Загрузка файла ошибок";
-            s.StartFinishForm_LoadResults_Text = "Загрузка файла результатов";
-            s.StartFinishForm_SaveImages_Text = "Сохранение файла картинок";
-            s.StartFinishForm_SaveMistakes_Text = "Сохранение файла ошибок";
-            s.StartFinishForm_SaveResults_Text = "Сохранение файла результатов";
-            s.StartFinishForm_ClearTemporary_Text = "Удаление временных файлов";
+            s.StartFinishForm_LoadImages_Text = "Р—Р°РіСЂСѓР·РєР° С„Р°Р№Р»Р° РєР°СЂС‚РёРЅРѕРє";
+            s.StartFinishForm_LoadMistakes_Text = "Р—Р°РіСЂСѓР·РєР° С„Р°Р№Р»Р° РѕС€РёР±РѕРє";
+            s.StartFinishForm_LoadResults_Text = "Р—Р°РіСЂСѓР·РєР° С„Р°Р№Р»Р° СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ";
+            s.StartFinishForm_SaveImages_Text = "РЎРѕС…СЂР°РЅРµРЅРёРµ С„Р°Р№Р»Р° РєР°СЂС‚РёРЅРѕРє";
+            s.StartFinishForm_SaveMistakes_Text = "РЎРѕС…СЂР°РЅРµРЅРёРµ С„Р°Р№Р»Р° РѕС€РёР±РѕРє";
+            s.StartFinishForm_SaveResults_Text = "РЎРѕС…СЂР°РЅРµРЅРёРµ С„Р°Р№Р»Р° СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ";
+            s.StartFinishForm_ClearTemporary_Text = "РЈРґР°Р»РµРЅРёРµ РІСЂРµРјРµРЅРЅС‹С… С„Р°Р№Р»РѕРІ";
 
-            s.CoreOptionsForm_Text = "Опции";
+            s.CoreOptionsForm_Text = "РћРїС†РёРё";
 
-            s.CoreOptionsForm_SearchTabPage_Text = "Поиск";
-            s.CoreOptionsForm_SearchFileTypeGroupBox_Text = "Искать типы:";
+            s.CoreOptionsForm_SearchTabPage_Text = "РџРѕРёСЃРє";
+            s.CoreOptionsForm_SearchFileTypeGroupBox_Text = "РСЃРєР°С‚СЊ С‚РёРїС‹:";
             s.CoreOptionsForm_BmpCheckBox_Text = "BMP";
             s.CoreOptionsForm_GifCheckBox_Text = "GIF";
             s.CoreOptionsForm_JpegCheckBox_Text = "JPEG";
@@ -76,249 +76,249 @@ namespace AntiDupl.NET
             s.CoreOptionsForm_DdsCheckBox_Text = "DDS";
             s.CoreOptionsForm_TgaCheckBox_Text = "TGA";
             s.CoreOptionsForm_WebpCheckBox_Text = "WEBP";
-            s.CoreOptionsForm_SearchSystemCheckBox_Text = "Искать системные каталоги/файлы";
-            s.CoreOptionsForm_SearchHiddenCheckBox_Text = "Искать скрытые каталоги/файлы";
+            s.CoreOptionsForm_SearchSystemCheckBox_Text = "РСЃРєР°С‚СЊ СЃРёСЃС‚РµРјРЅС‹Рµ РєР°С‚Р°Р»РѕРіРё/С„Р°Р№Р»С‹";
+            s.CoreOptionsForm_SearchHiddenCheckBox_Text = "РСЃРєР°С‚СЊ СЃРєСЂС‹С‚С‹Рµ РєР°С‚Р°Р»РѕРіРё/С„Р°Р№Р»С‹";
 
-            s.CoreOptionsForm_CompareTabPage_Text = "Сравнение";
-            s.CoreOptionsForm_CheckOnEqualityCheckBox_Text = "Искать дублирующие картинки";
-            s.CoreOptionsForm_TransformedImageCheckBox_Text = "Искать повернутые и зеркальные дубликаты";
-            s.CoreOptionsForm_SizeControlCheckBox_Text = "Учитывать размер картинок";
-            s.CoreOptionsForm_TypeControlCheckBox_Text = "Учитывать тип картинок";
-            s.CoreOptionsForm_RatioControlCheckBox_Text = "Учитывать соотношение ширины/высоты картинок";
-            s.CoreOptionsForm_AlgorithmComparingLabeledComboBox_Text = "Алгоритм сравнения изображений";
-            s.CoreOptionsForm_AlgorithmComparingLabeledComboBox_SquaredSum = "Среднеквадратичная разность";
-            s.CoreOptionsForm_ThresholdDifferenceLabeledComboBox_Text = "Пороговая разность";
-            s.CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text = "Минимальная ширина/высота картинок";
-            s.CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text = "Максимальная ширина/высота картинок";
-            s.CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text = "Сравнивать картинки из одного пути поиска друг с другом";
-            s.CoreOptionsForm_CompareInsideOneFolderCheckBox_Text = "Сравнивать картинки внутри одного каталога";
+            s.CoreOptionsForm_CompareTabPage_Text = "РЎСЂР°РІРЅРµРЅРёРµ";
+            s.CoreOptionsForm_CheckOnEqualityCheckBox_Text = "РСЃРєР°С‚СЊ РґСѓР±Р»РёСЂСѓСЋС‰РёРµ РєР°СЂС‚РёРЅРєРё";
+            s.CoreOptionsForm_TransformedImageCheckBox_Text = "РСЃРєР°С‚СЊ РїРѕРІРµСЂРЅСѓС‚С‹Рµ Рё Р·РµСЂРєР°Р»СЊРЅС‹Рµ РґСѓР±Р»РёРєР°С‚С‹";
+            s.CoreOptionsForm_SizeControlCheckBox_Text = "РЈС‡РёС‚С‹РІР°С‚СЊ СЂР°Р·РјРµСЂ РєР°СЂС‚РёРЅРѕРє";
+            s.CoreOptionsForm_TypeControlCheckBox_Text = "РЈС‡РёС‚С‹РІР°С‚СЊ С‚РёРї РєР°СЂС‚РёРЅРѕРє";
+            s.CoreOptionsForm_RatioControlCheckBox_Text = "РЈС‡РёС‚С‹РІР°С‚СЊ СЃРѕРѕС‚РЅРѕС€РµРЅРёРµ С€РёСЂРёРЅС‹/РІС‹СЃРѕС‚С‹ РєР°СЂС‚РёРЅРѕРє";
+            s.CoreOptionsForm_AlgorithmComparingLabeledComboBox_Text = "РђР»РіРѕСЂРёС‚Рј СЃСЂР°РІРЅРµРЅРёСЏ РёР·РѕР±СЂР°Р¶РµРЅРёР№";
+            s.CoreOptionsForm_AlgorithmComparingLabeledComboBox_SquaredSum = "РЎСЂРµРґРЅРµРєРІР°РґСЂР°С‚РёС‡РЅР°СЏ СЂР°Р·РЅРѕСЃС‚СЊ";
+            s.CoreOptionsForm_ThresholdDifferenceLabeledComboBox_Text = "РџРѕСЂРѕРіРѕРІР°СЏ СЂР°Р·РЅРѕСЃС‚СЊ";
+            s.CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text = "РњРёРЅРёРјР°Р»СЊРЅР°СЏ С€РёСЂРёРЅР°/РІС‹СЃРѕС‚Р° РєР°СЂС‚РёРЅРѕРє";
+            s.CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text = "РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ С€РёСЂРёРЅР°/РІС‹СЃРѕС‚Р° РєР°СЂС‚РёРЅРѕРє";
+            s.CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text = "РЎСЂР°РІРЅРёРІР°С‚СЊ РєР°СЂС‚РёРЅРєРё РёР· РѕРґРЅРѕРіРѕ РїСѓС‚Рё РїРѕРёСЃРєР° РґСЂСѓРі СЃ РґСЂСѓРіРѕРј";
+            s.CoreOptionsForm_CompareInsideOneFolderCheckBox_Text = "РЎСЂР°РІРЅРёРІР°С‚СЊ РєР°СЂС‚РёРЅРєРё РІРЅСѓС‚СЂРё РѕРґРЅРѕРіРѕ РєР°С‚Р°Р»РѕРіР°";
 
-            s.CoreOptionsForm_DefectTabPage_Text = "Дефекты";
-            s.CoreOptionsForm_CheckOnDefectCheckBox_Text = "Проверять на дефекты";
-            s.CoreOptionsForm_CheckOnBlockinessCheckBox_Text = "Проверять на блочность";
-            s.CoreOptionsForm_BlockinessThresholdLabeledComboBox_Text = "Порог блочности";
-            s.CoreOptionsForm_CheckOnBlockinessOnlyNotJpegCheckBox_Text = "Проверять на блочность только для не Jpeg";
-            s.CoreOptionsForm_CheckOnBlurringCheckBox_Text = "Проверять на размытость";
-            s.CoreOptionsForm_BlurringThresholdLabeledComboBox_Text = "Порог размытости";
+            s.CoreOptionsForm_DefectTabPage_Text = "Р”РµС„РµРєС‚С‹";
+            s.CoreOptionsForm_CheckOnDefectCheckBox_Text = "РџСЂРѕРІРµСЂСЏС‚СЊ РЅР° РґРµС„РµРєС‚С‹";
+            s.CoreOptionsForm_CheckOnBlockinessCheckBox_Text = "РџСЂРѕРІРµСЂСЏС‚СЊ РЅР° Р±Р»РѕС‡РЅРѕСЃС‚СЊ";
+            s.CoreOptionsForm_BlockinessThresholdLabeledComboBox_Text = "РџРѕСЂРѕРі Р±Р»РѕС‡РЅРѕСЃС‚Рё";
+            s.CoreOptionsForm_CheckOnBlockinessOnlyNotJpegCheckBox_Text = "РџСЂРѕРІРµСЂСЏС‚СЊ РЅР° Р±Р»РѕС‡РЅРѕСЃС‚СЊ С‚РѕР»СЊРєРѕ РґР»СЏ РЅРµ Jpeg";
+            s.CoreOptionsForm_CheckOnBlurringCheckBox_Text = "РџСЂРѕРІРµСЂСЏС‚СЊ РЅР° СЂР°Р·РјС‹С‚РѕСЃС‚СЊ";
+            s.CoreOptionsForm_BlurringThresholdLabeledComboBox_Text = "РџРѕСЂРѕРі СЂР°Р·РјС‹С‚РѕСЃС‚Рё";
 
-            s.CoreOptionsForm_AdvancedTabPage_Text = "Дополнительные";
-            s.CoreOptionsForm_DeleteToRecycleBinCheckBox_Text = "Удалять в корзину";
-            s.CoreOptionsForm_MistakeDataBaseCheckBox_Text = "Запоминать ложные срабатывания";
-            s.CoreOptionsForm_RatioResolutionLabeledComboBox_Text = "Точность соотношения ширины/высоты картинок";
-            s.CoreOptionsForm_CompareThreadCountLabeledComboBox_Text = "Количество потоков сравнения";
-            s.CoreOptionsForm_CompareThreadCountLabeledComboBox_Description_0 = "Авто";
-            s.CoreOptionsForm_CollectThreadCountLabeledComboBox_Text = "Количество потоков загрузки";
-            s.CoreOptionsForm_CollectThreadCountLabeledComboBox_Description_0 = "Авто";
-            s.CoreOptionsForm_ReducedImageSizeLabeledComboBox_Text = "Отнормированный размер картинок";
-            s.CoreOptionsForm_UndoQueueSizeLabeledIntegerEdit_Text = "Размер очереди отмены";
-            s.CoreOptionsForm_ResultCountMaxLabeledIntegerEdit_Text = "Максимальное количество результатов";
-            s.CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text = "Ширина игнорируемой рамки картинки";
-            s.CoreOptionsForm_UseLibJpegTurboCheckBox_Text = "Использовать libjpeg-turbo";
+            s.CoreOptionsForm_AdvancedTabPage_Text = "Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ";
+            s.CoreOptionsForm_DeleteToRecycleBinCheckBox_Text = "РЈРґР°Р»СЏС‚СЊ РІ РєРѕСЂР·РёРЅСѓ";
+            s.CoreOptionsForm_MistakeDataBaseCheckBox_Text = "Р—Р°РїРѕРјРёРЅР°С‚СЊ Р»РѕР¶РЅС‹Рµ СЃСЂР°Р±Р°С‚С‹РІР°РЅРёСЏ";
+            s.CoreOptionsForm_RatioResolutionLabeledComboBox_Text = "РўРѕС‡РЅРѕСЃС‚СЊ СЃРѕРѕС‚РЅРѕС€РµРЅРёСЏ С€РёСЂРёРЅС‹/РІС‹СЃРѕС‚С‹ РєР°СЂС‚РёРЅРѕРє";
+            s.CoreOptionsForm_CompareThreadCountLabeledComboBox_Text = "РљРѕР»РёС‡РµСЃС‚РІРѕ РїРѕС‚РѕРєРѕРІ СЃСЂР°РІРЅРµРЅРёСЏ";
+            s.CoreOptionsForm_CompareThreadCountLabeledComboBox_Description_0 = "РђРІС‚Рѕ";
+            s.CoreOptionsForm_CollectThreadCountLabeledComboBox_Text = "РљРѕР»РёС‡РµСЃС‚РІРѕ РїРѕС‚РѕРєРѕРІ Р·Р°РіСЂСѓР·РєРё";
+            s.CoreOptionsForm_CollectThreadCountLabeledComboBox_Description_0 = "РђРІС‚Рѕ";
+            s.CoreOptionsForm_ReducedImageSizeLabeledComboBox_Text = "РћС‚РЅРѕСЂРјРёСЂРѕРІР°РЅРЅС‹Р№ СЂР°Р·РјРµСЂ РєР°СЂС‚РёРЅРѕРє";
+            s.CoreOptionsForm_UndoQueueSizeLabeledIntegerEdit_Text = "Р Р°Р·РјРµСЂ РѕС‡РµСЂРµРґРё РѕС‚РјРµРЅС‹";
+            s.CoreOptionsForm_ResultCountMaxLabeledIntegerEdit_Text = "РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ";
+            s.CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text = "РЁРёСЂРёРЅР° РёРіРЅРѕСЂРёСЂСѓРµРјРѕР№ СЂР°РјРєРё РєР°СЂС‚РёРЅРєРё";
+            s.CoreOptionsForm_UseLibJpegTurboCheckBox_Text = "РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ libjpeg-turbo";
 
-            s.CoreOptionsForm_HighlightTabPage_Text = "Подсветка";
-            s.CoreOptionsForm_HighlightDifferenceCheckBox_Text = "Подсветка различий";
-            s.CoreOptionsForm_DifrentValue_Text = "Величина различия";
-            s.CoreOptionsForm_NotHighlightIfFragmentsMoreThemCheckBox_Text = "Не подсвечивать различия, если фрагментов больше чем:";
-            s.CoreOptionsForm_MaxFragmentsForDisableHighlightLabeledIntegerEdit_Text = "Максимально количество фрагментов для отключения подсветки";
-            s.CoreOptionsForm_HighlightAllDifferencesCheckBox_Text = "Подсвечивать все различия";
-            s.CoreOptionsForm_MaxFragmentsForHighlightLabeledIntegerEdit_Text = "Максимально количество фрагментов для подсветки";
-            s.CoreOptionsForm_AmountOfFragmentsOnXLabeledIntegerEdit_Text = "Количество фрагментов по X";
-            s.CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text = "Количество фрагментов по Y";
-            s.CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text = "Нормированный размер изображения";
-            s.CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text = "Толшина рамки выделения";
+            s.CoreOptionsForm_HighlightTabPage_Text = "РџРѕРґСЃРІРµС‚РєР°";
+            s.CoreOptionsForm_HighlightDifferenceCheckBox_Text = "РџРѕРґСЃРІРµС‚РєР° СЂР°Р·Р»РёС‡РёР№";
+            s.CoreOptionsForm_DifrentValue_Text = "Р’РµР»РёС‡РёРЅР° СЂР°Р·Р»РёС‡РёСЏ";
+            s.CoreOptionsForm_NotHighlightIfFragmentsMoreThemCheckBox_Text = "РќРµ РїРѕРґСЃРІРµС‡РёРІР°С‚СЊ СЂР°Р·Р»РёС‡РёСЏ, РµСЃР»Рё С„СЂР°РіРјРµРЅС‚РѕРІ Р±РѕР»СЊС€Рµ С‡РµРј:";
+            s.CoreOptionsForm_MaxFragmentsForDisableHighlightLabeledIntegerEdit_Text = "РњР°РєСЃРёРјР°Р»СЊРЅРѕ РєРѕР»РёС‡РµСЃС‚РІРѕ С„СЂР°РіРјРµРЅС‚РѕРІ РґР»СЏ РѕС‚РєР»СЋС‡РµРЅРёСЏ РїРѕРґСЃРІРµС‚РєРё";
+            s.CoreOptionsForm_HighlightAllDifferencesCheckBox_Text = "РџРѕРґСЃРІРµС‡РёРІР°С‚СЊ РІСЃРµ СЂР°Р·Р»РёС‡РёСЏ";
+            s.CoreOptionsForm_MaxFragmentsForHighlightLabeledIntegerEdit_Text = "РњР°РєСЃРёРјР°Р»СЊРЅРѕ РєРѕР»РёС‡РµСЃС‚РІРѕ С„СЂР°РіРјРµРЅС‚РѕРІ РґР»СЏ РїРѕРґСЃРІРµС‚РєРё";
+            s.CoreOptionsForm_AmountOfFragmentsOnXLabeledIntegerEdit_Text = "РљРѕР»РёС‡РµСЃС‚РІРѕ С„СЂР°РіРјРµРЅС‚РѕРІ РїРѕ X";
+            s.CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text = "РљРѕР»РёС‡РµСЃС‚РІРѕ С„СЂР°РіРјРµРЅС‚РѕРІ РїРѕ Y";
+            s.CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text = "РќРѕСЂРјРёСЂРѕРІР°РЅРЅС‹Р№ СЂР°Р·РјРµСЂ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ";
+            s.CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text = "РўРѕР»С€РёРЅР° СЂР°РјРєРё РІС‹РґРµР»РµРЅРёСЏ";
 
-            s.CorePathsForm_Text = "Пути";
-            s.CorePathsForm_SearchTabPage_Text = "Искать";
-            s.CorePathsForm_IgnoreTabPage_Text = "Пропускать";
-            s.CorePathsForm_ValidTabPage_Text = "Проверено";
-            s.CorePathsForm_DeleteTabPage_Text = "Удалять";
-            s.CorePathsForm_AddFolderButton_Text = "Добавить каталог";
-            s.CorePathsForm_AddFilesButton_Text = "Добавить файлы";
-            s.CorePathsForm_ChangeButton_Text = "Изменить";
-            s.CorePathsForm_RemoveButton_Text = "Убрать";
-            s.CorePathsForm_SearchCheckedListBox_ToolTip_Text = "Установленный флажок означает поиск внутри поддиректорий указанной директории.";
+            s.CorePathsForm_Text = "РџСѓС‚Рё";
+            s.CorePathsForm_SearchTabPage_Text = "РСЃРєР°С‚СЊ";
+            s.CorePathsForm_IgnoreTabPage_Text = "РџСЂРѕРїСѓСЃРєР°С‚СЊ";
+            s.CorePathsForm_ValidTabPage_Text = "РџСЂРѕРІРµСЂРµРЅРѕ";
+            s.CorePathsForm_DeleteTabPage_Text = "РЈРґР°Р»СЏС‚СЊ";
+            s.CorePathsForm_AddFolderButton_Text = "Р”РѕР±Р°РІРёС‚СЊ РєР°С‚Р°Р»РѕРі";
+            s.CorePathsForm_AddFilesButton_Text = "Р”РѕР±Р°РІРёС‚СЊ С„Р°Р№Р»С‹";
+            s.CorePathsForm_ChangeButton_Text = "РР·РјРµРЅРёС‚СЊ";
+            s.CorePathsForm_RemoveButton_Text = "РЈР±СЂР°С‚СЊ";
+            s.CorePathsForm_SearchCheckedListBox_ToolTip_Text = "РЈСЃС‚Р°РЅРѕРІР»РµРЅРЅС‹Р№ С„Р»Р°Р¶РѕРє РѕР·РЅР°С‡Р°РµС‚ РїРѕРёСЃРє РІРЅСѓС‚СЂРё РїРѕРґРґРёСЂРµРєС‚РѕСЂРёР№ СѓРєР°Р·Р°РЅРЅРѕР№ РґРёСЂРµРєС‚РѕСЂРёРё.";
 
-            s.ProgressUtils_Completed = "завершено {0}%";
-            s.ProgressUtils_5HoursRemaining = "осталось {0} часов";
-            s.ProgressUtils_2HoursRemaining = "осталось {0} часа";
-            s.ProgressUtils_5MinutesRemaining = "осталось {0} минут";
-            s.ProgressUtils_2MinutesRemaining = "осталось {0} минуты";
-            s.ProgressUtils_5SecondsRemaining = "осталось {0} секунд";
+            s.ProgressUtils_Completed = "Р·Р°РІРµСЂС€РµРЅРѕ {0}%";
+            s.ProgressUtils_5HoursRemaining = "РѕСЃС‚Р°Р»РѕСЃСЊ {0} С‡Р°СЃРѕРІ";
+            s.ProgressUtils_2HoursRemaining = "РѕСЃС‚Р°Р»РѕСЃСЊ {0} С‡Р°СЃР°";
+            s.ProgressUtils_5MinutesRemaining = "РѕСЃС‚Р°Р»РѕСЃСЊ {0} РјРёРЅСѓС‚";
+            s.ProgressUtils_2MinutesRemaining = "РѕСЃС‚Р°Р»РѕСЃСЊ {0} РјРёРЅСѓС‚С‹";
+            s.ProgressUtils_5SecondsRemaining = "РѕСЃС‚Р°Р»РѕСЃСЊ {0} СЃРµРєСѓРЅРґ";
 
-            s.ProgressForm_DeleteDefect = "Удаление испорченных картинок в выделенных результатах";
-            s.ProgressForm_DeleteFirst = "Удаление первых картинок в выделенных результатах";
-            s.ProgressForm_DeleteSecond = "Удаление вторых картинок в выделенных результатах";
-            s.ProgressForm_DeleteBoth = "Удаление всех парных картинок в выделенных результатах";
-            s.ProgressForm_PerformHint = "Автоматическая обработка выделенных результатов";
-            s.ProgressForm_Mistake = "Пометка выделенных результатов как ошибочных";
-            s.ProgressForm_RenameCurrent = "Переименование/перемещение изображений";
-            s.ProgressForm_RefreshResults = "Обновление результатов";
-            s.ProgressForm_Undo = "Отмена действия";
-            s.ProgressForm_Redo = "Повторение действия";
+            s.ProgressForm_DeleteDefect = "РЈРґР°Р»РµРЅРёРµ РёСЃРїРѕСЂС‡РµРЅРЅС‹С… РєР°СЂС‚РёРЅРѕРє РІ РІС‹РґРµР»РµРЅРЅС‹С… СЂРµР·СѓР»СЊС‚Р°С‚Р°С…";
+            s.ProgressForm_DeleteFirst = "РЈРґР°Р»РµРЅРёРµ РїРµСЂРІС‹С… РєР°СЂС‚РёРЅРѕРє РІ РІС‹РґРµР»РµРЅРЅС‹С… СЂРµР·СѓР»СЊС‚Р°С‚Р°С…";
+            s.ProgressForm_DeleteSecond = "РЈРґР°Р»РµРЅРёРµ РІС‚РѕСЂС‹С… РєР°СЂС‚РёРЅРѕРє РІ РІС‹РґРµР»РµРЅРЅС‹С… СЂРµР·СѓР»СЊС‚Р°С‚Р°С…";
+            s.ProgressForm_DeleteBoth = "РЈРґР°Р»РµРЅРёРµ РІСЃРµС… РїР°СЂРЅС‹С… РєР°СЂС‚РёРЅРѕРє РІ РІС‹РґРµР»РµРЅРЅС‹С… СЂРµР·СѓР»СЊС‚Р°С‚Р°С…";
+            s.ProgressForm_PerformHint = "РђРІС‚РѕРјР°С‚РёС‡РµСЃРєР°СЏ РѕР±СЂР°Р±РѕС‚РєР° РІС‹РґРµР»РµРЅРЅС‹С… СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ";
+            s.ProgressForm_Mistake = "РџРѕРјРµС‚РєР° РІС‹РґРµР»РµРЅРЅС‹С… СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РєР°Рє РѕС€РёР±РѕС‡РЅС‹С…";
+            s.ProgressForm_RenameCurrent = "РџРµСЂРµРёРјРµРЅРѕРІР°РЅРёРµ/РїРµСЂРµРјРµС‰РµРЅРёРµ РёР·РѕР±СЂР°Р¶РµРЅРёР№";
+            s.ProgressForm_RefreshResults = "РћР±РЅРѕРІР»РµРЅРёРµ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ";
+            s.ProgressForm_Undo = "РћС‚РјРµРЅР° РґРµР№СЃС‚РІРёСЏ";
+            s.ProgressForm_Redo = "РџРѕРІС‚РѕСЂРµРЅРёРµ РґРµР№СЃС‚РІРёСЏ";
 
-            s.SearchExecuterForm_Result = "Обработка результатов";
-            s.SearchExecuterForm_Search = "Поиск";
-            s.SearchExecuterForm_Stopped = "Остановка поиска";
-            s.SearchExecuterForm_MinimizeToTaskbarButton_Text = "Свернуть";
-            s.SearchExecuterForm_MinimizeToSystrayButton_Text = "Фоновый режим";
+            s.SearchExecuterForm_Result = "РћР±СЂР°Р±РѕС‚РєР° СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ";
+            s.SearchExecuterForm_Search = "РџРѕРёСЃРє";
+            s.SearchExecuterForm_Stopped = "РћСЃС‚Р°РЅРѕРІРєР° РїРѕРёСЃРєР°";
+            s.SearchExecuterForm_MinimizeToTaskbarButton_Text = "РЎРІРµСЂРЅСѓС‚СЊ";
+            s.SearchExecuterForm_MinimizeToSystrayButton_Text = "Р¤РѕРЅРѕРІС‹Р№ СЂРµР¶РёРј";
 
-            s.ResultsPreviewBase_NextButton_ToolTip_Text = "Перейти к следующему результату";
-            s.ResultsPreviewBase_PreviousButton_ToolTip_Text = "Перейти к предыдущему результату";
+            s.ResultsPreviewBase_NextButton_ToolTip_Text = "РџРµСЂРµР№С‚Рё Рє СЃР»РµРґСѓСЋС‰РµРјСѓ СЂРµР·СѓР»СЊС‚Р°С‚Сѓ";
+            s.ResultsPreviewBase_PreviousButton_ToolTip_Text = "РџРµСЂРµР№С‚Рё Рє РїСЂРµРґС‹РґСѓС‰РµРјСѓ СЂРµР·СѓР»СЊС‚Р°С‚Сѓ";
 
-            s.ResultsPreviewDuplPair_DeleteFirstButton_ToolTip_Text = "Удалить первую картинку";
-            s.ResultsPreviewDuplPair_DeleteSecondButton_ToolTip_Text = "Удалить вторую картинку";
-            s.ResultsPreviewDuplPair_DeleteBothButton_ToolTip_Text = "Удалить обе картинки";
-            s.ResultsPreviewDuplPair_RenameFirstToSecondButton_ToolTip_Text = "Заместить вторую картинку первой";
-            s.ResultsPreviewDuplPair_RenameSecondToFirstButton_ToolTip_Text = "Заместить первую картинку второй";
-            s.ResultsPreviewDuplPair_MistakeButton_ToolTip_Text = "Пометить текущий результат как ошибочный";
+            s.ResultsPreviewDuplPair_DeleteFirstButton_ToolTip_Text = "РЈРґР°Р»РёС‚СЊ РїРµСЂРІСѓСЋ РєР°СЂС‚РёРЅРєСѓ";
+            s.ResultsPreviewDuplPair_DeleteSecondButton_ToolTip_Text = "РЈРґР°Р»РёС‚СЊ РІС‚РѕСЂСѓСЋ РєР°СЂС‚РёРЅРєСѓ";
+            s.ResultsPreviewDuplPair_DeleteBothButton_ToolTip_Text = "РЈРґР°Р»РёС‚СЊ РѕР±Рµ РєР°СЂС‚РёРЅРєРё";
+            s.ResultsPreviewDuplPair_RenameFirstToSecondButton_ToolTip_Text = "Р—Р°РјРµСЃС‚РёС‚СЊ РІС‚РѕСЂСѓСЋ РєР°СЂС‚РёРЅРєСѓ РїРµСЂРІРѕР№";
+            s.ResultsPreviewDuplPair_RenameSecondToFirstButton_ToolTip_Text = "Р—Р°РјРµСЃС‚РёС‚СЊ РїРµСЂРІСѓСЋ РєР°СЂС‚РёРЅРєСѓ РІС‚РѕСЂРѕР№";
+            s.ResultsPreviewDuplPair_MistakeButton_ToolTip_Text = "РџРѕРјРµС‚РёС‚СЊ С‚РµРєСѓС‰РёР№ СЂРµР·СѓР»СЊС‚Р°С‚ РєР°Рє РѕС€РёР±РѕС‡РЅС‹Р№";
 
-            s.ResultsPreviewDefect_DeleteButton_ToolTip_Text = "Удалить картинку";
-            s.ResultsPreviewDefect_MistakeButton_ToolTip_Text = "Пометить текущий результат как ошибочный";
+            s.ResultsPreviewDefect_DeleteButton_ToolTip_Text = "РЈРґР°Р»РёС‚СЊ РєР°СЂС‚РёРЅРєСѓ";
+            s.ResultsPreviewDefect_MistakeButton_ToolTip_Text = "РџРѕРјРµС‚РёС‚СЊ С‚РµРєСѓС‰РёР№ СЂРµР·СѓР»СЊС‚Р°С‚ РєР°Рє РѕС€РёР±РѕС‡РЅС‹Р№";
 
-            s.ResultRowSetter_DefectIcon_ToolTip_Text = "Дефектная картинка";
-            s.ResultRowSetter_DuplPairIcon_ToolTip_Text = "Дублирующая пара картинок";
+            s.ResultRowSetter_DefectIcon_ToolTip_Text = "Р”РµС„РµРєС‚РЅР°СЏ РєР°СЂС‚РёРЅРєР°";
+            s.ResultRowSetter_DuplPairIcon_ToolTip_Text = "Р”СѓР±Р»РёСЂСѓСЋС‰Р°СЏ РїР°СЂР° РєР°СЂС‚РёРЅРѕРє";
 
-            s.ResultRowSetter_UnknownDefectIcon_ToolTip_Text = "Неизвестный дефект";
-            s.ResultRowSetter_JpegEndMarkerIsAbsentIcon_ToolTip_Text = "Отсутствует маркер конца JPEG файла";
-            s.ResultRowSetter_blockinessIcon_ToolTip_Text = "Блочное изображение";
-            s.ResultRowSetter_blurringIcon_ToolTip_Text = "Размытое изображение";
+            s.ResultRowSetter_UnknownDefectIcon_ToolTip_Text = "РќРµРёР·РІРµСЃС‚РЅС‹Р№ РґРµС„РµРєС‚";
+            s.ResultRowSetter_JpegEndMarkerIsAbsentIcon_ToolTip_Text = "РћС‚СЃСѓС‚СЃС‚РІСѓРµС‚ РјР°СЂРєРµСЂ РєРѕРЅС†Р° JPEG С„Р°Р№Р»Р°";
+            s.ResultRowSetter_blockinessIcon_ToolTip_Text = "Р‘Р»РѕС‡РЅРѕРµ РёР·РѕР±СЂР°Р¶РµРЅРёРµ";
+            s.ResultRowSetter_blurringIcon_ToolTip_Text = "Р Р°Р·РјС‹С‚РѕРµ РёР·РѕР±СЂР°Р¶РµРЅРёРµ";
 
-            s.ResultRowSetter_DeleteDefectIcon_ToolTip_Text = "Удалить картинку";
-            s.ResultRowSetter_DeleteFirstIcon_ToolTip_Text = "Удалить первую картинку";
-            s.ResultRowSetter_DeleteSecondIcon_ToolTip_Text = "Удалить вторую картинку";
-            s.ResultRowSetter_RenameFirstToSecondIcon_ToolTip_Text = "Заместить вторую картинку первой";
-            s.ResultRowSetter_RenameSecondToFirstIcon_ToolTip_Text = "Заместить первую картинку второй";
+            s.ResultRowSetter_DeleteDefectIcon_ToolTip_Text = "РЈРґР°Р»РёС‚СЊ РєР°СЂС‚РёРЅРєСѓ";
+            s.ResultRowSetter_DeleteFirstIcon_ToolTip_Text = "РЈРґР°Р»РёС‚СЊ РїРµСЂРІСѓСЋ РєР°СЂС‚РёРЅРєСѓ";
+            s.ResultRowSetter_DeleteSecondIcon_ToolTip_Text = "РЈРґР°Р»РёС‚СЊ РІС‚РѕСЂСѓСЋ РєР°СЂС‚РёРЅРєСѓ";
+            s.ResultRowSetter_RenameFirstToSecondIcon_ToolTip_Text = "Р—Р°РјРµСЃС‚РёС‚СЊ РІС‚РѕСЂСѓСЋ РєР°СЂС‚РёРЅРєСѓ РїРµСЂРІРѕР№";
+            s.ResultRowSetter_RenameSecondToFirstIcon_ToolTip_Text = "Р—Р°РјРµСЃС‚РёС‚СЊ РїРµСЂРІСѓСЋ РєР°СЂС‚РёРЅРєСѓ РІС‚РѕСЂРѕР№";
 
-            s.ResultRowSetter_Turn_0_Icon_ToolTip_Text = "Оригинал";
-            s.ResultRowSetter_Turn_90_Icon_ToolTip_Text = "Повернутый на 90°";
-            s.ResultRowSetter_Turn_180_Icon_ToolTip_Text = "Повернутый на 180°";
-            s.ResultRowSetter_Turn_270_Icon_ToolTip_Text = "Повернутый на 270°";
-            s.ResultRowSetter_MirrorTurn_0_Icon_ToolTip_Text = "Горизонтально отраженный";
-            s.ResultRowSetter_MirrorTurn_90_Icon_ToolTip_Text = "Горизонтально отраженный и повернутый на 90°";
-            s.ResultRowSetter_MirrorTurn_180_Icon_ToolTip_Text = "Горизонтально отраженный и повернутый на 180°";
-            s.ResultRowSetter_MirrorTurn_270_Icon_ToolTip_Text = "Горизонтально отраженный и повернутый на 270°";
+            s.ResultRowSetter_Turn_0_Icon_ToolTip_Text = "РћСЂРёРіРёРЅР°Р»";
+            s.ResultRowSetter_Turn_90_Icon_ToolTip_Text = "РџРѕРІРµСЂРЅСѓС‚С‹Р№ РЅР° 90В°";
+            s.ResultRowSetter_Turn_180_Icon_ToolTip_Text = "РџРѕРІРµСЂРЅСѓС‚С‹Р№ РЅР° 180В°";
+            s.ResultRowSetter_Turn_270_Icon_ToolTip_Text = "РџРѕРІРµСЂРЅСѓС‚С‹Р№ РЅР° 270В°";
+            s.ResultRowSetter_MirrorTurn_0_Icon_ToolTip_Text = "Р“РѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅРѕ РѕС‚СЂР°Р¶РµРЅРЅС‹Р№";
+            s.ResultRowSetter_MirrorTurn_90_Icon_ToolTip_Text = "Р“РѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅРѕ РѕС‚СЂР°Р¶РµРЅРЅС‹Р№ Рё РїРѕРІРµСЂРЅСѓС‚С‹Р№ РЅР° 90В°";
+            s.ResultRowSetter_MirrorTurn_180_Icon_ToolTip_Text = "Р“РѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅРѕ РѕС‚СЂР°Р¶РµРЅРЅС‹Р№ Рё РїРѕРІРµСЂРЅСѓС‚С‹Р№ РЅР° 180В°";
+            s.ResultRowSetter_MirrorTurn_270_Icon_ToolTip_Text = "Р“РѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅРѕ РѕС‚СЂР°Р¶РµРЅРЅС‹Р№ Рё РїРѕРІРµСЂРЅСѓС‚С‹Р№ РЅР° 270В°";
 
-            s.ResultsListView_Type_Column_Text = "Тип";
-            s.ResultsListView_Group_Column_Text = "Группа";
-            s.ResultsListView_GroupSize_Column_Text = "Размер группы";
-            s.ResultsListView_Difference_Column_Text = "Различие";
-            s.ResultsListView_Defect_Column_Text = "Тип дефекта";
-            s.ResultsListView_Transform_Column_Text = "Трансформация";
-            s.ResultsListView_Hint_Column_Text = "Рекомендация";
+            s.ResultsListView_Type_Column_Text = "РўРёРї";
+            s.ResultsListView_Group_Column_Text = "Р“СЂСѓРїРїР°";
+            s.ResultsListView_GroupSize_Column_Text = "Р Р°Р·РјРµСЂ РіСЂСѓРїРїС‹";
+            s.ResultsListView_Difference_Column_Text = "Р Р°Р·Р»РёС‡РёРµ";
+            s.ResultsListView_Defect_Column_Text = "РўРёРї РґРµС„РµРєС‚Р°";
+            s.ResultsListView_Transform_Column_Text = "РўСЂР°РЅСЃС„РѕСЂРјР°С†РёСЏ";
+            s.ResultsListView_Hint_Column_Text = "Р РµРєРѕРјРµРЅРґР°С†РёСЏ";
             
-            s.ResultsListView_FileName_Column_Text = "Имя";
-            s.ResultsListView_FileDirectory_Column_Text = "В каталоге";
-            s.ResultsListView_ImageSize_Column_Text = "Размеры";
-            s.ResultsListView_ImageType_Column_Text = "Тип картинки";
-            s.ResultsListView_Blockiness_Column_Text = "Блочность";
-            s.ResultsListView_Blurring_Column_Text = "Размытие";
-            s.ResultsListView_FileSize_Column_Text = "Размер";
-            s.ResultsListView_FileTime_Column_Text = "Дата изменения";
+            s.ResultsListView_FileName_Column_Text = "РРјСЏ";
+            s.ResultsListView_FileDirectory_Column_Text = "Р’ РєР°С‚Р°Р»РѕРіРµ";
+            s.ResultsListView_ImageSize_Column_Text = "Р Р°Р·РјРµСЂС‹";
+            s.ResultsListView_ImageType_Column_Text = "РўРёРї РєР°СЂС‚РёРЅРєРё";
+            s.ResultsListView_Blockiness_Column_Text = "Р‘Р»РѕС‡РЅРѕСЃС‚СЊ";
+            s.ResultsListView_Blurring_Column_Text = "Р Р°Р·РјС‹С‚РёРµ";
+            s.ResultsListView_FileSize_Column_Text = "Р Р°Р·РјРµСЂ";
+            s.ResultsListView_FileTime_Column_Text = "Р”Р°С‚Р° РёР·РјРµРЅРµРЅРёСЏ";
 
-            s.ResultsListView_FirstFileName_Column_Text = "1: Имя";
-            s.ResultsListView_FirstFileDirectory_Column_Text = "1: В каталоге";
-            s.ResultsListView_FirstImageSize_Column_Text = "1: Размеры";
-            s.ResultsListView_FirstImageType_Column_Text = "1: Тип картинки";
-            s.ResultsListView_FirstBlockiness_Column_Text = "1: Блочность";
-            s.ResultsListView_FirstBlurring_Column_Text = "1: Размытие";
-            s.ResultsListView_FirstFileSize_Column_Text = "1: Размер";
-            s.ResultsListView_FirstFileTime_Column_Text = "1: Дата изменения";
-            s.ResultsListView_SecondFileName_Column_Text = "2: Имя";
-            s.ResultsListView_SecondFileDirectory_Column_Text = "2: В каталоге";
-            s.ResultsListView_SecondImageSize_Column_Text = "2: Размеры";
-            s.ResultsListView_SecondImageType_Column_Text = "2: Тип картинки";
-            s.ResultsListView_SecondBlockiness_Column_Text = "2: Блочность";
-            s.ResultsListView_SecondBlurring_Column_Text = "2: Размытие";
-            s.ResultsListView_SecondFileSize_Column_Text = "2: Размер";
-            s.ResultsListView_SecondFileTime_Column_Text = "2: Дата изменения";
+            s.ResultsListView_FirstFileName_Column_Text = "1: РРјСЏ";
+            s.ResultsListView_FirstFileDirectory_Column_Text = "1: Р’ РєР°С‚Р°Р»РѕРіРµ";
+            s.ResultsListView_FirstImageSize_Column_Text = "1: Р Р°Р·РјРµСЂС‹";
+            s.ResultsListView_FirstImageType_Column_Text = "1: РўРёРї РєР°СЂС‚РёРЅРєРё";
+            s.ResultsListView_FirstBlockiness_Column_Text = "1: Р‘Р»РѕС‡РЅРѕСЃС‚СЊ";
+            s.ResultsListView_FirstBlurring_Column_Text = "1: Р Р°Р·РјС‹С‚РёРµ";
+            s.ResultsListView_FirstFileSize_Column_Text = "1: Р Р°Р·РјРµСЂ";
+            s.ResultsListView_FirstFileTime_Column_Text = "1: Р”Р°С‚Р° РёР·РјРµРЅРµРЅРёСЏ";
+            s.ResultsListView_SecondFileName_Column_Text = "2: РРјСЏ";
+            s.ResultsListView_SecondFileDirectory_Column_Text = "2: Р’ РєР°С‚Р°Р»РѕРіРµ";
+            s.ResultsListView_SecondImageSize_Column_Text = "2: Р Р°Р·РјРµСЂС‹";
+            s.ResultsListView_SecondImageType_Column_Text = "2: РўРёРї РєР°СЂС‚РёРЅРєРё";
+            s.ResultsListView_SecondBlockiness_Column_Text = "2: Р‘Р»РѕС‡РЅРѕСЃС‚СЊ";
+            s.ResultsListView_SecondBlurring_Column_Text = "2: Р Р°Р·РјС‹С‚РёРµ";
+            s.ResultsListView_SecondFileSize_Column_Text = "2: Р Р°Р·РјРµСЂ";
+            s.ResultsListView_SecondFileTime_Column_Text = "2: Р”Р°С‚Р° РёР·РјРµРЅРµРЅРёСЏ";
 
-            s.ResultsListViewContextMenu_DeleteDefectItem_Text = "Удалить испорченные картинки в выделенных результатах";
-            s.ResultsListViewContextMenu_DeleteFirstItem_Text = "Удалить первые картинки в выделенных результатах";
-            s.ResultsListViewContextMenu_DeleteSecondItem_Text = "Удалить вторые картинки в выделенных результатах";
-            s.ResultsListViewContextMenu_DeleteBothItem_Text = "Удалить все парные картинки в выделенных результатах";
-            s.ResultsListViewContextMenu_RenameFirstToSecondIcon_ToolTip_Text = "Заместить вторые картинки первыми в выделенных результатах";
-            s.ResultsListViewContextMenu_RenameSecondToFirstIcon_ToolTip_Text = "Заместить первые картинки вторыми в выделенных результатах";
-            s.ResultsListViewContextMenu_RenameFirstLikeSecondButton_ToolTip_Text = "Переименовать первые картинки как вторые в выделенных результатах";
-            s.ResultsListViewContextMenu_RenameSecondLikeFirstButton_ToolTipText = "Переименовать вторые картинки как первые в выделенных результатах";
-            s.ResultsListViewContextMenu_MoveFirstToSecondButton_ToolTipText = "Переместить первые картинки ко вторым в выделенных результатах";
-            s.ResultsListViewContextMenu_MoveSecondToFirstButton_ToolTipText = "Переместить вторые картинки к первыми в выделенных результатах";
-            s.ResultsListViewContextMenu_MistakeItem_Text = "Пометить выделенные результаты как ошибочные";
-            s.ResultsListViewContextMenu_PerformHintItem_Text = "Автоматически обработать выделенные результаты";
+            s.ResultsListViewContextMenu_DeleteDefectItem_Text = "РЈРґР°Р»РёС‚СЊ РёСЃРїРѕСЂС‡РµРЅРЅС‹Рµ РєР°СЂС‚РёРЅРєРё РІ РІС‹РґРµР»РµРЅРЅС‹С… СЂРµР·СѓР»СЊС‚Р°С‚Р°С…";
+            s.ResultsListViewContextMenu_DeleteFirstItem_Text = "РЈРґР°Р»РёС‚СЊ РїРµСЂРІС‹Рµ РєР°СЂС‚РёРЅРєРё РІ РІС‹РґРµР»РµРЅРЅС‹С… СЂРµР·СѓР»СЊС‚Р°С‚Р°С…";
+            s.ResultsListViewContextMenu_DeleteSecondItem_Text = "РЈРґР°Р»РёС‚СЊ РІС‚РѕСЂС‹Рµ РєР°СЂС‚РёРЅРєРё РІ РІС‹РґРµР»РµРЅРЅС‹С… СЂРµР·СѓР»СЊС‚Р°С‚Р°С…";
+            s.ResultsListViewContextMenu_DeleteBothItem_Text = "РЈРґР°Р»РёС‚СЊ РІСЃРµ РїР°СЂРЅС‹Рµ РєР°СЂС‚РёРЅРєРё РІ РІС‹РґРµР»РµРЅРЅС‹С… СЂРµР·СѓР»СЊС‚Р°С‚Р°С…";
+            s.ResultsListViewContextMenu_RenameFirstToSecondIcon_ToolTip_Text = "Р—Р°РјРµСЃС‚РёС‚СЊ РІС‚РѕСЂС‹Рµ РєР°СЂС‚РёРЅРєРё РїРµСЂРІС‹РјРё РІ РІС‹РґРµР»РµРЅРЅС‹С… СЂРµР·СѓР»СЊС‚Р°С‚Р°С…";
+            s.ResultsListViewContextMenu_RenameSecondToFirstIcon_ToolTip_Text = "Р—Р°РјРµСЃС‚РёС‚СЊ РїРµСЂРІС‹Рµ РєР°СЂС‚РёРЅРєРё РІС‚РѕСЂС‹РјРё РІ РІС‹РґРµР»РµРЅРЅС‹С… СЂРµР·СѓР»СЊС‚Р°С‚Р°С…";
+            s.ResultsListViewContextMenu_RenameFirstLikeSecondButton_ToolTip_Text = "РџРµСЂРµРёРјРµРЅРѕРІР°С‚СЊ РїРµСЂРІС‹Рµ РєР°СЂС‚РёРЅРєРё РєР°Рє РІС‚РѕСЂС‹Рµ РІ РІС‹РґРµР»РµРЅРЅС‹С… СЂРµР·СѓР»СЊС‚Р°С‚Р°С…";
+            s.ResultsListViewContextMenu_RenameSecondLikeFirstButton_ToolTipText = "РџРµСЂРµРёРјРµРЅРѕРІР°С‚СЊ РІС‚РѕСЂС‹Рµ РєР°СЂС‚РёРЅРєРё РєР°Рє РїРµСЂРІС‹Рµ РІ РІС‹РґРµР»РµРЅРЅС‹С… СЂРµР·СѓР»СЊС‚Р°С‚Р°С…";
+            s.ResultsListViewContextMenu_MoveFirstToSecondButton_ToolTipText = "РџРµСЂРµРјРµСЃС‚РёС‚СЊ РїРµСЂРІС‹Рµ РєР°СЂС‚РёРЅРєРё РєРѕ РІС‚РѕСЂС‹Рј РІ РІС‹РґРµР»РµРЅРЅС‹С… СЂРµР·СѓР»СЊС‚Р°С‚Р°С…";
+            s.ResultsListViewContextMenu_MoveSecondToFirstButton_ToolTipText = "РџРµСЂРµРјРµСЃС‚РёС‚СЊ РІС‚РѕСЂС‹Рµ РєР°СЂС‚РёРЅРєРё Рє РїРµСЂРІС‹РјРё РІ РІС‹РґРµР»РµРЅРЅС‹С… СЂРµР·СѓР»СЊС‚Р°С‚Р°С…";
+            s.ResultsListViewContextMenu_MistakeItem_Text = "РџРѕРјРµС‚РёС‚СЊ РІС‹РґРµР»РµРЅРЅС‹Рµ СЂРµР·СѓР»СЊС‚Р°С‚С‹ РєР°Рє РѕС€РёР±РѕС‡РЅС‹Рµ";
+            s.ResultsListViewContextMenu_PerformHintItem_Text = "РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРё РѕР±СЂР°Р±РѕС‚Р°С‚СЊ РІС‹РґРµР»РµРЅРЅС‹Рµ СЂРµР·СѓР»СЊС‚Р°С‚С‹";
 
-            s.MainStatusStrip_TotalLabel_Text = "Всего: ";
-            s.MainStatusStrip_CurrentLabel_Text = "Текущий: ";
-            s.MainStatusStrip_SelectedLabel_Text = "Выделено: ";
+            s.MainStatusStrip_TotalLabel_Text = "Р’СЃРµРіРѕ: ";
+            s.MainStatusStrip_CurrentLabel_Text = "РўРµРєСѓС‰РёР№: ";
+            s.MainStatusStrip_SelectedLabel_Text = "Р’С‹РґРµР»РµРЅРѕ: ";
 
-            s.MainMenu_FileMenuItem_Text = "Файл";
-            s.MainMenu_File_OpenProfileMenuItem_Text = "Открыть профиль поиска";
-            s.MainMenu_File_SaveProfileAsMenuItem_Text = "Сохранить профиль поиска как";
-            s.MainMenu_File_LoadProfileOnLoadingMenuItem_Text = "Загружать профиль при загрузке";
-            s.MainMenu_File_SaveProfileOnClosingMenuItem_Text = "Сохранять профиль при закрытие";
-            s.MainMenu_File_ExitMenuItem_Text = "Выход";
+            s.MainMenu_FileMenuItem_Text = "Р¤Р°Р№Р»";
+            s.MainMenu_File_OpenProfileMenuItem_Text = "РћС‚РєСЂС‹С‚СЊ РїСЂРѕС„РёР»СЊ РїРѕРёСЃРєР°";
+            s.MainMenu_File_SaveProfileAsMenuItem_Text = "РЎРѕС…СЂР°РЅРёС‚СЊ РїСЂРѕС„РёР»СЊ РїРѕРёСЃРєР° РєР°Рє";
+            s.MainMenu_File_LoadProfileOnLoadingMenuItem_Text = "Р—Р°РіСЂСѓР¶Р°С‚СЊ РїСЂРѕС„РёР»СЊ РїСЂРё Р·Р°РіСЂСѓР·РєРµ";
+            s.MainMenu_File_SaveProfileOnClosingMenuItem_Text = "РЎРѕС…СЂР°РЅСЏС‚СЊ РїСЂРѕС„РёР»СЊ РїСЂРё Р·Р°РєСЂС‹С‚РёРµ";
+            s.MainMenu_File_ExitMenuItem_Text = "Р’С‹С…РѕРґ";
 
-            s.MainMenu_EditMenuItem_Text = "Правка";
-            s.MainMenu_Edit_UndoMenuItem_Text = "Отменить (Ctrl-Z)";
-            s.MainMenu_Edit_RedoMenuItem_Text = "Повторить (Ctrl-Y)";
-            s.MainMenu_Edit_SelectAllMenuItem_Text = "Выделить все (Ctrl-A)";
+            s.MainMenu_EditMenuItem_Text = "РџСЂР°РІРєР°";
+            s.MainMenu_Edit_UndoMenuItem_Text = "РћС‚РјРµРЅРёС‚СЊ (Ctrl-Z)";
+            s.MainMenu_Edit_RedoMenuItem_Text = "РџРѕРІС‚РѕСЂРёС‚СЊ (Ctrl-Y)";
+            s.MainMenu_Edit_SelectAllMenuItem_Text = "Р’С‹РґРµР»РёС‚СЊ РІСЃРµ (Ctrl-A)";
 
-            s.MainMenu_ViewMenuItem_Text = "Вид";
-            s.MainMenu_View_ToolMenuItem_Text = "Панель инструментов";
-            s.MainMenu_View_StatusMenuItem_Text = "Строка состояния";
-            s.MainMenu_View_SelectColumnsMenuItem_Text = "Выбор столбцов";
-            s.MainMenu_View_HotKeysMenuItem_Text = "Горячие клавиши";
-            s.MainMenu_View_StretchSmallImagesMenuItem_Text = "Растягивать небольшие изображения";
-            s.MainMenu_View_ProportionalImageSizeMenuItem_Text = "Пропорциональный размер картинок";
-            s.MainMenu_View_ShowNeighbourImageMenuItem_Text = "Показывать соседние изображения";
+            s.MainMenu_ViewMenuItem_Text = "Р’РёРґ";
+            s.MainMenu_View_ToolMenuItem_Text = "РџР°РЅРµР»СЊ РёРЅСЃС‚СЂСѓРјРµРЅС‚РѕРІ";
+            s.MainMenu_View_StatusMenuItem_Text = "РЎС‚СЂРѕРєР° СЃРѕСЃС‚РѕСЏРЅРёСЏ";
+            s.MainMenu_View_SelectColumnsMenuItem_Text = "Р’С‹Р±РѕСЂ СЃС‚РѕР»Р±С†РѕРІ";
+            s.MainMenu_View_HotKeysMenuItem_Text = "Р“РѕСЂСЏС‡РёРµ РєР»Р°РІРёС€Рё";
+            s.MainMenu_View_StretchSmallImagesMenuItem_Text = "Р Р°СЃС‚СЏРіРёРІР°С‚СЊ РЅРµР±РѕР»СЊС€РёРµ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ";
+            s.MainMenu_View_ProportionalImageSizeMenuItem_Text = "РџСЂРѕРїРѕСЂС†РёРѕРЅР°Р»СЊРЅС‹Р№ СЂР°Р·РјРµСЂ РєР°СЂС‚РёРЅРѕРє";
+            s.MainMenu_View_ShowNeighbourImageMenuItem_Text = "РџРѕРєР°Р·С‹РІР°С‚СЊ СЃРѕСЃРµРґРЅРёРµ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ";
 
-            s.MainMenu_SearchMenuItem_Text = "Поиск";
-            s.MainMenu_Search_StartMenuItem_Text = "Начать поиск";
-            s.MainMenu_Search_RefreshResultsMenuItem_Text = "Обновить результаты";
-            s.MainMenu_Search_RefreshImagesMenuItem_Text = "Удалить неактуальные записи из базы данных о картинках";
-            s.MainMenu_Search_PathsMenuItem_Text = "Пути";
-            s.MainMenu_Search_OptionsMenuItem_Text = "Опции";
-            s.MainMenu_Search_OnePathMenuItem_Text = "Один путь поиска";
-            s.MainMenu_Search_UseImageDataBaseMenuItem_Text = "Использовать базу данных о картинках";
-            s.MainMenu_Search_CheckResultsAtLoadingMenuItem_Text = "Проверять результаты при загрузке";
-            s.MainMenu_Search_CheckMistakesAtLoadingMenuItem_Text = "Проверять базу данных об ошибках при загрузке";
+            s.MainMenu_SearchMenuItem_Text = "РџРѕРёСЃРє";
+            s.MainMenu_Search_StartMenuItem_Text = "РќР°С‡Р°С‚СЊ РїРѕРёСЃРє";
+            s.MainMenu_Search_RefreshResultsMenuItem_Text = "РћР±РЅРѕРІРёС‚СЊ СЂРµР·СѓР»СЊС‚Р°С‚С‹";
+            s.MainMenu_Search_RefreshImagesMenuItem_Text = "РЈРґР°Р»РёС‚СЊ РЅРµР°РєС‚СѓР°Р»СЊРЅС‹Рµ Р·Р°РїРёСЃРё РёР· Р±Р°Р·С‹ РґР°РЅРЅС‹С… Рѕ РєР°СЂС‚РёРЅРєР°С…";
+            s.MainMenu_Search_PathsMenuItem_Text = "РџСѓС‚Рё";
+            s.MainMenu_Search_OptionsMenuItem_Text = "РћРїС†РёРё";
+            s.MainMenu_Search_OnePathMenuItem_Text = "РћРґРёРЅ РїСѓС‚СЊ РїРѕРёСЃРєР°";
+            s.MainMenu_Search_UseImageDataBaseMenuItem_Text = "РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Р±Р°Р·Сѓ РґР°РЅРЅС‹С… Рѕ РєР°СЂС‚РёРЅРєР°С…";
+            s.MainMenu_Search_CheckResultsAtLoadingMenuItem_Text = "РџСЂРѕРІРµСЂСЏС‚СЊ СЂРµР·СѓР»СЊС‚Р°С‚С‹ РїСЂРё Р·Р°РіСЂСѓР·РєРµ";
+            s.MainMenu_Search_CheckMistakesAtLoadingMenuItem_Text = "РџСЂРѕРІРµСЂСЏС‚СЊ Р±Р°Р·Сѓ РґР°РЅРЅС‹С… РѕР± РѕС€РёР±РєР°С… РїСЂРё Р·Р°РіСЂСѓР·РєРµ";
 
-            s.MainMenu_HelpMenuItem_Text = "Справка";
-            s.MainMenu_Help_HelpMenuItem_Text = "Справка";
-            s.MainMenu_Help_AboutProgramMenuItem_Text = "О программе...";
-            s.MainMenu_Help_CheckingForUpdatesMenuItem_Text = "Проверять наличие обновлений";
+            s.MainMenu_HelpMenuItem_Text = "РЎРїСЂР°РІРєР°";
+            s.MainMenu_Help_HelpMenuItem_Text = "РЎРїСЂР°РІРєР°";
+            s.MainMenu_Help_AboutProgramMenuItem_Text = "Рћ РїСЂРѕРіСЂР°РјРјРµ...";
+            s.MainMenu_Help_CheckingForUpdatesMenuItem_Text = "РџСЂРѕРІРµСЂСЏС‚СЊ РЅР°Р»РёС‡РёРµ РѕР±РЅРѕРІР»РµРЅРёР№";
 
-            s.MainMenu_NewVersionMenuItem_Text = "Новая версия";
-            s.MainMenu_NewVersionMenuItem_Tooltip = "AntiDupl.NET-{0} доступна на сайте!";
+            s.MainMenu_NewVersionMenuItem_Text = "РќРѕРІР°СЏ РІРµСЂСЃРёСЏ";
+            s.MainMenu_NewVersionMenuItem_Tooltip = "AntiDupl.NET-{0} РґРѕСЃС‚СѓРїРЅР° РЅР° СЃР°Р№С‚Рµ!";
 
-            s.SelectHotKeysForm_InvalidHotKeyToolTipText = "Эта комбинация клавиш уже используется для других целей.";
+            s.SelectHotKeysForm_InvalidHotKeyToolTipText = "Р­С‚Р° РєРѕРјР±РёРЅР°С†РёСЏ РєР»Р°РІРёС€ СѓР¶Рµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ РґСЂСѓРіРёС… С†РµР»РµР№.";
             
-            s.LanguageMenuItem_Text = "Язык";
+            s.LanguageMenuItem_Text = "РЇР·С‹Рє";
 
-            s.ViewModeMenuItem_Text = "Режим просмотра результатов";
-            s.ViewModeMenuItem_VerticalPairTableMenuItem_Text = "Таблица вертикальных пар";
-            s.ViewModeMenuItem_HorizontalPairTableMenuItem_Text = "Таблица горизонтальных пар";
-            s.ViewModeMenuItem_GroupedThumbnailsMenuItem_Text = "Сгруппированные миниатюры";
+            s.ViewModeMenuItem_Text = "Р РµР¶РёРј РїСЂРѕСЃРјРѕС‚СЂР° СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ";
+            s.ViewModeMenuItem_VerticalPairTableMenuItem_Text = "РўР°Р±Р»РёС†Р° РІРµСЂС‚РёРєР°Р»СЊРЅС‹С… РїР°СЂ";
+            s.ViewModeMenuItem_HorizontalPairTableMenuItem_Text = "РўР°Р±Р»РёС†Р° РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅС‹С… РїР°СЂ";
+            s.ViewModeMenuItem_GroupedThumbnailsMenuItem_Text = "РЎРіСЂСѓРїРїРёСЂРѕРІР°РЅРЅС‹Рµ РјРёРЅРёР°С‚СЋСЂС‹";
 
-            s.ImagePreviewContextMenu_CopyPathItem_Text = "Скопировать путь";
-            s.ImagePreviewContextMenu_CopyFileNameItem_Text = "Скопировать имя картинки";
-            s.ImagePreviewContextMenu_OpenImageItem_Text = "Открыть картинку";
-            s.ImagePreviewContextMenu_OpenFolderItem_Text = "Открыть каталог с картинкой";
-            s.ImagePreviewContextMenu_AddToIgnore_Text = "Добавить в игнорируемые";
-            s.ImagePreviewContextMenu_AddToIgnoreDirectory_Text = "Добавить директорию в игнорируемые";
-            s.ImagePreviewContextMenu_RenameImageItem_Text = "Переименовать картинку";
-            s.ImagePreviewContextMenu_RenameImageLikeNeighbour_Text = "Переименовать картинку как соседнию";
-            s.ImagePreviewContextMenu_MoveImageToNeighbourItem_Text = "Переместить картинку к соседней";
-            s.ImagePreviewContextMenu_MoveAndRenameImageToNeighbourItem_Text = "Переместить и переименовать к соседней";
-            s.ImagePreviewContextMenu_MoveGroupToNeighbourItem_Text = "Перенести группу в папку к соседней";
-            s.ImagePreviewContextMenu_RenameGroupAsNeighbourItem_Text = "Переименовать файлы в группе как соседней файл";
+            s.ImagePreviewContextMenu_CopyPathItem_Text = "РЎРєРѕРїРёСЂРѕРІР°С‚СЊ РїСѓС‚СЊ";
+            s.ImagePreviewContextMenu_CopyFileNameItem_Text = "РЎРєРѕРїРёСЂРѕРІР°С‚СЊ РёРјСЏ РєР°СЂС‚РёРЅРєРё";
+            s.ImagePreviewContextMenu_OpenImageItem_Text = "РћС‚РєСЂС‹С‚СЊ РєР°СЂС‚РёРЅРєСѓ";
+            s.ImagePreviewContextMenu_OpenFolderItem_Text = "РћС‚РєСЂС‹С‚СЊ РєР°С‚Р°Р»РѕРі СЃ РєР°СЂС‚РёРЅРєРѕР№";
+            s.ImagePreviewContextMenu_AddToIgnore_Text = "Р”РѕР±Р°РІРёС‚СЊ РІ РёРіРЅРѕСЂРёСЂСѓРµРјС‹Рµ";
+            s.ImagePreviewContextMenu_AddToIgnoreDirectory_Text = "Р”РѕР±Р°РІРёС‚СЊ РґРёСЂРµРєС‚РѕСЂРёСЋ РІ РёРіРЅРѕСЂРёСЂСѓРµРјС‹Рµ";
+            s.ImagePreviewContextMenu_RenameImageItem_Text = "РџРµСЂРµРёРјРµРЅРѕРІР°С‚СЊ РєР°СЂС‚РёРЅРєСѓ";
+            s.ImagePreviewContextMenu_RenameImageLikeNeighbour_Text = "РџРµСЂРµРёРјРµРЅРѕРІР°С‚СЊ РєР°СЂС‚РёРЅРєСѓ РєР°Рє СЃРѕСЃРµРґРЅРёСЋ";
+            s.ImagePreviewContextMenu_MoveImageToNeighbourItem_Text = "РџРµСЂРµРјРµСЃС‚РёС‚СЊ РєР°СЂС‚РёРЅРєСѓ Рє СЃРѕСЃРµРґРЅРµР№";
+            s.ImagePreviewContextMenu_MoveAndRenameImageToNeighbourItem_Text = "РџРµСЂРµРјРµСЃС‚РёС‚СЊ Рё РїРµСЂРµРёРјРµРЅРѕРІР°С‚СЊ Рє СЃРѕСЃРµРґРЅРµР№";
+            s.ImagePreviewContextMenu_MoveGroupToNeighbourItem_Text = "РџРµСЂРµРЅРµСЃС‚Рё РіСЂСѓРїРїСѓ РІ РїР°РїРєСѓ Рє СЃРѕСЃРµРґРЅРµР№";
+            s.ImagePreviewContextMenu_RenameGroupAsNeighbourItem_Text = "РџРµСЂРµРёРјРµРЅРѕРІР°С‚СЊ С„Р°Р№Р»С‹ РІ РіСЂСѓРїРїРµ РєР°Рє СЃРѕСЃРµРґРЅРµР№ С„Р°Р№Р»";
 
             s.ImagePreviewPanel_EXIF_Text = "EXIF";
-            s.ImagePreviewPanel_EXIF_Tooltip_ImageDescription = "Описание: ";
-            s.ImagePreviewPanel_EXIF_Tooltip_EquipMake = "Изготовитель камеры: ";
-            s.ImagePreviewPanel_EXIF_Tooltip_EquipModel = "Модель камеры: ";
-            s.ImagePreviewPanel_EXIF_Tooltip_SoftwareUsed = "Программное обеспечение: ";
-            s.ImagePreviewPanel_EXIF_Tooltip_DateTime = "Дата/Время: ";
-            s.ImagePreviewPanel_EXIF_Tooltip_Artist = "Автор: ";
-            s.ImagePreviewPanel_EXIF_Tooltip_UserComment = "Комментарий: ";
+            s.ImagePreviewPanel_EXIF_Tooltip_ImageDescription = "РћРїРёСЃР°РЅРёРµ: ";
+            s.ImagePreviewPanel_EXIF_Tooltip_EquipMake = "РР·РіРѕС‚РѕРІРёС‚РµР»СЊ РєР°РјРµСЂС‹: ";
+            s.ImagePreviewPanel_EXIF_Tooltip_EquipModel = "РњРѕРґРµР»СЊ РєР°РјРµСЂС‹: ";
+            s.ImagePreviewPanel_EXIF_Tooltip_SoftwareUsed = "РџСЂРѕРіСЂР°РјРјРЅРѕРµ РѕР±РµСЃРїРµС‡РµРЅРёРµ: ";
+            s.ImagePreviewPanel_EXIF_Tooltip_DateTime = "Р”Р°С‚Р°/Р’СЂРµРјСЏ: ";
+            s.ImagePreviewPanel_EXIF_Tooltip_Artist = "РђРІС‚РѕСЂ: ";
+            s.ImagePreviewPanel_EXIF_Tooltip_UserComment = "РљРѕРјРјРµРЅС‚Р°СЂРёР№: ";
         }
 
         static private Strings Create()

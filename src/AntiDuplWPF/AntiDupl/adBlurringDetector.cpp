@@ -83,7 +83,7 @@ namespace ad
             else
                 levels[i].view.Recreate(size, TView::Gray8);
 
-			size = TPoint((size.x + 1) >> 1, (size.y + 1) >> 1); //äåëèì ðàçìåðû íà 2
+			size = TPoint((size.x + 1) >> 1, (size.y + 1) >> 1); //Ð´ÐµÐ»Ð¸Ð¼ Ñ€Ð°Ð·Ð¼ÐµÑ€Ñ‹ Ð½Ð° 2
 			if(size.x < 3 || size.y < 3 || size.x*size.y < AD_BLURRING_DETECTOR_AREA_MIN)
 				break;
         }
@@ -100,7 +100,7 @@ namespace ad
         }
 	}
 	
-	//Îáðàòíàÿ ôóíêöèÿ ðàñïðåäåëåíèÿ (Êàêîå êîëè÷åñòâî ïèêñåëåé ëåæèò â çàäàííîì ïîðîãå)
+	//ÐžÐ±Ñ€Ð°Ñ‚Ð½Ð°Ñ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ñ Ñ€Ð°ÑÐ¿Ñ€ÐµÐ´ÐµÐ»ÐµÐ½Ð¸Ñ (ÐšÐ°ÐºÐ¾Ðµ ÐºÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ð¿Ð¸ÐºÑÐµÐ»ÐµÐ¹ Ð»ÐµÐ¶Ð¸Ñ‚ Ð² Ð·Ð°Ð´Ð°Ð½Ð½Ð¾Ð¼ Ð¿Ð¾Ñ€Ð¾Ð³Ðµ)
 	double TBlurringDetector::Quantile(const TUInt32 * histogram, double threshold) const
 	{
 		TUInt32 total = 0; 

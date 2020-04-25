@@ -111,23 +111,23 @@ namespace ad
             Add(pImageData);
     }
 
-	// Ïåðåäàííîå èçîáðàæåíèå ñâðàâíèâàåòñÿ ñ íàáîðîì ïðîâåðåííûõ è îñòàëüíûõ.
-	// pOriginal - îðèãèíàëüíîå èçîáðàæåíèå.
-	// pTransformed - òðàíñôîðìèðîâàííîå, åñëè ïðèìåíÿåòñÿ òðàíñôîðìàöèÿ èëè òî æå ÷òî è îðèãèíàëüíîå.
+	// ÐŸÐµÑ€ÐµÐ´Ð°Ð½Ð½Ð¾Ðµ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ðµ ÑÐ²Ñ€Ð°Ð²Ð½Ð¸Ð²Ð°ÐµÑ‚ÑÑ Ñ Ð½Ð°Ð±Ð¾Ñ€Ð¾Ð¼ Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐµÐ½Ð½Ñ‹Ñ… Ð¸ Ð¾ÑÑ‚Ð°Ð»ÑŒÐ½Ñ‹Ñ….
+	// pOriginal - Ð¾Ñ€Ð¸Ð³Ð¸Ð½Ð°Ð»ÑŒÐ½Ð¾Ðµ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ðµ.
+	// pTransformed - Ñ‚Ñ€Ð°Ð½ÑÑ„Ð¾Ñ€Ð¼Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ð¾Ðµ, ÐµÑÐ»Ð¸ Ð¿Ñ€Ð¸Ð¼ÐµÐ½ÑÐµÑ‚ÑÑ Ñ‚Ñ€Ð°Ð½ÑÑ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸Ñ Ð¸Ð»Ð¸ Ñ‚Ð¾ Ð¶Ðµ Ñ‡Ñ‚Ð¾ Ð¸ Ð¾Ñ€Ð¸Ð³Ð¸Ð½Ð°Ð»ÑŒÐ½Ð¾Ðµ.
     void TImageComparer::CompareWithSet(const Set &set, TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform)
     {
         double difference;
-		// Åñëè êàðòèíêà íå â ïðîâåðåííûõ
+		// Ð•ÑÐ»Ð¸ ÐºÐ°Ñ€Ñ‚Ð¸Ð½ÐºÐ° Ð½Ðµ Ð² Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐµÐ½Ð½Ñ‹Ñ…
         if(!pTransformed->valid)
         {
-			// Ñðàâíèâàåì ñ íàáîðîì ïðîâåðåííûõ
+			// Ð¡Ñ€Ð°Ð²Ð½Ð¸Ð²Ð°ÐµÐ¼ Ñ Ð½Ð°Ð±Ð¾Ñ€Ð¾Ð¼ Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐµÐ½Ð½Ñ‹Ñ…
             for(TImageDataPtrList::const_iterator i = set.valid.begin(); i != set.valid.end(); ++i)
             {
                 if(IsDuplPair(pTransformed, *i, &difference))
                     m_pResult->AddDuplImagePair(pOriginal, *i, difference, transform);
             }
         }
-		// Ñðàâíèâàåì ñ íàáîðîì îñòàëüíûõ
+		// Ð¡Ñ€Ð°Ð²Ð½Ð¸Ð²Ð°ÐµÐ¼ Ñ Ð½Ð°Ð±Ð¾Ñ€Ð¾Ð¼ Ð¾ÑÑ‚Ð°Ð»ÑŒÐ½Ñ‹Ñ…
 		for(TImageDataPtrList::const_iterator i = set.other.begin(); i != set.other.end(); ++i)
 		{
 			if(IsDuplPair(pTransformed, *i, &difference))
@@ -143,7 +143,7 @@ namespace ad
 			set.other.push_back(pImageData);
     }
 
-	// Ñðàâíåíèå äâóõ êàðòèíîê
+	// Ð¡Ñ€Ð°Ð²Ð½ÐµÐ½Ð¸Ðµ Ð´Ð²ÑƒÑ… ÐºÐ°Ñ€Ñ‚Ð¸Ð½Ð¾Ðº
 	bool TImageComparer::IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference)
 	{
 		if(m_pOptions->compare.typeControl == TRUE && 
@@ -312,7 +312,7 @@ namespace ad
         :TImageComparer(pEngine),
 		m_pImageDataStorage(pEngine->ImageDataStorage())
     {
-		//êîíñòàíòû
+		//ÐºÐ¾Ð½ÑÑ‚Ð°Ð½Ñ‚Ñ‹
 		C1 = (float)pow(0.01 * PIXEL_MAX_DIFFERENCE, 2);
         C2 = (float)pow(0.03 * PIXEL_MAX_DIFFERENCE, 2);
         m_sets.resize(1);
@@ -328,7 +328,7 @@ namespace ad
         CompareWithSet(m_sets[0], pOriginal, pTransformed, transform);
     }
 
-	// Ñðàâíåíèå äâóõ êàðòèíîê SSIM ìåòîäîì
+	// Ð¡Ñ€Ð°Ð²Ð½ÐµÐ½Ð¸Ðµ Ð´Ð²ÑƒÑ… ÐºÐ°Ñ€Ñ‚Ð¸Ð½Ð¾Ðº SSIM Ð¼ÐµÑ‚Ð¾Ð´Ð¾Ð¼
     bool TImageComparer_SSIM::IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference)
     {
         if(m_pOptions->compare.typeControl == TRUE && 
@@ -401,13 +401,13 @@ namespace ad
 			((pow(pFirst->data->average, 2) + pow(pSecond->data->average, 2) + C1) * 
 			(pFirst->data->varianceSquare + pSecond->data->varianceSquare + C2));  
 
-		if (res > 2 || res < -2) // ìîæåò áûòü ðàâíûì 1.0000000594991703 è äîëæíî áûòü îò 0 äî 1
+		if (res > 2 || res < -2) // Ð¼Ð¾Ð¶ÐµÑ‚ Ð±Ñ‹Ñ‚ÑŒ Ñ€Ð°Ð²Ð½Ñ‹Ð¼ 1.0000000594991703 Ð¸ Ð´Ð¾Ð»Ð¶Ð½Ð¾ Ð±Ñ‹Ñ‚ÑŒ Ð¾Ñ‚ 0 Ð´Ð¾ 1
 			return false;
 
 		double difference = 100 - (res * 100);
 		if (difference < 0)
 			difference = 0;
-		// åñëè ðàçëè÷èå áîëüøå çàäàííîãî, òî íå äóáëèêàòû
+		// ÐµÑÐ»Ð¸ Ñ€Ð°Ð·Ð»Ð¸Ñ‡Ð¸Ðµ Ð±Ð¾Ð»ÑŒÑˆÐµ Ð·Ð°Ð´Ð°Ð½Ð½Ð¾Ð³Ð¾, Ñ‚Ð¾ Ð½Ðµ Ð´ÑƒÐ±Ð»Ð¸ÐºÐ°Ñ‚Ñ‹
 		if (difference > m_pOptions->compare.thresholdDifference)
 			return false;
 
@@ -417,7 +417,7 @@ namespace ad
         return true;
     }
     //-------------------------------------------------------------------------
-	// Ôàáðèêà âîçâðàøàåò äâèæîê
+	// Ð¤Ð°Ð±Ñ€Ð¸ÐºÐ° Ð²Ð¾Ð·Ð²Ñ€Ð°ÑˆÐ°ÐµÑ‚ Ð´Ð²Ð¸Ð¶Ð¾Ðº
     TImageComparer* CreateImageComparer(TEngine *pEngine)
     {
 		if (pEngine->Options()->compare.algorithmComparing == AD_COMPARING_SQUARED_SUM)

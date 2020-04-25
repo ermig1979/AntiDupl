@@ -40,7 +40,7 @@ namespace ad
 	{
 	}
 
-	// Копируем из списка результатов информацию об изображениях в наш контейнер images.
+	// РљРѕРїРёСЂСѓРµРј РёР· СЃРїРёСЃРєР° СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± РёР·РѕР±СЂР°Р¶РµРЅРёСЏС… РІ РЅР°С€ РєРѕРЅС‚РµР№РЅРµСЂ images.
 	void TImageGroup::UpdateImages()
 	{
 		TImageInfoPtrSet buffer;
@@ -54,7 +54,7 @@ namespace ad
 		images.assign(buffer.begin(), buffer.end());
 	}
 
-	// Экспортируем в группу для экспорта из dll.
+	// Р­РєСЃРїРѕСЂС‚РёСЂСѓРµРј РІ РіСЂСѓРїРїСѓ РґР»СЏ СЌРєСЃРїРѕСЂС‚Р° РёР· dll.
 	bool TImageGroup::Export(adGroupPtr pGroup) const
 	{
 		if(pGroup == NULL)
@@ -75,7 +75,7 @@ namespace ad
 		Clear();
 	}
 
-	// Очищаем карту
+	// РћС‡РёС‰Р°РµРј РєР°СЂС‚Сѓ
 	void TImageGroupStorage::Clear()
 	{
 		for(TMap::iterator it = m_map.begin(); it != m_map.end(); ++it)
@@ -83,11 +83,11 @@ namespace ad
 		m_map.clear();
 	}
 
-	// Получаем или создаем группу с переданным ID
+	// РџРѕР»СѓС‡Р°РµРј РёР»Рё СЃРѕР·РґР°РµРј РіСЂСѓРїРїСѓ СЃ РїРµСЂРµРґР°РЅРЅС‹Рј ID
 	TImageGroupPtr TImageGroupStorage::Get(size_t id, bool create)
 	{
 		TMap::iterator it = m_map.find(id);
-		// Если не находим в карте группы с данным ID
+		// Р•СЃР»Рё РЅРµ РЅР°С…РѕРґРёРј РІ РєР°СЂС‚Рµ РіСЂСѓРїРїС‹ СЃ РґР°РЅРЅС‹Рј ID
 		if(it == m_map.end())
 		{
 			TImageGroupPtr pImageGroup = NULL;
@@ -102,7 +102,7 @@ namespace ad
 			return it->second;
 	}
 
-	// Удаляем группу с данным ID из карты.
+	// РЈРґР°Р»СЏРµРј РіСЂСѓРїРїСѓ СЃ РґР°РЅРЅС‹Рј ID РёР· РєР°СЂС‚С‹.
 	void TImageGroupStorage::Erase(size_t id)
 	{
 		TMap::iterator it = m_map.find(id);
@@ -113,7 +113,7 @@ namespace ad
 		}
 	}
 
-	// Копируем содержимое карты в вектор.
+	// РљРѕРїРёСЂСѓРµРј СЃРѕРґРµСЂР¶РёРјРѕРµ РєР°СЂС‚С‹ РІ РІРµРєС‚РѕСЂ.
 	void TImageGroupStorage::UpdateVector()
 	{
 		m_vector.clear();
@@ -125,7 +125,7 @@ namespace ad
 		}
 	}
 
-	// Копируем из переданного хранилиша в карту
+	// РљРѕРїРёСЂСѓРµРј РёР· РїРµСЂРµРґР°РЅРЅРѕРіРѕ С…СЂР°РЅРёР»РёС€Р° РІ РєР°СЂС‚Сѓ
 	void TImageGroupStorage::Assign(const TImageGroupStorage & storage)
 	{
 		Clear();
@@ -133,13 +133,13 @@ namespace ad
 			m_map[it->first] = new TImageGroup(*it->second);
 	}
 
-	// Устанавливает в переданном списке результатов группы из внутреннего хранилища групп и очищает его.
+	// РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РІ РїРµСЂРµРґР°РЅРЅРѕРј СЃРїРёСЃРєРµ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РіСЂСѓРїРїС‹ РёР· РІРЅСѓС‚СЂРµРЅРЅРµРіРѕ С…СЂР°РЅРёР»РёС‰Р° РіСЂСѓРїРї Рё РѕС‡РёС‰Р°РµС‚ РµРіРѕ.
 	void TImageGroupStorage::Set(TResultPtrVector & results, TStatus * pStatus)
 	{
 		pStatus->SetProgress(0, 0);
 		size_t current = 0, total = results.size(), groupId = 0;
 		Clear();
-		// Идем по списку результатов
+		// РРґРµРј РїРѕ СЃРїРёСЃРєСѓ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ
 		for(TResultPtrVector::iterator it = results.begin(); it != results.end(); ++it)
 		{
 			pStatus->SetProgress(current++, total);
@@ -148,7 +148,7 @@ namespace ad
 			{
 				if(pResult->type == AD_RESULT_DUPL_IMAGE_PAIR)
 				{
-					// Если обе группы не определены, находим ее с хранилише и заполняем значения.
+					// Р•СЃР»Рё РѕР±Рµ РіСЂСѓРїРїС‹ РЅРµ РѕРїСЂРµРґРµР»РµРЅС‹, РЅР°С…РѕРґРёРј РµРµ СЃ С…СЂР°РЅРёР»РёС€Рµ Рё Р·Р°РїРѕР»РЅСЏРµРј Р·РЅР°С‡РµРЅРёСЏ.
 					if(pResult->first->group == AD_UNDEFINED && pResult->second->group == AD_UNDEFINED)
 					{
 						TImageGroup * pGroup = Get(groupId++);
@@ -158,7 +158,7 @@ namespace ad
 					}
 					else
 					{
-						// Если первая группа не определена, копируем значения из второй
+						// Р•СЃР»Рё РїРµСЂРІР°СЏ РіСЂСѓРїРїР° РЅРµ РѕРїСЂРµРґРµР»РµРЅР°, РєРѕРїРёСЂСѓРµРј Р·РЅР°С‡РµРЅРёСЏ РёР· РІС‚РѕСЂРѕР№
 						if(pResult->first->group == AD_UNDEFINED)
 						{
 							pResult->group = pResult->second->group;
@@ -220,17 +220,17 @@ namespace ad
 		pStatus->Reset();
 	}
 
-	// Обновляем содержимое хранилиша групп в соответсвие с переданными результатами.
+	// РћР±РЅРѕРІР»СЏРµРј СЃРѕРґРµСЂР¶РёРјРѕРµ С…СЂР°РЅРёР»РёС€Р° РіСЂСѓРїРї РІ СЃРѕРѕС‚РІРµС‚СЃРІРёРµ СЃ РїРµСЂРµРґР°РЅРЅС‹РјРё СЂРµР·СѓР»СЊС‚Р°С‚Р°РјРё.
 	void TImageGroupStorage::Update(TResultPtrVector & results)
 	{
-		// Очишаем результаты для групп в хранилише
+		// РћС‡РёС€Р°РµРј СЂРµР·СѓР»СЊС‚Р°С‚С‹ РґР»СЏ РіСЂСѓРїРї РІ С…СЂР°РЅРёР»РёС€Рµ
 		for(TMap::iterator groupIt = m_map.begin(); groupIt != m_map.end(); ++groupIt)
 		{
 			TImageGroupPtr pImageGroup = groupIt->second;
 			pImageGroup->results.clear();
 		}
 
-		// заполняем результаты в группах
+		// Р·Р°РїРѕР»РЅСЏРµРј СЂРµР·СѓР»СЊС‚Р°С‚С‹ РІ РіСЂСѓРїРїР°С…
 		for(TResultPtrVector::iterator resultIt = results.begin(); resultIt != results.end(); ++resultIt)
 		{
 			TResultPtr pResult = *resultIt;

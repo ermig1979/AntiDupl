@@ -44,10 +44,10 @@ namespace ad
 
     //-------------------------------------------------------------------------
 
-    class TLogger::TStdOut : public TLogger::TOut //TStdOut наследуется от TOut
+    class TLogger::TStdOut : public TLogger::TOut //TStdOut РЅР°СЃР»РµРґСѓРµС‚СЃСЏ РѕС‚ TOut
     {
     public:
-        virtual void Write(const TChar* message) //Переопределяем функцию
+        virtual void Write(const TChar* message) //РџРµСЂРµРѕРїСЂРµРґРµР»СЏРµРј С„СѓРЅРєС†РёСЋ
         {
             std::cout << message;
         }
@@ -60,7 +60,7 @@ namespace ad
 
     //-------------------------------------------------------------------------
 
-    class TLogger::TFileOut : public TLogger::TOut //TFileOut наследуется от TOut
+    class TLogger::TFileOut : public TLogger::TOut //TFileOut РЅР°СЃР»РµРґСѓРµС‚СЃСЏ РѕС‚ TOut
     {
         std::ofstream m_ofstream; 
     public:

@@ -1,4 +1,4 @@
-/*
+п»ї/*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
 * Copyright (c) 2002-2018 Yermalayeu Ihar, 2013-2018 Borisov Dmitry.
@@ -30,7 +30,7 @@
 
 namespace ad
 {
-	// Структура информации о изображение
+	// РЎС‚СЂСѓРєС‚СѓСЂР° РёРЅС„РѕСЂРјР°С†РёРё Рѕ РёР·РѕР±СЂР°Р¶РµРЅРёРµ
     struct TImageInfo : public TFileInfo
     {
         TImageType type;

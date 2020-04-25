@@ -227,14 +227,14 @@ namespace ad
 		free(pPropBuffer);
 	}
 
-	// Çàãðóçêà èçîáðàæåíèÿ ñ ïîìîùüþ GDI.
+	// Ð—Ð°Ð³Ñ€ÑƒÐ·ÐºÐ° Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ñ Ñ Ð¿Ð¾Ð¼Ð¾Ñ‰ÑŒÑŽ GDI.
     TGdiplus* TGdiplus::Load(HGLOBAL hGlobal)
     {
         AD_FUNCTION_PERFORMANCE_TEST
 
         TView *pView = NULL;
         TImage::TFormat format = TImage::None;
-		TImageExif *imageExif = new TImageExif();; //óêàçàòåëü
+		TImageExif *imageExif = new TImageExif();; //ÑƒÐºÐ°Ð·Ð°Ñ‚ÐµÐ»ÑŒ
 
         if(hGlobal)
         {
@@ -264,11 +264,11 @@ namespace ad
             }
         }
 
-		// Åñëè ïîëó÷åí âèä SIMD
+		// Ð•ÑÐ»Ð¸ Ð¿Ð¾Ð»ÑƒÑ‡ÐµÐ½ Ð²Ð¸Ð´ SIMD
         if(pView)
         {
             TGdiplus* pGdiplus = new TGdiplus();
-			pGdiplus->m_exifInfo = *imageExif; //// âûâîä çíà÷åíèÿ ñîäåðæàùåãîñÿ â ïåðåìåííîé ÷åðåç óêàçàòåëü, îïåðàöèåé ðàçèìåíîâàíèÿ óêàçàòåëÿ
+			pGdiplus->m_exifInfo = *imageExif; //// Ð²Ñ‹Ð²Ð¾Ð´ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ñ ÑÐ¾Ð´ÐµÑ€Ð¶Ð°Ñ‰ÐµÐ³Ð¾ÑÑ Ð² Ð¿ÐµÑ€ÐµÐ¼ÐµÐ½Ð½Ð¾Ð¹ Ñ‡ÐµÑ€ÐµÐ· ÑƒÐºÐ°Ð·Ð°Ñ‚ÐµÐ»ÑŒ, Ð¾Ð¿ÐµÑ€Ð°Ñ†Ð¸ÐµÐ¹ Ñ€Ð°Ð·Ð¸Ð¼ÐµÐ½Ð¾Ð²Ð°Ð½Ð¸Ñ ÑƒÐºÐ°Ð·Ð°Ñ‚ÐµÐ»Ñ
 			if(imageExif)
 				delete imageExif;
             pGdiplus->m_pView = pView;

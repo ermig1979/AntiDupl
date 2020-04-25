@@ -1,4 +1,4 @@
-/*
+п»ї/*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
 * Copyright (c) 2002-2018 Yermalayeu Ihar, 2013-2015 Borisov Dmitry.
@@ -122,7 +122,7 @@ namespace AntiDupl.NET
         private LabeledIntegerEdit m_penThicknessLabeledIntegerEdit;
             
         /// <summary>
-        /// Все компоненты иницализированы.
+        /// Р’СЃРµ РєРѕРјРїРѕРЅРµРЅС‚С‹ РёРЅРёС†Р°Р»РёР·РёСЂРѕРІР°РЅС‹.
         /// </summary>
         private bool m_inited = false;
 
@@ -500,7 +500,7 @@ namespace AntiDupl.NET
         }
 
         /// <summary>
-        /// Проверка возмодных состояний настроек.
+        /// РџСЂРѕРІРµСЂРєР° РІРѕР·РјРѕРґРЅС‹С… СЃРѕСЃС‚РѕСЏРЅРёР№ РЅР°СЃС‚СЂРѕРµРє.
         /// </summary>
         private void UpdateHighlightItemsEnabling()
         {
@@ -531,7 +531,7 @@ namespace AntiDupl.NET
         }
 
         /// <summary>
-        /// Чтение опций из CoreOptions.
+        /// Р§С‚РµРЅРёРµ РѕРїС†РёР№ РёР· CoreOptions.
         /// </summary>
         private void GetOptions()
         {
@@ -584,7 +584,7 @@ namespace AntiDupl.NET
         }
 
         /// <summary>
-        /// Установка опций в CoreOptions.
+        /// РЈСЃС‚Р°РЅРѕРІРєР° РѕРїС†РёР№ РІ CoreOptions.
         /// </summary>
         private void SetOptions()
         {
@@ -713,11 +713,11 @@ namespace AntiDupl.NET
         }
 
         /// <summary>
-        /// Проверка возмодных состояний настроек.
+        /// РџСЂРѕРІРµСЂРєР° РІРѕР·РјРѕРґРЅС‹С… СЃРѕСЃС‚РѕСЏРЅРёР№ РЅР°СЃС‚СЂРѕРµРє.
         /// </summary>
         private void UpdateItemsEnabling()
         {
-            // Если не проставлены галочки поиска дубликатов и дефектов, то проставляем сами
+            // Р•СЃР»Рё РЅРµ РїСЂРѕСЃС‚Р°РІР»РµРЅС‹ РіР°Р»РѕС‡РєРё РїРѕРёСЃРєР° РґСѓР±Р»РёРєР°С‚РѕРІ Рё РґРµС„РµРєС‚РѕРІ, С‚Рѕ РїСЂРѕСЃС‚Р°РІР»СЏРµРј СЃР°РјРё
             if (!(m_newCoreOptions.defectOptions.checkOnDefect || m_newCoreOptions.compareOptions.checkOnEquality ||
                 m_newCoreOptions.defectOptions.checkOnBlockiness || m_newCoreOptions.defectOptions.checkOnBlurring))
             {

@@ -56,12 +56,12 @@ namespace ad
         delete m_pCurrent;
     }
 
-	//public Выполняем определнный тип действий с текщим или выделенными результатами.
+	//public Р’С‹РїРѕР»РЅСЏРµРј РѕРїСЂРµРґРµР»РЅРЅС‹Р№ С‚РёРї РґРµР№СЃС‚РІРёР№ СЃ С‚РµРєС‰РёРј РёР»Рё РІС‹РґРµР»РµРЅРЅС‹РјРё СЂРµР·СѓР»СЊС‚Р°С‚Р°РјРё.
     bool TUndoRedoEngine::ApplyTo(adLocalActionType localActionType, adTargetType targetType)
     {
         bool onceMaked = false;
 
-		// Сохраняем сотояние
+		// РЎРѕС…СЂР°РЅСЏРµРј СЃРѕС‚РѕСЏРЅРёРµ
         TUndoRedoChange *pOldChange = m_pCurrent->change;
         m_pCurrent->change = new TUndoRedoChange();
 
@@ -93,7 +93,7 @@ namespace ad
             m_pStatus->Reset();
         }
 
-		// Если ничего сделано не было.
+		// Р•СЃР»Рё РЅРёС‡РµРіРѕ СЃРґРµР»Р°РЅРѕ РЅРµ Р±С‹Р»Рѕ.
         if(!onceMaked)
         {
             delete m_pCurrent->change;
@@ -103,7 +103,7 @@ namespace ad
 
         m_pUndoDeque->push_back(m_pCurrent->Clone());
 
-		// Удаляем из списка ошибочные или удаленные
+		// РЈРґР°Р»СЏРµРј РёР· СЃРїРёСЃРєР° РѕС€РёР±РѕС‡РЅС‹Рµ РёР»Рё СѓРґР°Р»РµРЅРЅС‹Рµ
         if(localActionType == AD_LOCAL_ACTION_MISTAKE)
             m_pCurrent->RemoveMistaken(m_pStatus, m_pMistakeStorage);
         else
@@ -123,29 +123,29 @@ namespace ad
         return true;
     }
     
-	// private Переименовывает/перемещает файл с заменой
+	// private РџРµСЂРµРёРјРµРЅРѕРІС‹РІР°РµС‚/РїРµСЂРµРјРµС‰Р°РµС‚ С„Р°Р№Р» СЃ Р·Р°РјРµРЅРѕР№
     bool TUndoRedoEngine::Rename(TImageInfo *pImageInfo, const TString & newFileName)
     {
-		// Сохраняем состояние
+		// РЎРѕС…СЂР°РЅСЏРµРј СЃРѕСЃС‚РѕСЏРЅРёРµ
         TUndoRedoChange *pOldChange = m_pCurrent->change;
         m_pCurrent->change = new TUndoRedoChange();
-		// Если удается переименовать/переместить файл с заменой
+		// Р•СЃР»Рё СѓРґР°РµС‚СЃСЏ РїРµСЂРµРёРјРµРЅРѕРІР°С‚СЊ/РїРµСЂРµРјРµСЃС‚РёС‚СЊ С„Р°Р№Р» СЃ Р·Р°РјРµРЅРѕР№
         if(::MoveFileEx(pImageInfo->path.Original().c_str(), newFileName.c_str(), 
 			MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED) != FALSE)
         {
-			// Добавляем в список переименованных действие
+			// Р”РѕР±Р°РІР»СЏРµРј РІ СЃРїРёСЃРѕРє РїРµСЂРµРёРјРµРЅРѕРІР°РЅРЅС‹С… РґРµР№СЃС‚РІРёРµ
             m_pCurrent->change->renamedImages.push_back(TRename(pImageInfo, pImageInfo->path.Original(), newFileName));
-			// Изменяем статус
+			// РР·РјРµРЅСЏРµРј СЃС‚Р°С‚СѓСЃ
             m_pStatus->RenameImage(1);
-			// В хранилише ошибочных меняем имя
+			// Р’ С…СЂР°РЅРёР»РёС€Рµ РѕС€РёР±РѕС‡РЅС‹С… РјРµРЅСЏРµРј РёРјСЏ
             m_pMistakeStorage->Rename(pImageInfo, newFileName);
-			// Путь в информации о файле меняем
+			// РџСѓС‚СЊ РІ РёРЅС„РѕСЂРјР°С†РёРё Рѕ С„Р°Р№Р»Рµ РјРµРЅСЏРµРј
             pImageInfo->Rename(newFileName);
 
-			// Отмечаем новое состояние в очереди действий
+			// РћС‚РјРµС‡Р°РµРј РЅРѕРІРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ РІ РѕС‡РµСЂРµРґРё РґРµР№СЃС‚РІРёР№
             m_pUndoDeque->push_back(m_pCurrent->Clone());
 
-			// Обновляем подсказки в текущей группе.
+			// РћР±РЅРѕРІР»СЏРµРј РїРѕРґСЃРєР°Р·РєРё РІ С‚РµРєСѓС‰РµР№ РіСЂСѓРїРїРµ.
             m_pCurrent->groups.Get(pImageInfo->group)->invalidHint = true;
             m_pCurrent->UpdateHints(m_pOptions, false, m_pStatus);
 
@@ -154,7 +154,7 @@ namespace ad
             if(pOldChange)
                 delete pOldChange;
 
-			// Очишаем точки возврата в будушее.
+			// РћС‡РёС€Р°РµРј С‚РѕС‡РєРё РІРѕР·РІСЂР°С‚Р° РІ Р±СѓРґСѓС€РµРµ.
             ClearRedo();
             AdjustUndoDequeSize(m_pOptions->advanced.undoQueueSize);
 
@@ -168,7 +168,7 @@ namespace ad
         }    
     }
 
-	//private заменяем NewImageInfo файлом OldImageInfo
+	//private Р·Р°РјРµРЅСЏРµРј NewImageInfo С„Р°Р№Р»РѕРј OldImageInfo
 	bool TUndoRedoEngine::Rename(TImageInfo *pOldImageInfo, TImageInfo *pNewImageInfo)
     {
         const TChar *oldName = pOldImageInfo->path.Original().c_str();
@@ -177,7 +177,7 @@ namespace ad
         if(pOldImageInfo->removed || !IsFileExists(oldName))
             return false;
 
-		//Проверяем нет ли в уже переименованных нашего файла
+		//РџСЂРѕРІРµСЂСЏРµРј РЅРµС‚ Р»Рё РІ СѓР¶Рµ РїРµСЂРµРёРјРµРЅРѕРІР°РЅРЅС‹С… РЅР°С€РµРіРѕ С„Р°Р№Р»Р°
 		TRenameList & renamedImages = m_pCurrent->change->renamedImages;
 		for(TRenameList::iterator it = renamedImages.begin(); it != renamedImages.end(); ++it)
         {
@@ -185,7 +185,7 @@ namespace ad
 				return false;
         }
 
-		// если новое имя пустое
+		// РµСЃР»Рё РЅРѕРІРѕРµ РёРјСЏ РїСѓСЃС‚РѕРµ
         if(newName == TString())
             return false;
 
@@ -199,7 +199,7 @@ namespace ad
         }
         else
         {
-			// Перименовываем имя файла, если расширения разные.
+			// РџРµСЂРёРјРµРЅРѕРІС‹РІР°РµРј РёРјСЏ С„Р°Р№Р»Р°, РµСЃР»Рё СЂР°СЃС€РёСЂРµРЅРёСЏ СЂР°Р·РЅС‹Рµ.
             TString templatePath(newName);
             templatePath = templatePath.substr(0, templatePath.size() - newExtension.size() - 1);
             adPath path;
@@ -209,7 +209,7 @@ namespace ad
             newPath = path;
         }
 
-		// Если NewImageInfo удален, то заменяем его pOldImageInfo
+		// Р•СЃР»Рё NewImageInfo СѓРґР°Р»РµРЅ, С‚Рѕ Р·Р°РјРµРЅСЏРµРј РµРіРѕ pOldImageInfo
         if(Delete(pNewImageInfo))
         {
             if(::MoveFileEx(oldName, newPath.c_str(), 
@@ -226,7 +226,7 @@ namespace ad
         return false;
     }
 
-	//private Переименовываем old в new без замены
+	//private РџРµСЂРµРёРјРµРЅРѕРІС‹РІР°РµРј old РІ new Р±РµР· Р·Р°РјРµРЅС‹
 	bool TUndoRedoEngine::RenameLike(TImageInfo *pOldImageInfo, TImageInfo *pNewImageInfo)
     {
 		const TChar *oldPath = pOldImageInfo->path.Original().c_str();
@@ -235,11 +235,11 @@ namespace ad
 		if(pOldImageInfo->removed || !IsFileExists(oldPath))
             return false;
 
-		// если новый путь пустой
+		// РµСЃР»Рё РЅРѕРІС‹Р№ РїСѓС‚СЊ РїСѓСЃС‚РѕР№
         if(newPath == TString())
             return false;
 
-		//если имена без расширений равны
+		//РµСЃР»Рё РёРјРµРЅР° Р±РµР· СЂР°СЃС€РёСЂРµРЅРёР№ СЂР°РІРЅС‹
 		if (pNewImageInfo->path.GetName(false) == pOldImageInfo->path.GetName(false))
 			return false;
 
@@ -258,7 +258,7 @@ namespace ad
         return false;
     }
 
-	//private Перемещаем файл из old в new без замены
+	//private РџРµСЂРµРјРµС‰Р°РµРј С„Р°Р№Р» РёР· old РІ new Р±РµР· Р·Р°РјРµРЅС‹
 	bool TUndoRedoEngine::Move(TImageInfo *pOldImageInfo, TImageInfo *pNewImageInfo)
     {
 		const TChar *oldPath = pOldImageInfo->path.Original().c_str();
@@ -267,7 +267,7 @@ namespace ad
 		if(pOldImageInfo->removed || !IsFileExists(oldPath) || !IsDirectoryExists(newDir.c_str()))
             return false;
 
-		//Если картинка уже в заданной директории
+		//Р•СЃР»Рё РєР°СЂС‚РёРЅРєР° СѓР¶Рµ РІ Р·Р°РґР°РЅРЅРѕР№ РґРёСЂРµРєС‚РѕСЂРёРё
 		if (pOldImageInfo->path.GetDirectory() == newDir)
 			return false;
 
@@ -286,7 +286,7 @@ namespace ad
         return false;
     }
 
-	//private Перемещаем и переименовываем файл из old в new как соседа
+	//private РџРµСЂРµРјРµС‰Р°РµРј Рё РїРµСЂРµРёРјРµРЅРѕРІС‹РІР°РµРј С„Р°Р№Р» РёР· old РІ new РєР°Рє СЃРѕСЃРµРґР°
 	bool TUndoRedoEngine::MoveAndRenameLike(TImageInfo *pOldImageInfo, TImageInfo *pNewImageInfo)
     {
 		const TChar *oldPath = pOldImageInfo->path.Original().c_str();
@@ -314,18 +314,18 @@ namespace ad
         if(m_pUndoDeque->empty())
             return false;
 
-		// Возврашаем прошлое состояние в хранилишах.
+		// Р’РѕР·РІСЂР°С€Р°РµРј РїСЂРѕС€Р»РѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ РІ С…СЂР°РЅРёР»РёС€Р°С….
         m_pRedoDeque->push_back(m_pCurrent);
         m_pCurrent = m_pUndoDeque->back();
         m_pUndoDeque->pop_back();
 
-		//?? FIX Может надо Apply вызывать? иначе после undo группы пустые
+		//?? FIX РњРѕР¶РµС‚ РЅР°РґРѕ Apply РІС‹Р·С‹РІР°С‚СЊ? РёРЅР°С‡Рµ РїРѕСЃР»Рµ undo РіСЂСѓРїРїС‹ РїСѓСЃС‚С‹Рµ
 		m_pCurrent->UpdateGroups();
 
         m_pStatus->SetProgress(0, 0);
         size_t current = 0, total = m_pCurrent->change->renamedImages.size() + m_pCurrent->change->deletedImages.size();
 
-		// Переименовываем обратно переименованные файлы.
+		// РџРµСЂРµРёРјРµРЅРѕРІС‹РІР°РµРј РѕР±СЂР°С‚РЅРѕ РїРµСЂРµРёРјРµРЅРѕРІР°РЅРЅС‹Рµ С„Р°Р№Р»С‹.
         TRenameList & renamedImages = m_pCurrent->change->renamedImages;
         for(TRenameList::iterator it = renamedImages.begin(); it != renamedImages.end(); ++it, ++current)
         {
@@ -341,7 +341,7 @@ namespace ad
             m_pStatus->SetProgress(current, total);
         }
 
-		// Восстанавливаем удаленные файлы.
+		// Р’РѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј СѓРґР°Р»РµРЅРЅС‹Рµ С„Р°Р№Р»С‹.
         TImageInfoPtrList & deletedImages = m_pCurrent->change->deletedImages;
         for(TImageInfoPtrList::iterator it = deletedImages.begin(); it != deletedImages.end(); ++it, ++current)
         {
@@ -349,7 +349,7 @@ namespace ad
             m_pStatus->SetProgress(current, total);
         }
 
-		// Добавляем в список результатов удаленные элементы.
+		// Р”РѕР±Р°РІР»СЏРµРј РІ СЃРїРёСЃРѕРє СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ СѓРґР°Р»РµРЅРЅС‹Рµ СЌР»РµРјРµРЅС‚С‹.
         TResultPtrList & removedResults = m_pCurrent->change->removedResults;
         for(TResultPtrList::iterator it = removedResults.begin(); it != removedResults.end(); ++it)
         {
@@ -556,7 +556,7 @@ namespace ad
         return false;
     }
 
-	//private Удаляет изображение
+	//private РЈРґР°Р»СЏРµС‚ РёР·РѕР±СЂР°Р¶РµРЅРёРµ
     bool TUndoRedoEngine::Delete(TImageInfo *pImageInfo)
     {
         const TChar *fileName = pImageInfo->path.Original().c_str();
@@ -575,12 +575,12 @@ namespace ad
     bool TUndoRedoEngine::RenameCurrent(adRenameCurrentType renameCurrentType, const TString & newFileName)
     {
         TResult *pResult = m_pCurrent->results[m_pCurrent->currentIndex];
-		// Получаем информацию о файле, который переименовываем
+		// РџРѕР»СѓС‡Р°РµРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ С„Р°Р№Р»Рµ, РєРѕС‚РѕСЂС‹Р№ РїРµСЂРµРёРјРµРЅРѕРІС‹РІР°РµРј
         TImageInfo *pImageInfo = renameCurrentType == AD_RENAME_CURRENT_FIRST ? pResult->first : pResult->second;
         return Rename(pImageInfo, newFileName);
     }
 
-	//public Переименовывает файл с заданной группой и индексом.
+	//public РџРµСЂРµРёРјРµРЅРѕРІС‹РІР°РµС‚ С„Р°Р№Р» СЃ Р·Р°РґР°РЅРЅРѕР№ РіСЂСѓРїРїРѕР№ Рё РёРЅРґРµРєСЃРѕРј.
     bool TUndoRedoEngine::Rename(adSize groupId, adSize index, const TString & newFileName)
     {
         TImageGroupPtr pImageGroup = m_pCurrent->groups.Get(groupId, false);
@@ -592,7 +592,7 @@ namespace ad
         return false; 
     }
 
-	//public Переносим файлы из текущей группы в заданную директорию.
+	//public РџРµСЂРµРЅРѕСЃРёРј С„Р°Р№Р»С‹ РёР· С‚РµРєСѓС‰РµР№ РіСЂСѓРїРїС‹ РІ Р·Р°РґР°РЅРЅСѓСЋ РґРёСЂРµРєС‚РѕСЂРёСЋ.
 	bool TUndoRedoEngine::MoveCurrentGroup(const TString & directory)
     {
 		bool isMoving = false;
@@ -600,7 +600,7 @@ namespace ad
 		if(!IsDirectoryExists(directory.c_str()))
             return false;
 
-		// Сохраняем сотояние
+		// РЎРѕС…СЂР°РЅСЏРµРј СЃРѕС‚РѕСЏРЅРёРµ
         TUndoRedoChange *pOldChange = m_pCurrent->change;
         m_pCurrent->change = new TUndoRedoChange();
 
@@ -609,7 +609,7 @@ namespace ad
 		if(pImageGroup == NULL)
 			return false;
 
-		// Проходимся по списку изображений в группе.
+		// РџСЂРѕС…РѕРґРёРјСЃСЏ РїРѕ СЃРїРёСЃРєСѓ РёР·РѕР±СЂР°Р¶РµРЅРёР№ РІ РіСЂСѓРїРїРµ.
 		for (size_t i = 0; i < pImageGroup->images.size(); i++)
 		{
 			TPath * path = &pImageGroup->images[i]->path;
@@ -631,7 +631,7 @@ namespace ad
 			}
 		}
 
-		// Если ничего сделано не было.
+		// Р•СЃР»Рё РЅРёС‡РµРіРѕ СЃРґРµР»Р°РЅРѕ РЅРµ Р±С‹Р»Рѕ.
         if(!isMoving)
         {
             delete m_pCurrent->change;
@@ -655,16 +655,16 @@ namespace ad
         return true;
     }
 
-	//public Переименовавает файлы в группе как переданное имя файла.
+	//public РџРµСЂРµРёРјРµРЅРѕРІР°РІР°РµС‚ С„Р°Р№Р»С‹ РІ РіСЂСѓРїРїРµ РєР°Рє РїРµСЂРµРґР°РЅРЅРѕРµ РёРјСЏ С„Р°Р№Р»Р°.
 	bool TUndoRedoEngine::RenameCurrentGroupAs(const TString & fileName)
     {
 		bool isRenaming = false;
 
-		// если новое имя пустое
+		// РµСЃР»Рё РЅРѕРІРѕРµ РёРјСЏ РїСѓСЃС‚РѕРµ
         if(fileName == TString())
             return false;
 
-		// Сохраняем сотояние
+		// РЎРѕС…СЂР°РЅСЏРµРј СЃРѕС‚РѕСЏРЅРёРµ
         TUndoRedoChange *pOldChange = m_pCurrent->change;
         m_pCurrent->change = new TUndoRedoChange();
 
@@ -680,7 +680,7 @@ namespace ad
 			{
 				TString target = CreatePath(path->GetDirectory(), fileName + path->GetExtension());
 				if (IsFileExists(target.c_str()))
-					target = GetSimilarPath(TPath(target), *path); //разименовываем указатель
+					target = GetSimilarPath(TPath(target), *path); //СЂР°Р·РёРјРµРЅРѕРІС‹РІР°РµРј СѓРєР°Р·Р°С‚РµР»СЊ
 				if(::MoveFileEx(path->Original().c_str(), target.c_str(), MOVEFILE_COPY_ALLOWED) != FALSE)
 				{
 					m_pCurrent->change->renamedImages.push_back(TRename(pImageGroup->images[i], path->Original(), target));
@@ -692,7 +692,7 @@ namespace ad
 			}
 		}
 
-		// Если ничего сделано не было.
+		// Р•СЃР»Рё РЅРёС‡РµРіРѕ СЃРґРµР»Р°РЅРѕ РЅРµ Р±С‹Р»Рѕ.
         if(!isRenaming)
         {
             delete m_pCurrent->change;

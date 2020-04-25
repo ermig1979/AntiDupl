@@ -1,4 +1,4 @@
-/*
+п»ї/*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
 * Copyright (c) 2002-2018 Yermalayeu Ihar.
@@ -30,7 +30,7 @@ using System.Drawing;
 namespace AntiDupl.NET
 {
     /// <summary>
-    /// Главная панель инструментов.
+    /// Р“Р»Р°РІРЅР°СЏ РїР°РЅРµР»СЊ РёРЅСЃС‚СЂСѓРјРµРЅС‚РѕРІ.
     /// </summary>
     public class MainToolStrip : ToolStrip
     {
@@ -201,7 +201,7 @@ namespace AntiDupl.NET
         }
 
         /// <summary>
-        /// Вызывается при изменение опций CoreOptions.
+        /// Р’С‹Р·С‹РІР°РµС‚СЃСЏ РїСЂРё РёР·РјРµРЅРµРЅРёРµ РѕРїС†РёР№ CoreOptions.
         /// </summary>
         private void OnOptionsChanged()
         {

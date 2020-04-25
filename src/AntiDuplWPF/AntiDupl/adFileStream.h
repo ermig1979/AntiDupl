@@ -30,7 +30,7 @@
 
 namespace ad
 {
-	// Определяет формат потока файла.
+	// РћРїСЂРµРґРµР»СЏРµС‚ С„РѕСЂРјР°С‚ РїРѕС‚РѕРєР° С„Р°Р№Р»Р°.
 	class TFileStream
 	{
 	protected:
@@ -99,7 +99,7 @@ namespace ad
 		void Load(struct TPixelData & pixelData) const;
 		void Load(struct TImageData & imageData) const;
 		void Load(struct TResult & result) const;
-		void Load(struct TImageExif & imageExif) const; // Эта функция обещает не менять *this
+		void Load(struct TImageExif & imageExif) const; // Р­С‚Р° С„СѓРЅРєС†РёСЏ РѕР±РµС‰Р°РµС‚ РЅРµ РјРµРЅСЏС‚СЊ *this
 	};
 
 	//-------------------------------------------------------------------------
@@ -125,7 +125,7 @@ namespace ad
 		void Save(const struct TPixelData & pixelData) const;
 		void Save(const struct TImageData & imageData) const;
 		void Save(const struct TResult & result) const;
-		void Save(const struct TImageExif & imageExif) const; // Эта функция обещает не менять *this, ни imageExif
+		void Save(const struct TImageExif & imageExif) const; // Р­С‚Р° С„СѓРЅРєС†РёСЏ РѕР±РµС‰Р°РµС‚ РЅРµ РјРµРЅСЏС‚СЊ *this, РЅРё imageExif
 	};
 }
 

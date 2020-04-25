@@ -74,11 +74,11 @@ namespace ad
             m_pOptions->deletePaths.IsHasPath(second->path) != AD_IS_NOT_EXIST ||
             m_pOptions->deletePaths.IsHasSubPath(second->path) != AD_IS_NOT_EXIST;
 
-        if(pResult->difference == 0) //åñëè ðàçëè÷èå íóëåâîå
+        if(pResult->difference == 0) //ÐµÑÐ»Ð¸ Ñ€Ð°Ð·Ð»Ð¸Ñ‡Ð¸Ðµ Ð½ÑƒÐ»ÐµÐ²Ð¾Ðµ
         {
-            if(first->size > second->size) //åñëè ðàçìåð ïåðâîé áîëüøå âòîðîé
+            if(first->size > second->size) //ÐµÑÐ»Ð¸ Ñ€Ð°Ð·Ð¼ÐµÑ€ Ð¿ÐµÑ€Ð²Ð¾Ð¹ Ð±Ð¾Ð»ÑŒÑˆÐµ Ð²Ñ‚Ð¾Ñ€Ð¾Ð¹
             {
-                if(isSecondInDeletePath || !isFirstInDeletePath) //åñëè âòîðàÿ â ïóòè äëÿ óäàëåíèÿ èëè ïåðâàÿ íå â ïóòè
+                if(isSecondInDeletePath || !isFirstInDeletePath) //ÐµÑÐ»Ð¸ Ð²Ñ‚Ð¾Ñ€Ð°Ñ Ð² Ð¿ÑƒÑ‚Ð¸ Ð´Ð»Ñ ÑƒÐ´Ð°Ð»ÐµÐ½Ð¸Ñ Ð¸Ð»Ð¸ Ð¿ÐµÑ€Ð²Ð°Ñ Ð½Ðµ Ð² Ð¿ÑƒÑ‚Ð¸
                     pResult->hint = AD_HINT_DELETE_SECOND;
                 else
                     pResult->hint = canRename ? AD_HINT_RENAME_FIRST_TO_SECOND : AD_HINT_NONE;
@@ -107,7 +107,7 @@ namespace ad
             return;
         }
 
-        if(pResult->difference < m_autoDeleteThresholdDifference && first->type == second->type) //åñëè ðàçëè÷èå ìåíüøå ïîðîãà è òèï îäèí
+        if(pResult->difference < m_autoDeleteThresholdDifference && first->type == second->type) //ÐµÑÐ»Ð¸ Ñ€Ð°Ð·Ð»Ð¸Ñ‡Ð¸Ðµ Ð¼ÐµÐ½ÑŒÑˆÐµ Ð¿Ð¾Ñ€Ð¾Ð³Ð° Ð¸ Ñ‚Ð¸Ð¿ Ð¾Ð´Ð¸Ð½
         {
 			if(first->size == second->size && first->Area() == second->Area() && first->blockiness < m_blockinessThreshold && second->blockiness < m_blockinessThreshold)
 			{
@@ -125,7 +125,7 @@ namespace ad
 				return;
 			}
 
-            if(first->size >= second->size && first->Area() >= second->Area() && first->blockiness <= second->blockiness) //ðàçìåð è ðàçðåøåíèå ïåðâîé áîëüøå âòîðîé
+            if(first->size >= second->size && first->Area() >= second->Area() && first->blockiness <= second->blockiness) //Ñ€Ð°Ð·Ð¼ÐµÑ€ Ð¸ Ñ€Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¸Ðµ Ð¿ÐµÑ€Ð²Ð¾Ð¹ Ð±Ð¾Ð»ÑŒÑˆÐµ Ð²Ñ‚Ð¾Ñ€Ð¾Ð¹
             {
                 if(isSecondInDeletePath || !isFirstInDeletePath)
                     pResult->hint = AD_HINT_DELETE_SECOND;

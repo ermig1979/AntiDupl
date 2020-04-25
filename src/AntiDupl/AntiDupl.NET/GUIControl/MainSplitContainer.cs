@@ -1,4 +1,4 @@
-/*
+п»ї/*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
 * Copyright (c) 2002-2018 Yermalayeu Ihar.
@@ -30,7 +30,7 @@ using System.Drawing;
 namespace AntiDupl.NET
 {
     /// <summary>
-    /// Две панели, разделенные подвижной строкой: таблицы и превью.
+    /// Р”РІРµ РїР°РЅРµР»Рё, СЂР°Р·РґРµР»РµРЅРЅС‹Рµ РїРѕРґРІРёР¶РЅРѕР№ СЃС‚СЂРѕРєРѕР№: С‚Р°Р±Р»РёС†С‹ Рё РїСЂРµРІСЊСЋ.
     /// </summary>
     public class MainSplitContainer : SplitContainer
     {
@@ -85,7 +85,7 @@ namespace AntiDupl.NET
 
             InitializeComponents();
 
-            // Связываем, чтобы при вызове события OnViewModeChange вызывалась функция SetViewMode
+            // РЎРІСЏР·С‹РІР°РµРј, С‡С‚РѕР±С‹ РїСЂРё РІС‹Р·РѕРІРµ СЃРѕР±С‹С‚РёСЏ OnViewModeChange РІС‹Р·С‹РІР°Р»Р°СЃСЊ С„СѓРЅРєС†РёСЏ SetViewMode
             m_options.resultsOptions.OnViewModeChange += new ResultsOptions.ViewModeChangeHandler(SetViewMode);
 
             SplitterMoved += new SplitterEventHandler(OnSplitterPositionChanged);

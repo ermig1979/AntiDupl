@@ -79,7 +79,7 @@ namespace ad
 					<< result->first->blockiness << "\t"  << result->first->blurring << "\t" 
 					<< result->second->Area() << "\t" << result->second->size << "\t"  
 					<< result->second->blockiness << "\t" << result->second->blurring << "\t"
-					// åñëè óäàëÿåì ïåðâóþ òî 0
+					// ÐµÑÐ»Ð¸ ÑƒÐ´Ð°Ð»ÑÐµÐ¼ Ð¿ÐµÑ€Ð²ÑƒÑŽ Ñ‚Ð¾ 0
 					<< (result->first->removed ? 0 : 1)
 					<< std::endl;
 
