@@ -44,7 +44,7 @@
     <ProjectReference Include="..\..\3rd\libwebp\libwebp64.vcxproj">
       <Project>{8398ec77-8b40-4616-82cc-efbf76138461}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\3rd\Simd\Simd64.vcxproj">
+    <ProjectReference Include="..\..\3rd\Simd64.vcxproj">
       <Project>{1622c4ef-06a4-4daa-9631-5d71b32858a3}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\3rd\TurboJpeg\TurboJpeg64.vcxproj">

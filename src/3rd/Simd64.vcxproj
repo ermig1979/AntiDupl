@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="../../Prop.props" />
+  <Import Project="../Prop.props" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
@@ -15,14 +15,21 @@
     <ProjectGuid>{1622C4EF-06A4-4DAA-9631-5D71B32858A3}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <ProjectName>Simd64</ProjectName>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
   </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ItemDefinitionGroup>
     <ClCompile>
-      <PreprocessorDefinitions>_LIB;SIMD_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;_LIB;SIMD_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -30,37 +37,55 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include=".\Simd*.h" />
-    <ClInclude Include=".\Simd*.hpp" />
-    <ClCompile Include=".\SimdLib.cpp">
+    <ClInclude Include="Simd\Simd*.h" />
+    <ClInclude Include="Simd\Simd*.hpp" />
+    <ClCompile Include="Simd\SimdLib.cpp">
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdBase*.cpp">
+    <ClCompile Include="Simd\SimdBase*.cpp">
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdSse1*.cpp">
+    <ClCompile Include="Simd\SimdSse1*.cpp">
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdSse2*.cpp">
+    <ClCompile Include="Simd\SimdSse2*.cpp">
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdSse3*.cpp">
+    <ClCompile Include="Simd\SimdSse3*.cpp">
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdSsse3*.cpp">
+    <ClCompile Include="Simd\SimdSsse3*.cpp">
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdSse41*.cpp">
+    <ClCompile Include="Simd\SimdSse41*.cpp">
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdSse42*.cpp">
+    <ClCompile Include="Simd\SimdSse42*.cpp">
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdAvx1*.cpp">
+    <ClCompile Include="Simd\SimdAvx1*.cpp">
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include=".\SimdAvx2*.cpp">
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+    <ClCompile Include="Simd\SimdAvx2*.cpp">
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="Simd\SimdAvx512f*.cpp">
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="Simd\SimdAvx512bw*.cpp">
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="Simd\SimdVmx*.cpp">
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="Simd\SimdVsx*.cpp">
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="Simd\SimdNeon*.cpp">
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="Simd\SimdMsa*.cpp">
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

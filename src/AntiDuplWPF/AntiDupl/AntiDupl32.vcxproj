@@ -43,7 +43,7 @@
     <ProjectReference Include="..\..\3rd\OpenNN\OpenNN32.vcxproj">
       <Project>{44f4252d-8c3c-4981-b11b-b6008646a4ea}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\3rd\Simd\Simd32.vcxproj">
+    <ProjectReference Include="..\..\3rd\Simd32.vcxproj">
       <Project>{1622c4ef-06a4-4daa-9631-5d71b32858a2}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\3rd\tinyxml\TinyXml32.vcxproj">

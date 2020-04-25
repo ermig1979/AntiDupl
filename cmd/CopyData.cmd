@@ -2,15 +2,12 @@
 set SRC_DIR=%1
 set OUT_DIR=%2
 
-if exist %OUT_DIR%\data (
-echo Delete old data files:
-erase %OUT_DIR%\data\* /q /s /f
-rmdir %OUT_DIR%\data /q /s
-)
+robocopy "%SRC_DIR%\data\resources" "%OUT_DIR%\data\resources" /MIR
+if %ERRORLEVEL% GEQ 8 goto FAIL
+robocopy "%SRC_DIR%\docs\data\resources" "%OUT_DIR%\data\resources" /S
+if %ERRORLEVEL% GEQ 8 goto FAIL
 
-echo Copy new data files:
-mkdir %OUT_DIR%\data
-mkdir %OUT_DIR%\data\resources
-
-xcopy %SRC_DIR%\data\resources\* %OUT_DIR%\data\resources\* /y /i /s /e
-xcopy %SRC_DIR%\docs\data\resources\* %OUT_DIR%\data\resources\* /y /i /s /e
+exit /b 0
+:FAIL
+echo error! exitcode: %ERRORLEVEL%
+exit /b %ERRORLEVEL%
