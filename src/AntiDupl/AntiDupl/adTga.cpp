@@ -113,11 +113,6 @@ namespace ad
 			info.idLength = ReadByte(pStream);
 			info.colorMapType = ReadByte(pStream);
 			info.imageType = ReadByte(pStream);
-			if (((info.imageType != TGAColormap) && (info.imageType != TGARGB) && (info.imageType != TGAMonochrome) &&
-				(info.imageType != TGARLEColormap) && (info.imageType != TGARLERGB) && (info.imageType != TGARLEMonochrome)) ||
-				(((info.imageType == TGAColormap) || (info.imageType == TGARLEColormap)) && (info.colorMapType == 0)))
-				return false;
-
 			info.colorMapIndex = ReadLittleEndianShort(pStream);
 			info.colorMapLength = ReadLittleEndianShort(pStream);
 			info.colorMapSize = ReadByte(pStream);
@@ -127,10 +122,31 @@ namespace ad
 			info.height = ReadLittleEndianShort(pStream);
 			info.bitsPerPixel = ReadByte(pStream);
 			info.attributes = ReadByte(pStream);
+			if (info.colorMapType > 1)
+				return false;
+			if (info.colorMapType == 1)
+			{
+				if (info.imageType != TGAColormap && info.imageType != TGARLEColormap)
+					return false;
+				if (info.colorMapSize != 8 && info.colorMapSize != 15 && info.colorMapSize != 16 && info.colorMapSize != 24 && info.colorMapSize != 32)
+					return false;
+			}
+			else
+			{
+				if (info.imageType != TGARGB && info.imageType != TGAMonochrome && info.imageType != TGARLERGB && info.imageType != TGARLEMonochrome)
+					return false;
+			}
+			if (info.xOrigin != 0)
+				return false;
+			if (info.yOrigin != 0)
+				return false;
+			if (info.width < 1)
+				return false;
+			if (info.height < 1)
+				return false;
 			if ((((info.bitsPerPixel <= 1) || (info.bitsPerPixel >= 17)) &&
 				(info.bitsPerPixel != 24) && (info.bitsPerPixel != 32)))
 				return false;
-
 			return true;
 		}
 
