@@ -35,61 +35,41 @@ namespace ad
         {
 		  	uint8_t *data = (uint8_t *)::GlobalLock(hGlobal);
 			size_t data_size = ::GlobalSize(hGlobal);
-
-			int result;
-			int width;
-			int height;
-			result = WebPGetInfo(data, data_size, &width, &height);
+			WebPBitstreamFeatures features;
+			VP8StatusCode code = WebPGetFeatures(data, data_size, &features);
             ::GlobalUnlock(hGlobal);
-			return result != 0;
+			int64_t unpacked_size = int64_t(features.height) * int64_t(features.width) * 4;
+			return code == VP8_STATUS_OK && unpacked_size > 0 && unpacked_size < INT_MAX;
 		}
         return false;
     }
 
 	TWebp* TWebp::Load(HGLOBAL hGlobal)
 	{
+		TWebp* pWebp = NULL;
 		if(hGlobal)
         {	
 			uint8_t *data = (uint8_t *)::GlobalLock(hGlobal);
 			size_t data_size = ::GlobalSize(hGlobal);
-
-			//int width;
-			//int height;
-			//uint8_t* webpData = NULL;
-			//webpData = WebPDecodeBGRA(data, data_size, &width, &height);
-
-			WebPBitstreamFeatures webPBitstreamFeatures;
-
-			VP8StatusCode code = WebPGetFeatures(data, data_size, &webPBitstreamFeatures);
-
-
-			TView *pView;
-			pView = new TView(webPBitstreamFeatures.width, webPBitstreamFeatures.height, webPBitstreamFeatures.width * TView::PixelSize(TView::Bgra32),
-				TView::Bgra32, NULL);
-
-			pView->Recreate(webPBitstreamFeatures.width, webPBitstreamFeatures.height, TView::Bgra32);
-			WebPDecodeBGRAInto(data, data_size, pView->data, pView->DataSize(), (int)pView->stride);
-
-
+			WebPBitstreamFeatures features;
+			if (WebPGetFeatures(data, data_size, &features) == VP8_STATUS_OK)
+			{
+				TView * pView = new TView(features.width, features.height, TView::Bgra32);
+				if (pView)
+				{
+					pView->Recreate(features.width, features.height, TView::Bgra32);
+					if (WebPDecodeBGRAInto(data, data_size, pView->data, pView->DataSize(), (int)pView->stride))
+					{
+						pWebp = new TWebp();
+						pWebp->m_pView = pView;
+						pWebp->m_format = TImage::Webp;
+					}
+					else
+						delete pView;
+				}
+			}
 			::GlobalUnlock(hGlobal);
-
-			//memcpy(pView->data, &webpData, TView::PixelSize(TView::Bgra32) * width);
-			//WebPFree(webpData);
-			if(pView)
-            {
-                TWebp* pWebp = new TWebp();
-                pWebp->m_pView = pView;
-                pWebp->m_format = TImage::Webp;
-                return pWebp;
-            }
-
-
-
-            //TView *pView = Load((unsigned char*)::GlobalLock(hGlobal), ::GlobalSize(hGlobal));
-            //::GlobalUnlock(hGlobal);
-            
         }
-        return NULL;
+        return pWebp;
 	}
-
 }
