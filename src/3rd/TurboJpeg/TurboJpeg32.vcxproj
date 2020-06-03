@@ -34,8 +34,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include=".\inc\*.h" />
-    <ClCompile Include=".\src\*.c" />
+    <ClInclude Include=".\inc\jconfig.h" />
+    <ClInclude Include=".\inc\turbojpeg.h" />
+    <ClCompile Include=".\src\stub.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
