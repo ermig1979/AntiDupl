@@ -88,13 +88,30 @@ namespace AntiDupl.NET
 
         public CoreVersion GetVersion(CoreDll.VersionType versionType)
         {
-            sbyte[] version = new sbyte[VERSION_SIZE];
-            IntPtr[] pVersionSize = new IntPtr[1];
-            pVersionSize[0] = new IntPtr(VERSION_SIZE);
-            if (m_dll.adVersionGet(versionType, Marshal.UnsafeAddrOfPinnedArrayElement(version, 0), 
-                Marshal.UnsafeAddrOfPinnedArrayElement(pVersionSize, 0)) == CoreDll.Error.Ok)
+            try
             {
-                return new CoreVersion(version);
+                sbyte[] versionB = new sbyte[VERSION_SIZE];
+                IntPtr[] sizeB = new IntPtr[1];
+                sizeB[0] = new IntPtr(VERSION_SIZE);
+                GCHandle versionH = GCHandle.Alloc(versionB, GCHandleType.Pinned);
+                GCHandle sizeH = GCHandle.Alloc(sizeB, GCHandleType.Pinned);
+                try
+                {
+                    IntPtr versionP = versionH.AddrOfPinnedObject();
+                    IntPtr sizeP = sizeH.AddrOfPinnedObject();
+                    if (m_dll.adVersionGet(versionType, versionP, sizeP) == CoreDll.Error.Ok)
+                    {
+                        return new CoreVersion(versionB);
+                    }
+                }
+                finally 
+                {
+                    versionH.Free();
+                    sizeH.Free();
+                }
+            }
+            catch(Exception)
+            {
             }
             return null; 
         }
@@ -145,28 +162,53 @@ namespace AntiDupl.NET
 
         public CoreStatistic GetStatistic()
         {
-            CoreDll.adStatistic[] statistic = new CoreDll.adStatistic[1];
-            if (m_dll.adStatisticGet(m_handle, Marshal.UnsafeAddrOfPinnedArrayElement(statistic, 0)) == CoreDll.Error.Ok)
+            try
             {
-                return new CoreStatistic(ref statistic[0]);
+                object statisticO = new CoreDll.adStatistic();
+                byte[] statisticB = new byte[Marshal.SizeOf(statisticO)];
+                GCHandle statisticH = GCHandle.Alloc(statisticB, GCHandleType.Pinned);
+                try
+                {
+                    IntPtr statisticP = statisticH.AddrOfPinnedObject();
+                    if (m_dll.adStatisticGet(m_handle, statisticP) == CoreDll.Error.Ok)
+                    {
+                        CoreDll.adStatistic statistic = (CoreDll.adStatistic)Marshal.PtrToStructure(statisticP, statisticO.GetType());
+                        return new CoreStatistic(ref statistic);
+                    }
+                }
+                finally
+                {
+                    statisticH.Free();
+                }
+            }
+            catch (Exception)
+            {
             }
             return null;
         }
 
         public CoreStatus StatusGet(CoreDll.ThreadType threadType, int threadId)
         {
-            try 
+            try
             {
-                object statusObject = new CoreDll.adStatusW();
-                byte[] status = new byte[Marshal.SizeOf(statusObject)];
-                IntPtr pStatus = Marshal.UnsafeAddrOfPinnedArrayElement(status, 0);
-                if (m_dll.adStatusGetW(m_handle, threadType, new IntPtr(threadId), pStatus) == CoreDll.Error.Ok)
+                object statusO = new CoreDll.adStatusW();
+                byte[] statusB = new byte[Marshal.SizeOf(statusO)];
+                GCHandle statusH = GCHandle.Alloc(statusB, GCHandleType.Pinned);
+                try
                 {
-                    CoreDll.adStatusW statusW = (CoreDll.adStatusW)Marshal.PtrToStructure(pStatus, statusObject.GetType());
-                    return new CoreStatus(ref statusW);
+                    IntPtr statusP = statusH.AddrOfPinnedObject();
+                    if (m_dll.adStatusGetW(m_handle, threadType, new IntPtr(threadId), statusP) == CoreDll.Error.Ok)
+                    {
+                        CoreDll.adStatusW statusW = (CoreDll.adStatusW)Marshal.PtrToStructure(statusP, statusO.GetType());
+                        return new CoreStatus(ref statusW);
+                    }
+                }
+                finally
+                {
+                    statusH.Free();
                 }
             }
-            catch(Exception)
+            catch (Exception)
             {
             }
             return null;
@@ -189,10 +231,27 @@ namespace AntiDupl.NET
 
         public bool CanApply(CoreDll.ActionEnableType actionEnableType)
         {
-            int[] enable = new int[1];
-            if (m_dll.adCanApply(m_handle, actionEnableType, Marshal.UnsafeAddrOfPinnedArrayElement(enable, 0)) != CoreDll.Error.Ok)
-                return false;
-            return enable[0] != CoreDll.FALSE; 
+            try 
+            {
+                int[] enableB = new int[1];
+                GCHandle enableH = GCHandle.Alloc(enableB, GCHandleType.Pinned);
+                try
+                {
+                    IntPtr enableP = enableH.AddrOfPinnedObject();
+                    if (m_dll.adCanApply(m_handle, actionEnableType, enableP) == CoreDll.Error.Ok)
+                    {
+                        return enableB[0] != CoreDll.FALSE;
+                    }
+                }
+                finally 
+                {
+                    enableH.Free();
+                }
+            }
+            catch(Exception)
+            {
+            }
+            return false;
         }
 
         public bool RenameCurrent(CoreDll.RenameCurrentType renameCurrentType, string newFileName)
