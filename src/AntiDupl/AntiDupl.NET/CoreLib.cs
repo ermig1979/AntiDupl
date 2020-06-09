@@ -308,12 +308,28 @@ namespace AntiDupl.NET
 
         public uint GetResultSize()
         {
-            UIntPtr[] pStartFrom = new UIntPtr[1];
-            pStartFrom[0] = new UIntPtr(uint.MaxValue);
-            if (m_dll.adResultGetW(m_handle, Marshal.UnsafeAddrOfPinnedArrayElement(pStartFrom, 0),
-                new IntPtr(1), new IntPtr(1)) == CoreDll.Error.InvalidStartPosition)
+            try 
             {
-                return pStartFrom[0].ToUInt32();
+                UIntPtr[] startFromB = new UIntPtr[1];
+                startFromB[0] = new UIntPtr(uint.MaxValue);
+                GCHandle startFromH = GCHandle.Alloc(startFromB, GCHandleType.Pinned);
+                try 
+                {
+                    IntPtr startFromP = startFromH.AddrOfPinnedObject();
+                    IntPtr resultP = new IntPtr(1);
+                    IntPtr resultSizeP = new IntPtr(1);
+                    if (m_dll.adResultGetW(m_handle, startFromP, resultP, resultSizeP) == CoreDll.Error.InvalidStartPosition)
+                    {
+                        return startFromB[0].ToUInt32();
+                    }
+                }
+                finally
+                {
+                    startFromH.Free();
+                }
+            }
+            catch(Exception)
+            {
             }
             return 0;
         }

@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="adBlurringDetector.cpp" />
+    <ClCompile Include="adDataCollector.cpp" />
+    <ClCompile Include="adDump.cpp" />
+    <ClCompile Include="adDuplResultFilter.cpp" />
+    <ClCompile Include="adEngine.cpp" />
+    <ClCompile Include="adHintSetter.cpp" />
+    <ClCompile Include="adImageComparer.cpp" />
+    <ClCompile Include="adImageData.cpp" />
+    <ClCompile Include="adImageDataStorage.cpp" />
+    <ClCompile Include="adImageExif.cpp" />
+    <ClCompile Include="adImageGroup.cpp" />
+    <ClCompile Include="adImageInfo.cpp" />
+    <ClCompile Include="adImageInfoStorage.cpp" />
+    <ClCompile Include="adImageUtils.cpp" />
+    <ClCompile Include="adInit.cpp" />
+    <ClCompile Include="adLogger.cpp" />
+    <ClCompile Include="adMistakeStorage.cpp" />
+    <ClCompile Include="adOptions.cpp" />
+    <ClCompile Include="adPath.cpp" />
+    <ClCompile Include="adPerformance.cpp" />
+    <ClCompile Include="adPixelData.cpp" />
+    <ClCompile Include="adRecycleBin.cpp" />
+    <ClCompile Include="adResult.cpp" />
+    <ClCompile Include="adResultStorage.cpp" />
+    <ClCompile Include="adSearcher.cpp" />
+    <ClCompile Include="adStatisticsOfDeleting.cpp" />
+    <ClCompile Include="adStatus.cpp" />
+    <ClCompile Include="adStrings.cpp" />
+    <ClCompile Include="adThreadManagement.cpp" />
+    <ClCompile Include="adThreads.cpp" />
+    <ClCompile Include="adUndoRedoEngine.cpp" />
+    <ClCompile Include="adUndoRedoTypes.cpp" />
+    <ClCompile Include="AntiDupl.cpp" />
+    <ClCompile Include="adDds.cpp">
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="adGdiplus.cpp">
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="adOpenJpeg.cpp">
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="adTga.cpp">
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="adPsd.cpp">
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="adWebp.cpp">
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="adTurboJpeg.cpp">
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="adImage.cpp">
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="adFileInfo.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
+    <ClCompile Include="adFileStream.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
+    <ClCompile Include="adFileUtils.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
+    <ClCompile Include="adIniFile.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="adBlurringDetector.h" />
+    <ClInclude Include="adConfig.h" />
+    <ClInclude Include="adDataCollector.h" />
+    <ClInclude Include="adDump.h" />
+    <ClInclude Include="adDuplResultFilter.h" />
+    <ClInclude Include="adEngine.h" />
+    <ClInclude Include="adException.h" />
+    <ClInclude Include="adHintSetter.h" />
+    <ClInclude Include="adImageComparer.h" />
+    <ClInclude Include="adImageData.h" />
+    <ClInclude Include="adImageDataStorage.h" />
+    <ClInclude Include="adImageExif.h" />
+    <ClInclude Include="adImageGroup.h" />
+    <ClInclude Include="adImageInfo.h" />
+    <ClInclude Include="adImageInfoStorage.h" />
+    <ClInclude Include="adImageUtils.h" />
+    <ClInclude Include="adInit.h" />
+    <ClInclude Include="adLogger.h" />
+    <ClInclude Include="adMistakeStorage.h" />
+    <ClInclude Include="adOptions.h" />
+    <ClInclude Include="adPath.h" />
+    <ClInclude Include="adPerformance.h" />
+    <ClInclude Include="adPixelData.h" />
+    <ClInclude Include="adRecycleBin.h" />
+    <ClInclude Include="adResult.h" />
+    <ClInclude Include="adResultStorage.h" />
+    <ClInclude Include="adSearcher.h" />
+    <ClInclude Include="adStatisticsOfDeleting.h" />
+    <ClInclude Include="adStatus.h" />
+    <ClInclude Include="adStrings.h" />
+    <ClInclude Include="adThreadManagement.h" />
+    <ClInclude Include="adThreads.h" />
+    <ClInclude Include="adUndoRedoEngine.h" />
+    <ClInclude Include="adUndoRedoTypes.h" />
+    <ClInclude Include="AntiDupl.h" />
+    <ClInclude Include="adDds.h">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="adGdiplus.h">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="adOpenJpeg.h">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="adTga.h">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="adPsd.h">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="adWebp.h">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="adTurboJpeg.h">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="adImage.h">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="adFileInfo.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="adFileStream.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="adFileUtils.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="adIniFile.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="adIO.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Image">
+      <UniqueIdentifier>{fd879205-8328-4d87-8271-fb8fe1bfa672}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files">
+      <UniqueIdentifier>{25bbbdfc-485e-4b5f-8d78-febf0a7f5e01}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
