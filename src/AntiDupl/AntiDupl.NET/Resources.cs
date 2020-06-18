@@ -96,7 +96,10 @@ namespace AntiDupl.NET
                 Image image;
                 try
                 {
-                    image = Image.FromFile(GetPath(Path, name, Extension));
+                    string extension = System.IO.Path.GetExtension(name);
+                    if (string.IsNullOrEmpty(extension))
+                        extension = Extension;
+                    image = Image.FromFile(GetPath(Path, System.IO.Path.GetFileNameWithoutExtension(name), extension));
                 }
                 catch
                 {
