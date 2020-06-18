@@ -45,6 +45,7 @@ namespace AntiDupl.NET
         private ToolStripButton m_renameSecondToFirstButton;
         private ToolStripButton m_deleteBothButton;
         private ToolStripButton m_mistakeButton;
+        private ToolStripButton m_openBothFoldersButton;
 
         private struct RectanglesWithSimilarity
         {
@@ -80,8 +81,9 @@ namespace AntiDupl.NET
             m_renameFirstToSecondButton = InitFactory.ToolButton.Create("RenameFirstToSecondVerticalButton", CoreDll.LocalActionType.RenameFirstToSecond, OnButtonClicked);
             m_renameSecondToFirstButton = InitFactory.ToolButton.Create("RenameSecondToFirstVerticalButton", CoreDll.LocalActionType.RenameSecondToFirst, OnButtonClicked);
             m_mistakeButton = InitFactory.ToolButton.Create("MistakeButton", CoreDll.LocalActionType.Mistake, OnButtonClicked);
-            
-           /* m_difrentNumericUpDown = new System.Windows.Forms.NumericUpDown();
+            m_openBothFoldersButton = InitFactory.ToolButton.Create("OpenBothFoldersButton.png", null, OnOpenBothFoldersButtonClicked);
+
+            /* m_difrentNumericUpDown = new System.Windows.Forms.NumericUpDown();
             m_difrentNumericUpDown.Size = new System.Drawing.Size(62, 17);
             m_difrentNumericUpDown.Location = new System.Drawing.Point(102, 0);
             m_difrentNumericUpDown.Margin = new Padding(0);
@@ -120,6 +122,7 @@ namespace AntiDupl.NET
             m_renameFirstToSecondButton.ToolTipText = GetToolTip(s.ResultsPreviewDuplPair_RenameFirstToSecondButton_ToolTip_Text, HotKeyOptions.Action.CurrentDuplPairRenameFirstToSecond);
             m_renameSecondToFirstButton.ToolTipText = GetToolTip(s.ResultsPreviewDuplPair_RenameSecondToFirstButton_ToolTip_Text, HotKeyOptions.Action.CurrentDuplPairRenameSecondToFirst);
             m_mistakeButton.ToolTipText = GetToolTip(s.ResultsPreviewDefect_MistakeButton_ToolTip_Text, HotKeyOptions.Action.CurrentMistake);
+            m_openBothFoldersButton.ToolTipText = s.ResultsPreviewDuplPair_OpenBothFoldersButton_ToolTip_Text;
 
             // Для обновления EXIF.
             if (m_currentSearchResult != null)
@@ -192,6 +195,12 @@ namespace AntiDupl.NET
             Process.Start(startInfo);
         }
 
+        private void OnOpenBothFoldersButtonClicked(object sender, System.EventArgs e)
+        {
+            FolderOpener.OpenContainingFolder(m_firstImagePreviewPanel.CurrentImageInfo);
+            FolderOpener.OpenContainingFolder(m_secondImagePreviewPanel.CurrentImageInfo);
+        }
+
         private void OnOptionsChanged()
         {
             m_mistakeButton.Enabled = m_coreOptions.advancedOptions.mistakeDataBase;
@@ -228,6 +237,8 @@ namespace AntiDupl.NET
                 m_renameSecondToFirstButton.Image = Resources.Images.Get("RenameSecondToFirstHorizontalButton");
             }
 
+            m_toolStrip.Items.Add(m_openBothFoldersButton);
+            m_toolStrip.Items.Add(new ToolStripSeparator());
             m_toolStrip.Items.Add(m_deleteBothButton);
             m_toolStrip.Items.Add(new ToolStripSeparator());
             m_toolStrip.Items.Add(m_renameFirstToSecondButton);
