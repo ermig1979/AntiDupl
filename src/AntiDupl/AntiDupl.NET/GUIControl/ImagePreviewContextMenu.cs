@@ -140,16 +140,7 @@ namespace AntiDupl.NET
 
         private void OpenImage(object sender, EventArgs e)
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = m_imagePreviewPanel.CurrentImageInfo.path;
-            try
-            {
-                Process.Start(startInfo);
-            }
-            catch (System.Exception exeption)
-            {
-                MessageBox.Show(exeption.Message);
-            }
+            ImageOpener.OpenFile(m_imagePreviewPanel.CurrentImageInfo.path);
         }
 
         private void OpenFolder(object sender, EventArgs e)

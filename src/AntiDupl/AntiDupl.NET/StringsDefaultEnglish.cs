@@ -172,6 +172,7 @@ namespace AntiDupl.NET
             s.ResultsPreviewDuplPair_RenameSecondToFirstButton_ToolTip_Text = "Replace first picture by the second picture";
             s.ResultsPreviewDuplPair_MistakeButton_ToolTip_Text = "Mark current result as a mistake";
             s.ResultsPreviewDuplPair_OpenBothFoldersButton_ToolTip_Text = "Open both containing folders";
+            s.ResultsPreviewDuplPair_OpenBothImagesButton_ToolTip_Text = "Open both images";
 
             s.ResultsPreviewDefect_DeleteButton_ToolTip_Text = "Delete picture";
             s.ResultsPreviewDefect_MistakeButton_ToolTip_Text = "Mark current result as a mistake";
