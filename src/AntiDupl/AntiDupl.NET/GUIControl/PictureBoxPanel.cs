@@ -230,16 +230,7 @@ namespace AntiDupl.NET
 
         private void OnImageDoubleClicked(object sender, System.EventArgs e)
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = m_currentImageInfo.path;
-            try
-            {
-                Process.Start(startInfo);
-            }
-            catch (System.Exception exeption)
-            {
-                MessageBox.Show(exeption.Message);
-            }
+            ImageOpener.OpenFile(m_currentImageInfo.path);
         }
 
         private void OnSizeChanged(object sender, EventArgs e)
