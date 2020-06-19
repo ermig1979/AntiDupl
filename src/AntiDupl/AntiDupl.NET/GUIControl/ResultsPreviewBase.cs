@@ -83,7 +83,7 @@ namespace AntiDupl.NET
             {
                 m_toolStripPanel.Orientation = Orientation.Vertical;
 
-                m_buttonLayout = InitFactory.Layout.CreateVerticalCompensatedCenterAlign(30, 0);
+                m_buttonLayout = InitFactory.Layout.CreateVerticalCompensatedCenterAlign(0, 5);
                 m_buttonLayout.Controls.Add(m_toolStripPanel, 0, 2);
 
                 m_imageLayout = InitFactory.Layout.Create(1, 2, 0, 0);
@@ -100,7 +100,7 @@ namespace AntiDupl.NET
             {
                 m_toolStripPanel.Orientation = Orientation.Horizontal;
 
-                m_buttonLayout = InitFactory.Layout.CreateHorizontalCompensatedCenterAlign(0, 1);
+                m_buttonLayout = InitFactory.Layout.CreateHorizontalCompensatedCenterAlign(0, 104);
                 m_buttonLayout.Controls.Add(m_toolStripPanel, 2, 0);
 
                 m_imageLayout = InitFactory.Layout.Create(2, 1, 0, 0);
