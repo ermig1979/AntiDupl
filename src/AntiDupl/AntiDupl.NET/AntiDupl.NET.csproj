@@ -1,264 +1,178 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
-  <Import Project="$(SolutionDir)\..\Prop.csproj" />
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{394E0C8E-33D5-44B5-8056-5AD2B1C3C56A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AntiDupl.NET</RootNamespace>
-    <AssemblyName>AntiDupl.NET</AssemblyName>
-    <StartupObject>AntiDupl.NET.Program</StartupObject>
-    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <AssemblyVersion>2.3.10.11</AssemblyVersion>
+    <FileVersion>2.3.10.11</FileVersion>
+    <Platforms>AnyCPU;x86;x64</Platforms>
+    <Company>ErmIg</Company>
+    <Copyright>ErmIg © 2002-2018</Copyright>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>x86</PlatformTarget>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <OutputPath>..\..\..\bin\Debug\</OutputPath>
   </PropertyGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  <PropertyGroup>
-    <PostBuildEvent>$(SolutionDir)\..\..\cmd\CopyData.cmd $(SolutionDir)\..\.. $(SolutionDir)\..\..\bin\$(ConfigurationName)</PostBuildEvent>
-    <PreBuildEvent>$(SolutionDir)\Antidupl.NET\External.cmd $(SolutionDir)\Antidupl.NET</PreBuildEvent>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputPath>..\..\..\bin\Debug\</OutputPath>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputPath>..\..\..\bin\Debug\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="$(SolutionDir)\Antidupl.NET\External.cmd $(SolutionDir)\Antidupl.NET" />
+  </Target>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="$(SolutionDir)\..\..\cmd\CopyData.cmd $(SolutionDir)\..\.. $(SolutionDir)\..\..\bin\$(ConfigurationName)" />
+  </Target>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.XML" />
+    <None Remove="Icon.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Form\AboutProgramForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUIControl\AboutProgramPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ClipboardContentBuilder.cs" />
-    <Compile Include="ComparableBitmap.cs" />
-    <Compile Include="Comparator.cs" />
-    <Compile Include="GUIControl\ComplexProgressBar.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CoreAdvancedOptions.cs" />
-    <Compile Include="CoreCompareOptions.cs" />
-    <Compile Include="CoreDefectOptions.cs" />
-    <Compile Include="CoreGroup.cs" />
-    <Compile Include="CoreImageInfo.cs" />
-    <Compile Include="CoreDll.cs" />
-    <Compile Include="CorePathWithSubFolder.cs" />
-    <Compile Include="CoreResult.cs" />
-    <Compile Include="CoreSearchOptions.cs" />
-    <Compile Include="CoreStatistic.cs" />
-    <Compile Include="CoreStatus.cs" />
-    <Compile Include="CoreVersion.cs" />
-    <Compile Include="DynamicModule.cs" />
-    <Compile Include="External.cs" />
-    <Compile Include="FolderOpener.cs" />
-    <Compile Include="GUIControl\LabeledNumericUpDown.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUIControl\ThumbnailGroupTable.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUIControl\ThumbnailPreview.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUIControl\RaisedPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUIControl\ThumbnailGroupPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUIControl\ImagePreviewContextMenu.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUIControl\PictureBoxPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Form\ProgressForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ImageOpener.cs" />
-    <Compile Include="ProgressUtils.cs" />
-    <Compile Include="StringsDefaultRussian.cs" />
-    <Compile Include="CoreOptions.cs" />
-    <Compile Include="Form\CoreOptionsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form\CorePathsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CoreLib.cs" />
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="DataGridViewCustomRow.cs" />
-    <Compile Include="HotKeyOptions.cs" />
-    <Compile Include="GUIControl\ImagePreviewPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUIControl\LabeledComboBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="DataGridViewDoubleTextBoxCell.cs" />
-    <Compile Include="InitFactory.cs" />
-    <Compile Include="GUIControl\LabeledIntegerEdit.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUIControl\LanguageMenuItem.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Form\MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainFormOptions.cs" />
-    <Compile Include="GUIControl\MainMenu.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUIControl\MainToolStrip.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUIControl\NewVersionMenuItem.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Options.cs" />
-    <Compile Include="GUIControl\ThumbnailPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUIControl\ThumbnailPreviewContextMenu.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ThumbnailStorage.cs" />
-    <Compile Include="GUIControl\ViewModeMenuItem.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Resources.cs" />
-    <Compile Include="ResultRowSetter.cs" />
-    <Compile Include="GUIControl\MainSplitContainer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUIControl\ResultsListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUIControl\ResultsListViewContextMenu.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUIControl\MainStatusStrip.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ResultsOptions.cs" />
-    <Compile Include="GUIControl\ResultsPreviewBase.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUIControl\ResultsPreviewContainer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUIControl\ResultsPreviewDefect.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUIControl\ResultsPreviewDuplPair.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Form\SearchExecuterForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUIControl\ProgressPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Form\SelectHorizontalColumnsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form\SelectHotKeysForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form\SelectVerticalColumnsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form\StartFinishForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Strings.cs" />
-    <Compile Include="StringsDefaultEnglish.cs" />
-    <Compile Include="Version.cs" />
-  </ItemGroup>
+
   <ItemGroup>
     <Content Include="Icon.ico" />
   </ItemGroup>
+
   <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>Клиентский профиль .NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
+    <Compile Update="Form\AboutProgramForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Form\CoreOptionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Form\CorePathsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Form\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Form\ProgressForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Form\SearchExecuterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Form\SelectHorizontalColumnsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Form\SelectHotKeysForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Form\SelectVerticalColumnsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Form\StartFinishForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="GUIControl\AboutProgramPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\ComplexProgressBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\ImagePreviewContextMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\ImagePreviewPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\LabeledComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\LabeledIntegerEdit.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\LabeledNumericUpDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\LanguageMenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\MainMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\MainSplitContainer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\MainStatusStrip.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\MainToolStrip.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\NewVersionMenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\PictureBoxPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\ProgressPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\RaisedPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\ResultsListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\ResultsListViewContextMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\ResultsPreviewBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\ResultsPreviewContainer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\ResultsPreviewDefect.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\ResultsPreviewDuplPair.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\ThumbnailGroupPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\ThumbnailGroupTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\ThumbnailPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\ThumbnailPreview.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\ThumbnailPreviewContextMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="GUIControl\ViewModeMenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
+
 </Project>
