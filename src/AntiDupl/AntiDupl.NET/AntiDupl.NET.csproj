@@ -27,6 +27,8 @@
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputPath>..\..\..\bin\Release\</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -75,120 +77,44 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Form\AboutProgramForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Form\CoreOptionsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Form\CorePathsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Form\MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Form\ProgressForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Form\SearchExecuterForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Form\SelectHorizontalColumnsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Form\SelectHotKeysForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Form\SelectVerticalColumnsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Form\StartFinishForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="GUIControl\AboutProgramPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\ComplexProgressBar.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\ImagePreviewContextMenu.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\ImagePreviewPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\LabeledComboBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\LabeledIntegerEdit.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\LabeledNumericUpDown.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\LanguageMenuItem.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\MainMenu.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\MainSplitContainer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\MainStatusStrip.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\MainToolStrip.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\NewVersionMenuItem.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\PictureBoxPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\ProgressPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\RaisedPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\ResultsListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\ResultsListViewContextMenu.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\ResultsPreviewBase.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\ResultsPreviewContainer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\ResultsPreviewDefect.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\ResultsPreviewDuplPair.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\ThumbnailGroupPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\ThumbnailGroupTable.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\ThumbnailPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\ThumbnailPreview.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\ThumbnailPreviewContextMenu.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GUIControl\ViewModeMenuItem.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="Form\AboutProgramForm.cs" />
+    <Compile Update="Form\CoreOptionsForm.cs" />
+    <Compile Update="Form\CorePathsForm.cs" />
+    <Compile Update="Form\MainForm.cs" />
+    <Compile Update="Form\ProgressForm.cs" />
+    <Compile Update="Form\SearchExecuterForm.cs" />
+    <Compile Update="Form\SelectHorizontalColumnsForm.cs" />
+    <Compile Update="Form\SelectHotKeysForm.cs" />
+    <Compile Update="Form\SelectVerticalColumnsForm.cs" />
+    <Compile Update="Form\StartFinishForm.cs" />
+    <Compile Update="GUIControl\AboutProgramPanel.cs" />
+    <Compile Update="GUIControl\ComplexProgressBar.cs" />
+    <Compile Update="GUIControl\ImagePreviewContextMenu.cs" />
+    <Compile Update="GUIControl\ImagePreviewPanel.cs" />
+    <Compile Update="GUIControl\LabeledComboBox.cs" />
+    <Compile Update="GUIControl\LabeledIntegerEdit.cs" />
+    <Compile Update="GUIControl\LabeledNumericUpDown.cs" />
+    <Compile Update="GUIControl\LanguageMenuItem.cs" />
+    <Compile Update="GUIControl\MainMenu.cs" />
+    <Compile Update="GUIControl\MainSplitContainer.cs" />
+    <Compile Update="GUIControl\MainStatusStrip.cs" />
+    <Compile Update="GUIControl\MainToolStrip.cs" />
+    <Compile Update="GUIControl\NewVersionMenuItem.cs" />
+    <Compile Update="GUIControl\PictureBoxPanel.cs" />
+    <Compile Update="GUIControl\ProgressPanel.cs" />
+    <Compile Update="GUIControl\RaisedPanel.cs" />
+    <Compile Update="GUIControl\ResultsListView.cs" />
+    <Compile Update="GUIControl\ResultsListViewContextMenu.cs" />
+    <Compile Update="GUIControl\ResultsPreviewBase.cs" />
+    <Compile Update="GUIControl\ResultsPreviewContainer.cs" />
+    <Compile Update="GUIControl\ResultsPreviewDefect.cs" />
+    <Compile Update="GUIControl\ResultsPreviewDuplPair.cs" />
+    <Compile Update="GUIControl\ThumbnailGroupPanel.cs" />
+    <Compile Update="GUIControl\ThumbnailGroupTable.cs" />
+    <Compile Update="GUIControl\ThumbnailPanel.cs" />
+    <Compile Update="GUIControl\ThumbnailPreview.cs" />
+    <Compile Update="GUIControl\ThumbnailPreviewContextMenu.cs" />
+    <Compile Update="GUIControl\ViewModeMenuItem.cs" />
   </ItemGroup>
 
 </Project>
