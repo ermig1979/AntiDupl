@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace AntiDupl.NET
@@ -15,7 +16,8 @@ namespace AntiDupl.NET
             startInfo.FileName = filePath;
             try
             {
-                Process.Start(startInfo);
+                var process = Process.Start(startInfo);
+                Thread.Sleep(System.TimeSpan.FromMilliseconds(100));
             }
             catch (System.Exception exeption)
             {

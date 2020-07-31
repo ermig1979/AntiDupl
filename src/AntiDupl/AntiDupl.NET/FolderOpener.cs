@@ -28,6 +28,7 @@ using Microsoft.Win32;
 using System.IO;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace AntiDupl.NET
 {
@@ -84,16 +85,18 @@ namespace AntiDupl.NET
         {
             try
             {
-                if(m_canOpenFolderWithExplorer)
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                if (m_canOpenFolderWithExplorer)
                 {
-                    Process.Start("explorer.exe", string.Format("/e, /select, \"{0}\"", imageInfo.path));
+                    startInfo.FileName = "explorer.exe";
+                    startInfo.Arguments = string.Format("/e, /select, \"{0}\"", imageInfo.path);
                 }
                 else
                 {
-                    ProcessStartInfo startInfo = new ProcessStartInfo();
                     startInfo.FileName = imageInfo.GetDirectoryString();
-                    Process.Start(startInfo);
                 }
+                var process = Process.Start(startInfo);
+                Thread.Sleep(System.TimeSpan.FromMilliseconds(100));
             }
             catch (System.Exception exeption)
             {
