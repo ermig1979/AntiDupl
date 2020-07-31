@@ -11,6 +11,7 @@ namespace AntiDupl.NET
         static public void OpenFile(string filePath)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.UseShellExecute = true;
             startInfo.FileName = filePath;
             try
             {
