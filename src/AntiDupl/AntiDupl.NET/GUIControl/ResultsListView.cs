@@ -110,7 +110,7 @@ namespace AntiDupl.NET
         ResultRowSetter m_resultRowSetter;
 
         /// <summary>
-        /// Returns the lower value of the first & last drag-selected row indices.
+        /// Returns the lower value of the first and last drag-selected row indices.
         /// </summary>
         private int LowerDragSelectedRowIndex
         {
@@ -121,7 +121,7 @@ namespace AntiDupl.NET
         }
 
         /// <summary>
-        /// Returns the higher value of the first & last drag-selected row indices.
+        /// Returns the higher value of the first and last drag-selected row indices.
         /// </summary>
         private int HigherDragSelectedRowIndex
         {
