@@ -100,9 +100,36 @@ namespace AntiDupl.NET
         private bool m_isControlDown = false;
         private bool m_updateColumnOrder = false;
         private bool m_makeAction = false;
+        private bool m_isMouseDragSelecting = false;
+        private int m_firstDragSelectedRowIndex = -1;
+        private int m_lastDragSelectedRowIndex = -1;
+        private int m_lowestDragSelectedIndex = -1;
+        private int m_highestDragSelectedIndex = -1;
 
         ContextMenuStrip m_contextMenuStrip;
         ResultRowSetter m_resultRowSetter;
+
+        /// <summary>
+        /// Returns the lower value of the first & last drag-selected row indices.
+        /// </summary>
+        private int LowerDragSelectedRowIndex
+        {
+            get
+            {
+                return Math.Min(m_firstDragSelectedRowIndex, m_lastDragSelectedRowIndex);
+            }
+        }
+
+        /// <summary>
+        /// Returns the higher value of the first & last drag-selected row indices.
+        /// </summary>
+        private int HigherDragSelectedRowIndex
+        {
+            get
+            {
+                return Math.Max(m_firstDragSelectedRowIndex, m_lastDragSelectedRowIndex);
+            }
+        }
 
         public ResultsListView(CoreLib core, AntiDupl.NET.Options options, CoreOptions coreOptions, MainSplitContainer mainSplitContainer)
         {
@@ -644,13 +671,18 @@ namespace AntiDupl.NET
 
         protected override void OnCellMouseDown(DataGridViewCellMouseEventArgs e)
         {
-            if (e.RowIndex >= 0 && e.RowIndex < Rows.Count)
+            if (e != null && e.RowIndex >= 0 && e.RowIndex < Rows.Count)
             {
                 if (e.Button == MouseButtons.Left)
                 {
                     SetCurrentRow(e.RowIndex);
                     SetRowSelection(false);
                     Invalidate();
+                    m_isMouseDragSelecting = true;
+                    m_firstDragSelectedRowIndex = e.RowIndex;
+                    m_lastDragSelectedRowIndex = e.RowIndex;
+                    m_lowestDragSelectedIndex = e.RowIndex;
+                    m_highestDragSelectedIndex = e.RowIndex;
                 }
                 else if (e.Button == MouseButtons.Right)
                 {
@@ -669,6 +701,39 @@ namespace AntiDupl.NET
                 ContextMenuStrip = null;
             }
             base.OnCellMouseDown(e);
+        }
+
+        protected override void OnCellMouseEnter(DataGridViewCellEventArgs e)
+        {
+            if (m_isMouseDragSelecting && e != null && e.RowIndex >= 0 && e.RowIndex < Rows.Count)
+            {
+                // Drag-select a range of grid rows
+                m_lastDragSelectedRowIndex = e.RowIndex;
+                m_lowestDragSelectedIndex = Math.Min(m_lowestDragSelectedIndex, e.RowIndex);
+                m_highestDragSelectedIndex = Math.Max(m_highestDragSelectedIndex, e.RowIndex);
+                SetCurrentRow(e.RowIndex);
+                if (m_lowestDragSelectedIndex < LowerDragSelectedRowIndex)
+                {
+                    SetRowSelection(m_lowestDragSelectedIndex, LowerDragSelectedRowIndex, false);
+                }
+                if (m_highestDragSelectedIndex > HigherDragSelectedRowIndex)
+                {
+                    SetRowSelection(HigherDragSelectedRowIndex + 1, m_highestDragSelectedIndex + 1, false);
+                }
+                SetRowSelection(LowerDragSelectedRowIndex, HigherDragSelectedRowIndex + 1, true);
+                this.Refresh();
+                m_mainSplitContainer.SelectedResultsChanged();
+            }
+            base.OnCellMouseEnter(e);
+        }
+
+        protected override void OnCellMouseUp(DataGridViewCellMouseEventArgs e)
+        {
+            if (e != null && e.Button == MouseButtons.Left)
+            {
+                m_isMouseDragSelecting = false;
+            }
+            base.OnCellMouseUp(e);
         }
 
         protected override bool ProcessDataGridViewKey(KeyEventArgs e)
