@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace AntiDupl.NET
@@ -11,10 +12,12 @@ namespace AntiDupl.NET
         static public void OpenFile(string filePath)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.UseShellExecute = true;
             startInfo.FileName = filePath;
             try
             {
-                Process.Start(startInfo);
+                var process = Process.Start(startInfo);
+                Thread.Sleep(System.TimeSpan.FromMilliseconds(100));
             }
             catch (System.Exception exeption)
             {
