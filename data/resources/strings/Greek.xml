@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Strings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>Greek</Name>
+  <OriginalLanguageName>Ελληνικά</OriginalLanguageName>
+  <OkButton_Text>Εντάξει</OkButton_Text>
+  <CancelButton_Text>Άκυρο</CancelButton_Text>
+  <StopButton_Text>Διακοπή</StopButton_Text>
+  <SetDefaultButton_Text>Επαναφορά προεπιλ.</SetDefaultButton_Text>
+  <ErrorMessage_FileAlreadyExists>Δεν είναι δυνατή η μετονομασία του αρχείου επειδή υπάρχει ήδη αρχείο με αυτό το όνομα!</ErrorMessage_FileAlreadyExists>
+  <WarningMessage_ChangeFileExtension>Θέλετε πραγματικά να αλλάξετε την επέκταση του αρχείου;</WarningMessage_ChangeFileExtension>
+  <AboutProgramPanel_CopyrightLabel0_Text>Copyright (c) 2002-2020 Yermalayeu Ihar, </AboutProgramPanel_CopyrightLabel0_Text>
+  <AboutProgramPanel_CopyrightLabel1_Text>2013-2020 Borisov Dmitry.</AboutProgramPanel_CopyrightLabel1_Text>
+  <AboutProgramPanel_ComponentLabel_Text>Στοιχείο</AboutProgramPanel_ComponentLabel_Text>
+  <AboutProgramPanel_VersionLabel_Text>Έκδοση</AboutProgramPanel_VersionLabel_Text>
+  <AboutProgramForm_Text>Περί...</AboutProgramForm_Text>
+  <StartFinishForm_LoadImages_Text>Φόρτωση αρχείου εικόνων</StartFinishForm_LoadImages_Text>
+  <StartFinishForm_LoadMistakes_Text>Φόρτωση αρχείου σφαλμάτων</StartFinishForm_LoadMistakes_Text>
+  <StartFinishForm_LoadResults_Text>Φόρτωση αρχείου αποτελεσμάτων</StartFinishForm_LoadResults_Text>
+  <StartFinishForm_SaveImages_Text>Αποθήκευση αρχείου εικόνων</StartFinishForm_SaveImages_Text>
+  <StartFinishForm_SaveMistakes_Text>Αποθήκευση αρχείου σφαλμάτων</StartFinishForm_SaveMistakes_Text>
+  <StartFinishForm_SaveResults_Text>Αποθήκευση αρχείου αποτελεσμάτων</StartFinishForm_SaveResults_Text>
+  <StartFinishForm_ClearTemporary_Text>Διαγραφή προσωρινών αρχείων</StartFinishForm_ClearTemporary_Text>
+  <CoreOptionsForm_Text>Επιλογές</CoreOptionsForm_Text>
+  <CoreOptionsForm_SearchTabPage_Text>Αναζήτηση</CoreOptionsForm_SearchTabPage_Text>
+  <CoreOptionsForm_SearchFileTypeGroupBox_Text>Τύποι αναζήτησης:</CoreOptionsForm_SearchFileTypeGroupBox_Text>
+  <CoreOptionsForm_BmpCheckBox_Text>BMP</CoreOptionsForm_BmpCheckBox_Text>
+  <CoreOptionsForm_GifCheckBox_Text>GIF</CoreOptionsForm_GifCheckBox_Text>
+  <CoreOptionsForm_JpegCheckBox_Text>JPEG</CoreOptionsForm_JpegCheckBox_Text>
+  <CoreOptionsForm_PngCheckBox_Text>PNG</CoreOptionsForm_PngCheckBox_Text>
+  <CoreOptionsForm_TiffCheckBox_Text>TIFF</CoreOptionsForm_TiffCheckBox_Text>
+  <CoreOptionsForm_EmfCheckBox_Text>EMF</CoreOptionsForm_EmfCheckBox_Text>
+  <CoreOptionsForm_WmfCheckBox_Text>WMF</CoreOptionsForm_WmfCheckBox_Text>
+  <CoreOptionsForm_ExifCheckBox_Text>EXIF</CoreOptionsForm_ExifCheckBox_Text>
+  <CoreOptionsForm_IconCheckBox_Text>ICON</CoreOptionsForm_IconCheckBox_Text>
+  <CoreOptionsForm_Jp2CheckBox_Text>JP2</CoreOptionsForm_Jp2CheckBox_Text>
+  <CoreOptionsForm_PsdCheckBox_Text>PSD</CoreOptionsForm_PsdCheckBox_Text>
+  <CoreOptionsForm_DdsCheckBox_Text>DDS</CoreOptionsForm_DdsCheckBox_Text>
+  <CoreOptionsForm_TgaCheckBox_Text>TGA</CoreOptionsForm_TgaCheckBox_Text>
+  <CoreOptionsForm_WebpCheckBox_Text>WEBP</CoreOptionsForm_WebpCheckBox_Text>
+  <CoreOptionsForm_SearchSystemCheckBox_Text>Αναζήτηση φακέλων/αρχείων συστήματος</CoreOptionsForm_SearchSystemCheckBox_Text>
+  <CoreOptionsForm_SearchHiddenCheckBox_Text>Αναζήτηση κρυφών φακέλων/αρχείων</CoreOptionsForm_SearchHiddenCheckBox_Text>
+  <CoreOptionsForm_CompareTabPage_Text>Σύγκριση</CoreOptionsForm_CompareTabPage_Text>
+  <CoreOptionsForm_CheckOnEqualityCheckBox_Text>Αναζήτηση διπλότυπων εικόνων</CoreOptionsForm_CheckOnEqualityCheckBox_Text>
+  <CoreOptionsForm_TransformedImageCheckBox_Text>Αναζήτηση περιστραμμένων και ανεστραμμένων διπλότυπων εικόνων</CoreOptionsForm_TransformedImageCheckBox_Text>
+  <CoreOptionsForm_SizeControlCheckBox_Text>Έλεγχος μεγέθους εικόνας</CoreOptionsForm_SizeControlCheckBox_Text>
+  <CoreOptionsForm_TypeControlCheckBox_Text>Έλεγχος τύπου εικόνας</CoreOptionsForm_TypeControlCheckBox_Text>
+  <CoreOptionsForm_RatioControlCheckBox_Text>Έλεγχος αναλογίας πλάτους/ύψους εικόνας</CoreOptionsForm_RatioControlCheckBox_Text>
+  <CoreOptionsForm_AlgorithmComparingLabeledComboBox_Text>Αλγόριθμος σύγκρισης εικόνων</CoreOptionsForm_AlgorithmComparingLabeledComboBox_Text>
+  <CoreOptionsForm_AlgorithmComparingLabeledComboBox_SquaredSum>Μέση τετραγωνική διαφορά</CoreOptionsForm_AlgorithmComparingLabeledComboBox_SquaredSum>
+  <CoreOptionsForm_ThresholdDifferenceLabeledComboBox_Text>Όριο διαφοράς</CoreOptionsForm_ThresholdDifferenceLabeledComboBox_Text>
+  <CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text>Ελάχιστο πλάτος/ύψος εικόνας</CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text>
+  <CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text>Μέγιστο πλάτος/ύψος εικόνας</CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text>
+  <CoreOptionsForm_CompareInsideOneFolderCheckBox_Text>Σύγκριση εικόνων μέσα σε έναν κατάλογο</CoreOptionsForm_CompareInsideOneFolderCheckBox_Text>
+  <CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text>Σύγκριση εικόνων από μια διαδρομή αναζήτησης με μιας άλλης</CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text>
+  <CoreOptionsForm_DefectTabPage_Text>Ελαττώματα</CoreOptionsForm_DefectTabPage_Text>
+  <CoreOptionsForm_CheckOnDefectCheckBox_Text>Έλεγχος για ελαττώματα</CoreOptionsForm_CheckOnDefectCheckBox_Text>
+  <CoreOptionsForm_CheckOnBlockinessCheckBox_Text>Έλεγχος για μπλοκ</CoreOptionsForm_CheckOnBlockinessCheckBox_Text>
+  <CoreOptionsForm_BlockinessThresholdLabeledComboBox_Text>Όριο μπλοκ</CoreOptionsForm_BlockinessThresholdLabeledComboBox_Text>
+  <CoreOptionsForm_CheckOnBlockinessOnlyNotJpegCheckBox_Text>Έλεγχος για μπλοκ μόνο σε μη Jpeg</CoreOptionsForm_CheckOnBlockinessOnlyNotJpegCheckBox_Text>
+  <CoreOptionsForm_CheckOnBlurringCheckBox_Text>Έλεγχος για θάμπωμα</CoreOptionsForm_CheckOnBlurringCheckBox_Text>
+  <CoreOptionsForm_BlurringThresholdLabeledComboBox_Text>Όριο θαμπώματος</CoreOptionsForm_BlurringThresholdLabeledComboBox_Text>
+  <CoreOptionsForm_AdvancedTabPage_Text>Προηγμένες</CoreOptionsForm_AdvancedTabPage_Text>
+  <CoreOptionsForm_DeleteToRecycleBinCheckBox_Text>Διαγραφή με χρήση του κάδου ανακύκλωσης</CoreOptionsForm_DeleteToRecycleBinCheckBox_Text>
+  <CoreOptionsForm_MistakeDataBaseCheckBox_Text>Απομνημόνευση εσφαλμένων</CoreOptionsForm_MistakeDataBaseCheckBox_Text>
+  <CoreOptionsForm_RatioResolutionLabeledComboBox_Text>Ακρίβεια αναλογίας πλάτους/ύψους εικόνας</CoreOptionsForm_RatioResolutionLabeledComboBox_Text>
+  <CoreOptionsForm_CompareThreadCountLabeledComboBox_Text>Αριθμός νημάτων σύγκρισης</CoreOptionsForm_CompareThreadCountLabeledComboBox_Text>
+  <CoreOptionsForm_CompareThreadCountLabeledComboBox_Description_0>Αυτόμ.</CoreOptionsForm_CompareThreadCountLabeledComboBox_Description_0>
+  <CoreOptionsForm_CollectThreadCountLabeledComboBox_Text>Αριθμός νημάτων φόρτωσης</CoreOptionsForm_CollectThreadCountLabeledComboBox_Text>
+  <CoreOptionsForm_CollectThreadCountLabeledComboBox_Description_0>Αυτόμ.</CoreOptionsForm_CollectThreadCountLabeledComboBox_Description_0>
+  <CoreOptionsForm_ReducedImageSizeLabeledComboBox_Text>Προσαρμοσμένο μέγεθος εικόνων</CoreOptionsForm_ReducedImageSizeLabeledComboBox_Text>
+  <CoreOptionsForm_UndoQueueSizeLabeledIntegerEdit_Text>Μέγεθος ουράς αναίρεσης</CoreOptionsForm_UndoQueueSizeLabeledIntegerEdit_Text>
+  <CoreOptionsForm_ResultCountMaxLabeledIntegerEdit_Text>Μέγιστος αριθμός αποτελεσμάτων</CoreOptionsForm_ResultCountMaxLabeledIntegerEdit_Text>
+  <CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text>Πλάτος πλαισίου εικόνας που παραβλέπεται</CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text>
+  <CoreOptionsForm_UseLibJpegTurboCheckBox_Text>Χρήση libjpeg-turbo</CoreOptionsForm_UseLibJpegTurboCheckBox_Text>
+  <CoreOptionsForm_HighlightTabPage_Text>Επισήμανση</CoreOptionsForm_HighlightTabPage_Text>
+  <CoreOptionsForm_HighlightDifferenceCheckBox_Text>Επισήμανση διαφορών</CoreOptionsForm_HighlightDifferenceCheckBox_Text>
+  <CoreOptionsForm_DifrentValue_Text>Μέγεθος διαφοράς</CoreOptionsForm_DifrentValue_Text>
+  <CoreOptionsForm_NotHighlightIfFragmentsMoreThemCheckBox_Text>Χωρίς επισήμανση διαφορών αν τα τμήματα είναι πάνω από:</CoreOptionsForm_NotHighlightIfFragmentsMoreThemCheckBox_Text>
+  <CoreOptionsForm_MaxFragmentsForDisableHighlightLabeledIntegerEdit_Text>Μέγιστος αριθμός τμημάτων για απενεργοποίηση επισήμανσης</CoreOptionsForm_MaxFragmentsForDisableHighlightLabeledIntegerEdit_Text>
+  <CoreOptionsForm_HighlightAllDifferencesCheckBox_Text>Επισήμανση όλων των διαφορών</CoreOptionsForm_HighlightAllDifferencesCheckBox_Text>
+  <CoreOptionsForm_MaxFragmentsForHighlightLabeledIntegerEdit_Text>Μέγιστη ποσότητα τμημάτων για επισήμανση</CoreOptionsForm_MaxFragmentsForHighlightLabeledIntegerEdit_Text>
+  <CoreOptionsForm_AmountOfFragmentsOnXLabeledIntegerEdit_Text>Αριθμός τμημάτων κατά Χ</CoreOptionsForm_AmountOfFragmentsOnXLabeledIntegerEdit_Text>
+  <CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text>Αριθμός τμημάτων κατά Ψ</CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text>
+  <CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text>Προσαρμοσμένο μέγεθος εικόνας</CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text>
+  <CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text>Πάχος πλαισίου τμήματος</CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text>
+  <CorePathsForm_Text>Διαδρομές</CorePathsForm_Text>
+  <CorePathsForm_SearchTabPage_Text>Αναζήτηση</CorePathsForm_SearchTabPage_Text>
+  <CorePathsForm_IgnoreTabPage_Text>Παράβλεψη</CorePathsForm_IgnoreTabPage_Text>
+  <CorePathsForm_ValidTabPage_Text>Έγκυρη</CorePathsForm_ValidTabPage_Text>
+  <CorePathsForm_DeleteTabPage_Text>Διαγραφή</CorePathsForm_DeleteTabPage_Text>
+  <CorePathsForm_AddFolderButton_Text>Προσθήκη φακέλου</CorePathsForm_AddFolderButton_Text>
+  <CorePathsForm_AddFilesButton_Text>Προσθήκη αρχείων</CorePathsForm_AddFilesButton_Text>
+  <CorePathsForm_ChangeButton_Text>Αλλαγή</CorePathsForm_ChangeButton_Text>
+  <CorePathsForm_RemoveButton_Text>Κατάργηση</CorePathsForm_RemoveButton_Text>
+  <CorePathsForm_SearchCheckedListBox_ToolTip_Text>Επιλεγμένο πλαίσιο σημαίνει αναζήτηση μέσα σε υποκαταλόγους αυτών των καταλόγων.</CorePathsForm_SearchCheckedListBox_ToolTip_Text>
+  <ProgressUtils_Completed>Ολοκληρώθηκε το {0}%</ProgressUtils_Completed>
+  <ProgressUtils_5HoursRemaining>Απομένουν {0} ώρες</ProgressUtils_5HoursRemaining>
+  <ProgressUtils_2HoursRemaining>Απομένει {0} ώρα</ProgressUtils_2HoursRemaining>
+  <ProgressUtils_5MinutesRemaining>Απομένουν {0} λεπτά</ProgressUtils_5MinutesRemaining>
+  <ProgressUtils_2MinutesRemaining>Απομένει {0} λεπτό</ProgressUtils_2MinutesRemaining>
+  <ProgressUtils_5SecondsRemaining>Απομένουν {0} δευτ.</ProgressUtils_5SecondsRemaining>
+  <ProgressForm_DeleteDefect>Διαγραφή ελαττωματικών εικόνων στα επιλεγμένα αποτελέσματα</ProgressForm_DeleteDefect>
+  <ProgressForm_DeleteFirst>Διαγραφή των πρώτων εικόνων στα επιλεγμένα αποτελέσματα</ProgressForm_DeleteFirst>
+  <ProgressForm_DeleteSecond>Διαγραφή των δεύτερων εικόνων στα επιλεγμένα αποτελέσματα</ProgressForm_DeleteSecond>
+  <ProgressForm_DeleteBoth>Διαγραφή όλων των διπλότυπων εικόνων στα επιλεγμένα αποτελέσματα</ProgressForm_DeleteBoth>
+  <ProgressForm_PerformHint>Αυτόματη επεξεργασία των επιλεγμένων αποτελεσμάτων</ProgressForm_PerformHint>
+  <ProgressForm_Mistake>Σήμανση των επιλεγμένων αποτελεσμάτων ως εσφαλμένα</ProgressForm_Mistake>
+  <ProgressForm_RenameCurrent>Μετονομασία / Αντικατάσταση των εικόνων</ProgressForm_RenameCurrent>
+  <ProgressForm_RefreshResults>Ανανέωση των αποτελεσμάτων</ProgressForm_RefreshResults>
+  <ProgressForm_Undo>Αναίρεση ενέργειας</ProgressForm_Undo>
+  <ProgressForm_Redo>Επανάληψη ενέργειας</ProgressForm_Redo>
+  <SearchExecuterForm_Result>Επεξεργασία αποτελεσμάτων</SearchExecuterForm_Result>
+  <SearchExecuterForm_Search>Αναζήτηση</SearchExecuterForm_Search>
+  <SearchExecuterForm_Stopped>Διακοπή αναζήτησης</SearchExecuterForm_Stopped>
+  <SearchExecuterForm_MinimizeToTaskbarButton_Text>Ελαχιστοποίηση</SearchExecuterForm_MinimizeToTaskbarButton_Text>
+  <SearchExecuterForm_MinimizeToSystrayButton_Text>Λειτουργία φόντου</SearchExecuterForm_MinimizeToSystrayButton_Text>
+  <ResultsPreviewBase_NextButton_ToolTip_Text>Μετάβαση στο επόμενο αποτέλεσμα</ResultsPreviewBase_NextButton_ToolTip_Text>
+  <ResultsPreviewBase_PreviousButton_ToolTip_Text>Μετάβαση στο προηγούμενο αποτέλεσμα</ResultsPreviewBase_PreviousButton_ToolTip_Text>
+  <ResultsPreviewDuplPair_DeleteFirstButton_ToolTip_Text>Διαγραφή της πρώτης εικόνας</ResultsPreviewDuplPair_DeleteFirstButton_ToolTip_Text>
+  <ResultsPreviewDuplPair_DeleteSecondButton_ToolTip_Text>Διαγραφή της δεύτερης εικόνας</ResultsPreviewDuplPair_DeleteSecondButton_ToolTip_Text>
+  <ResultsPreviewDuplPair_DeleteBothButton_ToolTip_Text>Διαγραφή και των δύο εικόνων</ResultsPreviewDuplPair_DeleteBothButton_ToolTip_Text>
+  <ResultsPreviewDuplPair_RenameFirstToSecondButton_ToolTip_Text>Αντικατάσταση της δεύτερης εικόνας από την πρώτη</ResultsPreviewDuplPair_RenameFirstToSecondButton_ToolTip_Text>
+  <ResultsPreviewDuplPair_RenameSecondToFirstButton_ToolTip_Text>Αντικατάσταση της πρώτης εικόνας από την δεύτερη</ResultsPreviewDuplPair_RenameSecondToFirstButton_ToolTip_Text>
+  <ResultsPreviewDuplPair_MistakeButton_ToolTip_Text>Σήμανση τρέχοντος αποτελέσματος ως λάθος</ResultsPreviewDuplPair_MistakeButton_ToolTip_Text>
+  <ResultsPreviewDefect_DeleteButton_ToolTip_Text>Διαγραφή εικόνας</ResultsPreviewDefect_DeleteButton_ToolTip_Text>
+  <ResultsPreviewDefect_MistakeButton_ToolTip_Text>Σήμανση τρέχοντος αποτελέσματος ως λάθος</ResultsPreviewDefect_MistakeButton_ToolTip_Text>
+  <ResultRowSetter_DefectIcon_ToolTip_Text>Ελαττωματική εικόνα</ResultRowSetter_DefectIcon_ToolTip_Text>
+  <ResultRowSetter_DuplPairIcon_ToolTip_Text>Διπλότυπο ζεύγος εικόνων</ResultRowSetter_DuplPairIcon_ToolTip_Text>
+  <ResultRowSetter_UnknownDefectIcon_ToolTip_Text>Άγνωστο ελάττωμα</ResultRowSetter_UnknownDefectIcon_ToolTip_Text>
+  <ResultRowSetter_JpegEndMarkerIsAbsentIcon_ToolTip_Text>Λείπει ο δείκτης τέλους αρχείου JPEG</ResultRowSetter_JpegEndMarkerIsAbsentIcon_ToolTip_Text>
+  <ResultRowSetter_blockinessIcon_ToolTip_Text>Εικόνες με μπλοκ</ResultRowSetter_blockinessIcon_ToolTip_Text>
+  <ResultRowSetter_blurringIcon_ToolTip_Text>Θολή εικόνα</ResultRowSetter_blurringIcon_ToolTip_Text>
+  <ResultRowSetter_DeleteDefectIcon_ToolTip_Text>Διαγραφή εικόνας</ResultRowSetter_DeleteDefectIcon_ToolTip_Text>
+  <ResultRowSetter_DeleteFirstIcon_ToolTip_Text>Διαγραφή της πρώτης εικόνας</ResultRowSetter_DeleteFirstIcon_ToolTip_Text>
+  <ResultRowSetter_DeleteSecondIcon_ToolTip_Text>Διαγραφή της δεύτερης εικόνας</ResultRowSetter_DeleteSecondIcon_ToolTip_Text>
+  <ResultRowSetter_RenameFirstToSecondIcon_ToolTip_Text>Αντικατάσταση της δεύτερης εικόνας από την πρώτη</ResultRowSetter_RenameFirstToSecondIcon_ToolTip_Text>
+  <ResultRowSetter_RenameSecondToFirstIcon_ToolTip_Text>Αντικατάσταση της πρώτης εικόνας από την δεύτερη</ResultRowSetter_RenameSecondToFirstIcon_ToolTip_Text>
+  <ResultRowSetter_Turn_0_Icon_ToolTip_Text>Αρχική</ResultRowSetter_Turn_0_Icon_ToolTip_Text>
+  <ResultRowSetter_Turn_90_Icon_ToolTip_Text>Περιστραμμένη κατά 90°</ResultRowSetter_Turn_90_Icon_ToolTip_Text>
+  <ResultRowSetter_Turn_180_Icon_ToolTip_Text>Περιστραμμένη κατά 180°</ResultRowSetter_Turn_180_Icon_ToolTip_Text>
+  <ResultRowSetter_Turn_270_Icon_ToolTip_Text>Περιστραμμένη κατά 270°</ResultRowSetter_Turn_270_Icon_ToolTip_Text>
+  <ResultRowSetter_MirrorTurn_0_Icon_ToolTip_Text>Ανεστραμμένη οριζόντια</ResultRowSetter_MirrorTurn_0_Icon_ToolTip_Text>
+  <ResultRowSetter_MirrorTurn_90_Icon_ToolTip_Text>Ανεστραμμένη οριζόντια και περιστραμμένη κατά 90°</ResultRowSetter_MirrorTurn_90_Icon_ToolTip_Text>
+  <ResultRowSetter_MirrorTurn_180_Icon_ToolTip_Text>Ανεστραμμένη οριζόντια και περιστραμμένη κατά 180°</ResultRowSetter_MirrorTurn_180_Icon_ToolTip_Text>
+  <ResultRowSetter_MirrorTurn_270_Icon_ToolTip_Text>Ανεστραμμένη οριζόντια και περιστραμμένη κατά 270°</ResultRowSetter_MirrorTurn_270_Icon_ToolTip_Text>
+  <ResultsListView_Type_Column_Text>Τύπος</ResultsListView_Type_Column_Text>
+  <ResultsListView_Group_Column_Text>Ομάδα</ResultsListView_Group_Column_Text>
+  <ResultsListView_GroupSize_Column_Text>Μέγεθος ομάδας</ResultsListView_GroupSize_Column_Text>
+  <ResultsListView_Difference_Column_Text>Διαφορά</ResultsListView_Difference_Column_Text>
+  <ResultsListView_Defect_Column_Text>Είδος ελαττώματος</ResultsListView_Defect_Column_Text>
+  <ResultsListView_Transform_Column_Text>Μετασχηματισμός</ResultsListView_Transform_Column_Text>
+  <ResultsListView_Hint_Column_Text>Υπόδειξη</ResultsListView_Hint_Column_Text>
+  <ResultsListView_FileName_Column_Text>Όνομα</ResultsListView_FileName_Column_Text>
+  <ResultsListView_FileDirectory_Column_Text>Στο φάκελο</ResultsListView_FileDirectory_Column_Text>
+  <ResultsListView_ImageSize_Column_Text>Διαστάσεις</ResultsListView_ImageSize_Column_Text>
+  <ResultsListView_ImageType_Column_Text>Τύπος εικόνας</ResultsListView_ImageType_Column_Text>
+  <ResultsListView_Blockiness_Column_Text>Μπλοκ</ResultsListView_Blockiness_Column_Text>
+  <ResultsListView_Blurring_Column_Text>Θάμπωμα</ResultsListView_Blurring_Column_Text>
+  <ResultsListView_FileSize_Column_Text>Μέγεθος</ResultsListView_FileSize_Column_Text>
+  <ResultsListView_FileTime_Column_Text>Ημερ/νία τροποποίησης</ResultsListView_FileTime_Column_Text>
+  <ResultsListView_FirstFileName_Column_Text>1: Όνομα</ResultsListView_FirstFileName_Column_Text>
+  <ResultsListView_FirstFileDirectory_Column_Text>1: Στο φάκελο</ResultsListView_FirstFileDirectory_Column_Text>
+  <ResultsListView_FirstImageSize_Column_Text>1: Διαστάσεις</ResultsListView_FirstImageSize_Column_Text>
+  <ResultsListView_FirstImageType_Column_Text>1: Τύπος εικόνας</ResultsListView_FirstImageType_Column_Text>
+  <ResultsListView_FirstBlockiness_Column_Text>1: Μπλοκ</ResultsListView_FirstBlockiness_Column_Text>
+  <ResultsListView_FirstBlurring_Column_Text>1: Θάμπωμα</ResultsListView_FirstBlurring_Column_Text>
+  <ResultsListView_FirstFileSize_Column_Text>1: Μέγεθος</ResultsListView_FirstFileSize_Column_Text>
+  <ResultsListView_FirstFileTime_Column_Text>1: Ημερομηνία αλλαγής</ResultsListView_FirstFileTime_Column_Text>
+  <ResultsListView_SecondFileName_Column_Text>2: Όνομα</ResultsListView_SecondFileName_Column_Text>
+  <ResultsListView_SecondFileDirectory_Column_Text>2: Στο φάκελο</ResultsListView_SecondFileDirectory_Column_Text>
+  <ResultsListView_SecondImageSize_Column_Text>2: Διαστάσεις</ResultsListView_SecondImageSize_Column_Text>
+  <ResultsListView_SecondImageType_Column_Text>2: Τύπος εικόνας</ResultsListView_SecondImageType_Column_Text>
+  <ResultsListView_SecondBlockiness_Column_Text>2: Μπλοκ</ResultsListView_SecondBlockiness_Column_Text>
+  <ResultsListView_SecondBlurring_Column_Text>2: Θάμπωμα</ResultsListView_SecondBlurring_Column_Text>
+  <ResultsListView_SecondFileSize_Column_Text>2: Μέγεθος</ResultsListView_SecondFileSize_Column_Text>
+  <ResultsListView_SecondFileTime_Column_Text>2: Ημερομηνία αλλαγής</ResultsListView_SecondFileTime_Column_Text>
+  <ResultsListViewContextMenu_DeleteDefectItem_Text>Διαγραφή ελαττωματικών εικόνων στα επιλεγμένα αποτελέσματα</ResultsListViewContextMenu_DeleteDefectItem_Text>
+  <ResultsListViewContextMenu_DeleteFirstItem_Text>Διαγραφή των πρώτων εικόνων στα επιλεγμένα αποτελέσματα</ResultsListViewContextMenu_DeleteFirstItem_Text>
+  <ResultsListViewContextMenu_DeleteSecondItem_Text>Διαγραφή των δεύτερων εικόνων στα επιλεγμένα αποτελέσματα</ResultsListViewContextMenu_DeleteSecondItem_Text>
+  <ResultsListViewContextMenu_DeleteBothItem_Text>Διαγραφή όλων των διπλότυπων εικόνων στα επιλεγμένα αποτελέσματα</ResultsListViewContextMenu_DeleteBothItem_Text>
+  <ResultsListViewContextMenu_RenameFirstToSecondIcon_ToolTip_Text>Αντικατάσταση των δεύτερων εικόνων από τις πρώτες στα επιλεγμένα αποτελέσματα</ResultsListViewContextMenu_RenameFirstToSecondIcon_ToolTip_Text>
+  <ResultsListViewContextMenu_RenameSecondToFirstIcon_ToolTip_Text>Αντικατάσταση των πρώτων εικόνων από τις δεύτερες στα επιλεγμένα αποτελέσματα</ResultsListViewContextMenu_RenameSecondToFirstIcon_ToolTip_Text>
+  <ResultsListViewContextMenu_RenameFirstLikeSecondButton_ToolTip_Text>Μετονομασία των πρώτων εικόνων ως δεύτερες στα επιλεγμένα αποτελέσματα</ResultsListViewContextMenu_RenameFirstLikeSecondButton_ToolTip_Text>
+  <ResultsListViewContextMenu_RenameSecondLikeFirstButton_ToolTipText>Μετονομασία των δεύτερων εικόνων ως πρώτες στα επιλεγμένα αποτελέσματα</ResultsListViewContextMenu_RenameSecondLikeFirstButton_ToolTipText>
+  <ResultsListViewContextMenu_MoveFirstToSecondButton_ToolTipText>Μετακίνηση των πρώτων εικόνων στις δεύτερες στα επιλεγμένα αποτελέσματα</ResultsListViewContextMenu_MoveFirstToSecondButton_ToolTipText>
+  <ResultsListViewContextMenu_MoveSecondToFirstButton_ToolTipText>Μετακίνηση των δεύτερων εικόνων στις πρώτες στα επιλεγμένα αποτελέσματα</ResultsListViewContextMenu_MoveSecondToFirstButton_ToolTipText>
+  <ResultsListViewContextMenu_MistakeItem_Text>Σήμανση επιλεγμένων αποτελεσμάτων ως εσφαλμένα</ResultsListViewContextMenu_MistakeItem_Text>
+  <ResultsListViewContextMenu_PerformHintItem_Text>Αυτόματη επεξεργασία επιλεγμένων αποτελεσμάτων</ResultsListViewContextMenu_PerformHintItem_Text>
+  <MainStatusStrip_TotalLabel_Text>Σύνολο: </MainStatusStrip_TotalLabel_Text>
+  <MainStatusStrip_CurrentLabel_Text>Τρέχουσες: </MainStatusStrip_CurrentLabel_Text>
+  <MainStatusStrip_SelectedLabel_Text>Επιλεγμένες: </MainStatusStrip_SelectedLabel_Text>
+  <MainMenu_FileMenuItem_Text>Αρχείο</MainMenu_FileMenuItem_Text>
+  <MainMenu_File_OpenProfileMenuItem_Text>Άνοιγμα προφίλ αναζήτησης</MainMenu_File_OpenProfileMenuItem_Text>
+  <MainMenu_File_SaveProfileAsMenuItem_Text>Αποθήκευση προφίλ αναζήτησης ως</MainMenu_File_SaveProfileAsMenuItem_Text>
+  <MainMenu_File_LoadProfileOnLoadingMenuItem_Text>Φόρτωση προφίλ στο άνοιγμα</MainMenu_File_LoadProfileOnLoadingMenuItem_Text>
+  <MainMenu_File_SaveProfileOnClosingMenuItem_Text>Αποθήκευση προφίλ στο κλείσιμο</MainMenu_File_SaveProfileOnClosingMenuItem_Text>
+  <MainMenu_File_ExitMenuItem_Text>Εξοδος</MainMenu_File_ExitMenuItem_Text>
+  <MainMenu_EditMenuItem_Text>Επεξεργασία</MainMenu_EditMenuItem_Text>
+  <MainMenu_Edit_UndoMenuItem_Text>Αναίρεση (Ctrl-Z)</MainMenu_Edit_UndoMenuItem_Text>
+  <MainMenu_Edit_RedoMenuItem_Text>Επανάληψη (Ctrl-Y)</MainMenu_Edit_RedoMenuItem_Text>
+  <MainMenu_Edit_SelectAllMenuItem_Text>Επιλογή όλων (Ctrl-A)</MainMenu_Edit_SelectAllMenuItem_Text>
+  <MainMenu_ViewMenuItem_Text>Προβολή</MainMenu_ViewMenuItem_Text>
+  <MainMenu_View_ToolMenuItem_Text>Γραμμή εργαλείων</MainMenu_View_ToolMenuItem_Text>
+  <MainMenu_View_StatusMenuItem_Text>Γραμμή κατάστασης</MainMenu_View_StatusMenuItem_Text>
+  <MainMenu_View_SelectColumnsMenuItem_Text>Επιλογή στηλών</MainMenu_View_SelectColumnsMenuItem_Text>
+  <MainMenu_View_HotKeysMenuItem_Text>Πλήκτρα συντόμευσης</MainMenu_View_HotKeysMenuItem_Text>
+  <MainMenu_View_StretchSmallImagesMenuItem_Text>Παραμόρφωση μικρών εικόνων</MainMenu_View_StretchSmallImagesMenuItem_Text>
+  <MainMenu_View_ProportionalImageSizeMenuItem_Text>Αναλογικό μέγεθος εικόνων</MainMenu_View_ProportionalImageSizeMenuItem_Text>
+  <MainMenu_View_ShowNeighbourImageMenuItem_Text>Εμφάνιση γειτονικών εικόνων</MainMenu_View_ShowNeighbourImageMenuItem_Text>
+  <MainMenu_SearchMenuItem_Text>Αναζήτηση</MainMenu_SearchMenuItem_Text>
+  <MainMenu_Search_StartMenuItem_Text>Έναρξη αναζήτησης</MainMenu_Search_StartMenuItem_Text>
+  <MainMenu_Search_RefreshResultsMenuItem_Text>Ανανέωση αποτελεσμάτων</MainMenu_Search_RefreshResultsMenuItem_Text>
+  <MainMenu_Search_RefreshImagesMenuItem_Text>Διαγραφή άσχετων εγγραφών από τη βάση δεδομένων εικόνας</MainMenu_Search_RefreshImagesMenuItem_Text>
+  <MainMenu_Search_PathsMenuItem_Text>Διαδρομές</MainMenu_Search_PathsMenuItem_Text>
+  <MainMenu_Search_OptionsMenuItem_Text>Επιλογές</MainMenu_Search_OptionsMenuItem_Text>
+  <MainMenu_Search_OnePathMenuItem_Text>Μία διαδρομή αναζήτησης</MainMenu_Search_OnePathMenuItem_Text>
+  <MainMenu_Search_UseImageDataBaseMenuItem_Text>Χρήση βάσης δεδομένων εικόνων</MainMenu_Search_UseImageDataBaseMenuItem_Text>
+  <MainMenu_Search_CheckResultsAtLoadingMenuItem_Text>Έλεγχος αποτελεσμάτων κατά τη φόρτωση</MainMenu_Search_CheckResultsAtLoadingMenuItem_Text>
+  <MainMenu_Search_CheckMistakesAtLoadingMenuItem_Text>Έλεγχος βάσης δεδομένων σφαλμάτων κατά τη φόρτωση</MainMenu_Search_CheckMistakesAtLoadingMenuItem_Text>
+  <MainMenu_HelpMenuItem_Text>Βοήθεια</MainMenu_HelpMenuItem_Text>
+  <MainMenu_Help_HelpMenuItem_Text>Βοήθεια</MainMenu_Help_HelpMenuItem_Text>
+  <MainMenu_Help_AboutProgramMenuItem_Text>Σχετικά με το πρόγραμμα...</MainMenu_Help_AboutProgramMenuItem_Text>
+  <MainMenu_Help_CheckingForUpdatesMenuItem_Text>Έλεγχος για ενημερώσεις</MainMenu_Help_CheckingForUpdatesMenuItem_Text>
+  <MainMenu_NewVersionMenuItem_Text>Νέα έκδοση</MainMenu_NewVersionMenuItem_Text>
+  <MainMenu_NewVersionMenuItem_Tooltip>Το AntiDupl.NET-{0} είναι διαθέσιμο στον ιστότοπο!</MainMenu_NewVersionMenuItem_Tooltip>
+  <SelectHotKeysForm_InvalidHotKeyToolTipText>Αυτός ο συνδυασμός πλήκτρου συντόμευσης χρησιμοποιείται ήδη για άλλο σκοπό.</SelectHotKeysForm_InvalidHotKeyToolTipText>
+  <LanguageMenuItem_Text>Γλώσσα / Language</LanguageMenuItem_Text>
+  <ViewModeMenuItem_Text>Λειτουργία προβολής αποτελεσμάτων</ViewModeMenuItem_Text>
+  <ViewModeMenuItem_VerticalPairTableMenuItem_Text>Πίνακας κάθετων ζευγών</ViewModeMenuItem_VerticalPairTableMenuItem_Text>
+  <ViewModeMenuItem_HorizontalPairTableMenuItem_Text>Πίνακας οριζόντιων ζευγών</ViewModeMenuItem_HorizontalPairTableMenuItem_Text>
+  <ViewModeMenuItem_GroupedThumbnailsMenuItem_Text>Ομαδοποιημένες μικρογραφίες</ViewModeMenuItem_GroupedThumbnailsMenuItem_Text>
+  <ImagePreviewContextMenu_CopyPathItem_Text>Αντιγραφή διαδρομής</ImagePreviewContextMenu_CopyPathItem_Text>
+  <ImagePreviewContextMenu_CopyFileNameItem_Text>Αντιγραφή ονόματος εικόνας</ImagePreviewContextMenu_CopyFileNameItem_Text>
+  <ImagePreviewContextMenu_OpenImageItem_Text>Άνοιγμα εικόνας</ImagePreviewContextMenu_OpenImageItem_Text>
+  <ImagePreviewContextMenu_OpenFolderItem_Text>Άνοιγμα θέσης αρχείου</ImagePreviewContextMenu_OpenFolderItem_Text>
+  <ImagePreviewContextMenu_AddToIgnore_Text>Προσθήκη στη λίστα παράλειψης</ImagePreviewContextMenu_AddToIgnore_Text>
+  <ImagePreviewContextMenu_AddToIgnoreDirectory_Text>Προσθήκη καταλόγου στη λίστα παράλειψης</ImagePreviewContextMenu_AddToIgnoreDirectory_Text>
+  <ImagePreviewContextMenu_RenameImageItem_Text>Μετονομασία εικόνας</ImagePreviewContextMenu_RenameImageItem_Text>
+  <ImagePreviewContextMenu_RenameImageLikeNeighbour_Text>Μετονομασία όπως τη γειτονική</ImagePreviewContextMenu_RenameImageLikeNeighbour_Text>
+  <ImagePreviewContextMenu_MoveImageToNeighbourItem_Text>Μετακίνηση εικόνας στη γειτονική</ImagePreviewContextMenu_MoveImageToNeighbourItem_Text>
+  <ImagePreviewContextMenu_MoveAndRenameImageToNeighbourItem_Text>Μετακίνηση και μετονομασία εικόνας στη γειτονική</ImagePreviewContextMenu_MoveAndRenameImageToNeighbourItem_Text>
+  <ImagePreviewContextMenu_MoveGroupToNeighbourItem_Text>Μετακίνηση ομάδας εικόνων σε γειτονικό κατάλογο</ImagePreviewContextMenu_MoveGroupToNeighbourItem_Text>
+  <ImagePreviewContextMenu_RenameGroupAsNeighbourItem_Text>Μετονομασία ομάδας εικόνων ως γειτονικής εικόνας</ImagePreviewContextMenu_RenameGroupAsNeighbourItem_Text>
+  <ImagePreviewPanel_EXIF_Text>EXIF</ImagePreviewPanel_EXIF_Text>
+  <ImagePreviewPanel_EXIF_Tooltip_ImageDescription>Περιγραφή: </ImagePreviewPanel_EXIF_Tooltip_ImageDescription>
+  <ImagePreviewPanel_EXIF_Tooltip_EquipMake>Κατασκευαστής συσκευής: </ImagePreviewPanel_EXIF_Tooltip_EquipMake>
+  <ImagePreviewPanel_EXIF_Tooltip_EquipModel>Μοντέλο συσκευής: </ImagePreviewPanel_EXIF_Tooltip_EquipModel>
+  <ImagePreviewPanel_EXIF_Tooltip_SoftwareUsed>Λογισμικό: </ImagePreviewPanel_EXIF_Tooltip_SoftwareUsed>
+  <ImagePreviewPanel_EXIF_Tooltip_DateTime>Ημερομηνία/Ώρα: </ImagePreviewPanel_EXIF_Tooltip_DateTime>
+  <ImagePreviewPanel_EXIF_Tooltip_Artist>Καλλιτέχνης: </ImagePreviewPanel_EXIF_Tooltip_Artist>
+  <ImagePreviewPanel_EXIF_Tooltip_UserComment>Σχόλιο: </ImagePreviewPanel_EXIF_Tooltip_UserComment>
+</Strings>
