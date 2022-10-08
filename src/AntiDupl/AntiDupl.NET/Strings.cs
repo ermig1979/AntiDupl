@@ -79,6 +79,7 @@ namespace AntiDupl.NET
         public string CoreOptionsForm_DdsCheckBox_Text;
         public string CoreOptionsForm_TgaCheckBox_Text;
         public string CoreOptionsForm_WebpCheckBox_Text;
+        public string CoreOptionsForm_HeifCheckBox_Text;
         public string CoreOptionsForm_SearchSystemCheckBox_Text;
         public string CoreOptionsForm_SearchHiddenCheckBox_Text;
 
