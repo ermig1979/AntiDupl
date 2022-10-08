@@ -59,7 +59,17 @@ namespace ad
                 if(format)
                 {
                     TView view(pBitmap->width, pBitmap->height, pBitmap->stride, format, pBitmap->data);
-                    Simd::ResizeBilinear(*pImage->View(), view);
+                    if (pImage->View()->format == TView::Format::Rgb24)
+                    {
+                        int img_stride = (pImage->View()->width) * TView::PixelSize(TView::Bgra32);;
+                        TView Bgra(pImage->View()->width, pImage->View()->height, img_stride, TView::Bgra32, NULL);
+                        Simd::RgbToBgra(*pImage->View(), Bgra);
+                        Simd::ResizeBilinear(Bgra, view);
+                    }
+                    else
+                    {
+                        Simd::ResizeBilinear(*pImage->View(), view);
+                    }
                     result = AD_OK;
                 }
                 delete pImage;

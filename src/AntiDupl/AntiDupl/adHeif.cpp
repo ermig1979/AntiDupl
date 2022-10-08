@@ -25,7 +25,7 @@
 #include "adHeif.h"
 #include "adPerformance.h"
 
-#include "libwebp\src\webp\decode.h"
+//Install vcpkg to get libheif see https://github.com/microsoft/vcpkg
 #include "libheif\heif.h"
 
 namespace ad
@@ -45,55 +45,77 @@ namespace ad
 
 	THeif* THeif::Load(HGLOBAL hGlobal)
 	{
+		AD_FUNCTION_PERFORMANCE_TEST
+
 		THeif* pHeif = NULL;
 		if (hGlobal)
 		{
 			uint8_t* data = (uint8_t*)::GlobalLock(hGlobal);
 			size_t data_size = ::GlobalSize(hGlobal);
 			
-			heif_context* ctx = heif_context_alloc();
-			heif_error heif_error = heif_context_read_from_memory_without_copy(ctx, data, data_size, nullptr);
+			heif_error heif_error = heif_init(NULL);
+			if (heif_error.code != heif_error_Ok)
+			{
+				return NULL;
+			}
+
+			heif_context* heif_ctx = heif_context_alloc();
+
+			assert(heif_ctx);
+
+			heif_error = heif_context_read_from_memory_without_copy(heif_ctx, data, data_size, nullptr);
+	
+			::GlobalUnlock(hGlobal);
 
 			if (heif_error.code == heif_error_Ok)
 			{  
-				heif_image_handle* handle;
-				heif_error = heif_context_get_primary_image_handle(ctx, &handle);
+				heif_image_handle* heif_handle;
+				heif_error = heif_context_get_primary_image_handle(heif_ctx, &heif_handle);
 				if (heif_error.code == heif_error_Ok)
 				{
-					heif_image* img;
+					struct heif_image* heif_img;
 					struct heif_decoding_options* decode_options;
 					decode_options = heif_decoding_options_alloc();
-					decode_options->ignore_transformations = 1;
-					heif_error = heif_decode_image(handle, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGBA, decode_options);
+					decode_options->ignore_transformations = 0;
+
+					int img_has_alpha = heif_image_handle_has_alpha_channel(heif_handle);
+
+					heif_error = heif_decode_image(heif_handle, &heif_img, heif_colorspace_RGB, img_has_alpha ? heif_chroma_interleaved_RGBA : heif_chroma_interleaved_RGB, decode_options);
+
 					heif_decoding_options_free(decode_options);
 					if (heif_error.code == heif_error_Ok)
 					{
-						size_t img_width = heif_image_handle_get_width(handle);
-						size_t img_height = heif_image_handle_get_height(handle);
-						int img_stride;
-						uint8_t* pData = heif_image_get_plane(img, heif_channel_interleaved, &img_stride);
-						size_t profile_size = heif_image_handle_get_raw_color_profile_size(handle);
-						if (profile_size > 0) {
-							uint8_t* profile_data = static_cast<uint8_t*>(malloc(profile_size));
-							heif_image_handle_get_raw_color_profile(handle, profile_data);
-							free(profile_data);
-						}
-						TView* pView = new TView(img_width, img_height, img_stride, TView::Bgra32, pData);
-						if (pView)
+
+						size_t img_width = heif_image_handle_get_width(heif_handle);
+						size_t img_height = heif_image_handle_get_height(heif_handle);
+
+						// Get interleaved RGB plane
+						int img_stride_RGB = 0;
+						const uint8_t* pData_RGB = heif_image_get_plane_readonly(heif_img, heif_channel_interleaved, &img_stride_RGB);
+						TView* pView_RGB = new TView(img_width, img_height, img_stride_RGB, TView::Rgb24, NULL);
+
+						AD_PERFORMANCE_TEST_SET_SIZE(img_height*img_stride_RGB)
+
+						if (pView_RGB)
 						{
+							memcpy(pView_RGB->data, pData_RGB, img_height * img_stride_RGB);
 							pHeif = new THeif();
-							pHeif->m_pView = pView;
+							pHeif->m_pView = pView_RGB;
 							pHeif->m_format = TImage::Heif;
 						}
 						else
-							delete pView;
+						{
+							delete pView_RGB;
+						}
 					}
+					heif_image_release(heif_img);
 				}
-				//int has_alpha = heif_image_handle_has_alpha_channel(handle);
-				heif_image_handle_release(handle);
+				heif_image_handle_release(heif_handle);
 			}
-			::GlobalUnlock(hGlobal);
+			heif_context_free(heif_ctx);
+			heif_deinit();
+			return pHeif;
         }
-        return pHeif;
+		return NULL;
 	}
 }

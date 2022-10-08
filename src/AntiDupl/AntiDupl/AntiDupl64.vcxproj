@@ -58,6 +58,7 @@
     <ClCompile Include="adFileStream.cpp" />
     <ClCompile Include="adFileUtils.cpp" />
     <ClCompile Include="adGdiplus.cpp" />
+    <ClCompile Include="adHeif.cpp" />
     <ClCompile Include="adHintSetter.cpp" />
     <ClCompile Include="adImage.cpp" />
     <ClCompile Include="adImageComparer.cpp" />
@@ -107,6 +108,7 @@
     <ClInclude Include="adFileStream.h" />
     <ClInclude Include="adFileUtils.h" />
     <ClInclude Include="adGdiplus.h" />
+    <ClInclude Include="adHeif.h" />
     <ClInclude Include="adHintSetter.h" />
     <ClInclude Include="adImage.h" />
     <ClInclude Include="adImageComparer.h" />
