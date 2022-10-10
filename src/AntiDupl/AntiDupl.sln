@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30114.128
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibOpenJpeg32", "..\3rd\LibOpenJpeg\LibOpenJpeg32.vcxproj", "{1622C4EF-06A4-4DAA-9631-5D71B32858A4}"
 EndProject
@@ -130,6 +130,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Vsx_64", "..\3rd\Simd\Vsx_64.vcxproj", "{7AE68C49-9959-4C22-A6D0-680BE7B5CA04}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntiDupl.NET", "AntiDupl.NET\AntiDupl.NET.csproj", "{5E3F8B85-9C79-4EA1-90E3-BD5C84CBA820}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7C8C9359-ED04-4415-BB91-9947B59BC71E} = {7C8C9359-ED04-4415-BB91-9947B59BC71E}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

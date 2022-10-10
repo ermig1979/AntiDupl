@@ -340,6 +340,7 @@ namespace AntiDupl.NET
             public const string OpenJpeg = "http://www.openjpeg.org";
             public const string LibWebp = "https://github.com/webmproject/libwebp";
             public const string LibJpegTurbo = "http://www.libjpeg-turbo.org";
+            public const string LibHeif = "http://www.libheif.org";
 
             public static string GithubComAntiduplCurrent
             {

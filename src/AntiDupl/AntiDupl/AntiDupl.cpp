@@ -29,6 +29,8 @@
 
 #include "TurboJpeg/inc/jconfig.h"
 
+#include "libheif\heif.h"
+
 #include <windows.h>
 
 namespace ad
@@ -111,6 +113,9 @@ DLLAPI adError adVersionGet(adVersionType versionType, adCharA * pVersion, adSiz
         break;
     case AD_VERSION_TYPE_TURBOJPEG:
         version = AD_STRINGIFY(LIBJPEG_TURBO_VERSION);
+        break;
+    case AD_VERSION_TYPE_LIBHEIF:
+        version = heif_get_version();
         break;
 	default:
 		return AD_ERROR_INVALID_VERSION_TYPE;

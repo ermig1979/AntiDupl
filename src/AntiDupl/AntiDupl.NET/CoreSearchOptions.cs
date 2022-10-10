@@ -44,6 +44,7 @@ namespace AntiDupl.NET
         private static string[] s_ddsExtensions = {"DDS"};
         private static string[] s_tgaExtensions = {"TGA", "TPIC"};
         private static string[] s_webpExtensions = { "WEBP" };
+        private static string[] s_heifExtensions = { "HEIF", "HEIC" };
 
         public bool subFolders;
         public bool system;
@@ -62,6 +63,7 @@ namespace AntiDupl.NET
         public bool DDS;
         public bool TGA;
         public bool WEBP;
+        public bool HEIF;
 
         public CoreSearchOptions()
         {
@@ -85,6 +87,7 @@ namespace AntiDupl.NET
             DDS = searchOptions.DDS;
             TGA = searchOptions.TGA;
             WEBP = searchOptions.WEBP;
+            HEIF = searchOptions.HEIF;
         }
 
         public CoreSearchOptions(CoreDll.adSearchOptions searchOptions)
@@ -105,6 +108,7 @@ namespace AntiDupl.NET
             DDS = searchOptions.DDS != CoreDll.FALSE;
             TGA = searchOptions.TGA != CoreDll.FALSE;
             WEBP = searchOptions.WEBP != CoreDll.FALSE;
+            HEIF = searchOptions.HEIF != CoreDll.FALSE;
         }
 
         public void ConvertTo(ref CoreDll.adSearchOptions searchOptions)
@@ -125,6 +129,7 @@ namespace AntiDupl.NET
             searchOptions.DDS = DDS ? CoreDll.TRUE : CoreDll.FALSE;
             searchOptions.TGA = TGA ? CoreDll.TRUE : CoreDll.FALSE;
             searchOptions.WEBP = WEBP ? CoreDll.TRUE : CoreDll.FALSE;
+            searchOptions.HEIF = HEIF ? CoreDll.TRUE : CoreDll.FALSE;
         }
 
         public CoreSearchOptions Clone()
@@ -150,7 +155,8 @@ namespace AntiDupl.NET
                 PSD == searchOptions.PSD &&
                 DDS == searchOptions.DDS &&
                 TGA == searchOptions.TGA &&
-                WEBP == searchOptions.WEBP;
+                WEBP == searchOptions.WEBP &&
+                HEIF == searchOptions.HEIF;
         }
 
         public string[] GetActualExtensions()
@@ -182,6 +188,8 @@ namespace AntiDupl.NET
                 extensions.AddRange(s_tgaExtensions);
             if (WEBP)
                 extensions.AddRange(s_tgaExtensions);
+            if (HEIF)
+                extensions.AddRange(s_heifExtensions);
             return (string[])extensions.ToArray(typeof(string));
         }
     }

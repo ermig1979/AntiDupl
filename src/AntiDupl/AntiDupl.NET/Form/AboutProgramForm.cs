@@ -44,7 +44,7 @@ namespace AntiDupl.NET
 
         private void InitializeComponent()
         {
-            ClientSize = new System.Drawing.Size(310, 290);
+            ClientSize = new System.Drawing.Size(310, 350);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             StartPosition = FormStartPosition.CenterScreen;
             ShowInTaskbar = false;

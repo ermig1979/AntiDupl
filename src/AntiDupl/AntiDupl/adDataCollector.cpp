@@ -78,7 +78,14 @@ namespace ad
             pImageData->type = (TImageType)pImage->Format();
 
 			TView gray(pImage->View()->width, pImage->View()->height, TView::Gray8, NULL);
-			Simd::BgraToGray(*pImage->View(), gray);
+            if (pImage->View()->format == TView::Format::Rgb24)
+            {
+                Simd::RgbToGray(*pImage->View(), gray);
+            }
+            else
+            {
+                Simd::BgraToGray(*pImage->View(), gray);
+            }
 
 			pImageData->blockiness = GetBlockiness(gray);
 

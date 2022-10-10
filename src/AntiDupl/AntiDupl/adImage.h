@@ -53,6 +53,7 @@ namespace ad
 			Dds = 12,
 			Tga = 13,
 			Webp = 14,
+            Heif = 15,
             FormatSize
         };
 

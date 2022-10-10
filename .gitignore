@@ -331,3 +331,5 @@ ASALocalRun/
 /.svn
 /src/AntiDupl/AntiDupl/adExternal.h
 /src/AntiDupl/AntiDupl.NET/External.cs
+/src/AntiDupl/AntiDupl.NET/Form/MainForm.resx
+/src/AntiDupl/AntiDupl.NET/Form/SearchExecuterForm.resx
