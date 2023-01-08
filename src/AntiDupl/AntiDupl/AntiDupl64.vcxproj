@@ -19,6 +19,18 @@
   <PropertyGroup Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>true</VcpkgEnabled>
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+    <VcpkgManifestInstall>true</VcpkgManifestInstall>
+    <VcpkgAutoLink>true</VcpkgAutoLink>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ItemDefinitionGroup>
     <ClCompile>
@@ -39,9 +51,6 @@
     </ProjectReference>
     <ProjectReference Include="..\..\3rd\libwebp\libwebp64.vcxproj">
       <Project>{8398ec77-8b40-4616-82cc-efbf76138461}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\3rd\Simd\Simd_64.vcxproj">
-      <Project>{1622c4ef-06a4-4daa-9631-5d71b32858a3}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\3rd\TurboJpeg\TurboJpeg64.vcxproj">
       <Project>{49457768-4766-49df-b566-9aad8a83ff2c}</Project>
