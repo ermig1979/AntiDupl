@@ -46,17 +46,6 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\3rd\LibOpenJpeg\LibOpenJpeg64.vcxproj">
-      <Project>{b6080b9d-6f8c-417c-af11-9853c47ba665}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\3rd\libwebp\libwebp64.vcxproj">
-      <Project>{8398ec77-8b40-4616-82cc-efbf76138461}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\3rd\TurboJpeg\TurboJpeg64.vcxproj">
-      <Project>{49457768-4766-49df-b566-9aad8a83ff2c}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="adBlurringDetector.cpp" />
     <ClCompile Include="adDataCollector.cpp" />
     <ClCompile Include="adDds.cpp" />
