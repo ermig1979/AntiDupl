@@ -25,7 +25,7 @@
 #include "adWebp.h"
 #include "adPerformance.h"
 
-#include "libwebp\src\webp\decode.h"
+#include "webp\decode.h"
 
 namespace ad
 {

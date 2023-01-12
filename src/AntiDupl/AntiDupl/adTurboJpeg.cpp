@@ -26,7 +26,7 @@
 #include "adTurboJpeg.h"
 
 #ifdef AD_TURBO_JPEG_ENABLE
-#include "TurboJpeg/inc/turbojpeg.h"
+#include "turbojpeg.h"
 
 FILE _iob[] = { *stdin, *stdout, *stderr };
 extern "C" FILE * __cdecl __iob_func(void)

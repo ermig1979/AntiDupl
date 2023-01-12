@@ -22,7 +22,7 @@
 * SOFTWARE.
 */
 #define OPJ_STATIC
-#include "LibOpenJpeg/openjpeg.h"
+#include "openjpeg.h"
 
 #include "adPerformance.h"
 #include "adOpenJpeg.h"
