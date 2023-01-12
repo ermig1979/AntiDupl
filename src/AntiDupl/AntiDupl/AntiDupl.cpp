@@ -23,11 +23,11 @@
 */
 
 #define OPJ_STATIC
-#include "LibOpenJpeg/openjpeg.h"
+#include "openjpeg.h"
 
-#include "libwebp\src\webp\decode.h"
+#include "webp\decode.h"
 
-#include "TurboJpeg/inc/jconfig.h"
+#include "jconfig.h"
 
 #include "libheif\heif.h"
 
