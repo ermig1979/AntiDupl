@@ -397,17 +397,16 @@ namespace AntiDupl.NET
             CorePathWithSubFolder[] path = GetCurrentPath();
             if (path == null)
                 return;
-            FolderBrowserDialog dialog = new FolderBrowserDialog();
-            dialog.ShowNewFolderButton = false;
-            dialog.SelectedPath = GetInitialPath(path);
-            if (dialog.ShowDialog() == DialogResult.OK)
+            var dialog = new FolderPicker();
+            dialog.InputPath = GetInitialPath(path);
+            if (dialog.ShowDialog(IntPtr.Zero) == true)
             {
                 Array.Resize(ref path, path.Length + 1);
                 path[path.Length - 1] = new CorePathWithSubFolder();
-                if (dialog.SelectedPath[dialog.SelectedPath.Length - 1] == Path.DirectorySeparatorChar)
-                    path[path.Length - 1].path = dialog.SelectedPath.Remove(dialog.SelectedPath.Length - 1);
+                if (dialog.ResultPath[dialog.ResultPath.Length - 1] == Path.DirectorySeparatorChar)
+                    path[path.Length - 1].path = dialog.ResultPath.Remove(dialog.ResultPath.Length - 1);
                 else
-                    path[path.Length - 1].path = dialog.SelectedPath;
+                    path[path.Length - 1].path = dialog.ResultPath;
                 path[path.Length - 1].enableSubFolder = true;
                 SetCurrentPath(path);
                 m_newCoreOptions.Validate(m_core, m_options.onePath);

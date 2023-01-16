@@ -5,9 +5,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
-    <AssemblyVersion>2.3.10.13</AssemblyVersion>
-    <FileVersion>2.3.10.13</FileVersion>
-    <Platforms>x64</Platforms>
+    <AssemblyVersion>2.3.11.0</AssemblyVersion>
+    <FileVersion>2.3.11.0</FileVersion>
+    <Platforms>AnyCPU;x86;x64</Platforms>
     <Company>ErmIg</Company>
     <Copyright>ErmIg © 2002-2023</Copyright>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
