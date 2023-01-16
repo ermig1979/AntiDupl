@@ -44,7 +44,7 @@ namespace AntiDupl.NET
             s.WarningMessage_ChangeFileExtension = "Вы действительно хотите изменить расширение файла?";
 
             s.AboutProgramPanel_CopyrightLabel0_Text = "Copyright (c) 2002-2020 Ермолаев Игорь,";
-            s.AboutProgramPanel_CopyrightLabel1_Text = "2013-2020 Борисов Дмитрий.";
+            s.AboutProgramPanel_CopyrightLabel1_Text = "2013-2023 Борисов Дмитрий.";
             s.AboutProgramPanel_ComponentLabel_Text = "Компонент";
             s.AboutProgramPanel_VersionLabel_Text = "Версия";
 

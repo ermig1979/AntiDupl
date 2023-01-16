@@ -31,7 +31,7 @@ namespace AntiDupl.NET
     public class CoreDll : DynamicModule
     {
         public CoreDll()
-            : base(IntPtr.Size == 8 ? "AntiDupl64.dll" : "AntiDupl32.dll")
+            : base("AntiDupl64.dll")
         {
         } 
 
