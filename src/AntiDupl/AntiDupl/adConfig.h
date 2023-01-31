@@ -53,6 +53,8 @@
 //#define AD_DUMP_ENABLE
 #define AD_TURBO_JPEG_ENABLE
 
+//#define AD_HEIF_ENABLE
+
 #define AD_INLINE SIMD_INLINE
 
 namespace ad

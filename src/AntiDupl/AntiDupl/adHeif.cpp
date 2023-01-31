@@ -25,6 +25,7 @@
 #include "adHeif.h"
 #include "adPerformance.h"
 
+#ifdef AD_HEIF_ENABLE
 //Install vcpkg to get libheif see https://github.com/microsoft/vcpkg
 #include "libheif\heif.h"
 
@@ -119,3 +120,17 @@ namespace ad
 		return NULL;
 	}
 }
+#else
+namespace ad
+{
+	bool THeif::Supported(HGLOBAL hGlobal)
+	{
+		return false;
+	}
+
+	THeif* THeif::Load(HGLOBAL hGlobal)
+	{
+		return NULL;
+	}
+}
+#endif
