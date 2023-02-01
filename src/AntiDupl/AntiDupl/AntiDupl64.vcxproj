@@ -132,6 +132,7 @@
     <ClInclude Include="adResult.h" />
     <ClInclude Include="adResultStorage.h" />
     <ClInclude Include="adSearcher.h" />
+    <ClInclude Include="adSimd.h" />
     <ClInclude Include="adStatisticsOfDeleting.h" />
     <ClInclude Include="adStatus.h" />
     <ClInclude Include="adStrings.h" />

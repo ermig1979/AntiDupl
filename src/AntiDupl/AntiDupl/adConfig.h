@@ -1,7 +1,7 @@
 /*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2023 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -44,16 +44,12 @@
 #include <algorithm>
 #include <limits>
 
-#define SIMD_STATIC
-#include "Simd/SimdLib.hpp"
-#include "Simd/SimdConversion.h"
-
 //#define AD_PERFORMANCE_TEST_ENABLE
 //#define AD_LOGGER_ENABLE
 //#define AD_DUMP_ENABLE
 #define AD_TURBO_JPEG_ENABLE
 
-#define AD_INLINE SIMD_INLINE
+#include "adSimd.h"
 
 namespace ad
 {

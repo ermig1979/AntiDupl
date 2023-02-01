@@ -152,6 +152,7 @@
     <ClInclude Include="adHeif.h">
       <Filter>Image</Filter>
     </ClInclude>
+    <ClInclude Include="adSimd.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Image">
