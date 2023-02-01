@@ -16,17 +16,28 @@ It is simple to use, has high speed and accuracy of work, supports Russian and E
 Building AntiDupl.NET
 ================================
 1. Download Visual Studio 2022
-e.g. the Community Edition: https://visualstudio.microsoft.com/vs/community/
+e.g. the Community Edition:
+
+	https://visualstudio.microsoft.com/vs/community/
+	
 2. In the Visual Studio Installer select following Workloads
 - .NET Desktop development
 - Desktop development with C++
 Info: Current latest default toolset is v143
 3. Download [vcpkg](https://github.com/Microsoft/vcpkg) dependency manager:
 e.g. by using git:
-    git clone https://github.com/Microsoft/vcpkg.git
+	
+	git clone https://github.com/Microsoft/vcpkg.git
+	
 4. Install [vcpkg](https://github.com/Microsoft/vcpkg):
-    cd vcpkg
-    ./bootstrap-vcpkg.bat
-    ./vcpkg integrate install
-5. Open Visual solution file src\AntiDupl\AntiDupl.sln
-6. Build AntiDupl.NET. Depended libraries will be automatically loaded and build by vcpkg
+	
+	cd vcpkg
+	./bootstrap-vcpkg.bat
+	./vcpkg integrate install
+	
+5. Open Visual solution file
+	
+	src\AntiDupl\AntiDupl.sln
+	
+6. Start building AntiDupl.NET in Visual Studio.
+Depended libraries will be automatically loaded and build by vcpkg
