@@ -1,7 +1,7 @@
 ﻿<Window x:Class="AntiDuplWPF.View.PathWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:behavior="clr-namespace:AntiDuplWPF.Behavior"
         Title="PathWindow" Height="300" Width="300">
     <TabControl SelectedIndex="{Binding SelectedTabPageIndex, 

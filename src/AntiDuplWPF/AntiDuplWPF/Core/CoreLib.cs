@@ -15,7 +15,7 @@ namespace AntiDuplWPF.Core
 
         //-----------Public functions----------------------------------------------
 
-        public CoreLib()
+        public CoreLib(string userPath)
         {
             try
             {
@@ -25,7 +25,7 @@ namespace AntiDuplWPF.Core
             {
                 throw new Exception("Can't load core library! " + Environment.NewLine + ex.Message);
             }
-            _dll.adCreate();
+            _dll.adCreateW(userPath);
         }
 
         ~CoreLib()

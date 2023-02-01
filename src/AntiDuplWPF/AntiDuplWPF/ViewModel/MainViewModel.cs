@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -15,6 +16,7 @@ using AntiDuplWPF.Core;
 using AntiDuplWPF.Helper;
 using AntiDuplWPF.Model;
 using AntiDuplWPF.ObjectModel;
+using AntiDuplWPF.Properties;
 using AntiDuplWPF.Service;
 using AntiDuplWPF.UndoRedo;
 using AntiDuplWPF.View;
@@ -42,7 +44,9 @@ namespace AntiDuplWPF.ViewModel
 
         public MainViewModel()
         {
-            _core = new CoreLib();
+            Resources.UserPath = Resources.GetDefaultUserPath();
+
+            _core = new CoreLib(Resources.UserPath);
             _windowService = new WindowService();
             //LocationsModel = new LocationsModel(_core);
             LocationsModel = LocationsModel.Load(_core);
