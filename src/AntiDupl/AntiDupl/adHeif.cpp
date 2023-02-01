@@ -24,6 +24,7 @@
 */
 #include "adHeif.h"
 #include "adPerformance.h"
+#include "adLogger.h"
 
 //Install vcpkg to get libheif see https://github.com/microsoft/vcpkg
 #include "libheif\heif.h"
@@ -36,9 +37,11 @@ namespace ad
         {
 		  	uint8_t *data = (uint8_t *)::GlobalLock(hGlobal);
 			size_t data_size = ::GlobalSize(hGlobal);
-			heif_filetype_result filetype_check = heif_check_filetype(data, data_size);
 
-			return (filetype_check == heif_filetype_yes_supported);
+			heif_filetype_result filetype_check = heif_check_filetype(data, data_size);
+			::GlobalUnlock(hGlobal);
+
+			return ((filetype_check == heif_filetype_yes_supported) || (filetype_check == heif_filetype_maybe));
 		}
         return false;
     }
@@ -53,9 +56,12 @@ namespace ad
 			uint8_t* data = (uint8_t*)::GlobalLock(hGlobal);
 			size_t data_size = ::GlobalSize(hGlobal);
 			
-			heif_error heif_error = heif_init(NULL);
+			struct heif_error heif_error = heif_init(NULL);
 			if (heif_error.code != heif_error_Ok)
 			{
+#ifdef AD_LOGGER_ENABLE
+				AD_LOG(heif_error.message);
+#endif//AD_LOGGER_ENABLE
 				return NULL;
 			}
 
@@ -64,7 +70,10 @@ namespace ad
 			assert(heif_ctx);
 
 			heif_error = heif_context_read_from_memory_without_copy(heif_ctx, data, data_size, nullptr);
-	
+
+			int numCPU = SimdCpuInfo(SimdCpuInfoCores);
+			heif_context_set_max_decoding_threads(heif_ctx, numCPU);
+
 			::GlobalUnlock(hGlobal);
 
 			if (heif_error.code == heif_error_Ok)
@@ -83,6 +92,7 @@ namespace ad
 					heif_error = heif_decode_image(heif_handle, &heif_img, heif_colorspace_RGB, img_has_alpha ? heif_chroma_interleaved_RGBA : heif_chroma_interleaved_RGB, decode_options);
 
 					heif_decoding_options_free(decode_options);
+
 					if (heif_error.code == heif_error_Ok)
 					{
 
@@ -94,7 +104,7 @@ namespace ad
 						const uint8_t* pData_RGB = heif_image_get_plane_readonly(heif_img, heif_channel_interleaved, &img_stride_RGB);
 						TView* pView_RGB = new TView(img_width, img_height, img_stride_RGB, TView::Rgb24, NULL);
 
-						AD_PERFORMANCE_TEST_SET_SIZE(img_height*img_stride_RGB)
+						AD_PERFORMANCE_TEST_SET_SIZE(img_height * img_stride_RGB)
 
 						if (pView_RGB)
 						{
@@ -107,11 +117,21 @@ namespace ad
 						{
 							delete pView_RGB;
 						}
+						heif_image_release(heif_img);
 					}
-					heif_image_release(heif_img);
 				}
 				heif_image_handle_release(heif_handle);
 			}
+
+			if (heif_error.code != heif_error_Ok)
+			{ 
+#ifdef AD_LOGGER_ENABLE
+				AD_LOG(heif_error.message);
+#endif//AD_LOGGER_ENABLE
+				heif_deinit();
+				return NULL;
+			}
+
 			heif_context_free(heif_ctx);
 			heif_deinit();
 			return pHeif;

@@ -107,6 +107,9 @@ namespace AntiDupl.NET
                 case CoreDll.ImageType.Dds:
                     builder.Append("DDS");
                     break;
+                case CoreDll.ImageType.Webp:
+                    builder.Append("WEBP");
+                    break;
                 case CoreDll.ImageType.Heif:
                     builder.Append("HEIF");
                     break;

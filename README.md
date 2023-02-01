@@ -5,7 +5,7 @@ And then more these collections, then more likely to have the large number of du
 The natural desire of the user is to get rid of them. However, if the collection is large 
 enough, do this manually is a very tedious and unproductive work. AntiDupl.NET program 
 will help you automate this process. It can find and display duplicate images in the main 
-graphic formats: JPEG, GIF, TIFF, BMP, PNG, EMF, WMF, EXIF, ICON, JP2, PSD, DDS, HEIF, HEIC and TGA. 
+graphic formats: JPEG, GIF, TIFF, BMP, PNG, EMF, WMF, WEBP, EXIF, ICON, JP2, PSD, DDS, HEIF, HEIC and TGA. 
 The comparison is based on the contents of the files, so the program can find not only 
 almost identical, but similar images. In addition, the program can find images with some 
 types of defects.
