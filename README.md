@@ -20,24 +20,24 @@ e.g. the Community Edition:
 
 	https://visualstudio.microsoft.com/vs/community/
 	
-2. In the Visual Studio Installer select following Workloads
+2. In the Visual Studio Installer select following workloads
 - .NET Desktop development
 - Desktop development with C++
 Info: Current latest default toolset is v143
-3. Download [vcpkg](https://github.com/Microsoft/vcpkg) dependency manager:
+3. Download [vcpkg](https://github.com/Microsoft/vcpkg) dependency manager,
 e.g. by using git:
-	
+```
 	git clone https://github.com/Microsoft/vcpkg.git
-	
+```
 4. Install [vcpkg](https://github.com/Microsoft/vcpkg):
-	
+```
 	cd vcpkg
 	./bootstrap-vcpkg.bat
 	./vcpkg integrate install
-	
+```
 5. Open Visual solution file
-	
+```
 	src\AntiDupl\AntiDupl.sln
-	
+```
 6. Start building AntiDupl.NET in Visual Studio.
 Depended libraries will be automatically loaded and build by vcpkg
