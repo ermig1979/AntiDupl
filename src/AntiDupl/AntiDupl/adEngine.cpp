@@ -43,7 +43,7 @@ namespace ad
         : _userPath(userPath)
     {
 #ifdef AD_LOGGER_ENABLE
-        TLogger::s_logger.SetFileOut(UserPath() + TEXT("\\debug_log.txt")).c_str(), true);
+        TLogger::s_logger.SetFileOut((UserPath() + TEXT("\\debug_log.txt")).c_str(), true);
 #endif//AD_LOGGER_ENABLE
         m_pInit = new TInit();
         m_pOptions = new TOptions(userPath);

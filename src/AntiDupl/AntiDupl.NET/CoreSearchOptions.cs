@@ -187,7 +187,7 @@ namespace AntiDupl.NET
             if (TGA)
                 extensions.AddRange(s_tgaExtensions);
             if (WEBP)
-                extensions.AddRange(s_tgaExtensions);
+                extensions.AddRange(s_webpExtensions);
             if (HEIF)
                 extensions.AddRange(s_heifExtensions);
             return (string[])extensions.ToArray(typeof(string));
