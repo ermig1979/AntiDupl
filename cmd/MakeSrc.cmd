@@ -30,7 +30,13 @@ rmdir %TMP_DIR% /q /s
 
 if not exist %TMP_DIR% mkdir %TMP_DIR%
 
-xcopy %ROOT_DIR%\src\* %TMP_DIR%\src\* /y /i /s
+xcopy %ROOT_DIR%\src\* %TMP_DIR%\src\* /y /i
+xcopy %ROOT_DIR%\src\AntiDupl\* %TMP_DIR%\src\AntiDupl\* /y /i
+xcopy %ROOT_DIR%\src\AntiDupl\AntiDupl\* %TMP_DIR%\src\AntiDupl\AntiDupl\* /y /i
+xcopy %ROOT_DIR%\src\AntiDupl\AntiDupl.NET\* %TMP_DIR%\src\AntiDupl\AntiDupl.NET\* /y /i
+xcopy %ROOT_DIR%\src\AntiDupl\AntiDupl.NET\Form\* %TMP_DIR%\src\AntiDupl\AntiDupl.NET\Form\* /y /i
+xcopy %ROOT_DIR%\src\AntiDupl\AntiDupl.NET\GUIControl\* %TMP_DIR%\src\AntiDupl\AntiDupl.NET\GUIControl\* /y /i
+xcopy %ROOT_DIR%\src\AntiDupl\AntiDupl.NET\Properties\* %TMP_DIR%\src\AntiDupl\AntiDupl.NET\Properties\* /y /i
 xcopy %ROOT_DIR%\docs\* %TMP_DIR%\docs\* /y /i /s
 xcopy %ROOT_DIR%\cmd\* %TMP_DIR%\cmd\* /y /i /s
 
