@@ -406,7 +406,10 @@ namespace AntiDupl.NET
                     }
                     else
                     {
-                        Process.Start(url);
+                        ProcessStartInfo info = new ProcessStartInfo();
+                        info.FileName = url;
+                        info.UseShellExecute = true;
+                        Process.Start(info);
                     }
                 }
                 catch

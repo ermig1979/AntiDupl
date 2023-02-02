@@ -26,6 +26,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Diagnostics;
+using System.Security.Policy;
 
 namespace AntiDupl.NET
 {
@@ -170,7 +172,10 @@ namespace AntiDupl.NET
             int linkIndex = linkLabel.Links.IndexOf(e.Link);
             LinkLabel.Link link = linkLabel.Links[linkIndex];
             link.Visited = true;
-            System.Diagnostics.Process.Start(link.LinkData.ToString());
+            ProcessStartInfo info = new ProcessStartInfo();
+            info.FileName = link.LinkData.ToString();
+            info.UseShellExecute = true;
+            Process.Start(info);
         }
     }
 }
