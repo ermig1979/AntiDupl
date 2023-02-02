@@ -292,7 +292,7 @@ namespace AntiDupl.NET
             m_searchTabPage.Controls.Add(searchTableLayoutPanel);
 
             m_searchFileTypeGroupBox = new GroupBox();
-            m_searchFileTypeGroupBox.Size = new System.Drawing.Size(200, 140);
+            m_searchFileTypeGroupBox.Size = new System.Drawing.Size(200, 160);
             searchTableLayoutPanel.Controls.Add(m_searchFileTypeGroupBox, 0, 0);
 
             TableLayoutPanel searchFileTypeTableLayoutPanel = InitFactory.Layout.Create(3, 5, 5);

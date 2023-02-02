@@ -37,9 +37,9 @@ rmdir %TMP_DIR% /q /s
 if not exist %TMP_DIR% mkdir %TMP_DIR%
 
 xcopy %RELEASE_DIR%\data\* %TMP_DIR%\data\* /y /i /s
-xcopy %RELEASE_DIR%\AntiDupl.NET.exe %TMP_DIR%\* /y /i /s
-xcopy %RELEASE_DIR%\AntiDupl32.dll %TMP_DIR%\* /y /i /s
-xcopy %RELEASE_DIR%\AntiDupl64.dll %TMP_DIR%\* /y /i /s
+xcopy %RELEASE_DIR%\*.exe %TMP_DIR%\* /y /i
+xcopy %RELEASE_DIR%\*.dll %TMP_DIR%\* /y /i
+xcopy %RELEASE_DIR%\AntiDupl.NET.runtimeconfig.json %TMP_DIR%\* /y /i
 
 erase %TMP_DIR%\data\resources\strings\English.xml /q /s /f
 erase %TMP_DIR%\data\resources\strings\Russian.xml /q /s /f
