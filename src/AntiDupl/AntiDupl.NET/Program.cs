@@ -1,7 +1,7 @@
 /*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2023 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ namespace AntiDupl.NET
         [STAThread]
         static void Main(string[] args)
         {
-            if (IsDotNet35Installed)
+            if (IsDotNet4Installed)
             {
                 string customSavePath = null;
                 if (GetParameter(args, "-s", ref customSavePath))
@@ -52,9 +52,9 @@ namespace AntiDupl.NET
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new MainForm());
             }
-            else if (MessageBox.Show("You Need Microsoft .NET Framework 3.5 in order to run this program. Want to download .Net Framework 3.5?", "Warning",
+            else if (MessageBox.Show("You need Microsoft .NET Framework 4.8 in order to run this program. Do you want to download .Net Framework 4.8?", "Warning",
                         MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
-                System.Diagnostics.Process.Start("http://www.microsoft.com/ru-ru/download/details.aspx?id=22");
+                System.Diagnostics.Process.Start("https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48");
         }
 
         static bool GetParameter(string[] args, string name, ref string value)
@@ -70,13 +70,13 @@ namespace AntiDupl.NET
             return false;
         }
 
-        private static bool IsDotNet35Installed
+        private static bool IsDotNet4Installed
         {
             get
             {
                 try
                 {
-                    return (Convert.ToInt32(Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5").GetValue("Install")) == 1);
+                    return (Convert.ToInt32(Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Client").GetValue("Install")) == 1);
                 }
                 catch
                 {
