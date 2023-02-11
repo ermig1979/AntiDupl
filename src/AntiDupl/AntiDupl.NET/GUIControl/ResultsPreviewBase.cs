@@ -27,6 +27,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 
+using AntiDupl.NET.Core;
+
 namespace AntiDupl.NET
 {
     public abstract class ResultsPreviewBase : Panel

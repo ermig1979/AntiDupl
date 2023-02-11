@@ -26,6 +26,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
 
+using AntiDupl.NET.Core;
+
 using TypeVertical = AntiDupl.NET.ResultsListView.ColumnsTypeVertical;
 using TypeHorizontal = AntiDupl.NET.ResultsListView.ColumnsTypeHorizontal;
 

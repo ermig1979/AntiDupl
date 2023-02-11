@@ -32,6 +32,9 @@ using System.Threading;
 using System.Diagnostics;
 using System.IO;
 
+using AntiDupl.NET.Core;
+using AntiDupl.NET.Core.Original;
+
 namespace AntiDupl.NET
 {
     public class SearchExecuterForm : Form

@@ -33,6 +33,8 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
 
+using AntiDupl.NET.Core;
+
 namespace AntiDupl.NET
 {
     public class MainForm : Form

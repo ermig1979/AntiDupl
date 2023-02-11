@@ -28,6 +28,9 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.ComponentModel;
 
+using AntiDupl.NET.Core;
+using AntiDupl.NET.Core.Original;
+
 namespace AntiDupl.NET
 {
     /// <summary>

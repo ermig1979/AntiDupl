@@ -28,6 +28,8 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Threading;
 
+using AntiDupl.NET.Core;
+
 namespace AntiDupl.NET
 {
     /// <summary>

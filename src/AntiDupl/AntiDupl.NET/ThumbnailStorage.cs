@@ -27,6 +27,8 @@ using System.Text;
 using System.Drawing;
 using System.Threading;
 
+using AntiDupl.NET.Core;
+
 namespace AntiDupl.NET
 {
     /// <summary>
@@ -88,7 +90,7 @@ namespace AntiDupl.NET
             if (bitmap == null || bitmap.Height != size.Height || bitmap.Width != size.Width)
             {
                 m_mutex.ReleaseMutex(); // поток может работать дальше
-                bitmap = m_core.LoadBitmap(size, imageInfo.path);
+                bitmap = BitmapWorker.LoadBitmap(m_core, size, imageInfo.path);
                 m_mutex.WaitOne();
                 m_storage[imageInfo.id] = bitmap;
             }

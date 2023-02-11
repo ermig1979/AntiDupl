@@ -29,6 +29,9 @@ using System.IO;
 using System.Drawing;
 using System.Threading;
 
+using AntiDupl.NET.Core;
+using AntiDupl.NET.Core.Original;
+
 namespace AntiDupl.NET
 {
     public class StartFinishForm : Form

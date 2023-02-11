@@ -1,0 +1,64 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+	<AssemblyVersion>2.3.11.1</AssemblyVersion>
+    <FileVersion>2.3.11.1</FileVersion>
+    <Platforms>x64</Platforms>
+    <Configurations>Debug;Release</Configurations>
+    <Authors>ErmIg;Gigas002</Authors>
+    <Description>Bindings to native AntuDpl packages</Description>
+    <Copyright>ErmIg © 2002-2023</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <BaseOutputPath>..\..\..\bin\Debug\</BaseOutputPath>
+    <OutputPath>..\..\..\bin\Debug\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <BaseOutputPath>..\..\..\bin\Release\</BaseOutputPath>
+    <OutputPath>..\..\..\bin\Release\</OutputPath>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <DocumentationFile>AntiDupl.NET.Core.xml</DocumentationFile>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\..\..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+    <Folder Include="Enums\" />
+  </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="$(SolutionDir)\Antidupl.NET.Core\External.cmd $(SolutionDir)\Antidupl.NET.Core" />
+  </Target>
+
+</Project>
