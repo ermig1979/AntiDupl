@@ -26,6 +26,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
 
+using AntiDupl.NET.Core;
+using AntiDupl.NET.Core.Enums;
+
 namespace AntiDupl.NET
 {
     public class AboutProgramForm : Form

@@ -29,6 +29,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Collections.Specialized;
 
+using AntiDupl.NET.Core;
+using AntiDupl.NET.Core.Original;
 
 namespace AntiDupl.NET
 {

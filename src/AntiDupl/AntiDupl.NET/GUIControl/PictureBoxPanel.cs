@@ -29,6 +29,9 @@ using System.Drawing;
 using System.Diagnostics;
 using System.IO;
 
+using AntiDupl.NET.Core;
+using AntiDupl.NET.Core.Original;
+
 namespace AntiDupl.NET
 {
     public class PictureBoxPanel : Panel
@@ -134,12 +137,12 @@ namespace AntiDupl.NET
                         }
                         catch
                         {
-                            m_bitmap = m_core.LoadBitmap(m_currentImageInfo);
+                            m_bitmap = BitmapWorker.LoadBitmap(m_core, m_currentImageInfo);
                         }
                     }
                     else
                     {
-                        m_bitmap = m_core.LoadBitmap(m_currentImageInfo);
+                        m_bitmap = BitmapWorker.LoadBitmap(m_core, m_currentImageInfo);
                     }
                 }
                 else
@@ -559,7 +562,7 @@ namespace AntiDupl.NET
             }
             catch
             {
-                return m_core.LoadBitmap(m_currentImageInfo);
+                return BitmapWorker.LoadBitmap(m_core, m_currentImageInfo);
             }
 
             return null;

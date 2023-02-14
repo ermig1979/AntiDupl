@@ -30,6 +30,9 @@ using System.IO;
 using Microsoft.Win32;
 using System.ComponentModel;
 
+using AntiDupl.NET.Core;
+using AntiDupl.NET.Core.Original;
+
 namespace AntiDupl.NET
 {
     public class ImagePreviewContextMenu : ContextMenuStrip

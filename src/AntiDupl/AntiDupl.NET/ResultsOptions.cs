@@ -27,6 +27,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
+using AntiDupl.NET.Core.Original;
+
 namespace AntiDupl.NET
 {
     /// <summary>

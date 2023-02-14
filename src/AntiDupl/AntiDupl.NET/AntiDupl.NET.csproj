@@ -29,10 +29,6 @@
     <OutputPath>..\..\..\bin\Release\</OutputPath>
   </PropertyGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="$(SolutionDir)\Antidupl.NET\External.cmd $(SolutionDir)\Antidupl.NET" />
-  </Target>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="$(SolutionDir)\..\..\cmd\CopyData.cmd $(SolutionDir)\..\.. $(SolutionDir)\..\..\bin\$(ConfigurationName)" />
   </Target>
@@ -53,6 +49,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AntiDupl.NET.Core\AntiDupl.NET.Core.csproj" />
+  </ItemGroup>
+	
+
+	<ItemGroup>
     <Compile Update="Form\AboutProgramForm.cs" />
     <Compile Update="Form\CoreOptionsForm.cs" />
     <Compile Update="Form\CorePathsForm.cs" />
