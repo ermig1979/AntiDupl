@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using Microsoft.Xaml.Behaviors;
+using System.Windows.Interactivity;
 using System.Windows.Controls;
 using AntiDuplWPF.Helper;
 using TinyIoC;
@@ -70,6 +70,7 @@ namespace AntiDuplWPF.Behavior
                 }
             }
         }
+
         #endregion
     }
 }

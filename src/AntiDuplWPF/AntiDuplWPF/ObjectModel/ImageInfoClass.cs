@@ -17,7 +17,7 @@ using TinyIoC;
 
 namespace AntiDuplWPF.ObjectModel
 {
-    public class ImageInfoClass : PropertyChangedBase, IEquatable<ImageInfoClass>
+    public class ImageInfoClass : PropertyChangedBase, IEquatable<ImageInfoClass> 
     {
         [NonSerialized]
         [XmlIgnore]
@@ -27,8 +27,18 @@ namespace AntiDuplWPF.ObjectModel
         [XmlIgnore]
         IConfigurationModel _configuration;
 
+        [NonSerialized]
+        [XmlIgnore]
+        IImageLoader _imageLoader;
+
+        [NonSerialized]
+        [XmlIgnore]
+        IThumbnailProvider _thumbnailProvider;
+
         public ImageInfoClass()
         {
+            if (Application.Current != null
+                && Application.Current.Dispatcher != null)
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal,
                        (Action)delegate
                        {
@@ -38,6 +48,9 @@ namespace AntiDuplWPF.ObjectModel
 
             _configuration = TinyIoCContainer.Current.Resolve<IConfigurationModel>();
             _configuration.PropertyChanged += _configuration_PropertyChanged;
+
+            _imageLoader = TinyIoC.TinyIoCContainer.Current.Resolve<IImageLoader>();
+            _thumbnailProvider = TinyIoC.TinyIoCContainer.Current.Resolve<IThumbnailProvider>();
         }
 
         ~ImageInfoClass()
@@ -62,22 +75,69 @@ namespace AntiDuplWPF.ObjectModel
             set
             {
                 _path = value;
+                if (!String.IsNullOrEmpty(_path))
+                {
+                    FileName = System.IO.Path.GetFileName(_path);
+                    Directory = System.IO.Path.GetDirectoryName(_path);
+                }
                 RaisePropertyChangedEvent("Path");
-                //RaisePropertyChangedEvent("FileName");
+                RaisePropertyChangedEvent("FileName");
+                RaisePropertyChangedEvent("Directory");
+            }
+        }
+
+        [XmlIgnore]
+        public string FileName { get; private set; }
+
+        [XmlIgnore]
+        public string Directory { get; private set; }
+
+        uint _jpegPeaks;
+        public uint JpegPeaks
+        {
+            get { return _jpegPeaks; }
+            set
+            {
+                _jpegPeaks = value;
+                RaisePropertyChangedEvent("JpegPeaks");
             }
         }
 
         /// <summary>
-        /// Качество JPEG. Чем выше JpegQuality, тем лучше изображение.
+        /// Блочность. Чем выше Blockiness, тем лучше изображение.
         /// </summary>
-        public double JpegQuality { get; set; }
+        public double Blockiness { get; set; }
+
         /// <summary>
-        /// Резкость изображения. Чем выше Sharpness, тем лучше изображение.
+        /// Размытость изображенитя. Чем ниже Bluring, тем лучше изображение
         /// </summary>
-        public double Sharpness { get; set; }
+        public double Bluring { get; set; }
+
         public ulong FileSize { get; set; }
-        public uint Width { get; set; }
+
+        uint _width;
+        public uint Width
+        {
+            get { return _width; }
+            set
+            {
+                try
+                {
+                    _width = value;
+                }
+                catch (Exception)
+                {
+                    
+                    throw;
+                }
+
+                RaisePropertyChangedEvent("Width");
+            }
+        }
+
+
         public uint Height { get; set; }
+
         public string Resolution
         {
             get { return String.Format("{0}x{1}", Width, Height); }
@@ -97,7 +157,7 @@ namespace AntiDuplWPF.ObjectModel
                 if (String.IsNullOrEmpty(Path))
                     return null;
 
-                ThumbnailProvider.Instance.Enqueue(this);
+                _thumbnailProvider.Enqueue(this);
 
                 /*ThreadPool.QueueUserWorkItem(delegate(object state)
                 {
@@ -145,14 +205,22 @@ namespace AntiDuplWPF.ObjectModel
         {
             get
             {
-                if (File.Exists(Path))
-                    using (var fs = new FileStream(Path, FileMode.Open, FileAccess.Read))
-                    {
-                        return BitmapFrame.Create(
-                            fs, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-                    }
-                return null;
+                return _imageLoader.LoadImage(Path, Width, Height, Type);
             }
+        }
+
+        public override bool Equals(Object obj)
+        {
+            // Check for null values and compare run-time types.
+            if (obj == null || GetType() != obj.GetType())
+                return false;
+
+            //Если ссылки указывают на один и тот же адрес, то их идентичность гарантирована.
+            if (object.ReferenceEquals(this, obj))
+                return true;
+
+            ImageInfoClass i = (ImageInfoClass)obj;
+            return this.Path == i.Path;
         }
 
         public bool Equals(ImageInfoClass other)
@@ -165,6 +233,11 @@ namespace AntiDuplWPF.ObjectModel
             {
                 return false;
             }
+        }
+
+        public override int GetHashCode()
+        {
+            return Path.GetHashCode();
         }
 
 
@@ -190,25 +263,11 @@ namespace AntiDuplWPF.ObjectModel
             }
         }*/
 
-        /*[XmlIgnoreAttribute]
-        public decimal ResolutionNorm { get; set; }
-
-        [XmlIgnoreAttribute]
-        public decimal JpegQualityNorm { get; set; }
-
-        [XmlIgnoreAttribute]
-        public decimal SharpnessNorm { get; set; }
-
-        [XmlIgnoreAttribute]
-        public decimal FileSizeNorm { get; set; }*/
 
         [XmlIgnoreAttribute]
         public decimal UtilityIndexNotNorm { get; set; }
 
         decimal _utilityIndex;
-        /// <summary>
-        /// Чем выше JpegQuality, тем лучше изображение
-        /// </summary>
         [XmlIgnoreAttribute]
         public decimal UtilityIndex
         {
@@ -218,6 +277,11 @@ namespace AntiDuplWPF.ObjectModel
                 _utilityIndex = value;
                 RaisePropertyChangedEvent("UtilityIndex");
             }
+        }
+
+        public void RaiseUpdateUtilityIndex()
+        {
+            RaisePropertyChangedEvent("UtilityIndex");
         }
 
         string _utilityIndexCalculateDecription;
@@ -231,5 +295,9 @@ namespace AntiDuplWPF.ObjectModel
                 RaisePropertyChangedEvent("UtilityIndexCalculateDecription");
             }
         }
+
+        public Core.CoreDll.ImageType Type { get; set; }
+
+
     }
 }

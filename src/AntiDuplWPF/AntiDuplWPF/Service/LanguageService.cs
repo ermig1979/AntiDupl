@@ -138,13 +138,15 @@ namespace AntiDuplWPF.Service
                 {
                     ResourceDictionary oldDict = (from d in Application.Current.Resources.MergedDictionaries
                                                   where d.Source != null && d.Source.OriginalString.StartsWith("Resources/lang.")
-                                                  select d).First();
+                                                  select d).FirstOrDefault();
                     if (oldDict != null)
                     {
                         int ind = Application.Current.Resources.MergedDictionaries.IndexOf(oldDict);
                         Application.Current.Resources.MergedDictionaries.Remove(oldDict);
                         Application.Current.Resources.MergedDictionaries.Insert(ind, dict);
                     }
+                    else
+                        Application.Current.Resources.MergedDictionaries.Add(dict);
                 }
                 else
                 {

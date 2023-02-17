@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(SolutionDir)\..\Prop.csproj" />
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -69,40 +68,66 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Behavior\AllowableCharactersTextBoxBehavior.cs" />
     <Compile Include="Behavior\DataGridContextMenuItemSourceBindingOnOpenBehavior.cs" />
+    <Compile Include="Behavior\DataGridScrollIntoViewBehavior.cs" />
     <Compile Include="Behavior\FrameworkElementDropBehavior.cs" />
     <Compile Include="Behavior\GrayoutImageBehavior.cs" />
     <Compile Include="Behavior\ImagePropertyBehavior.cs" />
+    <Compile Include="Behavior\MenuItemButtonGroupBehavior.cs" />
+    <Compile Include="Behavior\MouseEnterBehaviour.cs" />
+    <Compile Include="Behavior\WindowCloseOnEscBehavior.cs" />
+    <Compile Include="Command\CalculateHistogramPeaksCommand.cs" />
+    <Compile Include="Command\ConvertToDuplPairCommand.cs" />
+    <Compile Include="Command\ConvertToGroupCommand.cs" />
     <Compile Include="Command\RelayCommand.cs" />
     <Compile Include="Command\SearchDllCommand.cs" />
     <Compile Include="Const.cs" />
+    <Compile Include="Control\BrushExtender.cs" />
     <Compile Include="Control\CgsImageViewer.xaml.cs">
       <DependentUpon>CgsImageViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Control\ComplexProgressBar.xaml.cs">
       <DependentUpon>ComplexProgressBar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Control\ImageInfoControl.xaml.cs">
+      <DependentUpon>ImageInfoControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Control\NumericUpDown.cs" />
     <Compile Include="Control\PanAndZoomViewer.cs" />
     <Compile Include="Control\RenameImageTextBox.cs" />
     <Compile Include="Control\RenameTextBox.cs" />
+    <Compile Include="Control\SearchControl.cs" />
+    <Compile Include="Convertor\ColorToSolidColorBrushConverter.cs" />
+    <Compile Include="Convertor\DeleteBackgroundValueConverter.cs" />
+    <Compile Include="Convertor\DifferenceValueConverter.cs" />
     <Compile Include="Convertor\DuplResultMultiValueConverter.cs" />
     <Compile Include="Convertor\FileSizeConverter.cs" />
     <Compile Include="Convertor\FolderAreDiffrentMultuValueConverter.cs" />
+    <Compile Include="Convertor\ImageBackgroundMultiValueConverter.cs" />
     <Compile Include="Convertor\InverseBooleanConverter.cs" />
     <Compile Include="Convertor\ListToBackgroundMultiValueConverter.cs" />
     <Compile Include="Convertor\MaxProperty.cs" />
+    <Compile Include="Convertor\StringToVisibilityConverter.cs" />
+    <Compile Include="Convertor\ViewModeToVisibilityConverter.cs" />
+    <Compile Include="Core\AdvancedOption.cs" />
     <Compile Include="Core\CompareOption.cs" />
     <Compile Include="Core\CoreDll.cs" />
     <Compile Include="Core\CoreLib.cs" />
     <Compile Include="Core\CoreStatus.cs" />
+    <Compile Include="Core\DefectOption.cs" />
     <Compile Include="Core\DynamicModule.cs" />
+    <Compile Include="Core\ICoreLib.cs" />
     <Compile Include="Core\Location.cs" />
     <Compile Include="Core\SearchOption.cs" />
     <Compile Include="DragDrop\IDropable.cs" />
+    <Compile Include="Helper\DataGridColumnChooserHelper.cs" />
+    <Compile Include="Helper\DiffrenceHelper.cs" />
+    <Compile Include="Helper\DirectoryHelper.cs" />
     <Compile Include="Helper\GroupHelper.cs" />
     <Compile Include="Helper\IconReader.cs" />
     <Compile Include="Helper\IOHelper.cs" />
+    <Compile Include="Helper\PercentHelper.cs" />
     <Compile Include="Helper\RenameHelper.cs" />
     <Compile Include="Helper\SaatiHelper.cs" />
     <Compile Include="Helper\SerializeHelper.cs" />
@@ -111,42 +136,100 @@
     <Compile Include="Model\ConfigurationModel.cs" />
     <Compile Include="Model\IConfigurationModel.cs" />
     <Compile Include="Model\IgnoreStorage.cs" />
+    <Compile Include="Model\IViewModeModel.cs" />
     <Compile Include="Model\LocationsModel.cs" />
     <Compile Include="Model\Option.cs" />
+    <Compile Include="Model\ViewModeModel.cs" />
+    <Compile Include="ObjectModel\ActionCondition.cs" />
+    <Compile Include="ObjectModel\ActionGenerator\AllBestGenerator.cs" />
+    <Compile Include="ObjectModel\ActionGenerator\BlockinesBluringGenerator.cs" />
+    <Compile Include="ObjectModel\ActionGenerator\FileSizePeakBluringGenerator.cs" />
+    <Compile Include="ObjectModel\ActionGenerator\FileSizePeakGenerator.cs" />
+    <Compile Include="ObjectModel\ActionGenerator\LittleDifferenceGenerator.cs" />
+    <Compile Include="ObjectModel\ActionGenerator\LittleDifferenceGenerator2.cs" />
+    <Compile Include="ObjectModel\ActionOnDuplPair.cs" />
     <Compile Include="ObjectModel\BindableMenuItem.cs" />
+    <Compile Include="ObjectModel\ByImageProperty\BestConditionParametr.cs" />
+    <Compile Include="ObjectModel\ByImageProperty\ConditionOfSelectingBestImageByProperty.cs" />
+    <Compile Include="ObjectModel\ByImageProperty\SelectingBestImageByProperty.cs" />
+    <Compile Include="ObjectModel\ByPath\BestImageShouldBeInDirectory.cs" />
+    <Compile Include="ObjectModel\ByPath\BestImageShouldHaveASmallerNumber.cs" />
+    <Compile Include="ObjectModel\ByPath\IBestSelectingByPath.cs" />
+    <Compile Include="ObjectModel\ConditionMode\EqualConditionMode.cs" />
+    <Compile Include="ObjectModel\ConditionMode\IConditionMode.cs" />
+    <Compile Include="ObjectModel\ConditionMode\LessConditionMode.cs" />
+    <Compile Include="ObjectModel\ConditionMode\MoreConditionMode.cs" />
+    <Compile Include="ObjectModel\FilterConditionParametr.cs" />
+    <Compile Include="ObjectModel\ActionGenerator\ConfigurableActionGenerator.cs" />
+    <Compile Include="ObjectModel\ConfigurableAction\DeleteBadAction.cs" />
+    <Compile Include="ObjectModel\ConfigurableAction\DeleteOtherAction.cs" />
+    <Compile Include="ObjectModel\ConfigurableAction\IConfigurableAction.cs" />
+    <Compile Include="ObjectModel\ConfigurableAction\ReplaceAndDeleteAction.cs" />
+    <Compile Include="ObjectModel\ConfigurableAction\ReplaceBadImageAction.cs" />
+    <Compile Include="ObjectModel\ConfigurableAction\SkipAction.cs" />
     <Compile Include="ObjectModel\Criterion.cs" />
     <Compile Include="ObjectModel\CriterionType.cs" />
+    <Compile Include="ObjectModel\DirectoryFilter\AnywhereDirectoryFilter.cs" />
+    <Compile Include="ObjectModel\DirectoryFilter\IDirectoryFilter.cs" />
+    <Compile Include="ObjectModel\DirectoryFilter\OneImageInDir1OtherInDir2.cs" />
+    <Compile Include="ObjectModel\DirectoryFilter\SameDirectory.cs" />
     <Compile Include="ObjectModel\DuplicateGroup.cs" />
+    <Compile Include="ObjectModel\EqualAction.cs" />
+    <Compile Include="ObjectModel\GettingNumber\IGettingNumber.cs" />
+    <Compile Include="ObjectModel\GettingNumber\NumberBeforeUnderlineGettingNumber.cs" />
     <Compile Include="ObjectModel\ImageInfoClass.cs" />
     <Compile Include="ObjectModel\LogEntry.cs" />
     <Compile Include="ObjectModel\PositionInDuplPair.cs" />
+    <Compile Include="ObjectModel\FilterCondition.cs" />
     <Compile Include="ObjectModel\SerializableCultureInfo.cs" />
+    <Compile Include="ObjectModel\ViewMode.cs" />
+    <Compile Include="Service\IImageLoader.cs" />
     <Compile Include="Service\ILanguageService.cs" />
+    <Compile Include="Service\ImageLoader.cs" />
+    <Compile Include="Service\IThumbnailProvider.cs" />
     <Compile Include="Service\LanguageService.cs" />
     <Compile Include="Service\ThumbnailCache.cs" />
     <Compile Include="Service\ThumbnailProvider.cs" />
     <Compile Include="TinyIoC.cs" />
     <Compile Include="UndoRedo\AutoDeleteMultiPairCommand.cs" />
+    <Compile Include="UndoRedo\DeleteCurrentImageCommand.cs" />
+    <Compile Include="UndoRedo\DeleteImageCommand.cs" />
+    <Compile Include="UndoRedo\DeleteMultiCommand.cs" />
+    <Compile Include="UndoRedo\DeleteOtherCommand.cs" />
     <Compile Include="UndoRedo\DeleteOtherFromGroupCommand.cs" />
     <Compile Include="UndoRedo\DeleteOtherFromPairCommand.cs" />
     <Compile Include="UndoRedo\IgnoreMultiPairCommand.cs" />
     <Compile Include="UndoRedo\IgnorePairCommand.cs" />
     <Compile Include="UndoRedo\IUCommand.cs" />
     <Compile Include="UndoRedo\IUndoRedoEngine.cs" />
+    <Compile Include="UndoRedo\RenamedImage.cs" />
     <Compile Include="UndoRedo\RenameImageCommand.cs" />
     <Compile Include="UndoRedo\RenameLikeCommand.cs" />
+    <Compile Include="UndoRedo\Replace2Command.cs" />
+    <Compile Include="UndoRedo\ReplaceCommand.cs" />
     <Compile Include="UndoRedo\UndoRedoEngine.cs" />
+    <Compile Include="ViewModel\BoolEventHandler.cs" />
+    <Compile Include="ViewModel\CloseableViewModel.cs" />
+    <Compile Include="ViewModel\ColorViewModel.cs" />
     <Compile Include="ViewModel\ComparatorViewModel.cs" />
+    <Compile Include="ViewModel\ConfigurableActionViewModel.cs" />
     <Compile Include="ViewModel\ConfigurationViewModel.cs" />
     <Compile Include="ViewModel\DuplPairViewModel.cs" />
+    <Compile Include="ViewModel\IClosingViewModel.cs" />
     <Compile Include="ViewModel\LanguageViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\PathViewModel.cs" />
     <Compile Include="ViewModel\PrioritiesViewModel.cs" />
     <Compile Include="ViewModel\ProgressDialogViewModel.cs" />
     <Compile Include="ViewModel\SearchPathViewModel.cs" />
+    <Compile Include="View\ColorWindow.xaml.cs">
+      <DependentUpon>ColorWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ComparatorWindow.xaml.cs">
       <DependentUpon>ComparatorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ConfigurableActionWindow.xaml.cs">
+      <DependentUpon>ConfigurableActionWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ConfigurationWindow.xaml.cs">
       <DependentUpon>ConfigurationWindow.xaml</DependentUpon>
@@ -169,6 +252,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Control\ImageInfoControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Control\SearchControlTheme.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Control\themes\NumericUpDown.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -181,11 +272,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Style\Default.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Generic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\ColorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\ComparatorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ConfigurableActionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -272,16 +375,145 @@
     <Resource Include="Image\spyglass24x24.png" />
   </ItemGroup>
   <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.8">
+    <Resource Include="Image\DeleteIcon16.png" />
+    <Resource Include="Image\MistakeButton.png" />
+    <Resource Include="Image\MoveFirstToSecondVerticalButton.png" />
+    <Resource Include="Image\MoveSecondToFirstVerticalButton.png" />
+    <Resource Include="Image\ReplaceFirstVerticalButton.png" />
+    <Resource Include="Image\ReplaceSecondVerticalButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\AB.jpg" />
+    <Resource Include="Image\MoveAndRenameFirstLikeSecondVertical.png" />
+    <Resource Include="Image\MoveAndRenameSecondLikeFirstVertical.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
       <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.8 %28x86 und x64%29</ProductName>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 и x64%29</ProductName>
       <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>Клиентский профиль .NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\img\PathsButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\img\BlockinessIcon.png" />
+    <Resource Include="Image\img\BlurringIcon.png" />
+    <Resource Include="Image\img\DefectIcon.png" />
+    <Resource Include="Image\img\DeleteBothesHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteBothesHorizontalMenu.png" />
+    <Resource Include="Image\img\DeleteBothesVerticalButton.png" />
+    <Resource Include="Image\img\DeleteBothesVerticalMenu.png" />
+    <Resource Include="Image\img\DeleteBothHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteBothVerticalButton.png" />
+    <Resource Include="Image\img\DeleteDefectHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteDefectIcon.png" />
+    <Resource Include="Image\img\DeleteDefectsHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteDefectsHorizontalMenu.png" />
+    <Resource Include="Image\img\DeleteDefectsVerticalButton.png" />
+    <Resource Include="Image\img\DeleteDefectsVerticalMenu.png" />
+    <Resource Include="Image\img\DeleteDefectVerticalButton.png" />
+    <Resource Include="Image\img\DeleteFirstHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteFirstHorizontalIcon.png" />
+    <Resource Include="Image\img\DeleteFirstsHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteFirstsHorizontalMenu.png" />
+    <Resource Include="Image\img\DeleteFirstsVerticalButton.png" />
+    <Resource Include="Image\img\DeleteFirstsVerticalMenu.png" />
+    <Resource Include="Image\img\DeleteFirstVerticalButton.png" />
+    <Resource Include="Image\img\DeleteFirstVerticalIcon.png" />
+    <Resource Include="Image\img\DeleteSecondHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteSecondHorizontalIcon.png" />
+    <Resource Include="Image\img\DeleteSecondsHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteSecondsHorizontalMenu.png" />
+    <Resource Include="Image\img\DeleteSecondsVerticalButton.png" />
+    <Resource Include="Image\img\DeleteSecondsVerticalMenu.png" />
+    <Resource Include="Image\img\DeleteSecondVerticalButton.png" />
+    <Resource Include="Image\img\DeleteSecondVerticalIcon.png" />
+    <Resource Include="Image\img\DuplPairHorizontalIcon.png" />
+    <Resource Include="Image\img\DuplPairVerticalIcon.png" />
+    <Resource Include="Image\img\HelpButton.png" />
+    <Resource Include="Image\img\HelpMenu.png" />
+    <Resource Include="Image\img\JpegEndMarkerIsAbsentIcon.png" />
+    <Resource Include="Image\img\MirrorTurn_0_Icon.png" />
+    <Resource Include="Image\img\MirrorTurn_180_Icon.png" />
+    <Resource Include="Image\img\MirrorTurn_270_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\img\MirrorTurn_90_Icon.png" />
+    <Resource Include="Image\img\MistakeButton.png" />
+    <Resource Include="Image\img\MistakesButton.png" />
+    <Resource Include="Image\img\MistakesMenu.png" />
+    <Resource Include="Image\img\MoveFirstToSecondHorizontalButton.png" />
+    <Resource Include="Image\img\MoveFirstToSecondHorizontalMenu.png" />
+    <Resource Include="Image\img\MoveFirstToSecondVerticalButton.png" />
+    <Resource Include="Image\img\MoveFirstToSecondVerticalMenu.png" />
+    <Resource Include="Image\img\MoveSecondToFirstHorizontalButton.png" />
+    <Resource Include="Image\img\MoveSecondToFirstHorizontalMenu.png" />
+    <Resource Include="Image\img\MoveSecondToFirstVerticalButton.png" />
+    <Resource Include="Image\img\MoveSecondToFirstVerticalMenu.png" />
+    <Resource Include="Image\img\NextButton.png" />
+    <Resource Include="Image\img\OptionsButton.png" />
+    <Resource Include="Image\img\OptionsMenu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\img\PathsMenu.png" />
+    <Resource Include="Image\img\PerformHintButton.png" />
+    <Resource Include="Image\img\PerformHintMenu.png" />
+    <Resource Include="Image\img\PreviousButton.png" />
+    <Resource Include="Image\img\ProfileOpenButton.png" />
+    <Resource Include="Image\img\ProfileOpenMenu.png" />
+    <Resource Include="Image\img\ProfileSaveAsButton.png" />
+    <Resource Include="Image\img\ProfileSaveAsMenu.png" />
+    <Resource Include="Image\img\RedoButton.png" />
+    <Resource Include="Image\img\RedoMenu.png" />
+    <Resource Include="Image\img\RefreshButton.png" />
+    <Resource Include="Image\img\RefreshMenu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\img\RenameFirstLikeSecondHorizontalButton.png" />
+    <Resource Include="Image\img\RenameFirstLikeSecondHorizontalMenu.png" />
+    <Resource Include="Image\img\RenameFirstLikeSecondVerticalButton.png" />
+    <Resource Include="Image\img\RenameFirstLikeSecondVerticalMenu.png" />
+    <Resource Include="Image\img\RenameFirstToSecondHorizontalButton.png" />
+    <Resource Include="Image\img\RenameFirstToSecondHorizontalIcon.png" />
+    <Resource Include="Image\img\RenameFirstToSecondHorizontalMenu.png" />
+    <Resource Include="Image\img\RenameFirstToSecondVerticalButton.png" />
+    <Resource Include="Image\img\RenameFirstToSecondVerticalIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\img\RenameFirstToSecondVerticalMenu.png" />
+    <Resource Include="Image\img\RenameSecondLikeFirstHorizontalButton.png" />
+    <Resource Include="Image\img\RenameSecondLikeFirstHorizontalMenu.png" />
+    <Resource Include="Image\img\RenameSecondLikeFirstVerticalButton.png" />
+    <Resource Include="Image\img\RenameSecondLikeFirstVerticalMenu.png" />
+    <Resource Include="Image\img\RenameSecondToFirstHorizontalButton.png" />
+    <Resource Include="Image\img\RenameSecondToFirstHorizontalIcon.png" />
+    <Resource Include="Image\img\RenameSecondToFirstHorizontalMenu.png" />
+    <Resource Include="Image\img\RenameSecondToFirstVerticalButton.png" />
+    <Resource Include="Image\img\RenameSecondToFirstVerticalIcon.png" />
+    <Resource Include="Image\img\RenameSecondToFirstVerticalMenu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\img\StartButton.png" />
+    <Resource Include="Image\img\StartMenu.png" />
+    <Resource Include="Image\img\Turn_0_Icon.png" />
+    <Resource Include="Image\img\Turn_180_Icon.png" />
+    <Resource Include="Image\img\Turn_270_Icon.png" />
+    <Resource Include="Image\img\Turn_90_Icon.png" />
+    <Resource Include="Image\img\UndoButton.png" />
+    <Resource Include="Image\img\UndoMenu.png" />
+    <Resource Include="Image\img\UnknownDefectIcon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

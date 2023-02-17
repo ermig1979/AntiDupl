@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AntiDuplWPF.ObjectModel.ConfigurableAction;
 using AntiDuplWPF.ViewModel;
 
 namespace AntiDuplWPF.ObjectModel
@@ -37,5 +38,8 @@ namespace AntiDuplWPF.ObjectModel
         {
             return FileList.Contains(imageInfoClass);
         }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public IConfigurableAction ConfigurableAction { get; set; }
     }
 }

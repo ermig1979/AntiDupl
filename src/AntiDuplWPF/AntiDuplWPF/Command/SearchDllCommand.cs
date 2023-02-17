@@ -17,7 +17,7 @@ namespace AntiDuplWPF.Command
     {
         public event EventHandler CanExecuteChanged;
         private MainViewModel _mainViewModel;
-        private CoreLib _core;
+        private ICoreLib _core;
         private IWindowService _windowService;
         DispatcherTimer _timer;
         ProgressDialogViewModel _progressDialogViewModel;
@@ -30,7 +30,7 @@ namespace AntiDuplWPF.Command
         }
         StateEnum _state = StateEnum.Start;
 
-        public SearchDllCommand(MainViewModel mainViewModel, CoreLib core, IWindowService windowService)
+        public SearchDllCommand(MainViewModel mainViewModel, ICoreLib core, IWindowService windowService)
         {
             this._mainViewModel = mainViewModel;
             this._core = core;
@@ -49,6 +49,16 @@ namespace AntiDuplWPF.Command
                 _timer.Stop();
                 var closeProgressWindow = new Action(_windowService.CloseProgressWindow);
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, closeProgressWindow);
+
+                DuplPairViewModel[] result2 = _core.GetResult();
+
+                //if (result2.Any())
+                _mainViewModel.SetResult(result2);
+            }
+            if (_state == StateEnum.Stopped)
+            {
+                _progressDialogViewModel.State = "Stopped";
+                _progressDialogViewModel.ProgressMessage = "Stopped";
             }
             else
             {
@@ -102,7 +112,7 @@ namespace AntiDuplWPF.Command
                 _progressDialogViewModel.ProgressMax = (uint)(mainThreadStatus.total);
                 _progressDialogViewModel.Progress = (uint)(currentFirst);
                 _progressDialogViewModel.CurrentSecond = (uint)currentSecond;
-                //_progressDialogViewModel.ProgressMessage = status.path;
+                _progressDialogViewModel.ProgressMessage = path;
             }
         }
 
@@ -117,6 +127,9 @@ namespace AntiDuplWPF.Command
             _progressDialogViewModel = new ProgressDialogViewModel();
             // Set the view model's token source
             _progressDialogViewModel.TokenSource = new CancellationTokenSource();
+            _progressDialogViewModel.TokenSource.Token.Register(() => OnCancel());
+
+            _state = StateEnum.Start;
 
             Thread thread = new Thread(new ThreadStart(RunProcess));
             thread.IsBackground = true; //make them a daemon - prevent thread callback issues
@@ -133,9 +146,6 @@ namespace AntiDuplWPF.Command
                 //_mainViewModel.RaiseWorkStartedEvent();
                 _windowService.OpenProgressWindow(_progressDialogViewModel);
             }
-            else
-            {
-            }
         }
 
         /// <summary>
@@ -143,29 +153,27 @@ namespace AntiDuplWPF.Command
         /// </summary>
         public void RunProcess()
         {
-            var progressDialogViewModel = _progressDialogViewModel;
+            //var watch = System.Diagnostics.Stopwatch.StartNew();
 
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-
-            progressDialogViewModel.State = "progressWindow_ComputeHashes2";
+            _progressDialogViewModel.State = "Search";
 
             _mainViewModel.Options.CopyToDll();
             _mainViewModel.LocationsModel.CopyToDll();
 
             var result = _core.Search();
 
-            watch.Stop();
-            var elapsedMs = watch.ElapsedMilliseconds;
+            //watch.Stop();
+            //var elapsedMs = watch.ElapsedMilliseconds;
             //MessageBox.Show(elapsedMs.ToString());
-
-
-            DuplPairViewModel[] result2 = _core.GetResult();
-
-            if (result2.Any())
-                _mainViewModel.SetResult(result2);
 
             _state = StateEnum.Finish;
         }
 
+        private void OnCancel()
+        {
+            _core.Stop();
+            _state = StateEnum.Stopped;
+            _progressDialogViewModel.IsCancelled = true;
+        }
     }
 }

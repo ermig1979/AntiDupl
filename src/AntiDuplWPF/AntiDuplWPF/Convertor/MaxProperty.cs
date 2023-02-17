@@ -8,8 +8,9 @@ namespace AntiDuplWPF.Convertor
 {
     public enum MaxProperty
     {
-        JpegQuality,
-        Sharpness,
+        Blockiness,
+        Bluring,
+        JpegPeaks,
         FileSize,
         Resolution,
         EXIF,

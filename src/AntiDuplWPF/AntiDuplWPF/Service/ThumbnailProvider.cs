@@ -16,7 +16,7 @@ using TinyIoC;
 
 namespace AntiDuplWPF.Service
 {
-    class ThumbnailProvider : PropertyChangedBase, IDisposable
+    class ThumbnailProvider : PropertyChangedBase, AntiDuplWPF.Service.IThumbnailProvider
     {
         //from http://rsdn.org/article/dotnet/CSThreading1.xml
         EventWaitHandle wh = new AutoResetEvent(false);
@@ -25,12 +25,15 @@ namespace AntiDuplWPF.Service
         ThumbnailCache _thumbnailCache;
         IConfigurationModel _configuration;
 
-        private Queue<ImageInfoClass> _queue = new Queue<ImageInfoClass>();
-        //private Stack<ImageInfoClass> _queue = new Stack<ImageInfoClass>();
+        IImageLoader _imageLoader;
 
-        public ThumbnailProvider()
+        //private Queue<ImageInfoClass> _queue = new Queue<ImageInfoClass>();
+        private Stack<ImageInfoClass> _queue = new Stack<ImageInfoClass>();
+
+        public ThumbnailProvider(IImageLoader imageLoader)
         {
             //_semaphore = new Semaphore(0, 1);
+            _imageLoader = imageLoader;
 
             //StartReader();
             _thumbnailLoaderThread = new Thread(ThumbnailLoader);
@@ -58,19 +61,19 @@ namespace AntiDuplWPF.Service
             wh.Close();             // Освобождение ресурсов
         }
 
-        #region Lazy<T> Singleton
+        //#region Lazy<T> Singleton
 
-        static readonly Lazy<ThumbnailProvider> _instance = new Lazy<ThumbnailProvider>(() => new ThumbnailProvider());
+        //static readonly Lazy<ThumbnailProvider> _instance = new Lazy<ThumbnailProvider>(() => new ThumbnailProvider());
 
-        public static ThumbnailProvider Instance
-        {
-            get
-            {
-                return _instance.Value;
-            }
-        }
+        //public static ThumbnailProvider Instance
+        //{
+        //    get
+        //    {
+        //        return _instance.Value;
+        //    }
+        //}
 
-        #endregion
+        //#endregion
 
         /*public void StartReader()
         {
@@ -118,8 +121,8 @@ namespace AntiDuplWPF.Service
                 //if (!_queue.Any(i => i.Path == item.Path))
                 //{
                 //Debug.WriteLine("Ставим в очередь " + item.Path);
-                _queue.Enqueue(item);
-                //_queue.Push(item);
+                //_queue.Enqueue(item);
+                _queue.Push(item);
                 //}
                 //else
                 //    Debug.WriteLine("В очереди на эскиз уже есть " + item.Path);
@@ -139,8 +142,8 @@ namespace AntiDuplWPF.Service
                 {
                     if (_queue.Count > 0)
                     {
-                        task = _queue.Dequeue();
-                        //task = _queue.Pop();
+                        //task = _queue.Dequeue();
+                        task = _queue.Pop();
                         if (task == null)
                             return;
                     }
@@ -156,28 +159,37 @@ namespace AntiDuplWPF.Service
                             if (File.Exists(task.Path))
                             {
                                 Debug.WriteLine(String.Format("ThumbnailProvider load {0}", task.Path));
-                                using (Stream stream = File.OpenRead(task.Path))
-                                {
-                                    var image = new BitmapImage();
-                                    image.BeginInit();
-                                    image.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
-                                    image.CacheOption = BitmapCacheOption.OnLoad;
-                                    //image.DecodePixelWidth = Const.IMAGE_WIDTH;
-                                    image.DecodePixelWidth = _configuration.ThumbnailWidth;
-                                    //image.DecodePixelHeight = Const.IMAGE_HEIGHT;
-                                    image.StreamSource = stream;
-                                    image.EndInit();
-                                    image.Freeze();
+                                BitmapSource bitmapImage = _imageLoader.LoadResizedBitmapImage(task.Path, task.Width, task.Height, task.Type, _configuration.ThumbnailWidth);
 
-                                    GC.Collect(GC.MaxGeneration);
-                                    //Debug.WriteLine("Добавляем в кеше эскиз для " + task.Path);
-                                    _thumbnailCache.AddThumbnail(task.Path, image);
-                                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal,
-                                   (Action)delegate
-                                   {
-                                       task.Image = image;
-                                   });
-                                }
+                                //using (Stream stream = File.OpenRead(task.Path))
+                                //{
+                                //    var image = new BitmapImage();
+                                //    image.BeginInit();
+                                //    image.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
+                                //    image.CacheOption = BitmapCacheOption.OnLoad;
+                                //    //image.DecodePixelWidth = Const.IMAGE_WIDTH;
+                                //    image.DecodePixelWidth = _configuration.ThumbnailWidth;
+                                //    //image.DecodePixelHeight = Const.IMAGE_HEIGHT;
+                                //    image.StreamSource = stream;
+                                //    image.EndInit();
+                                //    image.Freeze();
+
+                                //    GC.Collect(GC.MaxGeneration);
+                                //    //Debug.WriteLine("Добавляем в кеше эскиз для " + task.Path);
+                                //    _thumbnailCache.AddThumbnail(task.Path, image);
+                                //    Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal,
+                                //   (Action)delegate
+                                //   {
+                                //       task.Image = image;
+                                //   });
+                                //}
+
+                                _thumbnailCache.AddThumbnail(task.Path, bitmapImage);
+                                Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal,
+                               (Action)delegate
+                               {
+                                   task.Image = bitmapImage;
+                               });
                                 Debug.WriteLine(String.Format("ThumbnailProvider loaded {0}", task.Path));
                             }
                         }
@@ -219,6 +231,7 @@ namespace AntiDuplWPF.Service
             //lock (_queue)
             //{
             _thumbnailCache.Clear();
+            _queue.Clear();
             //    _queue.Clear;
             //}
         }

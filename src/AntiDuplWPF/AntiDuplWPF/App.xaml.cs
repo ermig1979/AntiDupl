@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
+using AntiDuplWPF.Core;
 using AntiDuplWPF.Model;
 using AntiDuplWPF.Service;
 using AntiDuplWPF.View;
@@ -14,10 +10,7 @@ using TinyIoC;
 
 namespace AntiDuplWPF
 {
-    /// <summary>
-    /// Логика взаимодействия для App.xaml
-    /// </summary>
-    public partial class App : Application
+    public partial class App
     {
         public App()
         {
@@ -34,13 +27,26 @@ namespace AntiDuplWPF
             // Register config
             TinyIoCContainer.Current.Register<IConfigurationModel, ConfigurationModel>(confModel);
 
-            LanguageService languageService = new LanguageService(confModel);
-            TinyIoCContainer.Current.Register<ILanguageService, LanguageService>(languageService);
+            ILanguageService languageService = new LanguageService(confModel);
+            TinyIoCContainer.Current.Register<ILanguageService>(languageService);
 
-            var viewModel = new MainViewModel();
+            CoreLib core = new CoreLib();
+            TinyIoC.TinyIoCContainer.Current.Register<ICoreLib>(core);
+
+            ImageLoader imageLoader = new ImageLoader(core);
+            TinyIoC.TinyIoCContainer.Current.Register<IImageLoader>(imageLoader);
+
+            ThumbnailProvider thumbnailProvider = new ThumbnailProvider(imageLoader);
+            TinyIoC.TinyIoCContainer.Current.Register<IThumbnailProvider>(thumbnailProvider);
+
+            //IWindowService windowService = new WindowService();
+            MainViewModel viewModel = TinyIoCContainer.Current.Resolve<MainViewModel>();
+            //var viewModel = new MainViewModel(languageService);
 
             var shell = new MainWindow();
+            //windowService.MainWindow = shell;
             shell.DataContext = viewModel;
+            shell.Loaded += new RoutedEventHandler(viewModel.OnLoaded);
             shell.Closing += new CancelEventHandler(viewModel.OnClosing);
             shell.Show();
         }

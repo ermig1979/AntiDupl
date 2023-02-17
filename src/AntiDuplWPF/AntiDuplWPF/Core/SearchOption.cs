@@ -44,10 +44,12 @@ namespace AntiDuplWPF.Core
         bool DDS;
         [MarshalAs(UnmanagedType.U1)]
         bool TGA;
+        [MarshalAs(UnmanagedType.U1)]
+        bool WEBP;
 
         public SearchOption()
         {
-            JPEG = BMP = GIF = PNG = TIFF = EMF = WMF = EXIF = ICON = JP2 = PSD = DDS = TGA = true;
+            JPEG = BMP = GIF = PNG = TIFF = EMF = WMF = EXIF = ICON = JP2 = PSD = DDS = TGA = WEBP = true;
         }
 
 

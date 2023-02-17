@@ -25,6 +25,8 @@
             </DataGrid.Columns>
         </DataGrid>
 
+        <Button Content="Set default" 
+                Command="{Binding SetDefaulCommand}"/>
         <Button Content="{DynamicResource prioritiesWindow_pairedComparison}" 
                 Command="{Binding StartFillingCommand}"/>
         <Label Content="{DynamicResource prioritiesWindow_enterCriteriaPriorities}"/>

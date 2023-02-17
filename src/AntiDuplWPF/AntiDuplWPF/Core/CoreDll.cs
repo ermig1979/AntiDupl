@@ -7,10 +7,17 @@ using System.Threading.Tasks;
 
 namespace AntiDuplWPF.Core
 {
+    //надо вынести из класса, иначе comboBox не увидит
+    public enum AlgorithmComparing : int
+    {
+        SquaredSum = 0,
+        SSIM = 1,
+    };
+
     public class CoreDll : DynamicModule
     {
         public CoreDll()
-            : base("AntiDupl64.dll")
+            : base(IntPtr.Size == 8 ? "AntiDupl64.dll" : "AntiDupl32.dll")
         {
         }
 
@@ -137,13 +144,8 @@ namespace AntiDuplWPF.Core
             Psd = 11,
             Dds = 12,
             Tga = 13,
+            Webp = 14,
         }
-
-        public enum AlgorithmComparing : int
-        {
-            SquaredSum = 0,
-            SSIM = 1,
-        };
 
         public enum OptionsType : int
         {
@@ -152,6 +154,12 @@ namespace AntiDuplWPF.Core
             Compare = 1,
             Defect = 2,
             Advanced = 3,
+        }
+
+        public enum PixelFormatType : int
+        {
+            None = 0,
+            Argb32 = 1,
         }
 
         //-----------API structures--------------------------------------------
@@ -202,7 +210,23 @@ namespace AntiDuplWPF.Core
             public uint height;
             public double blockiness;
             public double blurring;
+            public uint jpegPeaks;
             public adImageExifW exifInfo;
+
+            public adImageInfoW(ObjectModel.ImageInfoClass i)
+                : this()  
+            {
+                //id = IntPtr.Zero;
+                path = i.Path;
+                size = i.FileSize;
+                path = i.Path;
+                jpegPeaks = i.JpegPeaks;
+                blockiness = i.Blockiness;
+                blurring = i.Bluring;
+                width = i.Width;
+                height = i.Height;
+                type = i.Type;
+            }
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -219,14 +243,63 @@ namespace AntiDuplWPF.Core
             public IntPtr group;
             public IntPtr groupSize;
             public HintType hint;
+
+            //public adResultW(ViewModel.DuplPairViewModel d)
+            //{
+            //    difference = d.Difference;
+            //    transform = d.Transform;
+            //    type = d.Type;
+
+            //    first.path = d.FirstFile.Path;
+            //    first.jpegPeaks = d.FirstFile.JpegPeaks;
+            //    first.blockiness = d.FirstFile.Blockiness;
+            //    first.blurring = d.FirstFile.Bluring;
+            //    first.size = d.FirstFile.FileSize;
+            //    first.width = d.FirstFile.Width;
+            //    first.height = d.FirstFile.Height;
+            //    first.type = d.FirstFile.Type;
+
+            //    second.path = d.SecondFile.Path;
+            //    second.jpegPeaks = d.SecondFile.JpegPeaks;
+            //    second.blockiness = d.SecondFile.Blockiness;
+            //    second.blurring = d.SecondFile.Bluring;
+            //    second.size = d.SecondFile.FileSize;
+            //    second.width = d.SecondFile.Width;
+            //    second.height = d.SecondFile.Height;
+            //    second.type = d.SecondFile.Type;
+            //}
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct adBitmap
+        {
+            public uint width;
+            public uint height;
+            public int stride;
+            public PixelFormatType format;
+            public IntPtr data;
+        }
+
+
+        public delegate bool CancellationPendingCallback();
+
+        [StructLayout(LayoutKind.Sequential)]
+        public class WorkProgressInteropNegotiator
+        {
+            public CancellationPendingCallback cancellationPending;
+
+#pragma warning disable 0649
+            // C# does not see this member is set up in native code, we disable warning to avoid it.
+            public bool cancel;
+#pragma warning restore 0649
         }
 
         //-------------------API functions:------------------------------------
 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
-        public delegate IntPtr adCreate_fn(string userPath);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void adCreate_fn();
         [DynamicModuleApi]
-        public adCreate_fn adCreateW = null;
+        public adCreate_fn adCreate = null;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
         public delegate Error adRelease_fn();
@@ -277,5 +350,31 @@ namespace AntiDuplWPF.Core
         public delegate Error adSetSearchOptions_fn([In, Out] SearchOption options);
         [DynamicModuleApi]
         public adSetSearchOptions_fn adSetSearchOptions = null;
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate Error adSetAdvancedOptions_fn([In, Out] AdvancedOption options);
+        [DynamicModuleApi]
+        public adSetAdvancedOptions_fn adSetAdvancedOptions = null;
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate Error adSetCompareOption_fn([In, Out] CompareOption options);
+        [DynamicModuleApi]
+        public adSetCompareOption_fn adSetCompareOption = null;
+        
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate Error adSetDefectOption_fn([In, Out] DefectOption options);
+        [DynamicModuleApi]
+        public adSetDefectOption_fn adSetDefectOption = null;
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+        public delegate Error adLoadBitmapW_fn(string fileName, IntPtr pBitmap);
+        [DynamicModuleApi]
+        public adLoadBitmapW_fn adLoadBitmapW = null;
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+        public delegate Error adCalculateMultiImageMetric_fn([In, Out] adImageInfoW[] fileArray, int size, [In, Out] WorkProgressInteropNegotiator negotiator);
+        [DynamicModuleApi]
+        public adCalculateMultiImageMetric_fn adCalculateMultiImageMetric = null;
+        
     }
 }

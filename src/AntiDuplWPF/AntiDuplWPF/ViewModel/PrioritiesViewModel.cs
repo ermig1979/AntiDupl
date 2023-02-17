@@ -7,17 +7,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AntiDuplWPF.Command;
+using AntiDuplWPF.Helper;
 using AntiDuplWPF.Model;
 using AntiDuplWPF.ObjectModel;
 
 namespace AntiDuplWPF.ViewModel
 {
-    public class PrioritiesViewModel : PropertyChangedBase
+    public class PrioritiesViewModel : PropertyChangedBase, IClosingViewModel
     {
-        public ObservableCollection<Criterion> Criterions { get; set; }
+        IConfigurationModel _configuration;
         List<Criterion> _workCriterions;
-        public decimal[,] priorities;
+        public decimal[,] _priorities;
         //public decimal[,] Priorities { get; set; }
+        IEnumerable<DuplPairViewModel> _result;
+        IEnumerable<DuplicateGroup> _groups;
+
         DataView _dataView;
         public DataView DataView
         {
@@ -27,24 +31,35 @@ namespace AntiDuplWPF.ViewModel
             }
         }
 
-        int iteration = 0;
-        int jiteration = 0;
-
-        public PrioritiesViewModel(IConfigurationModel configuration)
+        ObservableCollection<Criterion> _criterions;
+        public ObservableCollection<Criterion> Criterions
         {
-            /*Criterions = new ObservableCollection<Criterion>();
-            Criterions.Add(new Criterion() { Name = "Разрешение" });
-            Criterions.Add(new Criterion() { Name = "Размер файла" });
-            Criterions.Add(new Criterion() { Name = "Блочность" });
-            Criterions.Add(new Criterion() { Name = "Резкость" });*/
+            get { return _criterions; }
+            set
+            {
+                _criterions = value;
+                RaisePropertyChangedEvent("Criterions");
+            }
+        }
+
+        int _iteration = 0;
+        int _jiteration = 0;
+
+        public PrioritiesViewModel(IConfigurationModel configuration, IEnumerable<DuplPairViewModel> result, 
+            IEnumerable<DuplicateGroup> groups)
+        {
+            _configuration = configuration;
+            _result = result;
+            _groups = groups;
+
             Criterions = configuration.Criterions;
             FillingMode = false;
         }
 
         private void FillDataView()
         {
-            var rows = priorities.GetLength(0);
-            var columns = priorities.GetLength(1);
+            var rows = _priorities.GetLength(0);
+            var columns = _priorities.GetLength(1);
             var t = new DataTable();
             // Add columns with name "0", "1", "2", ...
             for (var c = 0; c < columns; c++)
@@ -57,7 +72,7 @@ namespace AntiDuplWPF.ViewModel
                 var newRow = t.NewRow();
                 for (var c = 0; c < columns; c++)
                 {
-                    string text = priorities[r, c].ToString();
+                    string text = _priorities[r, c].ToString();
                     //string text = priorities[r, c].ToString("###.######");
                     if (text.Length > 5)
                         text = text.Substring(0, 5);
@@ -140,13 +155,13 @@ namespace AntiDuplWPF.ViewModel
                         FillingMode = false;
                         return;
                     }
-                    this.priorities = new decimal[_workCriterions.Count() + 1, _workCriterions.Count() + 1];
+                    this._priorities = new decimal[_workCriterions.Count() + 1, _workCriterions.Count() + 1];
                     FillDataView();
 
-                    iteration = 0; //а если не стоит галочка?
-                    jiteration = 0;
+                    _iteration = 0; //а если не стоит галочка?
+                    _jiteration = 0;
                     if (_workCriterions.Count > 1)
-                        jiteration++;
+                        _jiteration++;
                     nextCompare();
                 }, arg => true));
             }
@@ -159,17 +174,17 @@ namespace AntiDuplWPF.ViewModel
             {
                 return _howMuchAddedCommand ?? (_howMuchAddedCommand = new RelayCommand(arg =>
                 {
-                    this.priorities[iteration, jiteration] = HowMuch;
-                    this.priorities[jiteration, iteration] = 1 / HowMuch;
+                    this._priorities[_iteration, _jiteration] = HowMuch;
+                    this._priorities[_jiteration, _iteration] = 1 / HowMuch;
                     FillDataView();
 
-                    jiteration++;
-                    if (jiteration == _workCriterions.Count) //переходим на следующую строчку
+                    _jiteration++;
+                    if (_jiteration == _workCriterions.Count) //переходим на следующую строчку
                     {
-                        iteration++;
-                        jiteration = iteration + 1;
+                        _iteration++;
+                        _jiteration = _iteration + 1;
                     }
-                    if (iteration != _workCriterions.Count && jiteration < _workCriterions.Count)
+                    if (_iteration != _workCriterions.Count && _jiteration < _workCriterions.Count)
                     {
                         nextCompare();
                     }
@@ -179,14 +194,14 @@ namespace AntiDuplWPF.ViewModel
                         FillingMode = false;
                         //NextStepBTN.Enabled = true;
                         HowMuchText = "Приоритеты для всех критериев введены.";
-                        if (jiteration == _workCriterions.Count)
+                        if (_jiteration == _workCriterions.Count)
                         {
-                            iteration++;
-                            jiteration = iteration;
+                            _iteration++;
+                            _jiteration = _iteration;
                         }
                         for (int i = 0; i < _workCriterions.Count; i++)
                         {
-                            this.priorities[i, i] = 1;
+                            this._priorities[i, i] = 1;
                         }
                         /*for (int i = 0; i < this.Criterions.Count; i++)
                         {
@@ -202,33 +217,33 @@ namespace AntiDuplWPF.ViewModel
                         for (int i = 0; i < _workCriterions.Count; i++)
                         {
                             //PrioritiesTableDGV.Rows[i].Cells["sumstr"].Value = "0";
-                            priorities[i, _workCriterions.Count] = 0;
+                            _priorities[i, _workCriterions.Count] = 0;
                             for (int j = 0; j < _workCriterions.Count; j++)
                             {
                                 //PrioritiesTableDGV.Rows[i].Cells["sumstr"].Value = 
                                 //    (Convert.ToDecimal(PrioritiesTableDGV.Rows[i].Cells["sumstr"].Value.ToString()) 
                                 //    + Convert.ToDecimal(PrioritiesTableDGV[j, i].Value.ToString())).ToString();
 
-                                priorities[i, _workCriterions.Count] = priorities[i, _workCriterions.Count] + priorities[i, j];
+                                _priorities[i, _workCriterions.Count] = _priorities[i, _workCriterions.Count] + _priorities[i, j];
                             }
-                            priorities[_workCriterions.Count, _workCriterions.Count] = priorities[_workCriterions.Count, _workCriterions.Count]
-                                + priorities[i, _workCriterions.Count];
+                            _priorities[_workCriterions.Count, _workCriterions.Count] = _priorities[_workCriterions.Count, _workCriterions.Count]
+                                + _priorities[i, _workCriterions.Count];
                             /*PrioritiesTableDGV.Rows[PrioritiesTableDGV.Rows.Count - 1].Cells[PrioritiesTableDGV.Columns.Count - 1].Value 
                                 = (Convert.ToDecimal(PrioritiesTableDGV.Rows[PrioritiesTableDGV.Rows.Count - 1].Cells[PrioritiesTableDGV.Columns.Count - 1].Value.ToString()) 
                                 + Convert.ToDecimal(PrioritiesTableDGV.Rows[i].Cells["sumstr"].Value.ToString())).ToString();*/
                         }
 
-                        decimal sum = priorities[_workCriterions.Count, _workCriterions.Count];
+                        decimal sum = _priorities[_workCriterions.Count, _workCriterions.Count];
                         //Convert.ToDecimal(PrioritiesTableDGV.Rows[PrioritiesTableDGV.Rows.Count - 1].Cells[PrioritiesTableDGV.Columns.Count - 1].Value.ToString());
                         for (int i = 0; i < _workCriterions.Count; i++)
                         {
                             //this.CriterionsWeights[i] = Convert.ToDecimal(PrioritiesTableDGV.Rows[i].Cells["sumstr"].Value.ToString()) / sum;
-                            _workCriterions[i].Weight = priorities[i, _workCriterions.Count] / sum;
+                            _workCriterions[i].Weight = _priorities[i, _workCriterions.Count] / sum;
                             //PrioritiesTableDGV.Rows[i].Cells["sumstr"].Value = this.CriterionsWeights[i].ToString();
-                            priorities[i, _workCriterions.Count] = _workCriterions[i].Weight;
+                            _priorities[i, _workCriterions.Count] = _workCriterions[i].Weight;
                         }
                         //PrioritiesTableDGV.Rows[PrioritiesTableDGV.Rows.Count - 1].Cells[PrioritiesTableDGV.Columns.Count - 1].Value = "1";
-                        priorities[_workCriterions.Count, _workCriterions.Count] = 1;
+                        _priorities[_workCriterions.Count, _workCriterions.Count] = 1;
                         FillDataView();
 
                         foreach (var criterion in _workCriterions)
@@ -241,11 +256,37 @@ namespace AntiDuplWPF.ViewModel
             }
         }
 
-
         private void nextCompare()
         {
-            HowMuchText = String.Format("Во сколько раз критерий {0} важнее {1}?", _workCriterions[iteration].Name, _workCriterions[jiteration].Name);
+            HowMuchText = String.Format("Во сколько раз критерий {0} важнее {1}?", _workCriterions[_iteration].Name, _workCriterions[_jiteration].Name);
             //HowMuchText = "Во сколько раз критерий " + Criterions[iteration].Name + " важнее " + Criterions[jiteration].Name + "?";
+        }
+
+        ICommand _setDefaulCommand;
+        public ICommand SetDefaulCommand
+        {
+            get
+            {
+                return _setDefaulCommand ?? (_setDefaulCommand = new RelayCommand(arg =>
+                {
+                    Criterions = _configuration.GetDefaultCriterions();
+                    //FillDataView();
+                }, arg => FillingMode == false));
+            }
+        }
+
+        public void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (_result != null)
+                foreach (var item in _result)
+                {
+                    SaatiHelper.CalculateIndex(item, _configuration);
+                }
+            if (_groups != null)
+                foreach (var group in _groups)
+                {
+                    SaatiHelper.CalculateIndex(group.FileList, _configuration);
+                }
         }
     }
 }

@@ -9,13 +9,13 @@ using AntiDuplWPF.ViewModel;
 
 namespace AntiDuplWPF.Core
 {
-    public class CoreLib : IDisposable
+    public class CoreLib : AntiDuplWPF.Core.ICoreLib
     {
         private CoreDll _dll = null;
 
         //-----------Public functions----------------------------------------------
 
-        public CoreLib(string userPath)
+        public CoreLib()
         {
             try
             {
@@ -25,7 +25,7 @@ namespace AntiDuplWPF.Core
             {
                 throw new Exception("Can't load core library! " + Environment.NewLine + ex.Message);
             }
-            _dll.adCreateW(userPath);
+            _dll.adCreate();
         }
 
         ~CoreLib()
@@ -64,7 +64,16 @@ namespace AntiDuplWPF.Core
 
         public bool Search()
         {
-            return _dll.adSearch() == CoreDll.Error.Ok;
+            try
+            {
+                return _dll.adSearch() == CoreDll.Error.Ok;
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
+            return false;
         }
 
         //public CoreDll.Status2 GetStatus()
@@ -95,9 +104,12 @@ namespace AntiDuplWPF.Core
         public bool SetLocation(IEnumerable<Location> locations, CoreDll.PathType pathType)
         {
             _dll.adClearLocations(pathType);
-            foreach (Location item in locations)
+            foreach (Location location in locations)
             {
-                _dll.adAddLocations(pathType, item);
+                if (location.Path.Last() == '\\'
+                    || location.Path.Last() == '/')
+                    throw new Exception("Location end with slash!");
+                _dll.adAddLocations(pathType, location);
             }
             return true;
         }
@@ -115,7 +127,15 @@ namespace AntiDuplWPF.Core
                 // Initialize unmanged memory to hold the struct.
                 IntPtr ptr = Marshal.AllocHGlobal(elemSize);
 
-                _dll.adGetResult(ptr, i);
+                try
+                {
+                    _dll.adGetResult(ptr, i);
+                }
+                catch (Exception)
+                {                    
+                    throw;
+                }
+               
 
                 CoreDll.adResultW dpExport = (CoreDll.adResultW)Marshal.PtrToStructure(ptr, typeof(CoreDll.adResultW));
                 result.Add(new DuplPairViewModel(dpExport));
@@ -136,6 +156,32 @@ namespace AntiDuplWPF.Core
         public void SetSearchOptions(SearchOption options)
         {
             _dll.adSetSearchOptions(options);
+        }
+
+        public void SetAdvancedOptions(AdvancedOption options)
+        {
+            _dll.adSetAdvancedOptions(options);
+        }
+
+        public void SetCompareOptions(CompareOption options)
+        {
+            _dll.adSetCompareOption(options);
+        }
+
+        public void SetDefectOptions(DefectOption options)
+        {
+            _dll.adSetDefectOption(options);
+        }
+
+        public bool LoadBitmap(string fileName, IntPtr pBitmap)
+        {
+            return _dll.adLoadBitmapW(fileName, pBitmap) == CoreDll.Error.Ok;
+        }
+
+
+        public void CalculateHistogramPeaks(CoreDll.adImageInfoW[] array, CoreDll.WorkProgressInteropNegotiator negotiator)
+        {
+            _dll.adCalculateMultiImageMetric(array, array.Length, negotiator);
         }
     }
 }
