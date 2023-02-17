@@ -11,7 +11,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Interactivity;
+using Microsoft.Xaml.Behaviors;
 using AntiDuplWPF.Helper;
 using AntiDuplWPF.ObjectModel;
 using AntiDuplWPF.ViewModel;

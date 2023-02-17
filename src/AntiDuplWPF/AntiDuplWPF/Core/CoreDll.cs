@@ -17,7 +17,7 @@ namespace AntiDuplWPF.Core
     public class CoreDll : DynamicModule
     {
         public CoreDll()
-            : base(IntPtr.Size == 8 ? "AntiDupl64.dll" : "AntiDupl32.dll")
+            : base("AntiDupl64.dll")
         {
         }
 
@@ -296,10 +296,10 @@ namespace AntiDuplWPF.Core
 
         //-------------------API functions:------------------------------------
 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void adCreate_fn();
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+        public delegate IntPtr adCreate_fn(string userPath);
         [DynamicModuleApi]
-        public adCreate_fn adCreate = null;
+        public adCreate_fn adCreateW = null;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
         public delegate Error adRelease_fn();
@@ -341,8 +341,8 @@ namespace AntiDuplWPF.Core
         [DynamicModuleApi]
         public adGetResult_fn adGetResult = null;
 
-        /*[UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
-        public delegate Error adOptionsSet_fn(OptionsType optionsType, IntPtr pOptions);
+ /*       [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+        public delegate Error adOptionsSet_fn(IntPtr handle, OptionsType optionsType, IntPtr pOptions);
         [DynamicModuleApi]
         public adOptionsSet_fn adOptionsSet = null;*/
 
