@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntiDuplWPF", "AntiDuplWPF\AntiDuplWPF.csproj", "{D3DAF82B-7EF8-4FBE-9922-CDA58C58BA28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntiDuplWPF", "AntiDuplWPF\AntiDuplWPF.csproj", "{D3DAF82B-7EF8-4FBE-9922-CDA58C58BA28}"
 	ProjectSection(ProjectDependencies) = postProject
 		{064909D6-CA38-45EA-ABC8-9DF202E600C9} = {064909D6-CA38-45EA-ABC8-9DF202E600C9}
 	EndProjectSection
