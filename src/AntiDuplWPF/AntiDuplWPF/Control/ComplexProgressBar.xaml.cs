@@ -66,8 +66,22 @@ namespace AntiDuplWPF.Control
             //e.Property = (double)e.NewValue + 5;
             //myControl.imgCurrent.Source = ((ImageInfoClass)e.NewValue).Image;
 
-            myControl.ProgressBarForeground.Width = (myControl.ActualWidth - 2) * myControl.CurrentFirst / myControl.Maximum;
+            try
+            {
+                if (myControl.ActualWidth > 0)
+                    myControl.ProgressBarForeground.Width = (myControl.ActualWidth - 2) * myControl.CurrentFirst / myControl.Maximum;
+            }
+            catch (Exception ex)
+            {
+                
+                throw;
+            }
+
            // myControl.ProgressBarForeground2.Width = (myControl.ActualWidth - 2) * myControl. / myControl.Maximum;
+            if (myControl.Maximum > 0)
+                myControl.ProgressText.Text = (((double)myControl.CurrentFirst / (double)myControl.Maximum) * 100).ToString("F2") + "%";
+            else
+                myControl.ProgressText.Text = "";
         }
 
         public static readonly DependencyProperty CurrentSecondProperty =
@@ -89,7 +103,17 @@ namespace AntiDuplWPF.Control
         private static void OnCurrentSecondChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             ComplexProgressBar myControl = sender as ComplexProgressBar;
-            myControl.ProgressBarForeground2.Width = (myControl.ActualWidth - 2) * myControl.CurrentSecond / myControl.Maximum;
+            try
+            {
+                if (myControl.ActualWidth > 0)
+                myControl.ProgressBarForeground2.Width = (myControl.ActualWidth - 2) * myControl.CurrentSecond / myControl.Maximum;
+            }
+            catch (Exception ex)
+            {
+                
+                throw;
+            }
+
         }
 
     }

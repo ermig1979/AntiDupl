@@ -33,11 +33,21 @@ namespace AntiDuplWPF.Core
         [MarshalAs(UnmanagedType.U1)]
         bool _compareInsideOneSearchPath;
         [MarshalAs(UnmanagedType.I4)]
-        CoreDll.AlgorithmComparing _algorithmComparing;
+        AlgorithmComparing _algorithmComparing;
 
         public CompareOption()
         {
             _checkOnEquality = true;
+            _transformedImage = true;
+            _sizeControl = false;
+            _typeControl = false;
+            _ratioControl = false;
+            _thresholdDifference = 5;
+            _minimalImageSize = 64;
+            _maximalImageSize = 16328;
+            _compareInsideOneFolder = true;
+            _compareInsideOneSearchPath = true;
+            _algorithmComparing = Core.AlgorithmComparing.SquaredSum;
         }
 
         public bool CheckOnEquality
@@ -117,6 +127,36 @@ namespace AntiDuplWPF.Core
             {
                 _maximalImageSize = value;
                 NotifyPropertyChanged("MaximalImageSize");
+            }
+        }
+
+        public bool CompareInsideOneFolder
+        {
+            get { return _compareInsideOneFolder; }
+            set
+            {
+                _compareInsideOneFolder = value;
+                NotifyPropertyChanged("CompareInsideOneFolder");
+            }
+        }
+
+        public bool CompareInsideOneSearchPath
+        {
+            get { return _compareInsideOneSearchPath; }
+            set
+            {
+                _compareInsideOneSearchPath = value;
+                NotifyPropertyChanged("CompareInsideOneSearchPath");
+            }
+        }
+
+        public AlgorithmComparing AlgorithmComparing
+        {
+            get { return _algorithmComparing; }
+            set
+            {
+                _algorithmComparing = value;
+                NotifyPropertyChanged("AlgorithmComparing");
             }
         }
 

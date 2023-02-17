@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
+using AntiDuplWPF.Command;
 using AntiDuplWPF.Core;
 using AntiDuplWPF.Model;
 using AntiDuplWPF.Service;
@@ -15,14 +17,20 @@ namespace AntiDuplWPF.ViewModel
     public class ConfigurationViewModel : PropertyChangedBase
     {
         private IConfigurationModel _configuration;
+        public IConfigurationModel Configuration
+        {
+            get { return _configuration; }
+        }
 
         public int Delay { get; set; }
         private DispatcherTimer timer;
         IWindowService _windowService;
-        CoreLib _core;
+        ICoreLib _core;
         public Option Option { get; set; }
+        IThumbnailProvider _thumbnailProvider;
 
-        public ConfigurationViewModel(IConfigurationModel configuration, IWindowService windowService, CoreLib core, Option option)
+        public ConfigurationViewModel(IConfigurationModel configuration, IWindowService windowService, ICoreLib core, Option option, 
+            IThumbnailProvider thumbnailProvider)
         {
             this._configuration = configuration;
             _windowService = windowService;
@@ -30,11 +38,7 @@ namespace AntiDuplWPF.ViewModel
             Delay = 500;
             _thumbnailWidth = _configuration.ThumbnailWidth;
             Option = option;
-        }
-
-        public IConfigurationModel Configuration
-        {
-            get { return _configuration; }
+            _thumbnailProvider = thumbnailProvider;
         }
 
         int _thumbnailWidth;
@@ -64,7 +68,7 @@ namespace AntiDuplWPF.ViewModel
                                 t.Stop();
 
                                 _configuration.ThumbnailWidth = _thumbnailWidth;
-                                ThumbnailProvider.Instance.ClearThumbnailCache();
+                                _thumbnailProvider.ClearThumbnailCache();
                             };
                         }
 
@@ -73,7 +77,7 @@ namespace AntiDuplWPF.ViewModel
                     else
                     {
                         _configuration.ThumbnailWidth = value;
-                        ThumbnailProvider.Instance.ClearThumbnailCache();
+                        _thumbnailProvider.ClearThumbnailCache();
                     }
                 }
             }
@@ -102,5 +106,33 @@ namespace AntiDuplWPF.ViewModel
             }
         }
 
+        ICommand _changeGoodColorCommand;
+        public ICommand ChangeGoodColorCommand
+        {
+            get
+            {
+                return _changeGoodColorCommand ?? (_changeGoodColorCommand = new RelayCommand(arg =>
+                {
+                    ColorViewModel vm = new ColorViewModel(Configuration.GoodColor);
+                    _windowService.ShowDialogWindow<ColorWindow>(vm);
+                    Configuration.GoodColor = vm.Color;
+                }));
+            }
+        }
+
+        ICommand _changeBadColorCommand;
+        public ICommand ChangeBadColorCommand
+        {
+            get
+            {
+                return _changeBadColorCommand ?? (_changeBadColorCommand = new RelayCommand(arg =>
+                {
+                    ColorViewModel vm = new ColorViewModel(Configuration.BadColor);
+                    _windowService.ShowDialogWindow<ColorWindow>(vm);
+                    Configuration.BadColor = vm.Color;
+                }));
+            }
+        }
+        
     }
 }

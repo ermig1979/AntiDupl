@@ -157,6 +157,28 @@ namespace AntiDuplWPF.Model
             }
         }
 
+		bool _loadResultOnOpen;
+		public bool LoadResultOnOpen
+		{
+			get { return _loadResultOnOpen; }
+			set
+			{
+				_loadResultOnOpen = value;
+				RaisePropertyChangedEvent("LoadResultOnOpen");
+			}
+		}
+
+		bool _saveResultOnClose;
+		public bool SaveResultOnClose
+		{
+			get { return _saveResultOnClose; }
+			set
+			{
+				_saveResultOnClose = value;
+				RaisePropertyChangedEvent("SaveResultOnClose");
+			}
+		}
+
         public Brush AlternateBrush
         {
             get { return new SolidColorBrush(_alternateColor); }
@@ -173,15 +195,21 @@ namespace AntiDuplWPF.Model
             }
             if (model.Criterions == null || model.Criterions.Count != 5)
             {
-                model.Criterions = new ObservableCollection<Criterion>();
-                model.Criterions.Add(new Criterion() { Type = CriterionType.Resolution, Weight = 0.4M });
-                model.Criterions.Add(new Criterion() { Type = CriterionType.SmallerFileSize, Weight = 0.00001M });
-                model.Criterions.Add(new Criterion() { Type = CriterionType.LargerFileSize, IsUse = false });
-                model.Criterions.Add(new Criterion() { Type = CriterionType.JpegQuality, Weight = 0.3001M });
-                model.Criterions.Add(new Criterion() { Type = CriterionType.Sharpness, Weight = 0.29989M });
+                model.Criterions = model.GetDefaultCriterions();
             }
 
             return model;
+        }
+
+        public ObservableCollection<Criterion> GetDefaultCriterions()
+        {
+            var criterions = new ObservableCollection<Criterion>();
+            criterions.Add(new Criterion() { Type = CriterionType.Resolution, Weight = 0.4M, IsUse = true });
+            criterions.Add(new Criterion() { Type = CriterionType.SmallerFileSize, Weight = 0.00001M, IsUse = true });
+            criterions.Add(new Criterion() { Type = CriterionType.LargerFileSize, IsUse = false });
+            criterions.Add(new Criterion() { Type = CriterionType.Blockiness, Weight = 0.3001M, IsUse = true });
+            criterions.Add(new Criterion() { Type = CriterionType.Bluring, Weight = 0.29989M, IsUse = true });
+            return criterions;
         }
 
         public void Save()

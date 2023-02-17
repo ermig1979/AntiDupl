@@ -40,7 +40,7 @@ namespace AntiDuplWPF.Model
 
         public object Current { get; set; }
 
-        CoreLib _core;
+        ICoreLib _core;
 
         /*public LocationsModel()
         {
@@ -48,7 +48,7 @@ namespace AntiDuplWPF.Model
             _locationsObservable = new ObservableCollection<SearchPathViewModel>();
         }*/
 
-        public LocationsModel(CoreLib core, List<Location> list)
+        public LocationsModel(ICoreLib core, List<Location> list)
         {
             _core = core;
 
@@ -72,7 +72,7 @@ namespace AntiDuplWPF.Model
             }
         }
 
-        public static LocationsModel Load(CoreLib core)
+        public static LocationsModel Load(ICoreLib core)
         {
             List<Location> list = SerializeHelper<List<Location>>.Load(_fileName);
             if (list == null)
@@ -89,13 +89,16 @@ namespace AntiDuplWPF.Model
             SerializeHelper<List<Location>>.Save(locations, _fileName);
         }
 
-        public void AddPath(string path)
+        public void AddSearchPath(string path)
         {
-            Location sp = new Location(path);
-            //_searchPathList.Add(sp);
-            SearchPathViewModel spvm = new SearchPathViewModel(sp);
-            spvm.PropertyChanged += OnSearchPathPropertyChanged;
-            SearchLocations.Add(spvm);
+            if (!SearchLocations.Any(sl => sl.Path.Equals(path)))
+            {
+                Location sp = new Location(path);
+                //_searchPathList.Add(sp);
+                SearchPathViewModel spvm = new SearchPathViewModel(sp);
+                spvm.PropertyChanged += OnSearchPathPropertyChanged;
+                SearchLocations.Add(spvm);
+            }
         }
 
         void OnSearchPathPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

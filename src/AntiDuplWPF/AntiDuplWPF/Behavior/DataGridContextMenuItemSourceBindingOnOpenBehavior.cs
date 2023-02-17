@@ -8,8 +8,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using Microsoft.Xaml.Behaviors;
+using AntiDuplWPF.Helper;
 using AntiDuplWPF.ObjectModel;
 using AntiDuplWPF.ViewModel;
 
@@ -30,7 +33,7 @@ namespace AntiDuplWPF.Behavior
             set { SetValue(MenuGeneratorDuplPairProperty, value); }
         }
 
-       /* public static readonly DependencyProperty MenuGeneratorDuplGroupProperty =
+        public static readonly DependencyProperty MenuGeneratorDuplGroupProperty =
              DependencyProperty.Register("MenuGeneratorDuplGroup",
              typeof(Func<DuplicateGroup, BindableMenuItem[]>),
              typeof(DataGridContextMenuItemSourceBindingOnOpenBehavior),
@@ -40,7 +43,7 @@ namespace AntiDuplWPF.Behavior
         {
             get { return (Func<DuplicateGroup, BindableMenuItem[]>)GetValue(MenuGeneratorDuplGroupProperty); }
             set { SetValue(MenuGeneratorDuplGroupProperty, value); }
-        }*/
+        }
 
         public static readonly DependencyProperty MenuGeneratorMultiDuplPairProperty =
                 DependencyProperty.Register("MenuGeneratorMultiDuplPair",
@@ -75,40 +78,97 @@ namespace AntiDuplWPF.Behavior
 
         void AssociatedObject_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            var grid = sender as MultiSelector;
-            if (grid != null)
+            var grid = sender as DataGrid;
+            if (grid == null)
+                return;
+
+            if (grid.ContextMenu == null)
+                return;
+
+            grid.ContextMenu.ItemsSource = null;
+            grid.ContextMenu.Items.Clear();
+
+            var fe = e.OriginalSource as FrameworkElement;
+            if (fe != null)
             {
-                if (grid.SelectedItems.Count > 1)
+                if (HandleColumnHeadersMenuOpen(grid, grid.ContextMenu))
+                    return;
+            }
+
+            if (grid.SelectedItems.Count > 1)
+            {
+                if (grid.SelectedItem is DuplPairViewModel)
                 {
-                    if (grid.SelectedItem is DuplPairViewModel)
-                    {
-                        IList viewResultsOfDupl = (IList)grid.SelectedItems;
-                        if (MenuGeneratorMultiDuplPair != null)
-                            grid.ContextMenu.ItemsSource = MenuGeneratorMultiDuplPair(viewResultsOfDupl);
-                    }
-                   /* else if (grid.SelectedItem is DuplicateGroup)
-                    {
-                        IList viewResults = (IList)grid.SelectedItems;
-                        if (MenuGeneratorMultiDuplGroup != null)
-                            grid.ContextMenu.ItemsSource = MenuGeneratorMultiDuplGroup(viewResults);
-                    }*/
+                    IList viewResultsOfDupl = (IList)grid.SelectedItems;
+                    if (MenuGeneratorMultiDuplPair != null)
+                        grid.ContextMenu.ItemsSource = MenuGeneratorMultiDuplPair(viewResultsOfDupl);
                 }
-                else
+                else if (grid.SelectedItem is DuplicateGroup)
                 {
-                    if (grid.SelectedItem is DuplPairViewModel)
-                    {
-                        DuplPairViewModel viewResultOfDupl = (DuplPairViewModel)grid.SelectedItem;
-                        if (MenuGeneratorDuplPair != null)
-                            grid.ContextMenu.ItemsSource = MenuGeneratorDuplPair(viewResultOfDupl);
-                    }
-                    /*else if (grid.SelectedItem is DuplicateGroup)
-                    {
-                        DuplicateGroup duplicateGroup = (DuplicateGroup)grid.SelectedItem;
-                        if (MenuGeneratorDuplGroup != null)
-                            grid.ContextMenu.ItemsSource = MenuGeneratorDuplGroup(duplicateGroup);
-                    }*/
+                    IList viewResults = (IList)grid.SelectedItems;
+                    if (MenuGeneratorMultiDuplGroup != null)
+                        grid.ContextMenu.ItemsSource = MenuGeneratorMultiDuplGroup(viewResults);
                 }
             }
+            else
+            {
+                if (grid.SelectedItem is DuplPairViewModel)
+                {
+                    DuplPairViewModel viewResultOfDupl = (DuplPairViewModel)grid.SelectedItem;
+                    if (MenuGeneratorDuplPair != null)
+                        grid.ContextMenu.ItemsSource = MenuGeneratorDuplPair(viewResultOfDupl);
+                }
+                else if (grid.SelectedItem is DuplicateGroup)
+                {
+                    DuplicateGroup duplicateGroup = (DuplicateGroup)grid.SelectedItem;
+                    if (MenuGeneratorDuplGroup != null)
+                        grid.ContextMenu.ItemsSource = MenuGeneratorDuplGroup(duplicateGroup);
+                }
+            }
+        }
+
+        private static bool HandleColumnHeadersMenuOpen(DataGrid grid, ContextMenu menu)
+        {
+            var headersPresenter = VisualTreeHelperEx.FindVisualChildByType<DataGridColumnHeadersPresenter>(grid);
+            if (headersPresenter == null)
+                return false;
+
+            var currentPosition = Mouse.GetPosition(headersPresenter);
+            if (currentPosition.X < 0 || currentPosition.X > headersPresenter.ActualWidth ||
+                currentPosition.Y < 0 || currentPosition.Y > headersPresenter.ActualHeight)
+                return false;
+
+            var enabled = DataGridColumnChooserHelper.GetIsEnabled(grid);
+            if (!enabled)
+                return true;
+
+            foreach (var col in grid.Columns.OrderBy(col => col.DisplayIndex))
+            {
+                string title;
+                if (col.Header is TextBlock)
+                {
+                    var tblock = (TextBlock) col.Header;
+                    title = !string.IsNullOrEmpty(tblock.Text)
+                        ? tblock.Text
+                        : string.Join(string.Empty, tblock.Inlines.OfType<Run>().Select(i => i.Text))
+                            .Replace(Environment.NewLine, string.Empty);
+                }
+                else
+                    title = (string) col.Header;
+
+                var menuItem = new MenuItem {Header = title, IsCheckable = true};
+                var binding = new Binding
+                {
+                    Source = col,
+                    Path = new PropertyPath(DataGridColumn.VisibilityProperty.Name),
+                    Converter = new VisibilityToBoolConverter()
+                };
+                BindingOperations.SetBinding(menuItem, MenuItem.IsCheckedProperty, binding);
+                menuItem.StaysOpenOnClick = true;
+                menu.Items.Add(menuItem);
+            }
+
+            return true;
         }
 
         protected override void OnDetaching()

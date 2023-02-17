@@ -52,7 +52,7 @@ namespace AntiDuplWPF.ViewModel
         {
             //_parentViewModel = mainViewModel;
             //_progressMessageTemplate = "Simulated work {0}% complete";
-            _cancellationMessage = "progressWindow_CancellationMessage";
+            _cancellationMessage = "Cancellation";
             //"Simulated work cancelled";
             //Log = new ObservableCollection<LogEntry>();
             LogItems = new ObservableCollection<LogEntry>();
@@ -98,6 +98,9 @@ namespace AntiDuplWPF.ViewModel
                 //}, arg => true));
                 return _cancelCommand ?? (_cancelCommand = new RelayCommand(arg =>
                 {
+                    // Cancel all pending background tasks
+                    if (TokenSource != null)
+                        TokenSource.Cancel();
                     IsCancel = true;
                     ShowCancellationMessage();
                 }, arg => !IsCancelled));
@@ -214,7 +217,7 @@ namespace AntiDuplWPF.ViewModel
             _progress = 0;
             //Progress = 0;
             _progressMax = 0;
-            _progressMessage = "progressWindow_PreparingMessage";
+            _progressMessage = "Preparing";
             this.IsCancelled = false;
         }
 

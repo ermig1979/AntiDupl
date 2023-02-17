@@ -12,18 +12,6 @@ using AntiDuplWPF.ObjectModel;
 
 namespace AntiDuplWPF.UndoRedo
 {
-    struct RenamedImage
-    {
-        public ImageInfoClass ImageInfo;
-        public string PathWithTempExtension;
-
-        public RenamedImage(ImageInfoClass item)
-        {
-            ImageInfo = item;
-            PathWithTempExtension = item.Path + Const.ForDeleteEXTENSION;
-        }
-    }
-
     class DeleteOtherFromGroupCommand : IUCommand
     {
         private ImageInfoClass _forSaveInfo;

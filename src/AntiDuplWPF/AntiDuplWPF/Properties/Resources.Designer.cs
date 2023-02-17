@@ -12,7 +12,6 @@ namespace AntiDuplWPF.Properties {
     using System;
     using System.IO;
 
-
     /// <summary>
     ///   Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.
     /// </summary>
@@ -32,7 +31,6 @@ namespace AntiDuplWPF.Properties {
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Resources() {
         }
-
         static private string GetPath(string path, string name, string extension)
         {
             return string.Format("{0}\\{1}{2}", path, name, extension);

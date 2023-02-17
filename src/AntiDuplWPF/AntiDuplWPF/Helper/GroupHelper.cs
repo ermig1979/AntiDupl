@@ -12,7 +12,6 @@ namespace AntiDuplWPF.Helper
     {
         public static void ConvertToGroup(IList<DuplicateGroup> groups, IEnumerable<DuplPairViewModel> resultList)
         {
-            groups.Clear();
             foreach (var result in resultList)
             {
                 DuplicateGroup finded = null;
@@ -30,6 +29,17 @@ namespace AntiDuplWPF.Helper
                 }
                 else
                     groups.Add(new DuplicateGroup(result));
+            }
+        }
+
+        public static void GroupToList(IEnumerable<DuplicateGroup> groups, IList<DuplPairViewModel> results)
+        {
+            foreach (var group in groups)
+            {
+                foreach (var result in group.ResultList)
+                {
+                    results.Add(result);
+                }
             }
         }
     }

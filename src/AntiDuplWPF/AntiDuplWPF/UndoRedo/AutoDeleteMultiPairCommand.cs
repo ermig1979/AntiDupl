@@ -46,6 +46,7 @@ namespace AntiDuplWPF.UndoRedo
 
         public bool Execute()
         {
+            _groups.Clear();
             GroupHelper.ConvertToGroup(_groups, _resultsForDeleteCopy);
             foreach (DuplicateGroup group in _groups)
             {
