@@ -1,18 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D3DAF82B-7EF8-4FBE-9922-CDA58C58BA28}</ProjectGuid>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AntiDuplWPF</RootNamespace>
-    <AssemblyName>AntiDuplWPF</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
     <PublishUrl>publish</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -28,351 +17,28 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <Platforms>x64</Platforms>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>AntiDuplWPF.App</StartupObject>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <PlatformTarget>x64</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>..\..\..\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <BaseOutputPath>..\..\..\bin\Debug\</BaseOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <PlatformTarget>x64</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <BaseOutputPath>..\..\..\bin\Release\</BaseOutputPath>
     <OutputPath>..\..\..\bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.39\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WindowsAPICodePack-Core.1.1.1\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="UIAutomationProvider" />
-    <Reference Include="UIAutomationTypes" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-  </ItemGroup>
-  <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Compile Include="Behavior\AllowableCharactersTextBoxBehavior.cs" />
-    <Compile Include="Behavior\DataGridContextMenuItemSourceBindingOnOpenBehavior.cs" />
-    <Compile Include="Behavior\DataGridScrollIntoViewBehavior.cs" />
-    <Compile Include="Behavior\FrameworkElementDropBehavior.cs" />
-    <Compile Include="Behavior\GrayoutImageBehavior.cs" />
-    <Compile Include="Behavior\ImagePropertyBehavior.cs" />
-    <Compile Include="Behavior\MenuItemButtonGroupBehavior.cs" />
-    <Compile Include="Behavior\MouseEnterBehaviour.cs" />
-    <Compile Include="Behavior\WindowCloseOnEscBehavior.cs" />
-    <Compile Include="Command\CalculateHistogramPeaksCommand.cs" />
-    <Compile Include="Command\ConvertToDuplPairCommand.cs" />
-    <Compile Include="Command\ConvertToGroupCommand.cs" />
-    <Compile Include="Command\RelayCommand.cs" />
-    <Compile Include="Command\SearchDllCommand.cs" />
-    <Compile Include="Const.cs" />
-    <Compile Include="Control\BrushExtender.cs" />
-    <Compile Include="Control\CgsImageViewer.xaml.cs">
-      <DependentUpon>CgsImageViewer.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Control\ComplexProgressBar.xaml.cs">
-      <DependentUpon>ComplexProgressBar.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Control\ImageInfoControl.xaml.cs">
-      <DependentUpon>ImageInfoControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Control\NumericUpDown.cs" />
-    <Compile Include="Control\PanAndZoomViewer.cs" />
-    <Compile Include="Control\RenameImageTextBox.cs" />
-    <Compile Include="Control\RenameTextBox.cs" />
-    <Compile Include="Control\SearchControl.cs" />
-    <Compile Include="Convertor\ColorToSolidColorBrushConverter.cs" />
-    <Compile Include="Convertor\DeleteBackgroundValueConverter.cs" />
-    <Compile Include="Convertor\DifferenceValueConverter.cs" />
-    <Compile Include="Convertor\DuplResultMultiValueConverter.cs" />
-    <Compile Include="Convertor\FileSizeConverter.cs" />
-    <Compile Include="Convertor\FolderAreDiffrentMultuValueConverter.cs" />
-    <Compile Include="Convertor\ImageBackgroundMultiValueConverter.cs" />
-    <Compile Include="Convertor\InverseBooleanConverter.cs" />
-    <Compile Include="Convertor\ListToBackgroundMultiValueConverter.cs" />
-    <Compile Include="Convertor\MaxProperty.cs" />
-    <Compile Include="Convertor\StringToVisibilityConverter.cs" />
-    <Compile Include="Convertor\ViewModeToVisibilityConverter.cs" />
-    <Compile Include="Core\AdvancedOption.cs" />
-    <Compile Include="Core\CompareOption.cs" />
-    <Compile Include="Core\CoreDll.cs" />
-    <Compile Include="Core\CoreLib.cs" />
-    <Compile Include="Core\CoreStatus.cs" />
-    <Compile Include="Core\DefectOption.cs" />
-    <Compile Include="Core\DynamicModule.cs" />
-    <Compile Include="Core\ICoreLib.cs" />
-    <Compile Include="Core\Location.cs" />
-    <Compile Include="Core\SearchOption.cs" />
-    <Compile Include="DragDrop\IDropable.cs" />
-    <Compile Include="Helper\DataGridColumnChooserHelper.cs" />
-    <Compile Include="Helper\DiffrenceHelper.cs" />
-    <Compile Include="Helper\DirectoryHelper.cs" />
-    <Compile Include="Helper\GroupHelper.cs" />
-    <Compile Include="Helper\IconReader.cs" />
-    <Compile Include="Helper\IOHelper.cs" />
-    <Compile Include="Helper\PercentHelper.cs" />
-    <Compile Include="Helper\RenameHelper.cs" />
-    <Compile Include="Helper\SaatiHelper.cs" />
-    <Compile Include="Helper\SerializeHelper.cs" />
-    <Compile Include="Helper\VisualTreeHelperEx.cs" />
-    <Compile Include="Helper\WinAPIMethods.cs" />
-    <Compile Include="Model\ConfigurationModel.cs" />
-    <Compile Include="Model\IConfigurationModel.cs" />
-    <Compile Include="Model\IgnoreStorage.cs" />
-    <Compile Include="Model\IViewModeModel.cs" />
-    <Compile Include="Model\LocationsModel.cs" />
-    <Compile Include="Model\Option.cs" />
-    <Compile Include="Model\ViewModeModel.cs" />
-    <Compile Include="ObjectModel\ActionCondition.cs" />
-    <Compile Include="ObjectModel\ActionGenerator\AllBestGenerator.cs" />
-    <Compile Include="ObjectModel\ActionGenerator\BlockinesBluringGenerator.cs" />
-    <Compile Include="ObjectModel\ActionGenerator\FileSizePeakBluringGenerator.cs" />
-    <Compile Include="ObjectModel\ActionGenerator\FileSizePeakGenerator.cs" />
-    <Compile Include="ObjectModel\ActionGenerator\LittleDifferenceGenerator.cs" />
-    <Compile Include="ObjectModel\ActionGenerator\LittleDifferenceGenerator2.cs" />
-    <Compile Include="ObjectModel\ActionOnDuplPair.cs" />
-    <Compile Include="ObjectModel\BindableMenuItem.cs" />
-    <Compile Include="ObjectModel\ByImageProperty\BestConditionParametr.cs" />
-    <Compile Include="ObjectModel\ByImageProperty\ConditionOfSelectingBestImageByProperty.cs" />
-    <Compile Include="ObjectModel\ByImageProperty\SelectingBestImageByProperty.cs" />
-    <Compile Include="ObjectModel\ByPath\BestImageShouldBeInDirectory.cs" />
-    <Compile Include="ObjectModel\ByPath\BestImageShouldHaveASmallerNumber.cs" />
-    <Compile Include="ObjectModel\ByPath\IBestSelectingByPath.cs" />
-    <Compile Include="ObjectModel\ConditionMode\EqualConditionMode.cs" />
-    <Compile Include="ObjectModel\ConditionMode\IConditionMode.cs" />
-    <Compile Include="ObjectModel\ConditionMode\LessConditionMode.cs" />
-    <Compile Include="ObjectModel\ConditionMode\MoreConditionMode.cs" />
-    <Compile Include="ObjectModel\FilterConditionParametr.cs" />
-    <Compile Include="ObjectModel\ActionGenerator\ConfigurableActionGenerator.cs" />
-    <Compile Include="ObjectModel\ConfigurableAction\DeleteBadAction.cs" />
-    <Compile Include="ObjectModel\ConfigurableAction\DeleteOtherAction.cs" />
-    <Compile Include="ObjectModel\ConfigurableAction\IConfigurableAction.cs" />
-    <Compile Include="ObjectModel\ConfigurableAction\ReplaceAndDeleteAction.cs" />
-    <Compile Include="ObjectModel\ConfigurableAction\ReplaceBadImageAction.cs" />
-    <Compile Include="ObjectModel\ConfigurableAction\SkipAction.cs" />
-    <Compile Include="ObjectModel\Criterion.cs" />
-    <Compile Include="ObjectModel\CriterionType.cs" />
-    <Compile Include="ObjectModel\DirectoryFilter\AnywhereDirectoryFilter.cs" />
-    <Compile Include="ObjectModel\DirectoryFilter\IDirectoryFilter.cs" />
-    <Compile Include="ObjectModel\DirectoryFilter\OneImageInDir1OtherInDir2.cs" />
-    <Compile Include="ObjectModel\DirectoryFilter\SameDirectory.cs" />
-    <Compile Include="ObjectModel\DuplicateGroup.cs" />
-    <Compile Include="ObjectModel\EqualAction.cs" />
-    <Compile Include="ObjectModel\GettingNumber\IGettingNumber.cs" />
-    <Compile Include="ObjectModel\GettingNumber\NumberBeforeUnderlineGettingNumber.cs" />
-    <Compile Include="ObjectModel\ImageInfoClass.cs" />
-    <Compile Include="ObjectModel\LogEntry.cs" />
-    <Compile Include="ObjectModel\PositionInDuplPair.cs" />
-    <Compile Include="ObjectModel\FilterCondition.cs" />
-    <Compile Include="ObjectModel\SerializableCultureInfo.cs" />
-    <Compile Include="ObjectModel\ViewMode.cs" />
-    <Compile Include="Service\IImageLoader.cs" />
-    <Compile Include="Service\ILanguageService.cs" />
-    <Compile Include="Service\ImageLoader.cs" />
-    <Compile Include="Service\IThumbnailProvider.cs" />
-    <Compile Include="Service\LanguageService.cs" />
-    <Compile Include="Service\ThumbnailCache.cs" />
-    <Compile Include="Service\ThumbnailProvider.cs" />
-    <Compile Include="TinyIoC.cs" />
-    <Compile Include="UndoRedo\AutoDeleteMultiPairCommand.cs" />
-    <Compile Include="UndoRedo\DeleteCurrentImageCommand.cs" />
-    <Compile Include="UndoRedo\DeleteImageCommand.cs" />
-    <Compile Include="UndoRedo\DeleteMultiCommand.cs" />
-    <Compile Include="UndoRedo\DeleteOtherCommand.cs" />
-    <Compile Include="UndoRedo\DeleteOtherFromGroupCommand.cs" />
-    <Compile Include="UndoRedo\DeleteOtherFromPairCommand.cs" />
-    <Compile Include="UndoRedo\IgnoreMultiPairCommand.cs" />
-    <Compile Include="UndoRedo\IgnorePairCommand.cs" />
-    <Compile Include="UndoRedo\IUCommand.cs" />
-    <Compile Include="UndoRedo\IUndoRedoEngine.cs" />
-    <Compile Include="UndoRedo\RenamedImage.cs" />
-    <Compile Include="UndoRedo\RenameImageCommand.cs" />
-    <Compile Include="UndoRedo\RenameLikeCommand.cs" />
-    <Compile Include="UndoRedo\Replace2Command.cs" />
-    <Compile Include="UndoRedo\ReplaceCommand.cs" />
-    <Compile Include="UndoRedo\UndoRedoEngine.cs" />
-    <Compile Include="ViewModel\BoolEventHandler.cs" />
-    <Compile Include="ViewModel\CloseableViewModel.cs" />
-    <Compile Include="ViewModel\ColorViewModel.cs" />
-    <Compile Include="ViewModel\ComparatorViewModel.cs" />
-    <Compile Include="ViewModel\ConfigurableActionViewModel.cs" />
-    <Compile Include="ViewModel\ConfigurationViewModel.cs" />
-    <Compile Include="ViewModel\DuplPairViewModel.cs" />
-    <Compile Include="ViewModel\IClosingViewModel.cs" />
-    <Compile Include="ViewModel\LanguageViewModel.cs" />
-    <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\PathViewModel.cs" />
-    <Compile Include="ViewModel\PrioritiesViewModel.cs" />
-    <Compile Include="ViewModel\ProgressDialogViewModel.cs" />
-    <Compile Include="ViewModel\SearchPathViewModel.cs" />
-    <Compile Include="View\ColorWindow.xaml.cs">
-      <DependentUpon>ColorWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\ComparatorWindow.xaml.cs">
-      <DependentUpon>ComparatorWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\ConfigurableActionWindow.xaml.cs">
-      <DependentUpon>ConfigurableActionWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\ConfigurationWindow.xaml.cs">
-      <DependentUpon>ConfigurationWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\PathWindow.xaml.cs">
-      <DependentUpon>PathWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\PrioritiesWindow.xaml.cs">
-      <DependentUpon>PrioritiesWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\ProgressDialog.xaml.cs">
-      <DependentUpon>ProgressDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\WindowService.cs" />
-    <Page Include="Control\CgsImageViewer.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Control\ComplexProgressBar.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Control\ImageInfoControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Control\SearchControlTheme.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Control\themes\NumericUpDown.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Control\themes\RenameTextBox.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\lang.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Style\Default.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Themes\Generic.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\ColorWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\ComparatorWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\ConfigurableActionWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\ConfigurationWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ViewModel\PropertyChangedBase.cs" />
-    <Compile Include="View\IWindowService.cs" />
-    <Compile Include="View\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="View\PathWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\PrioritiesWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\ProgressDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
     <AppDesigner Include="Properties\" />
-    <Page Include="Resources\lang.ru-RU.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Image\check.png" />
@@ -534,12 +200,14 @@
     <Resource Include="Image\img\UndoMenu.png" />
     <Resource Include="Image\img\UnknownDefectIcon.png" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.410601">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.0" />
+  </ItemGroup>
 </Project>
