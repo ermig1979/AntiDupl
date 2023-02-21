@@ -1,7 +1,8 @@
 ﻿/*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar, 2013-2018 Borisov Dmitry.
+* Copyright (c) 2002-2023 Yermalayeu Ihar,
+*               2013-2018 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -25,14 +26,17 @@
 #define __adImageInfo_h__
 
 #include "adConfig.h"
-#include "adFileInfo.h"
+#include "adPath.h"
 #include "adImageExif.h"
 
 namespace ad
 {
-	// Структура информации о изображение
-    struct TImageInfo : public TFileInfo
+    struct TImageInfo
     {
+        TPath path;
+        TUInt64 size;
+        TUInt64 time;
+        TUInt32 hash;
         TImageType type;
         TUInt32 width;
         TUInt32 height;
@@ -47,20 +51,30 @@ namespace ad
         bool removed;
 		bool selected;
         
-		TImageInfo() {Init();}
-        TImageInfo(const TString& path_) : TFileInfo(path_) {Init();}
-        TImageInfo(const TString& path_, TUInt64 size_, TUInt64 time_) : TFileInfo(path_, size_, time_) {Init();}
-        TImageInfo(const TFileInfo& fileInfo) : TFileInfo(fileInfo) {Init();}
-        TImageInfo(const TImageInfo& imageInfo) {Init(); *this = imageInfo;};
+        TImageInfo();
+        TImageInfo(const TString& path_);
+        TImageInfo(const TString& path_, TUInt64 size_, TUInt64 time_);
+        TImageInfo(const TImageInfo& imageInfo);
         virtual ~TImageInfo();
 
         TImageInfo& operator = (const TImageInfo& imageInfo);
+
+        bool operator==(const TImageInfo& imageInfo) const;
+        inline bool operator!=(const TImageInfo& imageInfo) const { return !(*this == imageInfo); }
+        inline bool operator>(const TImageInfo& imageInfo) const { return TPath::BiggerByPath(path, imageInfo.path); }
+        inline bool operator<(const TImageInfo& imageInfo) const { return TPath::LesserByPath(path, imageInfo.path); }
+
+        bool Actual(bool update = false);
+
+        void Rename(const TString& newPath);
 
         bool Export(adImageInfoPtrA pImageInfo) const;
         bool Export(adImageInfoPtrW pImageInfo) const;
 
 		TUInt32 Area() const {return width*height;}
 private:
+        int _actual;
+
         void Init();
     };
 

@@ -1,7 +1,8 @@
 /*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar, 2013-2018 Borisov Dmitry.
+* Copyright (c) 2002-2023 Yermalayeu Ihar,
+*               2013-2018 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +25,6 @@
 
 #include "adFileStream.h"
 #include "adPath.h"
-#include "adFileInfo.h"
 #include "adImageInfo.h"
 #include "adImageData.h"
 #include "adFileUtils.h"
@@ -118,22 +118,15 @@ namespace ad
 		path = string;
 	}
 
-	void TInputFileStream::Load(TFileInfo & fileInfo) const
-	{
-		fileInfo = TFileInfo();
-		Load(fileInfo.path);
-		Load(fileInfo.size);
-		Load(fileInfo.time);
-		Load(fileInfo.hash);
-		if(fileInfo.hash != fileInfo.path.GetCrc32())
-			throw TException(AD_ERROR_INVALID_FILE_FORMAT);
-	}
-
-	// Загружаем данные изображения
 	void TInputFileStream::Load(TImageInfo & imageInfo) const
 	{
 		imageInfo = TImageInfo();
-		Load((TFileInfo&)imageInfo);
+		Load(imageInfo.path);
+		Load(imageInfo.size);
+		Load(imageInfo.time);
+		Load(imageInfo.hash);
+		if (imageInfo.hash != imageInfo.path.GetCrc32())
+			throw TException(AD_ERROR_INVALID_FILE_FORMAT);
 		Load(imageInfo.type);
 		Load(imageInfo.width);
 		Load(imageInfo.height);
@@ -145,7 +138,6 @@ namespace ad
 			Load(imageInfo.imageExif);
 	}
 
-	// Считываем эскиз изображения
 	void TInputFileStream::Load(TPixelData & pixelData) const
 	{
 		size_t side = LoadSize();
@@ -255,18 +247,12 @@ namespace ad
 		Save(path.Original());
 	}
 
-	void TOutputFileStream::Save(const TFileInfo & fileInfo) const
-	{
-		Save(fileInfo.path);
-		Save(fileInfo.size);
-		Save(fileInfo.time);
-		Save(fileInfo.hash);
-	}
-
-	// Сохраняем данные изображения
 	void TOutputFileStream::Save(const TImageInfo & imageInfo) const
 	{
-		Save((const TFileInfo&)imageInfo);
+		Save(imageInfo.path);
+		Save(imageInfo.size);
+		Save(imageInfo.time);
+		Save(imageInfo.hash);
 		Save(imageInfo.type);
 		Save(imageInfo.width);
 		Save(imageInfo.height);

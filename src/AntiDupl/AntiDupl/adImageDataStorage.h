@@ -1,7 +1,7 @@
 /*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2023 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ namespace ad
 		TImageDataStorage(TEngine *pEngine);
 		~TImageDataStorage() {ClearMemory();}
 
-		TImageDataPtr Get(const TFileInfo& fileInfo);
+		TImageDataPtr Get(const TImageInfo& imageInfo);
 
 		adError Load(const TChar *path, bool allLoad = false);
 		adError Save(const TChar *path);
@@ -52,7 +52,7 @@ namespace ad
 		typedef std::multimap<TUInt32, TImageDataPtr> TStorage;
 		typedef std::vector<TImageDataPtr> TVector;
 
-		TStorage::iterator Find(const TFileInfo& fileInfo);
+		TStorage::iterator Find(const TImageInfo& imageInfo);
 		TStorage::iterator Insert(TImageData* pImageData);
 
 		// Информация которую будем записывать. Словарь TImageData

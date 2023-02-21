@@ -1,7 +1,7 @@
 /*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2023 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -60,7 +60,7 @@ namespace ad
                 }
                 else if(IsWanted(path))
                 {
-                    m_pImageDataPtrs->push_back(m_pImageDataStorage->Get(TFileInfo(m_pOptions->searchPaths[i].Original())));
+                    m_pImageDataPtrs->push_back(m_pImageDataStorage->Get(TImageInfo(m_pOptions->searchPaths[i].Original())));
                 }
             }
             m_pStatus->Search(NULL, m_pImageDataPtrs->size(), m_searchedImageSize);
@@ -101,7 +101,7 @@ namespace ad
                 else if(IsWanted(path.c_str()) && m_pOptions->ignorePaths.IsHasPath(path) == AD_IS_NOT_EXIST)
                 {
                     adUInt64 imageSize = adUInt64(findData.nFileSizeLow) + adUInt64(findData.nFileSizeHigh) * adUInt64(0x100000000);
-                    m_pImageDataPtrs->push_back(m_pImageDataStorage->Get(TFileInfo(path, imageSize, *(TUInt64*)&findData.ftLastWriteTime)));
+                    m_pImageDataPtrs->push_back(m_pImageDataStorage->Get(TImageInfo(path, imageSize, *(TUInt64*)&findData.ftLastWriteTime)));
                     m_searchedImageSize += imageSize;
                 }
             } while(FindNextFile(hFind, &findData) != 0 && !m_pStatus->Stopped()); 

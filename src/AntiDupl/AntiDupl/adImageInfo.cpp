@@ -1,7 +1,8 @@
 ﻿/*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar, 2013-2018 Borisov Dmitry.
+* Copyright (c) 2002-2023 Yermalayeu Ihar,
+*               2013-2018 Borisov Dmitry.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +29,11 @@ namespace ad
 {
     void TImageInfo::Init()
     {
+        size = 0;
+        time = 0;
+        hash = 0;
+        _actual = AD_UNDEFINED;
+
         type = AD_IMAGE_UNDEFINE;
         width = 0;
         height = 0;
@@ -41,6 +47,44 @@ namespace ad
         removed = false;
 		selected = false;
     }
+
+    TImageInfo::TImageInfo() 
+    { 
+        Init(); 
+    }
+
+    TImageInfo::TImageInfo(const TString& path_)
+    {
+        Init();
+        WIN32_FILE_ATTRIBUTE_DATA fileAttributeData;
+        if (GetFileAttributesEx(path_.c_str(), GetFileExInfoStandard,
+            &fileAttributeData))
+        {
+            size = TUInt64(fileAttributeData.nFileSizeLow) +
+                TUInt64(fileAttributeData.nFileSizeHigh) * 0x100000000;
+            time = *(TUInt64*)&fileAttributeData.ftLastWriteTime;
+            hash = path.GetCrc32();
+            _actual = 1;
+        }
+        else
+        {
+            _actual = 0;
+        }
+    }
+
+    TImageInfo::TImageInfo(const TString& path_, TUInt64 size_, TUInt64 time_)
+    { 
+        Init(); 
+        path = path_;
+        size = size_;
+        time = time_;
+        hash = path.GetCrc32();
+    }
+
+    TImageInfo::TImageInfo(const TImageInfo& imageInfo)
+    {
+        *this = imageInfo;
+    }
     
     TImageInfo::~TImageInfo()
     {
@@ -48,7 +92,11 @@ namespace ad
 
     TImageInfo& TImageInfo::operator = (const TImageInfo& imageInfo)
     {
-        *(static_cast<TFileInfo*>(this)) = imageInfo;
+        path = imageInfo.path;
+        size = imageInfo.size;
+        time = imageInfo.time;
+        hash = imageInfo.hash;
+        _actual = imageInfo._actual;
 
         type = imageInfo.type;
         width = imageInfo.width;
@@ -65,7 +113,30 @@ namespace ad
         return *this;
     }
 
-	// Ёкспортируем информацию об изображение в переданный указатель.
+    bool TImageInfo::operator==(const TImageInfo& imageInfo) const
+    {
+        return
+            hash == imageInfo.hash &&
+            TPath::EqualByPath(path, imageInfo.path) &&
+            size == imageInfo.size &&
+            time == imageInfo.time;
+    }
+
+    bool TImageInfo::Actual(bool update)
+    {
+        if (update || _actual == AD_UNDEFINED)
+        {
+            _actual = (*this == TImageInfo(path.Original())) ? 1 : 0;
+        }
+        return _actual > 0;
+    }
+
+    void TImageInfo::Rename(const TString& newPath)
+    {
+        path = newPath;
+        hash = path.GetCrc32();
+    }
+
     bool TImageInfo::Export(adImageInfoPtrA pImageInfo) const
     {
         if(pImageInfo == NULL)

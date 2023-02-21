@@ -1,7 +1,7 @@
 /*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2023 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -33,8 +33,8 @@ namespace ad
 		SetData(reducedImageSize);
 	}
 
-	TImageData::TImageData(const TFileInfo& fileInfo, size_t reducedImageSize) 
-		: TImageInfo(fileInfo) 
+	TImageData::TImageData(const TImageInfo& imageInfo, size_t reducedImageSize)
+		: TImageInfo(imageInfo) 
 	{
 		Init();
 		SetData(reducedImageSize);

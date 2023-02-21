@@ -6,14 +6,14 @@
     <members>
         <member name="M:AntiDupl.NET.Core.CoreLib.GetGroupSize">
             <summary>
-				Returns the total number of groups.
-			</summary>
+            Возврашает общее количество групп.
+            </summary>
             <returns></returns>
         </member>
         <member name="M:AntiDupl.NET.Core.CoreLib.GetImageInfo(System.Int32,System.UInt32,System.UInt32)">
             <summary>
-				Returns an array of CoreImageInfo contained in the passed group.
-			</summary>
+            Возврашает массив CoreImageInfo содержащихся в переданной группе.
+            </summary>
             <param name="groupId"></param>
             <param name="startFrom"></param>
             <param name="size"></param>
@@ -21,8 +21,8 @@
         </member>
         <member name="M:AntiDupl.NET.Core.CoreLib.GetImageInfoSize(System.Int32)">
             <summary>
-				Returns the number of images in the passed group.
-			</summary>
+            Возвращает количество изображений в переданной группе.
+            </summary>
             <param name="groupId"></param>
             <returns></returns>
         </member>

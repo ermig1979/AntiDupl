@@ -1,7 +1,7 @@
 /*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2023 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -49,13 +49,13 @@ namespace ad
 	{
 	}
 
-	TImageDataStorage::TStorage::iterator TImageDataStorage::Find(const TFileInfo& fileInfo)
+	TImageDataStorage::TStorage::iterator TImageDataStorage::Find(const TImageInfo& imageInfo)
 	{
-		TStorage::iterator it = m_storage.lower_bound(fileInfo.hash);
-		TStorage::iterator itEnd = m_storage.upper_bound(fileInfo.hash);
+		TStorage::iterator it = m_storage.lower_bound(imageInfo.hash);
+		TStorage::iterator itEnd = m_storage.upper_bound(imageInfo.hash);
 		for(;it != itEnd; ++it)
 		{
-			if(TPath::EqualByPath(it->second->path, fileInfo.path))
+			if(TPath::EqualByPath(it->second->path, imageInfo.path))
 				return it;
 		}
 		return m_storage.end();
@@ -96,22 +96,22 @@ namespace ad
 	}
 
 	// Загружает в хранилише m_storage переданный файл
-	TImageDataPtr TImageDataStorage::Get(const TFileInfo& fileInfo)
+	TImageDataPtr TImageDataStorage::Get(const TImageInfo& imageInfo)
 	{
-		TStorage::iterator it = Find(fileInfo);
+		TStorage::iterator it = Find(imageInfo);
 		// Если файл найден в хранилише
 		if(it != m_storage.end())
 		{
-			if(it->second->size != fileInfo.size || it->second->time != fileInfo.time)
+			if(it->second->size != imageInfo.size || it->second->time != imageInfo.time)
 			{
 				delete it->second;
-				it->second = new TImageData(fileInfo, m_pOptions->advanced.reducedImageSize);
+				it->second = new TImageData(imageInfo, m_pOptions->advanced.reducedImageSize);
 				m_needToSave = true;
 			}
 		}
 		else
 		{
-			it = Insert(new TImageData(fileInfo, m_pOptions->advanced.reducedImageSize));
+			it = Insert(new TImageData(imageInfo, m_pOptions->advanced.reducedImageSize));
 			m_needToSave = true;
 		}
 		return it->second;

@@ -58,7 +58,6 @@
     <ClCompile Include="adDump.cpp" />
     <ClCompile Include="adDuplResultFilter.cpp" />
     <ClCompile Include="adEngine.cpp" />
-    <ClCompile Include="adFileInfo.cpp" />
     <ClCompile Include="adFileStream.cpp" />
     <ClCompile Include="adFileUtils.cpp" />
     <ClCompile Include="adGdiplus.cpp" />
@@ -108,7 +107,6 @@
     <ClInclude Include="adDuplResultFilter.h" />
     <ClInclude Include="adEngine.h" />
     <ClInclude Include="adException.h" />
-    <ClInclude Include="adFileInfo.h" />
     <ClInclude Include="adFileStream.h" />
     <ClInclude Include="adFileUtils.h" />
     <ClInclude Include="adGdiplus.h" />

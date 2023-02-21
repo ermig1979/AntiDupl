@@ -1,7 +1,7 @@
 /*
 * AntiDupl.NET Program (http://ermig1979.github.io/AntiDupl).
 *
-* Copyright (c) 2002-2018 Yermalayeu Ihar.
+* Copyright (c) 2002-2023 Yermalayeu Ihar.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy 
 * of this software and associated documentation files (the "Software"), to deal
@@ -94,7 +94,6 @@ namespace ad
 
 		void Load(TString & string) const;
 		void Load(class TPath & path) const;
-		void Load(struct TFileInfo & fileInfo) const;
 		void Load(struct TImageInfo & imageInfo) const;
 		void Load(struct TPixelData & pixelData) const;
 		void Load(struct TImageData & imageData) const;
@@ -120,7 +119,6 @@ namespace ad
 
 		void Save(const TString & string) const;
 		void Save(const class TPath & path) const;
-		void Save(const struct TFileInfo & fileInfo) const;
 		void Save(const struct TImageInfo & imageInfo) const;
 		void Save(const struct TPixelData & pixelData) const;
 		void Save(const struct TImageData & imageData) const;
