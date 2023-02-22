@@ -60,6 +60,7 @@ namespace ad
         if (GetFileAttributesEx(path_.c_str(), GetFileExInfoStandard,
             &fileAttributeData))
         {
+            path = path_;
             size = TUInt64(fileAttributeData.nFileSizeLow) +
                 TUInt64(fileAttributeData.nFileSizeHigh) * 0x100000000;
             time = *(TUInt64*)&fileAttributeData.ftLastWriteTime;
@@ -146,6 +147,7 @@ namespace ad
         path.Original().CopyTo(pImageInfo->path, MAX_PATH);
         pImageInfo->size = size;
         pImageInfo->time = time;
+        pImageInfo->hash = hash;
         pImageInfo->type = type;
         pImageInfo->width = width;
         pImageInfo->height = height;
@@ -165,6 +167,7 @@ namespace ad
         path.Original().CopyTo(pImageInfo->path, MAX_PATH_EX);
         pImageInfo->size = size;
         pImageInfo->time = time;
+        pImageInfo->hash = hash;
         pImageInfo->type = type;
         pImageInfo->width = width;
         pImageInfo->height = height;

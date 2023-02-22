@@ -34,6 +34,7 @@ namespace AntiDupl.NET.Core
         public string path;
         public ulong size;
         public ulong time;
+        public uint hash;
         public CoreDll.ImageType type;
         public uint width;
         public uint height;
@@ -47,6 +48,7 @@ namespace AntiDupl.NET.Core
             path = imageInfo.path;
             size = imageInfo.size;
             time = imageInfo.time;
+            hash = imageInfo.hash;
             type = imageInfo.type;
             width = imageInfo.width;
             height = imageInfo.height;

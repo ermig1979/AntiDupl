@@ -396,6 +396,7 @@ namespace AntiDupl.NET.Core.Original
             public string path;
             public ulong size;
             public ulong time;
+            public uint hash;
             public ImageType type;
             public uint width;
             public uint height;

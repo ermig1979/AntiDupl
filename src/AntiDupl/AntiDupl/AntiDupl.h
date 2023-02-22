@@ -519,6 +519,7 @@ extern "C"
         adPathA path;
         adUInt64 size;
         adUInt64 time;
+        adUInt32 hash;
         adImageType type;
         adUInt32 width;
         adUInt32 height;
@@ -535,6 +536,7 @@ extern "C"
         adPathW path;
         adUInt64 size;
         adUInt64 time;
+        adUInt32 hash;
         adImageType type;
         adUInt32 width;
         adUInt32 height;
