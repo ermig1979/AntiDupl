@@ -15,6 +15,8 @@ using AntiDuplWPF.Service;
 using AntiDuplWPF.ViewModel;
 using TinyIoC;
 
+using AntiDupl.NET.Core.Original;
+
 namespace AntiDuplWPF.ObjectModel
 {
     public class ImageInfoClass : PropertyChangedBase, IEquatable<ImageInfoClass> 
@@ -296,7 +298,7 @@ namespace AntiDuplWPF.ObjectModel
             }
         }
 
-        public Core.CoreDll.ImageType Type { get; set; }
+        public CoreDll.ImageType Type { get; set; }
 
 
     }

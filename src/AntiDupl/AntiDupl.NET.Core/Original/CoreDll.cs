@@ -266,12 +266,6 @@ namespace AntiDupl.NET.Core.Original
             SelectAllButThis = 4,
         }
 
-        public enum AlgorithmComparing : int
-        {
-            SquaredSum = 0,
-            SSIM = 1,
-        };
-
         //-----------API structures--------------------------------------------
 
         [StructLayout(LayoutKind.Sequential)]
@@ -403,6 +397,7 @@ namespace AntiDupl.NET.Core.Original
             public double blockiness;
             public double blurring;
             public adImageExifW exifInfo;
+            public uint jpegPeaks;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]

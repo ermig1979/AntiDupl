@@ -11,12 +11,15 @@ using System.Windows.Threading;
 using AntiDuplWPF.Core;
 using AntiDuplWPF.ViewModel;
 
+using AntiDupl.NET.Core;
+using AntiDupl.NET.Core.Original;
+
 namespace AntiDuplWPF.Command
 {
     class CalculateHistogramPeaksCommand :  ICommand
     {
         private ViewModel.MainViewModel _mainViewModel;
-        private Core.ICoreLib _core;
+        private CoreLib _core;
         private View.IWindowService _windowService;
         //private IEnumerable<DuplPairViewModel> _results;
         System.Collections.ObjectModel.ObservableCollection<DuplPairViewModel> _resultList;
@@ -35,7 +38,7 @@ namespace AntiDuplWPF.Command
         }
 
         public CalculateHistogramPeaksCommand(ViewModel.MainViewModel mainViewModel,
-            Core.ICoreLib core, View.IWindowService windowService, 
+            CoreLib core, View.IWindowService windowService, 
             System.Collections.ObjectModel.ObservableCollection<DuplPairViewModel> resultList)
         {
             _mainViewModel = mainViewModel;
@@ -104,6 +107,9 @@ namespace AntiDuplWPF.Command
         {
             _progressDialogViewModel.State = "Calculate DCT Histogram Peaks";
 
+            // TODO: -> New feature for Net.Core from WPF branch, not jet implemented
+            // -> Core and Anitdupl nativ update needed
+            /*
             CoreDll.WorkProgressInteropNegotiator negotiator = new CoreDll.WorkProgressInteropNegotiator();
             negotiator.cancellationPending = new CoreDll.CancellationPendingCallback(() => { return _progressDialogViewModel.IsCancel; });
 
@@ -112,7 +118,8 @@ namespace AntiDuplWPF.Command
             // http://msdn.microsoft.com/en-us/library/367eeye0%28v=vs.100%29.aspx
             GCHandle gch = GCHandle.Alloc(negotiator);
 
-            _mainViewModel.Options.CopyToDll();
+            _mainViewModel.Options = new CoreOptions(_core);
+
             _mainViewModel.LocationsModel.CopyToDll();
 
             var array = _resultList.Select(r => r.FirstFile).Union(_resultList.Select(r2 => r2.SecondFile));
@@ -129,9 +136,9 @@ namespace AntiDuplWPF.Command
             _core.CalculateHistogramPeaks(_arrayInfo, negotiator);
 
             // DuplPairViewModel[] result2 = _core.GetResult();
-
             //if (result2.Any())
            //     _mainViewModel.SetResult(result2);
+            */
 
             _state = StateEnum.Finish;
         }

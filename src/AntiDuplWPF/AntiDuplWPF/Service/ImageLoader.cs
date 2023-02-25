@@ -10,23 +10,27 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using AntiDuplWPF.Core;
 
+using AntiDupl.NET.Core;
+using AntiDupl.NET.Core.Original;
+using AntiDupl.NET.Core.Enums;
+
 namespace AntiDuplWPF.Service
 {
     class ImageLoader : IImageLoader
     {
-        ICoreLib _core;
+        CoreLib _core;
 
-        public ImageLoader(ICoreLib core)
+        public ImageLoader(CoreLib core)
         {
             _core = core; 
         }
 
-        public System.Windows.Media.Imaging.BitmapSource LoadImage(string path, uint width, uint height, Core.CoreDll.ImageType type)
+        public System.Windows.Media.Imaging.BitmapSource LoadImage(string path, uint width, uint height, CoreDll.ImageType type)
         {
              if (File.Exists(path))
              {
                  //может считать net Framework
-                if (type <= Core.CoreDll.ImageType.Icon)
+                if (type <= CoreDll.ImageType.Icon)
                 {
                     using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
                     {
@@ -48,14 +52,16 @@ namespace AntiDuplWPF.Service
                     int rawStride = (int)width * pf.BitsPerPixel;
                     byte[] rawImage = new byte[rawStride * height];
 
-                    Core.CoreDll.adBitmap[] pBitmap = new Core.CoreDll.adBitmap[1];
+                    AdBitmap[] pBitmap = new AdBitmap[1];
                     pBitmap[0].width = width;
                     pBitmap[0].height = height;
                     pBitmap[0].stride = rawStride;
-                    pBitmap[0].format = CoreDll.PixelFormatType.Argb32;
+                    pBitmap[0].format = PixelFormatType.Argb32;
                     pBitmap[0].data = Marshal.UnsafeAddrOfPinnedArrayElement(rawImage, 0);
                     //CoreDll.Error error = m_dll.adLoadBitmapW(path, Marshal.UnsafeAddrOfPinnedArrayElement(pBitmap, 0));
-                    _core.LoadBitmap(path, Marshal.UnsafeAddrOfPinnedArrayElement(pBitmap, 0));
+                    //_core.LoadBitmap(path, Marshal.UnsafeAddrOfPinnedArrayElement(pBitmap, 0));
+
+                    Error error = _core.LoadBitmap(path, pBitmap);
 
                     //Marshal.FreeHGlobal(pBitmap[0].data);
 
@@ -127,13 +133,13 @@ namespace AntiDuplWPF.Service
         }
 
 
-        public BitmapSource LoadResizedBitmapImage(string path, uint width, uint height, Core.CoreDll.ImageType imageType, int resizedWidth)
+        public BitmapSource LoadResizedBitmapImage(string path, uint width, uint height, CoreDll.ImageType imageType, int resizedWidth)
         {
             if (File.Exists(path))
             {
                 BitmapImage image;
                 //может считать net Framework
-                if (imageType <= Core.CoreDll.ImageType.Icon)
+                if (imageType <= CoreDll.ImageType.Heif)
                 {
                     using (Stream stream = File.OpenRead(path))
                     {
@@ -164,13 +170,13 @@ namespace AntiDuplWPF.Service
                     int rawStride = (int)width * pf.BitsPerPixel;
                     byte[] rawImage = new byte[rawStride * height];
 
-                    Core.CoreDll.adBitmap[] pBitmap = new Core.CoreDll.adBitmap[1];
+                    AdBitmap[] pBitmap = new AdBitmap[1];
                     pBitmap[0].width = width;
                     pBitmap[0].height = height;
                     pBitmap[0].stride = rawStride;
-                    pBitmap[0].format = CoreDll.PixelFormatType.Argb32;
+                    pBitmap[0].format = PixelFormatType.Argb32;
                     pBitmap[0].data = Marshal.UnsafeAddrOfPinnedArrayElement(rawImage, 0);
-                    _core.LoadBitmap(path, Marshal.UnsafeAddrOfPinnedArrayElement(pBitmap, 0));
+                    Error error = _core.LoadBitmap(path, pBitmap);
 
                     BitmapSource bitmapSource = BitmapSource.Create((int)width, (int)height,
                                         96, 96, pf, null,

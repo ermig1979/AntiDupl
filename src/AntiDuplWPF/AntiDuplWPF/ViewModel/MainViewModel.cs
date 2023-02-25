@@ -23,6 +23,8 @@ using AntiDuplWPF.View;
 using Microsoft.Win32;
 using TinyIoC;
 
+using AntiDupl.NET.Core;
+
 namespace AntiDuplWPF.ViewModel
 {
     public class MainViewModel : PropertyChangedBase
@@ -30,10 +32,10 @@ namespace AntiDuplWPF.ViewModel
         const int DUPL_IMAGE_TAB_INDEX = 0;
         const int COMPARE_TAB_INDEX = 2;
         
-        ICoreLib _core;
+        CoreLib _core;
         IWindowService _windowService;
         public LocationsModel LocationsModel { get; set; }
-        public Option Options { get; set; }
+        public CoreOptions Options { get; set; }
 
         /// <summary>
         /// Список пар дубликатов полученный из dll
@@ -96,7 +98,7 @@ namespace AntiDuplWPF.ViewModel
         public MainViewModel(
             ILanguageService languageService,
             IConfigurationModel configuration,
-            ICoreLib coreLib,
+            CoreLib coreLib,
             IThumbnailProvider thumbnailProvider)
         {
             _languageService = languageService;
@@ -107,7 +109,7 @@ namespace AntiDuplWPF.ViewModel
             _core = coreLib;
             //LocationsModel = new LocationsModel(_core);
             LocationsModel = LocationsModel.Load(_core);
-            Options = new Option(_core);
+            Options = new CoreOptions(_core);
             _ignoreStorage = IgnoreStorage.Load();
 
             //_configuration = TinyIoCContainer.Current.Resolve<IConfigurationModel>();

@@ -26,10 +26,11 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Text;
 using AntiDupl.NET.Core.Original;
+using System.ComponentModel;
 
 namespace AntiDupl.NET.Core
 {
-    public class CoreSearchOptions
+    public class CoreSearchOptions : INotifyPropertyChanged
     {
         private static string[] s_jpegExtensions = {"JPEG", "JFIF", "JPG", "JPE", "JIFF", "JIF", "J", "JNG", "JFF"};
         private static string[] s_tiffExtensions = {"TIF", "TIFF"};
@@ -193,5 +194,40 @@ namespace AntiDupl.NET.Core
                 extensions.AddRange(s_heifExtensions);
             return (string[])extensions.ToArray(typeof(string));
         }
+
+        public bool System
+        {
+            get { return system; }
+            set
+            {
+                system = value;
+                NotifyPropertyChanged("System");
+            }
+        }
+
+        public bool Hidden
+        {
+            get { return hidden; }
+            set
+            {
+                hidden = value;
+                NotifyPropertyChanged("Hidden");
+            }
+        }
+
+        #region Члены INotifyPropertyChanged
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // This method is called by the Set accessor of each property.
+        // The CallerMemberName attribute that is applied to the optional propertyName
+        // parameter causes the property name of the caller to be substituted as an argument.
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
     }
 }

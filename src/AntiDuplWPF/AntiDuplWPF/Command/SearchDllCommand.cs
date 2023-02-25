@@ -11,13 +11,20 @@ using AntiDuplWPF.Core;
 using AntiDuplWPF.View;
 using AntiDuplWPF.ViewModel;
 
+using AntiDupl.NET.Core;
+using AntiDupl.NET.Core.Original;
+using System.Runtime.InteropServices;
+using System.Drawing;
+using System.ComponentModel.Composition.Primitives;
+using MS.WindowsAPICodePack.Internal;
+
 namespace AntiDuplWPF.Command
 {
    public class SearchDllCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
         private MainViewModel _mainViewModel;
-        private ICoreLib _core;
+        private CoreLib _core;
         private IWindowService _windowService;
         DispatcherTimer _timer;
         ProgressDialogViewModel _progressDialogViewModel;
@@ -30,7 +37,7 @@ namespace AntiDuplWPF.Command
         }
         StateEnum _state = StateEnum.Start;
 
-        public SearchDllCommand(MainViewModel mainViewModel, ICoreLib core, IWindowService windowService)
+        public SearchDllCommand(MainViewModel mainViewModel, CoreLib core, IWindowService windowService)
         {
             this._mainViewModel = mainViewModel;
             this._core = core;
@@ -42,6 +49,22 @@ namespace AntiDuplWPF.Command
             _timer.Interval = new TimeSpan(0, 0, 1);
         }
 
+        public DuplPairViewModel[] GetResults()
+        {
+            uint resultSize = _core.GetResultSize();
+            CoreResult[] core_result = _core.GetResult(0, resultSize);
+
+            List<DuplPairViewModel> result = new List<DuplPairViewModel>();
+            if (resultSize > 0)
+            {
+                for (uint i = 0; i < resultSize; i++)
+                {
+                    result.Add(new DuplPairViewModel(core_result[i]));
+                }
+            }
+            return result.ToArray();
+        }
+
         void OnTimerTick(object sender, EventArgs e)
         {
             if (_state == StateEnum.Finish)
@@ -50,7 +73,7 @@ namespace AntiDuplWPF.Command
                 var closeProgressWindow = new Action(_windowService.CloseProgressWindow);
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, closeProgressWindow);
 
-                DuplPairViewModel[] result2 = _core.GetResult();
+                DuplPairViewModel[] result2 = GetResults();
 
                 //if (result2.Any())
                 _mainViewModel.SetResult(result2);
@@ -72,7 +95,7 @@ namespace AntiDuplWPF.Command
                     total = mainThreadStatus.total;
                     if (mainThreadStatus.current > 0)
                     {
-                        if (_mainViewModel.Options.CompareOptions.CheckOnEquality)
+                        if (_mainViewModel.Options.compareOptions.checkOnEquality)
                         {
                             for (int i = 0; ; i++)
                             {
@@ -157,7 +180,8 @@ namespace AntiDuplWPF.Command
 
             _progressDialogViewModel.State = "Search";
 
-            _mainViewModel.Options.CopyToDll();
+            //_mainViewModel.Options.CopyToDll();
+            _mainViewModel.Options = new CoreOptions(_core);
             _mainViewModel.LocationsModel.CopyToDll();
 
             var result = _core.Search();

@@ -41,7 +41,8 @@ namespace AntiDupl.NET.Core
         public double blockiness;
         public double blurring;
         public CoreDll.adImageExifW exifInfo;
-
+        //TODO: jpegPeaks -> New feature for Net.Core from WPF branch, not jet fully implemented
+        public uint jpegPeaks;
         public CoreImageInfo(ref CoreDll.adImageInfoW imageInfo)
         {
             id = (ulong)imageInfo.id;

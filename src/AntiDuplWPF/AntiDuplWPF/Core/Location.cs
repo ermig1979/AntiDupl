@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using AntiDuplWPF.Helper;
 
+using AntiDupl.NET.Core.Original;
+
 namespace AntiDuplWPF.Core
 {
     [Serializable]

@@ -210,4 +210,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.0" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\AntiDupl\AntiDupl.NET.Core\AntiDupl.NET.Core.csproj" />
+  </ItemGroup>
 </Project>

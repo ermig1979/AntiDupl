@@ -8,6 +8,8 @@ using AntiDuplWPF.Helper;
 using AntiDuplWPF.ObjectModel.ConditionMode;
 using AntiDuplWPF.ViewModel;
 
+using AntiDupl.NET.Core.Original;
+
 namespace AntiDuplWPF.ObjectModel
 {
     public class FilterCondition : PropertyChangedBase
@@ -70,7 +72,7 @@ namespace AntiDuplWPF.ObjectModel
 
         public bool IsSelect(DuplPairViewModel pair)
         {
-            if (pair.Type != Core.CoreDll.ResultType.DuplImagePair)
+            if (pair.Type != CoreDll.ResultType.DuplImagePair)
                 return false;
 
             double percent;
@@ -165,7 +167,7 @@ namespace AntiDuplWPF.ObjectModel
                 //case ConditionParametr.FileSize:
                 //    break;
                 case FilterConditionParametr.NoTransformType:
-                    return pair.Transform == Core.CoreDll.TransformType.Turn_0;
+                    return pair.Transform == CoreDll.TransformType.Turn_0;
                     break;
                 //case ConditionParametr.SameDirectory:
                 //    return pair.FirstFile.Directory == pair.SecondFile.Directory;

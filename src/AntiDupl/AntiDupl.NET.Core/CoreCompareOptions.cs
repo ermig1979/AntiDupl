@@ -23,12 +23,15 @@
 */
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using AntiDupl.NET.Core.Original;
+using AntiDupl.NET.Core.Enums;
+using System.Runtime.InteropServices;
 
 namespace AntiDupl.NET.Core
 {
-    public class CoreCompareOptions
+    public class CoreCompareOptions : INotifyPropertyChanged
     {
         public bool checkOnEquality;
         public bool transformedImage;
@@ -40,7 +43,7 @@ namespace AntiDupl.NET.Core
         public int maximalImageSize;
         public bool compareInsideOneFolder;
         public bool compareInsideOneSearchPath;
-        public CoreDll.AlgorithmComparing algorithmComparing;
+        public AlgorithmComparing algorithmComparing;
 
         public CoreCompareOptions()
         {
@@ -111,5 +114,130 @@ namespace AntiDupl.NET.Core
                 compareInsideOneFolder == compareOptions.compareInsideOneFolder &&
                 compareInsideOneSearchPath == compareOptions.compareInsideOneSearchPath;
         }
+
+        public bool CheckOnEquality
+        {
+            get { return checkOnEquality; }
+            set
+            {
+                checkOnEquality = value;
+                NotifyPropertyChanged("CheckOnEquality");
+            }
+        }
+
+        public bool TransformedImage
+        {
+            get { return transformedImage; }
+            set
+            {
+                transformedImage = value;
+                NotifyPropertyChanged("TransformedImage");
+            }
+        }
+
+        public bool SizeControl
+        {
+            get { return sizeControl; }
+            set
+            {
+                sizeControl = value;
+                NotifyPropertyChanged("SizeControl");
+            }
+        }
+
+        public bool TypeControl
+        {
+            get { return typeControl; }
+            set
+            {
+                typeControl = value;
+                NotifyPropertyChanged("TypeControl");
+            }
+        }
+
+        public bool RatioControl
+        {
+            get { return ratioControl; }
+            set
+            {
+                ratioControl = value;
+                NotifyPropertyChanged("RatioControl");
+            }
+        }
+
+        public int ThresholdDifference
+        {
+            get { return thresholdDifference; }
+            set
+            {
+                thresholdDifference = value;
+                NotifyPropertyChanged("ThresholdDifference");
+            }
+        }
+
+        public int MinimalImageSize
+        {
+            get { return minimalImageSize; }
+            set
+            {
+                minimalImageSize = value;
+                NotifyPropertyChanged("MinimalImageSize");
+            }
+        }
+
+        public int MaximalImageSize
+        {
+            get { return maximalImageSize; }
+            set
+            {
+                maximalImageSize = value;
+                NotifyPropertyChanged("MaximalImageSize");
+            }
+        }
+
+        public bool CompareInsideOneFolder
+        {
+            get { return compareInsideOneFolder; }
+            set
+            {
+                compareInsideOneFolder = value;
+                NotifyPropertyChanged("CompareInsideOneFolder");
+            }
+        }
+
+        public bool CompareInsideOneSearchPath
+        {
+            get { return compareInsideOneSearchPath; }
+            set
+            {
+                compareInsideOneSearchPath = value;
+                NotifyPropertyChanged("CompareInsideOneSearchPath");
+            }
+        }
+
+        public AlgorithmComparing AlgorithmComparing
+        {
+            get { return algorithmComparing; }
+            set
+            {
+                algorithmComparing = value;
+                NotifyPropertyChanged("AlgorithmComparing");
+            }
+        }
+
+        #region Члены INotifyPropertyChanged
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // This method is called by the Set accessor of each property.
+        // The CallerMemberName attribute that is applied to the optional propertyName
+        // parameter causes the property name of the caller to be substituted as an argument.
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
     }
 }

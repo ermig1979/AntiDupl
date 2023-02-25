@@ -12,6 +12,8 @@ using AntiDuplWPF.Model;
 using AntiDuplWPF.Service;
 using AntiDuplWPF.View;
 
+using AntiDupl.NET.Core;
+
 namespace AntiDuplWPF.ViewModel
 {
     public class ConfigurationViewModel : PropertyChangedBase
@@ -25,11 +27,11 @@ namespace AntiDuplWPF.ViewModel
         public int Delay { get; set; }
         private DispatcherTimer timer;
         IWindowService _windowService;
-        ICoreLib _core;
-        public Option Option { get; set; }
+        CoreLib _core;
+        public CoreOptions Option { get; set; }
         IThumbnailProvider _thumbnailProvider;
 
-        public ConfigurationViewModel(IConfigurationModel configuration, IWindowService windowService, ICoreLib core, Option option, 
+        public ConfigurationViewModel(IConfigurationModel configuration, IWindowService windowService, CoreLib core, CoreOptions option, 
             IThumbnailProvider thumbnailProvider)
         {
             this._configuration = configuration;

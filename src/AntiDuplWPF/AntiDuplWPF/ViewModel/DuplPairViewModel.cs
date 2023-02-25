@@ -11,6 +11,9 @@ using AntiDuplWPF.ObjectModel;
 using AntiDuplWPF.ObjectModel.ConfigurableAction;
 using TinyIoC;
 
+using AntiDupl.NET.Core.Original;
+using AntiDupl.NET.Core;
+
 namespace AntiDuplWPF.ViewModel
 {
     [Serializable]
@@ -20,8 +23,8 @@ namespace AntiDuplWPF.ViewModel
         public ImageInfoClass SecondFile { get; set; }
 
         public double Difference { get; set; }
-        public AntiDuplWPF.Core.CoreDll.TransformType Transform { get; set; }
-        public AntiDuplWPF.Core.CoreDll.ResultType Type { get; set; }
+        public CoreDll.TransformType Transform { get; set; }
+        public CoreDll.ResultType Type { get; set; }
 
         [XmlIgnoreAttribute]
         /// <summary>
@@ -38,8 +41,39 @@ namespace AntiDuplWPF.ViewModel
             SecondFile = new ImageInfoClass();
             _configuration = TinyIoCContainer.Current.Resolve<IConfigurationModel>();
         }
+        public DuplPairViewModel(CoreResult core_results)
+        {
+            FirstFile = new ImageInfoClass();
+            SecondFile = new ImageInfoClass();
 
-        public DuplPairViewModel(Core.CoreDll.adResultW a) : this()
+            Difference = core_results.difference;
+            Transform = core_results.transform;
+            Type = core_results.type;
+
+            FirstFile.Path = core_results.first.path;
+            FirstFile.JpegPeaks = core_results.first.jpegPeaks;
+            FirstFile.Blockiness = core_results.first.blockiness;
+            FirstFile.Bluring = core_results.first.blurring;
+            FirstFile.FileSize = core_results.first.size;
+            FirstFile.Width = core_results.first.width;
+            FirstFile.Height = core_results.first.height;
+            FirstFile.Type = core_results.first.type;
+
+            SecondFile.Path = core_results.second.path;
+            SecondFile.JpegPeaks = core_results.second.jpegPeaks;
+            SecondFile.Blockiness = core_results.second.blockiness;
+            SecondFile.Bluring = core_results.second.blurring;
+            SecondFile.FileSize = core_results.second.size;
+            SecondFile.Width = core_results.second.width;
+            SecondFile.Height = core_results.second.height;
+            SecondFile.Type = core_results.second.type;
+
+            //SaatiHelper.CalculateIndex(this, _configuration);
+            _configuration = TinyIoCContainer.Current.Resolve<IConfigurationModel>();
+            FillFolderAreDiffrent();
+        }
+
+        public DuplPairViewModel(CoreDll.adResultW a) : this()
         {
             FirstFile = new ImageInfoClass();
             SecondFile = new ImageInfoClass();

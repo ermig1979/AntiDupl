@@ -7,6 +7,8 @@ using System.Windows.Media.Imaging;
 using AntiDuplWPF.Core;
 using AntiDuplWPF.Helper;
 
+using AntiDupl.NET.Core.Original;
+
 namespace AntiDuplWPF.ViewModel
 {
     public class SearchPathViewModel : PropertyChangedBase

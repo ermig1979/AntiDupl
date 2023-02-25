@@ -23,12 +23,13 @@
 */
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using AntiDupl.NET.Core.Original;
 
 namespace AntiDupl.NET.Core
 {
-    public class CoreAdvancedOptions
+    public class CoreAdvancedOptions : INotifyPropertyChanged
     {
         public bool deleteToRecycleBin;
         public bool mistakeDataBase;
@@ -106,5 +107,80 @@ namespace AntiDupl.NET.Core
                 ignoreFrameWidth == advancedOptions.ignoreFrameWidth &&
                 useLibJpegTurbo == advancedOptions.useLibJpegTurbo;
         }
+
+        public int RatioResolution
+        {
+            get { return ratioResolution; }
+            set
+            {
+                ratioResolution = value;
+                NotifyPropertyChanged("RatioResolution");
+            }
+        }
+
+        public int CompareThreadCount
+        {
+            get { return compareThreadCount; }
+            set
+            {
+                compareThreadCount = value;
+                NotifyPropertyChanged("CompareThreadCount");
+            }
+        }
+
+        public int CollectThreadCount
+        {
+            get { return collectThreadCount; }
+            set
+            {
+                collectThreadCount = value;
+                NotifyPropertyChanged("CollectThreadCount");
+            }
+        }
+
+        public int ReducedImageSize
+        {
+            get { return reducedImageSize; }
+            set
+            {
+                reducedImageSize = value;
+                NotifyPropertyChanged("ReducedImageSize");
+            }
+        }
+
+        public int ResultCountMax
+        {
+            get { return resultCountMax; }
+            set
+            {
+                resultCountMax = value;
+                NotifyPropertyChanged("ResultCountMax");
+            }
+        }
+
+        public int IgnoreFrameWidth
+        {
+            get { return ignoreFrameWidth; }
+            set
+            {
+                ignoreFrameWidth = value;
+                NotifyPropertyChanged("IgnoreFrameWidth");
+            }
+        }
+
+        #region Члены INotifyPropertyChanged
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // This method is called by the Set accessor of each property.
+        // The CallerMemberName attribute that is applied to the optional propertyName
+        // parameter causes the property name of the caller to be substituted as an argument.
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
     }
 }

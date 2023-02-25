@@ -23,12 +23,13 @@
 */
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using AntiDupl.NET.Core.Original;
 
 namespace AntiDupl.NET.Core
 {
-    public class CoreDefectOptions
+    public class CoreDefectOptions : INotifyPropertyChanged
     {
         public bool checkOnDefect;
         public bool checkOnBlockiness;
@@ -86,5 +87,80 @@ namespace AntiDupl.NET.Core
                 checkOnBlurring == defectOptions.checkOnBlurring &&
                 blurringThreshold == defectOptions.blurringThreshold;
         }
+
+        public bool CheckOnDefect
+        {
+            get { return checkOnDefect; }
+            set
+            {
+                checkOnDefect = value;
+                NotifyPropertyChanged("CheckOnDefect");
+            }
+        }
+
+        public bool CheckOnBlockiness
+        {
+            get { return checkOnBlockiness; }
+            set
+            {
+                checkOnBlockiness = value;
+                NotifyPropertyChanged("CheckOnBlockiness");
+            }
+        }
+
+        public int BlockinessThreshold
+        {
+            get { return blockinessThreshold; }
+            set
+            {
+                blockinessThreshold = value;
+                NotifyPropertyChanged("BlockinessThreshold");
+            }
+        }
+
+        public bool CheckOnBlockinessOnlyNotJpeg
+        {
+            get { return checkOnBlockinessOnlyNotJpeg; }
+            set
+            {
+                checkOnBlockinessOnlyNotJpeg = value;
+                NotifyPropertyChanged("CheckOnBlockinessOnlyNotJpeg");
+            }
+        }
+
+        public bool CheckOnBlurring
+        {
+            get { return checkOnBlurring; }
+            set
+            {
+                checkOnBlurring = value;
+                NotifyPropertyChanged("CheckOnBlurring");
+            }
+        }
+
+        public int BlurringThreshold
+        {
+            get { return blurringThreshold; }
+            set
+            {
+                blurringThreshold = value;
+                NotifyPropertyChanged("BlurringThreshold");
+            }
+        }
+
+        #region Члены INotifyPropertyChanged
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // This method is called by the Set accessor of each property.
+        // The CallerMemberName attribute that is applied to the optional propertyName
+        // parameter causes the property name of the caller to be substituted as an argument.
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
     }
 }

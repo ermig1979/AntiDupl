@@ -4,7 +4,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:behavior="clr-namespace:AntiDuplWPF.Behavior"
-        xmlns:core="clr-namespace:AntiDuplWPF.Core"
+        xmlns:core="clr-namespace:AntiDupl.NET.Core.Enums;assembly=AntiDupl.NET.Core"
         Title="ConfigurationWindow"
         Height="400" Width="500"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -98,7 +98,7 @@
             </Grid>
         </TabItem>
         <TabItem Header="SearchOption">
-            <Grid DataContext="{Binding Option.SearchOptions}">
+            <Grid DataContext="{Binding Option.searchOptions}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -108,7 +108,7 @@
             </Grid>
         </TabItem>
         <TabItem Header="CompareOption">
-            <Grid DataContext="{Binding Option.CompareOptions}">
+            <Grid DataContext="{Binding Option.compareOptions}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="75" />
@@ -175,7 +175,7 @@
             </Grid>
         </TabItem>
         <TabItem Header="AdvancedOption">
-            <Grid DataContext="{Binding Option.AdvancedOptions}">
+            <Grid DataContext="{Binding Option.advancedOptions}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="75" />
@@ -189,9 +189,6 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-
-                <CheckBox Grid.Column="0" Grid.Row="0" Content="UseImageDataBase"
-                          IsChecked="{Binding UseImageDataBase}" />
 
                 <TextBlock Grid.Column="0" Grid.Row="1" Text="RatioResolution" />
                 <TextBox Grid.Column="1" Grid.Row="1"
@@ -261,27 +258,27 @@
                 </Grid.RowDefinitions>
 
                 <CheckBox Grid.Column="0" Grid.Row="0" Content="CheckOnDefect"
-                          IsChecked="{Binding Option.DefectOptions.CheckOnDefect}" />
+                          IsChecked="{Binding Option.defectOptions.CheckOnDefect}" />
                 <CheckBox Grid.Column="0" Grid.Row="1" Content="CheckOnBlockiness"
-                          IsChecked="{Binding Option.DefectOptions.CheckOnBlockiness}" />
+                          IsChecked="{Binding Option.defectOptions.CheckOnBlockiness}" />
 
 
                 <TextBlock Grid.Column="0" Grid.Row="2" Text="BlockinessThreshold" />
                 <TextBox Grid.Column="1" Grid.Row="2"
-                         Text="{Binding Option.DefectOptions.BlockinessThreshold, UpdateSourceTrigger=PropertyChanged}">
+                         Text="{Binding Option.defectOptions.BlockinessThreshold, UpdateSourceTrigger=PropertyChanged}">
                     <i:Interaction.Behaviors>
                         <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="3" />
                     </i:Interaction.Behaviors>
                 </TextBox>
                 <CheckBox Grid.Column="0" Grid.Row="3" Content="CheckOnBlockinessOnlyNotJpeg"
-                          IsChecked="{Binding Option.DefectOptions.CheckOnBlockinessOnlyNotJpeg}" />
+                          IsChecked="{Binding Option.defectOptions.CheckOnBlockinessOnlyNotJpeg}" />
                 <CheckBox Grid.Column="0" Grid.Row="4" Content="CheckOnBlurring"
-                          IsChecked="{Binding Option.DefectOptions.CheckOnBlurring}" />
+                          IsChecked="{Binding Option.defectOptions.CheckOnBlurring}" />
 
 
                 <TextBlock Grid.Column="0" Grid.Row="5" Text="BlurringThreshold" />
                 <TextBox Grid.Column="1" Grid.Row="5"
-                         Text="{Binding Option.DefectOptions.BlurringThreshold, UpdateSourceTrigger=PropertyChanged}">
+                         Text="{Binding Option.defectOptions.BlurringThreshold, UpdateSourceTrigger=PropertyChanged}">
                     <i:Interaction.Behaviors>
                         <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="3" />
                     </i:Interaction.Behaviors>

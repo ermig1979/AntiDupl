@@ -11,6 +11,10 @@ using AntiDuplWPF.Core;
 using AntiDuplWPF.Helper;
 using AntiDuplWPF.ViewModel;
 
+using AntiDupl.NET.Core;
+using AntiDupl.NET.Core.Original;
+using static System.Formats.Asn1.AsnWriter;
+
 namespace AntiDuplWPF.Model
 {
     [Serializable()]
@@ -40,7 +44,7 @@ namespace AntiDuplWPF.Model
 
         public object Current { get; set; }
 
-        ICoreLib _core;
+        CoreLib _core;
 
         /*public LocationsModel()
         {
@@ -48,7 +52,7 @@ namespace AntiDuplWPF.Model
             _locationsObservable = new ObservableCollection<SearchPathViewModel>();
         }*/
 
-        public LocationsModel(ICoreLib core, List<Location> list)
+        public LocationsModel(CoreLib core, List<Location> list)
         {
             _core = core;
 
@@ -72,7 +76,7 @@ namespace AntiDuplWPF.Model
             }
         }
 
-        public static LocationsModel Load(ICoreLib core)
+        public static LocationsModel Load(CoreLib core)
         {
             List<Location> list = SerializeHelper<List<Location>>.Load(_fileName);
             if (list == null)
@@ -109,7 +113,15 @@ namespace AntiDuplWPF.Model
         public void CopyToDll()
         {
             var locations = SearchLocations.Select(l => l.Model);
-            _core.SetLocation(locations, AntiDuplWPF.Core.CoreDll.PathType.Search);
+            List<CorePathWithSubFolder> searchPathes = new List<CorePathWithSubFolder>();
+            foreach (Location location in locations)
+            {
+                CorePathWithSubFolder sfPath = new CorePathWithSubFolder();
+                sfPath.path = location.Path;
+                sfPath.enableSubFolder = location.SearchInSubfolder;
+                searchPathes.Add(sfPath);
+            }
+            _core.searchPath = (CorePathWithSubFolder[])searchPathes.ToArray();
             /*locations = IgnoreLocations.Select(l => l.Model);
             _core.SetLocation(locations, AntiDuplWPF.Core.CoreDll.PathType.Ignore);
             locations = ValidLocations.Select(l => l.Model);
