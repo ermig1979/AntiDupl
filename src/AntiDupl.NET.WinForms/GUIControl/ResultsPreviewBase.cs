@@ -29,7 +29,7 @@ using System.Drawing;
 
 using AntiDupl.NET.Core;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     public abstract class ResultsPreviewBase : Panel
     {

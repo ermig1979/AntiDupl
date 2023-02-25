@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AntiDuplWPF.Helper;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.Helper;
+using AntiDupl.NET.WPF.ViewModel;
 
-namespace AntiDuplWPF.Model
+namespace AntiDupl.NET.WPF.Model
 {
     public class IgnoreStorage
     {

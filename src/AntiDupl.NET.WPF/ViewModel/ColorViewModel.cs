@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace AntiDuplWPF.ViewModel
+namespace AntiDupl.NET.WPF.ViewModel
 {
     public class ColorViewModel : PropertyChangedBase
     {

@@ -10,7 +10,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Threading;
 
-namespace AntiDuplWPF.Control
+namespace AntiDupl.NET.WPF.Control
 {
     /// <summary>
     /// Represents a control that can be used for text search input.

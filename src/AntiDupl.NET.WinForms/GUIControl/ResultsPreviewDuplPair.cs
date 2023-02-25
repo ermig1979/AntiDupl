@@ -33,7 +33,7 @@ using System.Threading;
 using AntiDupl.NET.Core;
 using AntiDupl.NET.Core.Original;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     /// <summary>
     /// Панель которая включает в себя две панели с просмотра изображений и панель инструментов для работы с дубликатами изображений.

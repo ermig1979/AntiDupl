@@ -4,9 +4,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AntiDuplWPF.ObjectModel;
+using AntiDupl.NET.WPF.ObjectModel;
 
-namespace AntiDuplWPF.Model
+namespace AntiDupl.NET.WPF.Model
 {
     public interface IViewModeModel : INotifyPropertyChanged
     {

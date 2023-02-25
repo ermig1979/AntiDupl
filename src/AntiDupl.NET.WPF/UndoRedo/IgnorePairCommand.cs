@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.ViewModel;
 
-namespace AntiDuplWPF.UndoRedo
+namespace AntiDupl.NET.WPF.UndoRedo
 {
     class IgnorePairCommand : IUCommand
     {

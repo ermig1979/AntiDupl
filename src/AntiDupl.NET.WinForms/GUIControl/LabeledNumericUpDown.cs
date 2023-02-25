@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     /// <summary>
     /// NumericUpDown с подписью.

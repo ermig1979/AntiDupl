@@ -30,7 +30,7 @@ using System.Threading;
 
 using AntiDupl.NET.Core;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     /// <summary>
     /// Таблица групп.
@@ -38,7 +38,7 @@ namespace AntiDupl.NET
     public class ThumbnailGroupTable : Panel
     {
         private CoreLib m_core;
-        private AntiDupl.NET.Options m_options;
+        private AntiDupl.NET.WinForms.Options m_options;
         private CoreGroup[] m_groups;
         private int m_maxGroupIndex = -1;
         private MainSplitContainer m_mainSplitContainer;
@@ -54,7 +54,7 @@ namespace AntiDupl.NET
         public delegate void CurrentThumbnailChangedHandler(CoreGroup group, int index);
         public event CurrentThumbnailChangedHandler OnCurrentThumbnailChanged;
 
-        public ThumbnailGroupTable(CoreLib core, AntiDupl.NET.Options options, MainSplitContainer mainSplitContainer)
+        public ThumbnailGroupTable(CoreLib core, AntiDupl.NET.WinForms.Options options, MainSplitContainer mainSplitContainer)
         {
             m_core = core;
             m_options = options;

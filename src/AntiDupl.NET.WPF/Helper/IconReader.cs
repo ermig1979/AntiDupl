@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
-namespace AntiDuplWPF.Helper
+namespace AntiDupl.NET.WPF.Helper
 {
     class IconReader
     {

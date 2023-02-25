@@ -35,7 +35,7 @@ using System.IO;
 
 using AntiDupl.NET.Core;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     public class MainForm : Form
     {

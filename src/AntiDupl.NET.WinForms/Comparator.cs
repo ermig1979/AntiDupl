@@ -23,7 +23,7 @@
 */
 using System;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     class Comparator
     {

@@ -3,9 +3,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Media;
-using AntiDuplWPF.ObjectModel;
+using AntiDupl.NET.WPF.ObjectModel;
 
-namespace AntiDuplWPF.Model
+namespace AntiDupl.NET.WPF.Model
 {
     public interface IConfigurationModel : INotifyPropertyChanged
     {

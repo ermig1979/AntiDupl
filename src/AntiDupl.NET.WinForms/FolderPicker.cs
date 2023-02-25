@@ -31,7 +31,7 @@ using System.Runtime.InteropServices.ComTypes;
 //using System.Windows; // for WPF support
 //using System.Windows.Interop;  // for WPF support
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     public class FolderPicker
     {

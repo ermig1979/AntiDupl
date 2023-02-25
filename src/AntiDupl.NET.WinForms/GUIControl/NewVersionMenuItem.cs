@@ -30,7 +30,9 @@ using System.Drawing;
 using System.IO;
 using System.Threading;
 
-namespace AntiDupl.NET
+using Version = AntiDupl.NET.Core.Version;
+
+namespace AntiDupl.NET.WinForms
 {
     public class NewVersionMenuItem : ToolStripMenuItem
     {

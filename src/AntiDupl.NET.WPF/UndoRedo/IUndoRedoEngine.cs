@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AntiDuplWPF.UndoRedo
+namespace AntiDupl.NET.WPF.UndoRedo
 {
     public interface IUndoRedoEngine : INotifyPropertyChanged
     {

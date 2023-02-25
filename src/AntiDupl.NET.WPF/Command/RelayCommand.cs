@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace AntiDuplWPF.Command
+namespace AntiDupl.NET.WPF.Command
 {
     /// <summary>
     /// Taken from http://msdn.microsoft.com/en-us/magazine/dd419663.aspx#id0090030

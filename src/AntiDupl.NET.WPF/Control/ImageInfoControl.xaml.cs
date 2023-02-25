@@ -12,9 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using AntiDuplWPF.ObjectModel;
+using AntiDupl.NET.WPF.ObjectModel;
 
-namespace AntiDuplWPF.Control
+namespace AntiDupl.NET.WPF.Control
 {
     /// <summary>
     /// Логика взаимодействия для ImageInfoControl.xaml

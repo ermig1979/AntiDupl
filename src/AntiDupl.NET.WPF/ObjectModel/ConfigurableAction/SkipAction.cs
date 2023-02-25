@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AntiDuplWPF.ObjectModel.ConfigurableAction
+namespace AntiDupl.NET.WPF.ObjectModel.ConfigurableAction
 {
     public class SkipAction : IConfigurableAction
     {

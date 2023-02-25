@@ -8,14 +8,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using AntiDuplWPF.Command;
-using AntiDuplWPF.Helper;
-using AntiDuplWPF.Model;
-using AntiDuplWPF.ObjectModel;
-using AntiDuplWPF.UndoRedo;
-using AntiDuplWPF.View;
+using AntiDupl.NET.WPF.Command;
+using AntiDupl.NET.WPF.Helper;
+using AntiDupl.NET.WPF.Model;
+using AntiDupl.NET.WPF.ObjectModel;
+using AntiDupl.NET.WPF.UndoRedo;
+using AntiDupl.NET.WPF.View;
 
-namespace AntiDuplWPF.ViewModel
+namespace AntiDupl.NET.WPF.ViewModel
 {
     public class ComparatorViewModel : PropertyChangedBase
     {

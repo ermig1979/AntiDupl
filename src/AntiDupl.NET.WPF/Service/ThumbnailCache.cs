@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using AntiDuplWPF.Model;
+using AntiDupl.NET.WPF.Model;
 
-namespace AntiDuplWPF.Service
+namespace AntiDupl.NET.WPF.Service
 {
     class ThumbnailCache
     {

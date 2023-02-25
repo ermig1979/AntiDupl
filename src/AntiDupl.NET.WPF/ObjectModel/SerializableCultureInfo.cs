@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AntiDuplWPF.ObjectModel
+namespace AntiDupl.NET.WPF.ObjectModel
 {
     [Serializable]
     public class SerializableCultureInfo

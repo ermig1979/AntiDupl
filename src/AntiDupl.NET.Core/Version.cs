@@ -28,9 +28,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 
-using AntiDupl.NET.Core;
-
-namespace AntiDupl.NET
+namespace AntiDupl.NET.Core
 {
     public class Version
     {

@@ -27,7 +27,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     public class ViewModeMenuItem : ToolStripMenuItem
     {
@@ -47,7 +47,7 @@ namespace AntiDupl.NET
             UpdateStrings();
             UpdateIcons(m_options.resultsOptions.viewMode);
             Resources.Strings.OnCurrentChange += new Resources.Strings.CurrentChangeHandler(UpdateStrings);
-            m_options.resultsOptions.OnViewModeChange += new AntiDupl.NET.ResultsOptions.ViewModeChangeHandler(UpdateIcons);
+            m_options.resultsOptions.OnViewModeChange += new AntiDupl.NET.WinForms.ResultsOptions.ViewModeChangeHandler(UpdateIcons);
         }
 
         private void InitializeComponents()

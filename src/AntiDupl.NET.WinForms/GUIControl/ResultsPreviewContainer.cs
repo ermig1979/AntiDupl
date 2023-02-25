@@ -30,7 +30,7 @@ using System.Drawing;
 using AntiDupl.NET.Core;
 using AntiDupl.NET.Core.Original;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     /// <summary>
     /// Панель содеражшая или превью дефекта или дубликатов.

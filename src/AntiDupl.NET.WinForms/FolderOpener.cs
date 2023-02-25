@@ -32,7 +32,7 @@ using System.Threading;
 
 using AntiDupl.NET.Core;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     static public class FolderOpener
     {

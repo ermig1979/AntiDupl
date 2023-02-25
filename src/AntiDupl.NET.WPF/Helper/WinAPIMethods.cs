@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 
-namespace AntiDuplWPF.Helper
+namespace AntiDupl.NET.WPF.Helper
 {
     /// <summary>
     /// Contains P/Invoke methods for functions in the Windows API.

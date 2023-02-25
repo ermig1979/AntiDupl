@@ -5,7 +5,7 @@ using System.Windows.Media.Animation;
 using System.Windows;
 using System.Windows.Media;
 
-namespace AntiDuplWPF.Control
+namespace AntiDupl.NET.WPF.Control
 {
     public class PanAndZoomViewer : ContentControl
     {

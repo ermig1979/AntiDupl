@@ -8,13 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using AntiDuplWPF.Core;
+using AntiDupl.NET.WPF.Core;
 
 using AntiDupl.NET.Core;
 using AntiDupl.NET.Core.Original;
 using AntiDupl.NET.Core.Enums;
 
-namespace AntiDuplWPF.Service
+namespace AntiDupl.NET.WPF.Service
 {
     class ImageLoader : IImageLoader
     {

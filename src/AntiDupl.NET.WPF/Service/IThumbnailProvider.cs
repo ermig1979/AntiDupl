@@ -1,13 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
-namespace AntiDuplWPF.Service
+namespace AntiDupl.NET.WPF.Service
 {
     public interface IThumbnailProvider : IDisposable
     {
         event PropertyChangedEventHandler PropertyChanged;
         void ClearThumbnailCache();
         void Dispose();
-        void Enqueue(AntiDuplWPF.ObjectModel.ImageInfoClass item);
+        void Enqueue(AntiDupl.NET.WPF.ObjectModel.ImageInfoClass item);
         string ThumbnailCacheStatus { get; set; }
     }
 }

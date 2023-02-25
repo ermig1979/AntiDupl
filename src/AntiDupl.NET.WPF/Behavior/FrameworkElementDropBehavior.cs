@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Xaml.Behaviors;
-using AntiDuplWPF.DragDrop;
+using AntiDupl.NET.WPF.DragDrop;
 
-namespace AntiDuplWPF.Behavior
+namespace AntiDupl.NET.WPF.Behavior
 {
     public class FrameworkElementDropBehavior : Behavior<FrameworkElement>
     {

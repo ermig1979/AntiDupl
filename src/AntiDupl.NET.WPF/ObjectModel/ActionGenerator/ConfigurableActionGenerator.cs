@@ -4,15 +4,15 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AntiDuplWPF.ObjectModel.ByImageProperty;
-using AntiDuplWPF.ObjectModel.ByPath;
-using AntiDuplWPF.ObjectModel.ConfigurableAction;
-using AntiDuplWPF.ObjectModel.DirectoryFilter;
-using AntiDuplWPF.ObjectModel.GettingNumber;
-using AntiDuplWPF.UndoRedo;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.ObjectModel.ByImageProperty;
+using AntiDupl.NET.WPF.ObjectModel.ByPath;
+using AntiDupl.NET.WPF.ObjectModel.ConfigurableAction;
+using AntiDupl.NET.WPF.ObjectModel.DirectoryFilter;
+using AntiDupl.NET.WPF.ObjectModel.GettingNumber;
+using AntiDupl.NET.WPF.UndoRedo;
+using AntiDupl.NET.WPF.ViewModel;
 
-namespace AntiDuplWPF.ObjectModel.ActionGenerator
+namespace AntiDupl.NET.WPF.ObjectModel.ActionGenerator
 {
     public class ConfigurableActionGenerator : PropertyChangedBase
     {

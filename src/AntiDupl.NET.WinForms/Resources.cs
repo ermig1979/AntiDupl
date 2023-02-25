@@ -33,7 +33,7 @@ using System.IO;
 using System.Diagnostics;
 using System.ComponentModel;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     static public class Resources
     {
@@ -167,7 +167,7 @@ namespace AntiDupl.NET
                     FileInfo[] fileInfos = directoryInfo.GetFiles(Filter, SearchOption.TopDirectoryOnly);
                     for (int i = 0; i < fileInfos.Length; i++)
                     {
-                        AntiDupl.NET.Strings strings = Load(fileInfos[i].FullName);
+                        AntiDupl.NET.WinForms.Strings strings = Load(fileInfos[i].FullName);
                         if(strings != null)
                         {
                             string name = System.IO.Path.GetFileNameWithoutExtension(fileInfos[i].FullName);
@@ -192,16 +192,16 @@ namespace AntiDupl.NET
                 }
             }
             
-            static private AntiDupl.NET.Strings Load(string path)
+            static private AntiDupl.NET.WinForms.Strings Load(string path)
             {
                 FileInfo fileInfo = new FileInfo(path);
                 if (fileInfo.Exists)
                 {
                     try
                     {
-                        XmlSerializer xmlSerializer = new XmlSerializer(typeof(AntiDupl.NET.Strings));
+                        XmlSerializer xmlSerializer = new XmlSerializer(typeof(AntiDupl.NET.WinForms.Strings));
                         FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
-                        AntiDupl.NET.Strings strings = (AntiDupl.NET.Strings)xmlSerializer.Deserialize(fileStream);
+                        AntiDupl.NET.WinForms.Strings strings = (AntiDupl.NET.WinForms.Strings)xmlSerializer.Deserialize(fileStream);
                         fileStream.Close();
                         return strings;
                     }
@@ -214,13 +214,13 @@ namespace AntiDupl.NET
                     return null;
             }
 
-            static private void Save(AntiDupl.NET.Strings strings)
+            static private void Save(AntiDupl.NET.WinForms.Strings strings)
             {
                 try
                 {
 
                     TextWriter writer = new StreamWriter(GetPath(Path, strings.Name, Extension));
-                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(AntiDupl.NET.Strings));
+                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(AntiDupl.NET.WinForms.Strings));
                     xmlSerializer.Serialize(writer, strings);
                     writer.Close();
                 }
@@ -251,21 +251,21 @@ namespace AntiDupl.NET
                 }
             }
             
-            public static AntiDupl.NET.Strings Current
+            public static AntiDupl.NET.WinForms.Strings Current
             {
                 get 
                 {
                     if (m_currentIndex < Count && m_currentIndex >= 0)
-                        return (AntiDupl.NET.Strings)m_strings[m_currentIndex];
+                        return (AntiDupl.NET.WinForms.Strings)m_strings[m_currentIndex];
                     else
                         return null; 
                 }
             }
             
-            public static AntiDupl.NET.Strings Get(int index)
+            public static AntiDupl.NET.WinForms.Strings Get(int index)
             {
                 if (index < Count && index >= 0)
-                    return (AntiDupl.NET.Strings)m_strings[index];
+                    return (AntiDupl.NET.WinForms.Strings)m_strings[index];
                 else
                     return null;
             }

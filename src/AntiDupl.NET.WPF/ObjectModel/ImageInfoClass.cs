@@ -10,14 +10,14 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Xml.Serialization;
-using AntiDuplWPF.Model;
-using AntiDuplWPF.Service;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.Model;
+using AntiDupl.NET.WPF.Service;
+using AntiDupl.NET.WPF.ViewModel;
 using TinyIoC;
 
 using AntiDupl.NET.Core.Original;
 
-namespace AntiDuplWPF.ObjectModel
+namespace AntiDupl.NET.WPF.ObjectModel
 {
     public class ImageInfoClass : PropertyChangedBase, IEquatable<ImageInfoClass> 
     {
@@ -44,7 +44,7 @@ namespace AntiDuplWPF.ObjectModel
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal,
                        (Action)delegate
                        {
-                           _dumbImage = new BitmapImage(new Uri("pack://application:,,,/AntiDuplWPF;component/Image/loading.jpg", UriKind.Absolute));
+                           _dumbImage = new BitmapImage(new Uri("pack://application:,,,/AntiDupl.NET.WPF;component/Image/loading.jpg", UriKind.Absolute));
                        });
 
 

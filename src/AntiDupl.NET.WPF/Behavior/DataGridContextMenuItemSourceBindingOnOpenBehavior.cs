@@ -12,11 +12,11 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using Microsoft.Xaml.Behaviors;
-using AntiDuplWPF.Helper;
-using AntiDuplWPF.ObjectModel;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.Helper;
+using AntiDupl.NET.WPF.ObjectModel;
+using AntiDupl.NET.WPF.ViewModel;
 
-namespace AntiDuplWPF.Behavior
+namespace AntiDupl.NET.WPF.Behavior
 {
     public class DataGridContextMenuItemSourceBindingOnOpenBehavior : Behavior<DataGrid>
     {

@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Windows.Forms;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     static public class ImageOpener
     {

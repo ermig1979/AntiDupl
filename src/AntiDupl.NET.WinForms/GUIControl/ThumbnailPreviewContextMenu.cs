@@ -32,7 +32,7 @@ using System.ComponentModel;
 
 using AntiDupl.NET.Core;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     public class ThumbnailPreviewContextMenu : ContextMenuStrip
     {

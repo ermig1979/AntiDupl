@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
-namespace AntiDuplWPF.Control
+namespace AntiDupl.NET.WPF.Control
 {
     public static class BrushExtender
     {

@@ -32,7 +32,7 @@ using System.IO;
 using AntiDupl.NET.Core;
 using AntiDupl.NET.Core.Original;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     /// <summary>
     /// Class output result in ListView.
@@ -90,7 +90,7 @@ namespace AntiDupl.NET
 
         private MainSplitContainer m_mainSplitContainer;
         private CoreLib m_core;
-        private AntiDupl.NET.Options m_options;
+        private AntiDupl.NET.WinForms.Options m_options;
         public CoreOptions CoreOptions { get { return m_coreOptions; } } 
         private CoreOptions m_coreOptions;
         private CoreResult[] m_results;
@@ -134,7 +134,7 @@ namespace AntiDupl.NET
             }
         }
 
-        public ResultsListView(CoreLib core, AntiDupl.NET.Options options, CoreOptions coreOptions, MainSplitContainer mainSplitContainer)
+        public ResultsListView(CoreLib core, AntiDupl.NET.WinForms.Options options, CoreOptions coreOptions, MainSplitContainer mainSplitContainer)
         {
             m_core = core;
             m_options = options;

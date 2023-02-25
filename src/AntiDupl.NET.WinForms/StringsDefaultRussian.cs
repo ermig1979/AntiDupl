@@ -25,7 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     static public class StringsDefaultRussian
     {

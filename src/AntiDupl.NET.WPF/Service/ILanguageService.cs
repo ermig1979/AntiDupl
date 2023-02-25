@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.ViewModel;
 
-namespace AntiDuplWPF.Service
+namespace AntiDupl.NET.WPF.Service
 {
     public interface ILanguageService
     {

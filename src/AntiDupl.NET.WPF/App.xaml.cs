@@ -1,17 +1,17 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
-using AntiDuplWPF.Core;
-using AntiDuplWPF.Model;
-using AntiDuplWPF.Properties;
-using AntiDuplWPF.Service;
-using AntiDuplWPF.View;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.Core;
+using AntiDupl.NET.WPF.Model;
+using AntiDupl.NET.WPF.Properties;
+using AntiDupl.NET.WPF.Service;
+using AntiDupl.NET.WPF.View;
+using AntiDupl.NET.WPF.ViewModel;
 using TinyIoC;
 
 using AntiDupl.NET.Core;
 
-namespace AntiDuplWPF
+namespace AntiDupl.NET.WPF
 {
     public partial class App
     {
@@ -33,8 +33,8 @@ namespace AntiDuplWPF
             ILanguageService languageService = new LanguageService(confModel);
             TinyIoCContainer.Current.Register<ILanguageService>(languageService);
 
-            AntiDuplWPF.Resources.Resources.UserPath = AntiDuplWPF.Resources.Resources.GetDefaultUserPath();
-            CoreLib core = new CoreLib(AntiDuplWPF.Resources.Resources.UserPath);
+            AntiDupl.NET.WPF.Resources.Resources.UserPath = AntiDupl.NET.WPF.Resources.Resources.GetDefaultUserPath();
+            CoreLib core = new CoreLib(AntiDupl.NET.WPF.Resources.Resources.UserPath);
             TinyIoC.TinyIoCContainer.Current.Register<CoreLib>(core);
 
             ImageLoader imageLoader = new ImageLoader(core);

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AntiDuplWPF.ObjectModel.GettingNumber
+namespace AntiDupl.NET.WPF.ObjectModel.GettingNumber
 {
     public interface IGettingNumber
     {

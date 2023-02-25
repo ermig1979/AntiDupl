@@ -29,7 +29,7 @@ using System.Drawing;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     public class ComplexProgressBar : ProgressBar
     {

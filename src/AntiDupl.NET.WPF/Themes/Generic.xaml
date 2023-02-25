@@ -2,8 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/AntiDuplWPF;component/Control/themes/NumericUpDown.xaml" />
-        <ResourceDictionary Source="/AntiDuplWPF;component/Control/themes/RenameTextBox.xaml" />
+        <ResourceDictionary Source="/AntiDupl.NET.WPF;component/Control/themes/NumericUpDown.xaml" />
+        <ResourceDictionary Source="/AntiDupl.NET.WPF;component/Control/themes/RenameTextBox.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

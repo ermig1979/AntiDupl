@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 
-namespace AntiDuplWPF.Helper
+namespace AntiDupl.NET.WPF.Helper
 {
     public sealed class ReferenceEqualityComparer<T> : IEqualityComparer<T>
     {

@@ -6,15 +6,15 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AntiDuplWPF.UndoRedo;
+using AntiDupl.NET.WPF.UndoRedo;
 using TinyIoC;
 using System.Windows.Input;
 using System.Windows;
-using AntiDuplWPF.ObjectModel;
-using AntiDuplWPF.Command;
+using AntiDupl.NET.WPF.ObjectModel;
+using AntiDupl.NET.WPF.Command;
 using System.IO;
 
-namespace AntiDuplWPF.Control
+namespace AntiDupl.NET.WPF.Control
 {
     public class RenameImageTextBox : RenameTextBox
     {

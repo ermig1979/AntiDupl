@@ -8,7 +8,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 
 
-namespace AntiDuplWPF.Convertor
+namespace AntiDupl.NET.WPF.Convertor
 {
     public class FolderAreDiffrentMultuValueConverter : IMultiValueConverter
     {

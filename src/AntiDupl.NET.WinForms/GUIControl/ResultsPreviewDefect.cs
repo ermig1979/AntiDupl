@@ -31,7 +31,7 @@ using System.Diagnostics;
 using AntiDupl.NET.Core;
 using AntiDupl.NET.Core.Original;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     /// <summary>
     /// Панель которая включает в себя панель с просмотра изображеня и панель инструментов для работы с дефектными изображенями.

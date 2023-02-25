@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.ViewModel;
 
-namespace AntiDuplWPF.ObjectModel
+namespace AntiDupl.NET.WPF.ObjectModel
 {
     public class Criterion : PropertyChangedBase
     {

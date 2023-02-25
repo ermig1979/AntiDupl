@@ -12,20 +12,20 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
-using AntiDuplWPF.Command;
-using AntiDuplWPF.Core;
-using AntiDuplWPF.Helper;
-using AntiDuplWPF.Model;
-using AntiDuplWPF.ObjectModel;
-using AntiDuplWPF.Service;
-using AntiDuplWPF.UndoRedo;
-using AntiDuplWPF.View;
+using AntiDupl.NET.WPF.Command;
+using AntiDupl.NET.WPF.Core;
+using AntiDupl.NET.WPF.Helper;
+using AntiDupl.NET.WPF.Model;
+using AntiDupl.NET.WPF.ObjectModel;
+using AntiDupl.NET.WPF.Service;
+using AntiDupl.NET.WPF.UndoRedo;
+using AntiDupl.NET.WPF.View;
 using Microsoft.Win32;
 using TinyIoC;
 
 using AntiDupl.NET.Core;
 
-namespace AntiDuplWPF.ViewModel
+namespace AntiDupl.NET.WPF.ViewModel
 {
     public class MainViewModel : PropertyChangedBase
     {
@@ -808,7 +808,7 @@ namespace AntiDuplWPF.ViewModel
                        throw;
                    }
 
-                   Title = String.Format("AntiDuplWPF - {0}", Path.GetFileNameWithoutExtension(Configuration.LastResultFile));
+                   Title = String.Format("AntiDupl.NET.WPF - {0}", Path.GetFileNameWithoutExtension(Configuration.LastResultFile));
                }
            })
             .ContinueWith(t =>
@@ -838,7 +838,7 @@ namespace AntiDuplWPF.ViewModel
                     {
                         SerializeHelper<DuplPairViewModel[]>.Save(_resultList.ToArray(), dialog.FileName);
                         Configuration.LastResultFile = dialog.FileName;
-                        Title = String.Format("AntiDuplWPF - {0}", Path.GetFileNameWithoutExtension(Configuration.LastResultFile));
+                        Title = String.Format("AntiDupl.NET.WPF - {0}", Path.GetFileNameWithoutExtension(Configuration.LastResultFile));
                     }
                 }, arg => _resultList != null && _resultList.Any()));
             }
@@ -1037,7 +1037,7 @@ namespace AntiDuplWPF.ViewModel
 
         #endregion
 
-        string _title = "AntiDuplWPF";
+        string _title = "AntiDupl.NET.WPF";
         public string Title
         {
             get

@@ -4,10 +4,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AntiDuplWPF.ObjectModel.ByImageProperty;
-using AntiDuplWPF.ObjectModel.ConditionMode;
+using AntiDupl.NET.WPF.ObjectModel.ByImageProperty;
+using AntiDupl.NET.WPF.ObjectModel.ConditionMode;
 
-namespace AntiDuplWPF.ObjectModel.ActionGenerator
+namespace AntiDupl.NET.WPF.ObjectModel.ActionGenerator
 {
 	class BlockinesBluringGenerator : ConfigurableActionGenerator
 	{
@@ -20,7 +20,7 @@ namespace AntiDuplWPF.ObjectModel.ActionGenerator
 		{
 			Name = "Blockines and Bluring";
 
-			AlgorithmOfGettingNumberFromFileName = algorithmsOfGettingNumberFromFileName.Single(a => a is AntiDuplWPF.ObjectModel.GettingNumber.NumberBeforeUnderlineGettingNumber);
+			AlgorithmOfGettingNumberFromFileName = algorithmsOfGettingNumberFromFileName.Single(a => a is AntiDupl.NET.WPF.ObjectModel.GettingNumber.NumberBeforeUnderlineGettingNumber);
 
 
 			FilterConditions.Add(new FilterCondition()
@@ -57,9 +57,9 @@ namespace AntiDuplWPF.ObjectModel.ActionGenerator
 			SelectingBestImageByProperty.ConditionsOfSelectingBestImageByProperty.Add(
 				new ConditionOfSelectingBestImageByProperty() { Parametr = BestConditionParametr.BlurringBest });
 
-			BestByPath = bestSelectingByPathList.Single(s => s is AntiDuplWPF.ObjectModel.ByPath.BestImageShouldHaveASmallerNumber);
+			BestByPath = bestSelectingByPathList.Single(s => s is AntiDupl.NET.WPF.ObjectModel.ByPath.BestImageShouldHaveASmallerNumber);
 
-			DirectoryFilter = allDirectoryFilters.Single(df => df is AntiDuplWPF.ObjectModel.DirectoryFilter.SameDirectory);
+			DirectoryFilter = allDirectoryFilters.Single(df => df is AntiDupl.NET.WPF.ObjectModel.DirectoryFilter.SameDirectory);
 		}
 	}
 }

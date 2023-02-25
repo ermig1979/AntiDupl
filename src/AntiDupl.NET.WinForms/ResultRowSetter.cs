@@ -31,7 +31,7 @@ using System.IO;
 using AntiDupl.NET.Core;
 using AntiDupl.NET.Core.Original;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     /// <summary>
     /// Set table of out defect and dublicate pair.
@@ -39,7 +39,7 @@ namespace AntiDupl.NET
     /// </summary>
     public class ResultRowSetter
     {
-        private AntiDupl.NET.Options m_options;
+        private AntiDupl.NET.WinForms.Options m_options;
         private DataGridView m_dataGridView;
 
         private Image m_nullIcon;
@@ -96,7 +96,7 @@ namespace AntiDupl.NET
         private string m_mirrorTurn_180_IconToolTipText;
         private string m_mirrorTurn_270_IconToolTipText;
 
-        public ResultRowSetter(AntiDupl.NET.Options options, DataGridView dataGridView)
+        public ResultRowSetter(AntiDupl.NET.WinForms.Options options, DataGridView dataGridView)
         {
             m_options = options;
             m_dataGridView = dataGridView;

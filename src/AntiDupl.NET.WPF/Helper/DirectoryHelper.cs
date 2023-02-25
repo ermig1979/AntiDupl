@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AntiDuplWPF.Helper
+namespace AntiDupl.NET.WPF.Helper
 {
     public class DirectoryHelper
     {

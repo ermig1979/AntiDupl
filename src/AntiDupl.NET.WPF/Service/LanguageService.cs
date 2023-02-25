@@ -7,12 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using AntiDuplWPF.Command;
-using AntiDuplWPF.Model;
-using AntiDuplWPF.ObjectModel;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.Command;
+using AntiDupl.NET.WPF.Model;
+using AntiDupl.NET.WPF.ObjectModel;
+using AntiDupl.NET.WPF.ViewModel;
 
-namespace AntiDuplWPF.Service
+namespace AntiDupl.NET.WPF.Service
 {
     class LanguageService : ILanguageService
     {

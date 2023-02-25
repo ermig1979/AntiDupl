@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using AntiDuplWPF.Command;
-using AntiDuplWPF.DragDrop;
-using AntiDuplWPF.Model;
+using AntiDupl.NET.WPF.Command;
+using AntiDupl.NET.WPF.DragDrop;
+using AntiDupl.NET.WPF.Model;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
-namespace AntiDuplWPF.ViewModel
+namespace AntiDupl.NET.WPF.ViewModel
 {
     class PathViewModel : PropertyChangedBase, IDropable
     {

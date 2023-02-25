@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using AntiDupl.NET.Core.Original;
 
-namespace AntiDuplWPF.Service
+namespace AntiDupl.NET.WPF.Service
 {
     interface IImageLoader
     {

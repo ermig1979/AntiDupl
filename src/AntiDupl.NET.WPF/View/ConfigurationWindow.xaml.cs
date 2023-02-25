@@ -1,4 +1,4 @@
-﻿namespace AntiDuplWPF.View
+﻿namespace AntiDupl.NET.WPF.View
 {
     public partial class ConfigurationWindow
     {

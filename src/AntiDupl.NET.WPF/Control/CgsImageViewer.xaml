@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="AntiDuplWPF.Control.CgsImageViewer"
+﻿<UserControl x:Class="AntiDupl.NET.WPF.Control.CgsImageViewer"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:control="clr-namespace:AntiDuplWPF.Control"
+             xmlns:control="clr-namespace:AntiDupl.NET.WPF.Control"
              mc:Ignorable="d" 
              MinWidth="320" 
              MinHeight="250"
@@ -70,16 +70,16 @@
                             </Style>
                         </StackPanel.Resources>
                         <Button x:Name="btnSelectZoom" Margin="50,0,0,0" Click="btnSelectZoom_Click" ToolTip="Change Zoom Level">
-                            <Image Width="24" Source="/AntiDuplWPF;component/Image/spyglass24x24.png" />
+                            <Image Width="24" Source="/AntiDupl.NET.WPF;component/Image/spyglass24x24.png" />
                         </Button>
                         <Button x:Name="btnFitSize" Margin="10,0,0,0" Click="btnFitSize_Click" ToolTip="Fit Image to Display">
-                            <Image Width="24" Source="/AntiDuplWPF;component/Image/fit_size24x24.png" />
+                            <Image Width="24" Source="/AntiDupl.NET.WPF;component/Image/fit_size24x24.png" />
                         </Button>
                         <Button x:Name="btnRotateLeft" Margin="45,0,0,0" Click="btnRotateLeft_Click" ToolTip="Rotate Image Left">
-                            <Image Width="24" Source="/AntiDuplWPF;component/Image/rotate_left24x24.png" />
+                            <Image Width="24" Source="/AntiDupl.NET.WPF;component/Image/rotate_left24x24.png" />
                         </Button>
                         <Button x:Name="btnRotateRight" Margin="10,0,0,0" Click="btnRotateRight_Click" ToolTip="Rotate Image Right">
-                            <Image Width="24" Source="/AntiDuplWPF;component/Image/rotate_right24x24.png" />
+                            <Image Width="24" Source="/AntiDupl.NET.WPF;component/Image/rotate_right24x24.png" />
                         </Button>
                     </StackPanel>
                 </Border>

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.ViewModel;
 
-namespace AntiDuplWPF.View
+namespace AntiDupl.NET.WPF.View
 {
     public interface IWindowService
     {

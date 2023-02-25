@@ -6,16 +6,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Xml.Serialization;
-using AntiDuplWPF.Command;
-using AntiDuplWPF.Core;
-using AntiDuplWPF.Helper;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.Command;
+using AntiDupl.NET.WPF.Core;
+using AntiDupl.NET.WPF.Helper;
+using AntiDupl.NET.WPF.ViewModel;
 
 using AntiDupl.NET.Core;
 using AntiDupl.NET.Core.Original;
 using static System.Formats.Asn1.AsnWriter;
 
-namespace AntiDuplWPF.Model
+namespace AntiDupl.NET.WPF.Model
 {
     [Serializable()]
     [XmlInclude(typeof(Location))]
@@ -123,9 +123,9 @@ namespace AntiDuplWPF.Model
             }
             _core.searchPath = (CorePathWithSubFolder[])searchPathes.ToArray();
             /*locations = IgnoreLocations.Select(l => l.Model);
-            _core.SetLocation(locations, AntiDuplWPF.Core.CoreDll.PathType.Ignore);
+            _core.SetLocation(locations, AntiDupl.NET.WPF.Core.CoreDll.PathType.Ignore);
             locations = ValidLocations.Select(l => l.Model);
-            _core.SetLocation(locations, AntiDuplWPF.Core.CoreDll.PathType.Valid);*/
+            _core.SetLocation(locations, AntiDupl.NET.WPF.Core.CoreDll.PathType.Valid);*/
         }
 
         ICommand _deleteLocationCommand;

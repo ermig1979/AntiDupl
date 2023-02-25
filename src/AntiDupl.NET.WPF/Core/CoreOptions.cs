@@ -30,9 +30,9 @@ using System.Xml;
 using System.Xml.Serialization;
 
 using AntiDupl.NET.Core;
-using AntiDuplWPF.Resources;
+using AntiDupl.NET.WPF.Resources;
 
-namespace AntiDuplWPF.Core
+namespace AntiDupl.NET.WPF.Core
 {
     public class CoreOptions
     {
@@ -93,7 +93,7 @@ namespace AntiDuplWPF.Core
 
             ignorePath = new CorePathWithSubFolder[1];
             ignorePath[0] = new CorePathWithSubFolder();
-            ignorePath[0].path = AntiDuplWPF.Resources.Resources.DataPath;
+            ignorePath[0].path = AntiDupl.NET.WPF.Resources.Resources.DataPath;
         }
 
         public void Get(CoreLib core, bool onePath)
@@ -276,7 +276,7 @@ namespace AntiDuplWPF.Core
 
         public string GetImageDataBasePath()
         {
-            string directory = string.Format("{0}\\images\\{1}x{1}", AntiDuplWPF.Resources.Resources.UserPath, advancedOptions.reducedImageSize);
+            string directory = string.Format("{0}\\images\\{1}x{1}", AntiDupl.NET.WPF.Resources.Resources.UserPath, advancedOptions.reducedImageSize);
             DirectoryInfo directoryInfo = new DirectoryInfo(directory);
             if (!directoryInfo.Exists)
                 directoryInfo.Create();

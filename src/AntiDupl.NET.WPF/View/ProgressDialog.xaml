@@ -1,7 +1,7 @@
-﻿<Window x:Class="AntiDuplWPF.View.ProgressDialog"
+﻿<Window x:Class="AntiDupl.NET.WPF.View.ProgressDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:AntiDuplWPF.Control"
+        xmlns:controls="clr-namespace:AntiDupl.NET.WPF.Control"
         Title="ProgressDialog" Height="100" Width="600" >
     <Grid >
         <Grid.ColumnDefinitions>

@@ -4,11 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AntiDuplWPF.ObjectModel;
-using AntiDuplWPF.UndoRedo;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.ObjectModel;
+using AntiDupl.NET.WPF.UndoRedo;
+using AntiDupl.NET.WPF.ViewModel;
 
-namespace AntiDuplWPF.Helper
+namespace AntiDupl.NET.WPF.Helper
 {
     public class RenameHelper
     {

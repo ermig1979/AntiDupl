@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AntiDuplWPF.ObjectModel.ByPath
+namespace AntiDupl.NET.WPF.ObjectModel.ByPath
 {
     class BestImageShouldBeInDirectory : IBestSelectingByPath
     {

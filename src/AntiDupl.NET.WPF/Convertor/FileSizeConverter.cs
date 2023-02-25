@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace AntiDuplWPF.Convertor
+namespace AntiDupl.NET.WPF.Convertor
 {
     [ValueConversion(typeof(long), typeof(string))]
     public class FileSizeConverter : IValueConverter

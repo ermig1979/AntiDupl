@@ -6,12 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using AntiDuplWPF.Command;
-using AntiDuplWPF.Helper;
-using AntiDuplWPF.Model;
-using AntiDuplWPF.ObjectModel;
+using AntiDupl.NET.WPF.Command;
+using AntiDupl.NET.WPF.Helper;
+using AntiDupl.NET.WPF.Model;
+using AntiDupl.NET.WPF.ObjectModel;
 
-namespace AntiDuplWPF.ViewModel
+namespace AntiDupl.NET.WPF.ViewModel
 {
     public class PrioritiesViewModel : PropertyChangedBase, IClosingViewModel
     {

@@ -31,7 +31,7 @@ using System.IO;
 using AntiDupl.NET.Core;
 using AntiDupl.NET.Core.Original;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     /// <summary>
     /// Панель одного изображения и информации о нем, checkbox.
@@ -44,7 +44,7 @@ namespace AntiDupl.NET
         private CoreLib m_core;
         private CoreGroup m_group;
         private int m_index;
-        private AntiDupl.NET.Options m_options;
+        private AntiDupl.NET.WinForms.Options m_options;
         private ThumbnailGroupPanel m_thumbnailGroupPanel;
 
         private TableLayoutPanel m_mainLayout;
@@ -82,7 +82,7 @@ namespace AntiDupl.NET
 
         public CoreImageInfo ImageInfo { get { return m_group.images[m_index]; } }
 
-        public ThumbnailPanel(CoreLib core, AntiDupl.NET.Options options, CoreGroup group, int index, ThumbnailGroupPanel thumbnailGroupPanel)
+        public ThumbnailPanel(CoreLib core, AntiDupl.NET.WinForms.Options options, CoreGroup group, int index, ThumbnailGroupPanel thumbnailGroupPanel)
         {
             m_core = core;
             m_options = options;

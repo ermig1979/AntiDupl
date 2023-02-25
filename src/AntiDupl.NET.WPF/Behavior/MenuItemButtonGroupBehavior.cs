@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Xaml.Behaviors;
-using AntiDuplWPF.Model;
-using AntiDuplWPF.ObjectModel;
+using AntiDupl.NET.WPF.Model;
+using AntiDupl.NET.WPF.ObjectModel;
 using TinyIoC;
 
-namespace AntiDuplWPF.Behavior
+namespace AntiDupl.NET.WPF.Behavior
 {
     public class MenuItemButtonGroupBehavior : Behavior<MenuItem>
     {

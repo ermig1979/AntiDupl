@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AntiDuplWPF.Helper;
+using AntiDupl.NET.WPF.Helper;
 
-namespace AntiDuplWPF.UndoRedo
+namespace AntiDupl.NET.WPF.UndoRedo
 {
     class DeleteMultiCommand : IUCommand
     {

@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using AntiDuplWPF.Core;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.Core;
+using AntiDupl.NET.WPF.ViewModel;
 
 using AntiDupl.NET.Core;
 using AntiDupl.NET.Core.Original;
 
-namespace AntiDuplWPF.Command
+namespace AntiDupl.NET.WPF.Command
 {
     class CalculateHistogramPeaksCommand :  ICommand
     {

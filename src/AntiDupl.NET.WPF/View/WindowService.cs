@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.ViewModel;
 
-namespace AntiDuplWPF.View
+namespace AntiDupl.NET.WPF.View
 {
     public class WindowService : IWindowService
     {

@@ -8,7 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Image = System.Windows.Controls.Image;
 
-namespace AntiDuplWPF.Behavior
+namespace AntiDupl.NET.WPF.Behavior
 {
     // http://stackoverflow.com/questions/11305577/grey-out-image-on-button-when-element-is-disabled-simple-and-beautiful-way
     public class GrayoutImageBehavior

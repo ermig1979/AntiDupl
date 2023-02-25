@@ -29,7 +29,7 @@ using System.IO;
 
 using AntiDupl.NET.Core.Original;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     /// <summary>
     /// Setting for table out (ListView).

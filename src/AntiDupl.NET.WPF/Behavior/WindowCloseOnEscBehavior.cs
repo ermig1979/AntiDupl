@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using Microsoft.Xaml.Behaviors;
 
-namespace AntiDuplWPF.Behavior
+namespace AntiDupl.NET.WPF.Behavior
 {
     class WindowCloseOnEscBehavior : Behavior<Window>
     {

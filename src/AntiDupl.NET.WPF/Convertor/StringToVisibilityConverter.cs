@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace AntiDuplWPF.Convertor
+namespace AntiDupl.NET.WPF.Convertor
 {
     [ValueConversion(typeof(string), typeof(Visibility))]
     public class StringToVisibilityConverter : IValueConverter

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Xaml.Behaviors;
 using System.Windows.Controls;
-using AntiDuplWPF.Helper;
+using AntiDupl.NET.WPF.Helper;
 using TinyIoC;
-using AntiDuplWPF.Model;
+using AntiDupl.NET.WPF.Model;
 
-namespace AntiDuplWPF.Behavior
+namespace AntiDupl.NET.WPF.Behavior
 {
     public class ImagePropertyBehavior : Behavior<Image>
     {

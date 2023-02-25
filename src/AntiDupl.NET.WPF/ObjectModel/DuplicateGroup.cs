@@ -4,10 +4,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AntiDuplWPF.ObjectModel.ConfigurableAction;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.ObjectModel.ConfigurableAction;
+using AntiDupl.NET.WPF.ViewModel;
 
-namespace AntiDuplWPF.ObjectModel
+namespace AntiDupl.NET.WPF.ObjectModel
 {
     public class DuplicateGroup
     {

@@ -4,10 +4,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AntiDuplWPF.Model;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.Model;
+using AntiDupl.NET.WPF.ViewModel;
 
-namespace AntiDuplWPF.UndoRedo
+namespace AntiDupl.NET.WPF.UndoRedo
 {
     public class UndoRedoEngine : PropertyChangedBase, INotifyPropertyChanged, IUndoRedoEngine
     {

@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
-using AntiDuplWPF.Helper;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.Helper;
+using AntiDupl.NET.WPF.ViewModel;
 
-namespace AntiDuplWPF.Command
+namespace AntiDupl.NET.WPF.Command
 {
     class ConvertToDuplPairCommand : ICommand
     {

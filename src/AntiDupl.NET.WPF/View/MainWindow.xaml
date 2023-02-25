@@ -1,16 +1,16 @@
-﻿<Window x:Class="AntiDuplWPF.View.MainWindow"
+﻿<Window x:Class="AntiDupl.NET.WPF.View.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-        xmlns:behavior="clr-namespace:AntiDuplWPF.Behavior"
-        xmlns:control="clr-namespace:AntiDuplWPF.Control"
-        xmlns:convertor="clr-namespace:AntiDuplWPF.Convertor"
-        xmlns:objectModel="clr-namespace:AntiDuplWPF.ObjectModel"
+        xmlns:behavior="clr-namespace:AntiDupl.NET.WPF.Behavior"
+        xmlns:control="clr-namespace:AntiDupl.NET.WPF.Control"
+        xmlns:convertor="clr-namespace:AntiDupl.NET.WPF.Convertor"
+        xmlns:objectModel="clr-namespace:AntiDupl.NET.WPF.ObjectModel"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        xmlns:viewModel="clr-namespace:AntiDuplWPF.ViewModel"
-        xmlns:helper="clr-namespace:AntiDuplWPF.Helper"
+        xmlns:viewModel="clr-namespace:AntiDupl.NET.WPF.ViewModel"
+        xmlns:helper="clr-namespace:AntiDupl.NET.WPF.Helper"
         Title="{Binding Title, Mode=OneWay}"
         Height="350" Width="625"
         d:DataContext="{d:DesignInstance viewModel:MainViewModel, IsDesignTimeCreatable=False}"
@@ -254,7 +254,7 @@
                                         <Button ToolTip="{DynamicResource mainwindow_tabControl_duplPair_ignore}" 
                                     Command="{Binding DataContext.ExecuteIgnorePairCommand, Source={x:Reference dummyElement}}"
                                     CommandParameter="{Binding}" >
-                                            <Image Source ="/AntiDuplWPF;component/Image/MistakeButton.png" MaxHeight="24" />
+                                            <Image Source ="/AntiDupl.NET.WPF;component/Image/MistakeButton.png" MaxHeight="24" />
                                         </Button>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -860,32 +860,32 @@
                                         ToolTip="{DynamicResource mainwindow_tooltip_Delete}"
                                         Background="{Binding Result/, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource deleteBackgroundValueConverter},
                                             ConverterParameter={x:Static objectModel:PositionInDuplPair.First}}">
-                                    <Image Source ="/AntiDuplWPF;component/Image/DeleteIcon16.png" MaxHeight="24" />
+                                    <Image Source ="/AntiDupl.NET.WPF;component/Image/DeleteIcon16.png" MaxHeight="24" />
                                 </Button>
                                 <Button ToolTip="{DynamicResource mainwindow_tooltip_MoveFirstToNeighbourDirectory}" 
                                     Command="{Binding MoveFirstToNeighbourDirectoryCommand}"
                                     CommandParameter="{Binding Result}" 
                                     Style="{StaticResource CollapsedButton}" >
-                                    <Image Source ="/AntiDuplWPF;component/Image/MoveFirstToSecondVerticalButton.png" 
+                                    <Image Source ="/AntiDupl.NET.WPF;component/Image/MoveFirstToSecondVerticalButton.png" 
                                            MaxHeight="24" />
                                 </Button>
                                 <Button ToolTip="{Binding RenameFirstLikeSecondText, Mode=OneWay}"
                                     Command="{Binding RenameFirstLikeSecondCommand}"
                                     CommandParameter="{Binding Result}" >
-                                    <Image Source ="/AntiDuplWPF;component/Image/AB.jpg" 
+                                    <Image Source ="/AntiDupl.NET.WPF;component/Image/AB.jpg" 
                                            MaxHeight="24" />
                                 </Button>
                                 <Button ToolTip="{DynamicResource mainwindow_tooltip_MoveAndRename}" 
                                     Command="{Binding MoveAndRenameCommand}"
                                     CommandParameter="{Binding Result}"
                                     Style="{StaticResource CollapsedButton}">
-                                    <Image Source ="/AntiDuplWPF;component/Image/MoveAndRenameSecondLikeFirstVertical.png" 
+                                    <Image Source ="/AntiDupl.NET.WPF;component/Image/MoveAndRenameSecondLikeFirstVertical.png" 
                                            MaxHeight="24" />
                                 </Button>
                                 <Button ToolTip="{DynamicResource mainwindow_tooltip_ReplaseNeighbour}"
                                     Command="{Binding ReplaseSecondCommand}"
                                     CommandParameter="{Binding Result}">
-                                    <Image Source ="/AntiDuplWPF;component/Image/ReplaceSecondVerticalButton.png" 
+                                    <Image Source ="/AntiDupl.NET.WPF;component/Image/ReplaceSecondVerticalButton.png" 
                                            MaxHeight="24" />
                                 </Button>
                             </StackPanel>
@@ -893,7 +893,7 @@
                                     ToolTip="{DynamicResource mainwindow_tooltip_Ignore}" 
                                     Command="{Binding ExecuteIgnorePairCommand}" 
                                     CommandParameter="{Binding Result}" >
-                                <Image Source ="/AntiDuplWPF;component/Image/MistakeButton.png" 
+                                <Image Source ="/AntiDupl.NET.WPF;component/Image/MistakeButton.png" 
                                        MaxHeight="24" />
                             </Button>
 
@@ -904,26 +904,26 @@
                                     Command="{Binding MoveSecondToNeighbourDirectoryCommand}"
                                     CommandParameter="{Binding Result}" 
                                     Style="{StaticResource CollapsedButton}" >
-                                    <Image Source ="/AntiDuplWPF;component/Image/MoveSecondToFirstVerticalButton.png" 
+                                    <Image Source ="/AntiDupl.NET.WPF;component/Image/MoveSecondToFirstVerticalButton.png" 
                                            MaxHeight="24" />
                                 </Button>
                                 <Button ToolTip="{Binding RenameSecondLikeFirstText, Mode=OneWay}"
                                     Command="{Binding RenameSecondLikeFirstCommand}"
                                     CommandParameter="{Binding Result}" >
-                                    <Image Source ="/AntiDuplWPF;component/Image/AB.jpg" 
+                                    <Image Source ="/AntiDupl.NET.WPF;component/Image/AB.jpg" 
                                            MaxHeight="24" />
                                 </Button>
                                 <Button ToolTip="{DynamicResource mainwindow_tooltip_MoveAndRename}" 
                                     Command="{Binding MoveAndRenameCommand}"
                                     CommandParameter="{Binding Result}"
                                     Style="{StaticResource CollapsedButton}">
-                                    <Image Source ="/AntiDuplWPF;component/Image/MoveAndRenameSecondLikeFirstVertical.png" 
+                                    <Image Source ="/AntiDupl.NET.WPF;component/Image/MoveAndRenameSecondLikeFirstVertical.png" 
                                            MaxHeight="24" />
                                 </Button>
                                 <Button ToolTip="{DynamicResource mainwindow_tooltip_ReplaseNeighbour}"
                                     Command="{Binding ReplaseFirstCommand}"
                                     CommandParameter="{Binding Result}" >
-                                    <Image Source ="/AntiDuplWPF;component/Image/ReplaceFirstVerticalButton.png" 
+                                    <Image Source ="/AntiDupl.NET.WPF;component/Image/ReplaceFirstVerticalButton.png" 
                                            MaxHeight="24" />
                                 </Button>
                                 <Button Command="{Binding DeleteImageCommand}"
@@ -931,7 +931,7 @@
                                         ToolTip="{DynamicResource mainwindow_tooltip_Delete}" 
                                         Background="{Binding Result/, Converter={StaticResource deleteBackgroundValueConverter},
                                         ConverterParameter={x:Static objectModel:PositionInDuplPair.Second}}">
-                                    <Image Source ="/AntiDuplWPF;component/Image/DeleteIcon16.png" 
+                                    <Image Source ="/AntiDupl.NET.WPF;component/Image/DeleteIcon16.png" 
                                            MaxHeight="24" />
                                 </Button>
                             </StackPanel>

@@ -31,7 +31,7 @@ using AntiDupl.NET.Core;
 using AntiDupl.NET.Core.Original;
 using AntiDupl.NET.Core.Enums;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     /// <summary>
     /// Главная панель инструментов.

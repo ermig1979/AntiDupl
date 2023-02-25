@@ -32,7 +32,7 @@ using System.Threading;
 using AntiDupl.NET.Core;
 using AntiDupl.NET.Core.Original;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     public class StartFinishForm : Form
     {
@@ -71,7 +71,7 @@ namespace AntiDupl.NET
 
         private void InitializeComponent()
         {
-            ClientSize = new System.Drawing.Size(310, 310);
+            ClientSize = new System.Drawing.Size(330, 310);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             StartPosition = FormStartPosition.CenterScreen;
             ShowInTaskbar = false;

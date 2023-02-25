@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using AntiDuplWPF.Model;
-using AntiDuplWPF.ObjectModel;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.Model;
+using AntiDupl.NET.WPF.ObjectModel;
+using AntiDupl.NET.WPF.ViewModel;
 using TinyIoC;
 
-namespace AntiDuplWPF.Service
+namespace AntiDupl.NET.WPF.Service
 {
-    class ThumbnailProvider : PropertyChangedBase, AntiDuplWPF.Service.IThumbnailProvider
+    class ThumbnailProvider : PropertyChangedBase, AntiDupl.NET.WPF.Service.IThumbnailProvider
     {
         //from http://rsdn.org/article/dotnet/CSThreading1.xml
         EventWaitHandle wh = new AutoResetEvent(false);

@@ -5,16 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using AntiDuplWPF.Helper;
-using AntiDuplWPF.Model;
-using AntiDuplWPF.ObjectModel;
-using AntiDuplWPF.ObjectModel.ConfigurableAction;
+using AntiDupl.NET.WPF.Helper;
+using AntiDupl.NET.WPF.Model;
+using AntiDupl.NET.WPF.ObjectModel;
+using AntiDupl.NET.WPF.ObjectModel.ConfigurableAction;
 using TinyIoC;
 
 using AntiDupl.NET.Core.Original;
 using AntiDupl.NET.Core;
 
-namespace AntiDuplWPF.ViewModel
+namespace AntiDupl.NET.WPF.ViewModel
 {
     [Serializable]
     public class DuplPairViewModel

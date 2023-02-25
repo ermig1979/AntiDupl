@@ -29,7 +29,7 @@ using System.Xml.Serialization;
 using System.IO;
 using System.Windows.Forms;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     public class Options
     {

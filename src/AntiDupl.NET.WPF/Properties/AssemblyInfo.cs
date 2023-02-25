@@ -7,11 +7,11 @@ using System.Windows;
 // Управление общими сведениями о сборке осуществляется с помощью 
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
-[assembly: AssemblyTitle("AntiDuplWPF")]
+[assembly: AssemblyTitle("AntiDupl.NET.WPF")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("AntiDuplWPF")]
+[assembly: AssemblyProduct("AntiDupl.NET.WPF")]
 [assembly: AssemblyCopyright("Copyright Ihar Yermalayeu, Borisov Dmitry ©  2017-2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

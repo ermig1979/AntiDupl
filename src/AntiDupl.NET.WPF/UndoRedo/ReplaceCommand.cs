@@ -6,11 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AntiDuplWPF.Helper;
-using AntiDuplWPF.ObjectModel;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.Helper;
+using AntiDupl.NET.WPF.ObjectModel;
+using AntiDupl.NET.WPF.ViewModel;
 
-namespace AntiDuplWPF.UndoRedo
+namespace AntiDupl.NET.WPF.UndoRedo
 {
     class ReplaceCommand : IUCommand
     {

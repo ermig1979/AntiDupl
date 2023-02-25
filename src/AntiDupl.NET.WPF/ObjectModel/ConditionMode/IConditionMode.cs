@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AntiDuplWPF.ObjectModel.ConditionMode
+namespace AntiDupl.NET.WPF.ObjectModel.ConditionMode
 {
     public interface IConditionMode
     {

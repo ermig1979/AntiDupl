@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using AntiDuplWPF.Command;
-using AntiDuplWPF.ObjectModel;
+using AntiDupl.NET.WPF.Command;
+using AntiDupl.NET.WPF.ObjectModel;
 
-namespace AntiDuplWPF.ViewModel
+namespace AntiDupl.NET.WPF.ViewModel
 {
     public class ProgressDialogViewModel : PropertyChangedBase
     {

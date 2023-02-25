@@ -27,7 +27,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     /// <summary>
     /// Фабрика создает элементы GUI

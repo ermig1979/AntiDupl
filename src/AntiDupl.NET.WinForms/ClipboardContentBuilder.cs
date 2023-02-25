@@ -28,10 +28,10 @@ using System.Windows.Forms;
 
 using AntiDupl.NET.Core;
 
-using TypeVertical = AntiDupl.NET.ResultsListView.ColumnsTypeVertical;
-using TypeHorizontal = AntiDupl.NET.ResultsListView.ColumnsTypeHorizontal;
+using TypeVertical = AntiDupl.NET.WinForms.ResultsListView.ColumnsTypeVertical;
+using TypeHorizontal = AntiDupl.NET.WinForms.ResultsListView.ColumnsTypeHorizontal;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     public class ClipboardContentBuilder
     {

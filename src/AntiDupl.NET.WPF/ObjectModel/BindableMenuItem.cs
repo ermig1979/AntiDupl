@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace AntiDuplWPF.ObjectModel
+namespace AntiDupl.NET.WPF.ObjectModel
 {
     public class BindableMenuItem
     {

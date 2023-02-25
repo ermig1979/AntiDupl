@@ -4,14 +4,14 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AntiDuplWPF.ObjectModel.ByImageProperty;
-using AntiDuplWPF.ObjectModel.ByPath;
-using AntiDuplWPF.ObjectModel.ConditionMode;
-using AntiDuplWPF.ObjectModel.DirectoryFilter;
-using AntiDuplWPF.ObjectModel.GettingNumber;
-using AntiDuplWPF.UndoRedo;
+using AntiDupl.NET.WPF.ObjectModel.ByImageProperty;
+using AntiDupl.NET.WPF.ObjectModel.ByPath;
+using AntiDupl.NET.WPF.ObjectModel.ConditionMode;
+using AntiDupl.NET.WPF.ObjectModel.DirectoryFilter;
+using AntiDupl.NET.WPF.ObjectModel.GettingNumber;
+using AntiDupl.NET.WPF.UndoRedo;
 
-namespace AntiDuplWPF.ObjectModel.ActionGenerator
+namespace AntiDupl.NET.WPF.ObjectModel.ActionGenerator
 {
     class AllBestGenerator : ConfigurableActionGenerator
     {

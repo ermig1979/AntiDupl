@@ -7,21 +7,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using AntiDuplWPF.Command;
-using AntiDuplWPF.Helper;
-using AntiDuplWPF.Model;
-using AntiDuplWPF.ObjectModel;
-using AntiDuplWPF.ObjectModel.ActionGenerator;
-using AntiDuplWPF.ObjectModel.ByImageProperty;
-using AntiDuplWPF.ObjectModel.ByPath;
-using AntiDuplWPF.ObjectModel.ConditionMode;
-using AntiDuplWPF.ObjectModel.ConfigurableAction;
-using AntiDuplWPF.ObjectModel.DirectoryFilter;
-using AntiDuplWPF.ObjectModel.GettingNumber;
-using AntiDuplWPF.UndoRedo;
-using AntiDuplWPF.View;
+using AntiDupl.NET.WPF.Command;
+using AntiDupl.NET.WPF.Helper;
+using AntiDupl.NET.WPF.Model;
+using AntiDupl.NET.WPF.ObjectModel;
+using AntiDupl.NET.WPF.ObjectModel.ActionGenerator;
+using AntiDupl.NET.WPF.ObjectModel.ByImageProperty;
+using AntiDupl.NET.WPF.ObjectModel.ByPath;
+using AntiDupl.NET.WPF.ObjectModel.ConditionMode;
+using AntiDupl.NET.WPF.ObjectModel.ConfigurableAction;
+using AntiDupl.NET.WPF.ObjectModel.DirectoryFilter;
+using AntiDupl.NET.WPF.ObjectModel.GettingNumber;
+using AntiDupl.NET.WPF.UndoRedo;
+using AntiDupl.NET.WPF.View;
 
-namespace AntiDuplWPF.ViewModel
+namespace AntiDupl.NET.WPF.ViewModel
 {
     class ConfigurableActionViewModel : CloseableViewModel
     {

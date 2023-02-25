@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using AntiDuplWPF.Command;
-using AntiDuplWPF.Core;
-using AntiDuplWPF.Model;
-using AntiDuplWPF.Service;
-using AntiDuplWPF.View;
+using AntiDupl.NET.WPF.Command;
+using AntiDupl.NET.WPF.Core;
+using AntiDupl.NET.WPF.Model;
+using AntiDupl.NET.WPF.Service;
+using AntiDupl.NET.WPF.View;
 
 using AntiDupl.NET.Core;
 
-namespace AntiDuplWPF.ViewModel
+namespace AntiDupl.NET.WPF.ViewModel
 {
     public class ConfigurationViewModel : PropertyChangedBase
     {

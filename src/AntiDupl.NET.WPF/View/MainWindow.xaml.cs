@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace AntiDuplWPF.View
+namespace AntiDupl.NET.WPF.View
 {
     public partial class MainWindow
     {

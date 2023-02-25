@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using AntiDuplWPF.Core;
-using AntiDuplWPF.View;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.Core;
+using AntiDupl.NET.WPF.View;
+using AntiDupl.NET.WPF.ViewModel;
 
 using AntiDupl.NET.Core;
 using AntiDupl.NET.Core.Original;
@@ -18,7 +18,7 @@ using System.Drawing;
 using System.ComponentModel.Composition.Primitives;
 using MS.WindowsAPICodePack.Internal;
 
-namespace AntiDuplWPF.Command
+namespace AntiDupl.NET.WPF.Command
 {
    public class SearchDllCommand : ICommand
     {

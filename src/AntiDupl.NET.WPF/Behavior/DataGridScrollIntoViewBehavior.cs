@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Xaml.Behaviors;
 
-namespace AntiDuplWPF.Behavior
+namespace AntiDupl.NET.WPF.Behavior
 {
     public class DataGridScrollIntoViewBehavior : Behavior<DataGrid>
     {

@@ -33,7 +33,7 @@ using System.IO;
 using System.Diagnostics;
 using System.ComponentModel;
 
-namespace AntiDuplWPF.Resources
+namespace AntiDupl.NET.WPF.Resources
 {
     static public class Resources
     {

@@ -5,10 +5,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AntiDuplWPF.UndoRedo;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.UndoRedo;
+using AntiDupl.NET.WPF.ViewModel;
 
-namespace AntiDuplWPF.ObjectModel.ConfigurableAction
+namespace AntiDupl.NET.WPF.ObjectModel.ConfigurableAction
 {
    /* class DeleteBadAction : IConfigurableAction
     {

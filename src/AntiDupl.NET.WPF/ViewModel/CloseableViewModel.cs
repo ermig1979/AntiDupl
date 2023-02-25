@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
-using AntiDuplWPF.Command;
+using AntiDupl.NET.WPF.Command;
 
-namespace AntiDuplWPF.ViewModel
+namespace AntiDupl.NET.WPF.ViewModel
 {
     public abstract class CloseableViewModel : PropertyChangedBase
     {

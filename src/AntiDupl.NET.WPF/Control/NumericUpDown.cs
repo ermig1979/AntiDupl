@@ -12,7 +12,7 @@ using System.Windows.Automation.Provider;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace AntiDuplWPF.Control
+namespace AntiDupl.NET.WPF.Control
 {
     public class NumericUpDown : System.Windows.Controls.Control
     {

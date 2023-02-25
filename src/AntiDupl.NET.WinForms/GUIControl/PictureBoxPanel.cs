@@ -32,7 +32,7 @@ using System.IO;
 using AntiDupl.NET.Core;
 using AntiDupl.NET.Core.Original;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     public class PictureBoxPanel : Panel
     {

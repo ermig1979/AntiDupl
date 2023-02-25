@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AntiDuplWPF.Convertor
+namespace AntiDupl.NET.WPF.Convertor
 {
     public enum MaxProperty
     {

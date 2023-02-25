@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using AntiDuplWPF.ObjectModel;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.ObjectModel;
+using AntiDupl.NET.WPF.ViewModel;
 
-namespace AntiDuplWPF.Convertor
+namespace AntiDupl.NET.WPF.Convertor
 {
     public class DuplResultMultiValueConverter : IMultiValueConverter
     {

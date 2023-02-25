@@ -12,7 +12,7 @@
     <Copyright>ErmIg © 2002-2023</Copyright>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <StartupObject>AntiDupl.NET.Program</StartupObject>
+    <StartupObject>AntiDupl.NET.WinForms.Program</StartupObject>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

@@ -8,7 +8,7 @@ using System.Windows;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace AntiDuplWPF.Helper
+namespace AntiDupl.NET.WPF.Helper
 {
     public class SerializeHelper<T>
     {

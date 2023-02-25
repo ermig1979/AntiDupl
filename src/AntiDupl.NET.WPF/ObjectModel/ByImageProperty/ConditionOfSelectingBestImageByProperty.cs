@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AntiDuplWPF.ObjectModel.ConditionMode;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.ObjectModel.ConditionMode;
+using AntiDupl.NET.WPF.ViewModel;
 
-namespace AntiDuplWPF.ObjectModel.ByImageProperty
+namespace AntiDupl.NET.WPF.ObjectModel.ByImageProperty
 {
     public class ConditionOfSelectingBestImageByProperty : PropertyChangedBase
     {

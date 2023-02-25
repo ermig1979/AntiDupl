@@ -5,10 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AntiDuplWPF.Helper;
-using AntiDuplWPF.ObjectModel;
+using AntiDupl.NET.WPF.Helper;
+using AntiDupl.NET.WPF.ObjectModel;
 
-namespace AntiDuplWPF.UndoRedo
+namespace AntiDupl.NET.WPF.UndoRedo
 {
     class DeleteCurrentImageCommand : IUCommand
     {

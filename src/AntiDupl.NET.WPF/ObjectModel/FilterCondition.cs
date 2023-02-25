@@ -4,13 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AntiDuplWPF.Helper;
-using AntiDuplWPF.ObjectModel.ConditionMode;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.Helper;
+using AntiDupl.NET.WPF.ObjectModel.ConditionMode;
+using AntiDupl.NET.WPF.ViewModel;
 
 using AntiDupl.NET.Core.Original;
 
-namespace AntiDuplWPF.ObjectModel
+namespace AntiDupl.NET.WPF.ObjectModel
 {
     public class FilterCondition : PropertyChangedBase
     {
@@ -59,8 +59,8 @@ namespace AntiDuplWPF.ObjectModel
             }
         }
 
-        //AntiDuplWPF.Core.CoreDll.TransformType _transformType;
-        //public AntiDuplWPF.Core.CoreDll.TransformType TransformType
+        //AntiDupl.NET.WPF.Core.CoreDll.TransformType _transformType;
+        //public AntiDupl.NET.WPF.Core.CoreDll.TransformType TransformType
         //      {
         //          get { return _transformType; }
         //    set

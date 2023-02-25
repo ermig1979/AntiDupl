@@ -6,9 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AntiDuplWPF.UndoRedo;
+using AntiDupl.NET.WPF.UndoRedo;
 
-namespace AntiDuplWPF.ObjectModel.ConfigurableAction
+namespace AntiDupl.NET.WPF.ObjectModel.ConfigurableAction
 {
     class DeleteOtherAction : IConfigurableAction
     {

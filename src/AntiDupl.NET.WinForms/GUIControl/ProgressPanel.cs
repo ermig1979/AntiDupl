@@ -28,7 +28,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.ComponentModel;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     public class ProgressPanel : Panel
     {

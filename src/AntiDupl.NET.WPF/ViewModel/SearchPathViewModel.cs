@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using AntiDuplWPF.Core;
-using AntiDuplWPF.Helper;
+using AntiDupl.NET.WPF.Core;
+using AntiDupl.NET.WPF.Helper;
 
 using AntiDupl.NET.Core.Original;
 
-namespace AntiDuplWPF.ViewModel
+namespace AntiDupl.NET.WPF.ViewModel
 {
     public class SearchPathViewModel : PropertyChangedBase
     {

@@ -25,7 +25,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     public class ComparableBitmap
     {

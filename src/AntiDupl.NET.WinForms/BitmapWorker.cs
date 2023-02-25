@@ -5,7 +5,7 @@ using AntiDupl.NET.Core;
 using AntiDupl.NET.Core.Enums;
 using AntiDupl.NET.Core.Original;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     public static class BitmapWorker
     {

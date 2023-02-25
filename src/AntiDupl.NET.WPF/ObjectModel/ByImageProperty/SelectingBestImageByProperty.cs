@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AntiDuplWPF.ViewModel;
+using AntiDupl.NET.WPF.ViewModel;
 
-namespace AntiDuplWPF.ObjectModel.ByImageProperty
+namespace AntiDupl.NET.WPF.ObjectModel.ByImageProperty
 {
     public class SelectingBestImageByProperty : PropertyChangedBase
     {

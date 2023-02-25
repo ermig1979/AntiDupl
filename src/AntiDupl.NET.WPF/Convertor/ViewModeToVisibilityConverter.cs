@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
-using AntiDuplWPF.ObjectModel;
+using AntiDupl.NET.WPF.ObjectModel;
 
-namespace AntiDuplWPF.Convertor
+namespace AntiDupl.NET.WPF.Convertor
 {
     [ValueConversion(typeof(ViewMode), typeof(Visibility))]
     public class ViewModeToVisibilityConverter : IValueConverter

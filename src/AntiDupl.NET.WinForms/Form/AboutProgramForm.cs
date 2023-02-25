@@ -29,7 +29,7 @@ using System.Windows.Forms;
 using AntiDupl.NET.Core;
 using AntiDupl.NET.Core.Enums;
 
-namespace AntiDupl.NET
+namespace AntiDupl.NET.WinForms
 {
     public class AboutProgramForm : Form
     {
@@ -47,7 +47,7 @@ namespace AntiDupl.NET
 
         private void InitializeComponent()
         {
-            ClientSize = new System.Drawing.Size(310, 350);
+            ClientSize = new System.Drawing.Size(350, 350);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             StartPosition = FormStartPosition.CenterScreen;
             ShowInTaskbar = false;
