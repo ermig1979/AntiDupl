@@ -7,7 +7,7 @@ exit 1
 )
 
 set ROOT_DIR=..
-set VERSION_FILE=%ROOT_DIR%\src\AntiDupl\version.txt
+set VERSION_FILE=%ROOT_DIR%\src\version.txt
 
 if not exist %VERSION_FILE% (
 echo Can't find "%VERSION_FILE%" file!
@@ -32,11 +32,13 @@ if not exist %TMP_DIR% mkdir %TMP_DIR%
 
 xcopy %ROOT_DIR%\src\* %TMP_DIR%\src\* /y /i
 xcopy %ROOT_DIR%\src\AntiDupl\* %TMP_DIR%\src\AntiDupl\* /y /i
-xcopy %ROOT_DIR%\src\AntiDupl\AntiDupl\* %TMP_DIR%\src\AntiDupl\AntiDupl\* /y /i
-xcopy %ROOT_DIR%\src\AntiDupl\AntiDupl.NET\* %TMP_DIR%\src\AntiDupl\AntiDupl.NET\* /y /i
-xcopy %ROOT_DIR%\src\AntiDupl\AntiDupl.NET\Form\* %TMP_DIR%\src\AntiDupl\AntiDupl.NET\Form\* /y /i
-xcopy %ROOT_DIR%\src\AntiDupl\AntiDupl.NET\GUIControl\* %TMP_DIR%\src\AntiDupl\AntiDupl.NET\GUIControl\* /y /i
-xcopy %ROOT_DIR%\src\AntiDupl\AntiDupl.NET\Properties\* %TMP_DIR%\src\AntiDupl\AntiDupl.NET\Properties\* /y /i
+xcopy %ROOT_DIR%\src\AntiDupl.NET.WinForms\* %TMP_DIR%\src\AntiDupl.NET.WinForms\* /y /i
+xcopy %ROOT_DIR%\src\AntiDupl.NET.Core\* %TMP_DIR%\src\AntiDupl.NET.Core\* /y /i
+xcopy %ROOT_DIR%\src\AntiDupl.NET.Core\Enums\* %TMP_DIR%\src\AntiDupl.NET.Core\Enums\* /y /i
+xcopy %ROOT_DIR%\src\AntiDupl.NET.Core\Original\* %TMP_DIR%\src\AntiDupl.NET.Core\Original\* /y /i
+xcopy %ROOT_DIR%\src\AntiDupl.NET.WinForms\Form\* %TMP_DIR%\src\AntiDupl.NET.WinForms\Form\* /y /i
+xcopy %ROOT_DIR%\src\AntiDupl.NET.WinForms\GUIControl\* %TMP_DIR%\src\AntiDupl.NET.WinForms\GUIControl\* /y /i
+xcopy %ROOT_DIR%\src\AntiDupl.NET.WinForms\Properties\* %TMP_DIR%\src\AntiDupl.NET.WinForms\Properties\* /y /i
 xcopy %ROOT_DIR%\docs\* %TMP_DIR%\docs\* /y /i /s
 xcopy %ROOT_DIR%\cmd\* %TMP_DIR%\cmd\* /y /i /s
 

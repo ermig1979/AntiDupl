@@ -8,7 +8,7 @@ exit 1
 
 set ROOT_DIR=..
 set RELEASE_DIR=%ROOT_DIR%\bin\Release
-set VERSION_FILE=%ROOT_DIR%\src\AntiDupl\version.txt
+set VERSION_FILE=%ROOT_DIR%\src\version.txt
 
 if not exist %RELEASE_DIR% (
 echo Can't find "%RELEASE_DIR%" directory!

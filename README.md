@@ -37,7 +37,7 @@ e.g. by using git:
 ```
 5. Open Visual solution file
 ```
-	src\AntiDupl\AntiDupl.sln
+	src\AntiDupl.sln
 ```
 6. Start building AntiDupl.NET in Visual Studio.
 Depended libraries will be automatically loaded and build by vcpkg

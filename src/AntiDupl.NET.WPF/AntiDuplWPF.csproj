@@ -1,0 +1,216 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <OutputType>WinExe</OutputType>
+    <PublishUrl>publish</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <Platforms>x64</Platforms>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>AntiDuplWPF.App</StartupObject>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <BaseOutputPath>..\..\bin\Debug\</BaseOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <BaseOutputPath>..\..\bin\Release\</BaseOutputPath>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\check.png" />
+    <Resource Include="Image\search_clear.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\loading.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\redo-3-32.png" />
+    <Resource Include="Image\undo-3-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\arrow-190-64-left.png" />
+    <Resource Include="Image\arrow-190-64-rigth.png" />
+    <Resource Include="Image\fit_size24x24.png" />
+    <Resource Include="Image\rotate_left24x24.png" />
+    <Resource Include="Image\rotate_right24x24.png" />
+    <Resource Include="Image\spyglass24x24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\DeleteIcon16.png" />
+    <Resource Include="Image\MistakeButton.png" />
+    <Resource Include="Image\MoveFirstToSecondVerticalButton.png" />
+    <Resource Include="Image\MoveSecondToFirstVerticalButton.png" />
+    <Resource Include="Image\ReplaceFirstVerticalButton.png" />
+    <Resource Include="Image\ReplaceSecondVerticalButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\AB.jpg" />
+    <Resource Include="Image\MoveAndRenameFirstLikeSecondVertical.png" />
+    <Resource Include="Image\MoveAndRenameSecondLikeFirstVertical.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.8">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.8 %28x86 und x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>Клиентский профиль .NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\img\PathsButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\img\BlockinessIcon.png" />
+    <Resource Include="Image\img\BlurringIcon.png" />
+    <Resource Include="Image\img\DefectIcon.png" />
+    <Resource Include="Image\img\DeleteBothesHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteBothesHorizontalMenu.png" />
+    <Resource Include="Image\img\DeleteBothesVerticalButton.png" />
+    <Resource Include="Image\img\DeleteBothesVerticalMenu.png" />
+    <Resource Include="Image\img\DeleteBothHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteBothVerticalButton.png" />
+    <Resource Include="Image\img\DeleteDefectHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteDefectIcon.png" />
+    <Resource Include="Image\img\DeleteDefectsHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteDefectsHorizontalMenu.png" />
+    <Resource Include="Image\img\DeleteDefectsVerticalButton.png" />
+    <Resource Include="Image\img\DeleteDefectsVerticalMenu.png" />
+    <Resource Include="Image\img\DeleteDefectVerticalButton.png" />
+    <Resource Include="Image\img\DeleteFirstHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteFirstHorizontalIcon.png" />
+    <Resource Include="Image\img\DeleteFirstsHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteFirstsHorizontalMenu.png" />
+    <Resource Include="Image\img\DeleteFirstsVerticalButton.png" />
+    <Resource Include="Image\img\DeleteFirstsVerticalMenu.png" />
+    <Resource Include="Image\img\DeleteFirstVerticalButton.png" />
+    <Resource Include="Image\img\DeleteFirstVerticalIcon.png" />
+    <Resource Include="Image\img\DeleteSecondHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteSecondHorizontalIcon.png" />
+    <Resource Include="Image\img\DeleteSecondsHorizontalButton.png" />
+    <Resource Include="Image\img\DeleteSecondsHorizontalMenu.png" />
+    <Resource Include="Image\img\DeleteSecondsVerticalButton.png" />
+    <Resource Include="Image\img\DeleteSecondsVerticalMenu.png" />
+    <Resource Include="Image\img\DeleteSecondVerticalButton.png" />
+    <Resource Include="Image\img\DeleteSecondVerticalIcon.png" />
+    <Resource Include="Image\img\DuplPairHorizontalIcon.png" />
+    <Resource Include="Image\img\DuplPairVerticalIcon.png" />
+    <Resource Include="Image\img\HelpButton.png" />
+    <Resource Include="Image\img\HelpMenu.png" />
+    <Resource Include="Image\img\JpegEndMarkerIsAbsentIcon.png" />
+    <Resource Include="Image\img\MirrorTurn_0_Icon.png" />
+    <Resource Include="Image\img\MirrorTurn_180_Icon.png" />
+    <Resource Include="Image\img\MirrorTurn_270_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\img\MirrorTurn_90_Icon.png" />
+    <Resource Include="Image\img\MistakeButton.png" />
+    <Resource Include="Image\img\MistakesButton.png" />
+    <Resource Include="Image\img\MistakesMenu.png" />
+    <Resource Include="Image\img\MoveFirstToSecondHorizontalButton.png" />
+    <Resource Include="Image\img\MoveFirstToSecondHorizontalMenu.png" />
+    <Resource Include="Image\img\MoveFirstToSecondVerticalButton.png" />
+    <Resource Include="Image\img\MoveFirstToSecondVerticalMenu.png" />
+    <Resource Include="Image\img\MoveSecondToFirstHorizontalButton.png" />
+    <Resource Include="Image\img\MoveSecondToFirstHorizontalMenu.png" />
+    <Resource Include="Image\img\MoveSecondToFirstVerticalButton.png" />
+    <Resource Include="Image\img\MoveSecondToFirstVerticalMenu.png" />
+    <Resource Include="Image\img\NextButton.png" />
+    <Resource Include="Image\img\OptionsButton.png" />
+    <Resource Include="Image\img\OptionsMenu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\img\PathsMenu.png" />
+    <Resource Include="Image\img\PerformHintButton.png" />
+    <Resource Include="Image\img\PerformHintMenu.png" />
+    <Resource Include="Image\img\PreviousButton.png" />
+    <Resource Include="Image\img\ProfileOpenButton.png" />
+    <Resource Include="Image\img\ProfileOpenMenu.png" />
+    <Resource Include="Image\img\ProfileSaveAsButton.png" />
+    <Resource Include="Image\img\ProfileSaveAsMenu.png" />
+    <Resource Include="Image\img\RedoButton.png" />
+    <Resource Include="Image\img\RedoMenu.png" />
+    <Resource Include="Image\img\RefreshButton.png" />
+    <Resource Include="Image\img\RefreshMenu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\img\RenameFirstLikeSecondHorizontalButton.png" />
+    <Resource Include="Image\img\RenameFirstLikeSecondHorizontalMenu.png" />
+    <Resource Include="Image\img\RenameFirstLikeSecondVerticalButton.png" />
+    <Resource Include="Image\img\RenameFirstLikeSecondVerticalMenu.png" />
+    <Resource Include="Image\img\RenameFirstToSecondHorizontalButton.png" />
+    <Resource Include="Image\img\RenameFirstToSecondHorizontalIcon.png" />
+    <Resource Include="Image\img\RenameFirstToSecondHorizontalMenu.png" />
+    <Resource Include="Image\img\RenameFirstToSecondVerticalButton.png" />
+    <Resource Include="Image\img\RenameFirstToSecondVerticalIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\img\RenameFirstToSecondVerticalMenu.png" />
+    <Resource Include="Image\img\RenameSecondLikeFirstHorizontalButton.png" />
+    <Resource Include="Image\img\RenameSecondLikeFirstHorizontalMenu.png" />
+    <Resource Include="Image\img\RenameSecondLikeFirstVerticalButton.png" />
+    <Resource Include="Image\img\RenameSecondLikeFirstVerticalMenu.png" />
+    <Resource Include="Image\img\RenameSecondToFirstHorizontalButton.png" />
+    <Resource Include="Image\img\RenameSecondToFirstHorizontalIcon.png" />
+    <Resource Include="Image\img\RenameSecondToFirstHorizontalMenu.png" />
+    <Resource Include="Image\img\RenameSecondToFirstVerticalButton.png" />
+    <Resource Include="Image\img\RenameSecondToFirstVerticalIcon.png" />
+    <Resource Include="Image\img\RenameSecondToFirstVerticalMenu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\img\StartButton.png" />
+    <Resource Include="Image\img\StartMenu.png" />
+    <Resource Include="Image\img\Turn_0_Icon.png" />
+    <Resource Include="Image\img\Turn_180_Icon.png" />
+    <Resource Include="Image\img\Turn_270_Icon.png" />
+    <Resource Include="Image\img\Turn_90_Icon.png" />
+    <Resource Include="Image\img\UndoButton.png" />
+    <Resource Include="Image\img\UndoMenu.png" />
+    <Resource Include="Image\img\UnknownDefectIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.410601">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AntiDupl.NET.Core\AntiDupl.NET.Core.csproj" />
+  </ItemGroup>
+</Project>

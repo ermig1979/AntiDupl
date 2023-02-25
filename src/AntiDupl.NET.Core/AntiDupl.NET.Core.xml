@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AntiDupl.NET.Core</name>
+    </assembly>
+    <members>
+        <member name="M:AntiDupl.NET.Core.CoreLib.GetGroupSize">
+            <summary>
+            Возврашает общее количество групп.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AntiDupl.NET.Core.CoreLib.GetImageInfo(System.Int32,System.UInt32,System.UInt32)">
+            <summary>
+            Возврашает массив CoreImageInfo содержащихся в переданной группе.
+            </summary>
+            <param name="groupId"></param>
+            <param name="startFrom"></param>
+            <param name="size"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AntiDupl.NET.Core.CoreLib.GetImageInfoSize(System.Int32)">
+            <summary>
+            Возвращает количество изображений в переданной группе.
+            </summary>
+            <param name="groupId"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
