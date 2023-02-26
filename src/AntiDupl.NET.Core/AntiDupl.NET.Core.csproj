@@ -42,7 +42,6 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
@@ -53,8 +52,10 @@
 		</None>
 	</ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+  <Target Name="GenerateSources" BeforeTargets="BeforeBuild">
     <Exec Command="$(SolutionDir)\Antidupl.NET.Core\External.cmd $(SolutionDir)\Antidupl.NET.Core" />
+    <ItemGroup>
+       <Compile Include="$(SolutionDir)\Antidupl.NET.Core\External.cs" />
+    </ItemGroup>
   </Target>
-
 </Project>
