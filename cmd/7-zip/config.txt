@@ -1,0 +1,4 @@
+;!@Install@!UTF-8!
+Title="AntiDupl.NET-2.3.11"
+RunProgram=""
+;!@InstallEnd@!

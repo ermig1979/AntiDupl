@@ -1,10 +1,6 @@
 @echo off
 
 set RAR_EXE="C:\Program Files\WinRAR\WinRar.exe"
-if not exist %RAR_EXE% (
-echo Execution file "%RAR_EXE%" is to exists!
-exit 1
-)
 
 set ROOT_DIR=..
 set RELEASE_DIR=%ROOT_DIR%\bin\Release
@@ -39,10 +35,17 @@ if not exist %TMP_DIR% mkdir %TMP_DIR%
 xcopy %RELEASE_DIR%\data\* %TMP_DIR%\data\* /y /i /s
 xcopy %RELEASE_DIR%\*.exe %TMP_DIR%\* /y /i
 xcopy %RELEASE_DIR%\*.dll %TMP_DIR%\* /y /i
-xcopy %RELEASE_DIR%\AntiDupl.NET.runtimeconfig.json %TMP_DIR%\* /y /i
+xcopy %RELEASE_DIR%\AntiDupl.NET.WinForms.runtimeconfig.json %TMP_DIR%\* /y /i
 
 erase %TMP_DIR%\data\resources\strings\English.xml /q /s /f
 erase %TMP_DIR%\data\resources\strings\Russian.xml /q /s /f
 
-%RAR_EXE% a -ep1 -s -m5 -r -sfx %OUT_DIR%\AntiDupl.NET-%VERSION%.exe %TMP_DIR%
-::%RAR_EXE% a -afzip -ep1 -r %OUT_DIR%\AntiDupl.NET-%VERSION%.zip %TMP_DIR%
+if exist %RAR_EXE% (
+%RAR_EXE% a -ep1 -s -m5 -r -sfx %OUT_DIR%\AntiDupl.NET-%VERSION%.zip %TMP_DIR%
+%RAR_EXE% a -afzip -ep1 -r %OUT_DIR%\AntiDupl.NET-%VERSION%.zip %TMP_DIR%
+)
+else
+(
+.\7-zip\7za_2201.exe a -sfx7z.sfx %OUT_DIR%\AntiDupl.NET-%VERSION%.exe %TMP_DIR%
+.\7-zip\7za_2201.exe a %OUT_DIR%\AntiDupl.NET-%VERSION%.7z .\%TMP_DIR%\*
+)
