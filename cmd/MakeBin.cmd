@@ -41,11 +41,13 @@ erase %TMP_DIR%\data\resources\strings\English.xml /q /s /f
 erase %TMP_DIR%\data\resources\strings\Russian.xml /q /s /f
 
 if exist %RAR_EXE% (
-%RAR_EXE% a -ep1 -s -m5 -r -sfx %OUT_DIR%\AntiDupl.NET-%VERSION%.zip %TMP_DIR%
+%RAR_EXE% a -ep1 -s -m5 -r -sfx %OUT_DIR%\AntiDupl.NET-%VERSION%.exe %TMP_DIR%
+certutil -hashfile %OUT_DIR%\AntiDupl.NET-%VERSION%.exe SHA256 > %OUT_DIR%\AntiDupl.NET-%VERSION%.exe.hash.txt
 %RAR_EXE% a -afzip -ep1 -r %OUT_DIR%\AntiDupl.NET-%VERSION%.zip %TMP_DIR%
-)
-else
-(
+certutil -hashfile %OUT_DIR%\AntiDupl.NET-%VERSION%.zip SHA256 > %OUT_DIR%\AntiDupl.NET-%VERSION%.zip.hash.txt
+) else (
 .\7-zip\7za_2201.exe a -sfx7z.sfx %OUT_DIR%\AntiDupl.NET-%VERSION%.exe %TMP_DIR%
+certutil -hashfile %OUT_DIR%\AntiDupl.NET-%VERSION%.exe SHA256 > %OUT_DIR%\AntiDupl.NET-%VERSION%.exe.hash.txt
 .\7-zip\7za_2201.exe a %OUT_DIR%\AntiDupl.NET-%VERSION%.7z .\%TMP_DIR%\*
+certutil -hashfile %OUT_DIR%\AntiDupl.NET-%VERSION%.7z SHA256 > %OUT_DIR%\AntiDupl.NET-%VERSION%.7z.hash.txt
 )

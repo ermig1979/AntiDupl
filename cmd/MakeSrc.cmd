@@ -44,9 +44,9 @@ erase %TMP_DIR%\src\*.suo /q /s /f
 erase %TMP_DIR%\src\*.ncb /q /s /f
 
 if exist %RAR_EXE% (
-%RAR_EXE% a -afzip -ep1 -r %OUT_DIR%\AntiDupl.NET-%VERSION%.zip %TMP_DIR%
-)
-else
-(
-.\7-zip\7za_2201.exe a %OUT_DIR%\AntiDupl.NET-%VERSION%.7z .\%TMP_DIR%\*
+%RAR_EXE% a -afzip -ep1 -r %OUT_DIR%\AntiDupl.NET-%VERSION%_Sources.zip %TMP_DIR%
+certutil -hashfile %OUT_DIR%\AntiDupl.NET-%VERSION%_Sources.zip SHA256 > %OUT_DIR%\AntiDupl.NET-%VERSION%_Sources.zip.hash.txt
+) else (
+.\7-zip\7za_2201.exe a %OUT_DIR%\AntiDupl.NET-%VERSION%_Sources.7z .\%TMP_DIR%\*
+certutil -hashfile %OUT_DIR%\AntiDupl.NET-%VERSION%_Sources.7z SHA256 > %OUT_DIR%\AntiDupl.NET-%VERSION%_Sources.7z.hash.txt
 )
