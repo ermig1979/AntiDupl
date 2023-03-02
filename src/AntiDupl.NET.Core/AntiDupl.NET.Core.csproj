@@ -11,6 +11,8 @@
     <Description>Bindings to native AntuDpl packages</Description>
     <Copyright>ErmIg © 2002-2023</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

@@ -33,7 +33,7 @@ namespace AntiDupl.NET.Core.Original
     public class CoreDll : DynamicModule
     {
         public CoreDll()
-            : base("AntiDupl64.dll")
+            : base("AntiDupl.dll")
         {
         }
 
