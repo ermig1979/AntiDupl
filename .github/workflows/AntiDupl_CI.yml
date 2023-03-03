@@ -1,0 +1,79 @@
+name: AntiDupl CI Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  VCPKG_DEFAULT_TRIPLET: x64-windows-static
+  
+jobs:
+
+  build:
+
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+
+    runs-on: windows-latest
+
+    env:
+      Solution_Name: ./src/AntiDupl.sln
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1.0.2
+      
+    - name: Restore NuGet packages
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: nuget restore ${{env.Solution_Name}}
+
+    - name: Run and cache vcpkg dependecies
+      uses: lukka/run-vcpkg@v10.7
+      with:
+        vcpkgGitCommitId: 223d33be7d3ec6c3d64381ca37f501b8c87dda6a
+        vcpkgJsonGlob: src/vcpkg.json
+        runVcpkgInstall: false
+        appendedCacheKey: '${{matrix.configuration}}'
+
+    - name: Integrate vcpkg
+      working-directory: ${{env.VCPKG_ROOT}}
+      run: |
+        ${{ github.workspace }}/vcpkg/vcpkg.exe integrate install
+
+    - name: Build
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild /m /p:Configuration=$env:Configuration $env:Solution_Name
+      env: 
+        Configuration: ${{ matrix.configuration }}
+  
+    - name: Make release binary and source files
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        cd cmd
+        .\MakeBin.cmd
+        .\MakeSrc.cmd
+
+    - if: matrix.configuration == 'Release'
+      name: Upload build
+      uses: actions/upload-artifact@v3
+      with:
+        name: AntiDupl.NET-2.3.11 build
+        path: |
+              ${{ github.workspace }}\out\bin\AntiDupl.NET-2.3.11.exe
+              ${{ github.workspace }}\out\bin\AntiDupl.NET-2.3.11.exe.hash.txt
+              ${{ github.workspace }}\out\bin\AntiDupl.NET-2.3.11.7z
+              ${{ github.workspace }}\out\bin\AntiDupl.NET-2.3.11.7z.hash.txt
+
+    - name: Upload source
+      uses: actions/upload-artifact@v3
+      with:
+        name: AntiDupl.NET-2.3.11 sources
+        path: |
+            ${{ github.workspace }}\out\src\AntiDupl.NET-2.3.11_Sources.7z
+            ${{ github.workspace }}\out\src\AntiDupl.NET-2.3.11_Sources.7z.hash.txt
