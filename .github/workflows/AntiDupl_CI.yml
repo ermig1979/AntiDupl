@@ -59,6 +59,16 @@ jobs:
         .\MakeBin.cmd
         .\MakeSrc.cmd
 
+    - name: VirusTotal Scan
+      uses: crazy-max/ghaction-virustotal@v3
+      env:
+          VT_API_KEY: ${{ secrets.VT_API_KEY }}
+      if: matrix.configuration == 'Release' && env.VT_API_KEY != null
+      with:
+        vt_api_key: ${{ secrets.VT_API_KEY }}
+        files: |
+          ${{ github.workspace }}\bin\Release\AntiDupl.NET.WinForms.exe
+
     - if: matrix.configuration == 'Release'
       name: Upload build
       uses: actions/upload-artifact@v3
