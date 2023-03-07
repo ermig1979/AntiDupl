@@ -1,47 +1,38 @@
 ﻿<UserControl x:Class="AntiDupl.NET.WPF.Control.ComplexProgressBar"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
-             d:DesignHeight="50" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="50"
              d:DesignWidth="200">
     <Grid>
         <!--The progress bar background-->
-        <Rectangle Stroke="#FF000000" 
-                   RenderTransformOrigin="0.5,0.5" 
-                   x:Name="ProgressBarBackground">
-            <!--<Rectangle.Fill>
-                <LinearGradientBrush EndPoint="0.5,1" 
-                                     StartPoint="0.5,0">
-                    <GradientStop Color="White" Offset="0" />
-                    <GradientStop Color="Gray" Offset="1"/>
-                </LinearGradientBrush>
-            </Rectangle.Fill>-->
-        </Rectangle>
-        <Rectangle x:Name="ProgressBarForeground2" 
+        <Rectangle x:Name="ProgressBarBackground"
+                   Stroke="#FF000000"
+                   RenderTransformOrigin="0.5,0.5" />
+        <!--The progress bar foreground2-->
+        <Rectangle x:Name="ProgressBarForeground2"
                    HorizontalAlignment="Left">
             <Rectangle.Fill>
-                <SolidColorBrush  Color="DarkGreen" />
+                <SolidColorBrush Color="DarkGreen" />
             </Rectangle.Fill>
         </Rectangle>
         <!--The progress bar foreground-->
-        <Rectangle Stroke="#FF000000" 
+        <Rectangle x:Name="ProgressBarForeground"
+                   Stroke="#FF000000"
                    RenderTransformOrigin="0.5,0.5"
-                   x:Name="ProgressBarForeground" 
                    HorizontalAlignment="Left">
             <Rectangle.Fill>
-                <SolidColorBrush  Color="#FF01D328" />
+                <SolidColorBrush Color="#FF01D328" />
             </Rectangle.Fill>
         </Rectangle>
-        <Viewbox>
-            <!--The progress bar text display-->
-            <TextBlock TextAlignment="Center" 
-                       Background="Transparent"
-                       FontFamily="Times"
-                       Foreground="Black" 
-                       x:Name="ProgressText"
-                       Margin="2,2,2,2" /> 
-        </Viewbox>
+        <!--The progress bar text display-->
+        <TextBlock x:Name="ProgressText"
+                   TextAlignment="Center"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Background="Transparent"
+                   Foreground="Black" />
     </Grid>
 </UserControl>

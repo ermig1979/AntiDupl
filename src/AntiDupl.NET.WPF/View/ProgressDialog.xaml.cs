@@ -1,27 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using AntiDupl.NET.WPF.ViewModel;
 
-namespace AntiDupl.NET.WPF.View
+namespace AntiDupl.NET.WPF.View;
+
+/// <summary>
+///     Логика взаимодействия для ProgressDialog.xaml
+/// </summary>
+public partial class ProgressDialog : Window
 {
-    /// <summary>
-    /// Логика взаимодействия для ProgressDialog.xaml
-    /// </summary>
-    public partial class ProgressDialog : Window
+    public ProgressDialog()
     {
-        public ProgressDialog()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+    }
+
+    protected override void OnClosing(CancelEventArgs e)
+    {
+        base.OnClosing(e);
+
+        //find out, if the close button was pressed or if the window was closed by win.close()
+        if (new StackTrace().GetFrames().FirstOrDefault(x => x.GetMethod() == typeof(Window).GetMethod("Close")) != null) return;
+
+        //if close button was pressed, cancel execution
+        var vm = (ProgressDialogViewModel)DataContext;
+        vm.CancelCommand.Execute(null);
+        e.Cancel = true;
     }
 }
