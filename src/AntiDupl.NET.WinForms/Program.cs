@@ -33,7 +33,9 @@ namespace AntiDupl.NET.WinForms
         [STAThread]
         static void Main(string[] args)
         {
+#if !PUBLISH
             if (IsDotNet4Installed)
+#endif
             {
                 string customSavePath = null;
                 if (GetParameter(args, "-s", ref customSavePath))
@@ -52,9 +54,11 @@ namespace AntiDupl.NET.WinForms
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new MainForm());
             }
+#if !PUBLISH
             else if (MessageBox.Show("You need Microsoft .NET Framework 4.8 in order to run this program. Do you want to download .Net Framework 4.8?", "Warning",
                         MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
                 System.Diagnostics.Process.Start("https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48");
+#endif
         }
 
         static bool GetParameter(string[] args, string name, ref string value)

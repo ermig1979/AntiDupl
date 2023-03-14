@@ -6,6 +6,10 @@
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Publish|x64">
+      <Configuration>Publish</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
@@ -40,6 +44,9 @@
     <VcpkgHostTriplet>x64-windows-static</VcpkgHostTriplet>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <VcpkgHostTriplet>x64-windows-static</VcpkgHostTriplet>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Publish|x64'">
     <VcpkgHostTriplet>x64-windows-static</VcpkgHostTriplet>
   </PropertyGroup>
   <ItemDefinitionGroup>

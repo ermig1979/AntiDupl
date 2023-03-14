@@ -13,6 +13,7 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <StartupObject>AntiDupl.NET.WinForms.Program</StartupObject>
+    <Configurations>Debug;Release;Publish</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -27,6 +28,12 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <BaseOutputPath>..\..\bin\Release\</BaseOutputPath>
     <OutputPath>..\..\bin\Release\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Publish|x64'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <BaseOutputPath>..\..\bin\Publish\</BaseOutputPath>
+    <OutputPath>..\..\bin\Publish\</OutputPath>
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

@@ -6,7 +6,7 @@
 	<AssemblyVersion>2.3.11.1</AssemblyVersion>
     <FileVersion>2.3.11.1</FileVersion>
     <Platforms>x64</Platforms>
-    <Configurations>Debug;Release</Configurations>
+    <Configurations>Debug;Release;Publish</Configurations>
     <Authors>ErmIg;Gigas002</Authors>
     <Description>Bindings to native AntuDpl packages</Description>
     <Copyright>ErmIg © 2002-2023</Copyright>
@@ -28,6 +28,12 @@
     <BaseOutputPath>..\..\bin\Release\</BaseOutputPath>
     <OutputPath>..\..\bin\Release\</OutputPath>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Publish|x64'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <BaseOutputPath>..\..\bin\Publish\</BaseOutputPath>
+    <OutputPath>..\..\bin\Publish\</OutputPath>
+  </PropertyGroup>
   
   <PropertyGroup>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
@@ -39,6 +45,15 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Publish'">
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>

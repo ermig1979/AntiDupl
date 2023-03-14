@@ -2,7 +2,10 @@ name: AntiDupl CI Build
 
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - master
+    tags:
+      - v*
   pull_request:
     branches: [ "master" ]
 
@@ -12,10 +15,10 @@ env:
 jobs:
 
   build:
-
+    
     strategy:
       matrix:
-        configuration: [Debug, Release]
+        configuration: [Debug, Release, Publish]
 
     runs-on: windows-latest
 
@@ -25,7 +28,13 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-
+      
+    - name: Read version.txt
+      id: version
+      uses: juliangruber/read-file-action@v1
+      with:
+        path: ./src/version.txt
+      
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.2
       
@@ -46,44 +55,120 @@ jobs:
       run: |
         ${{ github.workspace }}/vcpkg/vcpkg.exe integrate install
 
-    - name: Build
+    - if: matrix.configuration == 'Release' || matrix.configuration == 'Debug'
+      name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: msbuild /m /p:Configuration=$env:Configuration $env:Solution_Name
       env: 
         Configuration: ${{ matrix.configuration }}
-  
-    - name: Make release binary and source files
+
+    - if: matrix.configuration == 'Publish'
+      name: Build
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild /m $env:Solution_Name /p:Configuration=$env:Configuration -restore -t:Publish -p:PublishProfile="AntiDuplPublishSingleFile"
+      env: 
+        Configuration: ${{ matrix.configuration }}
+        
+    - if: matrix.configuration == 'Release'
+      name: Make release binary and source files
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
         cd cmd
         .\MakeBin.cmd
-        .\MakeSrc.cmd
-
-    - name: VirusTotal Scan
-      uses: crazy-max/ghaction-virustotal@v3
-      env:
-          VT_API_KEY: ${{ secrets.VT_API_KEY }}
-      if: matrix.configuration == 'Release' && env.VT_API_KEY != null
-      with:
-        vt_api_key: ${{ secrets.VT_API_KEY }}
-        files: |
-          ${{ github.workspace }}\bin\Release\AntiDupl.NET.WinForms.exe
-
+      
+    - if: matrix.configuration == 'Publish'
+      name: Make release binary and source files
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        cd cmd
+        .\MakePublish.cmd
+      
     - if: matrix.configuration == 'Release'
       name: Upload build
       uses: actions/upload-artifact@v3
       with:
-        name: AntiDupl.NET-2.3.11 build
+        name: "AntiDupl.NET-${{ steps.version.outputs.content }} build"
         path: |
-              ${{ github.workspace }}\out\bin\AntiDupl.NET-2.3.11.exe
-              ${{ github.workspace }}\out\bin\AntiDupl.NET-2.3.11.exe.hash.txt
-              ${{ github.workspace }}\out\bin\AntiDupl.NET-2.3.11.7z
-              ${{ github.workspace }}\out\bin\AntiDupl.NET-2.3.11.7z.hash.txt
-
-    - name: Upload source
+              ${{ github.workspace }}\out\bin\AntiDupl.NET-${{ steps.version.outputs.content }}.exe
+              ${{ github.workspace }}\out\bin\AntiDupl.NET-${{ steps.version.outputs.content }}.exe.hash.txt
+              ${{ github.workspace }}\out\bin\AntiDupl.NET-${{ steps.version.outputs.content }}.zip
+              ${{ github.workspace }}\out\bin\AntiDupl.NET-${{ steps.version.outputs.content }}.zip.hash.txt
+      
+    - if: matrix.configuration == 'Publish'
+      name: Upload build SingleFilePortable
       uses: actions/upload-artifact@v3
       with:
-        name: AntiDupl.NET-2.3.11 sources
+        name: "AntiDupl.NET-${{ steps.version.outputs.content }} build SingleFilePortable"
         path: |
-            ${{ github.workspace }}\out\src\AntiDupl.NET-2.3.11_Sources.7z
-            ${{ github.workspace }}\out\src\AntiDupl.NET-2.3.11_Sources.7z.hash.txt
+              ${{ github.workspace }}\out\Publish\AntiDupl.NET-${{ steps.version.outputs.content }}_SingleFilePortable.exe
+              ${{ github.workspace }}\out\Publish\AntiDupl.NET-${{ steps.version.outputs.content }}_SingleFilePortable.exe.hash.txt
+              ${{ github.workspace }}\out\Publish\AntiDupl.NET-${{ steps.version.outputs.content }}_SingleFilePortable.zip
+              ${{ github.workspace }}\out\Publish\AntiDupl.NET-${{ steps.version.outputs.content }}_SingleFilePortable.zip.hash.txt
+    
+  create-draft-release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    
+    runs-on: windows-latest
+    
+    steps:
+      - uses: msys2/setup-msys2@v2
+      
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Read version.txt
+        id: version
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./src/version.txt
+        
+      - name: Load all artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: "AntiDupl.NET-${{ steps.version.outputs.content }} build"
+          
+      - name: Load all artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: "AntiDupl.NET-${{ steps.version.outputs.content }} build SingleFilePortable"
+          
+      - name: Virus Total Scan
+        id: scan_files
+        uses: crazy-max/ghaction-virustotal@v3
+        with:
+          vt_api_key: ${{ secrets.VT_API_KEY }}
+          files: |
+            AntiDupl.NET-${{ steps.version.outputs.content }}.exe
+            AntiDupl.NET-${{ steps.version.outputs.content }}.zip
+            AntiDupl.NET-${{ steps.version.outputs.content }}_SingleFilePortable.exe
+            AntiDupl.NET-${{ steps.version.outputs.content }}_SingleFilePortable.zip
+            
+      - name: Generate VirusTotal Body
+        shell: msys2 {0}
+        run: |
+          echo "🛡 [VirusTotal GitHub Action](https://github.com/crazy-max/ghaction-virustotal) analysis:" >> body.txt
+          echo "" >> body.txt
+          analysis="${{ steps.scan_files.outputs.analysis }}"
+          while read -d, -r pair; do
+            IFS='=' read -r filename analysisURL <<<"$pair"
+            echo "* [$(basename $filename)]($analysisURL)" >> body.txt
+          done <<<"$analysis,"
+        
+      - name: GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "AntiDupl.NET v${{ steps.version.outputs.content }}"
+          body_path: body.txt
+          prerelease: true
+          files: |
+            AntiDupl.NET-${{ steps.version.outputs.content }}.exe
+            AntiDupl.NET-${{ steps.version.outputs.content }}.exe.hash.txt
+            AntiDupl.NET-${{ steps.version.outputs.content }}.zip
+            AntiDupl.NET-${{ steps.version.outputs.content }}.zip.hash.txt
+            AntiDupl.NET-${{ steps.version.outputs.content }}_SingleFilePortable.exe
+            AntiDupl.NET-${{ steps.version.outputs.content }}_SingleFilePortable.exe.hash.txt
+            AntiDupl.NET-${{ steps.version.outputs.content }}_SingleFilePortable.zip
+            AntiDupl.NET-${{ steps.version.outputs.content }}_SingleFilePortable.zip.hash.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

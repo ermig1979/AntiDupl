@@ -24,23 +24,32 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
+		Publish|x64 = Publish|x64
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{064909D6-CA38-45EA-ABC8-9DF202E600C9}.Debug|x64.ActiveCfg = Debug|x64
 		{064909D6-CA38-45EA-ABC8-9DF202E600C9}.Debug|x64.Build.0 = Debug|x64
+		{064909D6-CA38-45EA-ABC8-9DF202E600C9}.Publish|x64.ActiveCfg = Publish|x64
+		{064909D6-CA38-45EA-ABC8-9DF202E600C9}.Publish|x64.Build.0 = Publish|x64
 		{064909D6-CA38-45EA-ABC8-9DF202E600C9}.Release|x64.ActiveCfg = Release|x64
 		{064909D6-CA38-45EA-ABC8-9DF202E600C9}.Release|x64.Build.0 = Release|x64
 		{5E3F8B85-9C79-4EA1-90E3-BD5C84CBA820}.Debug|x64.ActiveCfg = Debug|x64
 		{5E3F8B85-9C79-4EA1-90E3-BD5C84CBA820}.Debug|x64.Build.0 = Debug|x64
+		{5E3F8B85-9C79-4EA1-90E3-BD5C84CBA820}.Publish|x64.ActiveCfg = Publish|x64
+		{5E3F8B85-9C79-4EA1-90E3-BD5C84CBA820}.Publish|x64.Build.0 = Publish|x64
 		{5E3F8B85-9C79-4EA1-90E3-BD5C84CBA820}.Release|x64.ActiveCfg = Release|x64
 		{5E3F8B85-9C79-4EA1-90E3-BD5C84CBA820}.Release|x64.Build.0 = Release|x64
 		{8F2134F7-2163-4B0B-8C79-801631116565}.Debug|x64.ActiveCfg = Debug|x64
 		{8F2134F7-2163-4B0B-8C79-801631116565}.Debug|x64.Build.0 = Debug|x64
+		{8F2134F7-2163-4B0B-8C79-801631116565}.Publish|x64.ActiveCfg = Publish|x64
+		{8F2134F7-2163-4B0B-8C79-801631116565}.Publish|x64.Build.0 = Publish|x64
 		{8F2134F7-2163-4B0B-8C79-801631116565}.Release|x64.ActiveCfg = Release|x64
 		{8F2134F7-2163-4B0B-8C79-801631116565}.Release|x64.Build.0 = Release|x64
 		{45E650C2-2508-4897-9A7F-3EA583FC9243}.Debug|x64.ActiveCfg = Debug|x64
 		{45E650C2-2508-4897-9A7F-3EA583FC9243}.Debug|x64.Build.0 = Debug|x64
+		{45E650C2-2508-4897-9A7F-3EA583FC9243}.Publish|x64.ActiveCfg = Publish|x64
+		{45E650C2-2508-4897-9A7F-3EA583FC9243}.Publish|x64.Build.0 = Publish|x64
 		{45E650C2-2508-4897-9A7F-3EA583FC9243}.Release|x64.ActiveCfg = Release|x64
 		{45E650C2-2508-4897-9A7F-3EA583FC9243}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection

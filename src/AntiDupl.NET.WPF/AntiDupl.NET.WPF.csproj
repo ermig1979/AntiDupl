@@ -2,7 +2,6 @@
   <PropertyGroup>
     <TargetFramework>net6.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <PublishUrl>publish</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -24,6 +23,7 @@
     <Platforms>x64</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+	<Configurations>Debug;Release;Publish</Configurations>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>AntiDupl.NET.WPF.App</StartupObject>
@@ -36,6 +36,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <BaseOutputPath>..\..\bin\Release\</BaseOutputPath>
     <OutputPath>..\..\bin\Release\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Publish|x64'">
+    <BaseOutputPath>..\..\bin\Publish\</BaseOutputPath>
+    <OutputPath>..\..\bin\Publish\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <AppDesigner Include="Properties\" />
