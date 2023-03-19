@@ -80,6 +80,8 @@ namespace AntiDupl.NET.WinForms
         public string CoreOptionsForm_TgaCheckBox_Text;
         public string CoreOptionsForm_WebpCheckBox_Text;
         public string CoreOptionsForm_HeifCheckBox_Text;
+        public string CoreOptionsForm_AvifCheckBox_Text;
+        public string CoreOptionsForm_JxlCheckBox_Text;
         public string CoreOptionsForm_SearchSystemCheckBox_Text;
         public string CoreOptionsForm_SearchHiddenCheckBox_Text;
 

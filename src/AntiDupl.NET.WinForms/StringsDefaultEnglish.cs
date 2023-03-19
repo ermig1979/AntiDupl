@@ -77,6 +77,8 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_TgaCheckBox_Text = "TGA";
             s.CoreOptionsForm_WebpCheckBox_Text = "WEBP";
             s.CoreOptionsForm_HeifCheckBox_Text = "HEIF";
+            s.CoreOptionsForm_AvifCheckBox_Text = "AVIF";
+            s.CoreOptionsForm_JxlCheckBox_Text = "JXL";
             s.CoreOptionsForm_SearchSystemCheckBox_Text = "Search system folders/files";
             s.CoreOptionsForm_SearchHiddenCheckBox_Text = "Search hidden folders/files";
 

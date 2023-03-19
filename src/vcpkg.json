@@ -7,6 +7,8 @@
     "openjpeg",
     "libwebp",
     "libheif",
-    "simd"
+    "simd",
+    "libavif",
+    "libjxl"
   ]
 }

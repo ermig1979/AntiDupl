@@ -33,6 +33,11 @@
 
 #include <windows.h>
 
+#include "avif/avif.h"
+
+#define JXL_STATIC_DEFINE
+#include <jxl/decode.h>
+
 namespace ad
 {
 	class TEngine;
@@ -116,6 +121,13 @@ DLLAPI adError adVersionGet(adVersionType versionType, adCharA * pVersion, adSiz
         break;
     case AD_VERSION_TYPE_LIBHEIF:
         version = heif_get_version();
+        break;
+    case AD_VERSION_TYPE_LIBAVIF:
+        version = avifVersion();
+        break;
+    case AD_VERSION_TYPE_LIBJXL:
+        v = JxlDecoderVersion();
+        version = std::to_string((v / 1000000)) + "." + std::to_string(((v / 1000) % 1000)) + "." + std::to_string(((v % 1000)));
         break;
 	default:
 		return AD_ERROR_INVALID_VERSION_TYPE;

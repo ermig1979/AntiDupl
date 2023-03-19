@@ -105,7 +105,7 @@ namespace AntiDupl.NET.WinForms
 
         private Control CreateInfoTable(Font font)
         {
-            TableLayoutPanel table = InitFactory.Layout.Create(2, 7, 0, 0);
+            TableLayoutPanel table = InitFactory.Layout.Create(2, 9, 0, 0);
             table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             table.CellBorderStyle = TableLayoutPanelCellBorderStyle.Inset;
@@ -134,6 +134,13 @@ namespace AntiDupl.NET.WinForms
 
             table.Controls.Add(CreateLinkLabel("libheif", Resources.WebLinks.LibHeif, font), 0, 6);
             table.Controls.Add(CreateLabel(m_core.GetVersion(CoreDll.VersionType.Heif).ToString(), font), 1, 6);
+
+            table.Controls.Add(CreateLinkLabel("libavif", Resources.WebLinks.LibAvif, font), 0, 7);
+            table.Controls.Add(CreateLabel(m_core.GetVersion(CoreDll.VersionType.Avif).ToString(), font), 1, 7);
+
+            table.Controls.Add(CreateLinkLabel("libjxl", Resources.WebLinks.LibJxl, font), 0, 8);
+            table.Controls.Add(CreateLabel(m_core.GetVersion(CoreDll.VersionType.Jxl).ToString(), font), 1, 8);
+
             return table;
         }
 

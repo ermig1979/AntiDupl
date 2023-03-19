@@ -99,6 +99,8 @@ namespace AntiDupl.NET.WinForms
         private CheckBox m_tgaCheckBox;
         private CheckBox m_webpCheckBox;
         private CheckBox m_heifCheckBox;
+        private CheckBox m_avifCheckBox;
+        private CheckBox m_jxlCheckBox;
         private CheckBox m_searchSystemCheckBox;
         private CheckBox m_searchHiddenCheckBox;
 
@@ -296,10 +298,10 @@ namespace AntiDupl.NET.WinForms
             m_searchTabPage.Controls.Add(searchTableLayoutPanel);
 
             m_searchFileTypeGroupBox = new GroupBox();
-            m_searchFileTypeGroupBox.Size = new System.Drawing.Size(200, 160);
+            m_searchFileTypeGroupBox.Size = new System.Drawing.Size(245, 160);
             searchTableLayoutPanel.Controls.Add(m_searchFileTypeGroupBox, 0, 0);
 
-            TableLayoutPanel searchFileTypeTableLayoutPanel = InitFactory.Layout.Create(3, 5, 5);
+            TableLayoutPanel searchFileTypeTableLayoutPanel = InitFactory.Layout.Create(4, 5, 5);
             searchFileTypeTableLayoutPanel.AutoScroll = true;
             m_searchFileTypeGroupBox.Controls.Add(searchFileTypeTableLayoutPanel);
 
@@ -347,6 +349,12 @@ namespace AntiDupl.NET.WinForms
 
             m_heifCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
             searchFileTypeTableLayoutPanel.Controls.Add(m_heifCheckBox, 2, 4);
+
+            m_avifCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
+            searchFileTypeTableLayoutPanel.Controls.Add(m_avifCheckBox, 3, 0);
+
+            m_jxlCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
+            searchFileTypeTableLayoutPanel.Controls.Add(m_jxlCheckBox, 3, 1);
 
             m_searchSystemCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
             searchTableLayoutPanel.Controls.Add(m_searchSystemCheckBox, 0, 1);
@@ -577,6 +585,8 @@ namespace AntiDupl.NET.WinForms
             m_tgaCheckBox.Checked = m_newCoreOptions.searchOptions.TGA;
             m_webpCheckBox.Checked = m_newCoreOptions.searchOptions.WEBP;
             m_heifCheckBox.Checked = m_newCoreOptions.searchOptions.HEIF;
+            m_avifCheckBox.Checked = m_newCoreOptions.searchOptions.AVIF;
+            m_jxlCheckBox.Checked = m_newCoreOptions.searchOptions.JXL;
             m_searchSystemCheckBox.Checked = m_newCoreOptions.searchOptions.system;
             m_searchHiddenCheckBox.Checked = m_newCoreOptions.searchOptions.hidden;
 
@@ -631,6 +641,8 @@ namespace AntiDupl.NET.WinForms
             m_newCoreOptions.searchOptions.TGA = m_tgaCheckBox.Checked;
             m_newCoreOptions.searchOptions.WEBP = m_webpCheckBox.Checked;
             m_newCoreOptions.searchOptions.HEIF = m_heifCheckBox.Checked;
+            m_newCoreOptions.searchOptions.AVIF = m_avifCheckBox.Checked;
+            m_newCoreOptions.searchOptions.JXL = m_jxlCheckBox.Checked;
             m_newCoreOptions.searchOptions.system = m_searchSystemCheckBox.Checked;
             m_newCoreOptions.searchOptions.hidden = m_searchHiddenCheckBox.Checked;
 
@@ -693,6 +705,8 @@ namespace AntiDupl.NET.WinForms
             m_tgaCheckBox.Text = s.CoreOptionsForm_TgaCheckBox_Text;
             m_webpCheckBox.Text = s.CoreOptionsForm_WebpCheckBox_Text;
             m_heifCheckBox.Text = s.CoreOptionsForm_HeifCheckBox_Text;
+            m_avifCheckBox.Text = s.CoreOptionsForm_AvifCheckBox_Text;
+            m_jxlCheckBox.Text = s.CoreOptionsForm_JxlCheckBox_Text;
             m_searchSystemCheckBox.Text = s.CoreOptionsForm_SearchSystemCheckBox_Text;
             m_searchHiddenCheckBox.Text = s.CoreOptionsForm_SearchHiddenCheckBox_Text;
 

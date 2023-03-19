@@ -202,6 +202,8 @@ namespace AntiDupl.NET.Core.Original
             Tga = 13,
             Webp = 14,
             Heif = 15,
+            Avif = 16,
+            Jxl = 17,
         }
 
         public enum DefectType : int
@@ -255,6 +257,8 @@ namespace AntiDupl.NET.Core.Original
             Webp = 3,
             TurboJpeg = 4,
             Heif = 5,
+            Avif = 6,
+            Jxl = 7,
         }
 
         public enum SelectionType : int
@@ -288,6 +292,8 @@ namespace AntiDupl.NET.Core.Original
             public int TGA;
             public int WEBP;
             public int HEIF;
+            public int AVIF;
+            public int JXL;
         }
 
         [StructLayout(LayoutKind.Sequential)]
