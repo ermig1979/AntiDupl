@@ -32,6 +32,8 @@
 #include "adWebp.h"
 #include "adTurboJpeg.h"
 #include "adHeif.h"
+#include "adAvif.h"
+#include "adJxl.h"
 
 namespace ad
 {
@@ -54,6 +56,8 @@ namespace ad
 		{TEXT("TGA") , TEXT("TPIC"), 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Tga = 13
 		{TEXT("WEBP"), 0,			 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Webp = 14
         {TEXT("HEIF"), TEXT("HEIC"), 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Heif = 15
+        {TEXT("AVIF"), 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Avif = 16
+        {TEXT("JXL"),  0           , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Jxl = 17
     };
     //-------------------------------------------------------------------------
 
@@ -106,6 +110,10 @@ namespace ad
         if (pOptions->advanced.useLibJpegTurbo && TTurboJpeg::Supported(hGlobal))
             return TTurboJpeg::Load(hGlobal);
 #endif//AD_TURBO_JPEG_ENABLE
+        else if (TAvif::Supported(hGlobal))
+            return TAvif::Load(hGlobal);
+        else if (TJxl::Supported(hGlobal))
+            return TJxl::Load(hGlobal);
         else
             return TGdiplus::Load(hGlobal);
     }

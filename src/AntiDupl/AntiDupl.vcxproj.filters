@@ -70,6 +70,12 @@
     <ClCompile Include="adHeif.cpp">
       <Filter>Image</Filter>
     </ClCompile>
+    <ClCompile Include="adAvif.cpp">
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="adJxl.cpp">
+      <Filter>Image</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="adBlurringDetector.h" />
@@ -147,6 +153,12 @@
       <Filter>Image</Filter>
     </ClInclude>
     <ClInclude Include="adSimd.h" />
+    <ClInclude Include="adAvif.h">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="adJxl.h">
+      <Filter>Image</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Image">

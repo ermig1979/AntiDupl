@@ -92,6 +92,8 @@ namespace ad
         m_options.push_back(TOption(&search.TGA, TEXT("SearchOptions"), TEXT("TGA"), TRUE, FALSE, TRUE));
         m_options.push_back(TOption(&search.WEBP, TEXT("SearchOptions"), TEXT("WEBP"), TRUE, FALSE, TRUE));
         m_options.push_back(TOption(&search.HEIF, TEXT("SearchOptions"), TEXT("HEIF"), TRUE, FALSE, TRUE));
+        m_options.push_back(TOption(&search.AVIF, TEXT("SearchOptions"), TEXT("AVIF"), TRUE, FALSE, TRUE));
+        m_options.push_back(TOption(&search.JXL, TEXT("SearchOptions"), TEXT("JXL"), TRUE, FALSE, TRUE));
 
         m_options.push_back(TOption(&compare.checkOnEquality, TEXT("CompareOptions"), TEXT("CheckOnEquality"), TRUE, FALSE, TRUE));
         m_options.push_back(TOption(&compare.transformedImage, TEXT("CompareOptions"), TEXT("TransformedImage"), FALSE, FALSE, TRUE));
