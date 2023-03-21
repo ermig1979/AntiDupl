@@ -27,10 +27,26 @@
 #include "adPerformance.h"
 #include "adLogger.h"
 
+#include <jxl/decode.h>
+
 namespace ad
 {
 	bool TJxl::Supported(HGLOBAL hGlobal)
 	{
+		if (hGlobal)
+		{
+			uint8_t* data = (uint8_t*)::GlobalLock(hGlobal);
+			size_t data_size = ::GlobalSize(hGlobal);
+
+			JxlSignature signature = JxlSignatureCheck(data, data_size);
+			::GlobalUnlock(hGlobal);
+
+			if (signature == JXL_SIG_NOT_ENOUGH_BYTES || signature == JXL_SIG_INVALID)
+				return false;
+			else
+				return true;
+
+		}
 		return false;
 	}
 

@@ -27,10 +27,24 @@
 #include "adPerformance.h"
 #include "adLogger.h"
 
+#include <avif/avif.h>
+
 namespace ad
 {
 	bool TAvif::Supported(HGLOBAL hGlobal)
 	{
+		if (hGlobal)
+		{
+			uint8_t* data = (uint8_t*)::GlobalLock(hGlobal);
+			size_t data_size = ::GlobalSize(hGlobal);
+
+			const auto avif_data = avifROData{ data, data_size };
+			bool filetype_supported = avifPeekCompatibleFileType(&avif_data);
+
+			::GlobalUnlock(hGlobal);
+
+			return filetype_supported;
+		}
 		return false;
 	}
 

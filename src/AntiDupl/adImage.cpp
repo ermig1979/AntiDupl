@@ -104,16 +104,16 @@ namespace ad
 			return TTga::Load(hGlobal);
 		else if (TWebp::Supported(hGlobal))
 			return TWebp::Load(hGlobal);
+        else if (TAvif::Supported(hGlobal))
+            return TAvif::Load(hGlobal);
+        else if (TJxl::Supported(hGlobal))
+            return TJxl::Load(hGlobal);
         else if (THeif::Supported(hGlobal))
             return THeif::Load(hGlobal);
 #ifdef AD_TURBO_JPEG_ENABLE
         if (pOptions->advanced.useLibJpegTurbo && TTurboJpeg::Supported(hGlobal))
             return TTurboJpeg::Load(hGlobal);
 #endif//AD_TURBO_JPEG_ENABLE
-        else if (TAvif::Supported(hGlobal))
-            return TAvif::Load(hGlobal);
-        else if (TJxl::Supported(hGlobal))
-            return TJxl::Load(hGlobal);
         else
             return TGdiplus::Load(hGlobal);
     }
