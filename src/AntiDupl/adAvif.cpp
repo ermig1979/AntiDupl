@@ -50,6 +50,85 @@ namespace ad
 
 	TAvif* TAvif::Load(HGLOBAL hGlobal)
 	{
+		AD_FUNCTION_PERFORMANCE_TEST
+
+		TAvif* pAvif = NULL;
+		if (hGlobal)
+		{
+			uint8_t* data = (uint8_t*)::GlobalLock(hGlobal);
+			size_t data_size = ::GlobalSize(hGlobal);
+
+			avifDecoder* decoder = avifDecoderCreate();
+
+			avifResult result = avifDecoderSetIOMemory(decoder, data, data_size);
+			if (result != AVIF_RESULT_OK) {
+				avifDecoderDestroy(decoder);
+#ifdef AD_LOGGER_ENABLE
+				AD_LOG(avifResultToString(result));
+#endif//AD_LOGGER_ENABLE
+				return NULL;
+			}
+
+			result = avifDecoderParse(decoder);
+			if (result != AVIF_RESULT_OK) {
+				avifDecoderDestroy(decoder);
+#ifdef AD_LOGGER_ENABLE
+				AD_LOG(avifResultToString(result));
+#endif//AD_LOGGER_ENABLE
+				return NULL;
+			}
+
+			result = avifDecoderNextImage(decoder);
+			if (result != AVIF_RESULT_OK) {
+				avifDecoderDestroy(decoder);
+#ifdef AD_LOGGER_ENABLE
+				AD_LOG(avifResultToString(result));
+#endif//AD_LOGGER_ENABLE
+				return NULL;
+			}
+
+
+			avifRGBImage bgra_image;
+			memset(&bgra_image, 0, sizeof(bgra_image));
+
+			avifRGBImageSetDefaults(&bgra_image, decoder->image);
+			bgra_image.format = AVIF_RGB_FORMAT_BGRA;
+			bgra_image.depth = 8;
+
+			avifRGBImageAllocatePixels(&bgra_image);
+
+			result = avifImageYUVToRGB(decoder->image, &bgra_image);
+			if (result != AVIF_RESULT_OK) {
+				avifRGBImageFreePixels(&bgra_image);
+				avifDecoderDestroy(decoder);
+#ifdef AD_LOGGER_ENABLE
+				AD_LOG(avifResultToString(result));
+#endif//AD_LOGGER_ENABLE
+				return NULL;
+
+			}
+			::GlobalUnlock(hGlobal);
+
+			TView* pView_BGRA = new TView(bgra_image.width, bgra_image.height, bgra_image.rowBytes, TView::Bgra32, NULL);
+
+			AD_PERFORMANCE_TEST_SET_SIZE(bgra_image.width * bgra_image.height)
+
+			if (pView_BGRA)
+			{
+				memcpy(pView_BGRA->data, bgra_image.pixels, bgra_image.height * bgra_image.rowBytes);
+				pAvif = new TAvif();
+				pAvif->m_pView = pView_BGRA;
+				pAvif->m_format = TImage::Avif;
+			}
+			else
+			{
+				delete pView_BGRA;
+			}
+
+			avifRGBImageFreePixels(&bgra_image);
+			avifDecoderDestroy(decoder);
+			return pAvif;
+		}
 		return NULL;
 	}
 }
