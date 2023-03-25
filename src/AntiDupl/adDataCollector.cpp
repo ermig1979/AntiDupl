@@ -82,6 +82,10 @@ namespace ad
             {
                 Simd::RgbToGray(*pImage->View(), gray);
             }
+            else if (pImage->View()->format == TView::Format::Rgba32)
+            {
+                Simd::RgbaToGray(*pImage->View(), gray);
+            }
             else
             {
                 Simd::BgraToGray(*pImage->View(), gray);

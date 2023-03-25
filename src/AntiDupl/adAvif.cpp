@@ -61,7 +61,8 @@ namespace ad
 			avifDecoder* decoder = avifDecoderCreate();
 
 			avifResult result = avifDecoderSetIOMemory(decoder, data, data_size);
-			if (result != AVIF_RESULT_OK) {
+			if (result != AVIF_RESULT_OK)
+			{
 				avifDecoderDestroy(decoder);
 #ifdef AD_LOGGER_ENABLE
 				AD_LOG(avifResultToString(result));
@@ -70,7 +71,8 @@ namespace ad
 			}
 
 			result = avifDecoderParse(decoder);
-			if (result != AVIF_RESULT_OK) {
+			if (result != AVIF_RESULT_OK)
+			{
 				avifDecoderDestroy(decoder);
 #ifdef AD_LOGGER_ENABLE
 				AD_LOG(avifResultToString(result));
@@ -79,7 +81,8 @@ namespace ad
 			}
 
 			result = avifDecoderNextImage(decoder);
-			if (result != AVIF_RESULT_OK) {
+			if (result != AVIF_RESULT_OK)
+			{
 				avifDecoderDestroy(decoder);
 #ifdef AD_LOGGER_ENABLE
 				AD_LOG(avifResultToString(result));
@@ -98,7 +101,8 @@ namespace ad
 			avifRGBImageAllocatePixels(&bgra_image);
 
 			result = avifImageYUVToRGB(decoder->image, &bgra_image);
-			if (result != AVIF_RESULT_OK) {
+			if (result != AVIF_RESULT_OK)
+			{
 				avifRGBImageFreePixels(&bgra_image);
 				avifDecoderDestroy(decoder);
 #ifdef AD_LOGGER_ENABLE
