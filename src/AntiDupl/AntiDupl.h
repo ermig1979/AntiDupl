@@ -305,6 +305,8 @@ extern "C"
 		AD_IMAGE_TGA = 13,
 		AD_IMAGE_WEBP = 14,
         AD_IMAGE_HEIF = 15,
+        AD_IMAGE_AVIF = 16,
+        AD_IMAGE_JXL = 17,
         AD_IMAGE_SIZE
     };
 
@@ -365,6 +367,8 @@ extern "C"
         AD_VERSION_TYPE_WEBP = 3,
         AD_VERSION_TYPE_TURBOJPEG = 4,
         AD_VERSION_TYPE_LIBHEIF = 5,
+        AD_VERSION_TYPE_LIBAVIF = 6,
+        AD_VERSION_TYPE_LIBJXL = 7,
         AD_VERSION_TYPE_SIZE
 	};
 
@@ -406,6 +410,8 @@ extern "C"
 		adBool TGA;
 		adBool WEBP;
         adBool HEIF;
+        adBool AVIF;
+        adBool JXL;
     };
     typedef adSearchOptions* adSearchOptionsPtr;
 

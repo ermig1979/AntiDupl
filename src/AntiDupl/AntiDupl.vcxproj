@@ -67,6 +67,7 @@
     </BuildLog>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="adAvif.cpp" />
     <ClCompile Include="adBlurringDetector.cpp" />
     <ClCompile Include="adDataCollector.cpp" />
     <ClCompile Include="adDds.cpp" />
@@ -89,6 +90,7 @@
     <ClCompile Include="adImageUtils.cpp" />
     <ClCompile Include="adIniFile.cpp" />
     <ClCompile Include="adInit.cpp" />
+    <ClCompile Include="adJxl.cpp" />
     <ClCompile Include="adLogger.cpp" />
     <ClCompile Include="adMistakeStorage.cpp" />
     <ClCompile Include="adOpenJpeg.cpp" />
@@ -114,6 +116,7 @@
     <ClCompile Include="AntiDupl.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="adAvif.h" />
     <ClInclude Include="adBlurringDetector.h" />
     <ClInclude Include="adConfig.h" />
     <ClInclude Include="adDataCollector.h" />
@@ -139,6 +142,7 @@
     <ClInclude Include="adIniFile.h" />
     <ClInclude Include="adInit.h" />
     <ClInclude Include="adIO.h" />
+    <ClInclude Include="adJxl.h" />
     <ClInclude Include="adLogger.h" />
     <ClInclude Include="adMistakeStorage.h" />
     <ClInclude Include="adOpenJpeg.h" />

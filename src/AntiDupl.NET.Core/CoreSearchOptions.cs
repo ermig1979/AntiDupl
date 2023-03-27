@@ -47,6 +47,8 @@ namespace AntiDupl.NET.Core
         private static string[] s_tgaExtensions = {"TGA", "TPIC"};
         private static string[] s_webpExtensions = { "WEBP" };
         private static string[] s_heifExtensions = { "HEIF", "HEIC" };
+        private static string[] s_avifExtensions = { "AVIF" };
+        private static string[] s_jxlExtensions = { "JXL" };
 
         public bool subFolders;
         public bool system;
@@ -66,6 +68,8 @@ namespace AntiDupl.NET.Core
         public bool TGA;
         public bool WEBP;
         public bool HEIF;
+        public bool AVIF;
+        public bool JXL;
 
         public CoreSearchOptions()
         {
@@ -90,6 +94,8 @@ namespace AntiDupl.NET.Core
             TGA = searchOptions.TGA;
             WEBP = searchOptions.WEBP;
             HEIF = searchOptions.HEIF;
+            AVIF = searchOptions.AVIF;
+            JXL = searchOptions.JXL;
         }
 
         public CoreSearchOptions(CoreDll.adSearchOptions searchOptions)
@@ -111,6 +117,8 @@ namespace AntiDupl.NET.Core
             TGA = searchOptions.TGA != CoreDll.FALSE;
             WEBP = searchOptions.WEBP != CoreDll.FALSE;
             HEIF = searchOptions.HEIF != CoreDll.FALSE;
+            AVIF = searchOptions.AVIF != CoreDll.FALSE;
+            JXL = searchOptions.JXL != CoreDll.FALSE;
         }
 
         public void ConvertTo(ref CoreDll.adSearchOptions searchOptions)
@@ -132,6 +140,8 @@ namespace AntiDupl.NET.Core
             searchOptions.TGA = TGA ? CoreDll.TRUE : CoreDll.FALSE;
             searchOptions.WEBP = WEBP ? CoreDll.TRUE : CoreDll.FALSE;
             searchOptions.HEIF = HEIF ? CoreDll.TRUE : CoreDll.FALSE;
+            searchOptions.AVIF = AVIF ? CoreDll.TRUE : CoreDll.FALSE;
+            searchOptions.JXL = JXL ? CoreDll.TRUE : CoreDll.FALSE;
         }
 
         public CoreSearchOptions Clone()
@@ -158,7 +168,9 @@ namespace AntiDupl.NET.Core
                 DDS == searchOptions.DDS &&
                 TGA == searchOptions.TGA &&
                 WEBP == searchOptions.WEBP &&
-                HEIF == searchOptions.HEIF;
+                HEIF == searchOptions.HEIF &&
+                AVIF == searchOptions.AVIF &&
+                JXL == searchOptions.JXL;
         }
 
         public string[] GetActualExtensions()
@@ -192,6 +204,10 @@ namespace AntiDupl.NET.Core
                 extensions.AddRange(s_webpExtensions);
             if (HEIF)
                 extensions.AddRange(s_heifExtensions);
+            if (AVIF)
+                extensions.AddRange(s_avifExtensions);
+            if (JXL)
+                extensions.AddRange(s_jxlExtensions);
             return (string[])extensions.ToArray(typeof(string));
         }
 

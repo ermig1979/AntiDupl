@@ -341,6 +341,9 @@ namespace AntiDupl.NET.WinForms
             public const string LibWebp = "https://github.com/webmproject/libwebp";
             public const string LibJpegTurbo = "http://www.libjpeg-turbo.org";
             public const string LibHeif = "http://www.libheif.org";
+            public const string LibAvif = "https://github.com/AOMediaCodec/libavif";
+            public const string LibJxl = "https://github.com/libjxl/libjxl";
+
 
             public static string GithubComAntiduplCurrent
             {

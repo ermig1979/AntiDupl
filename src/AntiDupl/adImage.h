@@ -54,6 +54,8 @@ namespace ad
 			Tga = 13,
 			Webp = 14,
             Heif = 15,
+            Avif = 16,
+            Jxl = 17,
             FormatSize
         };
 

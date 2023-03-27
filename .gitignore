@@ -335,3 +335,6 @@ ASALocalRun/
 /src/AntiDupl.NET.WinForms/Form/MainForm.resx
 /src/AntiDupl.NET.WinForms/Form/SearchExecuterForm.resx
 /src/vcpkg_installed
+src/AntiDupl.NET.WinForms/Form/CoreOptionsForm.resx
+src/AntiDupl.NET.WinForms/Form/AboutProgramForm.resx
+src/AntiDupl.NET.WinForms/Form/StartFinishForm.resx

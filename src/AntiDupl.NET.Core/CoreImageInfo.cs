@@ -117,6 +117,12 @@ namespace AntiDupl.NET.Core
                 case CoreDll.ImageType.Heif:
                     builder.Append("HEIF");
                     break;
+                case CoreDll.ImageType.Avif:
+                    builder.Append("AVIF");
+                    break;
+                case CoreDll.ImageType.Jxl:
+                    builder.Append("JXL");
+                    break;
             }
             return builder.ToString();
         }

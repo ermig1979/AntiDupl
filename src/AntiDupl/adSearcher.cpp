@@ -160,6 +160,8 @@ namespace ad
 		AddExtensions(AD_IMAGE_TGA, m_pOptions->search.TGA);
 		AddExtensions(AD_IMAGE_WEBP, m_pOptions->search.WEBP);
         AddExtensions(AD_IMAGE_HEIF, m_pOptions->search.HEIF);
+        AddExtensions(AD_IMAGE_AVIF, m_pOptions->search.AVIF);
+        AddExtensions(AD_IMAGE_JXL, m_pOptions->search.JXL);
     }
 
     void TSearcher::AddExtensions(TImageType imageType, adBool enable)
