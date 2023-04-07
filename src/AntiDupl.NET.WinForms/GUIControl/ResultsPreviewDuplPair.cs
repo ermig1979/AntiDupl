@@ -50,6 +50,7 @@ namespace AntiDupl.NET.WinForms
         private ToolStripButton m_mistakeButton;
         private ToolStripButton m_openBothFoldersButton;
         private ToolStripButton m_openBothImagesButton;
+        private ToolStripButton m_openExternDiffImagesButton;
 
         private struct RectanglesWithSimilarity
         {
@@ -87,6 +88,7 @@ namespace AntiDupl.NET.WinForms
             m_mistakeButton = InitFactory.ToolButton.Create("MistakeButton", CoreDll.LocalActionType.Mistake, OnButtonClicked);
             m_openBothFoldersButton = InitFactory.ToolButton.Create("OpenBothFoldersButton.png", null, OnOpenBothFoldersButtonClicked);
             m_openBothImagesButton = InitFactory.ToolButton.Create("OpenBothImagesButton.png", null, OnOpenBothImagesButtonClicked);
+            m_openExternDiffImagesButton = InitFactory.ToolButton.Create("OpenExternDiffImagesButton.png", null, OnOpenExternDiffImagesClicked);
 
             /* m_difrentNumericUpDown = new System.Windows.Forms.NumericUpDown();
             m_difrentNumericUpDown.Size = new System.Drawing.Size(62, 17);
@@ -129,6 +131,7 @@ namespace AntiDupl.NET.WinForms
             m_mistakeButton.ToolTipText = GetToolTip(s.ResultsPreviewDefect_MistakeButton_ToolTip_Text, HotKeyOptions.Action.CurrentMistake);
             m_openBothFoldersButton.ToolTipText = s.ResultsPreviewDuplPair_OpenBothFoldersButton_ToolTip_Text;
             m_openBothImagesButton.ToolTipText = s.ResultsPreviewDuplPair_OpenBothImagesButton_ToolTip_Text;
+            m_openExternDiffImagesButton.ToolTipText = s.ResultsPreviewDuplPair_ExternDiffImagesButton_ToolTip_Text;
 
             // Для обновления EXIF.
             if (m_currentSearchResult != null)
@@ -213,6 +216,11 @@ namespace AntiDupl.NET.WinForms
             ImageOpener.OpenFile(m_secondImagePreviewPanel.CurrentImageInfo.path);
         }
 
+        private void OnOpenExternDiffImagesClicked(object sender, System.EventArgs e)
+        {
+            ImageDiffOpener.OpenFiles(m_firstImagePreviewPanel.CurrentImageInfo.path, m_secondImagePreviewPanel.CurrentImageInfo.path);
+        }
+
         private void OnOptionsChanged()
         {
             m_mistakeButton.Enabled = m_coreOptions.advancedOptions.mistakeDataBase;
@@ -250,6 +258,7 @@ namespace AntiDupl.NET.WinForms
             }
 
             m_toolStrip.Items.Add(m_openBothImagesButton);
+            m_toolStrip.Items.Add(m_openExternDiffImagesButton);
             m_toolStrip.Items.Add(m_openBothFoldersButton);
             m_toolStrip.Items.Add(new ToolStripSeparator());
             m_toolStrip.Items.Add(m_deleteBothButton);

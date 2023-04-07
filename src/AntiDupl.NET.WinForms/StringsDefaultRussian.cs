@@ -176,6 +176,7 @@ namespace AntiDupl.NET.WinForms
             s.ResultsPreviewDuplPair_MistakeButton_ToolTip_Text = "Пометить текущий результат как ошибочный";
             s.ResultsPreviewDuplPair_OpenBothFoldersButton_ToolTip_Text = "Откройте обе содержащие папки";
             s.ResultsPreviewDuplPair_OpenBothImagesButton_ToolTip_Text = "Откройте оба изображения";
+            s.ResultsPreviewDuplPair_ExternDiffImagesButton_ToolTip_Text = "Открыть разницу изображений с помощью внешнего инструмента";
 
             s.ResultsPreviewDefect_DeleteButton_ToolTip_Text = "Удалить картинку";
             s.ResultsPreviewDefect_MistakeButton_ToolTip_Text = "Пометить текущий результат как ошибочный";
