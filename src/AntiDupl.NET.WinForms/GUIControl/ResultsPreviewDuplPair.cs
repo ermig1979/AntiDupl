@@ -218,7 +218,8 @@ namespace AntiDupl.NET.WinForms
 
         private void OnOpenExternDiffImagesClicked(object sender, System.EventArgs e)
         {
-            ImageDiffOpener.OpenFiles(m_firstImagePreviewPanel.CurrentImageInfo.path, m_secondImagePreviewPanel.CurrentImageInfo.path);
+            ImageDiffOpener.OpenFiles(m_firstImagePreviewPanel.CurrentImageInfo.path, 
+                m_secondImagePreviewPanel.CurrentImageInfo.path, m_options.imageDiffExecutablePath, m_options.imageDiffExecutableArguments);
         }
 
         private void OnOptionsChanged()

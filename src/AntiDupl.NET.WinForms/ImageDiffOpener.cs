@@ -14,14 +14,11 @@ namespace AntiDupl.NET.WinForms
         /// <summary>
         /// Opens the specified file using its default application.
         /// </summary>
-        static public void OpenFiles(string filePathFirstImage, string filePathSecondImage)
+        static public void OpenFiles(string filePathFirstImage, string filePathSecondImage, string executablePath, string executableArguments)
         {
-            string ExecutablePath = "C:\\Program Files\\WinMerge\\WinMergeU.exe";
-            string ExecutableArguments = "%1 %2";
-
             ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = ExecutablePath;
-            startInfo.Arguments = ExecutableArguments.Replace("%1",filePathFirstImage).Replace("%2",filePathSecondImage);
+            startInfo.FileName = executablePath;
+            startInfo.Arguments = executableArguments.Replace("%1",filePathFirstImage).Replace("%2",filePathSecondImage);
             startInfo.WindowStyle = ProcessWindowStyle.Maximized;
             try
             {
