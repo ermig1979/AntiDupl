@@ -67,8 +67,8 @@ namespace AntiDupl.NET.WinForms
         public bool checkMistakesAtLoading = true;
         public bool loadProfileOnLoading = true;
         public bool saveProfileOnClosing = true;
-        public string imageDiffExecutablePath = "C:\\Program Files\\WinMerge\\WinMergeU.exe";
-        public string imageDiffExecutableArguments = "%1 %2";
+        public string imageDiffExecutablePath = "";
+        public string imageDiffExecutableArguments = "";
 
         public MainFormOptions mainFormOptions = new MainFormOptions();
         public ResultsOptions resultsOptions = new ResultsOptions();

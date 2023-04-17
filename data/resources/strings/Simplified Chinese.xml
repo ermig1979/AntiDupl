@@ -84,6 +84,9 @@
   <CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text>Y 轴上的碎片数量</CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text>
   <CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text>标准化图片大小</CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text>
   <CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text>笔划粗度</CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text>
+  <CoreOptionsForm_ImageDiffTabPage_Text>图像差异工具</CoreOptionsForm_ImageDiffTabPage_Text>
+  <CoreOptionsForm_ImageDiffExecutablePathLabeledStringEdit_Text>可执行路径：</CoreOptionsForm_ImageDiffExecutablePathLabeledStringEdit_Text>
+  <CoreOptionsForm_ImageDiffExecutableArgumentsLabeledStringEdit_Text>可执行参数（由 %1 %2 提供）：</CoreOptionsForm_ImageDiffExecutableArgumentsLabeledStringEdit_Text>
   <CorePathsForm_Text>路径</CorePathsForm_Text>
   <CorePathsForm_SearchTabPage_Text>搜索</CorePathsForm_SearchTabPage_Text>
   <CorePathsForm_IgnoreTabPage_Text>忽略</CorePathsForm_IgnoreTabPage_Text>

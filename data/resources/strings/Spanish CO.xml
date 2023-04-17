@@ -83,6 +83,9 @@
   <CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text>Cantidad de fragmentos en Y</CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text>
   <CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text>Tamaño normal de imagen</CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text>
   <CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text>Grosor del lápiz</CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text>
+  <CoreOptionsForm_ImageDiffTabPage_Text>Herramienta de dif de imagen</CoreOptionsForm_ImageDiffTabPage_Text>
+  <CoreOptionsForm_ImageDiffExecutablePathLabeledStringEdit_Text>Ruta del ejecutable:</CoreOptionsForm_ImageDiffExecutablePathLabeledStringEdit_Text>
+  <CoreOptionsForm_ImageDiffExecutableArgumentsLabeledStringEdit_Text>Argumentos ejecutables (dados por %1 %2):</CoreOptionsForm_ImageDiffExecutableArgumentsLabeledStringEdit_Text>
   <CorePathsForm_Text>Carpetas</CorePathsForm_Text>
   <CorePathsForm_SearchTabPage_Text>Buscar</CorePathsForm_SearchTabPage_Text>
   <CorePathsForm_IgnoreTabPage_Text>Ignorar</CorePathsForm_IgnoreTabPage_Text>

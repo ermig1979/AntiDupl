@@ -130,6 +130,10 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text = "Нормированный размер изображения";
             s.CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text = "Толшина рамки выделения";
 
+            s.CoreOptionsForm_ImageDiffTabPage_Text = "Разница изображений инструмент";
+            s.CoreOptionsForm_ImageDiffExecutablePathLabeledStringEdit_Text = "Исполняемый путь:";
+            s.CoreOptionsForm_ImageDiffExecutableArgumentsLabeledStringEdit_Text = "Исполняемые аргументы (данные %1 %2):";
+
             s.CorePathsForm_Text = "Пути";
             s.CorePathsForm_SearchTabPage_Text = "Искать";
             s.CorePathsForm_IgnoreTabPage_Text = "Пропускать";

@@ -83,6 +83,9 @@
   <CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text>Αριθμός τμημάτων κατά Ψ</CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text>
   <CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text>Προσαρμοσμένο μέγεθος εικόνας</CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text>
   <CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text>Πάχος πλαισίου τμήματος</CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text>
+  <CoreOptionsForm_ImageDiffTabPage_Text>εργαλείο διαφοράς εικόνας</CoreOptionsForm_ImageDiffTabPage_Text>
+  <CoreOptionsForm_ImageDiffExecutablePathLabeledStringEdit_Text>Εκτελέσσιμη διαδρομή:</CoreOptionsForm_ImageDiffExecutablePathLabeledStringEdit_Text>
+  <CoreOptionsForm_ImageDiffExecutableArgumentsLabeledStringEdit_Text>Εκτελέσιμα ορίσματα (δόντια παρ %1 %2):</CoreOptionsForm_ImageDiffExecutableArgumentsLabeledStringEdit_Text>
   <CorePathsForm_Text>Διαδρομές</CorePathsForm_Text>
   <CorePathsForm_SearchTabPage_Text>Αναζήτηση</CorePathsForm_SearchTabPage_Text>
   <CorePathsForm_IgnoreTabPage_Text>Παράβλεψη</CorePathsForm_IgnoreTabPage_Text>
