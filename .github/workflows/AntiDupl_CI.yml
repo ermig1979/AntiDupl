@@ -45,7 +45,7 @@ jobs:
     - name: Run and cache vcpkg dependecies
       uses: lukka/run-vcpkg@v10.7
       with:
-        vcpkgGitCommitId: 223d33be7d3ec6c3d64381ca37f501b8c87dda6a
+        vcpkgGitCommitId: 501db0f17ef6df184fcdbfbe0f87cde2313b6ab1
         vcpkgJsonGlob: src/vcpkg.json
         runVcpkgInstall: false
         appendedCacheKey: '${{matrix.configuration}}'
