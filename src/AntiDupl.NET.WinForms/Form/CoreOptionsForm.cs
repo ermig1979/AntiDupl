@@ -127,7 +127,11 @@ namespace AntiDupl.NET.WinForms
         private LabeledIntegerEdit m_amountOfFragmentsOnYLabeledIntegerEdit;
         private LabeledIntegerEdit m_normalizedSizeOfImageLabeledIntegerEdit;
         private LabeledIntegerEdit m_penThicknessLabeledIntegerEdit;
-            
+
+        private TabPage m_imageDiffTabPage;
+        private LabeledStringEdit m_imageDiffExecutablePathLabeledStringEdit;
+        private LabeledStringEdit m_imageDiffExecutableArgumentsLabeledStringEdit;
+
         /// <summary>
         /// Все компоненты иницализированы.
         /// </summary>
@@ -179,6 +183,7 @@ namespace AntiDupl.NET.WinForms
 
             InitilizeHighlightTabPage();
 
+            InitilizeImageDiffTabPage();
 
             TableLayoutPanel mainButtonsTableLayoutPanel = InitFactory.Layout.Create(4, 1);
             mainButtonsTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
@@ -496,6 +501,24 @@ namespace AntiDupl.NET.WinForms
             UpdateHighlightItemsEnabling();
         }
 
+        private void InitilizeImageDiffTabPage()
+        {
+            m_imageDiffTabPage = new TabPage();
+            m_mainTabControl.Controls.Add(m_imageDiffTabPage);
+
+            TableLayoutPanel imageDiffTableLayoutPanel = InitFactory.Layout.Create(1, 11, 5);
+            imageDiffTableLayoutPanel.AutoScroll = true;
+            m_imageDiffTabPage.Controls.Add(imageDiffTableLayoutPanel);
+
+            m_imageDiffExecutablePathLabeledStringEdit = new LabeledStringEdit(COMBO_BOX_WIDTH + 300, COMBO_BOX_HEIGHT, OnOptionChanged);
+            m_imageDiffExecutablePathLabeledStringEdit.Value = m_options.imageDiffExecutablePath;
+            imageDiffTableLayoutPanel.Controls.Add(m_imageDiffExecutablePathLabeledStringEdit, 0, 11);
+
+            m_imageDiffExecutableArgumentsLabeledStringEdit = new LabeledStringEdit(COMBO_BOX_WIDTH + 300, COMBO_BOX_HEIGHT, OnOptionChanged);
+            m_imageDiffExecutableArgumentsLabeledStringEdit.Value = m_options.imageDiffExecutableArguments;
+            imageDiffTableLayoutPanel.Controls.Add(m_imageDiffExecutableArgumentsLabeledStringEdit, 0, 12);
+        }
+
         private void OnHighlightChanged(object sender, EventArgs e)
         {
             if (m_inited)
@@ -600,6 +623,9 @@ namespace AntiDupl.NET.WinForms
             m_resultCountMaxLabeledIntegerEdit.Value = m_newCoreOptions.advancedOptions.resultCountMax;
             m_ignoreFrameWidthLabeledComboBox.SelectedValue = m_newCoreOptions.advancedOptions.ignoreFrameWidth;
             m_useLibJpegTurboCheckBox.Checked = m_newCoreOptions.advancedOptions.useLibJpegTurbo;
+
+            m_imageDiffExecutablePathLabeledStringEdit.Value = m_options.imageDiffExecutablePath;
+            m_imageDiffExecutableArgumentsLabeledStringEdit.Value = m_options.imageDiffExecutableArguments;
         }
 
         /// <summary>
@@ -656,6 +682,9 @@ namespace AntiDupl.NET.WinForms
             m_newCoreOptions.advancedOptions.resultCountMax = m_resultCountMaxLabeledIntegerEdit.Value;
             m_newCoreOptions.advancedOptions.ignoreFrameWidth = m_ignoreFrameWidthLabeledComboBox.SelectedValue;
             m_newCoreOptions.advancedOptions.useLibJpegTurbo = m_useLibJpegTurboCheckBox.Checked;
+
+            m_options.imageDiffExecutablePath = m_imageDiffExecutablePathLabeledStringEdit.Value;
+            m_options.imageDiffExecutableArguments = m_imageDiffExecutableArgumentsLabeledStringEdit.Value;
         }
 
         private void UpdateStrings()
@@ -735,6 +764,10 @@ namespace AntiDupl.NET.WinForms
             m_amountOfFragmentsOnYLabeledIntegerEdit.Text = s.CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text;
             m_normalizedSizeOfImageLabeledIntegerEdit.Text = s.CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text;
             m_penThicknessLabeledIntegerEdit.Text = s.CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text;
+
+            m_imageDiffTabPage.Text = s.CoreOptionsForm_ImageDiffTabPage_Text;
+            m_imageDiffExecutablePathLabeledStringEdit.Text = s.CoreOptionsForm_ImageDiffExecutablePathLabeledStringEdit_Text;
+            m_imageDiffExecutableArgumentsLabeledStringEdit.Text = s.CoreOptionsForm_ImageDiffExecutableArgumentsLabeledStringEdit_Text;
         }
 
         /// <summary>

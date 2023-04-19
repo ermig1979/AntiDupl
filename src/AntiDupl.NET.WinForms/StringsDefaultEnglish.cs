@@ -130,6 +130,10 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text = "Normalized size of image";
             s.CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text = "Pen thickness";
 
+            s.CoreOptionsForm_ImageDiffTabPage_Text = "Image Difftool";
+            s.CoreOptionsForm_ImageDiffExecutablePathLabeledStringEdit_Text = "Executable path:";
+            s.CoreOptionsForm_ImageDiffExecutableArgumentsLabeledStringEdit_Text = "Executable arguments (given by %1 %2):";
+
             s.CorePathsForm_Text = "Paths";
             s.CorePathsForm_SearchTabPage_Text = "Search";
             s.CorePathsForm_IgnoreTabPage_Text = "Ignore";
@@ -176,6 +180,7 @@ namespace AntiDupl.NET.WinForms
             s.ResultsPreviewDuplPair_MistakeButton_ToolTip_Text = "Mark current result as a mistake";
             s.ResultsPreviewDuplPair_OpenBothFoldersButton_ToolTip_Text = "Open both containing folders";
             s.ResultsPreviewDuplPair_OpenBothImagesButton_ToolTip_Text = "Open both images";
+            s.ResultsPreviewDuplPair_ExternDiffImagesButton_ToolTip_Text = "Open image difference with external tool";
 
             s.ResultsPreviewDefect_DeleteButton_ToolTip_Text = "Delete picture";
             s.ResultsPreviewDefect_MistakeButton_ToolTip_Text = "Mark current result as a mistake";

@@ -67,6 +67,8 @@ namespace AntiDupl.NET.WinForms
         public bool checkMistakesAtLoading = true;
         public bool loadProfileOnLoading = true;
         public bool saveProfileOnClosing = true;
+        public string imageDiffExecutablePath = "";
+        public string imageDiffExecutableArguments = "";
 
         public MainFormOptions mainFormOptions = new MainFormOptions();
         public ResultsOptions resultsOptions = new ResultsOptions();
@@ -124,6 +126,8 @@ namespace AntiDupl.NET.WinForms
             checkMistakesAtLoading = options.checkMistakesAtLoading;
             loadProfileOnLoading = options.loadProfileOnLoading;
             saveProfileOnClosing = options.saveProfileOnClosing;
+            imageDiffExecutablePath = options.imageDiffExecutablePath;
+            imageDiffExecutableArguments = options.imageDiffExecutableArguments;
         }
 
         public void Save()
@@ -162,6 +166,8 @@ namespace AntiDupl.NET.WinForms
             options.checkMistakesAtLoading = checkMistakesAtLoading;
             options.loadProfileOnLoading = loadProfileOnLoading;
             options.saveProfileOnClosing = saveProfileOnClosing;
+            options.imageDiffExecutablePath = imageDiffExecutablePath;
+            options.imageDiffExecutableArguments = imageDiffExecutableArguments;
         }
 
         public static void PathCopy(string[] source, ref string[] destination)
@@ -224,6 +230,10 @@ namespace AntiDupl.NET.WinForms
             if (loadProfileOnLoading != options.loadProfileOnLoading)
                 return false;
             if (saveProfileOnClosing != options.saveProfileOnClosing)
+                return false;
+            if (imageDiffExecutablePath != options.imageDiffExecutablePath)
+                return false;
+            if (imageDiffExecutableArguments != options.imageDiffExecutableArguments)
                 return false;
             if (m_language != options.m_language)
                 return false;
