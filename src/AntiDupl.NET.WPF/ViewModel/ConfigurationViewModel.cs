@@ -13,6 +13,7 @@ using AntiDupl.NET.WPF.Service;
 using AntiDupl.NET.WPF.View;
 
 using AntiDupl.NET.Core;
+using System.Globalization;
 
 namespace AntiDupl.NET.WPF.ViewModel
 {
@@ -25,22 +26,30 @@ namespace AntiDupl.NET.WPF.ViewModel
         }
 
         public int Delay { get; set; }
-        private DispatcherTimer timer;
+        private DispatcherTimer _timer;
         IWindowService _windowService;
         CoreLib _core;
-        public CoreOptions Option { get; set; }
+        public CoreOptions Option { get; private set; }
         IThumbnailProvider _thumbnailProvider;
 
-        public ConfigurationViewModel(IConfigurationModel configuration, IWindowService windowService, CoreLib core, CoreOptions option, 
-            IThumbnailProvider thumbnailProvider)
+        //public CompareOptionViewModel CompareOptions { get; private set; }
+
+        public ConfigurationViewModel(IConfigurationModel configuration,
+            IWindowService windowService,
+            CoreLib core,
+            CoreOptions option, 
+            IThumbnailProvider thumbnailProvider,
+            CompareOptions compareOptions)
         {
             this._configuration = configuration;
             _windowService = windowService;
             _core = core;
+            Option = option;
             Delay = 500;
             _thumbnailWidth = _configuration.ThumbnailWidth;
-            Option = option;
             _thumbnailProvider = thumbnailProvider;
+
+           // CompareOptions = new CompareOptionViewModel(option);
         }
 
         int _thumbnailWidth;
@@ -57,14 +66,14 @@ namespace AntiDupl.NET.WPF.ViewModel
 
                     if (this.Delay > 0)
                     {
-                        if (timer != null)
-                            timer.Stop();
+                        if (_timer != null)
+                            _timer.Stop();
 
-                        if (timer == null)
+                        if (_timer == null)
                         {
-                            timer = new DispatcherTimer();
-                            timer.Interval = TimeSpan.FromMilliseconds(this.Delay);
-                            timer.Tick += (object s, EventArgs ea) =>
+                            _timer = new DispatcherTimer();
+                            _timer.Interval = TimeSpan.FromMilliseconds(this.Delay);
+                            _timer.Tick += (object s, EventArgs ea) =>
                             {
                                 DispatcherTimer t = s as DispatcherTimer;
                                 t.Stop();
@@ -74,7 +83,7 @@ namespace AntiDupl.NET.WPF.ViewModel
                             };
                         }
 
-                        timer.Start();
+                        _timer.Start();
                     }
                     else
                     {
@@ -135,6 +144,5 @@ namespace AntiDupl.NET.WPF.ViewModel
                 }));
             }
         }
-        
     }
 }

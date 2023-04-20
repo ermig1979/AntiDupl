@@ -15,17 +15,4 @@ public partial class ProgressDialog : Window
     {
         InitializeComponent();
     }
-
-    protected override void OnClosing(CancelEventArgs e)
-    {
-        base.OnClosing(e);
-
-        //find out, if the close button was pressed or if the window was closed by win.close()
-        if (new StackTrace().GetFrames().FirstOrDefault(x => x.GetMethod() == typeof(Window).GetMethod("Close")) != null) return;
-
-        //if close button was pressed, cancel execution
-        var vm = (ProgressDialogViewModel)DataContext;
-        vm.CancelCommand.Execute(null);
-        e.Cancel = true;
-    }
 }

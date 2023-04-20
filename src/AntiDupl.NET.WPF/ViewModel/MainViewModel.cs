@@ -21,7 +21,6 @@ using AntiDupl.NET.WPF.Service;
 using AntiDupl.NET.WPF.UndoRedo;
 using AntiDupl.NET.WPF.View;
 using Microsoft.Win32;
-using TinyIoC;
 
 using AntiDupl.NET.Core;
 
@@ -99,7 +98,8 @@ namespace AntiDupl.NET.WPF.ViewModel
             ILanguageService languageService,
             IConfigurationModel configuration,
             CoreLib coreLib,
-            IThumbnailProvider thumbnailProvider)
+            IThumbnailProvider thumbnailProvider,
+            IUndoRedoEngine undoRedoEngine)
         {
             _languageService = languageService;
             //_windowService = windowService;
@@ -116,14 +116,8 @@ namespace AntiDupl.NET.WPF.ViewModel
             Configuration = configuration;
             Configuration.PropertyChanged += OnConfigurationPropertyChanged;
 
-            UndoRedoEngine undoRedoEngine = new UndoRedoEngine(Configuration);
             _undoRedoEngine = undoRedoEngine;
             _undoRedoEngine.PropertyChanged += OnUndoRedoEnginePropertyChanged;
-            TinyIoCContainer.Current.Register<IUndoRedoEngine, UndoRedoEngine>(undoRedoEngine);
-
-            _viewModeModel = new ViewModeModel();
-            TinyIoCContainer.Current.Register<IViewModeModel, ViewModeModel>(_viewModeModel);
-
 
             _thumbnailProvider.PropertyChanged += OnThumbnailProviderPropertyChanged;
             //ThumbnailProvider.Instance.PropertyChanged += OnThumbnailProviderPropertyChanged;
@@ -133,7 +127,6 @@ namespace AntiDupl.NET.WPF.ViewModel
         {
             Configuration.PropertyChanged -= OnConfigurationPropertyChanged;
             _undoRedoEngine.PropertyChanged -= OnUndoRedoEnginePropertyChanged;
-            TinyIoCContainer.Current.Unregister<IUndoRedoEngine>();
             //_dllModel.SaveSettings();
             _core.Dispose();
 

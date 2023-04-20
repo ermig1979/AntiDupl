@@ -37,7 +37,7 @@ namespace AntiDupl.NET.WPF.Core
     public class CoreOptions
     {
         public CoreSearchOptions searchOptions { get; private set; }
-        public CoreCompareOptions compareOptions { get; private set; }
+        public CoreCompareOptions CompareOptions { get; private set; }
         public CoreDefectOptions defectOptions { get; private set; }
         public CoreAdvancedOptions advancedOptions { get; private set; }
 
@@ -49,7 +49,7 @@ namespace AntiDupl.NET.WPF.Core
         public CoreOptions()
         {
             searchOptions = new CoreSearchOptions();
-            compareOptions = new CoreCompareOptions();
+            CompareOptions = new CoreCompareOptions();
             defectOptions = new CoreDefectOptions();
             advancedOptions = new CoreAdvancedOptions();
 
@@ -73,7 +73,7 @@ namespace AntiDupl.NET.WPF.Core
         public CoreOptions(CoreOptions options)
         {
             searchOptions = options.searchOptions.Clone();
-            compareOptions = options.compareOptions.Clone();
+            CompareOptions = options.CompareOptions.Clone();
             defectOptions = options.defectOptions.Clone();
             advancedOptions = options.advancedOptions.Clone();
 
@@ -99,7 +99,7 @@ namespace AntiDupl.NET.WPF.Core
         public void Get(CoreLib core, bool onePath)
         {
             searchOptions = core.searchOptions.Clone();
-            compareOptions = core.compareOptions.Clone();
+            CompareOptions = core.compareOptions.Clone();
             defectOptions = core.defectOptions.Clone();
             advancedOptions = core.advancedOptions.Clone();
             if (onePath)
@@ -123,7 +123,7 @@ namespace AntiDupl.NET.WPF.Core
         public void Set(CoreLib core, bool onePath)
         {
             core.searchOptions = searchOptions.Clone();
-            core.compareOptions = compareOptions.Clone();
+            core.compareOptions = CompareOptions.Clone();
             core.defectOptions = defectOptions.Clone();
             core.advancedOptions = advancedOptions.Clone();
             if (onePath)
@@ -162,7 +162,7 @@ namespace AntiDupl.NET.WPF.Core
         public void CopyTo(ref CoreOptions options)
         {
             options.searchOptions = searchOptions.Clone();
-            options.compareOptions = compareOptions.Clone();
+            options.CompareOptions = CompareOptions.Clone();
             options.defectOptions = defectOptions.Clone();
             options.advancedOptions = advancedOptions.Clone();
 
@@ -214,7 +214,7 @@ namespace AntiDupl.NET.WPF.Core
         {
             if (!searchOptions.Equals(options.searchOptions))
                 return false;
-            if (!compareOptions.Equals(options.compareOptions))
+            if (!CompareOptions.Equals(options.CompareOptions))
                 return false;
             if (!defectOptions.Equals(options.defectOptions))
                 return false;

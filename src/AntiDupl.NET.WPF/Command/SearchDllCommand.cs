@@ -95,7 +95,7 @@ namespace AntiDupl.NET.WPF.Command
                     total = mainThreadStatus.total;
                     if (mainThreadStatus.current > 0)
                     {
-                        if (_mainViewModel.Options.compareOptions.checkOnEquality)
+                        if (_mainViewModel.Options.CompareOptions.CheckOnEquality)
                         {
                             for (int i = 0; ; i++)
                             {

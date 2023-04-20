@@ -108,7 +108,7 @@
             </Grid>
         </TabItem>
         <TabItem Header="CompareOption">
-            <Grid DataContext="{Binding Option.compareOptions}">
+            <Grid DataContext="{Binding Option.CompareOptions}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="75" />
@@ -146,7 +146,7 @@
 
                 <TextBlock Grid.Column="0" Grid.Row="6" Text="ThresholdDifference" />
                 <TextBox Grid.Column="1" Grid.Row="6"
-                         Text="{Binding ThresholdDifference, UpdateSourceTrigger=PropertyChanged}">
+                         Text="{Binding ThresholdDifference, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                     <i:Interaction.Behaviors>
                         <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="3" />
                     </i:Interaction.Behaviors>

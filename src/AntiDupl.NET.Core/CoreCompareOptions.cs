@@ -33,17 +33,17 @@ namespace AntiDupl.NET.Core
 {
     public class CoreCompareOptions : INotifyPropertyChanged
     {
-        public bool checkOnEquality;
-        public bool transformedImage;
-        public bool sizeControl;
-        public bool typeControl;
-        public bool ratioControl;
-        public int thresholdDifference;
-        public int minimalImageSize;
-        public int maximalImageSize;
-        public bool compareInsideOneFolder;
-        public bool compareInsideOneSearchPath;
-        public AlgorithmComparing algorithmComparing;
+        private bool _checkOnEquality;
+        private bool _transformedImage;
+        private bool _sizeControl;
+        private bool _typeControl;
+        private bool _ratioControl;
+        private int _thresholdDifference;
+        private int _minimalImageSize;
+        private int _maximalImageSize;
+        private bool _compareInsideOneFolder;
+        private bool _compareInsideOneSearchPath;
+        private AlgorithmComparing _algorithmComparing;
 
         public CoreCompareOptions()
         {
@@ -51,47 +51,47 @@ namespace AntiDupl.NET.Core
 
         public CoreCompareOptions(CoreCompareOptions compareOptions)
         {
-            checkOnEquality = compareOptions.checkOnEquality;
-            transformedImage = compareOptions.transformedImage;
-            sizeControl = compareOptions.sizeControl;
-            typeControl = compareOptions.typeControl;
-            ratioControl = compareOptions.ratioControl;
-			algorithmComparing = compareOptions.algorithmComparing;
-            thresholdDifference = compareOptions.thresholdDifference;
-            minimalImageSize = compareOptions.minimalImageSize;
-            maximalImageSize = compareOptions.maximalImageSize;
-            compareInsideOneFolder = compareOptions.compareInsideOneFolder;
-            compareInsideOneSearchPath = compareOptions.compareInsideOneSearchPath;
+            _checkOnEquality = compareOptions._checkOnEquality;
+            _transformedImage = compareOptions._transformedImage;
+            _sizeControl = compareOptions._sizeControl;
+            _typeControl = compareOptions._typeControl;
+            _ratioControl = compareOptions._ratioControl;
+			_algorithmComparing = compareOptions._algorithmComparing;
+            _thresholdDifference = compareOptions._thresholdDifference;
+            _minimalImageSize = compareOptions._minimalImageSize;
+            _maximalImageSize = compareOptions._maximalImageSize;
+            _compareInsideOneFolder = compareOptions._compareInsideOneFolder;
+            _compareInsideOneSearchPath = compareOptions._compareInsideOneSearchPath;
         }
 
         public CoreCompareOptions(ref CoreDll.adCompareOptions compareOptions)
         {
-            checkOnEquality = compareOptions.checkOnEquality != CoreDll.FALSE;
-            transformedImage = compareOptions.transformedImage != CoreDll.FALSE;
-            sizeControl = compareOptions.sizeControl != CoreDll.FALSE;
-            typeControl = compareOptions.typeControl != CoreDll.FALSE;
-            ratioControl = compareOptions.ratioControl != CoreDll.FALSE;
-			algorithmComparing = compareOptions.algorithmComparing;
-            thresholdDifference = compareOptions.thresholdDifference;
-            minimalImageSize = compareOptions.minimalImageSize;
-            maximalImageSize = compareOptions.maximalImageSize;
-            compareInsideOneFolder = compareOptions.compareInsideOneFolder != CoreDll.FALSE;
-            compareInsideOneSearchPath = compareOptions.compareInsideOneSearchPath != CoreDll.FALSE;
+            _checkOnEquality = compareOptions.checkOnEquality != CoreDll.FALSE;
+            _transformedImage = compareOptions.transformedImage != CoreDll.FALSE;
+            _sizeControl = compareOptions.sizeControl != CoreDll.FALSE;
+            _typeControl = compareOptions.typeControl != CoreDll.FALSE;
+            _ratioControl = compareOptions.ratioControl != CoreDll.FALSE;
+			_algorithmComparing = compareOptions.algorithmComparing;
+            _thresholdDifference = compareOptions.thresholdDifference;
+            _minimalImageSize = compareOptions.minimalImageSize;
+            _maximalImageSize = compareOptions.maximalImageSize;
+            _compareInsideOneFolder = compareOptions.compareInsideOneFolder != CoreDll.FALSE;
+            _compareInsideOneSearchPath = compareOptions.compareInsideOneSearchPath != CoreDll.FALSE;
         }
 
         public void ConvertTo(ref CoreDll.adCompareOptions compareOptions)
         {
-            compareOptions.checkOnEquality = checkOnEquality ? CoreDll.TRUE : CoreDll.FALSE;
-            compareOptions.transformedImage = transformedImage ? CoreDll.TRUE : CoreDll.FALSE;
-            compareOptions.sizeControl = sizeControl ? CoreDll.TRUE : CoreDll.FALSE;
-            compareOptions.typeControl = typeControl ? CoreDll.TRUE : CoreDll.FALSE;
-            compareOptions.ratioControl = ratioControl ? CoreDll.TRUE : CoreDll.FALSE;
-			compareOptions.algorithmComparing = algorithmComparing;
-            compareOptions.thresholdDifference = thresholdDifference;
-            compareOptions.minimalImageSize = minimalImageSize;
-            compareOptions.maximalImageSize = maximalImageSize;
-            compareOptions.compareInsideOneFolder = compareInsideOneFolder ? CoreDll.TRUE : CoreDll.FALSE;
-            compareOptions.compareInsideOneSearchPath = compareInsideOneSearchPath ? CoreDll.TRUE : CoreDll.FALSE;
+            compareOptions.checkOnEquality = _checkOnEquality ? CoreDll.TRUE : CoreDll.FALSE;
+            compareOptions.transformedImage = _transformedImage ? CoreDll.TRUE : CoreDll.FALSE;
+            compareOptions.sizeControl = _sizeControl ? CoreDll.TRUE : CoreDll.FALSE;
+            compareOptions.typeControl = _typeControl ? CoreDll.TRUE : CoreDll.FALSE;
+            compareOptions.ratioControl = _ratioControl ? CoreDll.TRUE : CoreDll.FALSE;
+			compareOptions.algorithmComparing = _algorithmComparing;
+            compareOptions.thresholdDifference = _thresholdDifference;
+            compareOptions.minimalImageSize = _minimalImageSize;
+            compareOptions.maximalImageSize = _maximalImageSize;
+            compareOptions.compareInsideOneFolder = _compareInsideOneFolder ? CoreDll.TRUE : CoreDll.FALSE;
+            compareOptions.compareInsideOneSearchPath = _compareInsideOneSearchPath ? CoreDll.TRUE : CoreDll.FALSE;
         }
 
         public CoreCompareOptions Clone()
@@ -102,125 +102,125 @@ namespace AntiDupl.NET.Core
         public bool Equals(CoreCompareOptions compareOptions)
         {
             return
-                checkOnEquality == compareOptions.checkOnEquality &&
-                transformedImage == compareOptions.transformedImage &&
-                sizeControl == compareOptions.sizeControl &&
-                typeControl == compareOptions.typeControl &&
-                ratioControl == compareOptions.ratioControl &&
-				algorithmComparing == compareOptions.algorithmComparing &&
-                thresholdDifference == compareOptions.thresholdDifference &&
-                minimalImageSize == compareOptions.minimalImageSize &&
-                maximalImageSize == compareOptions.maximalImageSize &&
-                compareInsideOneFolder == compareOptions.compareInsideOneFolder &&
-                compareInsideOneSearchPath == compareOptions.compareInsideOneSearchPath;
+                _checkOnEquality == compareOptions._checkOnEquality &&
+                _transformedImage == compareOptions._transformedImage &&
+                _sizeControl == compareOptions._sizeControl &&
+                _typeControl == compareOptions._typeControl &&
+                _ratioControl == compareOptions._ratioControl &&
+				_algorithmComparing == compareOptions._algorithmComparing &&
+                _thresholdDifference == compareOptions._thresholdDifference &&
+                _minimalImageSize == compareOptions._minimalImageSize &&
+                _maximalImageSize == compareOptions._maximalImageSize &&
+                _compareInsideOneFolder == compareOptions._compareInsideOneFolder &&
+                _compareInsideOneSearchPath == compareOptions._compareInsideOneSearchPath;
         }
 
         public bool CheckOnEquality
         {
-            get { return checkOnEquality; }
+            get { return _checkOnEquality; }
             set
             {
-                checkOnEquality = value;
+                _checkOnEquality = value;
                 NotifyPropertyChanged("CheckOnEquality");
             }
         }
 
         public bool TransformedImage
         {
-            get { return transformedImage; }
+            get { return _transformedImage; }
             set
             {
-                transformedImage = value;
+                _transformedImage = value;
                 NotifyPropertyChanged("TransformedImage");
             }
         }
 
         public bool SizeControl
         {
-            get { return sizeControl; }
+            get { return _sizeControl; }
             set
             {
-                sizeControl = value;
+                _sizeControl = value;
                 NotifyPropertyChanged("SizeControl");
             }
         }
 
         public bool TypeControl
         {
-            get { return typeControl; }
+            get { return _typeControl; }
             set
             {
-                typeControl = value;
+                _typeControl = value;
                 NotifyPropertyChanged("TypeControl");
             }
         }
 
         public bool RatioControl
         {
-            get { return ratioControl; }
+            get { return _ratioControl; }
             set
             {
-                ratioControl = value;
+                _ratioControl = value;
                 NotifyPropertyChanged("RatioControl");
             }
         }
 
         public int ThresholdDifference
         {
-            get { return thresholdDifference; }
+            get { return _thresholdDifference; }
             set
             {
-                thresholdDifference = value;
+                _thresholdDifference = value;
                 NotifyPropertyChanged("ThresholdDifference");
             }
         }
 
         public int MinimalImageSize
         {
-            get { return minimalImageSize; }
+            get { return _minimalImageSize; }
             set
             {
-                minimalImageSize = value;
+                _minimalImageSize = value;
                 NotifyPropertyChanged("MinimalImageSize");
             }
         }
 
         public int MaximalImageSize
         {
-            get { return maximalImageSize; }
+            get { return _maximalImageSize; }
             set
             {
-                maximalImageSize = value;
+                _maximalImageSize = value;
                 NotifyPropertyChanged("MaximalImageSize");
             }
         }
 
         public bool CompareInsideOneFolder
         {
-            get { return compareInsideOneFolder; }
+            get { return _compareInsideOneFolder; }
             set
             {
-                compareInsideOneFolder = value;
+                _compareInsideOneFolder = value;
                 NotifyPropertyChanged("CompareInsideOneFolder");
             }
         }
 
         public bool CompareInsideOneSearchPath
         {
-            get { return compareInsideOneSearchPath; }
+            get { return _compareInsideOneSearchPath; }
             set
             {
-                compareInsideOneSearchPath = value;
+                _compareInsideOneSearchPath = value;
                 NotifyPropertyChanged("CompareInsideOneSearchPath");
             }
         }
 
         public AlgorithmComparing AlgorithmComparing
         {
-            get { return algorithmComparing; }
+            get { return _algorithmComparing; }
             set
             {
-                algorithmComparing = value;
+                _algorithmComparing = value;
                 NotifyPropertyChanged("AlgorithmComparing");
             }
         }

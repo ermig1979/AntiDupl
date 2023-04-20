@@ -1,15 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
-using AntiDupl.NET.WPF.Core;
+using Microsoft.Extensions.DependencyInjection;
 using AntiDupl.NET.WPF.Model;
-using AntiDupl.NET.WPF.Properties;
 using AntiDupl.NET.WPF.Service;
 using AntiDupl.NET.WPF.View;
 using AntiDupl.NET.WPF.ViewModel;
-using TinyIoC;
-
 using AntiDupl.NET.Core;
+using AntiDupl.NET.WPF.UndoRedo;
 
 namespace AntiDupl.NET.WPF
 {
@@ -26,33 +24,46 @@ namespace AntiDupl.NET.WPF
                    new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
 
+            var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+
+            ResgisterServices(services);
+
+            using (ServiceProvider serviceProvider = services.BuildServiceProvider())
+            {
+                //IWindowService windowService = new WindowService();
+                MainViewModel viewModel = serviceProvider.GetRequiredService<MainViewModel>();
+
+                var shell = new MainWindow();
+                //windowService.MainWindow = shell;
+                shell.DataContext = viewModel;
+                shell.Loaded += new RoutedEventHandler(viewModel.OnLoaded);
+                shell.Closing += new CancelEventHandler(viewModel.OnClosing);
+                shell.Show();
+            }
+        }
+
+        private void ResgisterServices(Microsoft.Extensions.DependencyInjection.ServiceCollection services)
+        {
             ConfigurationModel confModel = ConfigurationModel.Load();
             // Register config
-            TinyIoCContainer.Current.Register<IConfigurationModel, ConfigurationModel>(confModel);
+            services.AddSingleton<IConfigurationModel>(confModel);
 
             ILanguageService languageService = new LanguageService(confModel);
-            TinyIoCContainer.Current.Register<ILanguageService>(languageService);
+            services.AddSingleton<ILanguageService>(languageService);
 
             AntiDupl.NET.WPF.Resources.Resources.UserPath = AntiDupl.NET.WPF.Resources.Resources.GetDefaultUserPath();
             CoreLib core = new CoreLib(AntiDupl.NET.WPF.Resources.Resources.UserPath);
-            TinyIoC.TinyIoCContainer.Current.Register<CoreLib>(core);
+            services.AddSingleton<CoreLib>(core);
 
             ImageLoader imageLoader = new ImageLoader(core);
-            TinyIoC.TinyIoCContainer.Current.Register<IImageLoader>(imageLoader);
+            services.AddSingleton<IImageLoader>(imageLoader);
 
             ThumbnailProvider thumbnailProvider = new ThumbnailProvider(imageLoader);
-            TinyIoC.TinyIoCContainer.Current.Register<IThumbnailProvider>(thumbnailProvider);
+            services.AddSingleton<IThumbnailProvider>(thumbnailProvider);
 
-            //IWindowService windowService = new WindowService();
-            MainViewModel viewModel = TinyIoCContainer.Current.Resolve<MainViewModel>();
-            //var viewModel = new MainViewModel(languageService);
-
-            var shell = new MainWindow();
-            //windowService.MainWindow = shell;
-            shell.DataContext = viewModel;
-            shell.Loaded += new RoutedEventHandler(viewModel.OnLoaded);
-            shell.Closing += new CancelEventHandler(viewModel.OnClosing);
-            shell.Show();
+            services
+                .AddSingleton<IUndoRedoEngine, UndoRedoEngine>()
+                .AddSingleton<IViewModeModel,ViewModeModel>();
         }
 
         void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

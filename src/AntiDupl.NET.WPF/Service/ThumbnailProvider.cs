@@ -12,7 +12,6 @@ using System.Windows.Threading;
 using AntiDupl.NET.WPF.Model;
 using AntiDupl.NET.WPF.ObjectModel;
 using AntiDupl.NET.WPF.ViewModel;
-using TinyIoC;
 
 namespace AntiDupl.NET.WPF.Service
 {
@@ -30,7 +29,9 @@ namespace AntiDupl.NET.WPF.Service
         //private Queue<ImageInfoClass> _queue = new Queue<ImageInfoClass>();
         private Stack<ImageInfoClass> _queue = new Stack<ImageInfoClass>();
 
-        public ThumbnailProvider(IImageLoader imageLoader)
+        public ThumbnailProvider(
+            IConfigurationModel configurationModel,
+            IImageLoader imageLoader)
         {
             //_semaphore = new Semaphore(0, 1);
             _imageLoader = imageLoader;
@@ -42,7 +43,7 @@ namespace AntiDupl.NET.WPF.Service
             _thumbnailLoaderThread.Priority = ThreadPriority.Lowest;
             _thumbnailLoaderThread.Start();
 
-            _configuration = TinyIoCContainer.Current.Resolve<IConfigurationModel>();
+            _configuration = configurationModel ?? throw new ArgumentNullException(nameof(configurationModel));
             _configuration.PropertyChanged += _configuration_PropertyChanged;
 
             _thumbnailCache = new ThumbnailCache(_configuration);
