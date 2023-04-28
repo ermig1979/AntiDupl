@@ -15,7 +15,7 @@ types of defects.
 It is simple to use, has high speed and accuracy of work, supports Russian and English interface.
 
 Building AntiDupl.NET
-================================
+=====================
 1. Download Visual Studio 2022
 e.g. the Community Edition:
 
@@ -42,3 +42,8 @@ e.g. by using git:
 ```
 6. Start building AntiDupl.NET in Visual Studio.
 Depended libraries will be automatically loaded and build by vcpkg
+
+Command line tool AntiDuplX
+===========================
+There is a command line tool [AntiDuplX](https://github.com/ermig1979/AntiDuplX) to search simular and damaged images. 
+This is standalon project which uses similar algorithm of image comparison. It works for Linux and Windows.
