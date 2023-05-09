@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Strings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>German</Name>
+  <OriginalLanguageName>Deutsch</OriginalLanguageName>
+  <OkButton_Text>OK</OkButton_Text>
+  <CancelButton_Text>Abbrechen</CancelButton_Text>
+  <StopButton_Text>Stop</StopButton_Text>
+  <SetDefaultButton_Text>Standard</SetDefaultButton_Text>
+  <ErrorMessage_FileAlreadyExists>Datei kann nicht umbenannt werden, da die Datei mit diesem Namen bereits vorhanden ist!</ErrorMessage_FileAlreadyExists>
+  <WarningMessage_ChangeFileExtension>Möchten Sie die Dateierweiterung wirklich ändern?</WarningMessage_ChangeFileExtension>
+  <AboutProgramPanel_CopyrightLabel0_Text>Copyright (c) 2002-2020 Yermalayeu Ihar, </AboutProgramPanel_CopyrightLabel0_Text>
+  <AboutProgramPanel_CopyrightLabel1_Text>2013-2020 Borisov Dmitry.</AboutProgramPanel_CopyrightLabel1_Text>
+  <AboutProgramPanel_ComponentLabel_Text>Bestandteil</AboutProgramPanel_ComponentLabel_Text>
+  <AboutProgramPanel_VersionLabel_Text>Version</AboutProgramPanel_VersionLabel_Text>
+  <AboutProgramForm_Text>Über das Programm...</AboutProgramForm_Text>
+  <StartFinishForm_LoadImages_Text>Bilddateien laden</StartFinishForm_LoadImages_Text>
+  <StartFinishForm_LoadMistakes_Text>Fehlerhafte Dateien laden</StartFinishForm_LoadMistakes_Text>
+  <StartFinishForm_LoadResults_Text>Ergebnisdatei laden</StartFinishForm_LoadResults_Text>
+  <StartFinishForm_SaveImages_Text>Bilddateien speichern</StartFinishForm_SaveImages_Text>
+  <StartFinishForm_SaveMistakes_Text>Datei mit Fehlern speichern</StartFinishForm_SaveMistakes_Text>
+  <StartFinishForm_SaveResults_Text>Datei mit den Ergebnissen speichern</StartFinishForm_SaveResults_Text>
+  <StartFinishForm_ClearTemporary_Text>Temporäre Dateien löschen</StartFinishForm_ClearTemporary_Text>
+  <CoreOptionsForm_Text>Optionen</CoreOptionsForm_Text>
+  <CoreOptionsForm_SearchTabPage_Text>Suchen</CoreOptionsForm_SearchTabPage_Text>
+  <CoreOptionsForm_SearchFileTypeGroupBox_Text>Suchtypen:</CoreOptionsForm_SearchFileTypeGroupBox_Text>
+  <CoreOptionsForm_BmpCheckBox_Text>BMP</CoreOptionsForm_BmpCheckBox_Text>
+  <CoreOptionsForm_GifCheckBox_Text>GIF</CoreOptionsForm_GifCheckBox_Text>
+  <CoreOptionsForm_JpegCheckBox_Text>JPEG</CoreOptionsForm_JpegCheckBox_Text>
+  <CoreOptionsForm_PngCheckBox_Text>PNG</CoreOptionsForm_PngCheckBox_Text>
+  <CoreOptionsForm_TiffCheckBox_Text>TIFF</CoreOptionsForm_TiffCheckBox_Text>
+  <CoreOptionsForm_EmfCheckBox_Text>EMF</CoreOptionsForm_EmfCheckBox_Text>
+  <CoreOptionsForm_WmfCheckBox_Text>WMF</CoreOptionsForm_WmfCheckBox_Text>
+  <CoreOptionsForm_ExifCheckBox_Text>EXIF</CoreOptionsForm_ExifCheckBox_Text>
+  <CoreOptionsForm_IconCheckBox_Text>ICON</CoreOptionsForm_IconCheckBox_Text>
+  <CoreOptionsForm_Jp2CheckBox_Text>JP2</CoreOptionsForm_Jp2CheckBox_Text>
+  <CoreOptionsForm_PsdCheckBox_Text>PSD</CoreOptionsForm_PsdCheckBox_Text>
+  <CoreOptionsForm_DdsCheckBox_Text>DDS</CoreOptionsForm_DdsCheckBox_Text>
+  <CoreOptionsForm_TgaCheckBox_Text>TGA</CoreOptionsForm_TgaCheckBox_Text>
+  <CoreOptionsForm_WebpCheckBox_Text>WEBP</CoreOptionsForm_WebpCheckBox_Text>
+  <CoreOptionsForm_SearchSystemCheckBox_Text>Systemordner/-dateien durchsuchen</CoreOptionsForm_SearchSystemCheckBox_Text>
+  <CoreOptionsForm_SearchHiddenCheckBox_Text>Versteckte Ordner/Dateien durchsuchen</CoreOptionsForm_SearchHiddenCheckBox_Text>
+  <CoreOptionsForm_CompareTabPage_Text>Vergleichen</CoreOptionsForm_CompareTabPage_Text>
+  <CoreOptionsForm_CheckOnEqualityCheckBox_Text>Bildduplikate suchen</CoreOptionsForm_CheckOnEqualityCheckBox_Text>
+  <CoreOptionsForm_TransformedImageCheckBox_Text>gedrehte und spiegelbildliche Duplikate suchen</CoreOptionsForm_TransformedImageCheckBox_Text>
+  <CoreOptionsForm_SizeControlCheckBox_Text>Bildgröße überprüfen</CoreOptionsForm_SizeControlCheckBox_Text>
+  <CoreOptionsForm_TypeControlCheckBox_Text>Bildtyp überprüfen</CoreOptionsForm_TypeControlCheckBox_Text>
+  <CoreOptionsForm_RatioControlCheckBox_Text>Verhältnis von Bildbreite und -höhe überprüfen</CoreOptionsForm_RatioControlCheckBox_Text>
+  <CoreOptionsForm_AlgorithmComparingLabeledComboBox_Text>Algorithmus zum Vergleichen von Bildern</CoreOptionsForm_AlgorithmComparingLabeledComboBox_Text>
+  <CoreOptionsForm_AlgorithmComparingLabeledComboBox_SquaredSum>Differenz</CoreOptionsForm_AlgorithmComparingLabeledComboBox_SquaredSum>
+  <CoreOptionsForm_ThresholdDifferenceLabeledComboBox_Text>Schwellenwert-Differenz</CoreOptionsForm_ThresholdDifferenceLabeledComboBox_Text>
+  <CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text>Minimale Bildbreite/-höhe</CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text>
+  <CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text>Maximale Bildbreite/-höhe</CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text>
+  <CoreOptionsForm_CompareInsideOneFolderCheckBox_Text>Vergleichen von Bildern in einem Verzeichnis</CoreOptionsForm_CompareInsideOneFolderCheckBox_Text>
+  <CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text>Vergleichen von Bildern aus einem Suchpfad miteinander</CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text>
+  <CoreOptionsForm_DefectTabPage_Text>Defekte</CoreOptionsForm_DefectTabPage_Text>
+  <CoreOptionsForm_CheckOnDefectCheckBox_Text>Überprüfung des Defekts</CoreOptionsForm_CheckOnDefectCheckBox_Text>
+  <CoreOptionsForm_CheckOnBlockinessCheckBox_Text>Blockierung</CoreOptionsForm_CheckOnBlockinessCheckBox_Text>
+  <CoreOptionsForm_BlockinessThresholdLabeledComboBox_Text>Sperrschwelle</CoreOptionsForm_BlockinessThresholdLabeledComboBox_Text>
+  <CoreOptionsForm_CheckOnBlockinessOnlyNotJpegCheckBox_Text>Blockierung nur bei Nicht-JPEG prüfen</CoreOptionsForm_CheckOnBlockinessOnlyNotJpegCheckBox_Text>
+  <CoreOptionsForm_CheckOnBlurringCheckBox_Text>Unschärfe prüfen</CoreOptionsForm_CheckOnBlurringCheckBox_Text>
+  <CoreOptionsForm_BlurringThresholdLabeledComboBox_Text>Schwellenunschärfe</CoreOptionsForm_BlurringThresholdLabeledComboBox_Text>
+  <CoreOptionsForm_AdvancedTabPage_Text>Erweitert</CoreOptionsForm_AdvancedTabPage_Text>
+  <CoreOptionsForm_DeleteToRecycleBinCheckBox_Text>In den Papierkorb löschen</CoreOptionsForm_DeleteToRecycleBinCheckBox_Text>
+  <CoreOptionsForm_MistakeDataBaseCheckBox_Text>An Fehler erinnern</CoreOptionsForm_MistakeDataBaseCheckBox_Text>
+  <CoreOptionsForm_RatioResolutionLabeledComboBox_Text>Präzision des Verhältnisses von Bildbreite und -höhe</CoreOptionsForm_RatioResolutionLabeledComboBox_Text>
+  <CoreOptionsForm_CompareThreadCountLabeledComboBox_Text>Anzahl der Threads vergleichen</CoreOptionsForm_CompareThreadCountLabeledComboBox_Text>
+  <CoreOptionsForm_CompareThreadCountLabeledComboBox_Description_0>Auto</CoreOptionsForm_CompareThreadCountLabeledComboBox_Description_0>
+  <CoreOptionsForm_CollectThreadCountLabeledComboBox_Text>Anzahl der geladenen Threads</CoreOptionsForm_CollectThreadCountLabeledComboBox_Text>
+  <CoreOptionsForm_CollectThreadCountLabeledComboBox_Description_0>Auto</CoreOptionsForm_CollectThreadCountLabeledComboBox_Description_0>
+  <CoreOptionsForm_ReducedImageSizeLabeledComboBox_Text>Normalisierte Bildgröße</CoreOptionsForm_ReducedImageSizeLabeledComboBox_Text>
+  <CoreOptionsForm_UndoQueueSizeLabeledIntegerEdit_Text>Warteschlangengröße des Rückgängigmachens</CoreOptionsForm_UndoQueueSizeLabeledIntegerEdit_Text>
+  <CoreOptionsForm_ResultCountMaxLabeledIntegerEdit_Text>Maximale Anzahl der Resultate</CoreOptionsForm_ResultCountMaxLabeledIntegerEdit_Text>
+  <CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text>Breite des ignorierten Bildrahmens</CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text>
+  <CoreOptionsForm_UseLibJpegTurboCheckBox_Text>libjpeg-turbo verwenden</CoreOptionsForm_UseLibJpegTurboCheckBox_Text>
+  <CoreOptionsForm_HighlightTabPage_Text>Hervorhebung</CoreOptionsForm_HighlightTabPage_Text>
+  <CoreOptionsForm_HighlightDifferenceCheckBox_Text>Hervorhebung von Unterschieden</CoreOptionsForm_HighlightDifferenceCheckBox_Text>
+  <CoreOptionsForm_DifrentValue_Text>Wert der Differenz</CoreOptionsForm_DifrentValue_Text>
+  <CoreOptionsForm_NotHighlightIfFragmentsMoreThemCheckBox_Text>keine Unterschiede hervorheben, wenn Fragmente mehr als:</CoreOptionsForm_NotHighlightIfFragmentsMoreThemCheckBox_Text>
+  <CoreOptionsForm_MaxFragmentsForDisableHighlightLabeledIntegerEdit_Text>Maximale Anzahl von Fragmenten für die Deaktivierung</CoreOptionsForm_MaxFragmentsForDisableHighlightLabeledIntegerEdit_Text>
+  <CoreOptionsForm_HighlightAllDifferencesCheckBox_Text>Alle Unterschiede hervorheben</CoreOptionsForm_HighlightAllDifferencesCheckBox_Text>
+  <CoreOptionsForm_MaxFragmentsForHighlightLabeledIntegerEdit_Text>Maximale Anzahl von Fragmenten für die Hervorhebung</CoreOptionsForm_MaxFragmentsForHighlightLabeledIntegerEdit_Text>
+  <CoreOptionsForm_AmountOfFragmentsOnXLabeledIntegerEdit_Text>Anzahl der Fragmente auf X</CoreOptionsForm_AmountOfFragmentsOnXLabeledIntegerEdit_Text>
+  <CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text>Anzahl der Fragmente auf Y</CoreOptionsForm_AmountOfFragmentsOnYLabeledIntegerEdit_Text>
+  <CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text>Normalisierte Bildgröße</CoreOptionsForm_NormalizedSizeOfImageLabeledIntegerEdit_Text>
+  <CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text>Dicke des Stifts</CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text>
+  <CorePathsForm_Text>Pfade</CorePathsForm_Text>
+  <CorePathsForm_SearchTabPage_Text>Suche</CorePathsForm_SearchTabPage_Text>
+  <CorePathsForm_IgnoreTabPage_Text>Ignorieren</CorePathsForm_IgnoreTabPage_Text>
+  <CorePathsForm_ValidTabPage_Text>Gültig</CorePathsForm_ValidTabPage_Text>
+  <CorePathsForm_DeleteTabPage_Text>Löschen</CorePathsForm_DeleteTabPage_Text>
+  <CorePathsForm_AddFolderButton_Text>Ordner hizufügen</CorePathsForm_AddFolderButton_Text>
+  <CorePathsForm_AddFilesButton_Text>Dateien hizufügen</CorePathsForm_AddFilesButton_Text>
+  <CorePathsForm_ChangeButton_Text>Ändern</CorePathsForm_ChangeButton_Text>
+  <CorePathsForm_RemoveButton_Text>Entfernen</CorePathsForm_RemoveButton_Text>
+  <CorePathsForm_SearchCheckedListBox_ToolTip_Text>Aktiviertes Kontrollkästchen bedeutet Suche in Unterverzeichnissen dieser Verzeichnisse.</CorePathsForm_SearchCheckedListBox_ToolTip_Text>
+  <ProgressUtils_Completed>{0}% abgeschlossen</ProgressUtils_Completed>
+  <ProgressUtils_5HoursRemaining>{0} Stunden verbleiben</ProgressUtils_5HoursRemaining>
+  <ProgressUtils_2HoursRemaining>{0} Stunden verbleiben</ProgressUtils_2HoursRemaining>
+  <ProgressUtils_5MinutesRemaining>{0} Minuten verbleiben</ProgressUtils_5MinutesRemaining>
+  <ProgressUtils_2MinutesRemaining>{0} Minuten verbleiben</ProgressUtils_2MinutesRemaining>
+  <ProgressUtils_5SecondsRemaining>{0} Sekunden verbleiben</ProgressUtils_5SecondsRemaining>
+  <ProgressForm_DeleteDefect>Löschen von Fehlerbildern in ausgewählten Ergebnissen</ProgressForm_DeleteDefect>
+  <ProgressForm_DeleteFirst>Löschen von ersten Bildern in ausgewählten Ergebnissen</ProgressForm_DeleteFirst>
+  <ProgressForm_DeleteSecond>Löschen von Zweitbildern in ausgewählten Ergebnissen</ProgressForm_DeleteSecond>
+  <ProgressForm_DeleteBoth>Löschen aller duplizierten Bilder in ausgewählten Ergebnissen</ProgressForm_DeleteBoth>
+  <ProgressForm_PerformHint>Automatische Verarbeitung ausgewählter Ergebnisse</ProgressForm_PerformHint>
+  <ProgressForm_Mistake>Markieren ausgewählter Ergebnisse als Fehler</ProgressForm_Mistake>
+  <ProgressForm_RenameCurrent>Umbenennen/Ersetzen von Bildern</ProgressForm_RenameCurrent>
+  <ProgressForm_RefreshResults>Ergebnisse aktuakisieren</ProgressForm_RefreshResults>
+  <ProgressForm_Undo>Aktion rückgängig</ProgressForm_Undo>
+  <ProgressForm_Redo>Aktion wiederholen</ProgressForm_Redo>
+  <SearchExecuterForm_Result>Verarbeitung der Ergebnisse</SearchExecuterForm_Result>
+  <SearchExecuterForm_Search>Suche</SearchExecuterForm_Search>
+  <SearchExecuterForm_Stopped>Suche anhalten</SearchExecuterForm_Stopped>
+  <SearchExecuterForm_MinimizeToTaskbarButton_Text>Minimieren</SearchExecuterForm_MinimizeToTaskbarButton_Text>
+  <SearchExecuterForm_MinimizeToSystrayButton_Text>Hintergrundmodus</SearchExecuterForm_MinimizeToSystrayButton_Text>
+  <ResultsPreviewBase_NextButton_ToolTip_Text>Zum nächsten Ergebnis</ResultsPreviewBase_NextButton_ToolTip_Text>
+  <ResultsPreviewBase_PreviousButton_ToolTip_Text>Zum vorigen Ergebnis</ResultsPreviewBase_PreviousButton_ToolTip_Text>
+  <ResultsPreviewDuplPair_DeleteFirstButton_ToolTip_Text>Erstes Bild löschen</ResultsPreviewDuplPair_DeleteFirstButton_ToolTip_Text>
+  <ResultsPreviewDuplPair_DeleteSecondButton_ToolTip_Text>Zweites Bild löschen</ResultsPreviewDuplPair_DeleteSecondButton_ToolTip_Text>
+  <ResultsPreviewDuplPair_DeleteBothButton_ToolTip_Text>Beide Bilder löschen</ResultsPreviewDuplPair_DeleteBothButton_ToolTip_Text>
+  <ResultsPreviewDuplPair_RenameFirstToSecondButton_ToolTip_Text>zweites Bild durch erstes Bild ersetzen</ResultsPreviewDuplPair_RenameFirstToSecondButton_ToolTip_Text>
+  <ResultsPreviewDuplPair_RenameSecondToFirstButton_ToolTip_Text>Erstes Bild durch zweites Bild ersetzen</ResultsPreviewDuplPair_RenameSecondToFirstButton_ToolTip_Text>
+  <ResultsPreviewDuplPair_MistakeButton_ToolTip_Text>Aktuelles Ergebnis als Fehler markieren</ResultsPreviewDuplPair_MistakeButton_ToolTip_Text>
+  <ResultsPreviewDefect_DeleteButton_ToolTip_Text>Bild löschen</ResultsPreviewDefect_DeleteButton_ToolTip_Text>
+  <ResultsPreviewDefect_MistakeButton_ToolTip_Text>Aktuelles Ergebnis als Fehler markieren</ResultsPreviewDefect_MistakeButton_ToolTip_Text>
+  <ResultRowSetter_DefectIcon_ToolTip_Text>Defektes Bild</ResultRowSetter_DefectIcon_ToolTip_Text>
+  <ResultRowSetter_DuplPairIcon_ToolTip_Text>Synchronisiertes Bildpaar</ResultRowSetter_DuplPairIcon_ToolTip_Text>
+  <ResultRowSetter_UnknownDefectIcon_ToolTip_Text>Unbekannter Defekt</ResultRowSetter_UnknownDefectIcon_ToolTip_Text>
+  <ResultRowSetter_JpegEndMarkerIsAbsentIcon_ToolTip_Text>Die Endmarkierung der JPEG-Datei fehlt</ResultRowSetter_JpegEndMarkerIsAbsentIcon_ToolTip_Text>
+  <ResultRowSetter_blockinessIcon_ToolTip_Text>Bild blockiert</ResultRowSetter_blockinessIcon_ToolTip_Text>
+  <ResultRowSetter_blurringIcon_ToolTip_Text>Unscharfes Bild</ResultRowSetter_blurringIcon_ToolTip_Text>
+  <ResultRowSetter_DeleteDefectIcon_ToolTip_Text>Bild löschen</ResultRowSetter_DeleteDefectIcon_ToolTip_Text>
+  <ResultRowSetter_DeleteFirstIcon_ToolTip_Text>Erstes Bild löschen</ResultRowSetter_DeleteFirstIcon_ToolTip_Text>
+  <ResultRowSetter_DeleteSecondIcon_ToolTip_Text>Zweites Bild löschen</ResultRowSetter_DeleteSecondIcon_ToolTip_Text>
+  <ResultRowSetter_RenameFirstToSecondIcon_ToolTip_Text>zweites Bild durch erstes Bild ersetzen</ResultRowSetter_RenameFirstToSecondIcon_ToolTip_Text>
+  <ResultRowSetter_RenameSecondToFirstIcon_ToolTip_Text>Erstes Bild durch zweites Bild ersetzen</ResultRowSetter_RenameSecondToFirstIcon_ToolTip_Text>
+  <ResultRowSetter_Turn_0_Icon_ToolTip_Text>Orginal</ResultRowSetter_Turn_0_Icon_ToolTip_Text>
+  <ResultRowSetter_Turn_90_Icon_ToolTip_Text>90° gedreht</ResultRowSetter_Turn_90_Icon_ToolTip_Text>
+  <ResultRowSetter_Turn_180_Icon_ToolTip_Text>180° gedreht</ResultRowSetter_Turn_180_Icon_ToolTip_Text>
+  <ResultRowSetter_Turn_270_Icon_ToolTip_Text>270° gedreht</ResultRowSetter_Turn_270_Icon_ToolTip_Text>
+  <ResultRowSetter_MirrorTurn_0_Icon_ToolTip_Text>Horizontal gespiegelt</ResultRowSetter_MirrorTurn_0_Icon_ToolTip_Text>
+  <ResultRowSetter_MirrorTurn_90_Icon_ToolTip_Text>Horizontal gekippt und um 90° gedreht</ResultRowSetter_MirrorTurn_90_Icon_ToolTip_Text>
+  <ResultRowSetter_MirrorTurn_180_Icon_ToolTip_Text>Horizontal gekippt und um 180° gedreht</ResultRowSetter_MirrorTurn_180_Icon_ToolTip_Text>
+  <ResultRowSetter_MirrorTurn_270_Icon_ToolTip_Text>Horizontal gekippt und um 270° gedreht</ResultRowSetter_MirrorTurn_270_Icon_ToolTip_Text>
+  <ResultsListView_Type_Column_Text>Typ</ResultsListView_Type_Column_Text>
+  <ResultsListView_Group_Column_Text>Gruppe</ResultsListView_Group_Column_Text>
+  <ResultsListView_GroupSize_Column_Text>Gruppengröße</ResultsListView_GroupSize_Column_Text>
+  <ResultsListView_Difference_Column_Text>Differenz</ResultsListView_Difference_Column_Text>
+  <ResultsListView_Defect_Column_Text>Art des Defekts</ResultsListView_Defect_Column_Text>
+  <ResultsListView_Transform_Column_Text>Transformation</ResultsListView_Transform_Column_Text>
+  <ResultsListView_Hint_Column_Text>Hinweis</ResultsListView_Hint_Column_Text>
+  <ResultsListView_FileName_Column_Text>Name</ResultsListView_FileName_Column_Text>
+  <ResultsListView_FileDirectory_Column_Text>Im Ordner</ResultsListView_FileDirectory_Column_Text>
+  <ResultsListView_ImageSize_Column_Text>Dimensionen</ResultsListView_ImageSize_Column_Text>
+  <ResultsListView_ImageType_Column_Text>Bildtyp</ResultsListView_ImageType_Column_Text>
+  <ResultsListView_Blockiness_Column_Text>Blockierung</ResultsListView_Blockiness_Column_Text>
+  <ResultsListView_Blurring_Column_Text>Unschärfe</ResultsListView_Blurring_Column_Text>
+  <ResultsListView_FileSize_Column_Text>Größe</ResultsListView_FileSize_Column_Text>
+  <ResultsListView_FileTime_Column_Text>Modifizierungsdatum</ResultsListView_FileTime_Column_Text>
+  <ResultsListView_FirstFileName_Column_Text>1: Name</ResultsListView_FirstFileName_Column_Text>
+  <ResultsListView_FirstFileDirectory_Column_Text>1: im Ordner</ResultsListView_FirstFileDirectory_Column_Text>
+  <ResultsListView_FirstImageSize_Column_Text>1: Dimensionen</ResultsListView_FirstImageSize_Column_Text>
+  <ResultsListView_FirstImageType_Column_Text>1: Bildtyp</ResultsListView_FirstImageType_Column_Text>
+  <ResultsListView_FirstBlockiness_Column_Text>1: Blockierung</ResultsListView_FirstBlockiness_Column_Text>
+  <ResultsListView_FirstBlurring_Column_Text>1: Unschärfe</ResultsListView_FirstBlurring_Column_Text>
+  <ResultsListView_FirstFileSize_Column_Text>1: Größe</ResultsListView_FirstFileSize_Column_Text>
+  <ResultsListView_FirstFileTime_Column_Text>1: erstes Modifizierungsdatum</ResultsListView_FirstFileTime_Column_Text>
+  <ResultsListView_SecondFileName_Column_Text>2: Name</ResultsListView_SecondFileName_Column_Text>
+  <ResultsListView_SecondFileDirectory_Column_Text>2: im Ordner</ResultsListView_SecondFileDirectory_Column_Text>
+  <ResultsListView_SecondImageSize_Column_Text>2: Dimensionen</ResultsListView_SecondImageSize_Column_Text>
+  <ResultsListView_SecondImageType_Column_Text>2: Bildtyp</ResultsListView_SecondImageType_Column_Text>
+  <ResultsListView_SecondBlockiness_Column_Text>2: Blockierung</ResultsListView_SecondBlockiness_Column_Text>
+  <ResultsListView_SecondBlurring_Column_Text>2: Unschärfe</ResultsListView_SecondBlurring_Column_Text>
+  <ResultsListView_SecondFileSize_Column_Text>2: Größe</ResultsListView_SecondFileSize_Column_Text>
+  <ResultsListView_SecondFileTime_Column_Text>2: Modifizierungsdatum</ResultsListView_SecondFileTime_Column_Text>
+  <ResultsListViewContextMenu_DeleteDefectItem_Text>Fehlerbilder in ausgewählten Ergebnissen löschen</ResultsListViewContextMenu_DeleteDefectItem_Text>
+  <ResultsListViewContextMenu_DeleteFirstItem_Text>Die ersten Bilder in den gewählten Ergebnissen löschen</ResultsListViewContextMenu_DeleteFirstItem_Text>
+  <ResultsListViewContextMenu_DeleteSecondItem_Text>Die zweiten Bilder in den gewählten Ergebnissen löschen</ResultsListViewContextMenu_DeleteSecondItem_Text>
+  <ResultsListViewContextMenu_DeleteBothItem_Text>Alle doppelten Bilder in den gewählten Ergebnissen löschen</ResultsListViewContextMenu_DeleteBothItem_Text>
+  <ResultsListViewContextMenu_RenameFirstToSecondIcon_ToolTip_Text>Die zweiten Bilder durch die ersten Bilder in den Ergebnissen ersetzen</ResultsListViewContextMenu_RenameFirstToSecondIcon_ToolTip_Text>
+  <ResultsListViewContextMenu_RenameSecondToFirstIcon_ToolTip_Text>Die ersten Bilder durch die zweiten Bilder in den Ergebnissen ersetzen</ResultsListViewContextMenu_RenameSecondToFirstIcon_ToolTip_Text>
+  <ResultsListViewContextMenu_RenameFirstLikeSecondButton_ToolTip_Text>Die ersten Bilder in den ausgewählten Ergebnissen in die zweiten Bilder umbenennen</ResultsListViewContextMenu_RenameFirstLikeSecondButton_ToolTip_Text>
+  <ResultsListViewContextMenu_RenameSecondLikeFirstButton_ToolTipText>Die zweiten Bilder in den ausgewählten Ergebnissen in die ersten Bilder umbenennen</ResultsListViewContextMenu_RenameSecondLikeFirstButton_ToolTipText>
+  <ResultsListViewContextMenu_MoveFirstToSecondButton_ToolTipText>Die ersten Bilder in die zweiten Bilder in den ausgewählten Ergebnissen verschieben</ResultsListViewContextMenu_MoveFirstToSecondButton_ToolTipText>
+  <ResultsListViewContextMenu_MoveSecondToFirstButton_ToolTipText>Die zweiten Bilder in die ersten Bilder in den ausgewählten Ergebnissen verschieben</ResultsListViewContextMenu_MoveSecondToFirstButton_ToolTipText>
+  <ResultsListViewContextMenu_MistakeItem_Text>Markierte Ergebnisse als Fehler markieren</ResultsListViewContextMenu_MistakeItem_Text>
+  <ResultsListViewContextMenu_PerformHintItem_Text>Ausgewählte Ergebnisse automatisch verarbeiten</ResultsListViewContextMenu_PerformHintItem_Text>
+  <MainStatusStrip_TotalLabel_Text>Total: </MainStatusStrip_TotalLabel_Text>
+  <MainStatusStrip_CurrentLabel_Text>Aktuell: </MainStatusStrip_CurrentLabel_Text>
+  <MainStatusStrip_SelectedLabel_Text>Gewählt: </MainStatusStrip_SelectedLabel_Text>
+  <MainMenu_FileMenuItem_Text>Datei</MainMenu_FileMenuItem_Text>
+  <MainMenu_File_OpenProfileMenuItem_Text>Suchprofil öffnen</MainMenu_File_OpenProfileMenuItem_Text>
+  <MainMenu_File_SaveProfileAsMenuItem_Text>Suchprofil speichern unter</MainMenu_File_SaveProfileAsMenuItem_Text>
+  <MainMenu_File_LoadProfileOnLoadingMenuItem_Text>Profile beim Start laden</MainMenu_File_LoadProfileOnLoadingMenuItem_Text>
+  <MainMenu_File_SaveProfileOnClosingMenuItem_Text>Profile beim Schließen speichern</MainMenu_File_SaveProfileOnClosingMenuItem_Text>
+  <MainMenu_File_ExitMenuItem_Text>Exit</MainMenu_File_ExitMenuItem_Text>
+  <MainMenu_EditMenuItem_Text>Bearbeiten</MainMenu_EditMenuItem_Text>
+  <MainMenu_Edit_UndoMenuItem_Text>Rückgängig (Ctrl-Z)</MainMenu_Edit_UndoMenuItem_Text>
+  <MainMenu_Edit_RedoMenuItem_Text>Wiederherstellen (Ctrl-Y)</MainMenu_Edit_RedoMenuItem_Text>
+  <MainMenu_Edit_SelectAllMenuItem_Text>Alles wählen (Ctrl-A)</MainMenu_Edit_SelectAllMenuItem_Text>
+  <MainMenu_ViewMenuItem_Text>Ansicht</MainMenu_ViewMenuItem_Text>
+  <MainMenu_View_ToolMenuItem_Text>Werkzeugleiste</MainMenu_View_ToolMenuItem_Text>
+  <MainMenu_View_StatusMenuItem_Text>Statusleiste</MainMenu_View_StatusMenuItem_Text>
+  <MainMenu_View_SelectColumnsMenuItem_Text>Spalten auswählen</MainMenu_View_SelectColumnsMenuItem_Text>
+  <MainMenu_View_HotKeysMenuItem_Text>Tastenkombi.</MainMenu_View_HotKeysMenuItem_Text>
+  <MainMenu_View_StretchSmallImagesMenuItem_Text>Kleine Bilder strecken</MainMenu_View_StretchSmallImagesMenuItem_Text>
+  <MainMenu_View_ProportionalImageSizeMenuItem_Text>Proportionale Größe der Bilder</MainMenu_View_ProportionalImageSizeMenuItem_Text>
+  <MainMenu_View_ShowNeighbourImageMenuItem_Text>Nachbarbilder anzeigen</MainMenu_View_ShowNeighbourImageMenuItem_Text>
+  <MainMenu_SearchMenuItem_Text>Suche</MainMenu_SearchMenuItem_Text>
+  <MainMenu_Search_StartMenuItem_Text>Suche starten</MainMenu_Search_StartMenuItem_Text>
+  <MainMenu_Search_RefreshResultsMenuItem_Text>Resultate aktualisieren</MainMenu_Search_RefreshResultsMenuItem_Text>
+  <MainMenu_Search_RefreshImagesMenuItem_Text>Löschen irrelevanter Datensätze aus der Bilddatenbank</MainMenu_Search_RefreshImagesMenuItem_Text>
+  <MainMenu_Search_PathsMenuItem_Text>Pfade</MainMenu_Search_PathsMenuItem_Text>
+  <MainMenu_Search_OptionsMenuItem_Text>Optionen</MainMenu_Search_OptionsMenuItem_Text>
+  <MainMenu_Search_OnePathMenuItem_Text>Ein Suchpfad</MainMenu_Search_OnePathMenuItem_Text>
+  <MainMenu_Search_UseImageDataBaseMenuItem_Text>Bilddatenbank verwenden</MainMenu_Search_UseImageDataBaseMenuItem_Text>
+  <MainMenu_Search_CheckResultsAtLoadingMenuItem_Text>Ergebnisse beim Laden überprüfen</MainMenu_Search_CheckResultsAtLoadingMenuItem_Text>
+  <MainMenu_Search_CheckMistakesAtLoadingMenuItem_Text>Datenbank beim Laden auf Fehler überprüfen</MainMenu_Search_CheckMistakesAtLoadingMenuItem_Text>
+  <MainMenu_HelpMenuItem_Text>Hilfe</MainMenu_HelpMenuItem_Text>
+  <MainMenu_Help_HelpMenuItem_Text>Hilfe</MainMenu_Help_HelpMenuItem_Text>
+  <MainMenu_Help_AboutProgramMenuItem_Text>Über das Programm...</MainMenu_Help_AboutProgramMenuItem_Text>
+  <MainMenu_Help_CheckingForUpdatesMenuItem_Text>Nach Updates suchen</MainMenu_Help_CheckingForUpdatesMenuItem_Text>
+  <MainMenu_NewVersionMenuItem_Text>Neue Version</MainMenu_NewVersionMenuItem_Text>
+  <MainMenu_NewVersionMenuItem_Tooltip>AntiDupl.NET-{0} ist auf der Website verfügbar!</MainMenu_NewVersionMenuItem_Tooltip>
+  <SelectHotKeysForm_InvalidHotKeyToolTipText>This hot key combination is already used for another purpose.</SelectHotKeysForm_InvalidHotKeyToolTipText>
+  <LanguageMenuItem_Text>Sprache</LanguageMenuItem_Text>
+  <ViewModeMenuItem_Text>Modus der Ergebnisse anzeigen</ViewModeMenuItem_Text>
+  <ViewModeMenuItem_VerticalPairTableMenuItem_Text>Tabelle der vertikalen Paare</ViewModeMenuItem_VerticalPairTableMenuItem_Text>
+  <ViewModeMenuItem_HorizontalPairTableMenuItem_Text>Tabelle der horizontalen Paare</ViewModeMenuItem_HorizontalPairTableMenuItem_Text>
+  <ViewModeMenuItem_GroupedThumbnailsMenuItem_Text>Gruppierte Miniaturansichten</ViewModeMenuItem_GroupedThumbnailsMenuItem_Text>
+  <ImagePreviewContextMenu_CopyPathItem_Text>Pfad kopieren</ImagePreviewContextMenu_CopyPathItem_Text>
+  <ImagePreviewContextMenu_CopyFileNameItem_Text>Bildnamen kopieren</ImagePreviewContextMenu_CopyFileNameItem_Text>
+  <ImagePreviewContextMenu_OpenImageItem_Text>Bild öffnen</ImagePreviewContextMenu_OpenImageItem_Text>
+  <ImagePreviewContextMenu_OpenFolderItem_Text>Enthaltenden Ordner öffnen</ImagePreviewContextMenu_OpenFolderItem_Text>
+  <ImagePreviewContextMenu_AddToIgnore_Text>Zu Ignorieren hinzufügen</ImagePreviewContextMenu_AddToIgnore_Text>
+  <ImagePreviewContextMenu_AddToIgnoreDirectory_Text>Verzeichnis zu Ignorieren hinzufügen</ImagePreviewContextMenu_AddToIgnoreDirectory_Text>
+  <ImagePreviewContextMenu_RenameImageItem_Text>Bild umbenennen</ImagePreviewContextMenu_RenameImageItem_Text>
+  <ImagePreviewContextMenu_RenameImageLikeNeighbour_Text>Umbenennen wie Nachbarbild</ImagePreviewContextMenu_RenameImageLikeNeighbour_Text>
+  <ImagePreviewContextMenu_MoveImageToNeighbourItem_Text>Bild zum Nachbarn verschieben</ImagePreviewContextMenu_MoveImageToNeighbourItem_Text>
+  <ImagePreviewContextMenu_MoveAndRenameImageToNeighbourItem_Text>Verschieben und Umbenennen des Bildes in Nachbarbild</ImagePreviewContextMenu_MoveAndRenameImageToNeighbourItem_Text>
+  <ImagePreviewContextMenu_MoveGroupToNeighbourItem_Text>Bildgruppe in das Nachbarverzeichnis verschieben</ImagePreviewContextMenu_MoveGroupToNeighbourItem_Text>
+  <ImagePreviewContextMenu_RenameGroupAsNeighbourItem_Text>Umbenennen der Bildgruppe in Nachbarbild</ImagePreviewContextMenu_RenameGroupAsNeighbourItem_Text>
+  <ImagePreviewPanel_EXIF_Text>EXIF</ImagePreviewPanel_EXIF_Text>
+  <ImagePreviewPanel_EXIF_Tooltip_ImageDescription>Beschreibung: </ImagePreviewPanel_EXIF_Tooltip_ImageDescription>
+  <ImagePreviewPanel_EXIF_Tooltip_EquipMake>Gerätemarke: </ImagePreviewPanel_EXIF_Tooltip_EquipMake>
+  <ImagePreviewPanel_EXIF_Tooltip_EquipModel>Gerätemodell: </ImagePreviewPanel_EXIF_Tooltip_EquipModel>
+  <ImagePreviewPanel_EXIF_Tooltip_SoftwareUsed>Software: </ImagePreviewPanel_EXIF_Tooltip_SoftwareUsed>
+  <ImagePreviewPanel_EXIF_Tooltip_DateTime>Datum/Zeit: </ImagePreviewPanel_EXIF_Tooltip_DateTime>
+  <ImagePreviewPanel_EXIF_Tooltip_Artist>Künstler: </ImagePreviewPanel_EXIF_Tooltip_Artist>
+  <ImagePreviewPanel_EXIF_Tooltip_UserComment>Kommentar: </ImagePreviewPanel_EXIF_Tooltip_UserComment>
+</Strings>
