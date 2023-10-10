@@ -44,7 +44,8 @@ namespace AntiDupl.NET.WinForms
             s.WarningMessage_ChangeFileExtension = "Do you really want to change file extension?";
 
             s.AboutProgramPanel_CopyrightLabel0_Text = "Copyright (c) 2002-2023 Yermalayeu Ihar, ";
-            s.AboutProgramPanel_CopyrightLabel1_Text = "2013-2023 Borisov Dmitry.";
+            s.AboutProgramPanel_CopyrightLabel1_Text = "2013-2023 Borisov Dmitry,";
+            s.AboutProgramPanel_CopyrightLabel2_Text = "2023-2023 Edi61.";
             s.AboutProgramPanel_ComponentLabel_Text = "Component";
             s.AboutProgramPanel_VersionLabel_Text = "Version";
 

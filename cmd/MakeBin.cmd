@@ -33,12 +33,13 @@ rmdir %TMP_DIR% /q /s
 if not exist %TMP_DIR% mkdir %TMP_DIR%
 
 xcopy %RELEASE_DIR%\data\* %TMP_DIR%\data\* /y /i /s
-xcopy %RELEASE_DIR%\*.exe %TMP_DIR%\* /y /i
-xcopy %RELEASE_DIR%\*.dll %TMP_DIR%\* /y /i
+xcopy %RELEASE_DIR%\AntiDupl*.exe %TMP_DIR%\* /y /i
+xcopy %RELEASE_DIR%\AntiDupl*.dll %TMP_DIR%\* /y /i
 xcopy %RELEASE_DIR%\AntiDupl.NET.WinForms.runtimeconfig.json %TMP_DIR%\* /y /i
 
 erase %TMP_DIR%\data\resources\strings\English.xml /q /s /f
 erase %TMP_DIR%\data\resources\strings\Russian.xml /q /s /f
+erase %TMP_DIR%\AntiDupl.NET.WPF.* /q /s /f
 
 if exist %RAR_EXE% (
 %RAR_EXE% a -ep1 -s -m5 -r -sfx %OUT_DIR%\AntiDupl.NET-%VERSION%.exe %TMP_DIR%

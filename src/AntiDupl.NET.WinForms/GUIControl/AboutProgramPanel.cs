@@ -48,7 +48,7 @@ namespace AntiDupl.NET.WinForms
 
         private void InitializeComponent()
         {
-            TableLayoutPanel layout = InitFactory.Layout.Create(1, 4, 5, 0);
+            TableLayoutPanel layout = InitFactory.Layout.Create(1, 5, 5, 0);
             layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
@@ -61,7 +61,9 @@ namespace AntiDupl.NET.WinForms
 
             layout.Controls.Add(GetCoopyrightLabel(1), 0, 2);
 
-            layout.Controls.Add(CreateInfoTable(Font), 0, 3);
+            layout.Controls.Add(GetCoopyrightLabel(2), 0, 3);
+
+            layout.Controls.Add(CreateInfoTable(Font), 0, 4);
 
             Controls.Add(layout);
         }
@@ -73,9 +75,10 @@ namespace AntiDupl.NET.WinForms
             {
                 case 0: text = Resources.Strings.Current.AboutProgramPanel_CopyrightLabel0_Text; break;
                 case 1: text = Resources.Strings.Current.AboutProgramPanel_CopyrightLabel1_Text; break;
+                case 2: text = Resources.Strings.Current.AboutProgramPanel_CopyrightLabel2_Text; break;
             }
             Label label = CreateLabel(text, new Font(this.Font.FontFamily, this.Font.Size * 1.2f));
-            label.Margin = new Padding(0, (index == 0 ? 10 : 0), 0, (index == 1 ? 10 : 0));
+            label.Margin = new Padding(0, (index == 0 ? 10 : 0), 0, (index == 2 ? 10 : 0));
             return label;
         }
 

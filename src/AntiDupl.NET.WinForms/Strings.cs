@@ -48,6 +48,7 @@ namespace AntiDupl.NET.WinForms
 
         public string AboutProgramPanel_CopyrightLabel0_Text;
         public string AboutProgramPanel_CopyrightLabel1_Text;
+        public string AboutProgramPanel_CopyrightLabel2_Text;
         public string AboutProgramPanel_ComponentLabel_Text;
         public string AboutProgramPanel_VersionLabel_Text;
 
