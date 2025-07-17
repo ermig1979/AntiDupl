@@ -1,18 +1,18 @@
 ![AntiDupl screenshot](https://ermig1979.github.io/AntiDupl/data/help/english/files/MainForm.png)
 
 Typically, modern computer users have large collections of images in various formats. 
-And then more these collections, then more likely to have the large number of duplicates. 
+With more of these collections, it is more likely to have a large number of duplicates. 
 The natural desire of the user is to get rid of them. However, if the collection is large 
-enough, do this manually is a very tedious and unproductive work. AntiDupl.NET program 
-will help you automate this process. It can find and display duplicate images in the main 
-graphic formats: JPEG, GIF, TIFF, BMP, PNG, EMF, WMF, WEBP, EXIF, ICON, JP2, PSD, DDS, 
-HEIF, HEIC, TGA, AVIF and JXL. 
+enough, performing this manually is a very tedious and unproductive task. AntiDupl.NET is a
+program to help you automate this process. It can find and display duplicate images in the 
+most common graphic formats: JPEG, GIF, TIFF, BMP, PNG, EMF, WMF, WEBP, EXIF, ICON, JP2, PSD,
+DDS, HEIF, HEIC, TGA, AVIF and JXL. 
 The comparison is based on the contents of the files, so the program can find not only 
-almost identical, but similar images. In addition, the program can find images with some 
+almost identical, but also similar images. In addition, the program can find images with some 
 types of defects.
 
-[AntiDupl.NET](http://ermig1979.github.io/AntiDupl) program is free and open-source software. 
-It is simple to use, has high speed and accuracy of work, supports Russian and English interface.
+[AntiDupl.NET](https://ermig1979.github.io/AntiDupl) is free and open-source software. 
+It is simple to use, has high speed and accuracy of work, and supports Russian and English interfaces.
 
 Building AntiDupl.NET
 =====================
@@ -41,9 +41,9 @@ e.g. by using git:
 	src\AntiDupl.sln
 ```
 6. Start building AntiDupl.NET in Visual Studio.
-Depended libraries will be automatically loaded and build by vcpkg
+Depended libraries will be automatically loaded and built by vcpkg.
 
 Command line tool AntiDuplX
 ===========================
-There is a command line tool [AntiDuplX](https://github.com/ermig1979/AntiDuplX) to search simular and damaged images. 
-This is standalon project which uses similar algorithm of image comparison. It works for Linux and Windows.
+There is a command line tool [AntiDuplX](https://github.com/ermig1979/AntiDuplX) to search for similar and damaged images. 
+This is a standalone project which uses a similar algorithm for image comparison. It works on Linux and Windows.
