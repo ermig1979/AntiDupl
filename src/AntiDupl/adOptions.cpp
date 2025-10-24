@@ -32,11 +32,11 @@ namespace ad
     const TChar DEFAULT_fileName[] = TEXT("AntiDupl.ini");
 
     //---------------------------------------------------------------------------
-    TOption::TOption(int *pValue, const TChar* section, const TChar* key, int default, int min, int max)
+    TOption::TOption(int *pValue, const TChar* section, const TChar* key, int _default, int min, int max)
         :m_pValue(pValue),
         m_section(section),
         m_key(key),
-        m_default(default),
+        m_default(_default),
         m_min(min),
         m_max(max)
     {

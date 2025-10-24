@@ -3,12 +3,12 @@
   "name": "antidupl",
   "version": "1.1",
   "dependencies": [
-    "libjpeg-turbo",
     "openjpeg",
     "libwebp",
     "libheif",
     "simd",
     "libavif",
     "libjxl"
-  ]
+  ],
+  "builtin-baseline": "3b9d086009cc1c2256e9c28ad44a00036fbd9b26"
 }
