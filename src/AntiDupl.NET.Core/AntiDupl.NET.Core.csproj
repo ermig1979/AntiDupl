@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
 	<AssemblyVersion>2.3.11.1</AssemblyVersion>
     <FileVersion>2.3.11.1</FileVersion>
     <Platforms>x64</Platforms>
