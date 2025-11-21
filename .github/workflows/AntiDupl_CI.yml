@@ -58,14 +58,14 @@ jobs:
     - if: matrix.configuration == 'Release' || matrix.configuration == 'Debug'
       name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild /m /p:Configuration=$env:Configuration $env:Solution_Name
+      run: msbuild /m /p:Configuration=$env:Configuration /p:Platform=x64 $env:Solution_Name
       env: 
         Configuration: ${{ matrix.configuration }}
 
     - if: matrix.configuration == 'Publish'
       name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild /m $env:Solution_Name /p:Configuration=$env:Configuration -restore -t:Publish -p:PublishProfile="AntiDuplPublishSingleFile"
+      run: msbuild /m $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=x64 -restore -t:Publish -p:PublishProfile="AntiDuplPublishSingleFile"
       env: 
         Configuration: ${{ matrix.configuration }}
         
