@@ -85,7 +85,7 @@ jobs:
       
     - if: matrix.configuration == 'Release'
       name: Upload build
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: "AntiDupl.NET-${{ steps.version.outputs.content }} build"
         path: |
@@ -96,7 +96,7 @@ jobs:
       
     - if: matrix.configuration == 'Publish'
       name: Upload build SingleFilePortable
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: "AntiDupl.NET-${{ steps.version.outputs.content }} build SingleFilePortable"
         path: |
