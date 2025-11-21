@@ -124,12 +124,12 @@ jobs:
           path: ./src/version.txt
         
       - name: Load all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: "AntiDupl.NET-${{ steps.version.outputs.content }} build"
           
       - name: Load all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: "AntiDupl.NET-${{ steps.version.outputs.content }} build SingleFilePortable"
           
