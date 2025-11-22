@@ -37,7 +37,7 @@ namespace ad
     class TOption
     {
     public:
-        TOption(int *pValue, const TChar* section, const TChar* key, int default, 
+        TOption(int *pValue, const TChar* section, const TChar* key, int, 
             int min = INT_MIN, int max = INT_MAX);
         ~TOption(){};
 

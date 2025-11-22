@@ -52,7 +52,7 @@ namespace AntiDupl.NET.WinForms
 
         static public string GetDefaultUserPath()
         {
-            return CreateIfNotExists(string.Format("{0}\\user", Application.StartupPath));
+            return CreateIfNotExists(string.Format("{0}\\user", Application.LocalUserAppDataPath));
         }
 
         static private string m_userPath = null;

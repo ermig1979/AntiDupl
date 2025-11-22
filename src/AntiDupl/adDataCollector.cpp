@@ -98,7 +98,7 @@ namespace ad
 
 			pImageData->imageExif = pImage->ImageExif();
 
-			Simd::ResizeBilinear(gray, *m_pGrayBuffers.front());
+			Simd::Resize(gray, *m_pGrayBuffers.front());
             for(size_t i = 1; i < m_pGrayBuffers.size(); ++i)
 				Simd::ReduceGray2x2(*m_pGrayBuffers[i - 1], *m_pGrayBuffers[i]);
 			TPixelData & data = *pImageData->data;

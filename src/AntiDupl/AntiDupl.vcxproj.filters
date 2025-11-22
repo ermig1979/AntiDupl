@@ -168,4 +168,7 @@
       <UniqueIdentifier>{25bbbdfc-485e-4b5f-8d78-febf0a7f5e01}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\vcpkg.json" />
+  </ItemGroup>
 </Project>

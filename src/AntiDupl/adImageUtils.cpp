@@ -64,18 +64,18 @@ namespace ad
                         int img_stride = (pImage->View()->width) * TView::PixelSize(TView::Bgra32);;
                         TView Bgra(pImage->View()->width, pImage->View()->height, img_stride, TView::Bgra32, NULL);
                         Simd::RgbToBgra(*pImage->View(), Bgra);
-                        Simd::ResizeBilinear(Bgra, view);
+                        Simd::Resize(Bgra, view);
                     }
                     else if (pImage->View()->format == TView::Format::Rgba32)
                     {
                         int img_stride = (pImage->View()->width) * TView::PixelSize(TView::Bgra32);;
                         TView Bgra(pImage->View()->width, pImage->View()->height, TView::Bgra32, NULL);
                         Simd::RgbaToBgra(*pImage->View(), Bgra);
-                        Simd::ResizeBilinear(Bgra, view);
+                        Simd::Resize(Bgra, view);
                     }
                     else
                     {
-                        Simd::ResizeBilinear(*pImage->View(), view);
+                        Simd::Resize(*pImage->View(), view);
                     }
                     result = AD_OK;
                 }

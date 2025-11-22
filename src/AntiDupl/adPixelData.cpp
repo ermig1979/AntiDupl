@@ -30,28 +30,24 @@ namespace ad
         :side(side_),
 		size(Simd::Square(side_)),
         full(Simd::Square(side_) + FAST_DATA_SIZE),
-        fast(NULL),
-        main(NULL),
+        fast(static_cast<TUInt8*>(SimdAllocate(full, SimdAlignment()))),
+        main(fast + FAST_DATA_SIZE),
         filled(false),
 		average(0),
 		varianceSquare(0)
     {
-        (TUInt8*)fast = (TUInt8*)SimdAllocate(full, SimdAlignment());
-        (TUInt8*)main = fast + FAST_DATA_SIZE;
     }
 
     TPixelData::TPixelData(const TPixelData& pixelData)
         :side(pixelData.side),
         size(Simd::Square(pixelData.side)),
         full(Simd::Square(pixelData.side) + FAST_DATA_SIZE),
-        fast(NULL),
-        main(NULL),
+        fast(static_cast<TUInt8*>(SimdAllocate(full, SimdAlignment()))),
+        main(fast + FAST_DATA_SIZE),
         filled(false),
 		average(pixelData.average),
 		varianceSquare(pixelData.varianceSquare)
     {
-        (TUInt8*)fast = (TUInt8*)SimdAllocate(full, SimdAlignment());
-        (TUInt8*)main = fast + FAST_DATA_SIZE;
         if(pixelData.filled)
         {
             memcpy(fast, pixelData.fast, full);

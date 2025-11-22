@@ -49,7 +49,13 @@ namespace ad
     public:
         virtual void Write(const TChar* message) //Переопределяем функцию
         {
-            std::cout << message;
+            std::
+#ifdef UNICODE
+                wcout
+#else
+                cout
+#endif
+                << message;
         }
 
         virtual void Flush()

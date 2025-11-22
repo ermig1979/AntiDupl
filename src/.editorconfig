@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# WFO1000: 缺少属性内容的代码序列化配置
+dotnet_diagnostic.WFO1000.severity = warning

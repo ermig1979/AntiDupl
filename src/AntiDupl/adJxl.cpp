@@ -134,7 +134,7 @@ namespace ad
 					size_t icc_size;
 					if (JXL_DEC_SUCCESS !=
 						JxlDecoderGetICCProfileSize(
-							decoder.get(), &format, JXL_COLOR_PROFILE_TARGET_DATA, &icc_size))
+							decoder.get(), JXL_COLOR_PROFILE_TARGET_DATA, &icc_size))
 					{
 #ifdef AD_LOGGER_ENABLE
 						AD_LOG("JxlDecoderGetICCProfileSize failed\n);
