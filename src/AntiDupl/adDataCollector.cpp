@@ -102,7 +102,8 @@ namespace ad
             for(size_t i = 1; i < m_pGrayBuffers.size(); ++i)
 				Simd::ReduceGray2x2(*m_pGrayBuffers[i - 1], *m_pGrayBuffers[i]);
 			TPixelData & data = *pImageData->data;
-            ReduceGray2x2(*m_pGrayBuffers.back(), TView(data.side, data.side, data.side, TView::Gray8, data.main));
+            TView reducedView(data.side, data.side, data.side, TView::Gray8, data.main);
+            ReduceGray2x2(*m_pGrayBuffers.back(), reducedView);
             data.filled = true;
 
 			delete pImage;

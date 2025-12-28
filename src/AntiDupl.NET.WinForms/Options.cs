@@ -43,7 +43,7 @@ namespace AntiDupl.NET.WinForms
                 OnChange();
         }
 
-        private string m_language = "Simplified Chinese";
+        private string m_language = StringsDefaultEnglish.Get().Name;
         public string Language
         {
             get

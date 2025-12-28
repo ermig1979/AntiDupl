@@ -55,7 +55,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <PreprocessorDefinitions>_WINDOWS;_USRDLL;ANTIDUPL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;_USRDLL;ANTIDUPL_EXPORTS;%(PreprocessorDefinitions);NOMINMAX </PreprocessorDefinitions>
       <DisableSpecificWarnings Condition="'$(Platform)'=='x64'">4267</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdcpplatest</LanguageStandard>
@@ -192,5 +192,4 @@
     <None Include="..\vcpkg.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-
 </Project>
