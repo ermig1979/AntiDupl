@@ -311,6 +311,14 @@ namespace AntiDupl.NET.WinForms
                 builder.Append("JP2; ");
             if (m_newCoreOptions.searchOptions.PSD)
                 builder.Append("PSD; ");
+            if (m_newCoreOptions.searchOptions.JXL)
+                builder.Append("JXL; ");
+            if (m_newCoreOptions.searchOptions.HEIF)
+                builder.Append("HEIF; ");
+            if (m_newCoreOptions.searchOptions.DDS)
+                builder.Append("DDS; ");
+            if (m_newCoreOptions.searchOptions.AVIF)
+                builder.Append("AVIF; ");
             builder.Append("|");
             if (m_newCoreOptions.searchOptions.JPEG)
                 builder.Append("*.jpeg;*.jfif;*.jpg;*.jpe;*.jiff;*.jif;*.j;*.jng;*.jff;");
@@ -336,6 +344,16 @@ namespace AntiDupl.NET.WinForms
                 builder.Append("*.psd;");
             if (m_newCoreOptions.searchOptions.WEBP)
                 builder.Append("*.webp;");
+            if (m_newCoreOptions.searchOptions.JXL)
+                builder.Append("*.jxl;");
+            if (m_newCoreOptions.searchOptions.HEIF)
+                builder.Append("*.heif;*.heic;");
+            if (m_newCoreOptions.searchOptions.TGA)
+                builder.Append("*.tga;");
+            if (m_newCoreOptions.searchOptions.DDS)
+                builder.Append("*.dds;");
+            if (m_newCoreOptions.searchOptions.AVIF)
+                builder.Append("*.avif;");
             return builder.ToString();
         }
 
