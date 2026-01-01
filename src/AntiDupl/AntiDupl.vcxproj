@@ -78,6 +78,9 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(CoreLibraryDependencies);%(AdditionalDependencies);mf.lib;mfplat.lib;mfuuid.lib;strmiids.lib;bcrypt.lib</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Publish|x64'">$(CoreLibraryDependencies);%(AdditionalDependencies);mf.lib;mfplat.lib;mfuuid.lib;strmiids.lib;bcrypt.lib</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(CoreLibraryDependencies);%(AdditionalDependencies);mf.lib;mfplat.lib;mfuuid.lib;strmiids.lib;bcrypt.lib</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>"$(ProjectDir)".\adExternal.cmd</Command>
