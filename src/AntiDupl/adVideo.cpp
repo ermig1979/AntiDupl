@@ -71,6 +71,20 @@ namespace ad
 		return (int64_t)r->pos;
 	}
 
+	int is_image_codec(AVCodecID id) {
+		switch (id) {
+		case AV_CODEC_ID_PNG:
+		case AV_CODEC_ID_JPEG2000:
+		case AV_CODEC_ID_MJPEG:
+		case AV_CODEC_ID_BMP:
+		case AV_CODEC_ID_GIF:
+		case AV_CODEC_ID_TIFF:
+			return true;
+		default:
+			return false;
+		}
+	}
+
 	bool TVideo::Supported(HGLOBAL hGlobal)
 	{
 		if (!hGlobal)
@@ -111,8 +125,11 @@ namespace ad
 						{
 							if (fmt_ctx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
 							{
-								result = true;
-								break;
+								if (is_image_codec(fmt_ctx->streams[i]->codecpar->codec_id) == false)
+								{
+									result = true;
+									break;
+								}
 							}
 						}
 					}

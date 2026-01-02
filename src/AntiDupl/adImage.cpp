@@ -112,12 +112,12 @@ namespace ad
             return TJxl::Load(hGlobal);
         else if (THeif::Supported(hGlobal))
             return THeif::Load(hGlobal);
-		else if (TVideo::Supported(hGlobal))
-			return TVideo::Load(hGlobal);
 #ifdef AD_TURBO_JPEG_ENABLE
-        if (pOptions->advanced.useLibJpegTurbo && TTurboJpeg::Supported(hGlobal))
+        else if (pOptions->advanced.useLibJpegTurbo && TTurboJpeg::Supported(hGlobal))
             return TTurboJpeg::Load(hGlobal);
 #endif//AD_TURBO_JPEG_ENABLE
+        else if (TVideo::Supported(hGlobal))
+            return TVideo::Load(hGlobal);
         else
             return TGdiplus::Load(hGlobal);
     }
