@@ -343,7 +343,7 @@ namespace AntiDupl.NET.WinForms
             public const string LibHeif = "http://www.libheif.org";
             public const string LibAvif = "https://github.com/AOMediaCodec/libavif";
             public const string LibJxl = "https://github.com/libjxl/libjxl";
-
+            public const string LibFfmpeg = "https://ffmpeg.org";
 
             public static string GithubComAntiduplCurrent
             {

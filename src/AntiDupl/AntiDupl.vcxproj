@@ -78,9 +78,9 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(CoreLibraryDependencies);%(AdditionalDependencies);mf.lib;mfplat.lib;mfuuid.lib;strmiids.lib;bcrypt.lib</AdditionalDependencies>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Publish|x64'">$(CoreLibraryDependencies);%(AdditionalDependencies);mf.lib;mfplat.lib;mfuuid.lib;strmiids.lib;bcrypt.lib</AdditionalDependencies>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(CoreLibraryDependencies);%(AdditionalDependencies);mf.lib;mfplat.lib;mfuuid.lib;strmiids.lib;bcrypt.lib</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(CoreLibraryDependencies);%(AdditionalDependencies);mf.lib;mfplat.lib;mfuuid.lib;strmiids.lib;bcrypt.lib;Ws2_32.lib;secur32.lib</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Publish|x64'">$(CoreLibraryDependencies);%(AdditionalDependencies);mf.lib;mfplat.lib;mfuuid.lib;strmiids.lib;bcrypt.lib;Ws2_32.lib;secur32.lib</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(CoreLibraryDependencies);%(AdditionalDependencies);mf.lib;mfplat.lib;mfuuid.lib;strmiids.lib;bcrypt.lib;Ws2_32.lib;secur32.lib</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>"$(ProjectDir)".\adExternal.cmd</Command>
@@ -135,6 +135,7 @@
     <ClCompile Include="adTurboJpeg.cpp" />
     <ClCompile Include="adUndoRedoEngine.cpp" />
     <ClCompile Include="adUndoRedoTypes.cpp" />
+    <ClCompile Include="adVideo.cpp" />
     <ClCompile Include="adWebp.cpp" />
     <ClCompile Include="AntiDupl.cpp" />
   </ItemGroup>
@@ -188,6 +189,7 @@
     <ClInclude Include="adTurboJpeg.h" />
     <ClInclude Include="adUndoRedoEngine.h" />
     <ClInclude Include="adUndoRedoTypes.h" />
+    <ClInclude Include="adVideo.h" />
     <ClInclude Include="adWebp.h" />
     <ClInclude Include="AntiDupl.h" />
   </ItemGroup>

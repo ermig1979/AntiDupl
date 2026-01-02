@@ -80,6 +80,7 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_HeifCheckBox_Text = "HEIF";
             s.CoreOptionsForm_AvifCheckBox_Text = "AVIF";
             s.CoreOptionsForm_JxlCheckBox_Text = "JXL";
+            s.CoreOptionsForm_VideoCheckBox_Text = "VIDEO";
             s.CoreOptionsForm_SearchSystemCheckBox_Text = "Искать системные каталоги/файлы";
             s.CoreOptionsForm_SearchHiddenCheckBox_Text = "Искать скрытые каталоги/файлы";
 

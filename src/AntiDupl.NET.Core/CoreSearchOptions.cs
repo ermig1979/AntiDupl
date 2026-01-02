@@ -49,6 +49,7 @@ namespace AntiDupl.NET.Core
         private static string[] s_heifExtensions = { "HEIF", "HEIC" };
         private static string[] s_avifExtensions = { "AVIF" };
         private static string[] s_jxlExtensions = { "JXL" };
+        private static string[] s_videoExtensions = { "MOV","AVI" };
 
         public bool subFolders;
         public bool system;
@@ -70,6 +71,7 @@ namespace AntiDupl.NET.Core
         public bool HEIF;
         public bool AVIF;
         public bool JXL;
+        public bool VIDEO;
 
         public CoreSearchOptions()
         {
@@ -96,6 +98,7 @@ namespace AntiDupl.NET.Core
             HEIF = searchOptions.HEIF;
             AVIF = searchOptions.AVIF;
             JXL = searchOptions.JXL;
+            VIDEO = searchOptions.VIDEO;
         }
 
         public CoreSearchOptions(CoreDll.adSearchOptions searchOptions)
@@ -119,6 +122,7 @@ namespace AntiDupl.NET.Core
             HEIF = searchOptions.HEIF != CoreDll.FALSE;
             AVIF = searchOptions.AVIF != CoreDll.FALSE;
             JXL = searchOptions.JXL != CoreDll.FALSE;
+            VIDEO = searchOptions.VIDEO != CoreDll.FALSE;
         }
 
         public void ConvertTo(ref CoreDll.adSearchOptions searchOptions)
@@ -142,6 +146,7 @@ namespace AntiDupl.NET.Core
             searchOptions.HEIF = HEIF ? CoreDll.TRUE : CoreDll.FALSE;
             searchOptions.AVIF = AVIF ? CoreDll.TRUE : CoreDll.FALSE;
             searchOptions.JXL = JXL ? CoreDll.TRUE : CoreDll.FALSE;
+            searchOptions.VIDEO = VIDEO ? CoreDll.TRUE : CoreDll.FALSE;
         }
 
         public CoreSearchOptions Clone()
@@ -170,7 +175,8 @@ namespace AntiDupl.NET.Core
                 WEBP == searchOptions.WEBP &&
                 HEIF == searchOptions.HEIF &&
                 AVIF == searchOptions.AVIF &&
-                JXL == searchOptions.JXL;
+                JXL == searchOptions.JXL &&
+                VIDEO == searchOptions.VIDEO;
         }
 
         public string[] GetActualExtensions()
@@ -208,6 +214,8 @@ namespace AntiDupl.NET.Core
                 extensions.AddRange(s_avifExtensions);
             if (JXL)
                 extensions.AddRange(s_jxlExtensions);
+            if (VIDEO)
+                extensions.AddRange(s_videoExtensions);
             return (string[])extensions.ToArray(typeof(string));
         }
 

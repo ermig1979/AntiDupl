@@ -76,6 +76,9 @@
     <ClCompile Include="adJxl.cpp">
       <Filter>Image</Filter>
     </ClCompile>
+    <ClCompile Include="adVideo.cpp">
+      <Filter>Image</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="adBlurringDetector.h" />
@@ -157,6 +160,9 @@
       <Filter>Image</Filter>
     </ClInclude>
     <ClInclude Include="adJxl.h">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="adVideo.h">
       <Filter>Image</Filter>
     </ClInclude>
   </ItemGroup>

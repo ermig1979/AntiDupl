@@ -123,6 +123,9 @@ namespace AntiDupl.NET.Core
                 case CoreDll.ImageType.Jxl:
                     builder.Append("JXL");
                     break;
+                case CoreDll.ImageType.Video:
+                    builder.Append("VIDEO");
+                    break;
             }
             return builder.ToString();
         }

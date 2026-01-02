@@ -94,6 +94,13 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReasonForCall, LPVOID lpReserved)
     return TRUE;
 }
 
+// Füge diese include-Deklaration zu den bestehenden includes (z. B. nach <windows.h>) hinzu:
+extern "C" {
+  #include <libavformat/avformat.h>
+}
+
+// Ersetze die bestehende Implementierung von `adVersionGet` durch folgende Version,
+// damit die FFMPEG/LibAV-Version zur Laufzeit über die API ermittelt wird.
 DLLAPI adError adVersionGet(adVersionType versionType, adCharA * pVersion, adSizePtr pVersionSize)
 {
 	CHECK_POINTER(pVersion);
@@ -129,6 +136,12 @@ DLLAPI adError adVersionGet(adVersionType versionType, adCharA * pVersion, adSiz
         v = JxlDecoderVersion();
         version = std::to_string((v / 1000000)) + "." + std::to_string(((v / 1000) % 1000)) + "." + std::to_string(((v % 1000)));
         break;
+	case AD_VERSION_TYPE_LIBFFMPEG:
+        // Verwende libavformat API, um die Laufzeit-Version zu ermitteln.
+        // avformat_version() liefert eine Integer-Codierung: MAJOR<<16 | MINOR<<8 | MICRO
+        v = avformat_version();
+        version = std::to_string((v >> 16) & 255) + "." + std::to_string((v >> 8) & 255) + "." + std::to_string(v & 255);
+		break;
 	default:
 		return AD_ERROR_INVALID_VERSION_TYPE;
 	}

@@ -162,6 +162,7 @@ namespace ad
         AddExtensions(AD_IMAGE_HEIF, m_pOptions->search.HEIF);
         AddExtensions(AD_IMAGE_AVIF, m_pOptions->search.AVIF);
         AddExtensions(AD_IMAGE_JXL, m_pOptions->search.JXL);
+		AddExtensions(AD_IMAGE_VIDEO, m_pOptions->search.VIDEO);
     }
 
     void TSearcher::AddExtensions(TImageType imageType, adBool enable)

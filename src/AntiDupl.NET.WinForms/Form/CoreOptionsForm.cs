@@ -99,6 +99,7 @@ namespace AntiDupl.NET.WinForms
         private CheckBox m_tgaCheckBox;
         private CheckBox m_webpCheckBox;
         private CheckBox m_heifCheckBox;
+        private CheckBox m_videoCheckBox;
         private CheckBox m_avifCheckBox;
         private CheckBox m_jxlCheckBox;
         private CheckBox m_searchSystemCheckBox;
@@ -303,7 +304,7 @@ namespace AntiDupl.NET.WinForms
             m_searchTabPage.Controls.Add(searchTableLayoutPanel);
 
             m_searchFileTypeGroupBox = new GroupBox();
-            m_searchFileTypeGroupBox.Size = new System.Drawing.Size(245, 160);
+            m_searchFileTypeGroupBox.Size = new System.Drawing.Size(300, 160);
             searchTableLayoutPanel.Controls.Add(m_searchFileTypeGroupBox, 0, 0);
 
             TableLayoutPanel searchFileTypeTableLayoutPanel = InitFactory.Layout.Create(4, 5, 5);
@@ -360,6 +361,9 @@ namespace AntiDupl.NET.WinForms
 
             m_jxlCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
             searchFileTypeTableLayoutPanel.Controls.Add(m_jxlCheckBox, 3, 1);
+
+            m_videoCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
+            searchFileTypeTableLayoutPanel.Controls.Add(m_videoCheckBox, 3, 2);
 
             m_searchSystemCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
             searchTableLayoutPanel.Controls.Add(m_searchSystemCheckBox, 0, 1);
@@ -610,6 +614,7 @@ namespace AntiDupl.NET.WinForms
             m_heifCheckBox.Checked = m_newCoreOptions.searchOptions.HEIF;
             m_avifCheckBox.Checked = m_newCoreOptions.searchOptions.AVIF;
             m_jxlCheckBox.Checked = m_newCoreOptions.searchOptions.JXL;
+            m_videoCheckBox.Checked = m_newCoreOptions.searchOptions.VIDEO;
             m_searchSystemCheckBox.Checked = m_newCoreOptions.searchOptions.system;
             m_searchHiddenCheckBox.Checked = m_newCoreOptions.searchOptions.hidden;
 
@@ -669,6 +674,7 @@ namespace AntiDupl.NET.WinForms
             m_newCoreOptions.searchOptions.HEIF = m_heifCheckBox.Checked;
             m_newCoreOptions.searchOptions.AVIF = m_avifCheckBox.Checked;
             m_newCoreOptions.searchOptions.JXL = m_jxlCheckBox.Checked;
+            m_newCoreOptions.searchOptions.VIDEO = m_videoCheckBox.Checked;
             m_newCoreOptions.searchOptions.system = m_searchSystemCheckBox.Checked;
             m_newCoreOptions.searchOptions.hidden = m_searchHiddenCheckBox.Checked;
 
@@ -736,6 +742,7 @@ namespace AntiDupl.NET.WinForms
             m_heifCheckBox.Text = s.CoreOptionsForm_HeifCheckBox_Text;
             m_avifCheckBox.Text = s.CoreOptionsForm_AvifCheckBox_Text;
             m_jxlCheckBox.Text = s.CoreOptionsForm_JxlCheckBox_Text;
+            m_videoCheckBox.Text = s.CoreOptionsForm_VideoCheckBox_Text;
             m_searchSystemCheckBox.Text = s.CoreOptionsForm_SearchSystemCheckBox_Text;
             m_searchHiddenCheckBox.Text = s.CoreOptionsForm_SearchHiddenCheckBox_Text;
 

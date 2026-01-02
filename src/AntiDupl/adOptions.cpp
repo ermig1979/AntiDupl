@@ -94,6 +94,7 @@ namespace ad
         m_options.push_back(TOption(&search.HEIF, TEXT("SearchOptions"), TEXT("HEIF"), TRUE, FALSE, TRUE));
         m_options.push_back(TOption(&search.AVIF, TEXT("SearchOptions"), TEXT("AVIF"), TRUE, FALSE, TRUE));
         m_options.push_back(TOption(&search.JXL, TEXT("SearchOptions"), TEXT("JXL"), TRUE, FALSE, TRUE));
+		m_options.push_back(TOption(&search.VIDEO, TEXT("SearchOptions"), TEXT("VIDEO"), TRUE, FALSE, TRUE));
 
         m_options.push_back(TOption(&compare.checkOnEquality, TEXT("CompareOptions"), TEXT("CheckOnEquality"), TRUE, FALSE, TRUE));
         m_options.push_back(TOption(&compare.transformedImage, TEXT("CompareOptions"), TEXT("TransformedImage"), FALSE, FALSE, TRUE));

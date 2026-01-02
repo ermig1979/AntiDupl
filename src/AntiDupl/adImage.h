@@ -56,6 +56,7 @@ namespace ad
             Heif = 15,
             Avif = 16,
             Jxl = 17,
+            Video = 18,
             FormatSize
         };
 

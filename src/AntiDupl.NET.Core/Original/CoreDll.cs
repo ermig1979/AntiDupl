@@ -204,6 +204,7 @@ namespace AntiDupl.NET.Core.Original
             Heif = 15,
             Avif = 16,
             Jxl = 17,
+            Video = 18,
         }
 
         public enum DefectType : int
@@ -259,6 +260,7 @@ namespace AntiDupl.NET.Core.Original
             Heif = 5,
             Avif = 6,
             Jxl = 7,
+            Ffmpeg = 8,
         }
 
         public enum SelectionType : int
@@ -294,6 +296,7 @@ namespace AntiDupl.NET.Core.Original
             public int HEIF;
             public int AVIF;
             public int JXL;
+            public int VIDEO;
         }
 
         [StructLayout(LayoutKind.Sequential)]

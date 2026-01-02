@@ -108,7 +108,7 @@ namespace AntiDupl.NET.WinForms
 
         private Control CreateInfoTable(Font font)
         {
-            TableLayoutPanel table = InitFactory.Layout.Create(2, 9, 0, 0);
+            TableLayoutPanel table = InitFactory.Layout.Create(2, 10, 0, 0);
             table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             table.CellBorderStyle = TableLayoutPanelCellBorderStyle.Inset;
@@ -143,6 +143,9 @@ namespace AntiDupl.NET.WinForms
 
             table.Controls.Add(CreateLinkLabel("libjxl", Resources.WebLinks.LibJxl, font), 0, 8);
             table.Controls.Add(CreateLabel(m_core.GetVersion(CoreDll.VersionType.Jxl).ToString(), font), 1, 8);
+
+            table.Controls.Add(CreateLinkLabel("libffmpeg", Resources.WebLinks.LibFfmpeg, font), 0, 9);
+            table.Controls.Add(CreateLabel(m_core.GetVersion(CoreDll.VersionType.Ffmpeg).ToString(), font), 1, 9);
 
             return table;
         }

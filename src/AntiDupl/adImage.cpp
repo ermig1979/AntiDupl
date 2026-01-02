@@ -34,6 +34,7 @@
 #include "adHeif.h"
 #include "adAvif.h"
 #include "adJxl.h"
+#include "adVideo.h"
 
 namespace ad
 {
@@ -58,6 +59,7 @@ namespace ad
         {TEXT("HEIF"), TEXT("HEIC"), 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Heif = 15
         {TEXT("AVIF"), 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Avif = 16
         {TEXT("JXL"),  0           , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Jxl = 17
+        {TEXT("MOV"),  TEXT("AVI") , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Video = 18
     };
     //-------------------------------------------------------------------------
 
@@ -110,6 +112,8 @@ namespace ad
             return TJxl::Load(hGlobal);
         else if (THeif::Supported(hGlobal))
             return THeif::Load(hGlobal);
+		else if (TVideo::Supported(hGlobal))
+			return TVideo::Load(hGlobal);
 #ifdef AD_TURBO_JPEG_ENABLE
         if (pOptions->advanced.useLibJpegTurbo && TTurboJpeg::Supported(hGlobal))
             return TTurboJpeg::Load(hGlobal);

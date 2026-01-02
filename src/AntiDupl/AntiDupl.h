@@ -307,6 +307,7 @@ extern "C"
         AD_IMAGE_HEIF = 15,
         AD_IMAGE_AVIF = 16,
         AD_IMAGE_JXL = 17,
+        AD_IMAGE_VIDEO = 18,
         AD_IMAGE_SIZE
     };
 
@@ -369,6 +370,7 @@ extern "C"
         AD_VERSION_TYPE_LIBHEIF = 5,
         AD_VERSION_TYPE_LIBAVIF = 6,
         AD_VERSION_TYPE_LIBJXL = 7,
+        AD_VERSION_TYPE_LIBFFMPEG = 8,
         AD_VERSION_TYPE_SIZE
 	};
 
@@ -412,6 +414,7 @@ extern "C"
         adBool HEIF;
         adBool AVIF;
         adBool JXL;
+		adBool VIDEO;
     };
     typedef adSearchOptions* adSearchOptionsPtr;
 

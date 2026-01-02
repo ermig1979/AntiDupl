@@ -71,7 +71,7 @@ namespace AntiDupl.NET.WinForms
 
         private void InitializeComponent()
         {
-            ClientSize = new System.Drawing.Size(330, 380);
+            ClientSize = new System.Drawing.Size(330, 400);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             StartPosition = FormStartPosition.CenterScreen;
             ShowInTaskbar = false;
