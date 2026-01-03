@@ -25,10 +25,12 @@
 #include "adVideo.h"
 
 extern "C" {
-#include <libavformat/avformat.h>
-#include <libavcodec/avcodec.h>
-#include <libswscale/swscale.h>
-#include <libavutil/imgutils.h>
+	#include <libavformat/avformat.h>
+	#include <libavcodec/avcodec.h>
+	#include <libswscale/swscale.h>
+	#include <libavutil/imgutils.h>
+	#include <libavutil/display.h>
+	#include <libavutil/frame.h>
 }
 
 namespace ad
@@ -334,6 +336,24 @@ namespace ad
 
 		sws_scale(sws_ctx, frame->data, frame->linesize, 0, img_height, rgb_frame->data, rgb_frame->linesize);
 
+		// Determine rotation from metadata/side-data
+		double angle = 0.0;
+		// Try metadata "rotate"
+		AVDictionaryEntry* rotate_tag = av_dict_get(fmt_ctx->streams[video_stream_index]->metadata, "rotate", NULL, 0);
+		if (rotate_tag)
+		{
+			angle = atof(rotate_tag->value);
+		}
+		else
+		{
+			AVFrameSideData* sd = av_frame_get_side_data(frame, AV_FRAME_DATA_DISPLAYMATRIX);
+			if (sd) {
+				angle = av_display_rotation_get((int32_t*)sd->data);
+			}
+		}
+		// normalize
+		int rotation = ((int)angle % 360 + 360) % 360;
+
 		// Create TView and copy RGB data
 		TView* pView_RGB = new TView(img_width, img_height, img_stride_RGB, TView::Rgb24, NULL);
 		if (pView_RGB)
@@ -342,6 +362,31 @@ namespace ad
 			pVideo = new TVideo();
 			pVideo->m_pView = pView_RGB;
 			pVideo->m_format = TImage::Video;
+
+			// Use simdlib TransformSize to determine destination size after rotation
+			::SimdTransformType simdTransform = SimdTransformRotate0;
+			TView* pView_RGB_rotated;
+			if (rotation == 90)
+			{
+				pView_RGB_rotated = new TView(img_height, img_height, img_height*3, TView::Rgb24, NULL);
+				simdTransform = SimdTransformRotate90;
+			}
+			else if (rotation == 180)
+			{
+				pView_RGB_rotated = new TView(img_width, img_height, img_stride_RGB, TView::Rgb24, NULL);
+				simdTransform = SimdTransformRotate180;
+			}
+			else if (rotation == 270)
+			{
+				pView_RGB_rotated = new TView(img_height, img_width, img_height*3, TView::Rgb24, NULL);
+				simdTransform = SimdTransformRotate270;
+			}
+			
+			if (rotation > 0)
+			{
+				Simd::TransformImage(*pVideo->m_pView, simdTransform, *pView_RGB_rotated);
+				pVideo->m_pView = pView_RGB_rotated;
+			}
 		}
 		else
 		{
