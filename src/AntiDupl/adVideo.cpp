@@ -368,7 +368,7 @@ namespace ad
 			TView* pView_RGB_rotated;
 			if (rotation == 90)
 			{
-				pView_RGB_rotated = new TView(img_height, img_height, img_height*3, TView::Rgb24, NULL);
+				pView_RGB_rotated = new TView(img_height, img_width, img_height*3, TView::Rgb24, NULL);
 				simdTransform = SimdTransformRotate90;
 			}
 			else if (rotation == 180)
