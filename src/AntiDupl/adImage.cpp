@@ -38,7 +38,7 @@
 
 namespace ad
 {
-    const size_t EXTENSION_MAX_COUNT = 9;
+    const size_t EXTENSION_MAX_COUNT = 10;
     const TChar *s_FormatExtensions[TImage::FormatSize][EXTENSION_MAX_COUNT + 1] = 
     {
         {0           , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// None = 0
@@ -59,7 +59,7 @@ namespace ad
         {TEXT("HEIF"), TEXT("HEIC"), 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Heif = 15
         {TEXT("AVIF"), 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Avif = 16
         {TEXT("JXL"),  0           , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Jxl = 17
-        {TEXT("MOV"),  TEXT("AVI") , 0           , 0           , 0           , 0           , 0           , 0           , 0           , 0},// Video = 18
+        {TEXT("MOV"),  TEXT("AVI") , TEXT("MP4") , TEXT("MKV") , TEXT("WEBM"), TEXT("MPG") , TEXT("MPEG"), TEXT("ASF") , TEXT("MXF") , TEXT("FLV")},// Video = 18
     };
     //-------------------------------------------------------------------------
 

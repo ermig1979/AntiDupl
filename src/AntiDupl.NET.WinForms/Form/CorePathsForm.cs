@@ -21,16 +21,14 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
-using System;
-using System.Collections.Generic;
-using System.Collections;
-using System.Text;
-using System.Windows.Forms;
-using System.IO;
-using System.Collections.Specialized;
-
 using AntiDupl.NET.Core;
 using AntiDupl.NET.Core.Original;
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.IO;
+using System.Text;
+using System.Windows.Forms;
 
 namespace AntiDupl.NET.WinForms
 {
@@ -311,6 +309,8 @@ namespace AntiDupl.NET.WinForms
                 builder.Append("JP2; ");
             if (m_newCoreOptions.searchOptions.PSD)
                 builder.Append("PSD; ");
+            if (m_newCoreOptions.searchOptions.VIDEO)
+                builder.Append("MOV;AVI;MP4;MKV;WEBM;MPG;MPEG;ASF;MXF;FLV;");
             builder.Append("|");
             if (m_newCoreOptions.searchOptions.JPEG)
                 builder.Append("*.jpeg;*.jfif;*.jpg;*.jpe;*.jiff;*.jif;*.j;*.jng;*.jff;");
@@ -336,6 +336,8 @@ namespace AntiDupl.NET.WinForms
                 builder.Append("*.psd;");
             if (m_newCoreOptions.searchOptions.WEBP)
                 builder.Append("*.webp;");
+            if (m_newCoreOptions.searchOptions.VIDEO)
+                builder.Append("*.mov;*.avi;*.mp4;*.mkv;*.webm;*.mpg;*.mpeg;*.asf;*.mxf;*.flv;");
             return builder.ToString();
         }
 
