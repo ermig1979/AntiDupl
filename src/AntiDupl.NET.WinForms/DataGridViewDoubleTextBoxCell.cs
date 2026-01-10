@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Drawing.Text;
 using System.ComponentModel;
 
 namespace AntiDupl.NET.WinForms
@@ -100,8 +101,9 @@ namespace AntiDupl.NET.WinForms
                     secondColor = markColor;
                     break;
                 case MarkType.Both:
-                    firstColor = markColor;
-                    secondColor = markColor;
+                    // Für Both zeichnen wir mit Diff-Highlighting
+                    firstColor = ordinaryColor;
+                    secondColor = ordinaryColor;
                     break;
                 default:
                     firstColor = ordinaryColor;
@@ -162,14 +164,24 @@ namespace AntiDupl.NET.WinForms
             Rectangle firstBounds = new Rectangle(
               cellBounds.Left + LEFT_INTEND, cellBounds.Top + TOP_INTEND,
               cellBounds.Width - LEFT_INTEND - RIGHT_INTEND, cellBounds.Height / 2 - TOP_INTEND);
-            graphics.DrawString(m_first.ToString(), cellStyle.Font, new SolidBrush(firstColor),
-              firstBounds, format);
 
             Rectangle secondBounds = new Rectangle(
               cellBounds.Left + LEFT_INTEND, separatorX + SEPARATOR_WIDTH + TOP_INTEND,
               cellBounds.Width - LEFT_INTEND - RIGHT_INTEND, cellBounds.Height / 2 - TOP_INTEND);
-            graphics.DrawString(m_second.ToString(), cellStyle.Font, new SolidBrush(secondColor),
-              secondBounds, format);
+
+            if (m_markType == MarkType.Both)
+            {
+                // Diff-Highlighting: nur unterschiedliche Teile rot markieren
+                DrawTextWithDiff(graphics, firstBounds, m_first?.ToString() ?? "", m_second?.ToString() ?? "", cellStyle, format);
+                DrawTextWithDiff(graphics, secondBounds, m_second?.ToString() ?? "", m_first?.ToString() ?? "", cellStyle, format);
+            }
+            else
+            {
+                graphics.DrawString(m_first.ToString(), cellStyle.Font, new SolidBrush(firstColor),
+                  firstBounds, format);
+                graphics.DrawString(m_second.ToString(), cellStyle.Font, new SolidBrush(secondColor),
+                  secondBounds, format);
+            };
 
             graphics.DrawLine(separatorPen, cellBounds.Left, separatorX, cellBounds.Right - 2, separatorX);
 
@@ -207,6 +219,133 @@ namespace AntiDupl.NET.WinForms
             preferedSize.Height = firstSize.Height + secondSize.Height + SEPARATOR_WIDTH + 4 * PADDING;
             preferedSize.Width = firstSize.Width > secondSize.Width ? firstSize.Width : secondSize.Width + 2 * PADDING;
             return preferedSize;
+        }
+
+        private void DrawTextWithDiff(Graphics g, Rectangle bounds, string text, string otherText, DataGridViewCellStyle style, StringFormat format)
+        {
+            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(otherText) || text == otherText)
+            {
+                g.DrawString(text ?? "", style.Font, new SolidBrush(style.ForeColor), bounds, format);
+                return;
+            }
+
+            g.TextRenderingHint = TextRenderingHint.AntiAlias;
+
+            // StringFormat für präzise Messung ohne extra Padding
+            StringFormat measureFormat = StringFormat.GenericTypographic;
+            measureFormat.FormatFlags = StringFormatFlags.MeasureTrailingSpaces;
+
+            // Segmente mit Gleichheit-Status erstellen
+            var segments = BuildDiffSegments(text, otherText);
+
+            // Gesamtbreite für Ausrichtung berechnen
+            float totalWidth = g.MeasureString(text, style.Font, int.MaxValue, measureFormat).Width;
+            float x = bounds.Left;
+
+            if (format.Alignment == StringAlignment.Center)
+                x = bounds.Left + (bounds.Width - totalWidth) / 2f;
+            else if (format.Alignment == StringAlignment.Far)
+                x = bounds.Right - totalWidth;
+
+            float y = bounds.Top + (bounds.Height - style.Font.Height) / 2f;
+
+            // Alle Segmente nacheinander zeichnen
+            foreach (var segment in segments)
+            {
+                if (string.IsNullOrEmpty(segment.Text))
+                    continue;
+
+                Color color = segment.IsDifferent ? m_markerColor : style.ForeColor;
+                g.DrawString(segment.Text, style.Font, new SolidBrush(color), x, y, measureFormat);
+                x += g.MeasureString(segment.Text, style.Font, int.MaxValue, measureFormat).Width;
+            }
+        }
+
+        private struct DiffSegment
+        {
+            public string Text;
+            public bool IsDifferent;
+
+            public DiffSegment(string text, bool isDifferent)
+            {
+                Text = text;
+                IsDifferent = isDifferent;
+            }
+        }
+
+        private List<DiffSegment> BuildDiffSegments(string text, string otherText)
+        {
+            var segments = new List<DiffSegment>();
+            int i = 0, j = 0;
+
+            while (i < text.Length || j < otherText.Length)
+            {
+                // Prüfe ob beide Strings an dieser Position gleich sind
+                if (i < text.Length && j < otherText.Length && text[i] == otherText[j])
+                {
+                    // Gleiche Zeichen sammeln
+                    int start = i;
+                    while (i < text.Length && j < otherText.Length && text[i] == otherText[j])
+                    {
+                        i++;
+                        j++;
+                    }
+                    segments.Add(new DiffSegment(text.Substring(start, i - start), false));
+                }
+                else
+                {
+                    // Unterschiedliche Zeichen sammeln
+                    // Vorausschauen: wo synchronisieren sich die Strings wieder?
+                    int startI = i;
+                    int startJ = j;
+                    
+                    // Finde die nächste Position wo beide Strings wieder übereinstimmen
+                    int syncPoint = -1;
+                    for (int lookAhead = 1; lookAhead <= Math.Max(text.Length - i, otherText.Length - j); lookAhead++)
+                    {
+                        // Prüfe ob ab diesem Punkt mindestens 2 Zeichen übereinstimmen
+                        for (int offsetI = 0; offsetI <= lookAhead && startI + offsetI < text.Length; offsetI++)
+                        {
+                            for (int offsetJ = 0; offsetJ <= lookAhead && startJ + offsetJ < otherText.Length; offsetJ++)
+                            {
+                                if (startI + offsetI < text.Length && startJ + offsetJ < otherText.Length)
+                                {
+                                    // Prüfe auf mindestens 2 übereinstimmende Zeichen
+                                    int matchLen = 0;
+                                    while (startI + offsetI + matchLen < text.Length && 
+                                           startJ + offsetJ + matchLen < otherText.Length &&
+                                           text[startI + offsetI + matchLen] == otherText[startJ + offsetJ + matchLen])
+                                    {
+                                        matchLen++;
+                                    }
+                                    
+                                    if (matchLen >= 2)
+                                    {
+                                        i = startI + offsetI;
+                                        j = startJ + offsetJ;
+                                        syncPoint = i;
+                                        goto FoundSync;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    FoundSync:
+                    
+                    // Wenn kein Sync-Punkt gefunden, bis zum Ende markieren
+                    if (syncPoint == -1)
+                    {
+                        i = text.Length;
+                        j = otherText.Length;
+                    }
+                    
+                    if (i > startI)
+                        segments.Add(new DiffSegment(text.Substring(startI, i - startI), true));
+                }
+            }
+
+            return segments;
         }
     }
 }
