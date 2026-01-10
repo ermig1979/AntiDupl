@@ -428,8 +428,14 @@ namespace AntiDupl.NET.WinForms
             }
 
             DataGridViewDoubleTextBoxCell doubleCell;
-            cells[(int)ResultsListView.ColumnsTypeVertical.FileName] = new DataGridViewDoubleTextBoxCell(
-              Path.GetFileName(result.first.path), Path.GetFileName(result.second.path));
+            
+            // FileName mit Diff-Highlighting wenn unterschiedlich
+            doubleCell = new DataGridViewDoubleTextBoxCell(
+                Path.GetFileName(result.first.path), Path.GetFileName(result.second.path));
+            if (Path.GetFileName(result.first.path) != Path.GetFileName(result.second.path))
+                doubleCell.markType = DataGridViewDoubleTextBoxCell.MarkType.Both;
+            cells[(int)ResultsListView.ColumnsTypeVertical.FileName] = doubleCell;
+            
             cells[(int)ResultsListView.ColumnsTypeVertical.FileDirectory] = new DataGridViewDoubleTextBoxCell(
               result.first.GetDirectoryString(), result.second.GetDirectoryString());
 

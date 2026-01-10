@@ -311,6 +311,14 @@ namespace AntiDupl.NET.WinForms
                 builder.Append("PSD; ");
             if (m_newCoreOptions.searchOptions.VIDEO)
                 builder.Append("MOV;AVI;MP4;MKV;WEBM;MPG;MPEG;ASF;MXF;FLV;");
+            if (m_newCoreOptions.searchOptions.JXL)
+                builder.Append("JXL; ");
+            if (m_newCoreOptions.searchOptions.HEIF)
+                builder.Append("HEIF; ");
+            if (m_newCoreOptions.searchOptions.DDS)
+                builder.Append("DDS; ");
+            if (m_newCoreOptions.searchOptions.AVIF)
+                builder.Append("AVIF; ");
             builder.Append("|");
             if (m_newCoreOptions.searchOptions.JPEG)
                 builder.Append("*.jpeg;*.jfif;*.jpg;*.jpe;*.jiff;*.jif;*.j;*.jng;*.jff;");
@@ -338,6 +346,16 @@ namespace AntiDupl.NET.WinForms
                 builder.Append("*.webp;");
             if (m_newCoreOptions.searchOptions.VIDEO)
                 builder.Append("*.mov;*.avi;*.mp4;*.mkv;*.webm;*.mpg;*.mpeg;*.asf;*.mxf;*.flv;");
+            if (m_newCoreOptions.searchOptions.JXL)
+                builder.Append("*.jxl;");
+            if (m_newCoreOptions.searchOptions.HEIF)
+                builder.Append("*.heif;*.heic;");
+            if (m_newCoreOptions.searchOptions.TGA)
+                builder.Append("*.tga;");
+            if (m_newCoreOptions.searchOptions.DDS)
+                builder.Append("*.dds;");
+            if (m_newCoreOptions.searchOptions.AVIF)
+                builder.Append("*.avif;");
             return builder.ToString();
         }
 
