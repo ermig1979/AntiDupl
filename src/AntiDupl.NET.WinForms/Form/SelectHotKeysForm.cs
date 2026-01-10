@@ -63,7 +63,7 @@ namespace AntiDupl.NET.WinForms
 
         private void InitializeComponents()
         {
-            ClientSize = new System.Drawing.Size(420, 350);
+            ClientSize = new System.Drawing.Size(450, 340);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             StartPosition = FormStartPosition.CenterScreen;
             ShowInTaskbar = false;
@@ -86,6 +86,17 @@ namespace AntiDupl.NET.WinForms
             hotKeysTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 66F));
             hotKeysTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 6F));
             hotKeysTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
+            // Ensure consistent per-row height to avoid taller rows
+            for (int r = 0; r < m_newHotKeyOptions.keys.Length; r++)
+            {
+                if (hotKeysTableLayoutPanel.RowStyles.Count <= r)
+                    hotKeysTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 24F));
+                else
+                {
+                    hotKeysTableLayoutPanel.RowStyles[r].SizeType = SizeType.Absolute;
+                    hotKeysTableLayoutPanel.RowStyles[r].Height = 24F;
+                }
+            }
             mainTableLayoutPanel.Controls.Add(hotKeysTableLayoutPanel, 0, 0);
             
             m_hotKeyItems = new HotKeyItem[m_newHotKeyOptions.keys.Length];
@@ -157,6 +168,7 @@ namespace AntiDupl.NET.WinForms
                 m_hotKeyItems[(int)HotKeyOptions.Action.CurrentDuplPairDeleteBoth].icon.Image = Resources.Images.Get("DeleteBothVerticalButton");
                 m_hotKeyItems[(int)HotKeyOptions.Action.CurrentDuplPairRenameFirstToSecond].icon.Image = Resources.Images.Get("RenameFirstToSecondVerticalButton");
                 m_hotKeyItems[(int)HotKeyOptions.Action.CurrentDuplPairRenameSecondToFirst].icon.Image = Resources.Images.Get("RenameSecondToFirstVerticalButton");
+                m_hotKeyItems[(int)HotKeyOptions.Action.ShowNeighbours].icon.Image = Resources.Images.Get("DuplPairVerticalIcon");
             }
             else if (m_options.resultsOptions.viewMode == ResultsOptions.ViewMode.HorizontalPairTable)
             {
@@ -166,8 +178,11 @@ namespace AntiDupl.NET.WinForms
                 m_hotKeyItems[(int)HotKeyOptions.Action.CurrentDuplPairDeleteBoth].icon.Image = Resources.Images.Get("DeleteBothHorizontalButton");
                 m_hotKeyItems[(int)HotKeyOptions.Action.CurrentDuplPairRenameFirstToSecond].icon.Image = Resources.Images.Get("RenameFirstToSecondHorizontalButton");
                 m_hotKeyItems[(int)HotKeyOptions.Action.CurrentDuplPairRenameSecondToFirst].icon.Image = Resources.Images.Get("RenameSecondToFirstHorizontalButton");
+                m_hotKeyItems[(int)HotKeyOptions.Action.ShowNeighbours].icon.Image = Resources.Images.Get("DuplPairHorizontalIcon");
             }
             m_hotKeyItems[(int)HotKeyOptions.Action.CurrentMistake].icon.Image = Resources.Images.Get("MistakeButton");
+            // Icon for external image diff
+            m_hotKeyItems[(int)HotKeyOptions.Action.OpenImageDiff].icon.Image = Resources.Images.Get("OpenExternDiffImagesButton.png");
         }
 
         private void UpdateStrings()
@@ -190,6 +205,7 @@ namespace AntiDupl.NET.WinForms
             m_hotKeyItems[(int)HotKeyOptions.Action.CurrentDuplPairRenameSecondToFirst].text.Text = s.ResultsPreviewDuplPair_RenameSecondToFirstButton_ToolTip_Text;
             m_hotKeyItems[(int)HotKeyOptions.Action.CurrentMistake].text.Text = s.ResultsPreviewDuplPair_MistakeButton_ToolTip_Text;
             m_hotKeyItems[(int)HotKeyOptions.Action.ShowNeighbours].text.Text = s.MainMenu_View_ShowNeighbourImageMenuItem_Text;
+            m_hotKeyItems[(int)HotKeyOptions.Action.OpenImageDiff].text.Text = s.ResultsPreviewDuplPair_ExternDiffImagesButton_ToolTip_Text;
         }
 
         private void OnButtonClick(object sender, EventArgs e)

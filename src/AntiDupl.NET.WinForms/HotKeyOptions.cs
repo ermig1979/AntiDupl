@@ -40,6 +40,7 @@ namespace AntiDupl.NET.WinForms
             CurrentDuplPairRenameSecondToFirst,
             CurrentMistake,
             ShowNeighbours,
+            OpenImageDiff,
             Size
         }
         
@@ -73,6 +74,7 @@ namespace AntiDupl.NET.WinForms
             keys[(int)Action.CurrentDuplPairRenameSecondToFirst] = Keys.NumPad6;
             keys[(int)Action.CurrentMistake] = Keys.NumPad5;
             keys[(int)Action.ShowNeighbours] = Keys.Control | Keys.Q;
+            keys[(int)Action.OpenImageDiff] = Keys.Control | Keys.D;
         }
 
         public void SetDefault(Action action)
@@ -94,6 +96,8 @@ namespace AntiDupl.NET.WinForms
                 keys[(int)Action.CurrentDuplPairRenameSecondToFirst] = Keys.NumPad6;
             if (action == Action.ShowNeighbours)
                 keys[(int)Action.ShowNeighbours] = Keys.Control | Keys.Q;
+            if (action == Action.OpenImageDiff)
+				keys[(int)Action.OpenImageDiff] = Keys.Control | Keys.D;
             /*for(Keys key = Keys.NumPad1; key < Keys.NumPad7; key++)
             {
                 keys[(int)action] = key;

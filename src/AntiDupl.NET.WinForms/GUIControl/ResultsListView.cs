@@ -359,6 +359,11 @@ namespace AntiDupl.NET.WinForms
                         MakeAction(CoreDll.LocalActionType.Mistake, CoreDll.TargetType.Current);
                     else if (hotKey == m_options.hotKeyOptions.keys[(int)HotKeyOptions.Action.ShowNeighbours])
                         m_options.resultsOptions.ShowNeighboursImages = !m_options.resultsOptions.ShowNeighboursImages;
+                    else if (hotKey == m_options.hotKeyOptions.keys[(int)HotKeyOptions.Action.OpenImageDiff])
+                    {
+                        var result = m_results[m_currentRowIndex];
+                        ImageDiffOpener.OpenFiles(result.first.path, result.second.path, m_options.imageDiffExecutablePath, m_options.imageDiffExecutableArguments);
+                    }
                     return;
                 }
             }
