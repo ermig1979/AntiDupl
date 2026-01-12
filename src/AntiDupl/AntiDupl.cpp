@@ -384,6 +384,40 @@ DLLAPI adError adPathWithSubFolderSetW(adEngineHandle handle, adPathType pathTyp
 	}
 }
 
+DLLAPI adError adIgnoreFilenameFilterSetW(adEngineHandle handle, const wchar_t* pFilter)
+{
+	CHECK_HANDLE CHECK_ACCESS LOCK
+
+	if(pFilter == NULL)
+		return AD_ERROR_INVALID_POINTER;
+
+	ad::TOptions *pOptions = handle->Options();
+	pOptions->ignoreFilenameFilter = pFilter;
+
+	return AD_OK;
+}
+
+DLLAPI adError adIgnoreFilenameFilterGetW(adEngineHandle handle, wchar_t* pFilter, adSize bufferSize, adSizePtr pFilterSize)
+{
+	CHECK_HANDLE CHECK_ACCESS
+
+	if(pFilter == NULL || pFilterSize == NULL)
+		return AD_ERROR_INVALID_POINTER;
+
+	ad::TOptions *pOptions = handle->Options();
+	const wchar_t* pFilterValue = pOptions->ignoreFilenameFilter.c_str();
+	size_t filterLen = pOptions->ignoreFilenameFilter.length();
+
+	*pFilterSize = (adSize)filterLen + 1;
+
+	if(filterLen + 1 > bufferSize)
+		return AD_ERROR_OUTPUT_BUFFER_IS_TOO_SMALL;
+
+	wmemcpy(pFilter, pFilterValue, filterLen + 1);
+
+	return AD_OK;
+}
+
 DLLAPI adError adStatisticGet(adEngineHandle handle, adStatisticPtr pStatistic)
 {
     CHECK_HANDLE

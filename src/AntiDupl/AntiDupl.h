@@ -624,6 +624,9 @@ extern "C"
     DLLAPI adError adPathSetA(adEngineHandle handle, adPathType pathType, adPathPtrA pPath, adSize pathSize);
     DLLAPI adError adPathSetW(adEngineHandle handle, adPathType pathType, adPathPtrW pPath, adSize pathSize);
 
+    DLLAPI adError adIgnoreFilenameFilterSetW(adEngineHandle handle, const wchar_t* pFilter);
+    DLLAPI adError adIgnoreFilenameFilterGetW(adEngineHandle handle, wchar_t* pFilter, adSize bufferSize, adSizePtr pFilterSize);
+
     DLLAPI adError adStatisticGet(adEngineHandle handle, adStatisticPtr pStatistic);
     DLLAPI adError adStatusGetA(adEngineHandle handle, adThreadType threadType, adSize threadId, adStatusPtrA pStatus);
     DLLAPI adError adStatusGetW(adEngineHandle handle, adThreadType threadType, adSize threadId, adStatusPtrW pStatus);

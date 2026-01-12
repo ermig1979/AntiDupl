@@ -144,6 +144,7 @@ namespace AntiDupl.NET.WinForms
             s.CorePathsForm_AddFilesButton_Text = "Добавить файлы";
             s.CorePathsForm_ChangeButton_Text = "Изменить";
             s.CorePathsForm_RemoveButton_Text = "Убрать";
+            s.CorePathsForm_IgnoreFilenameFilter_Text = "Фильтр имен файлов (Regex):";
             s.CorePathsForm_SearchCheckedListBox_ToolTip_Text = "Установленный флажок означает поиск внутри поддиректорий указанной директории.";
 
             s.ProgressUtils_Completed = "завершено {0}%";

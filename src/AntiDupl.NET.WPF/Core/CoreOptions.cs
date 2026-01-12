@@ -45,6 +45,7 @@ namespace AntiDupl.NET.WPF.Core
         public CorePathWithSubFolder[] ignorePath;
         public CorePathWithSubFolder[] validPath;
         public CorePathWithSubFolder[] deletePath;
+        public string ignoreFilenameFilter; // Regular expression pattern to filter files
 
         public CoreOptions()
         {
@@ -57,6 +58,7 @@ namespace AntiDupl.NET.WPF.Core
             ignorePath = new CorePathWithSubFolder[0];
             validPath = new CorePathWithSubFolder[0];
             deletePath = new CorePathWithSubFolder[0];
+            ignoreFilenameFilter = "";
         }
 
         public CoreOptions(CoreLib core, bool onePath)
@@ -81,6 +83,7 @@ namespace AntiDupl.NET.WPF.Core
             ignorePath = PathClone(options.ignorePath);
             validPath = PathClone(options.validPath);
             deletePath = PathClone(options.deletePath);
+            ignoreFilenameFilter = options.ignoreFilenameFilter ?? "";
         }
 
         public void SetDefault(CoreLib core, bool onePath)
@@ -113,6 +116,7 @@ namespace AntiDupl.NET.WPF.Core
                 validPath = core.validPath;
                 deletePath = core.deletePath;
             }
+            ignoreFilenameFilter = core.ignoreFilenameFilter ?? "";
         }
 
         /// <summary>
@@ -145,6 +149,7 @@ namespace AntiDupl.NET.WPF.Core
                 core.ignorePath = ignorePath;
                 core.validPath = validPath;
                 core.deletePath = deletePath;
+                core.ignoreFilenameFilter = ignoreFilenameFilter ?? "";
             }
         }
 
@@ -170,6 +175,7 @@ namespace AntiDupl.NET.WPF.Core
             PathCopy(ignorePath, ref options.ignorePath);
             PathCopy(validPath, ref options.validPath);
             PathCopy(deletePath, ref options.deletePath);
+            options.ignoreFilenameFilter = ignoreFilenameFilter ?? "";
         }
 
         public static void PathCopy(string[] source, ref string[] destination)

@@ -66,6 +66,8 @@ namespace ad
         TPathContainer validPaths;
         TPathContainer deletePaths;
 
+        TString ignoreFilenameFilter; // Regular expression pattern to filter files in ignore paths
+
         adSearchOptions search;
         adCompareOptions compare;
         adDefectOptions defect;

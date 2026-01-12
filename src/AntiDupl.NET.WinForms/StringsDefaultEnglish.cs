@@ -144,6 +144,7 @@ namespace AntiDupl.NET.WinForms
             s.CorePathsForm_AddFilesButton_Text = "Add Files";
             s.CorePathsForm_ChangeButton_Text = "Change";
             s.CorePathsForm_RemoveButton_Text = "Remove";
+            s.CorePathsForm_IgnoreFilenameFilter_Text = "Filename Filter (Regex):";
             s.CorePathsForm_SearchCheckedListBox_ToolTip_Text = "Checked box mean search inside subdirectories this directories.";
 
             s.ProgressUtils_Completed = "{0}% completed";

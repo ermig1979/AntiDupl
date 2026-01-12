@@ -56,6 +56,8 @@ namespace AntiDupl.NET.WinForms
         private CheckedListBox m_searchCheckedList;
         private TabPage m_ignoreTabPage;
         private ListBox m_ignoreListBox;
+        private Label m_ignoreFilterLabel;
+        private TextBox m_ignoreFilterTextBox;
         private TabPage m_validTabPage;
         private ListBox m_validListBox;
         private TabPage m_deleteTabPage;
@@ -71,6 +73,7 @@ namespace AntiDupl.NET.WinForms
             InitializeComponent();
             UpdateStrings();
             UpdatePath();
+            m_ignoreFilterTextBox.Text = m_newCoreOptions.ignoreFilenameFilter ?? "";
             UpdateButtonEnabling();
         }
 
@@ -119,8 +122,32 @@ namespace AntiDupl.NET.WinForms
             m_ignoreTabPage.Tag = CoreDll.PathType.Ignore;
             m_tabControl.Controls.Add(m_ignoreTabPage);
 
+            TableLayoutPanel ignoreLayout = InitFactory.Layout.Create(1, 2, 5);
+            ignoreLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 80F));
+            ignoreLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 35F));
+            m_ignoreTabPage.Controls.Add(ignoreLayout);
+
             m_ignoreListBox = InitFactory.ListBox.Create(OnSelectedIndexChanged, OnListBoxDoubleClick);
-            m_ignoreTabPage.Controls.Add(m_ignoreListBox);
+            m_ignoreListBox.Dock = DockStyle.Fill;
+            ignoreLayout.Controls.Add(m_ignoreListBox, 0, 0);
+
+            TableLayoutPanel filterLayout = InitFactory.Layout.Create(2, 1);
+            filterLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 160F));
+            filterLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            filterLayout.Dock = DockStyle.Fill;
+            ignoreLayout.Controls.Add(filterLayout, 0, 1);
+
+            m_ignoreFilterLabel = new Label();
+            m_ignoreFilterLabel.AutoSize = true;
+            m_ignoreFilterLabel.Anchor = AnchorStyles.Left;
+            m_ignoreFilterLabel.Margin = new Padding(3);
+            filterLayout.Controls.Add(m_ignoreFilterLabel, 0, 0);
+
+            m_ignoreFilterTextBox = new TextBox();
+            m_ignoreFilterTextBox.Dock = DockStyle.Fill;
+            m_ignoreFilterTextBox.Margin = new Padding(3);
+            m_ignoreFilterTextBox.TextChanged += new EventHandler(OnIgnoreFilterTextChanged);
+            filterLayout.Controls.Add(m_ignoreFilterTextBox, 1, 0);
 
             m_validTabPage = new TabPage();
             m_validTabPage.Tag = CoreDll.PathType.Valid;
@@ -202,6 +229,7 @@ namespace AntiDupl.NET.WinForms
             m_addFolderButton.Text = s.CorePathsForm_AddFolderButton_Text;
             m_changeButton.Text = s.CorePathsForm_ChangeButton_Text;
             m_removeButton.Text = s.CorePathsForm_RemoveButton_Text;
+            m_ignoreFilterLabel.Text = s.CorePathsForm_IgnoreFilenameFilter_Text;
         }
 
         /// <summary>
@@ -480,6 +508,11 @@ namespace AntiDupl.NET.WinForms
         private void OnItemCheck(object sender, ItemCheckEventArgs e)
         {
             UpdateSubFolderOptions(e);
+        }
+
+        private void OnIgnoreFilterTextChanged(object sender, EventArgs e)
+        {
+            m_newCoreOptions.ignoreFilenameFilter = m_ignoreFilterTextBox.Text ?? "";
         }
 
         private void UpdateSubFolderOptions(ItemCheckEventArgs e)

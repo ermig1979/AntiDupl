@@ -638,6 +638,47 @@ namespace AntiDupl.NET.Core
             }
         }
 
+        public string ignoreFilenameFilter
+        {
+            get
+            {
+                try
+                {
+                    const int MAX_FILTER_SIZE = 1024;
+                    char[] filterBuffer = new char[MAX_FILTER_SIZE];
+                    IntPtr[] pFilterSize = new IntPtr[1];
+                    
+                    GCHandle bufferH = GCHandle.Alloc(filterBuffer, GCHandleType.Pinned);
+                    try
+                    {
+                        IntPtr bufferPtr = bufferH.AddrOfPinnedObject();
+                        IntPtr pFilterSizePtr = Marshal.UnsafeAddrOfPinnedArrayElement(pFilterSize, 0);
+                        
+                        if (m_dll.adIgnoreFilenameFilterGetW(m_handle, bufferPtr, new IntPtr(MAX_FILTER_SIZE), pFilterSizePtr) == Error.Ok)
+                        {
+                            int filterLen = pFilterSize[0].ToInt32();
+                            if (filterLen > 0 && filterLen <= MAX_FILTER_SIZE)
+                            {
+                                return new string(filterBuffer, 0, filterLen - 1);
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        bufferH.Free();
+                    }
+                }
+                catch (Exception)
+                {
+                }
+                return "";
+            }
+            set
+            {
+                m_dll.adIgnoreFilenameFilterSetW(m_handle, value ?? "");
+            }
+        }
+
 #endregion
 
         //-----------Private functions:--------------------------------------------

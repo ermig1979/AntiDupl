@@ -44,6 +44,7 @@ namespace AntiDupl.NET.WinForms
         public CorePathWithSubFolder[] ignorePath;
         public CorePathWithSubFolder[] validPath;
         public CorePathWithSubFolder[] deletePath;
+        public string ignoreFilenameFilter; // Regular expression pattern to filter files in ignore paths
 
         public CoreOptions()
         {
@@ -56,6 +57,7 @@ namespace AntiDupl.NET.WinForms
             ignorePath = new CorePathWithSubFolder[0];
             validPath = new CorePathWithSubFolder[0];
             deletePath = new CorePathWithSubFolder[0];
+            ignoreFilenameFilter = "";
         }
 
         public CoreOptions(CoreLib core, bool onePath)
@@ -80,6 +82,7 @@ namespace AntiDupl.NET.WinForms
             ignorePath = PathClone(options.ignorePath);
             validPath = PathClone(options.validPath);
             deletePath = PathClone(options.deletePath);
+            ignoreFilenameFilter = options.ignoreFilenameFilter ?? "";
         }
 
         public void SetDefault(CoreLib core, bool onePath)
@@ -112,6 +115,7 @@ namespace AntiDupl.NET.WinForms
                 validPath = core.validPath;
                 deletePath = core.deletePath;
             }
+            ignoreFilenameFilter = core.ignoreFilenameFilter ?? "";
         }
 
         /// <summary>
@@ -144,6 +148,7 @@ namespace AntiDupl.NET.WinForms
                 core.ignorePath = ignorePath;
                 core.validPath = validPath;
                 core.deletePath = deletePath;
+                core.ignoreFilenameFilter = ignoreFilenameFilter ?? "";
             }
         }
 
@@ -169,6 +174,7 @@ namespace AntiDupl.NET.WinForms
             PathCopy(ignorePath, ref options.ignorePath);
             PathCopy(validPath, ref options.validPath);
             PathCopy(deletePath, ref options.deletePath);
+            options.ignoreFilenameFilter = ignoreFilenameFilter ?? "";
         }
 
         public static void PathCopy(string[] source, ref string[] destination)
@@ -226,6 +232,8 @@ namespace AntiDupl.NET.WinForms
             if (!Equals(validPath, options.validPath))
                 return false;
             if (!Equals(deletePath, options.deletePath))
+                return false;
+            if (ignoreFilenameFilter != options.ignoreFilenameFilter)
                 return false;
 
             return true;

@@ -515,6 +515,16 @@ namespace AntiDupl.NET.Core.Original
         public adPathSetW_fn adPathSetW = null;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+        public delegate Error adIgnoreFilenameFilterSetW_fn(IntPtr handle, string filter);
+        [DynamicModuleApi]
+        public adIgnoreFilenameFilterSetW_fn adIgnoreFilenameFilterSetW = null;
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+        public delegate Error adIgnoreFilenameFilterGetW_fn(IntPtr handle, IntPtr pFilter, IntPtr bufferSize, IntPtr pFilterSize);
+        [DynamicModuleApi]
+        public adIgnoreFilenameFilterGetW_fn adIgnoreFilenameFilterGetW = null;
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
         public delegate Error adStatisticGet_fn(IntPtr handle, IntPtr pStatistic);
         [DynamicModuleApi]
         public adStatisticGet_fn adStatisticGet = null;

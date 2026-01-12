@@ -74,6 +74,7 @@ namespace ad
         , ignorePaths(TEXT("IgnorePaths"))
         , validPaths(TEXT("ValidPaths"))
         , deletePaths(TEXT("DeletePaths"))
+        , ignoreFilenameFilter(TEXT(""))
     {
         m_options.push_back(TOption(&search.system, TEXT("SearchOptions"), TEXT("System"), FALSE, FALSE, TRUE));
         m_options.push_back(TOption(&search.hidden, TEXT("SearchOptions"), TEXT("Hidden"), FALSE, FALSE, TRUE));
@@ -224,6 +225,9 @@ namespace ad
         validPaths.Load(path.c_str());
         deletePaths.Load(path.c_str());
 
+        TIniFile iniFile(path.c_str(), TEXT("IgnorePaths"));
+        ignoreFilenameFilter = iniFile.ReadString(TEXT("FilenameFilter"), TEXT(""));
+
         for(TOptionsList::iterator it = m_options.begin();  it != m_options.end(); ++it)
             it->Load(path.c_str());
 
@@ -246,6 +250,9 @@ namespace ad
         result = result && ignorePaths.Save(path.c_str());
         result = result && validPaths.Save(path.c_str());
         result = result && deletePaths.Save(path.c_str());
+
+        TIniFile iniFile(path.c_str(), TEXT("IgnorePaths"));
+        result = result && iniFile.WriteString(TEXT("FilenameFilter"), ignoreFilenameFilter.c_str());
 
         for(TOptionsList::const_iterator it = m_options.begin();  it != m_options.end(); ++it)
             result = result && it->Save(path.c_str());
