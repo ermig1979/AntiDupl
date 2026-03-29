@@ -52,11 +52,36 @@ namespace AntiDupl.NET.WinForms
 
         static public string GetDefaultUserPath()
         {
-            return CreateIfNotExists(string.Format("{0}\\user", Application.LocalUserAppDataPath));
+#if PUBLISH
+            return CreateIfNotExists(System.IO.Path.Combine(Application.StartupPath, "user"));
+#else
+            try
+            {
+                return CreateIfNotExists(System.IO.Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "AntiDupl.NET", "user"));
+            }
+            catch
+            {
+                return CreateIfNotExists(System.IO.Path.Combine(Application.StartupPath, "user"));
+            }
+#endif
         }
 
         static private string m_userPath = null;
         static public string UserPath { get { return m_userPath; } set { m_userPath = value; } }
+
+        static public string ProductName
+        {
+            get
+            {
+#if PUBLISH
+                return Application.ProductName + " (Portable)";
+#else
+                return Application.ProductName;
+#endif
+            }
+        }
 
         static public string ProfilesPath { get { return CreateIfNotExists(string.Format("{0}\\profiles", UserPath)); } }
 

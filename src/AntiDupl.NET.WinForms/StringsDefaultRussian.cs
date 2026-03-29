@@ -133,7 +133,7 @@ namespace AntiDupl.NET.WinForms
 
             s.CoreOptionsForm_ImageDiffTabPage_Text = "Разница изображений инструмент";
             s.CoreOptionsForm_ImageDiffExecutablePathLabeledStringEdit_Text = "Исполняемый путь:";
-            s.CoreOptionsForm_ImageDiffExecutableArgumentsLabeledStringEdit_Text = "Исполняемые аргументы (данные %1 %2):";
+            s.CoreOptionsForm_ImageDiffExecutableArgumentsLabeledStringEdit_Text = "Исполняемые аргументы (данные \"%1\" \"%2\"):";
 
             s.CorePathsForm_Text = "Пути";
             s.CorePathsForm_SearchTabPage_Text = "Искать";

@@ -33,6 +33,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Publish|x64'">
+    <DefineConstants>$(DefineConstants);PUBLISH</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <BaseOutputPath>..\..\bin\Publish\</BaseOutputPath>
     <OutputPath>..\..\bin\Publish\</OutputPath>

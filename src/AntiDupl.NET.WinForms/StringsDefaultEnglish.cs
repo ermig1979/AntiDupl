@@ -133,7 +133,7 @@ namespace AntiDupl.NET.WinForms
 
             s.CoreOptionsForm_ImageDiffTabPage_Text = "Image Difftool";
             s.CoreOptionsForm_ImageDiffExecutablePathLabeledStringEdit_Text = "Executable path:";
-            s.CoreOptionsForm_ImageDiffExecutableArgumentsLabeledStringEdit_Text = "Executable arguments (given by %1 %2):";
+            s.CoreOptionsForm_ImageDiffExecutableArgumentsLabeledStringEdit_Text = "Executable arguments (given by \"%1\" \"%2\"):";
 
             s.CorePathsForm_Text = "Paths";
             s.CorePathsForm_SearchTabPage_Text = "Search";

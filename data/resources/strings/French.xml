@@ -85,7 +85,7 @@
   <CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text>Épaisseur du stylo</CoreOptionsForm_PenThicknessLabeledIntegerEdit_Text>
   <CoreOptionsForm_ImageDiffTabPage_Text>Outil diff d'images</CoreOptionsForm_ImageDiffTabPage_Text>
   <CoreOptionsForm_ImageDiffExecutablePathLabeledStringEdit_Text>Chemin d'accès à l'exécutable:</CoreOptionsForm_ImageDiffExecutablePathLabeledStringEdit_Text>
-  <CoreOptionsForm_ImageDiffExecutableArgumentsLabeledStringEdit_Text>Arguments exécutables (donnés par %1 %2):</CoreOptionsForm_ImageDiffExecutableArgumentsLabeledStringEdit_Text>
+  <CoreOptionsForm_ImageDiffExecutableArgumentsLabeledStringEdit_Text>Arguments exécutables (donnés par "%1" "%2"):</CoreOptionsForm_ImageDiffExecutableArgumentsLabeledStringEdit_Text>
   <CorePathsForm_Text>Chemins</CorePathsForm_Text>
   <CorePathsForm_SearchTabPage_Text>Recherche</CorePathsForm_SearchTabPage_Text>
   <CorePathsForm_IgnoreTabPage_Text>Ignorés</CorePathsForm_IgnoreTabPage_Text>

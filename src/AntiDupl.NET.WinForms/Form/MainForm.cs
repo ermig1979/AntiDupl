@@ -154,7 +154,7 @@ namespace AntiDupl.NET.WinForms
 
         public void UpdateCaption()
         {
-            Text = string.Format("{0} - {1}", Application.ProductName, Path.GetFileNameWithoutExtension(m_options.coreOptionsFileName));
+            Text = string.Format("{0} - {1}", Resources.ProductName, Path.GetFileNameWithoutExtension(m_options.coreOptionsFileName));
         }
     }
 }

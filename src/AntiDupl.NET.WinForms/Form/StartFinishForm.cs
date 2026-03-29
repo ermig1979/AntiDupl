@@ -167,12 +167,12 @@ namespace AntiDupl.NET.WinForms
             else if(m_state == State.ViewStart)
             {
                 m_progressBar.Visible = false;
-                Text = Application.ProductName;
+                Text = Resources.ProductName;
             }
             else
             {
                 StringBuilder builder = new StringBuilder();
-                builder.Append(Application.ProductName);
+                builder.Append(Resources.ProductName);
                 builder.Append(" - ");
 
                 Strings s = Resources.Strings.Current;
