@@ -319,6 +319,10 @@ namespace AntiDupl.NET.WinForms
         /// <param name="hotKey"></param>
         private void MakeAction(Keys hotKey)
         {
+            KeyEventArgs keyEventArgs = new KeyEventArgs(hotKey);
+            if (keyEventArgs.KeyCode == Keys.ShiftKey || keyEventArgs.KeyCode == Keys.ControlKey || keyEventArgs.KeyCode == Keys.Menu)
+                return;
+
             if (hotKey == (Keys.Z | Keys.Control) && m_core.CanApply(CoreDll.ActionEnableType.Undo))
             {
                 ProgressForm progressForm = new ProgressForm(ProgressForm.Type.Undo, m_core, m_options, m_coreOptions, m_mainSplitContainer);
@@ -337,29 +341,29 @@ namespace AntiDupl.NET.WinForms
             {
                 if (m_results[m_currentRowIndex].type == CoreDll.ResultType.DefectImage)
                 {
-                    if (hotKey == m_options.hotKeyOptions.keys[(int)HotKeyOptions.Action.CurrentDefectDelete])
+                    if (hotKey == m_options.hotKeyOptions.Get(HotKeyOptions.Action.CurrentDefectDelete))
                         MakeAction(CoreDll.LocalActionType.DeleteDefect, CoreDll.TargetType.Current);
-                    else if (hotKey == m_options.hotKeyOptions.keys[(int)HotKeyOptions.Action.CurrentMistake])
+                    else if (hotKey == m_options.hotKeyOptions.Get(HotKeyOptions.Action.CurrentMistake))
                         MakeAction(CoreDll.LocalActionType.Mistake, CoreDll.TargetType.Current);
                     return;
                 }
                 if (m_results[m_currentRowIndex].type == CoreDll.ResultType.DuplImagePair)
                 {
-                    if (hotKey == m_options.hotKeyOptions.keys[(int)HotKeyOptions.Action.CurrentDuplPairDeleteFirst])
+                    if (hotKey == m_options.hotKeyOptions.Get(HotKeyOptions.Action.CurrentDuplPairDeleteFirst))
                         MakeAction(CoreDll.LocalActionType.DeleteFirst, CoreDll.TargetType.Current);
-                    else if (hotKey == m_options.hotKeyOptions.keys[(int)HotKeyOptions.Action.CurrentDuplPairDeleteSecond])
+                    else if (hotKey == m_options.hotKeyOptions.Get(HotKeyOptions.Action.CurrentDuplPairDeleteSecond))
                         MakeAction(CoreDll.LocalActionType.DeleteSecond, CoreDll.TargetType.Current);
-                    else if (hotKey == m_options.hotKeyOptions.keys[(int)HotKeyOptions.Action.CurrentDuplPairDeleteBoth])
+                    else if (hotKey == m_options.hotKeyOptions.Get(HotKeyOptions.Action.CurrentDuplPairDeleteBoth))
                         MakeAction(CoreDll.LocalActionType.DeleteBoth, CoreDll.TargetType.Current);
-                    else if (hotKey == m_options.hotKeyOptions.keys[(int)HotKeyOptions.Action.CurrentDuplPairRenameFirstToSecond])
+                    else if (hotKey == m_options.hotKeyOptions.Get(HotKeyOptions.Action.CurrentDuplPairRenameFirstToSecond))
                         MakeAction(CoreDll.LocalActionType.RenameFirstToSecond, CoreDll.TargetType.Current);
-                    else if (hotKey == m_options.hotKeyOptions.keys[(int)HotKeyOptions.Action.CurrentDuplPairRenameSecondToFirst])
+                    else if (hotKey == m_options.hotKeyOptions.Get(HotKeyOptions.Action.CurrentDuplPairRenameSecondToFirst))
                         MakeAction(CoreDll.LocalActionType.RenameSecondToFirst, CoreDll.TargetType.Current);
-                    else if (hotKey == m_options.hotKeyOptions.keys[(int)HotKeyOptions.Action.CurrentMistake])
+                    else if (hotKey == m_options.hotKeyOptions.Get(HotKeyOptions.Action.CurrentMistake))
                         MakeAction(CoreDll.LocalActionType.Mistake, CoreDll.TargetType.Current);
-                    else if (hotKey == m_options.hotKeyOptions.keys[(int)HotKeyOptions.Action.ShowNeighbours])
+                    else if (hotKey == m_options.hotKeyOptions.Get(HotKeyOptions.Action.ShowNeighbours))
                         m_options.resultsOptions.ShowNeighboursImages = !m_options.resultsOptions.ShowNeighboursImages;
-                    else if (hotKey == m_options.hotKeyOptions.keys[(int)HotKeyOptions.Action.OpenImageDiff])
+                    else if (hotKey == m_options.hotKeyOptions.Get(HotKeyOptions.Action.OpenImageDiff))
                     {
                         var result = m_results[m_currentRowIndex];
                         ImageDiffOpener.OpenFiles(result.first.path, result.second.path, m_options.imageDiffExecutablePath, m_options.imageDiffExecutableArguments);

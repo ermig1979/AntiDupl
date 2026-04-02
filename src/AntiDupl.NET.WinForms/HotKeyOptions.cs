@@ -55,13 +55,35 @@ namespace AntiDupl.NET.WinForms
         public HotKeyOptions(HotKeyOptions options)
         {
             keys = new Keys[(int)Action.Size];
-            if (options.keys.Length == (int)Action.Size)
+            SetDefault();
+            if (options != null && options.keys != null)
             {
-                for (int i = 0; i < keys.Length; ++i)
+                for (int i = 0; i < Math.Min(options.keys.Length, keys.Length); ++i)
                     keys[i] = options.keys[i];
             }
-            else
-                SetDefault();
+        }
+
+        public void Check()
+        {
+            int size = (int)Action.Size;
+            if (keys != null && keys.Length == size)
+                return;
+
+            Keys[] previous = keys;
+            keys = new Keys[size];
+            SetDefault();
+
+            if (previous != null)
+            {
+                for (int i = 0; i < Math.Min(previous.Length, size); ++i)
+                    keys[i] = previous[i];
+            }
+        }
+
+        public Keys Get(Action action)
+        {
+            Check();
+            return keys[(int)action];
         }
         
         public void SetDefault()
