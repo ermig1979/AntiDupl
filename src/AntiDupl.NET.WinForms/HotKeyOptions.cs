@@ -48,19 +48,14 @@ namespace AntiDupl.NET.WinForms
         
         public HotKeyOptions()
         {
-            keys = new Keys[(int)Action.Size];
-            SetDefault();
+            keys = null;
+            Check();
         }
     
         public HotKeyOptions(HotKeyOptions options)
         {
-            keys = new Keys[(int)Action.Size];
-            SetDefault();
-            if (options != null && options.keys != null)
-            {
-                for (int i = 0; i < Math.Min(options.keys.Length, keys.Length); ++i)
-                    keys[i] = options.keys[i];
-            }
+            keys = options != null && options.keys != null ? (Keys[])options.keys.Clone() : null;
+            Check();
         }
 
         public void Check()
@@ -71,13 +66,42 @@ namespace AntiDupl.NET.WinForms
 
             Keys[] previous = keys;
             keys = new Keys[size];
-            SetDefault();
 
             if (previous != null)
             {
                 for (int i = 0; i < Math.Min(previous.Length, size); ++i)
                     keys[i] = previous[i];
             }
+
+            EnsureDefaultIfEmpty(Action.CurrentDefectDelete, Keys.NumPad1);
+            EnsureDefaultIfEmpty(Action.CurrentDuplPairDeleteFirst, Keys.NumPad1);
+            EnsureDefaultIfEmpty(Action.CurrentDuplPairDeleteSecond, Keys.NumPad2);
+            EnsureDefaultIfEmpty(Action.CurrentDuplPairDeleteBoth, Keys.NumPad3);
+            EnsureDefaultIfEmpty(Action.CurrentDuplPairRenameFirstToSecond, Keys.NumPad4);
+            EnsureDefaultIfEmpty(Action.CurrentDuplPairRenameSecondToFirst, Keys.NumPad6);
+            EnsureDefaultIfEmpty(Action.CurrentMistake, Keys.NumPad5);
+            EnsureDefaultIfEmpty(Action.ShowNeighbours, Keys.Control | Keys.Q);
+            EnsureDefaultIfEmpty(Action.OpenImageDiff, Keys.Control | Keys.D);
+        }
+
+        private void EnsureDefaultIfEmpty(Action action, Keys defaultKey)
+        {
+            int index = (int)action;
+            if (keys[index] == Keys.None && !IsKeyUsed(defaultKey, action))
+                keys[index] = defaultKey;
+        }
+
+        private bool IsKeyUsed(Keys key, Action exceptAction)
+        {
+            if (key == Keys.None)
+                return false;
+
+            for (int i = 0; i < keys.Length; ++i)
+            {
+                if (i != (int)exceptAction && keys[i] == key)
+                    return true;
+            }
+            return false;
         }
 
         public Keys Get(Action action)
@@ -88,6 +112,7 @@ namespace AntiDupl.NET.WinForms
         
         public void SetDefault()
         {
+            keys = new Keys[(int)Action.Size];
             keys[(int)Action.CurrentDefectDelete] = Keys.NumPad1;
             keys[(int)Action.CurrentDuplPairDeleteFirst] = Keys.NumPad1;
             keys[(int)Action.CurrentDuplPairDeleteSecond] = Keys.NumPad2;
@@ -130,6 +155,8 @@ namespace AntiDupl.NET.WinForms
         
         public void CopyTo(ref HotKeyOptions options)
         {
+            Check();
+            options.Check();
             if (keys.Length != options.keys.Length)
                 options.keys = new Keys[(int)Action.Size];
             for (int i = 0; i < keys.Length; ++i)
@@ -138,6 +165,10 @@ namespace AntiDupl.NET.WinForms
 
         public bool Equals(HotKeyOptions options)
         {
+            Check();
+            if (options == null)
+                return false;
+            options.Check();
             if (keys.Length != options.keys.Length)
                 return false;
             for (int i = 0; i < keys.Length; ++i)
@@ -148,6 +179,7 @@ namespace AntiDupl.NET.WinForms
 
         public bool Valid(Action action)
         {
+            Check();
             KeyEventArgs key = new KeyEventArgs(keys[(int)action]);
             if(key.KeyData == Keys.None)
             {
