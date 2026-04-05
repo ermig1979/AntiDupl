@@ -247,8 +247,19 @@ namespace ad
         const Match* matches = (const Match*)batch;
 
         for (size_t i = 0; i < count; i++) {
+            // Проверяем индексы на валидность
+            if (matches[i].image1 >= ctx->imageByIndex->size() || 
+                matches[i].image2 >= ctx->imageByIndex->size()) {
+                continue;
+            }
+            
             TImageDataPtr pImage1 = ctx->imageByIndex->at(matches[i].image1);
             TImageDataPtr pImage2 = ctx->imageByIndex->at(matches[i].image2);
+            
+            // Пропускаем пары с nullptr (изображения без данных)
+            if (!pImage1 || !pImage2) {
+                continue;
+            }
 
             ctx->engine->Result()->AddDuplImagePair(pImage1, pImage2, matches[i].difference, AD_TRANSFORM_TURN_0);
             ctx->totalProcessed++;
