@@ -37,6 +37,7 @@
 #include "adLogger.h"
 #include "adFileUtils.h"
 #include "adGPUManager.h"
+#include "adGPU.h"
 #include "adStatus.h"
 #include <windows.h>
 #include <vector>
@@ -230,7 +231,31 @@ namespace ad
         AD_DEBUG("UpdateGpuDatabase: Finished\n");
     }
 
-    // NEW: GPU AllVsAll comparison
+    // Структура для контекста callback
+    struct MatchProcessContext {
+        TEngine* engine;
+        const std::vector<TImageDataPtr>* imageByIndex;
+        size_t thumbSize;
+        double maxDifference;
+        size_t totalProcessed;
+        size_t bufferFullCount;
+    };
+
+    // Callback функция для streaming обработки matches
+    static void MatchCallback(const void* batch, size_t count, void* context) {
+        MatchProcessContext* ctx = (MatchProcessContext*)context;
+        const Match* matches = (const Match*)batch;
+
+        for (size_t i = 0; i < count; i++) {
+            TImageDataPtr pImage1 = ctx->imageByIndex->at(matches[i].image1);
+            TImageDataPtr pImage2 = ctx->imageByIndex->at(matches[i].image2);
+
+            ctx->engine->Result()->AddDuplImagePair(pImage1, pImage2, matches[i].difference, AD_TRANSFORM_TURN_0);
+            ctx->totalProcessed++;
+        }
+    }
+
+    // NEW: GPU AllVsAll comparison с streaming processing
     void TEngine::ExecuteGpuAllVsAllComparison()
     {
         AD_DEBUG("ExecuteGpuAllVsAllComparison: Starting\n");
@@ -252,8 +277,10 @@ namespace ad
 
         AD_DEBUG_FMT("ExecuteGpuAllVsAllComparison: Preparing data for %zu images\n", count);
 
-        // Собираем все thumbnails в один массив
+        // Собираем все thumbnails и CRC в один проход
         std::vector<uint8_t> allThumbnails(count * thumbSize);
+        std::vector<uint64_t> allCrcArray(count);
+        std::vector<TImageDataPtr> imageByIndex(count);
         size_t validCount = 0;
 
         size_t idx = 0;
@@ -261,67 +288,63 @@ namespace ad
             TImageDataPtr pImageData = it->second;
             if (pImageData->data && pImageData->data->filled && pImageData->data->main != nullptr) {
                 memcpy(&allThumbnails[idx * thumbSize], pImageData->data->main, thumbSize);
+                allCrcArray[idx] = pImageData->crc32c;
+                imageByIndex[idx] = pImageData;
                 validCount++;
             }
         }
 
         AD_DEBUG_FMT("ExecuteGpuAllVsAllComparison: %zu valid thumbnails\n", validCount);
 
-        // Создаём vector для O(1) доступа по индексу (вместо O(N) std::advance)
-        std::vector<TImageDataPtr> imageByIndex(count);
-        idx = 0;
-        for (TImageDataStorage::TStorage::const_iterator it = storage.begin(); it != storage.end(); ++it, ++idx) {
-            TImageDataPtr pImageData = it->second;
-            if (pImageData->data && pImageData->data->filled && pImageData->data->main != nullptr) {
-                imageByIndex[idx] = pImageData;
-            }
-        }
-
-        // Вычисляем threshold как в оригинальном TImageComparer
+        // Вычисляем threshold и maxDifference как в оригинальном TImageComparer
         int thresholdPerPixel = Simd::Square(m_pOptions->compare.thresholdDifference * PIXEL_MAX_DIFFERENCE) /
             Simd::Square(DENOMINATOR);
         int mainThreshold = (int)(thumbSize * thresholdPerPixel);
         double threshold = (double)mainThreshold;
+        double maxDifference = (double)(Simd::Square(PIXEL_MAX_DIFFERENCE) * thumbSize);
 
-        AD_DEBUG_FMT("ExecuteGpuAllVsAllComparison: thresholdPerPixel=%d, mainThreshold=%d, threshold=%f\n",
-                     thresholdPerPixel, mainThreshold, threshold);
+        AD_DEBUG_FMT("ExecuteGpuAllVsAllComparison: threshold=%f, maxDifference=%f\n", threshold, maxDifference);
 
-        // Выделяем память для результатов (предполагаем ~5% дубликатов)
-        size_t maxMatches = count * (count - 1) / 2;
-        if (maxMatches > 10000000) maxMatches = 10000000; // Ограничиваем 10M
+        // Streaming processing context
+        MatchProcessContext ctx;
+        ctx.engine = this;
+        ctx.imageByIndex = &imageByIndex;
+        ctx.thumbSize = thumbSize;
+        ctx.maxDifference = maxDifference;
+        ctx.totalProcessed = 0;
+        ctx.bufferFullCount = 0;
 
-        std::vector<uint32_t> outImage1(maxMatches);
-        std::vector<uint32_t> outImage2(maxMatches);
-        std::vector<float> outDifference(maxMatches);
-        size_t matchCount = 0;
+        // Batch size для streaming readback: 5M matches = 60MB RAM
+        const size_t BATCH_MATCHES = 5000000;
 
-        AD_DEBUG("ExecuteGpuAllVsAllComparison: Calling GPU\n");
+        AD_DEBUG_FMT("ExecuteGpuAllVsAllComparison: Calling GPU (batch size: %zu)\n", BATCH_MATCHES);
 
-        if (m_pGpuManager->CompareAllVsAll(
-                allThumbnails.data(), count, thumbSize, threshold,
-                outImage1.data(), outImage2.data(), outDifference.data(),
-                &matchCount, maxMatches))
-        {
-            AD_DEBUG_FMT("ExecuteGpuAllVsAllComparison: GPU returned %zu matches\n", matchCount);
+        bool success = m_pGpuManager->CompareAllVsAll(
+            allThumbnails.data(),
+            allCrcArray.data(),
+            count,
+            thumbSize,
+            threshold,
+            maxDifference,
+            ADDITIONAL_DIFFERENCE_FOR_DIFFERENT_CRC32,
+            &ctx,
+            MatchCallback,
+            BATCH_MATCHES);
 
-            // Обрабатываем результаты — O(1) доступ вместо O(N) std::advance
-            for (size_t i = 0; i < matchCount; i++) {
-                TImageDataPtr pImage1 = imageByIndex[outImage1[i]];
-                TImageDataPtr pImage2 = imageByIndex[outImage2[i]];
-
-                double maxDifference = (double)(Simd::Square(PIXEL_MAX_DIFFERENCE) * thumbSize);
-                double difference = sqrt((double)outDifference[i] / maxDifference) * 100;
-                if (pImage1->crc32c != pImage2->crc32c)
-                    difference += ADDITIONAL_DIFFERENCE_FOR_DIFFERENT_CRC32;
-
-                m_pResult->AddDuplImagePair(pImage1, pImage2, difference, AD_TRANSFORM_TURN_0);
-            }
-
-            AD_DEBUG("ExecuteGpuAllVsAllComparison: Results processed\n");
+        if (success) {
+            AD_DEBUG_FMT("ExecuteGpuAllVsAllComparison: Processed %zu total matches\n", ctx.totalProcessed);
         }
         else {
             AD_DEBUG("ExecuteGpuAllVsAllComparison: GPU comparison FAILED\n");
         }
+
+        // Освобождаем большую память заранее
+        allThumbnails.clear();
+        allThumbnails.shrink_to_fit();
+        allCrcArray.clear();
+        allCrcArray.shrink_to_fit();
+        imageByIndex.clear();
+        imageByIndex.shrink_to_fit();
 
         AD_DEBUG("ExecuteGpuAllVsAllComparison: Finished\n");
     }

@@ -70,22 +70,23 @@ namespace ad
 
         bool EnsureCapacity(size_t required, size_t thumbSize);
 
-        // NEW: AllVsAll comparison
+        // NEW: AllVsAll comparison с streaming callback
         bool CompareAllVsAll(
             const uint8_t* allThumbnails,
+            const uint64_t* allCrcArray,
             size_t count,
             size_t thumbSize,
             double threshold,
-            uint32_t* outImage1,
-            uint32_t* outImage2,
-            float* outDifference,
-            size_t* outMatchCount,
-            size_t maxMatches) {
+            double maxDifference,
+            double addDiffForCrcMismatch,
+            void* callbackContext,
+            GpuMatchCallback callback,
+            size_t maxMatchesPerBatch) {
             if (!m_available) return false;
             std::lock_guard<std::mutex> lock(m_mutex);
-            return GpuCompareAllVsAll(allThumbnails, count, thumbSize, threshold,
-                                                    outImage1, outImage2, outDifference,
-                                                    outMatchCount, maxMatches);
+            return GpuCompareAllVsAll(allThumbnails, allCrcArray, count, thumbSize,
+                                                    threshold, maxDifference, addDiffForCrcMismatch,
+                                                    callbackContext, callback, maxMatchesPerBatch);
         }
 
     private:

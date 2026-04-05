@@ -50,13 +50,6 @@ namespace ad
 
     // --- Kernels ---
 
-    // Match structure for sparse results
-    struct Match {
-        uint32_t image1;
-        uint32_t image2;
-        float difference;
-    };
-
     __global__ void SquaredSumKernel(const uint8_t* pSrc1, const uint8_t* pSrc2, size_t size, double* pResult)
     {
         extern __shared__ double shared_data[];
@@ -76,18 +69,20 @@ namespace ad
         if (tid == 0) atomicAdd(pResult, shared_data[0]);
     }
 
-    // NEW: AllVsAll kernel — grid-stride loop + shared memory оптимизация
+    // NEW: AllVsAll kernel — grid-stride loop + shared memory + CRC check + final difference
     // Каждый блок обрабатывает несколько строк i с шагом gridDim.x
     __global__ void AllVsAllKernel(
-        const uint8_t* thumbnails,    // Все thumbnails в VRAM
+        const uint8_t* thumbnails,     // Все thumbnails в VRAM
+        const uint64_t* crcArray,      // CRC32c для каждого изображения
         size_t thumbSize,              // Размер одного thumbnail (1024)
         size_t count,                  // Общее количество изображений
-        double threshold,              // Порог для дубликатов
+        double threshold,              // Порог squared difference
+        double maxDifference,          // Максимальная разница для нормализации
+        double addDiffForCrcMismatch,  // Добавка за несовпадение CRC
         Match* results,                // Sparse buffer для результатов
         size_t* matchCount)            // Atomic counter
     {
         // Shared memory для thumb1 — ускоряет чтение в 10-100 раз
-        // Максимум 1024 байта (32x32 thumbnail)
         extern __shared__ uint8_t shared_thumb[];
 
         // Grid-stride loop: каждый блок обрабатывает несколько строк i
@@ -113,12 +108,20 @@ namespace ad
                     sumSqDiff += diff * diff;
                 }
 
-                // Если ниже threshold — записываем результат
+                // Проверяем threshold ДО нормализации (как в CPU версии)
                 if (sumSqDiff <= threshold) {
+                    // Вычисляем финальный difference в процентах
+                    double difference = sqrt(sumSqDiff / maxDifference) * 100.0;
+
+                    // Добавляем штраф за несовпадение CRC
+                    if (crcArray[i] != crcArray[j]) {
+                        difference += addDiffForCrcMismatch;
+                    }
+
                     size_t idx = atomicAdd(matchCount, (size_t)1);
                     results[idx].image1 = (uint32_t)i;
                     results[idx].image2 = (uint32_t)j;
-                    results[idx].difference = (float)sumSqDiff;
+                    results[idx].difference = (float)difference;
                 }
             }
             __syncthreads();  // Синхронизация перед следующей итерацией i
@@ -598,30 +601,32 @@ namespace ad
         return h_r;
     }
 
-    // NEW: AllVsAll comparison с массовым upload
+    // NEW: AllVsAll comparison с массовым upload + streaming callback
     bool GpuCompareAllVsAll(
-        const uint8_t* allThumbnails,     // Все thumbnails в RAM (непрерывный массив)
+        const uint8_t* allThumbnails,     // Все thumbnails в RAM
+        const uint64_t* allCrcArray,      // CRC32c для каждого изображения
         size_t count,                      // Количество изображений
         size_t thumbSize,                  // Размер одного thumbnail (1024)
-        double threshold,                  // Порог для дубликатов
-        uint32_t* outImage1,               // Массив для image1 (результат)
-        uint32_t* outImage2,               // Массив для image2 (результат)
-        float* outDifference,              // Массив для difference (результат)
-        size_t* outMatchCount,             // Количество найденных дубликатов
-        size_t maxMatches)                 // Максимальное количество результатов
+        double threshold,                  // Порог squared difference
+        double maxDifference,              // Максимальная разница для нормализации
+        double addDiffForCrcMismatch,      // Добавка за несовпадение CRC
+        void* callbackContext,             // Контекст для callback
+        GpuMatchCallback callback,         // Callback для streaming обработки
+        size_t maxMatchesPerBatch)         // Максимум matches за один вызов
     {
         AD_DEBUG("GpuCompareAllVsAll: Starting\n");
 
-        if (!allThumbnails || count == 0 || thumbSize == 0 || !outImage1 || !outImage2 || !outDifference || !outMatchCount) {
+        if (!allThumbnails || !allCrcArray || count == 0 || thumbSize == 0 || !callback) {
             AD_DEBUG("GpuCompareAllVsAll: Invalid parameters\n");
             return false;
         }
 
         size_t totalPairs = count * (count - 1) / 2;
-        AD_DEBUG_FMT("GpuCompareAllVsAll: Comparing %zu images, %zu pairs, threshold=%f\n", count, totalPairs, threshold);
+        AD_DEBUG_FMT("GpuCompareAllVsAll: Comparing %zu images, %zu pairs\n", count, totalPairs);
 
         // Выделяем VRAM для thumbnails
         uint8_t* d_thumbnails = nullptr;
+        uint64_t* d_crcArray = nullptr;
         Match* d_results = nullptr;
         size_t* d_matchCount = nullptr;
 
@@ -635,108 +640,142 @@ namespace ad
             return false;
         }
 
-        // 2. Выделяем память для результатов (sparse buffer)
-        AD_DEBUG("GpuCompareAllVsAll: Allocating VRAM for results\n");
-        err = cudaMalloc(&d_results, maxMatches * sizeof(Match));
+        // 2. Выделяем память для CRC массива
+        AD_DEBUG("GpuCompareAllVsAll: Allocating VRAM for CRC array\n");
+        err = cudaMalloc(&d_crcArray, count * sizeof(uint64_t));
         if (err != cudaSuccess) {
-            AD_DEBUG_FMT("GpuCompareAllVsAll: Failed to allocate results VRAM: %s\n", cudaGetErrorString(err));
+            AD_DEBUG_FMT("GpuCompareAllVsAll: Failed to allocate CRC VRAM: %s\n", cudaGetErrorString(err));
             cudaFree(d_thumbnails);
             return false;
         }
 
-        // 3. Выделяем память для counter
+        // 3. Выделяем память для результатов (batch buffer)
+        AD_DEBUG("GpuCompareAllVsAll: Allocating VRAM for results\n");
+        err = cudaMalloc(&d_results, maxMatchesPerBatch * sizeof(Match));
+        if (err != cudaSuccess) {
+            AD_DEBUG_FMT("GpuCompareAllVsAll: Failed to allocate results VRAM: %s\n", cudaGetErrorString(err));
+            cudaFree(d_thumbnails);
+            cudaFree(d_crcArray);
+            return false;
+        }
+
+        // 4. Выделяем память для counter
         err = cudaMalloc(&d_matchCount, sizeof(size_t));
         if (err != cudaSuccess) {
             AD_DEBUG("GpuCompareAllVsAll: Failed to allocate counter VRAM\n");
             cudaFree(d_thumbnails);
+            cudaFree(d_crcArray);
             cudaFree(d_results);
             return false;
         }
 
-        // 4. Один массовый upload всех thumbnails
+        // 5. Upload всех thumbnails в VRAM
         AD_DEBUG("GpuCompareAllVsAll: Uploading all thumbnails to VRAM\n");
         err = cudaMemcpy(d_thumbnails, allThumbnails, count * thumbSize, cudaMemcpyHostToDevice);
         if (err != cudaSuccess) {
-            AD_DEBUG_FMT("GpuCompareAllVsAll: Upload failed: %s\n", cudaGetErrorString(err));
+            AD_DEBUG_FMT("GpuCompareAllVsAll: Upload thumbnails failed: %s\n", cudaGetErrorString(err));
             cudaFree(d_thumbnails);
+            cudaFree(d_crcArray);
             cudaFree(d_results);
             cudaFree(d_matchCount);
             return false;
         }
-        AD_DEBUG("GpuCompareAllVsAll: Upload complete\n");
+        AD_DEBUG("GpuCompareAllVsAll: Upload thumbnails complete\n");
 
-        // 5. Инициализируем counter
+        // 6. Upload CRC массива
+        AD_DEBUG("GpuCompareAllVsAll: Uploading CRC array to VRAM\n");
+        err = cudaMemcpy(d_crcArray, allCrcArray, count * sizeof(uint64_t), cudaMemcpyHostToDevice);
+        if (err != cudaSuccess) {
+            AD_DEBUG_FMT("GpuCompareAllVsAll: Upload CRC failed: %s\n", cudaGetErrorString(err));
+            cudaFree(d_thumbnails);
+            cudaFree(d_crcArray);
+            cudaFree(d_results);
+            cudaFree(d_matchCount);
+            return false;
+        }
+        AD_DEBUG("GpuCompareAllVsAll: Upload CRC complete\n");
+
+        // 7. Инициализируем counter
         size_t h_matchCount = 0;
         err = cudaMemcpy(d_matchCount, &h_matchCount, sizeof(size_t), cudaMemcpyHostToDevice);
         if (err != cudaSuccess) {
             AD_DEBUG_FMT("GpuCompareAllVsAll: Counter init failed: %s\n", cudaGetErrorString(err));
             cudaFree(d_thumbnails);
+            cudaFree(d_crcArray);
             cudaFree(d_results);
             cudaFree(d_matchCount);
             return false;
         }
 
-        // 6. Запускаем kernel
+        // 8. Запускаем kernel
         AD_DEBUG("GpuCompareAllVsAll: Launching kernel\n");
 
         int threadsPerBlock = 256;
-        // Grid-stride loop: используем максимум блоков для параллелизма
         size_t blocks = count;
-        if (blocks > 65535) blocks = 65535;  // Максимум CUDA grid size
-        if (blocks == 0) blocks = 1;  // Минимум 1 блок
+        if (blocks > 65535) blocks = 65535;
+        if (blocks == 0) blocks = 1;
 
-        AD_DEBUG_FMT("GpuCompareAllVsAll: Launching %zu blocks, %d threads/block (grid-stride + shared mem)\n", blocks, threadsPerBlock);
+        AD_DEBUG_FMT("GpuCompareAllVsAll: Launching %zu blocks, %d threads/block\n", blocks, threadsPerBlock);
 
-        // Передаём размер shared memory динамически
         AllVsAllKernel<<<(int)blocks, threadsPerBlock, thumbSize>>>(
-            d_thumbnails, thumbSize, count, threshold, d_results, d_matchCount);
+            d_thumbnails, d_crcArray, thumbSize, count, threshold, maxDifference, addDiffForCrcMismatch,
+            d_results, d_matchCount);
 
         err = cudaGetLastError();
         if (err != cudaSuccess) {
             AD_DEBUG_FMT("GpuCompareAllVsAll: Kernel launch failed: %s\n", cudaGetErrorString(err));
             cudaFree(d_thumbnails);
+            cudaFree(d_crcArray);
             cudaFree(d_results);
             cudaFree(d_matchCount);
             return false;
         }
 
-        // 7. Ждём завершения
+        // 9. Ждём завершения kernel
         AD_DEBUG("GpuCompareAllVsAll: Synchronizing\n");
         err = cudaDeviceSynchronize();
         if (err != cudaSuccess) {
             AD_DEBUG_FMT("GpuCompareAllVsAll: Sync failed: %s\n", cudaGetErrorString(err));
             cudaFree(d_thumbnails);
+            cudaFree(d_crcArray);
             cudaFree(d_results);
             cudaFree(d_matchCount);
             return false;
         }
+        AD_DEBUG("GpuCompareAllVsAll: Kernel complete\n");
 
-        // 8. Считываем counter
-        AD_DEBUG("GpuCompareAllVsAll: Reading match count\n");
+        // 10. Считываем total match count
         cudaMemcpy(&h_matchCount, d_matchCount, sizeof(size_t), cudaMemcpyDeviceToHost);
+        AD_DEBUG_FMT("GpuCompareAllVsAll: Found %zu total matches\n", h_matchCount);
 
-        AD_DEBUG_FMT("GpuCompareAllVsAll: Found %zu matches\n", h_matchCount);
-
-        // 9. Считываем результаты
+        // 11. Streaming readback — читаем батчами и вызываем callback
         if (h_matchCount > 0) {
-            size_t readCount = (h_matchCount < maxMatches) ? h_matchCount : maxMatches;
-            AD_DEBUG_FMT("GpuCompareAllVsAll: Reading %zu results\n", readCount);
+            std::vector<Match> h_batch(maxMatchesPerBatch);
+            size_t remaining = h_matchCount;
+            size_t offset = 0;
 
-            std::vector<Match> h_results(readCount);
-            cudaMemcpy(h_results.data(), d_results, readCount * sizeof(Match), cudaMemcpyDeviceToHost);
+            while (remaining > 0) {
+                size_t batchSize = (remaining < maxMatchesPerBatch) ? remaining : maxMatchesPerBatch;
+                AD_DEBUG_FMT("GpuCompareAllVsAll: Reading batch %zu matches (offset %zu)\n", batchSize, offset);
 
-            // Копируем в выходные массивы
-            for (size_t i = 0; i < readCount; i++) {
-                outImage1[i] = h_results[i].image1;
-                outImage2[i] = h_results[i].image2;
-                outDifference[i] = h_results[i].difference;
+                err = cudaMemcpy(h_batch.data(), d_results + offset, batchSize * sizeof(Match), cudaMemcpyDeviceToHost);
+                if (err != cudaSuccess) {
+                    AD_DEBUG_FMT("GpuCompareAllVsAll: Readback failed: %s\n", cudaGetErrorString(err));
+                    break;
+                }
+
+                // Вызываем callback с батчем
+                callback(h_batch.data(), batchSize, callbackContext);
+                
+                remaining -= batchSize;
+                offset += batchSize;
             }
+            AD_DEBUG("GpuCompareAllVsAll: All batches processed\n");
         }
 
-        *outMatchCount = h_matchCount;
-
-        // 10. Освобождаем VRAM
+        // 12. Освобождаем VRAM
         cudaFree(d_thumbnails);
+        cudaFree(d_crcArray);
         cudaFree(d_results);
         cudaFree(d_matchCount);
 

@@ -110,7 +110,9 @@ namespace ad
             ReduceGray2x2(*m_pGrayBuffers.back(), TView(data.side, data.side, data.side, TView::Gray8, data.main));
             data.filled = true;
 
-            if (m_pEngine->GpuManager() && m_pEngine->GpuManager()->IsAvailable())
+            // Upload thumbnail to GPU — only for non-AllVsAll mode
+            // In AllVsAll mode, ExecuteGpuAllVsAllComparison does its own mass upload
+            if (!m_pEngine->SkipComparisonDuringCollection())
             {
                 // Ensure GPU buffer is initialized before first upload
                 static bool gpuBufferInitialized = false;
@@ -129,7 +131,7 @@ namespace ad
                         AD_DEBUG("FillPixelData: GPU buffer initialization FAILED\n");
                     }
                 }
-                
+
                 // Upload thumbnail to GPU immediately
                 if (m_pEngine->GpuManager()->UploadThumbnail(pImageData->globalIdx, data.main))
                 {

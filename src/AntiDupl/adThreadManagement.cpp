@@ -390,6 +390,13 @@ namespace ad
     size_t TCollectManager::DefaultThreadCount()
     {
         size_t threadCountMax = GetProcessorCount();
+        
+        // In GPU AllVsAll mode, maximize collection threads (leave 1 core for UI)
+        if (m_pEngine->SkipComparisonDuringCollection())
+        {
+            return Simd::Max((size_t)1, threadCountMax - 1);
+        }
+        
 #ifdef AD_TURBO_JPEG_ENABLE
         return Simd::Max((size_t)1, threadCountMax / 2);
 #else
