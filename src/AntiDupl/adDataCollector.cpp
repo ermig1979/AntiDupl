@@ -78,7 +78,7 @@ namespace ad
         TImage *pImage = TImage::Load(pImageData->hGlobal, m_pOptions);
         if(pImage)
         {
-            pImageData->height = (TUInt32)pImage->View()->height; 
+            pImageData->height = (TUInt32)pImage->View()->height;
             pImageData->width = (TUInt32)pImage->View()->width;
             pImageData->type = (TImageType)pImage->Format();
 

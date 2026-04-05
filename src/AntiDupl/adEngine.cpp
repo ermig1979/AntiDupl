@@ -263,24 +263,30 @@ namespace ad
 
             ctx->engine->Result()->AddDuplImagePair(pImage1, pImage2, matches[i].difference, AD_TRANSFORM_TURN_0);
             ctx->totalProcessed++;
+            
+            // Обновляем прогресс (для GPU режима)
+            if (ctx->totalProcessed % 10000 == 0) {
+                ctx->engine->Status()->SetProgress(ctx->totalProcessed, ctx->totalProcessed);  // dummy update
+            }
         }
     }
 
     // NEW: GPU AllVsAll comparison с streaming processing
-    void TEngine::ExecuteGpuAllVsAllComparison()
+    // Возвращает true при успешном выполнении, false при ошибке
+    bool TEngine::ExecuteGpuAllVsAllComparison()
     {
         AD_DEBUG("ExecuteGpuAllVsAllComparison: Starting\n");
 
         if (!m_pGpuManager || !m_pGpuManager->IsAvailable()) {
             AD_DEBUG("ExecuteGpuAllVsAllComparison: GPU not available\n");
-            return;
+            return false;
         }
 
         const TImageDataStorage::TStorage& storage = m_pImageDataStorage->Storage();
         size_t count = storage.size();
         if (count == 0) {
             AD_DEBUG("ExecuteGpuAllVsAllComparison: Empty storage\n");
-            return;
+            return false;
         }
 
         size_t reducedImageSize = m_pOptions->advanced.reducedImageSize;
@@ -288,24 +294,40 @@ namespace ad
 
         AD_DEBUG_FMT("ExecuteGpuAllVsAllComparison: Preparing data for %zu images\n", count);
 
-        // Собираем все thumbnails и CRC в один проход
-        std::vector<uint8_t> allThumbnails(count * thumbSize);
-        std::vector<uint64_t> allCrcArray(count);
-        std::vector<TImageDataPtr> imageByIndex(count);
+        // Собираем ТОЛЬКО валидные thumbnails в компактный массив
+        // Это предотвращает сравнение изображений без данных
+        std::vector<uint8_t> allThumbnails;
+        std::vector<uint64_t> allCrcArray;
+        std::vector<TImageDataPtr> imageByIndex;
+        allThumbnails.reserve(count * thumbSize);
+        allCrcArray.reserve(count);
+        imageByIndex.reserve(count);
+        
         size_t validCount = 0;
 
-        size_t idx = 0;
-        for (TImageDataStorage::TStorage::const_iterator it = storage.begin(); it != storage.end(); ++it, ++idx) {
+        for (TImageDataStorage::TStorage::const_iterator it = storage.begin(); it != storage.end(); ++it) {
             TImageDataPtr pImageData = it->second;
             if (pImageData->data && pImageData->data->filled && pImageData->data->main != nullptr) {
-                memcpy(&allThumbnails[idx * thumbSize], pImageData->data->main, thumbSize);
-                allCrcArray[idx] = pImageData->crc32c;
-                imageByIndex[idx] = pImageData;
+                // Копируем thumbnail
+                allThumbnails.resize((validCount + 1) * thumbSize);
+                memcpy(&allThumbnails[validCount * thumbSize], pImageData->data->main, thumbSize);
+                
+                // Копируем CRC
+                allCrcArray.push_back(pImageData->crc32c);
+                
+                // Сохраняем указатель
+                imageByIndex.push_back(pImageData);
+                
                 validCount++;
             }
         }
 
-        AD_DEBUG_FMT("ExecuteGpuAllVsAllComparison: %zu valid thumbnails\n", validCount);
+        AD_DEBUG_FMT("ExecuteGpuAllVsAllComparison: %zu valid thumbnails out of %zu\n", validCount, count);
+
+        if (validCount < 2) {
+            AD_DEBUG("ExecuteGpuAllVsAllComparison: Not enough valid images\n");
+            return false;
+        }
 
         // Вычисляем threshold и maxDifference как в оригинальном TImageComparer
         int thresholdPerPixel = Simd::Square(m_pOptions->compare.thresholdDifference * PIXEL_MAX_DIFFERENCE) /
@@ -328,12 +350,12 @@ namespace ad
         // Batch size для streaming readback: 5M matches = 60MB RAM
         const size_t BATCH_MATCHES = 5000000;
 
-        AD_DEBUG_FMT("ExecuteGpuAllVsAllComparison: Calling GPU (batch size: %zu)\n", BATCH_MATCHES);
+        AD_DEBUG_FMT("ExecuteGpuAllVsAllComparison: Calling GPU with %zu valid images (batch size: %zu)\n", validCount, BATCH_MATCHES);
 
         bool success = m_pGpuManager->CompareAllVsAll(
             allThumbnails.data(),
             allCrcArray.data(),
-            count,
+            validCount,  // Используем validCount вместо count
             thumbSize,
             threshold,
             maxDifference,
@@ -358,6 +380,7 @@ namespace ad
         imageByIndex.shrink_to_fit();
 
         AD_DEBUG("ExecuteGpuAllVsAllComparison: Finished\n");
+        return success;
     }
 
     void TEngine::Search()
@@ -421,9 +444,17 @@ namespace ad
         if (useGpu)
         {
             AD_DEBUG("Search: Using GPU AllVsAll comparison\n");
-            ExecuteGpuAllVsAllComparison();
+            bool gpuSuccess = ExecuteGpuAllVsAllComparison();
             m_skipComparisonDuringCollection = false;
-            AD_DEBUG("Search: GPU comparison completed\n");
+            
+            if (!gpuSuccess) {
+                AD_DEBUG("Search: GPU comparison FAILED — no CPU fallback (too slow for large collections)\n");
+                // CPU fallback removed — O(N^2) CPU comparison is impractical for 10K+ images
+                // User should retry with smaller collection or check GPU memory availability
+            }
+            else {
+                AD_DEBUG("Search: GPU comparison completed successfully\n");
+            }
         }
         else
         {

@@ -58,7 +58,7 @@ namespace ad
         void Search();
 
         void UpdateGpuDatabase();
-        void ExecuteGpuAllVsAllComparison();
+        bool ExecuteGpuAllVsAllComparison();  // Возвращает true при успехе
 
         // Flag to skip comparison during collection (for GPU AllVsAll mode)
         bool m_skipComparisonDuringCollection;

@@ -79,6 +79,7 @@ namespace ad
         double threshold,              // Порог squared difference
         double maxDifference,          // Максимальная разница для нормализации
         double addDiffForCrcMismatch,  // Добавка за несовпадение CRC
+        size_t maxMatches,             // Максимум matches (bounds checking)
         Match* results,                // Sparse buffer для результатов
         size_t* matchCount)            // Atomic counter
     {
@@ -110,18 +111,23 @@ namespace ad
 
                 // Проверяем threshold ДО нормализации (как в CPU версии)
                 if (sumSqDiff <= threshold) {
-                    // Вычисляем финальный difference в процентах
-                    double difference = sqrt(sumSqDiff / maxDifference) * 100.0;
-
-                    // Добавляем штраф за несовпадение CRC
-                    if (crcArray[i] != crcArray[j]) {
-                        difference += addDiffForCrcMismatch;
-                    }
-
+                    // Атомарно получаем индекс с bounds checking
                     size_t idx = atomicAdd(matchCount, (size_t)1);
-                    results[idx].image1 = (uint32_t)i;
-                    results[idx].image2 = (uint32_t)j;
-                    results[idx].difference = (float)difference;
+                    
+                    // ЗАЩИТА от переполнения буфера
+                    if (idx < maxMatches) {
+                        // Вычисляем финальный difference в процентах
+                        double difference = sqrt(sumSqDiff / maxDifference) * 100.0;
+
+                        // Добавляем штраф за несовпадение CRC
+                        if (crcArray[i] != crcArray[j]) {
+                            difference += addDiffForCrcMismatch;
+                        }
+
+                        results[idx].image1 = (uint32_t)i;
+                        results[idx].image2 = (uint32_t)j;
+                        results[idx].difference = (float)difference;
+                    }
                 }
             }
             __syncthreads();  // Синхронизация перед следующей итерацией i
@@ -616,6 +622,9 @@ namespace ad
     {
         AD_DEBUG("GpuCompareAllVsAll: Starting\n");
 
+        // Очищаем любые накопленные ошибки CUDA перед началом
+        cudaGetLastError();  // clear any pending errors
+
         if (!allThumbnails || !allCrcArray || count == 0 || thumbSize == 0 || !callback) {
             AD_DEBUG("GpuCompareAllVsAll: Invalid parameters\n");
             return false;
@@ -634,9 +643,24 @@ namespace ad
 
         // 1. Выделяем память для thumbnails
         AD_DEBUG("GpuCompareAllVsAll: Allocating VRAM for thumbnails\n");
+        
+        // Проверяем доступную VRAM перед выделением
+        size_t freeMem = 0, totalMem = 0;
+        cudaMemGetInfo(&freeMem, &totalMem);
+        size_t requiredMem = count * thumbSize + count * sizeof(uint64_t) + maxMatchesPerBatch * sizeof(Match);
+        AD_DEBUG_FMT("GpuCompareAllVsAll: VRAM free=%zu MB, total=%zu MB, required=%zu MB\n", 
+                     freeMem / 1024 / 1024, totalMem / 1024 / 1024, requiredMem / 1024 / 1024);
+        
+        if (requiredMem > freeMem * 9 / 10) {  // Используем максимум 90% свободной VRAM
+            AD_DEBUG_FMT("GpuCompareAllVsAll: Not enough VRAM (need %zu MB, have %zu MB)\n", 
+                         requiredMem / 1024 / 1024, freeMem / 1024 / 1024);
+            return false;
+        }
+
         err = cudaMalloc(&d_thumbnails, count * thumbSize);
         if (err != cudaSuccess) {
             AD_DEBUG_FMT("GpuCompareAllVsAll: Failed to allocate thumbnails VRAM: %s\n", cudaGetErrorString(err));
+            cudaGetLastError();  // Clear error state
             return false;
         }
 
@@ -719,7 +743,7 @@ namespace ad
 
         AllVsAllKernel<<<(int)blocks, threadsPerBlock, thumbSize>>>(
             d_thumbnails, d_crcArray, thumbSize, count, threshold, maxDifference, addDiffForCrcMismatch,
-            d_results, d_matchCount);
+            maxMatchesPerBatch, d_results, d_matchCount);
 
         err = cudaGetLastError();
         if (err != cudaSuccess) {
@@ -746,12 +770,18 @@ namespace ad
 
         // 10. Считываем total match count
         cudaMemcpy(&h_matchCount, d_matchCount, sizeof(size_t), cudaMemcpyDeviceToHost);
-        AD_DEBUG_FMT("GpuCompareAllVsAll: Found %zu total matches\n", h_matchCount);
+        AD_DEBUG_FMT("GpuCompareAllVsAll: Found %zu total matches (buffer capacity: %zu)\n", h_matchCount, maxMatchesPerBatch);
+
+        // Ограничиваем чтение размером буфера
+        size_t matchesToRead = (h_matchCount < maxMatchesPerBatch) ? h_matchCount : maxMatchesPerBatch;
+        if (h_matchCount > maxMatchesPerBatch) {
+            AD_DEBUG_FMT("GpuCompareAllVsAll: WARNING! Truncated from %zu to %zu matches\n", h_matchCount, maxMatchesPerBatch);
+        }
 
         // 11. Streaming readback — читаем батчами и вызываем callback
-        if (h_matchCount > 0) {
+        if (matchesToRead > 0) {
             std::vector<Match> h_batch(maxMatchesPerBatch);
-            size_t remaining = h_matchCount;
+            size_t remaining = matchesToRead;
             size_t offset = 0;
 
             while (remaining > 0) {

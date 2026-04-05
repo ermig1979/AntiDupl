@@ -38,6 +38,7 @@ namespace ad
 {
     struct TurboJpeg
     {
+    public:
         TurboJpeg()
         {
             _handle = ::tjInitDecompress();
@@ -47,6 +48,8 @@ namespace ad
         {
             ::tjDestroy(_handle);
         }
+        
+        tjhandle Handle() const { return _handle; }
 
         TView * Decompress(const unsigned char * data, size_t size, int targetSize = 0)
         {
@@ -103,6 +106,13 @@ namespace ad
                 pTurboJpeg = new TTurboJpeg();
                 pTurboJpeg->m_format = TImage::Jpeg;
                 pTurboJpeg->m_pView = pView;
+                
+                // Сохраняем оригинальные размеры из заголовка JPEG
+                int subsamp, colorspace, origWidth, origHeight;
+                if(::tjDecompressHeader3(turboJpeg.Handle(), data, (unsigned long)size, &origWidth, &origHeight, &subsamp, &colorspace) == 0) {
+                    pTurboJpeg->m_origWidth = origWidth;
+                    pTurboJpeg->m_origHeight = origHeight;
+                }
             }
             ::GlobalUnlock(hGlobal);
             return pTurboJpeg;

@@ -34,6 +34,13 @@ namespace ad
     public:
         static TTurboJpeg * Load(HGLOBAL hGlobal, int targetSize = 0);
         static bool Supported(HGLOBAL hGlobal);
+        
+        int OriginalWidth() const { return m_origWidth; }
+        int OriginalHeight() const { return m_origHeight; }
+        
+    private:
+        int m_origWidth = 0;
+        int m_origHeight = 0;
     };
 }
 #endif//AD_TURBO_JPEG_ENABLE
