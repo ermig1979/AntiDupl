@@ -32,7 +32,7 @@ namespace ad
     class TTurboJpeg : public TImage
     {
     public:
-        static TTurboJpeg * Load(HGLOBAL hGlobal);
+        static TTurboJpeg * Load(HGLOBAL hGlobal, int targetSize = 0);
         static bool Supported(HGLOBAL hGlobal);
     };
 }

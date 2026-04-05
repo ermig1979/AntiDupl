@@ -112,7 +112,7 @@ namespace ad
             return THeif::Load(hGlobal);
 #ifdef AD_TURBO_JPEG_ENABLE
         if (pOptions->advanced.useLibJpegTurbo && TTurboJpeg::Supported(hGlobal))
-            return TTurboJpeg::Load(hGlobal);
+            return TTurboJpeg::Load(hGlobal, pOptions->advanced.reducedImageSize);
 #endif//AD_TURBO_JPEG_ENABLE
         else
             return TGdiplus::Load(hGlobal);

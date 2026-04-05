@@ -48,18 +48,36 @@ namespace ad
             ::tjDestroy(_handle);
         }
 
-        TView * Decompress(const unsigned char * data, size_t size)
+        TView * Decompress(const unsigned char * data, size_t size, int targetSize = 0)
         {
             int subsamp, colorspace, width, height, flags = 0;
             if(::tjDecompressHeader3(_handle, data, (unsigned long)size, &width, &height, &subsamp, &colorspace) != 0)
                 return NULL;
             if (width == 0 || height == 0)
                 return NULL;
-            TView * pView = new TView(width, height, TView::Bgra32, NULL, 4);
-            if (::tjDecompress2(_handle, data, size, pView->data, width, 0, height, ::TJPF_RGBA, flags) != 0 && ::tjGetErrorCode(_handle) != ::TJERR_WARNING)
+
+            // Scaled decode для ускорения (если targetSize > 0)
+            int scaledWidth = width;
+            int scaledHeight = height;
+            
+            if (targetSize > 0 && (width > targetSize || height > targetSize)) {
+                // libjpeg-turbo поддерживает только определённые scaling factors
+                // Выбираем ближайший: 1/2, 1/4, 1/8
+                int denom = 1;
+                if (width / 8 >= targetSize && height / 8 >= targetSize) denom = 8;
+                else if (width / 4 >= targetSize && height / 4 >= targetSize) denom = 4;
+                else if (width / 2 >= targetSize && height / 2 >= targetSize) denom = 2;
+
+                if (denom > 1) {
+                    scaledWidth = width / denom;
+                    scaledHeight = height / denom;
+                    flags |= TJFLAG_FASTUPSAMPLE;
+                }
+            }
+
+            TView * pView = new TView(scaledWidth, scaledHeight, TView::Bgra32, NULL, 4);
+            if (::tjDecompress2(_handle, data, size, pView->data, scaledWidth, 0, scaledHeight, ::TJPF_RGBA, flags) != 0 && ::tjGetErrorCode(_handle) != ::TJERR_WARNING)
             {
-                //int code = ::tjGetErrorCode(_handle);
-                //const char * str = ::tjGetErrorStr2(_handle);
                 delete pView;
                 pView = NULL;
             }
@@ -72,14 +90,14 @@ namespace ad
 
     thread_local TurboJpeg turboJpeg;
 
-    TTurboJpeg * TTurboJpeg::Load(HGLOBAL hGlobal)
+    TTurboJpeg * TTurboJpeg::Load(HGLOBAL hGlobal, int targetSize)
     {
         if (hGlobal)
         {
             const unsigned char * data = (unsigned char*)::GlobalLock(hGlobal);
             size_t size = ::GlobalSize(hGlobal);
             TTurboJpeg * pTurboJpeg = NULL;
-            TView * pView = turboJpeg.Decompress(data, size);
+            TView * pView = turboJpeg.Decompress(data, size, targetSize);
             if (pView)
             {
                 pTurboJpeg = new TTurboJpeg();
