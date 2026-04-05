@@ -76,7 +76,8 @@ namespace ad
         if (tid == 0) atomicAdd(pResult, shared_data[0]);
     }
 
-    // NEW: AllVsAll kernel — каждый блок обрабатывает одну строку (один i), каждый поток — один j
+    // NEW: AllVsAll kernel — grid-stride loop + shared memory оптимизация
+    // Каждый блок обрабатывает несколько строк i с шагом gridDim.x
     __global__ void AllVsAllKernel(
         const uint8_t* thumbnails,    // Все thumbnails в VRAM
         size_t thumbSize,              // Размер одного thumbnail (1024)
@@ -85,32 +86,42 @@ namespace ad
         Match* results,                // Sparse buffer для результатов
         size_t* matchCount)            // Atomic counter
     {
-        // Каждый блок обрабатывает одну строку i
-        size_t i = blockIdx.x;
-        if (i >= count) return;
-        
-        const uint8_t* thumb1 = thumbnails + i * thumbSize;
-        
-        // Каждый поток обрабатывает несколько j > i с stride
-        size_t numThreads = blockDim.x;
-        
-        for (size_t j = i + 1 + threadIdx.x; j < count; j += numThreads) {
-            const uint8_t* thumb2 = thumbnails + j * thumbSize;
+        // Shared memory для thumb1 — ускоряет чтение в 10-100 раз
+        // Максимум 1024 байта (32x32 thumbnail)
+        extern __shared__ uint8_t shared_thumb[];
 
-            // Вычисляем squared difference
-            double sumSqDiff = 0;
-            for (size_t p = 0; p < thumbSize; p++) {
-                double diff = (double)thumb1[p] - (double)thumb2[p];
-                sumSqDiff += diff * diff;
-            }
+        // Grid-stride loop: каждый блок обрабатывает несколько строк i
+        for (size_t i = blockIdx.x; i < count; i += gridDim.x) {
+            const uint8_t* thumb1_global = thumbnails + i * thumbSize;
 
-            // Если ниже threshold — записываем результат
-            if (sumSqDiff <= threshold) {
-                size_t idx = atomicAdd(matchCount, (size_t)1);
-                results[idx].image1 = (uint32_t)i;
-                results[idx].image2 = (uint32_t)j;
-                results[idx].difference = (float)sumSqDiff;
+            // Загружаем thumb1 в shared memory кооперативно
+            for (size_t p = threadIdx.x; p < thumbSize; p += blockDim.x) {
+                shared_thumb[p] = thumb1_global[p];
             }
+            __syncthreads();
+
+            // Каждый поток обрабатывает несколько j > i с stride
+            size_t numThreads = blockDim.x;
+
+            for (size_t j = i + 1 + threadIdx.x; j < count; j += numThreads) {
+                const uint8_t* thumb2 = thumbnails + j * thumbSize;
+
+                // Вычисляем squared difference из shared memory
+                double sumSqDiff = 0;
+                for (size_t p = 0; p < thumbSize; p++) {
+                    double diff = (double)shared_thumb[p] - (double)thumb2[p];
+                    sumSqDiff += diff * diff;
+                }
+
+                // Если ниже threshold — записываем результат
+                if (sumSqDiff <= threshold) {
+                    size_t idx = atomicAdd(matchCount, (size_t)1);
+                    results[idx].image1 = (uint32_t)i;
+                    results[idx].image2 = (uint32_t)j;
+                    results[idx].difference = (float)sumSqDiff;
+                }
+            }
+            __syncthreads();  // Синхронизация перед следующей итерацией i
         }
     }
 
@@ -656,19 +667,28 @@ namespace ad
 
         // 5. Инициализируем counter
         size_t h_matchCount = 0;
-        cudaMemcpy(d_matchCount, &h_matchCount, sizeof(size_t), cudaMemcpyHostToDevice);
+        err = cudaMemcpy(d_matchCount, &h_matchCount, sizeof(size_t), cudaMemcpyHostToDevice);
+        if (err != cudaSuccess) {
+            AD_DEBUG_FMT("GpuCompareAllVsAll: Counter init failed: %s\n", cudaGetErrorString(err));
+            cudaFree(d_thumbnails);
+            cudaFree(d_results);
+            cudaFree(d_matchCount);
+            return false;
+        }
 
         // 6. Запускаем kernel
         AD_DEBUG("GpuCompareAllVsAll: Launching kernel\n");
 
         int threadsPerBlock = 256;
-        // Теперь каждый блок = одна строка i, так что blocks = count
+        // Grid-stride loop: используем максимум блоков для параллелизма
         size_t blocks = count;
-        if (blocks > 65535) blocks = 65535; // Ограничение CUDA
+        if (blocks > 65535) blocks = 65535;  // Максимум CUDA grid size
+        if (blocks == 0) blocks = 1;  // Минимум 1 блок
 
-        AD_DEBUG_FMT("GpuCompareAllVsAll: Launching %zu blocks, %d threads/block\n", blocks, threadsPerBlock);
+        AD_DEBUG_FMT("GpuCompareAllVsAll: Launching %zu blocks, %d threads/block (grid-stride + shared mem)\n", blocks, threadsPerBlock);
 
-        AllVsAllKernel<<<(int)blocks, threadsPerBlock>>>(
+        // Передаём размер shared memory динамически
+        AllVsAllKernel<<<(int)blocks, threadsPerBlock, thumbSize>>>(
             d_thumbnails, thumbSize, count, threshold, d_results, d_matchCount);
 
         err = cudaGetLastError();

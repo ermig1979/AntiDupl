@@ -267,6 +267,16 @@ namespace ad
 
         AD_DEBUG_FMT("ExecuteGpuAllVsAllComparison: %zu valid thumbnails\n", validCount);
 
+        // Создаём vector для O(1) доступа по индексу (вместо O(N) std::advance)
+        std::vector<TImageDataPtr> imageByIndex(count);
+        idx = 0;
+        for (TImageDataStorage::TStorage::const_iterator it = storage.begin(); it != storage.end(); ++it, ++idx) {
+            TImageDataPtr pImageData = it->second;
+            if (pImageData->data && pImageData->data->filled && pImageData->data->main != nullptr) {
+                imageByIndex[idx] = pImageData;
+            }
+        }
+
         // Вычисляем threshold как в оригинальном TImageComparer
         int thresholdPerPixel = Simd::Square(m_pOptions->compare.thresholdDifference * PIXEL_MAX_DIFFERENCE) /
             Simd::Square(DENOMINATOR);
@@ -294,16 +304,10 @@ namespace ad
         {
             AD_DEBUG_FMT("ExecuteGpuAllVsAllComparison: GPU returned %zu matches\n", matchCount);
 
-            // Обрабатываем результаты
+            // Обрабатываем результаты — O(1) доступ вместо O(N) std::advance
             for (size_t i = 0; i < matchCount; i++) {
-                // Находим изображения по индексам
-                auto it1 = storage.begin();
-                std::advance(it1, outImage1[i]);
-                TImageDataPtr pImage1 = it1->second;
-
-                auto it2 = storage.begin();
-                std::advance(it2, outImage2[i]);
-                TImageDataPtr pImage2 = it2->second;
+                TImageDataPtr pImage1 = imageByIndex[outImage1[i]];
+                TImageDataPtr pImage2 = imageByIndex[outImage2[i]];
 
                 double maxDifference = (double)(Simd::Square(PIXEL_MAX_DIFFERENCE) * thumbSize);
                 double difference = sqrt((double)outDifference[i] / maxDifference) * 100;

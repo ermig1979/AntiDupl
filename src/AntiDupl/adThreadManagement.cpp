@@ -174,7 +174,12 @@ namespace ad
     void TCollectTask::DoOwn(TImageData *pImageData)
     {
         m_pDataCollector->Fill(pImageData);
-        m_pCompareManager->Add(pImageData);
+        
+        // Skip CPU comparison if GPU AllVsAll mode is enabled
+        if (!m_pEngine->SkipComparisonDuringCollection()) {
+            m_pCompareManager->Add(pImageData);
+        }
+        
         m_pStatus->Process(AD_THREAD_TYPE_COLLECT, Queue()->Id(), pImageData->path.Original().c_str());
     }
     //-------------------------------------------------------------------------
