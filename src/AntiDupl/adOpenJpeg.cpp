@@ -22,6 +22,7 @@
 * SOFTWARE.
 */
 #define OPJ_STATIC
+#include <memory>
 #include "openjpeg.h"
 
 #include "adPerformance.h"
@@ -317,19 +318,28 @@ namespace ad
     {
         AD_FUNCTION_PERFORMANCE_TEST
         TView *pView = NULL;
-        opj_codec_t * codec = opj_create_decompress(OpenJpegCodecFormat(data, size));
+        
+        std::unique_ptr<opj_codec_t, decltype(&opj_destroy_codec)> codec(
+            opj_create_decompress(OpenJpegCodecFormat(data, size)), opj_destroy_codec);
+
         if(codec)
         {
             opj_dparameters_t parameters;
             opj_set_default_decoder_parameters(&parameters);
-            opj_setup_decoder(codec, &parameters);
-            opj_stream_t * stream = СreateBlobStream(data, size);
+            opj_setup_decoder(codec.get(), &parameters);
+
+            std::unique_ptr<opj_stream_t, decltype(&opj_stream_destroy)> stream(
+                СreateBlobStream(data, size), opj_stream_destroy);
+
             if(stream)
             {
-                opj_image_t  * image; 
-                if (opj_read_header(stream, codec, &image))
+                opj_image_t * imageRaw = NULL; 
+                if (opj_read_header(stream.get(), codec.get(), &imageRaw))
                 {
-                    if(opj_decode(codec, stream, image))
+                    std::unique_ptr<opj_image_t, decltype(&opj_image_destroy)> image(
+                        imageRaw, opj_image_destroy);
+
+                    if(opj_decode(codec.get(), stream.get(), image.get()))
                     {
                         size_t width = image->x1 - image->x0;
                         size_t height = image->y1 - image->y0;
@@ -375,11 +385,8 @@ namespace ad
                             AD_PERFORMANCE_TEST_SET_SIZE(width*height)
                         }
                     }
-                    opj_image_destroy(image);
                 }
-                opj_stream_destroy(stream);
             }
-            opj_destroy_codec(codec);
         }
         return pView;
     }

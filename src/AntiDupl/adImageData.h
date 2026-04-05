@@ -31,12 +31,15 @@
 namespace ad
 {
 	struct TOptions;
+	class TEngine;
 	//-------------------------------------------------------------------------
 	struct TImageData : public TImageInfo
 	{
 		TInt32 ratio; // Ratio between height and width of image;
 		bool valid; // The Image lie in 'valid' directory;
 		size_t index; // Index of the path from path list where this image were found;
+		size_t globalIdx; // Unique index for GPU buffer
+		TEngine* pEngine; // Pointer to engine for GPU access
 		TDefectType defect;
 		TUInt32 crc32c;
 		TPixelDataPtr data;

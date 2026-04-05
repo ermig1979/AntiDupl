@@ -28,7 +28,9 @@
 #include "adImageDataStorage.h"
 #include "adIO.h"
 #include "adFileStream.h"
+#include "adLogger.h"
 #include "adException.h"
+#include "adGPUManager.h"
 
 namespace ad
 {
@@ -43,9 +45,11 @@ namespace ad
     //-------------------------------------------------------------------------
 
 	TImageDataStorage::TImageDataStorage(TEngine *pEngine)
-		:m_pStatus(pEngine->Status()),
+		:m_pEngine(pEngine),
+		m_pStatus(pEngine->Status()),
 		m_pOptions(pEngine->Options()), 
-		m_needToSave (false)
+		m_needToSave (false),
+		m_nextGlobalIdx(0)
 	{
 	}
 
@@ -63,6 +67,16 @@ namespace ad
 
 	TImageDataStorage::TStorage::iterator TImageDataStorage::Insert(TImageData* pImageData)
 	{
+		// Check for globalIdx overflow
+		if (m_nextGlobalIdx >= SIZE_MAX) {
+#ifdef AD_LOGGER_ENABLE
+			AD_LOG("GPU: globalIdx counter overflow, resetting indices...");
+#endif
+			ResetGpuIndices();
+		}
+
+		pImageData->globalIdx = m_nextGlobalIdx++;
+		pImageData->pEngine = m_pEngine;
 		return m_storage.insert(TStorage::value_type(pImageData->hash, pImageData));
 	}
 
@@ -71,12 +85,27 @@ namespace ad
 		for(TStorage::iterator it = m_storage.begin(); it != m_storage.end(); ++it)
 			delete it->second;
 		m_storage.clear();
+		m_nextGlobalIdx = 0;
+		if (m_pEngine->GpuManager() && m_pEngine->GpuManager()->IsAvailable())
+		{
+			m_pEngine->GpuManager()->ClearBuffer();
+		}
+	}
+
+	void TImageDataStorage::ResetGpuIndices()
+	{
+		m_nextGlobalIdx = 0;
+		for(TStorage::iterator it = m_storage.begin(); it != m_storage.end(); ++it)
+		{
+			it->second->globalIdx = m_nextGlobalIdx++;
+		}
 	}
 
 	void TImageDataStorage::Check()
 	{
 		m_pStatus->Reset();
 		size_t size = m_storage.size(), i = 0;
+		bool found_deleted = false;
 		for(TStorage::iterator it = m_storage.begin(); it != m_storage.end(); )
 		{
 			if(m_pStatus->Stopped())
@@ -86,6 +115,7 @@ namespace ad
 			{
 				delete it->second;
 				it = m_storage.erase(it);
+				found_deleted = true;
 			}
 			else
 				++it;
@@ -93,6 +123,16 @@ namespace ad
 			m_pStatus->SetProgress(i++, size);
 		}
 		m_pStatus->Reset();
+
+		// Re-index GPU indices after deletions
+		if (found_deleted) {
+			ResetGpuIndices();
+#ifdef AD_LOGGER_ENABLE
+			std::stringstream ss;
+			ss << "GPU: Re-indexed " << m_storage.size() << " images after cleanup.";
+			AD_LOG(ss.str().c_str());
+#endif
+		}
 	}
 
 	// Загружает в хранилише m_storage переданный файл

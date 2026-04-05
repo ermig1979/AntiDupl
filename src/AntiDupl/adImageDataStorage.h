@@ -33,6 +33,7 @@ namespace ad
 	// Хранение информации об изображениях в т.ч. эскизов
 	class TImageDataStorage
 	{
+		friend class TEngine;
 	public:
 		TImageDataStorage(TEngine *pEngine);
 		~TImageDataStorage() {ClearMemory();}
@@ -47,9 +48,12 @@ namespace ad
 		void Check();
 		void ClearMemory();
 		void SetSaveState(const bool needToSave);
+		void ResetGpuIndices();
+
+		typedef std::multimap<TUInt32, TImageDataPtr> TStorage;
+		const TStorage& Storage() const { return m_storage; }
 
 	private:
-		typedef std::multimap<TUInt32, TImageDataPtr> TStorage;
 		typedef std::vector<TImageDataPtr> TVector;
 
 		TStorage::iterator Find(const TImageInfo& imageInfo);
@@ -57,10 +61,12 @@ namespace ad
 
 		// Информация которую будем записывать. Словарь TImageData
 		TStorage m_storage;
+		TEngine *m_pEngine;
 		TStatus *m_pStatus;
 		TOptions *m_pOptions;
 
 		bool m_needToSave;
+		size_t m_nextGlobalIdx;
 
 		struct TData
 		{

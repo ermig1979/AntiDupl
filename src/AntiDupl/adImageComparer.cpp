@@ -31,6 +31,10 @@
 #include "adResultStorage.h"
 #include "adImageComparer.h"
 #include "adImageDataStorage.h"
+#include "adGPUManager.h"
+#include <windows.h>
+
+#define AD_DEBUG(msg) OutputDebugStringA(msg)
 
 namespace ad
 {
@@ -39,7 +43,8 @@ namespace ad
     //-------------------------------------------------------------------------
 
     TImageComparer::TImageComparer(TEngine *pEngine)
-        :m_pOptions(pEngine->Options()),
+        :m_pEngine(pEngine),
+        m_pOptions(pEngine->Options()),
         m_pResult(pEngine->Result()),
         m_pTransformedImageData(NULL),
         m_pBuffer(NULL),
@@ -116,24 +121,110 @@ namespace ad
 	// pTransformed - трансформированное, если применяется трансформация или то же что и оригинальное.
     void TImageComparer::CompareWithSet(const Set &set, TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform)
     {
-        double difference;
-		// Если картинка не в проверенных
-        if(!pTransformed->valid)
+        TGpuManager* pGpu = m_pEngine->GpuManager();
+        bool gpuEligible = (pGpu && pGpu->IsAvailable() && 
+                            m_pOptions->compare.algorithmComparing == AD_COMPARING_SQUARED_SUM &&
+                            m_pOptions->advanced.ignoreFrameWidth == 0);
+
+        if (gpuEligible)
         {
-			// Сравниваем с набором проверенных
-            for(TImageDataPtrList::const_iterator i = set.valid.begin(); i != set.valid.end(); ++i)
+            if(!pTransformed->valid)
+                CompareWithSetGPU(set.valid, pOriginal, pTransformed, transform);
+            CompareWithSetGPU(set.other, pOriginal, pTransformed, transform);
+        }
+        else
+        {
+            double difference;
+            // Если картинка не в проверенных
+            if(!pTransformed->valid)
+            {
+                // Сравниваем с набором проверенных
+                for(TImageDataPtrList::const_iterator i = set.valid.begin(); i != set.valid.end(); ++i)
+                {
+                    if(IsDuplPair(pTransformed, *i, &difference))
+                        m_pResult->AddDuplImagePair(pOriginal, *i, difference, transform);
+                }
+            }
+            // Сравниваем с набором остальных
+            for(TImageDataPtrList::const_iterator i = set.other.begin(); i != set.other.end(); ++i)
             {
                 if(IsDuplPair(pTransformed, *i, &difference))
                     m_pResult->AddDuplImagePair(pOriginal, *i, difference, transform);
             }
         }
-		// Сравниваем с набором остальных
-		for(TImageDataPtrList::const_iterator i = set.other.begin(); i != set.other.end(); ++i)
-		{
-			if(IsDuplPair(pTransformed, *i, &difference))
-				m_pResult->AddDuplImagePair(pOriginal, *i, difference, transform);
-		}
 	}
+
+    void TImageComparer::CompareWithSetGPU(const TImageDataPtrList &list, TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform)
+    {
+        AD_DEBUG("CompareWithSetGPU: Starting\n");
+
+        if (list.empty()) return;
+
+        TGpuManager* pGpu = m_pEngine->GpuManager();
+        double threshold = (double)m_mainThreshold;
+
+        AD_DEBUG("CompareWithSetGPU: Gathering indices\n");
+
+        // Gather indices
+        std::vector<size_t> indices;
+        std::vector<TImageDataPtr> ptrs;
+        indices.reserve(list.size());
+        ptrs.reserve(list.size());
+
+        for (TImageDataPtrList::const_iterator i = list.begin(); i != list.end(); ++i)
+        {
+            TImageDataPtr pSecond = *i;
+            // Basic CPU-side pre-checks to avoid unnecessary GPU work
+            if(m_pOptions->compare.typeControl == TRUE && pTransformed->type != pSecond->type) continue;
+            if(m_pOptions->compare.sizeControl == TRUE && (pTransformed->height != pSecond->height || pTransformed->width != pSecond->width)) continue;
+            if(m_pOptions->compare.ratioControl == TRUE && Simd::Square(pTransformed->ratio - pSecond->ratio) > Simd::Square(RATIO_THRESHOLD_DIFFERENCE)) continue;
+            if(m_pOptions->compare.compareInsideOneFolder == FALSE && TPath::EqualByDirectory(pTransformed->path, pSecond->path)) continue;
+            if(m_pOptions->compare.compareInsideOneSearchPath == FALSE && pTransformed->index == pSecond->index) continue;
+
+            indices.push_back(pSecond->globalIdx);
+            ptrs.push_back(pSecond);
+        }
+
+        AD_DEBUG("CompareWithSetGPU: Processing batches\n");
+
+        if (indices.empty()) return;
+
+        const size_t batchSize = 1024; // Process in chunks to manage VRAM/latency
+
+        for (size_t start = 0; start < indices.size(); start += batchSize)
+        {
+            size_t count = std::min(batchSize, indices.size() - start);
+
+            std::vector<size_t> matchIndices(count);
+            std::vector<double> matchDiffs(count);
+            size_t matchCount = 0;
+
+            if (pGpu->CompareOneVsList(pTransformed->data->main, &indices[start], count, threshold,
+                                       matchIndices.data(), matchDiffs.data(), &matchCount, count))
+            {
+                for (size_t m = 0; m < matchCount; ++m)
+                {
+                    // Find original pointer by matching globalIdx
+                    for (size_t b = 0; b < count; ++b) {
+                        if (indices[start + b] == matchIndices[m]) {
+                            TImageDataPtr pSecond = ptrs[start + b];
+                            double difference = sqrt(matchDiffs[m]/m_maxDifference)*100;
+                            if(pOriginal->crc32c != pSecond->crc32c)
+                                difference += ADDITIONAL_DIFFERENCE_FOR_DIFFERENT_CRC32;
+                            m_pResult->AddDuplImagePair(pOriginal, pSecond, difference, transform);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                AD_DEBUG("CompareWithSetGPU: GpuCompareOneVsList FAILED\n");
+            }
+        }
+
+        AD_DEBUG("CompareWithSetGPU: Finished\n");
+    }
 
 	void TImageComparer::AddToSet(Set &set, TImageDataPtr pImageData)
 	{
@@ -173,17 +264,18 @@ namespace ad
 		if(fastDifference > m_fastThreshold)
 			return false;
 
-        uint64_t mainDifference = 0;
+		uint64_t mainDifference = 0;
         if(m_pOptions->advanced.ignoreFrameWidth > 0)
         {
             SimdSquaredDifferenceSumMasked(pFirst->data->main, m_mainSize, pSecond->data->main, m_mainSize, 
-				m_pMask, m_mainSize, FRAME_MASK_INDEX, m_mainSize, 1, &mainDifference);
+                m_pMask, m_mainSize, FRAME_MASK_INDEX, m_mainSize, 1, &mainDifference);
         }
         else
         {
-			SimdSquaredDifferenceSum(pFirst->data->main, m_mainSize, pSecond->data->main, m_mainSize, 
-				m_mainSize, 1, &mainDifference);
+            SimdSquaredDifferenceSum(pFirst->data->main, m_mainSize, pSecond->data->main, m_mainSize, 
+                m_mainSize, 1, &mainDifference);
         }
+        
         if(mainDifference > m_mainThreshold)
             return false;
 

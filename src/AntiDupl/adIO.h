@@ -24,6 +24,7 @@
 #ifndef __adIO_h__
 #define __adIO_h__
 
+#include <stdexcept>
 #include "adConfig.h"
 
 namespace ad
@@ -106,7 +107,7 @@ namespace ad
         {
             std::stringstream ss;
             ss << "Can't read " << sizeof(T) << " bytes from stream!";
-            throw std::exception(ss.str().c_str());
+            throw std::runtime_error(ss.str());
         }
         return (T)0;    
     }
@@ -155,7 +156,7 @@ namespace ad
             {
                 std::stringstream ss;
                 ss << "Can't read " << size << " bytes from stream!";
-                throw std::exception(ss.str().c_str());
+                throw std::runtime_error(ss.str());
             }
         }
     }
@@ -167,7 +168,7 @@ namespace ad
             LARGE_INTEGER shift;
             shift.QuadPart = size;
             if(pStream->Seek(shift, STREAM_SEEK_CUR, NULL) != S_OK)
-                throw std::exception("Can't read stub buffer!");
+                throw std::runtime_error("Can't read stub buffer!");
         }
     }
 
@@ -176,7 +177,7 @@ namespace ad
         ULARGE_INTEGER position;
         LARGE_INTEGER shift = {0};
         if(pStream->Seek(shift, STREAM_SEEK_CUR, &position) != S_OK)
-            throw std::exception("Can't get current stream position!");
+            throw std::runtime_error("Can't get current stream position!");
         return position.QuadPart;
     }
 
@@ -185,7 +186,7 @@ namespace ad
         LARGE_INTEGER shift;
         shift.QuadPart = position;
         if(pStream->Seek(shift, STREAM_SEEK_CUR, NULL) != S_OK)
-            throw std::exception("Can't get current stream position!");
+            throw std::runtime_error("Can't get current stream position!");
     }
 }
 

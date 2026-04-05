@@ -23,6 +23,7 @@
   <PropertyGroup Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 12.8.props" />
   <PropertyGroup Label="Configuration">
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
@@ -51,14 +52,22 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <PreprocessorDefinitions>_WINDOWS;_USRDLL;ANTIDUPL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;_USRDLL;ANTIDUPL_EXPORTS;ENABLE_CUDA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings Condition="'$(Platform)'=='x64'">4267</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
+      <AdditionalDependencies>cudart.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
+    <Cudart>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+    </Cudart>
+    <CudaCompile>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <CodeGeneration>compute_89,sm_89</CodeGeneration>
+    </CudaCompile>
     <PreBuildEvent>
       <Command>"$(ProjectDir)".\adExternal.cmd</Command>
     </PreBuildEvent>
@@ -78,6 +87,7 @@
     <ClCompile Include="adFileUtils.cpp" />
     <ClCompile Include="adGdiplus.cpp" />
     <ClCompile Include="adHeif.cpp" />
+    <ClCompile Include="adGPUManager.cpp" />
     <ClCompile Include="adHintSetter.cpp" />
     <ClCompile Include="adImage.cpp" />
     <ClCompile Include="adImageComparer.cpp" />
@@ -113,6 +123,7 @@
     <ClCompile Include="adUndoRedoEngine.cpp" />
     <ClCompile Include="adUndoRedoTypes.cpp" />
     <ClCompile Include="adWebp.cpp" />
+    <CudaCompile Include="adGPU.cu" />
     <ClCompile Include="AntiDupl.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -128,6 +139,8 @@
     <ClInclude Include="adFileStream.h" />
     <ClInclude Include="adFileUtils.h" />
     <ClInclude Include="adGdiplus.h" />
+    <ClInclude Include="adGPU.h" />
+    <ClInclude Include="adGPUManager.h" />
     <ClInclude Include="adHeif.h" />
     <ClInclude Include="adHintSetter.h" />
     <ClInclude Include="adImage.h" />
@@ -169,4 +182,7 @@
     <ClInclude Include="AntiDupl.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 12.8.targets" />
+  </ImportGroup>
 </Project>

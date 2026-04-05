@@ -44,6 +44,7 @@ namespace ad
     class TSearcher;
     class TRecycleBin;
 	class TCriticalSection;
+    class TGpuManager;
 
     typedef TImageData *TImageDataPtr; 
     //-------------------------------------------------------------------------
@@ -56,6 +57,13 @@ namespace ad
 
         void Search();
 
+        void UpdateGpuDatabase();
+        void ExecuteGpuAllVsAllComparison();
+
+        // Flag to skip comparison during collection (for GPU AllVsAll mode)
+        bool m_skipComparisonDuringCollection;
+        bool SkipComparisonDuringCollection() const { return m_skipComparisonDuringCollection; }
+
         const TString & UserPath() const { return _userPath; }
         TStatus* Status() {return m_pStatus;}
         TOptions* Options() {return m_pOptions;};
@@ -64,6 +72,7 @@ namespace ad
         TResultStorage* Result() {return m_pResult;}
         TCriticalSection* CriticalSection() {return m_pCriticalSection;}
         TRecycleBin* RecycleBin() {return m_pRecycleBin;}
+        TGpuManager* GpuManager() {return m_pGpuManager;}
 
     private:
         TString _userPath;
@@ -79,6 +88,7 @@ namespace ad
         TInit *m_pInit;
         TSearcher *m_pSearcher;
         TRecycleBin *m_pRecycleBin;
+        TGpuManager *m_pGpuManager;
     };
     //-------------------------------------------------------------------------
 }

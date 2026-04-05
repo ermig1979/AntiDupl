@@ -31,7 +31,7 @@
 
 namespace ad
 {
-    const DWORD STATUS_FATAL_APP_EXIT = 0x40000015;
+    const DWORD AD_STATUS_FATAL_APP_EXIT = 0x40000015;
 
     typedef BOOL (*MiniDumpWriteDumpPtr)(
         HANDLE hProcess,
@@ -107,7 +107,7 @@ namespace ad
     {
         DWORD exception_code = info->ExceptionRecord->ExceptionCode;
         void *address = info->ExceptionRecord->ExceptionAddress;
-        if (exception_code == STATUS_FATAL_APP_EXIT) 
+        if (exception_code == AD_STATUS_FATAL_APP_EXIT) 
         {// abort()
             MessageBox(NULL, TEXT("Program aborted."), 
                 TEXT("Crash report"), MB_OK | MB_ICONERROR);

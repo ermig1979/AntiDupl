@@ -38,6 +38,7 @@ namespace ad
     //-------------------------------------------------------------------------
     class TDataCollector
     {
+        TEngine *m_pEngine;
         TOptions *m_pOptions;
         TResultStorage *m_pResult;
         std::vector<TView*> m_pGrayBuffers;

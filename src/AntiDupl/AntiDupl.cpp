@@ -80,6 +80,8 @@ typedef ad::TEngine* adEngineHandle;
     if(p == NULL) \
     return AD_ERROR_INVALID_POINTER;
 
+#define AD_DEBUG(msg) OutputDebugStringA(msg)
+
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReasonForCall, LPVOID lpReserved)
 {
@@ -153,9 +155,14 @@ DLLAPI adEngineHandle adCreateA(const adCharA * userPath)
 
 DLLAPI adEngineHandle adCreateW(const adCharW * userPath)
 {
+    AD_DEBUG("adCreateW: Starting\n");
     ad::DumpInit();
+    AD_DEBUG("adCreateW: DumpInit done\n");
 
-    return new ad::TEngine(ad::TString(userPath));
+    adEngineHandle handle = new ad::TEngine(ad::TString(userPath));
+    AD_DEBUG("adCreateW: TEngine created\n");
+    
+    return handle;
 }
 
 DLLAPI adError adRelease(adEngineHandle handle)

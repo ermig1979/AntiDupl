@@ -32,6 +32,9 @@
 #include "adResult.h"
 #include "adResultStorage.h"
 #include "adPerformance.h"
+#include <windows.h>
+
+#define AD_DEBUG(msg) OutputDebugStringA(msg)
 
 namespace ad
 {
@@ -257,15 +260,36 @@ namespace ad
 
     void TCompareManager::Add(TImageData *pImageData)
     {
+        // Check if manager is started
+        if (m_pThreads == NULL) {
+            AD_DEBUG("TCompareManager::Add: Not started, skipping\n");
+            return;
+        }
+        
+        AD_DEBUG("TCompareManager::Add: Starting\n");
+
         if(CanCompare(pImageData))
         {
+            AD_DEBUG("TCompareManager::Add: CanCompare is true\n");
+
             TCriticalSection::TLocker locker(m_pCS);
             size_t threadId = m_addCounter%m_pThreads->size();
+            AD_DEBUG("TCompareManager::Add: Pushing to threads\n");
+
             for(TThreads::iterator i = m_pThreads->begin(); i != m_pThreads->end(); i++)
                 i->task->Queue()->Push(pImageData, threadId);
+
+            AD_DEBUG("TCompareManager::Add: Pushed to all threads\n");
+
             m_pEngine->Status()->Assign(AD_THREAD_TYPE_COMPARE, threadId);
             m_addCounter++;
         }
+        else
+        {
+            AD_DEBUG("TCompareManager::Add: CanCompare is false\n");
+        }
+
+        AD_DEBUG("TCompareManager::Add: Finished\n");
     }
 
     size_t TCompareManager::DefaultThreadCount(size_t imageCount)
@@ -316,21 +340,46 @@ namespace ad
 
     void TCollectManager::Add(TImageData *pImageData)
     {
+        AD_DEBUG("TCollectManager::Add: Starting\n");
+        
         if(pImageData->DefectCheckingNeed(m_pOptions) || pImageData->PixelDataFillingNeed(m_pOptions) || pImageData->crc32c == 0)
         {
+            AD_DEBUG("TCollectManager::Add: Loading file to memory\n");
             pImageData->hGlobal = LoadFileToMemory(pImageData->path.Original().c_str());
+            AD_DEBUG("TCollectManager::Add: File loaded\n");
+            
             size_t threadId = GetThreadId();
+            AD_DEBUG("TCollectManager::Add: Got threadId\n");
+            
             m_pThreads->at(threadId).task->Queue()->Push(pImageData, threadId);
+            AD_DEBUG("TCollectManager::Add: Pushed to queue\n");
+            
             m_pEngine->Status()->Assign(AD_THREAD_TYPE_COLLECT, threadId);
         }
         else
         {
+            AD_DEBUG("TCollectManager::Add: Using cached data\n");
 			TDefectType defect = pImageData->GetDefect(m_pOptions);
 			if(defect > AD_DEFECT_NONE)
 				m_pEngine->Result()->AddDefectImage(pImageData, defect);
+            
+            AD_DEBUG("TCollectManager::Add: Calling FillOther\n");
             pImageData->FillOther(m_pOptions);
-            m_pCompareManager->Add(pImageData);
+            
+            // Skip comparison if GPU AllVsAll mode is enabled
+            if (m_pEngine->SkipComparisonDuringCollection())
+            {
+                AD_DEBUG("TCollectManager::Add: Skipping comparison (GPU mode)\n");
+            }
+            else
+            {
+                AD_DEBUG("TCollectManager::Add: Calling CompareManager->Add\n");
+                m_pCompareManager->Add(pImageData);
+                AD_DEBUG("TCollectManager::Add: CompareManager->Add returned\n");
+            }
         }
+        
+        AD_DEBUG("TCollectManager::Add: Finished\n");
     }
 
     size_t TCollectManager::DefaultThreadCount()

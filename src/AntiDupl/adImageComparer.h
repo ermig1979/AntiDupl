@@ -50,6 +50,7 @@ namespace ad
         typedef std::vector<Set> Sets;
         Sets m_sets;
 
+        TEngine *m_pEngine;
         TOptions *m_pOptions;
     public:
         TImageComparer(TEngine *pEngine);
@@ -64,6 +65,7 @@ namespace ad
 
         void AddToSet(Set &set, TImageDataPtr pImageData);
         void CompareWithSet(const Set &set, TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform);
+        void CompareWithSetGPU(const TImageDataPtrList &list, TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform);
 
     private:
         TResultStorage *m_pResult;
