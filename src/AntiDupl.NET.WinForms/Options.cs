@@ -92,7 +92,14 @@ namespace AntiDupl.NET.WinForms
                     XmlSerializer xmlSerializer = new XmlSerializer(typeof(Options));
                     fileStream = new FileStream(Options.GetOptionsFileName(), FileMode.Open, FileAccess.Read);
                     Options options = (Options)xmlSerializer.Deserialize(fileStream);
-                    options.resultsOptions.Check();
+                    if (options.resultsOptions == null)
+                        options.resultsOptions = new ResultsOptions();
+                    else
+                        options.resultsOptions.Check();
+                    if (options.hotKeyOptions == null)
+                        options.hotKeyOptions = new HotKeyOptions();
+                    else
+                        options.hotKeyOptions.Check();
                     fileStream.Close();
                     return options;
                 }
