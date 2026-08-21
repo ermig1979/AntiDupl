@@ -42,6 +42,7 @@
   <CoreOptionsForm_CompareTabPage_Text>Σύγκριση</CoreOptionsForm_CompareTabPage_Text>
   <CoreOptionsForm_CheckOnEqualityCheckBox_Text>Αναζήτηση διπλότυπων εικόνων</CoreOptionsForm_CheckOnEqualityCheckBox_Text>
   <CoreOptionsForm_TransformedImageCheckBox_Text>Αναζήτηση περιστραμμένων και ανεστραμμένων διπλότυπων εικόνων</CoreOptionsForm_TransformedImageCheckBox_Text>
+  <CoreOptionsForm_ShiftedImageCheckBox_Text>Αναζήτηση μετατοπισμένων διπλότυπων εικόνων</CoreOptionsForm_ShiftedImageCheckBox_Text>
   <CoreOptionsForm_SizeControlCheckBox_Text>Έλεγχος μεγέθους εικόνας</CoreOptionsForm_SizeControlCheckBox_Text>
   <CoreOptionsForm_TypeControlCheckBox_Text>Έλεγχος τύπου εικόνας</CoreOptionsForm_TypeControlCheckBox_Text>
   <CoreOptionsForm_RatioControlCheckBox_Text>Έλεγχος αναλογίας πλάτους/ύψους εικόνας</CoreOptionsForm_RatioControlCheckBox_Text>

@@ -86,6 +86,7 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_CompareTabPage_Text = "Сравнение";
             s.CoreOptionsForm_CheckOnEqualityCheckBox_Text = "Искать дублирующие картинки";
             s.CoreOptionsForm_TransformedImageCheckBox_Text = "Искать повернутые и зеркальные дубликаты";
+            s.CoreOptionsForm_ShiftedImageCheckBox_Text = "Искать дубликаты со сдвигом изображения";
             s.CoreOptionsForm_SizeControlCheckBox_Text = "Учитывать размер картинок";
             s.CoreOptionsForm_TypeControlCheckBox_Text = "Учитывать тип картинок";
             s.CoreOptionsForm_RatioControlCheckBox_Text = "Учитывать соотношение ширины/высоты картинок";

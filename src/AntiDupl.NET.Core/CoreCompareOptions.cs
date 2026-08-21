@@ -35,6 +35,7 @@ namespace AntiDupl.NET.Core
     {
         public bool checkOnEquality;
         public bool transformedImage;
+        public bool shiftedImage;
         public bool sizeControl;
         public bool typeControl;
         public bool ratioControl;
@@ -53,6 +54,7 @@ namespace AntiDupl.NET.Core
         {
             checkOnEquality = compareOptions.checkOnEquality;
             transformedImage = compareOptions.transformedImage;
+            shiftedImage = compareOptions.shiftedImage;
             sizeControl = compareOptions.sizeControl;
             typeControl = compareOptions.typeControl;
             ratioControl = compareOptions.ratioControl;
@@ -68,6 +70,7 @@ namespace AntiDupl.NET.Core
         {
             checkOnEquality = compareOptions.checkOnEquality != CoreDll.FALSE;
             transformedImage = compareOptions.transformedImage != CoreDll.FALSE;
+            shiftedImage = compareOptions.shiftedImage != CoreDll.FALSE;
             sizeControl = compareOptions.sizeControl != CoreDll.FALSE;
             typeControl = compareOptions.typeControl != CoreDll.FALSE;
             ratioControl = compareOptions.ratioControl != CoreDll.FALSE;
@@ -83,6 +86,7 @@ namespace AntiDupl.NET.Core
         {
             compareOptions.checkOnEquality = checkOnEquality ? CoreDll.TRUE : CoreDll.FALSE;
             compareOptions.transformedImage = transformedImage ? CoreDll.TRUE : CoreDll.FALSE;
+            compareOptions.shiftedImage = shiftedImage ? CoreDll.TRUE : CoreDll.FALSE;
             compareOptions.sizeControl = sizeControl ? CoreDll.TRUE : CoreDll.FALSE;
             compareOptions.typeControl = typeControl ? CoreDll.TRUE : CoreDll.FALSE;
             compareOptions.ratioControl = ratioControl ? CoreDll.TRUE : CoreDll.FALSE;
@@ -104,6 +108,7 @@ namespace AntiDupl.NET.Core
             return
                 checkOnEquality == compareOptions.checkOnEquality &&
                 transformedImage == compareOptions.transformedImage &&
+                shiftedImage == compareOptions.shiftedImage &&
                 sizeControl == compareOptions.sizeControl &&
                 typeControl == compareOptions.typeControl &&
                 ratioControl == compareOptions.ratioControl &&
@@ -132,6 +137,16 @@ namespace AntiDupl.NET.Core
             {
                 transformedImage = value;
                 NotifyPropertyChanged("TransformedImage");
+            }
+        }
+
+        public bool ShiftedImage
+        {
+            get { return shiftedImage; }
+            set
+            {
+                shiftedImage = value;
+                NotifyPropertyChanged("ShiftedImage");
             }
         }
 
