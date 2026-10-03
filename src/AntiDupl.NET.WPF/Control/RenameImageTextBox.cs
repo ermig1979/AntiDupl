@@ -7,8 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AntiDupl.NET.WPF.UndoRedo;
-using TinyIoC;
-using System.Windows.Input;
+using AntiDupl.NET.WPF.Service;using System.Windows.Input;
 using System.Windows;
 using AntiDupl.NET.WPF.ObjectModel;
 using AntiDupl.NET.WPF.Command;
@@ -23,7 +22,7 @@ namespace AntiDupl.NET.WPF.Control
         public RenameImageTextBox()
         {
             Command = RenameCommand;
-            _undoRedoEngine = TinyIoCContainer.Current.Resolve<IUndoRedoEngine>();
+            _undoRedoEngine = ServiceLocator.Resolve<IUndoRedoEngine>();
         }
 
 

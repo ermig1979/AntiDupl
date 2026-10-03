@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -10,6 +12,7 @@ using System.Windows.Threading;
 using AntiDupl.NET.WPF.Core;
 using AntiDupl.NET.WPF.View;
 using AntiDupl.NET.WPF.ViewModel;
+using Microsoft.Extensions.Logging;
 
 using AntiDupl.NET.Core;
 using AntiDupl.NET.Core.Original;
@@ -26,6 +29,9 @@ namespace AntiDupl.NET.WPF.Command
         private MainViewModel _mainViewModel;
         private CoreLib _core;
         private IWindowService _windowService;
+        private ILogger _logger;
+        private volatile bool _running;
+        private int _lastLoggedPct10 = -1;
         DispatcherTimer _timer;
         ProgressDialogViewModel _progressDialogViewModel;
         public enum StateEnum
@@ -37,16 +43,17 @@ namespace AntiDupl.NET.WPF.Command
         }
         StateEnum _state = StateEnum.Start;
 
-        public SearchDllCommand(MainViewModel mainViewModel, CoreLib core, IWindowService windowService)
+        public SearchDllCommand(MainViewModel mainViewModel, CoreLib core, IWindowService windowService, ILogger logger)
         {
             this._mainViewModel = mainViewModel;
             this._core = core;
             this._windowService = windowService;
+            this._logger = logger;
 
-            //  установка таймера
+            //  установка таймера (250 мс — плавность, как в референс-проектах)
             _timer = new DispatcherTimer();
             _timer.Tick += OnTimerTick;
-            _timer.Interval = new TimeSpan(0, 0, 1);
+            _timer.Interval = TimeSpan.FromMilliseconds(250);
         }
 
         public DuplPairViewModel[] GetResults()
@@ -70,13 +77,15 @@ namespace AntiDupl.NET.WPF.Command
             if (_state == StateEnum.Finish)
             {
                 _timer.Stop();
+                _running = false;
+                RaiseCanExecuteChanged();
+                _logger.LogInformation("Поиск: завершён, получение результатов");
+                _mainViewModel.SetStatus("Поиск завершён, получение результатов…");
+
                 var closeProgressWindow = new Action(_windowService.CloseProgressWindow);
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, closeProgressWindow);
 
-                DuplPairViewModel[] result2 = GetResults();
-
-                //if (result2.Any())
-                _mainViewModel.SetResult(result2);
+                GetResultsAndSetResult();
             }
             if (_state == StateEnum.Stopped)
             {
@@ -132,20 +141,48 @@ namespace AntiDupl.NET.WPF.Command
                         path = mainThreadStatus.path;
                     }
                 }
-                _progressDialogViewModel.ProgressMax = (uint)(mainThreadStatus.total);
-                _progressDialogViewModel.Progress = (uint)(currentFirst);
-                _progressDialogViewModel.CurrentSecond = (uint)currentSecond;
-                _progressDialogViewModel.ProgressMessage = path;
+                if (mainThreadStatus.total != (int)_progressDialogViewModel.ProgressMax ||
+                    currentFirst != (int)_progressDialogViewModel.Progress ||
+                    currentSecond != (int)_progressDialogViewModel.CurrentSecond ||
+                    path != _progressDialogViewModel.ProgressMessage)
+                {
+                    _progressDialogViewModel.ProgressMax = (uint)(mainThreadStatus.total);
+                    _progressDialogViewModel.Progress = (uint)(currentFirst);
+                    _progressDialogViewModel.CurrentSecond = (uint)currentSecond;
+                    _progressDialogViewModel.ProgressMessage = path;
+
+                    if (total > 0)
+                    {
+                        int pct = currentFirst * 100 / total;
+                        if (pct / 10 != _lastLoggedPct10)
+                        {
+                            _lastLoggedPct10 = pct / 10;
+                            _logger.LogInformation("Поиск: прогресс {Pct}% ({Cur}/{Tot}), файл: {Path}",
+                                pct, currentFirst, total, path);
+                            _mainViewModel.SetStatus(string.Format("Идёт поиск… {0}% ({1}/{2})",
+                                pct, currentFirst, total));
+                        }
+                    }
+                }
             }
         }
 
         public bool CanExecute(object parameter)
         {
-            return true;
+            return !_running;
+        }
+
+        void RaiseCanExecuteChanged()
+        {
+            if (CanExecuteChanged != null)
+                CanExecuteChanged(this, EventArgs.Empty);
         }
 
         public void Execute(object parameter)
         {
+            if (_running)
+                return;
+
             // Initialize
             _progressDialogViewModel = new ProgressDialogViewModel();
             // Set the view model's token source
@@ -153,6 +190,11 @@ namespace AntiDupl.NET.WPF.Command
             _progressDialogViewModel.TokenSource.Token.Register(() => OnCancel());
 
             _state = StateEnum.Start;
+            _lastLoggedPct10 = -1;
+            _running = true;
+            RaiseCanExecuteChanged();
+            _logger.LogInformation("Поиск: старт");
+            _mainViewModel.SetStatus("Подготовка поиска…");
 
             Thread thread = new Thread(new ThreadStart(RunProcess));
             thread.IsBackground = true; //make them a daemon - prevent thread callback issues
@@ -176,28 +218,66 @@ namespace AntiDupl.NET.WPF.Command
         /// </summary>
         public void RunProcess()
         {
-            //var watch = System.Diagnostics.Stopwatch.StartNew();
+            var watch = Stopwatch.StartNew();
 
             _progressDialogViewModel.State = "Search";
+            _mainViewModel.SetStatus("Подготовка: передача параметров ядру…");
 
-            //_mainViewModel.Options.CopyToDll();
-            _mainViewModel.Options = new CoreOptions(_core);
+            // ВАЖНО: НЕ делать здесь _mainViewModel.Options = new CoreOptions(_core) —
+            // конструктор CoreOptions(CoreLib) временно сбрасывает опции ядра к дефолтам,
+            // и снимок оказывается заполнен дефолтными значениями (алгоритм/порог),
+            // что после поиска приводит к сбросу выпадающих списков. Снимок Options
+            // синхронизируется с ядром в ApplyCompareOptions, а пути передаются CopyToDll.
             _mainViewModel.LocationsModel.CopyToDll();
+            _logger.LogInformation("Поиск: параметры переданы ядру за {Ms} мс (режим={Algo}, порог={Th}%)",
+                watch.ElapsedMilliseconds,
+                _mainViewModel.Options.compareOptions.AlgorithmComparing,
+                _mainViewModel.Options.compareOptions.ThresholdDifference);
 
-            var result = _core.Search();
-
-            //watch.Stop();
-            //var elapsedMs = watch.ElapsedMilliseconds;
-            //MessageBox.Show(elapsedMs.ToString());
+            _mainViewModel.SetStatus("Идёт поиск…");
+            try
+            {
+                var result = _core.Search();
+            }
+            finally
+            {
+                _logger.LogInformation("Поиск: ядро завершено за {Ms} мс", watch.ElapsedMilliseconds);
+            }
 
             _state = StateEnum.Finish;
         }
 
+        /// <summary>
+        /// Получение результатов в фоновом потоке (P/Invoke + построение VM-шек),
+        /// затем порционный SetResult в UI-потоке.
+        /// </summary>
+        void GetResultsAndSetResult()
+        {
+            Task.Run(() =>
+            {
+                var sw = Stopwatch.StartNew();
+                DuplPairViewModel[] result2 = GetResults();
+                _logger.LogInformation("Поиск: получено результатов: {Count} пар за {Ms} мс",
+                    result2.Length, sw.ElapsedMilliseconds);
+                // SetResult сам маршализует обновление в UI-поток
+                _mainViewModel.SetResult(result2);
+            });
+        }
+
         private void OnCancel()
         {
+            // Поиск уже завершён (окно закрыто штатно после Finish) или уже остановлен —
+            // Stop() вызывать нельзя: ядро сбросит результат.
+            if (_state == StateEnum.Finish || _state == StateEnum.Stopped)
+                return;
+
+            _logger.LogWarning("Поиск: остановлен пользователем");
             _core.Stop();
             _state = StateEnum.Stopped;
             _progressDialogViewModel.IsCancelled = true;
+            _running = false;
+            RaiseCanExecuteChanged();
+            _mainViewModel.SetStatus("Остановлено");
         }
     }
 }

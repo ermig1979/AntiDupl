@@ -80,6 +80,10 @@
 
     <v:String x:Key="toolBar_Configuration">Configuration</v:String>
     <v:String x:Key="toolBar_setSaati">Set priorities for criterions for method Saati</v:String>
+    <v:String x:Key="toolBar_thresholdDifference">Threshold difference</v:String>
+    <v:String x:Key="toolBar_compareAlgorithm">Algorithm of comparing of images</v:String>
+    <v:String x:Key="toolBar_compareAlgorithm_squaredSum">Mean square difference</v:String>
+    <v:String x:Key="toolBar_compareAlgorithm_ssim">SSIM</v:String>
 
     <v:String x:Key="configurationWindow_thumbnailWidth">Thumbnail Width</v:String>
     <v:String x:Key="configurationWindow_maxCachedThumbnail">Max cached thumbnail</v:String>

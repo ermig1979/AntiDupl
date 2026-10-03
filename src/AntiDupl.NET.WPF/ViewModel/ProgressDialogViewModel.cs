@@ -50,6 +50,12 @@ public class ProgressDialogViewModel : PropertyChangedBase
     public bool IsCancelled { get; set; }
 
     /// <summary>
+    /// Программное закрытие окна (поиск завершён) — OnClosing не должен
+    /// трактовать его как отмену пользователем.
+    /// </summary>
+    public bool IsProgrammaticClose { get; set; }
+
+    /// <summary>
     ///     A cancellation token source for the background operations.
     /// </summary>
     internal CancellationTokenSource TokenSource { get; set; }

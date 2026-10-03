@@ -1,20 +1,25 @@
-﻿using System;
+using System;
 using System.ComponentModel;
+using System.IO;
 using System.Windows;
+using AntiDupl.NET.Core;
 using AntiDupl.NET.WPF.Core;
+using AntiDupl.NET.WPF.Helper;
 using AntiDupl.NET.WPF.Model;
 using AntiDupl.NET.WPF.Properties;
 using AntiDupl.NET.WPF.Service;
+using AntiDupl.NET.WPF.UndoRedo;
 using AntiDupl.NET.WPF.View;
 using AntiDupl.NET.WPF.ViewModel;
-using TinyIoC;
-
-using AntiDupl.NET.Core;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace AntiDupl.NET.WPF
 {
     public partial class App
     {
+        static ServiceProvider _serviceProvider;
+
         public App()
         {
             Startup += Application_Startup;
@@ -26,29 +31,40 @@ namespace AntiDupl.NET.WPF
                    new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
 
-            ConfigurationModel confModel = ConfigurationModel.Load();
-            // Register config
-            TinyIoCContainer.Current.Register<IConfigurationModel, ConfigurationModel>(confModel);
+            // Стандартное логирование (ILogger) в файл: <BaseDirectory>\logs
+            FileLoggerProvider fileLogProvider =
+                new FileLoggerProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs"));
 
-            ILanguageService languageService = new LanguageService(confModel);
-            TinyIoCContainer.Current.Register<ILanguageService>(languageService);
+            // Стандартный DI-контейнер (Microsoft.Extensions.DependencyInjection)
+            ServiceCollection services = new ServiceCollection();
+            services.AddLogging(builder =>
+            {
+                builder.SetMinimumLevel(LogLevel.Information);
+                builder.AddProvider(fileLogProvider);
+            });
+
+            services.AddSingleton<IConfigurationModel>(ConfigurationModel.Load());
+            services.AddSingleton<ILanguageService, LanguageService>();
 
             AntiDupl.NET.WPF.Resources.Resources.UserPath = AntiDupl.NET.WPF.Resources.Resources.GetDefaultUserPath();
-            CoreLib core = new CoreLib(AntiDupl.NET.WPF.Resources.Resources.UserPath);
-            TinyIoC.TinyIoCContainer.Current.Register<CoreLib>(core);
+            services.AddSingleton(new CoreLib(AntiDupl.NET.WPF.Resources.Resources.UserPath));
+            services.AddSingleton<IImageLoader, ImageLoader>();
+            services.AddSingleton<IThumbnailProvider, ThumbnailProvider>();
 
-            ImageLoader imageLoader = new ImageLoader(core);
-            TinyIoC.TinyIoCContainer.Current.Register<IImageLoader>(imageLoader);
+            services.AddSingleton<IUndoRedoEngine, UndoRedoEngine>();
+            services.AddSingleton<IViewModeModel, ViewModeModel>();
+            services.AddSingleton<MainViewModel>();
 
-            ThumbnailProvider thumbnailProvider = new ThumbnailProvider(imageLoader);
-            TinyIoC.TinyIoCContainer.Current.Register<IThumbnailProvider>(thumbnailProvider);
+            _serviceProvider = services.BuildServiceProvider();
+            ServiceLocator.Provider = _serviceProvider;
 
-            //IWindowService windowService = new WindowService();
-            MainViewModel viewModel = TinyIoCContainer.Current.Resolve<MainViewModel>();
-            //var viewModel = new MainViewModel(languageService);
+            ILoggerFactory loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
+            loggerFactory.CreateLogger<App>()
+                .LogInformation("Запуск приложения. Лог: {LogPath}", fileLogProvider.LogFilePath);
+
+            MainViewModel viewModel = _serviceProvider.GetRequiredService<MainViewModel>();
 
             var shell = new MainWindow();
-            //windowService.MainWindow = shell;
             shell.DataContext = viewModel;
             shell.Loaded += new RoutedEventHandler(viewModel.OnLoaded);
             shell.Closing += new CancelEventHandler(viewModel.OnClosing);
@@ -57,6 +73,7 @@ namespace AntiDupl.NET.WPF
 
         void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
+            LogError("DispatcherUnhandledException", e.Exception);
             MessageBox.Show(e.Exception.Message, "Uncaught Thread Exception",
                             MessageBoxButton.OK, MessageBoxImage.Error);
         }
@@ -64,8 +81,17 @@ namespace AntiDupl.NET.WPF
         void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Exception ex = e.ExceptionObject as Exception;
+            LogError("AppDomain.UnhandledException", ex);
             MessageBox.Show(ex.Message, "Uncaught Thread Exception",
                             MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        static void LogError(string source, Exception ex)
+        {
+            if (_serviceProvider == null || ex == null)
+                return;
+            _serviceProvider.GetRequiredService<ILoggerFactory>()
+                .CreateLogger(source).LogError(ex, "{Source}: {Message}", source, ex.Message);
         }
     }
 }

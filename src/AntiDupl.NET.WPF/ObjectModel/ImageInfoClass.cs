@@ -13,8 +13,7 @@ using System.Xml.Serialization;
 using AntiDupl.NET.WPF.Model;
 using AntiDupl.NET.WPF.Service;
 using AntiDupl.NET.WPF.ViewModel;
-using TinyIoC;
-
+using AntiDupl.NET.WPF.Service;
 using AntiDupl.NET.Core.Original;
 
 namespace AntiDupl.NET.WPF.ObjectModel
@@ -48,11 +47,11 @@ namespace AntiDupl.NET.WPF.ObjectModel
                        });
 
 
-            _configuration = TinyIoCContainer.Current.Resolve<IConfigurationModel>();
+            _configuration = ServiceLocator.Resolve<IConfigurationModel>();
             _configuration.PropertyChanged += _configuration_PropertyChanged;
 
-            _imageLoader = TinyIoC.TinyIoCContainer.Current.Resolve<IImageLoader>();
-            _thumbnailProvider = TinyIoC.TinyIoCContainer.Current.Resolve<IThumbnailProvider>();
+            _imageLoader = ServiceLocator.Resolve<IImageLoader>();
+            _thumbnailProvider = ServiceLocator.Resolve<IThumbnailProvider>();
         }
 
         ~ImageInfoClass()

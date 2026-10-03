@@ -39,6 +39,7 @@ namespace AntiDupl.NET.WPF.UndoRedo
                 //    OnActoinAppledEvent();
                 RaisePropertyChangedEvent("UndoEnable");
                 RaisePropertyChangedEvent("RedoEnable");
+                RaisePropertyChangedEvent("UndoTooltip");
                 return true;
             }
             return false;
@@ -55,6 +56,7 @@ namespace AntiDupl.NET.WPF.UndoRedo
                 //    OnActoinAppledEvent();
                 RaisePropertyChangedEvent("UndoEnable");
                 RaisePropertyChangedEvent("RedoEnable");
+                RaisePropertyChangedEvent("UndoTooltip");
                 return true;
             }
             return false;

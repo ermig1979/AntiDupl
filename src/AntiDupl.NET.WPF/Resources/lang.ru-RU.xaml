@@ -80,6 +80,10 @@
 
     <v:String x:Key="toolBar_Configuration">Настройки</v:String>
     <v:String x:Key="toolBar_setSaati">Установить приоритет критериев для метода Саати</v:String>
+    <v:String x:Key="toolBar_thresholdDifference">Пороговая разность</v:String>
+    <v:String x:Key="toolBar_compareAlgorithm">Алгоритм сравнения изображений</v:String>
+    <v:String x:Key="toolBar_compareAlgorithm_squaredSum">Среднеквадратичная разность</v:String>
+    <v:String x:Key="toolBar_compareAlgorithm_ssim">SSIM</v:String>
 
     <v:String x:Key="configurationWindow_thumbnailWidth">Ширина эскизов</v:String>
     <v:String x:Key="configurationWindow_maxCachedThumbnail">Максимальное количество эскизов в кеше</v:String>

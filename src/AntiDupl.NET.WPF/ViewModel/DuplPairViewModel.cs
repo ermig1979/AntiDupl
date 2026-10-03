@@ -9,8 +9,7 @@ using AntiDupl.NET.WPF.Helper;
 using AntiDupl.NET.WPF.Model;
 using AntiDupl.NET.WPF.ObjectModel;
 using AntiDupl.NET.WPF.ObjectModel.ConfigurableAction;
-using TinyIoC;
-
+using AntiDupl.NET.WPF.Service;
 using AntiDupl.NET.Core.Original;
 using AntiDupl.NET.Core;
 
@@ -39,7 +38,7 @@ namespace AntiDupl.NET.WPF.ViewModel
         {
             FirstFile = new ImageInfoClass();
             SecondFile = new ImageInfoClass();
-            _configuration = TinyIoCContainer.Current.Resolve<IConfigurationModel>();
+            _configuration = ServiceLocator.Resolve<IConfigurationModel>();
         }
         public DuplPairViewModel(CoreResult core_results)
         {
@@ -69,7 +68,7 @@ namespace AntiDupl.NET.WPF.ViewModel
             SecondFile.Type = core_results.second.type;
 
             //SaatiHelper.CalculateIndex(this, _configuration);
-            _configuration = TinyIoCContainer.Current.Resolve<IConfigurationModel>();
+            _configuration = ServiceLocator.Resolve<IConfigurationModel>();
             FillFolderAreDiffrent();
         }
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 using AntiDupl.NET.WPF.Command;
 using AntiDupl.NET.WPF.Core;
 using AntiDupl.NET.WPF.Helper;
@@ -20,10 +22,11 @@ using AntiDupl.NET.WPF.ObjectModel;
 using AntiDupl.NET.WPF.Service;
 using AntiDupl.NET.WPF.UndoRedo;
 using AntiDupl.NET.WPF.View;
+using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
-using TinyIoC;
 
 using AntiDupl.NET.Core;
+using AntiDupl.NET.Core.Enums;
 
 namespace AntiDupl.NET.WPF.ViewModel
 {
@@ -34,6 +37,7 @@ namespace AntiDupl.NET.WPF.ViewModel
         
         CoreLib _core;
         IWindowService _windowService;
+        ILogger _logger;
         public LocationsModel LocationsModel { get; set; }
         public CoreOptions Options { get; set; }
 
@@ -59,8 +63,8 @@ namespace AntiDupl.NET.WPF.ViewModel
         IgnoreStorage _ignoreStorage;
         ILanguageService _languageService;
 
-        ViewModeModel _viewModeModel;
-        public ViewModeModel ViewModeModel //используется для скрытия табов
+        IViewModeModel _viewModeModel;
+        public IViewModeModel ViewModeModel //используется для скрытия табов
         {
             get { return _viewModeModel; }
         }
@@ -99,11 +103,14 @@ namespace AntiDupl.NET.WPF.ViewModel
             ILanguageService languageService,
             IConfigurationModel configuration,
             CoreLib coreLib,
-            IThumbnailProvider thumbnailProvider)
+            IThumbnailProvider thumbnailProvider,
+            IUndoRedoEngine undoRedoEngine,
+            IViewModeModel viewModeModel,
+            ILoggerFactory loggerFactory)
         {
+            _logger = loggerFactory.CreateLogger<MainViewModel>();
             _languageService = languageService;
-            //_windowService = windowService;
-            _windowService = new WindowService();
+            _windowService = new WindowService(_logger);
 
             _thumbnailProvider = thumbnailProvider;
             _core = coreLib;
@@ -112,28 +119,29 @@ namespace AntiDupl.NET.WPF.ViewModel
             Options = new CoreOptions(_core);
             _ignoreStorage = IgnoreStorage.Load();
 
-            //_configuration = TinyIoCContainer.Current.Resolve<IConfigurationModel>();
+            _languageService.LanguageChanged += OnLanguageChanged;
+            InitializeCompareModeOptions();
+
+            _logger.LogInformation("MainViewModel: инициализирован (режим={Algorithm}, порог={Threshold}%)",
+                Options.compareOptions.AlgorithmComparing, Options.compareOptions.ThresholdDifference);
+
             Configuration = configuration;
             Configuration.PropertyChanged += OnConfigurationPropertyChanged;
 
-            UndoRedoEngine undoRedoEngine = new UndoRedoEngine(Configuration);
             _undoRedoEngine = undoRedoEngine;
             _undoRedoEngine.PropertyChanged += OnUndoRedoEnginePropertyChanged;
-            TinyIoCContainer.Current.Register<IUndoRedoEngine, UndoRedoEngine>(undoRedoEngine);
 
-            _viewModeModel = new ViewModeModel();
-            TinyIoCContainer.Current.Register<IViewModeModel, ViewModeModel>(_viewModeModel);
-
+            _viewModeModel = viewModeModel;
 
             _thumbnailProvider.PropertyChanged += OnThumbnailProviderPropertyChanged;
-            //ThumbnailProvider.Instance.PropertyChanged += OnThumbnailProviderPropertyChanged;
         }
 
         public void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            _logger.LogInformation("MainViewModel: закрытие окна");
             Configuration.PropertyChanged -= OnConfigurationPropertyChanged;
             _undoRedoEngine.PropertyChanged -= OnUndoRedoEnginePropertyChanged;
-            TinyIoCContainer.Current.Unregister<IUndoRedoEngine>();
+            _languageService.LanguageChanged -= OnLanguageChanged;
             //_dllModel.SaveSettings();
             _core.Dispose();
 
@@ -148,7 +156,10 @@ namespace AntiDupl.NET.WPF.ViewModel
         public void OnLoaded(object sender, RoutedEventArgs e)
         {
             if (Configuration.LoadResultOnOpen && !String.IsNullOrEmpty(Configuration.LastResultFile))
+            {
+                _logger.LogInformation("MainViewModel: загрузка результата при открытии: {File}", Configuration.LastResultFile);
                 LoadResults(Configuration.LastResultFile);
+            }
         }
 
         void OnUndoRedoEnginePropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -182,7 +193,65 @@ namespace AntiDupl.NET.WPF.ViewModel
         {
             get
             {
-                return _searchCommand ?? (_searchCommand = new SearchDllCommand(this, _core, _windowService));
+                return _searchCommand ?? (_searchCommand = new SearchDllCommand(this, _core, _windowService, _logger));
+            }
+        }
+
+        ICommand _deleteImageCommand;
+        /// <summary>
+        /// Удаление изображения из текущей пары (parameter = ImageInfoClass файла).
+        /// </summary>
+        public ICommand DeleteImageCommand
+        {
+            get
+            {
+                return _deleteImageCommand ?? (_deleteImageCommand = new RelayCommand(arg =>
+                {
+                    ImageInfoClass file = arg as ImageInfoClass;
+                    DuplPairViewModel result = (Result as ICollectionView)?.CurrentItem as DuplPairViewModel;
+                    if (file == null || result == null)
+                        return;
+                    if (file.Equals(result.FirstFile) || file.Equals(result.SecondFile))
+                    {
+                        _logger.LogInformation("DeleteImage: {Path}", file.Path);
+                        IUCommand uCommand = new UndoRedo.DeleteImageCommand(result, file, _resultList, Result);
+                        _undoRedoEngine.ExecuteCommand(uCommand);
+                    }
+                }, arg =>
+                {
+                    ImageInfoClass file = arg as ImageInfoClass;
+                    if (file == null)
+                        return false;
+                    DuplPairViewModel result = (Result as ICollectionView)?.CurrentItem as DuplPairViewModel;
+                    return result != null &&
+                        (file.Equals(result.FirstFile) || file.Equals(result.SecondFile));
+                }));
+            }
+        }
+
+        ICommand _openComparatorForDuplPairCommand;
+        /// <summary>
+        /// Открыть сравнитель для пары (parameter = DuplPairViewModel или null — текущая пара).
+        /// </summary>
+        public ICommand OpenComparatorForDuplPairCommand
+        {
+            get
+            {
+                return _openComparatorForDuplPairCommand ?? (_openComparatorForDuplPairCommand = new RelayCommand(arg =>
+                {
+                    DuplPairViewModel result = arg as DuplPairViewModel;
+                    if (result == null)
+                    {
+                        result = (Result as ICollectionView)?.CurrentItem as DuplPairViewModel;
+                    }
+                    if (result == null)
+                        return;
+                    _logger.LogInformation("OpenComparator: {First} / {Second}",
+                        result.FirstFile.Path, result.SecondFile.Path);
+                    ComparatorViewModel vm = new ComparatorViewModel(result, _resultList, Result,
+                        _undoRedoEngine, _windowService, Configuration);
+                    _windowService.OpenComparatorWindow(vm);
+                }, arg => true));
             }
         }
 
@@ -302,7 +371,12 @@ namespace AntiDupl.NET.WPF.ViewModel
 
         public void SetResult(DuplPairViewModel[] result)
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            int count = result != null ? result.Length : 0;
+            _logger.LogInformation("SetResult: получено пар: {Count}", count);
+            SetStatus(string.Format("Показ результатов в таблице ({0} пар)…", count));
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            Action fillOnUi = () =>
             {
                 if (_groups != null)
                     _groups.Clear();
@@ -311,15 +385,56 @@ namespace AntiDupl.NET.WPF.ViewModel
                 _viewModeModel.ViewMode = ViewMode.Pair;
                 _thumbnailProvider.ClearThumbnailCache();
 
-                //_resultList = new ObservableCollection<DuplPairViewModel>(result);
-                foreach (var item in result)
-	            {
-                    _resultList.Add(item);
-	            }
-                var res = CollectionViewSource.GetDefaultView(_resultList);
-                Result = (IEditableCollectionView)res;
-                Result.NewItemPlaceholderPosition = NewItemPlaceholderPosition.None;
-            });
+                if (count == 0)
+                {
+                    FinalizeResultTable(stopwatch, count);
+                    return;
+                }
+
+                // Порционное добавление: UI не блокируется на весь массив
+                const int batchSize = 200;
+                int index = 0;
+                EventHandler tickHandler = null;
+                var batchTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(10) };
+                tickHandler = (s, e) =>
+                {
+                    int end = Math.Min(index + batchSize, count);
+                    for (; index < end; index++)
+                    {
+                        _resultList.Add(result[index]);
+                    }
+                    if (index % (batchSize * 5) == 0 || index >= count)
+                    {
+                        SetStatus(string.Format("Заполнение таблицы… ({0}/{1})", Math.Min(index, count), count));
+                    }
+
+                    if (index >= count)
+                    {
+                        batchTimer.Stop();
+                        batchTimer.Tick -= tickHandler;
+                        FinalizeResultTable(stopwatch, count);
+                    }
+                };
+                batchTimer.Tick += tickHandler;
+                batchTimer.Start();
+            };
+
+            if (Application.Current.Dispatcher.CheckAccess())
+                fillOnUi();
+            else
+                Application.Current.Dispatcher.Invoke(fillOnUi);
+        }
+
+        void FinalizeResultTable(Stopwatch stopwatch, int count)
+        {
+            var res = CollectionViewSource.GetDefaultView(_resultList);
+            Result = (IEditableCollectionView)res;
+            Result.NewItemPlaceholderPosition = NewItemPlaceholderPosition.None;
+
+            RefreshCompareModeOptions();
+
+            _logger.LogInformation("SetResult: готово за {Ms} мс (пар: {Count})", stopwatch.ElapsedMilliseconds, count);
+            SetStatus(string.Empty);
         }
 
 
@@ -331,6 +446,37 @@ namespace AntiDupl.NET.WPF.ViewModel
         public int ThumbnailColumnWidth
         {
             get { return Configuration.ThumbnailWidth * 2 + 10; }
+        }
+
+        string _status = string.Empty;
+        /// <summary>
+        /// Текущее состояние приложения (выводится в строке состояния).
+        /// </summary>
+        public string Status
+        {
+            get { return _status; }
+            private set
+            {
+                if (_status != value)
+                {
+                    _status = value;
+                    RaisePropertyChangedEvent("Status");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Устанавливает статус (с учётом вызова из фоновых потоков) и пишет в лог.
+        /// </summary>
+        public void SetStatus(string status)
+        {
+            _logger.LogInformation("Статус: {Status}", status);
+            if (Application.Current == null)
+                return;
+            if (Application.Current.Dispatcher.CheckAccess())
+                Status = status;
+            else
+                Application.Current.Dispatcher.BeginInvoke(new Action(() => Status = status));
         }
 
         #region Context menu
@@ -389,7 +535,7 @@ namespace AntiDupl.NET.WPF.ViewModel
 
                         //IUCommand deleteFirstUndoCommand = new DeleteCurrentImageCommand(result, PositionInDuplPair.First, _resultList,
                         //                                         Result);
-                        IUCommand deleteFirstUndoCommand = new DeleteImageCommand(result, result.FirstFile, _resultList, Result);
+                        IUCommand deleteFirstUndoCommand = new UndoRedo.DeleteImageCommand(result, result.FirstFile, _resultList, Result);
                         ICommand deleteFirstCommand = new RelayCommand(arg =>
                         {
                             _undoRedoEngine.ExecuteCommand(deleteFirstUndoCommand);
@@ -525,7 +671,7 @@ namespace AntiDupl.NET.WPF.ViewModel
             }
         }
 
-        /*public Func<IList, BindableMenuItem[]> MenuGeneratorMultiDuplGroup
+        public Func<IList, BindableMenuItem[]> MenuGeneratorMultiDuplGroup
         {
             get
             {
@@ -549,7 +695,184 @@ namespace AntiDupl.NET.WPF.ViewModel
                     return null;
                 });
             }
-        }*/
+        }
+
+        #endregion
+
+        #region Режим работы (алгоритм сравнения и пороговая разность)
+
+        const int THRESHOLD_DIFFERENCE_MAX_SQUARED_SUM = 15;
+        const int THRESHOLD_DIFFERENCE_MAX_SSIM = 50;
+        const int THRESHOLD_DIFFERENCE_DEFAULT_SQUARED_SUM = 5;
+        const int THRESHOLD_DIFFERENCE_DEFAULT_SSIM = 20;
+
+        ObservableCollection<AlgorithmComparingItem> _algorithmItems = new ObservableCollection<AlgorithmComparingItem>();
+        /// <summary>
+        /// Режимы (алгоритмы) сравнения изображений
+        /// для выпадающего списка на панели инструментов.
+        /// </summary>
+        public ObservableCollection<AlgorithmComparingItem> AlgorithmItems
+        {
+            get { return _algorithmItems; }
+        }
+
+        ObservableCollection<int> _thresholdItems = new ObservableCollection<int>();
+        /// <summary>
+        /// Допустимые значения пороговой разности для текущего режима сравнения.
+        /// </summary>
+        public ObservableCollection<int> ThresholdItems
+        {
+            get { return _thresholdItems; }
+        }
+
+        /// <summary>
+        /// Текущий режим (алгоритм) сравнения изображений.
+        /// </summary>
+        public AlgorithmComparing AlgorithmComparing
+        {
+            get { return Options != null ? Options.compareOptions.AlgorithmComparing : AlgorithmComparing.SquaredSum; }
+            set
+            {
+                if (value == AlgorithmComparing)
+                    return;
+
+                RebuildThresholdItems(GetMaxThresholdDifference(value));
+                ApplyCompareOptions(value, GetDefaultThresholdDifference(value));
+
+                RaisePropertyChangedEvent("AlgorithmComparing");
+                RaisePropertyChangedEvent("ThresholdDifference");
+            }
+        }
+
+        /// <summary>
+        /// Пороговая разность (в процентах) для текущего режима сравнения.
+        /// </summary>
+        public int ThresholdDifference
+        {
+            get { return Options != null ? Options.compareOptions.ThresholdDifference : 0; }
+            set
+            {
+                int max = GetMaxThresholdDifference(AlgorithmComparing);
+                if (value < 0)
+                    value = 0;
+                if (value > max)
+                    value = max;
+                if (value == ThresholdDifference)
+                    return;
+
+                ApplyCompareOptions(AlgorithmComparing, value);
+                RaisePropertyChangedEvent("ThresholdDifference");
+            }
+        }
+
+        static int GetMaxThresholdDifference(AlgorithmComparing algorithm)
+        {
+            return algorithm == AlgorithmComparing.SSIM ? THRESHOLD_DIFFERENCE_MAX_SSIM : THRESHOLD_DIFFERENCE_MAX_SQUARED_SUM;
+        }
+
+        static int GetDefaultThresholdDifference(AlgorithmComparing algorithm)
+        {
+            return algorithm == AlgorithmComparing.SSIM ? THRESHOLD_DIFFERENCE_DEFAULT_SSIM : THRESHOLD_DIFFERENCE_DEFAULT_SQUARED_SUM;
+        }
+
+        static string GetCompareAlgorithmName(AlgorithmComparing algorithm)
+        {
+            string key = algorithm == AlgorithmComparing.SSIM
+                ? "toolBar_compareAlgorithm_ssim"
+                : "toolBar_compareAlgorithm_squaredSum";
+            if (Application.Current != null)
+            {
+                object value = Application.Current.TryFindResource(key);
+                if (value is string name && !String.IsNullOrEmpty(name))
+                    return name;
+            }
+            return algorithm.ToString();
+        }
+
+        void InitializeCompareModeOptions()
+        {
+            _algorithmItems.Add(new AlgorithmComparingItem(AlgorithmComparing.SquaredSum, GetCompareAlgorithmName(AlgorithmComparing.SquaredSum)));
+            _algorithmItems.Add(new AlgorithmComparingItem(AlgorithmComparing.SSIM, GetCompareAlgorithmName(AlgorithmComparing.SSIM)));
+
+            // Снимок Options, созданный конструктором CoreOptions(_core), несёт дефолтные
+            // значения (побочный эффект SetDefaultOptions в SetDefault), поэтому
+            // берём реальные текущие значения опций из ядра:
+            CoreCompareOptions coreCompare = _core.compareOptions;
+            AlgorithmComparing algorithm = coreCompare.algorithmComparing;
+
+            RebuildThresholdItems(GetMaxThresholdDifference(algorithm));
+
+            int threshold = coreCompare.thresholdDifference;
+            int max = GetMaxThresholdDifference(algorithm);
+            if (threshold < 0)
+                threshold = 0;
+            if (threshold > max)
+                threshold = max;
+            if (algorithm != Options.compareOptions.AlgorithmComparing ||
+                threshold != Options.compareOptions.ThresholdDifference)
+                ApplyCompareOptions(algorithm, threshold);
+        }
+
+        void RebuildThresholdItems(int max)
+        {
+            _thresholdItems.Clear();
+            for (int i = 0; i <= max; i++)
+                _thresholdItems.Add(i);
+        }
+
+        /// <summary>
+        /// Сохраняет режим сравнения и пороговую разность: в текущий снимок Options
+        /// и в опции ядра (dll), которые используются при следующем поиске.
+        /// </summary>
+        void ApplyCompareOptions(AlgorithmComparing algorithm, int threshold)
+        {
+            if (Options != null)
+            {
+                Options.compareOptions.algorithmComparing = algorithm;
+                Options.compareOptions.thresholdDifference = threshold;
+            }
+            if (_core != null)
+            {
+                CoreCompareOptions coreOptions = _core.compareOptions;
+                coreOptions.algorithmComparing = algorithm;
+                coreOptions.thresholdDifference = threshold;
+                _core.compareOptions = coreOptions;
+            }
+        }
+
+        void OnLanguageChanged(object sender, EventArgs e)
+        {
+            foreach (AlgorithmComparingItem item in _algorithmItems)
+                item.Name = GetCompareAlgorithmName(item.Value);
+        }
+
+        /// <summary>
+        /// После поиска объект Options заменяется на новый снимок опций ядра,
+        /// поэтому обновляем выпадающие списки режимов работы.
+        /// </summary>
+        void RefreshCompareModeOptions()
+        {
+            if (Options == null)
+                return;
+
+            AlgorithmComparing algorithm = Options.compareOptions.AlgorithmComparing;
+            int max = GetMaxThresholdDifference(algorithm);
+            if (_thresholdItems.Count != max + 1)
+                RebuildThresholdItems(max);
+
+            int threshold = Options.compareOptions.ThresholdDifference;
+            if (threshold < 0 || threshold > max)
+            {
+                if (threshold < 0)
+                    threshold = 0;
+                if (threshold > max)
+                    threshold = max;
+                ApplyCompareOptions(algorithm, threshold);
+            }
+
+            RaisePropertyChangedEvent("AlgorithmComparing");
+            RaisePropertyChangedEvent("ThresholdDifference");
+        }
 
         #endregion
 
@@ -609,6 +932,14 @@ namespace AntiDupl.NET.WPF.ViewModel
         public string Version
         {
             get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
+        }
+
+        /// <summary>
+        /// Подсказка кнопки Undo (описание последнего отменяемого действия).
+        /// </summary>
+        public string UndoTooltip
+        {
+            get { return _undoRedoEngine != null ? _undoRedoEngine.UndoTooltip : string.Empty; }
         }
 
         ICommand _undoCommand;
@@ -766,16 +1097,22 @@ namespace AntiDupl.NET.WPF.ViewModel
         private void LoadResults(string resPath)
         {
            //_windowService.ShowPleaseWait();
+            _logger.LogInformation("LoadResults: загрузка результата из файла: {File}", resPath);
             var progressDialogViewModel = new ProgressDialogViewModel();
            Task.Factory.StartNew(() =>
            {
+               var loadWatch = Stopwatch.StartNew();
                var readed = SerializeHelper<DuplPairViewModel[]>.Load(resPath);
                if (readed != null)
                {
                    //List<DuplPairViewModel> filtered = new List<DuplPairViewModel>(readed.Length);
+                   _logger.LogInformation("LoadResults: файл прочитан за {Ms} мс (пар: {Count})",
+                       loadWatch.ElapsedMilliseconds, readed.Length);
                    progressDialogViewModel.ProgressMax = (uint)readed.Length;
                    try
                    {
+                       int statusStep = Math.Max(1, readed.Length / 20);
+                       int processed = 0;
 
                    foreach (var item in readed)
                    {
@@ -790,13 +1127,18 @@ namespace AntiDupl.NET.WPF.ViewModel
                        //    filtered.Add(item);
 
                        progressDialogViewModel.Progress++;
+                       processed++;
+                       if (processed % statusStep == 0)
+                           SetStatus(string.Format("Загрузка результатов… ({0}/{1})", processed, readed.Length));
                        if (progressDialogViewModel.IsCancelled)
                            break;
                    }
 
+                    SetStatus(string.Format("Обработка завершена ({0} пар), показ в таблице…", readed.Length));
                    }
-                   catch (Exception)
+                   catch (Exception ex)
                    {
+                       _logger.LogError(ex, "LoadResults: ошибка обработки файла {File}", resPath);
                        throw;
                    }
                    try

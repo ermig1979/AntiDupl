@@ -170,6 +170,24 @@
             <Button ToolTip="Refresh" Command="{Binding RefreshCommand}">
                 <Image Source="../Image/img/RefreshButton.png" />
             </Button>
+
+            <Separator />
+            <TextBlock Text="{DynamicResource toolBar_thresholdDifference}"
+                       VerticalAlignment="Center" Margin="4,0,0,0" />
+            <ComboBox ItemsSource="{Binding ThresholdItems, Mode=OneWay}"
+                      SelectedItem="{Binding ThresholdDifference, Mode=TwoWay}"
+                      Width="50"
+                      VerticalContentAlignment="Center"
+                      ToolTip="{DynamicResource toolBar_thresholdDifference}" />
+            <TextBlock Text="{DynamicResource toolBar_compareAlgorithm}"
+                       VerticalAlignment="Center" Margin="4,0,0,0" />
+            <ComboBox ItemsSource="{Binding AlgorithmItems, Mode=OneWay}"
+                      DisplayMemberPath="Name"
+                      SelectedValuePath="Value"
+                      SelectedValue="{Binding AlgorithmComparing, Mode=TwoWay}"
+                      MinWidth="150"
+                      VerticalContentAlignment="Center"
+                      ToolTip="{DynamicResource toolBar_compareAlgorithm}" />
         </ToolBar>
 
         <StatusBar DockPanel.Dock="Bottom" >
@@ -179,6 +197,10 @@
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
 
+            <StatusBarItem DockPanel.Dock="Left">
+                <TextBlock Text="{Binding Status, Mode=OneWay}" />
+            </StatusBarItem>
+            <Separator DockPanel.Dock="Left" />
             <StatusBarItem DockPanel.Dock="Left">
                 <TextBlock Text="{Binding TotalInfo, Mode=OneWay}" />
             </StatusBarItem>
