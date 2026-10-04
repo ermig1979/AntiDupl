@@ -40,7 +40,7 @@
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="$(SolutionDir)\..\cmd\CopyData.cmd $(SolutionDir)\.. $(SolutionDir)\..\bin\$(ConfigurationName)" />
+    <Exec Command="&quot;$(SolutionDir)\..\cmd\CopyData.cmd&quot; &quot;$(SolutionDir)\..&quot; &quot;$(SolutionDir)\..\bin\$(ConfigurationName)&quot;" />
   </Target>
 
   <ItemGroup>
