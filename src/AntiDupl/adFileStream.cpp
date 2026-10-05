@@ -159,6 +159,16 @@ namespace ad
 		Load(imageData.data->filled);
 		if(imageData.data->filled)
 			Load(*imageData.data);
+		if(m_version < 5)
+		{
+			// Before version 5 TurboJPEG decoded with red and blue swapped:
+			// the reduced image and the values computed from it are wrong for
+			// those files. Keep the record (type, size, CRC, defect) and let
+			// PixelDataFillingNeed() schedule a recomputation.
+			imageData.data->filled = false;
+			imageData.blockiness = -1;
+			imageData.blurring = -1;
+		}
 	}
 
 	void TInputFileStream::Load(TResult & result) const

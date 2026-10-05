@@ -105,6 +105,12 @@ namespace ad
             TView reducedView(data.side, data.side, data.side, TView::Gray8, data.main);
             ReduceGray2x2(*m_pGrayBuffers.back(), reducedView);
             data.filled = true;
+            // The SSIM comparer caches mean and variance of the plane and only
+            // recomputes them while they are 0; a recomputed plane (e.g. an
+            // image database record invalidated on load) must not keep the old
+            // values.
+            data.average = 0;
+            data.varianceSquare = 0;
 
 			delete pImage;
         }
