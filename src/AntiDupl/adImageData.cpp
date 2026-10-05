@@ -105,6 +105,8 @@ namespace ad
 			memcpy(data->fast, imageData.data->fast, data->full);
 			data->average = imageData.data->average;
 			data->varianceSquare = imageData.data->varianceSquare;
+			data->sum = imageData.data->sum;
+			data->sumSquare = imageData.data->sumSquare;
 		}
 		return *this;
 	}
@@ -154,6 +156,7 @@ namespace ad
 		if(type > AD_IMAGE_NONE)
 		{
 			data->FillFast(pOptions->GetIgnoreWidthFrame());
+			data->FillMoments();
 
 			const int resolution = pOptions->advanced.ratioResolution;
 			if(width > height)
