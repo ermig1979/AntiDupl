@@ -28,6 +28,11 @@
 
 namespace ad
 {
+    template<class T> inline int CompareValues(const T& value1, const T& value2)
+    {
+        return value1 < value2 ? -1 : (value2 < value1 ? 1 : 0);
+    }
+
 	// Структура хранит пары дубликатов
     struct TResult
     {
@@ -51,6 +56,9 @@ namespace ad
         TResult();
         TResult(const TResult& result);
 
+        // Ascending: negative, zero or positive. sortType is one of the
+        // AD_SORT_BY_SORTED_* types.
+        static int ImageInfoCompare(TImageInfoPtr pFirst, TImageInfoPtr pSecond, TSortType sortType);
         static bool ImageInfoLesser(TImageInfoPtr pFirst, TImageInfoPtr pSecond, TSortType sortType, bool increasing);
         void Swap();
 
@@ -68,7 +76,9 @@ namespace ad
 
         bool operator() (TResultPtr pFirst, TResultPtr pSecond);
 
-    private: 
+    private:
+        int Compare(TResultPtr pFirst, TResultPtr pSecond) const;
+
         TSortType m_sortType;
         bool m_increasing;
     };

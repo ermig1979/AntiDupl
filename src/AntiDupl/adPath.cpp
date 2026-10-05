@@ -147,6 +147,49 @@ namespace ad
 		return 0;
 	}
 
+	static inline bool IsDigit(TChar c)
+	{
+		return c >= TEXT('0') && c <= TEXT('9');
+	}
+
+	int TPath::NaturalCompare(const TChar* begin1, const TChar* end1, const TChar* begin2, const TChar* end2)
+	{
+		const TChar *p1 = begin1, *p2 = begin2;
+		while(p1 != end1 && p2 != end2)
+		{
+			if(IsDigit(*p1) && IsDigit(*p2))
+			{
+				// Compare the numbers: without leading zeros, the longer
+				// one is bigger; of equal length, the first differing digit.
+				while(p1 != end1 && *p1 == TEXT('0'))
+					++p1;
+				while(p2 != end2 && *p2 == TEXT('0'))
+					++p2;
+				const TChar *number1 = p1, *number2 = p2;
+				while(p1 != end1 && IsDigit(*p1))
+					++p1;
+				while(p2 != end2 && IsDigit(*p2))
+					++p2;
+				if(p1 - number1 != p2 - number2)
+					return p1 - number1 < p2 - number2 ? -1 : 1;
+				int result = Compare(number1, p1, number2, p2);
+				if(result != 0)
+					return result;
+			}
+			else
+			{
+				if(*p1 != *p2)
+					return *p1 < *p2 ? -1 : 1;
+				++p1;
+				++p2;
+			}
+		}
+		if(p1 != end1 || p2 != end2)
+			return p1 == end1 ? -1 : 1;
+		// Equal apart from leading zeros ("01" and "1"): still a total order.
+		return Compare(begin1, end1, begin2, end2);
+	}
+
 	TPath::TIsSubPath TPath::IsSubPath(const TPath& path1, const TPath& path2)
 	{
 		const TChar *p1 = path1.m_compare.directory.first;
