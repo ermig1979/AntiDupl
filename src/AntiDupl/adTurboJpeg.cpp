@@ -24,6 +24,7 @@
 #include "adPerformance.h"
 #include "adIO.h"
 #include "adTurboJpeg.h"
+#include "adGdiplus.h"
 
 #ifdef AD_TURBO_JPEG_ENABLE
 #include "turbojpeg.h"
@@ -87,6 +88,8 @@ namespace ad
                 pTurboJpeg->m_pView = pView;
             }
             ::GlobalUnlock(hGlobal);
+            if (pTurboJpeg)
+                TGdiplus::LoadExif(hGlobal, pTurboJpeg->m_exifInfo);
             return pTurboJpeg;
         }
         return NULL;
@@ -98,7 +101,9 @@ namespace ad
         {
             const unsigned char * data = (unsigned char*)::GlobalLock(hGlobal);
             size_t size = ::GlobalSize(hGlobal);
-            bool supported = (size >= 4 && data[0] == 0xFF && data[1] == 0xD8 && data[2] == 0xFF && data[3] == 0xE0);
+            // Start of image followed by any marker: JFIF (APP0), EXIF (APP1),
+            // Adobe (APP14), Photoshop (APP13) or a bare table segment.
+            bool supported = (size >= 3 && data[0] == 0xFF && data[1] == 0xD8 && data[2] == 0xFF);
             ::GlobalUnlock(hGlobal);
             return supported;
         }
