@@ -321,6 +321,9 @@ namespace AntiDupl.NET.WinForms
             return new ResultsOptions(this);
         }
 
+        /// <summary>
+        /// Copies all settings; event subscriptions stay with the original.
+        /// </summary>
         public ResultsOptions(ResultsOptions options)
         {
             columnOptionsVertical = new ColumnOptions[(int)ResultsListView.ColumnsTypeVertical.Size];
@@ -337,16 +340,29 @@ namespace AntiDupl.NET.WinForms
             splitterDistanceHorizontalNormal = options.splitterDistanceHorizontalNormal;
             thumbnailSizeMax = options.thumbnailSizeMax;
 
-            m_highlightDifference = options.HighlightDifference;
-            m_differenceThreshold = options.DifferenceThreshold;
-            m_notHighlightIfFragmentsMoreThan = options.NotHighlightIfFragmentsMoreThan;
-            m_notHighlightMaxFragments = options.NotHighlightMaxFragments;
-            m_highlightAllDifferences = options.HighlightAllDifferences;
-            m_maxFragmentsForHighlight = options.MaxFragmentsForHighlight;
-            m_amountOfFragmentsOnX = options.AmountOfFragmentsOnX;
-            m_amountOfFragmentsOnY = options.AmountOfFragmentsOnY;
-            m_normalizedSizeOfImage = options.NormalizedSizeOfImage;
-            m_penThickness = options.PenThickness;
+            m_viewMode = options.m_viewMode;
+            m_stretchSmallImages = options.m_stretchSmallImages;
+            m_proportionalImageSize = options.m_proportionalImageSize;
+            m_showNeighboursImages = options.m_showNeighboursImages;
+
+            options.CopyHighlightTo(this);
+        }
+
+        /// <summary>
+        /// Copies the difference-highlighting settings without raising events.
+        /// </summary>
+        public void CopyHighlightTo(ResultsOptions options)
+        {
+            options.m_highlightDifference = m_highlightDifference;
+            options.m_differenceThreshold = m_differenceThreshold;
+            options.m_notHighlightIfFragmentsMoreThan = m_notHighlightIfFragmentsMoreThan;
+            options.m_notHighlightMaxFragments = m_notHighlightMaxFragments;
+            options.m_highlightAllDifferences = m_highlightAllDifferences;
+            options.m_maxFragmentsForHighlight = m_maxFragmentsForHighlight;
+            options.m_amountOfFragmentsOnX = m_amountOfFragmentsOnX;
+            options.m_amountOfFragmentsOnY = m_amountOfFragmentsOnY;
+            options.m_normalizedSizeOfImage = m_normalizedSizeOfImage;
+            options.m_penThickness = m_penThickness;
         }
 
         public ResultsOptions()

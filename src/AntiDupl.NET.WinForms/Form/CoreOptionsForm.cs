@@ -55,6 +55,7 @@ namespace AntiDupl.NET.WinForms
         private CoreOptions m_newCoreOptions;
         private CoreOptions m_defaultCoreOptions;
         private ResultsOptions m_oldResultsOptions;
+        private bool m_accepted = false;
 
         private Button m_okButton;
         private Button m_cancelButton;
@@ -160,6 +161,7 @@ namespace AntiDupl.NET.WinForms
             ShowInTaskbar = false;
             MaximizeBox = false;
             MinimizeBox = false;
+            FormClosing += new FormClosingEventHandler(OnFormClosing);
 
             Resources.Help.Bind(this, Resources.Help.Options);
 
@@ -871,13 +873,27 @@ namespace AntiDupl.NET.WinForms
             m_newCoreOptions.CopyTo(ref m_oldCoreOptions);
             m_oldCoreOptions.Validate(m_core, m_options.onePath);
             m_options.Change();
+            m_accepted = true;
             Close();
         }
 
         private void OnCancelButtonClick(object sender, EventArgs e)
         {
-            m_options.resultsOptions = m_oldResultsOptions;
             Close();
+        }
+
+        // Cancel and the window's close button both end here. The highlight
+        // settings were applied live while the dialog was open, so the old
+        // values go back into the same ResultsOptions object: the main
+        // window listens to that object's events, and replacing it would
+        // also drop the view mode and other settings the dialog never shows.
+        private void OnFormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!m_accepted)
+            {
+                m_oldResultsOptions.CopyHighlightTo(m_options.resultsOptions);
+                m_options.resultsOptions.RaiseEventOnHighlightDifferenceChange();
+            }
         }
 
         private void OnSetDefaultButtonClick(object sender, EventArgs e)
