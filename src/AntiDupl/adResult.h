@@ -61,6 +61,9 @@ namespace ad
         static int ImageInfoCompare(TImageInfoPtr pFirst, TImageInfoPtr pSecond, TSortType sortType);
         static bool ImageInfoLesser(TImageInfoPtr pFirst, TImageInfoPtr pSecond, TSortType sortType, bool increasing);
         void Swap();
+        // Puts the image with the lesser path first, so a pair's sides
+        // don't depend on the order the search found its images in.
+        void OrientByPath();
 
         bool Export(adResultPtrA pResult) const;
         bool Export(adResultPtrW pResult) const;

@@ -98,6 +98,12 @@ namespace ad
         return increasing ? result < 0 : result > 0;
     }
 
+    void TResult::OrientByPath()
+    {
+        if(type == AD_RESULT_DUPL_IMAGE_PAIR && TPath::NaturalCompareByPath(second->path, first->path) < 0)
+            Swap();
+    }
+
     void TResult::Swap()
     {
         if(type != AD_RESULT_DUPL_IMAGE_PAIR)
@@ -229,11 +235,11 @@ namespace ad
         // rows. The id is unique, which makes the order total.
         result = CompareValues(pFirst->type, pSecond->type);
         if(result == 0)
-            result = CompareValues(pFirst->difference, pSecond->difference);
-        if(result == 0)
             result = TPath::NaturalCompareByPath(pFirst->first->path, pSecond->first->path);
         if(result == 0)
             result = TPath::NaturalCompareByPath(pFirst->second->path, pSecond->second->path);
+        if(result == 0)
+            result = CompareValues(pFirst->difference, pSecond->difference);
         if(result == 0)
             result = CompareValues(pFirst->id, pSecond->id);
         return result < 0;
