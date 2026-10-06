@@ -224,9 +224,27 @@ namespace ad
         return 0;
     }
 
+    // The same property of the pair's other image, for sorts by one image's
+    // property: sorting by the first image's directory then orders the rows
+    // of each directory by the second image's directory.
+    int TResultPtrLesser::CompareOtherImage(TResultPtr pFirst, TResultPtr pSecond) const
+    {
+        if(m_sortType >= AD_SORT_BY_SORTED_PATH && m_sortType < AD_SORT_BY_FIRST_PATH)
+            return TResult::ImageInfoCompare(pFirst->second, pSecond->second, m_sortType);
+        if(m_sortType >= AD_SORT_BY_FIRST_PATH && m_sortType < AD_SORT_BY_SECOND_PATH)
+            return TResult::ImageInfoCompare(pFirst->second, pSecond->second,
+                adSortType(m_sortType + AD_SORT_BY_SORTED_PATH - AD_SORT_BY_FIRST_PATH));
+        if(m_sortType >= AD_SORT_BY_SECOND_PATH && m_sortType < AD_SORT_BY_DEFECT)
+            return TResult::ImageInfoCompare(pFirst->first, pSecond->first,
+                adSortType(m_sortType + AD_SORT_BY_SORTED_PATH - AD_SORT_BY_SECOND_PATH));
+        return 0;
+    }
+
     bool TResultPtrLesser::operator() (TResultPtr pFirst, TResultPtr pSecond)
     {
         int result = Compare(pFirst, pSecond);
+        if(result == 0)
+            result = CompareOtherImage(pFirst, pSecond);
         if(result != 0)
             return m_increasing ? result < 0 : result > 0;
 

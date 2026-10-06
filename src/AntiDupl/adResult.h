@@ -81,6 +81,7 @@ namespace ad
 
     private:
         int Compare(TResultPtr pFirst, TResultPtr pSecond) const;
+        int CompareOtherImage(TResultPtr pFirst, TResultPtr pSecond) const;
 
         TSortType m_sortType;
         bool m_increasing;
