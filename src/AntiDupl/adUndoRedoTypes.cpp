@@ -70,27 +70,12 @@ namespace ad
 
     void TUndoRedoStage::Sort(TSortType sortType, bool increasing)
     {
-        // The vertical table sorts by one property of both images and shows
-        // the lesser one first; on a tie, the one with the lesser path, so
-        // the sides don't depend on earlier sorts. Other sorts (the
-        // horizontal table's first/second columns, difference, group ...)
-        // leave the pairs as they are.
-        if(sortType >= AD_SORT_BY_SORTED_PATH && sortType <= AD_SORT_BY_SORTED_BLURRING)
-        {
-            for(TResultPtrVector::iterator it = results.begin(); it != results.end(); ++it)
-            {
-                TResultPtr pResult = *it;
-                if(pResult->type != AD_RESULT_DUPL_IMAGE_PAIR)
-                    continue;
-                int order = TResult::ImageInfoCompare(pResult->second, pResult->first, sortType);
-                if(!increasing)
-                    order = -order;
-                if(order == 0)
-                    order = TPath::NaturalCompareByPath(pResult->second->path, pResult->first->path);
-                if(order < 0)
-                    pResult->Swap();
-            }
-        }
+        // A sort by one image's property (the vertical table, the horizontal
+        // table's first/second columns) also decides which image of each
+        // pair is in the sorted place. Sorts by a property of the whole pair
+        // (difference, group ...) leave the pairs as they are.
+        for(TResultPtrVector::iterator it = results.begin(); it != results.end(); ++it)
+            (*it)->OrientFor(sortType, increasing);
         std::sort(results.begin(), results.end(), TResultPtrLesser(sortType, increasing));
         UpdateCurrentIndex();
     }

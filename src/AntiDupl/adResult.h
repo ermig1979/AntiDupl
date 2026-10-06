@@ -65,6 +65,17 @@ namespace ad
         // don't depend on the order the search found its images in.
         void OrientByPath();
 
+        // Which image of a pair a sort type looks at: 1 the first (the
+        // vertical table's types and the first-image columns), 2 the second,
+        // 0 neither (a property of the whole pair, such as the difference).
+        static int SortedImage(TSortType sortType);
+        // The AD_SORT_BY_SORTED_* type comparing the same image property.
+        static TSortType ImageSortType(TSortType sortType);
+        // For a sort by one image's property: puts in the sorted image's
+        // place the image that comes first in the sort's order, on a tie
+        // the one whose path comes first in that order.
+        void OrientFor(TSortType sortType, bool increasing);
+
         bool Export(adResultPtrA pResult) const;
         bool Export(adResultPtrW pResult) const;
     };
@@ -82,6 +93,7 @@ namespace ad
     private:
         int Compare(TResultPtr pFirst, TResultPtr pSecond) const;
         int CompareOtherImage(TResultPtr pFirst, TResultPtr pSecond) const;
+        int CompareImagePaths(TResultPtr pFirst, TResultPtr pSecond) const;
 
         TSortType m_sortType;
         bool m_increasing;
