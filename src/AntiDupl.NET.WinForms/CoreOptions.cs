@@ -46,6 +46,10 @@ namespace AntiDupl.NET.WinForms
         public CorePathWithSubFolder[] deletePath;
         public string ignoreFilenameFilter; // Regular expression pattern to filter files in ignore paths
 
+        /// <summary>Set when Load fell back to the defaults.</summary>
+        [XmlIgnore]
+        public UnreadableSettingsFile LoadProblem;
+
         public CoreOptions()
         {
             searchOptions = new CoreSearchOptions();
@@ -254,11 +258,13 @@ namespace AntiDupl.NET.WinForms
                     coreOptions.Validate(core, onePath);
                     return coreOptions;
                 }
-                catch
+                catch (Exception exception)
                 {
                     if(fileStream != null)
                         fileStream.Close();
-                    return new CoreOptions(core);
+                    CoreOptions coreOptions = new CoreOptions(core);
+                    coreOptions.LoadProblem = new UnreadableSettingsFile(fileName, exception);
+                    return coreOptions;
                 }
             }
             else
