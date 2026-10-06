@@ -63,6 +63,10 @@ namespace AntiDupl.NET.WinForms
                 m_coreOptions = new CoreOptions(m_core);
             }
             Resources.Strings.SetCurrent(m_options.Language);
+            if (m_options.LoadProblem != null)
+                m_options.LoadProblem.Show(null);
+            if (m_coreOptions.LoadProblem != null)
+                m_coreOptions.LoadProblem.Show(null);
 
             StartFinishForm startFinishForm = new StartFinishForm(m_core, m_options);
             startFinishForm.ExecuteStart();
