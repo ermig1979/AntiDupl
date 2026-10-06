@@ -52,7 +52,11 @@ namespace AntiDupl.NET.WinForms
                 Resources.Strings.Initialize();
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new MainForm());
+                // The color mode can't change once a window exists, so the
+                // options are read here, before the main window.
+                Options options = Options.Load();
+                Application.SetColorMode(options.colorMode);
+                Application.Run(new MainForm(options));
             }
 #if !PUBLISH
             else if (MessageBox.Show("You need Microsoft .NET Framework 4.8 in order to run this program. Do you want to download .Net Framework 4.8?", "Warning",

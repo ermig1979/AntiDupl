@@ -62,10 +62,10 @@ namespace AntiDupl.NET.WinForms
                     (int)graphics.VisibleClipBounds.Height - 1);
                 visibleClipBounds.Intersect(cellsBounds);
 
-                Pen pen = new Pen(Color.White);
+                Pen pen = new Pen(SystemColors.Window);
                 graphics.DrawRectangle(pen, visibleClipBounds);
                 pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
-                pen.Color = Color.Black;
+                pen.Color = SystemColors.WindowText;
                 graphics.DrawRectangle(pen, visibleClipBounds);
             }
         }

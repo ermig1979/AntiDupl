@@ -287,7 +287,7 @@ namespace AntiDupl.NET.WinForms
                 else
                 {
                     m_toolTip.SetToolTip(m_hotKeyItems[i].edit, m_invalidHotKeyToolTipText);
-                    m_hotKeyItems[i].edit.ForeColor = Color.Red;
+                    m_hotKeyItems[i].edit.ForeColor = ThemeColors.Worse;
                     m_hotKeyItems[i].edit.BackColor = TextBox.DefaultBackColor;
                 }
             }

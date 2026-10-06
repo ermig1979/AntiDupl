@@ -527,51 +527,51 @@ namespace AntiDupl.NET.WinForms
             if (result.first.height * result.first.width > result.second.height * result.second.width) //подсветка highlight
             {
                 cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageSize].Style.ForeColor = m_dataGridView.DefaultCellStyle.ForeColor;
-                cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageSize].Style.ForeColor = Color.Red;
+                cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageSize].Style.ForeColor = ThemeColors.Worse;
             }
             else if (result.first.height * result.first.width < result.second.height * result.second.width)
             {
-                cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageSize].Style.ForeColor = Color.Red;
+                cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageSize].Style.ForeColor = ThemeColors.Worse;
                 cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageSize].Style.ForeColor = m_dataGridView.DefaultCellStyle.ForeColor;
             }
 
             if (result.first.size > result.second.size)
             {
                 cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileSize].Style.ForeColor = m_dataGridView.DefaultCellStyle.ForeColor;
-                cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileSize].Style.ForeColor = Color.Red;
+                cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileSize].Style.ForeColor = ThemeColors.Worse;
             }
             else if (result.first.size < result.second.size)
             {
-                cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileSize].Style.ForeColor = Color.Red;
+                cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileSize].Style.ForeColor = ThemeColors.Worse;
                 cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileSize].Style.ForeColor = m_dataGridView.DefaultCellStyle.ForeColor;
             }
 
             if (result.first.blockiness > result.second.blockiness)
             {
-                cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstBlockiness].Style.ForeColor = Color.Red;
+                cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstBlockiness].Style.ForeColor = ThemeColors.Worse;
                 cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondBlockiness].Style.ForeColor = m_dataGridView.DefaultCellStyle.ForeColor;
             }
             else if (result.first.blockiness < result.second.blockiness)
             {
                 cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstBlockiness].Style.ForeColor = m_dataGridView.DefaultCellStyle.ForeColor;
-                cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondBlockiness].Style.ForeColor = Color.Red;
+                cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondBlockiness].Style.ForeColor = ThemeColors.Worse;
             }
 
             if (result.first.blurring > result.second.blurring)
             {
-                cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstBlurring].Style.ForeColor = Color.Red;
+                cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstBlurring].Style.ForeColor = ThemeColors.Worse;
                 cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondBlurring].Style.ForeColor = m_dataGridView.DefaultCellStyle.ForeColor;
             }
             else if (result.first.blurring < result.second.blurring)
             {
                 cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstBlurring].Style.ForeColor = m_dataGridView.DefaultCellStyle.ForeColor;
-                cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondBlurring].Style.ForeColor = Color.Red;
+                cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondBlurring].Style.ForeColor = ThemeColors.Worse;
             }
 
             if (result.first.type != result.second.type)
             {
-                cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageType].Style.ForeColor = Color.Red;
-                cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageType].Style.ForeColor = Color.Red;
+                cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageType].Style.ForeColor = ThemeColors.Worse;
+                cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageType].Style.ForeColor = ThemeColors.Worse;
             }
         }
     }

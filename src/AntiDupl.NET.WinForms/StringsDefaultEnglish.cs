@@ -310,6 +310,12 @@ namespace AntiDupl.NET.WinForms
             s.ViewModeMenuItem_HorizontalPairTableMenuItem_Text = "Table of horizontal pairs";
             s.ViewModeMenuItem_GroupedThumbnailsMenuItem_Text = "Grouped thumbnails";
 
+            s.ColorModeMenuItem_Text = "Theme";
+            s.ColorModeMenuItem_SystemMenuItem_Text = "As in Windows";
+            s.ColorModeMenuItem_LightMenuItem_Text = "Light";
+            s.ColorModeMenuItem_DarkMenuItem_Text = "Dark";
+            s.ColorModeMenuItem_RestartMessage = "The theme changes the next time the program starts.";
+
             s.ImagePreviewContextMenu_CopyPathItem_Text = "Copy path";
             s.ImagePreviewContextMenu_CopyFileNameItem_Text = "Copy image name";
             s.ImagePreviewContextMenu_OpenImageItem_Text = "Open image";

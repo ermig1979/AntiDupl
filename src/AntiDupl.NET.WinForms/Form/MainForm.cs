@@ -51,10 +51,10 @@ namespace AntiDupl.NET.WinForms
         private MainToolStrip m_mainToolStrip;
         private MainStatusStrip m_mainStatusStrip;
 
-        public MainForm()
+        public MainForm(Options options)
         {
             m_core = new CoreLib(Resources.UserPath);
-            m_options = Options.Load();
+            m_options = options;
             if (m_options.loadProfileOnLoading)
                 m_coreOptions = CoreOptions.Load(m_options.coreOptionsFileName, m_core, m_options.onePath);
             else

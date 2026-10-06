@@ -99,7 +99,7 @@ namespace AntiDupl.NET.WinForms
             Location = new System.Drawing.Point(0, 0);
             Dock = DockStyle.Fill;
             BorderStyle = BorderStyle.Fixed3D;
-            BackColor = Color.DarkGray;
+            BackColor = ThemeColors.PreviewBackground;
             DoubleBuffered = true;
 
             DoubleClick += new EventHandler(OnImageDoubleClicked);

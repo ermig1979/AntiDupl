@@ -59,6 +59,7 @@ namespace AntiDupl.NET.WinForms
         private ToolStripMenuItem m_view_toolMenuItem;
         private ToolStripMenuItem m_view_statusMenuItem;
         private ToolStripMenuItem m_view_languageMenuItem;
+        private ToolStripMenuItem m_view_colorModeMenuItem;
         private ToolStripMenuItem m_view_modeMenuItem;
         private ToolStripMenuItem m_view_selectColumnsMenuItem;
         private ToolStripMenuItem m_view_hotKeysMenuItem;
@@ -132,6 +133,7 @@ namespace AntiDupl.NET.WinForms
             m_view_toolMenuItem = InitFactory.MenuItem.Create(null, null, ViewItemCheckChangeAction, m_options.mainFormOptions.toolStripView);
             m_view_statusMenuItem = InitFactory.MenuItem.Create(null, null, ViewItemCheckChangeAction, m_options.mainFormOptions.statusStripView);
             m_view_languageMenuItem = new LanguageMenuItem(m_options);
+            m_view_colorModeMenuItem = new ColorModeMenuItem(m_options);
             m_view_modeMenuItem = new ViewModeMenuItem(m_options);
             m_view_selectColumnsMenuItem = InitFactory.MenuItem.Create(null, null, OnSelectColumnsClick);
             m_view_hotKeysMenuItem = InitFactory.MenuItem.Create(null, null, OnHotKeysClick);
@@ -144,6 +146,7 @@ namespace AntiDupl.NET.WinForms
             m_viewMenuItem.DropDownItems.Add(m_view_statusMenuItem);
             m_viewMenuItem.DropDownItems.Add(new ToolStripSeparator());
             m_viewMenuItem.DropDownItems.Add(m_view_languageMenuItem);
+            m_viewMenuItem.DropDownItems.Add(m_view_colorModeMenuItem);
             m_viewMenuItem.DropDownItems.Add(new ToolStripSeparator());
             m_viewMenuItem.DropDownItems.Add(m_view_modeMenuItem);
             m_viewMenuItem.DropDownItems.Add(m_view_selectColumnsMenuItem);
