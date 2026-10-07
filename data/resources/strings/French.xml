@@ -42,6 +42,7 @@
   <CoreOptionsForm_CompareTabPage_Text>Comparer</CoreOptionsForm_CompareTabPage_Text>
   <CoreOptionsForm_CheckOnEqualityCheckBox_Text>Rechercher des doublons d'images</CoreOptionsForm_CheckOnEqualityCheckBox_Text>
   <CoreOptionsForm_TransformedImageCheckBox_Text>Recherche de doublons d'images pivotées et miroir</CoreOptionsForm_TransformedImageCheckBox_Text>
+  <CoreOptionsForm_ShiftedImageCheckBox_Text>Recherche de doublons d'images décalées</CoreOptionsForm_ShiftedImageCheckBox_Text>
   <CoreOptionsForm_SizeControlCheckBox_Text>Contrôler la taille de l'image</CoreOptionsForm_SizeControlCheckBox_Text>
   <CoreOptionsForm_TypeControlCheckBox_Text>Contrôler le type d'image</CoreOptionsForm_TypeControlCheckBox_Text>
   <CoreOptionsForm_RatioControlCheckBox_Text>Contrôler le ratio largeur/hauteur de l'image</CoreOptionsForm_RatioControlCheckBox_Text>

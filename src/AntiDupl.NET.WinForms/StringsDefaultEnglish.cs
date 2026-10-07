@@ -86,6 +86,7 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_CompareTabPage_Text = "Compare";
             s.CoreOptionsForm_CheckOnEqualityCheckBox_Text = "Search image dupls";
             s.CoreOptionsForm_TransformedImageCheckBox_Text = "Search rotated and mirror image dupls";
+            s.CoreOptionsForm_ShiftedImageCheckBox_Text = "Search shifted image dupls";
             s.CoreOptionsForm_SizeControlCheckBox_Text = "Control image size";
             s.CoreOptionsForm_TypeControlCheckBox_Text = "Control image type";
             s.CoreOptionsForm_RatioControlCheckBox_Text = "Control image width/height ratio";

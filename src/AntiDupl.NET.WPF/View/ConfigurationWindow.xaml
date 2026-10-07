@@ -125,16 +125,18 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <CheckBox Grid.Column="0" Grid.Row="0" Content="CheckOnEquality" IsChecked="{Binding CheckOnEquality}" />
                 <CheckBox Grid.Column="0" Grid.Row="1" Content="TransformedImage"
                           IsChecked="{Binding TransformedImage}" />
-                <CheckBox Grid.Column="0" Grid.Row="2" Content="SizeControl" IsChecked="{Binding SizeControl}" />
-                <CheckBox Grid.Column="0" Grid.Row="3" Content="TypeControl" IsChecked="{Binding TypeControl}" />
-                <CheckBox Grid.Column="0" Grid.Row="4" Content="RatioControl" IsChecked="{Binding RatioControl}" />
+                <CheckBox Grid.Column="0" Grid.Row="2" Content="ShiftedImage" IsChecked="{Binding ShiftedImage}" />
+                <CheckBox Grid.Column="0" Grid.Row="3" Content="SizeControl" IsChecked="{Binding SizeControl}" />
+                <CheckBox Grid.Column="0" Grid.Row="4" Content="TypeControl" IsChecked="{Binding TypeControl}" />
+                <CheckBox Grid.Column="0" Grid.Row="5" Content="RatioControl" IsChecked="{Binding RatioControl}" />
 
-                <Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="5">
+                <Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
@@ -144,33 +146,33 @@
                               SelectedItem="{Binding Path=AlgorithmComparing}" />
                 </Grid>
 
-                <TextBlock Grid.Column="0" Grid.Row="6" Text="ThresholdDifference" />
-                <TextBox Grid.Column="1" Grid.Row="6"
+                <TextBlock Grid.Column="0" Grid.Row="7" Text="ThresholdDifference" />
+                <TextBox Grid.Column="1" Grid.Row="7"
                          Text="{Binding ThresholdDifference, UpdateSourceTrigger=PropertyChanged}">
                     <i:Interaction.Behaviors>
                         <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="3" />
                     </i:Interaction.Behaviors>
                 </TextBox>
 
-                <TextBlock Grid.Column="0" Grid.Row="7" Text="MinimalImageSize" />
-                <TextBox Grid.Column="1" Grid.Row="7"
+                <TextBlock Grid.Column="0" Grid.Row="8" Text="MinimalImageSize" />
+                <TextBox Grid.Column="1" Grid.Row="8"
                          Text="{Binding MinimalImageSize, UpdateSourceTrigger=PropertyChanged}">
                     <i:Interaction.Behaviors>
                         <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
                     </i:Interaction.Behaviors>
                 </TextBox>
 
-                <TextBlock Grid.Column="0" Grid.Row="8" Text="MaximalImageSize" />
-                <TextBox Grid.Column="1" Grid.Row="8"
+                <TextBlock Grid.Column="0" Grid.Row="9" Text="MaximalImageSize" />
+                <TextBox Grid.Column="1" Grid.Row="9"
                          Text="{Binding MaximalImageSize, UpdateSourceTrigger=PropertyChanged}">
                     <i:Interaction.Behaviors>
                         <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
                     </i:Interaction.Behaviors>
                 </TextBox>
 
-                <CheckBox Grid.Column="0" Grid.Row="9" Content="CompareInsideOneFolder"
+                <CheckBox Grid.Column="0" Grid.Row="10" Content="CompareInsideOneFolder"
                           IsChecked="{Binding CompareInsideOneFolder}" />
-                <CheckBox Grid.Column="0" Grid.Row="10" Content="CompareInsideOneSearchPath"
+                <CheckBox Grid.Column="0" Grid.Row="11" Content="CompareInsideOneSearchPath"
                           IsChecked="{Binding CompareInsideOneSearchPath}" />
             </Grid>
         </TabItem>

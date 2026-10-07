@@ -89,6 +89,7 @@ namespace AntiDupl.NET.WinForms
         public string CoreOptionsForm_CompareTabPage_Text;
         public string CoreOptionsForm_CheckOnEqualityCheckBox_Text;
         public string CoreOptionsForm_TransformedImageCheckBox_Text;
+        public string CoreOptionsForm_ShiftedImageCheckBox_Text;
         public string CoreOptionsForm_SizeControlCheckBox_Text;
         public string CoreOptionsForm_TypeControlCheckBox_Text;
         public string CoreOptionsForm_RatioControlCheckBox_Text;

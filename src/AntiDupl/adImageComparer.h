@@ -61,18 +61,26 @@ namespace ad
         virtual void Add(TImageDataPtr pImageData) = 0; // pure virtual or abstract function and requires to be overwritten in an derived class
         virtual void Compare(TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform) = 0;
 		virtual bool IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference); //виртуальная функция, но не обязательно ее переопределять
-
+        //Comparison of images with search of the optimal shift (shiftedImage option).
+        virtual bool ShiftedDifference(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference);
+        bool PassControls(TImageDataPtr pFirst, TImageDataPtr pSecond);
+        //Search of a nonzero shift of the reduced images that minimizes the squared difference.
+        bool FindShift(TImageDataPtr pFirst, TImageDataPtr pSecond, int &dx, int &dy);
         void AddToSet(Set &set, TImageDataPtr pImageData);
         void CompareWithSet(const Set &set, TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform);
 
+        TUInt8* m_pMask;      //mask of the central comparison area (ignoreFrameWidth)
+        int m_fastThreshold;  //threshold for the 4x4 fast signature
+
     private:
+        //Comparison of an image pair without shift and (if enabled) with shift compensation; the smaller difference is kept.
+        bool IsDuplPairAny(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference);
+
         TResultStorage *m_pResult;
         TImageData *m_pTransformedImageData;
         TUInt8* m_pBuffer;
-        TUInt8* m_pMask;
 
         int m_mainThreshold;
-        int m_fastThreshold;
         int m_maxDifference;
         size_t m_mainSize;
     };
@@ -137,6 +145,7 @@ namespace ad
         virtual void Add(TImageDataPtr pImageData);
         virtual void Compare(TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform);
 		virtual bool IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference);
+        virtual bool ShiftedDifference(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference);
 
     private:
 		float C1;

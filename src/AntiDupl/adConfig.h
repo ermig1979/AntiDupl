@@ -87,6 +87,8 @@ namespace ad
     const TUInt32 PIXEL_MAX_DIFFERENCE = 0xFF;
     const TUInt32 FAST_IMAGE_SIZE = 4;
     const size_t FAST_DATA_SIZE = FAST_IMAGE_SIZE*FAST_IMAGE_SIZE;
+    const int SHIFT_COARSE_FACTOR = 6;               //admissible threshold excess at the coarse stage of the shift compensation search
+    const int SHIFT_FINE_SIZE = 4;                   //radius of the fine shift compensation search in pixels of the reduced image
     const TUInt8 JPEG_FILE_MARKER = 0xFF;
     const TUInt8 JPEG_FILE_MARKER_END = 0xD9;
     const TInt32 RATIO_THRESHOLD_DIFFERENCE = 1;
