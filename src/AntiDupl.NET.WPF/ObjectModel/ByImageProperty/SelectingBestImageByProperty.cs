@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -22,7 +22,7 @@ namespace AntiDupl.NET.WPF.ObjectModel.ByImageProperty
             set
             {
                 _conditionsOfSelectingBestImageByProperty = value;
-                RaisePropertyChangedEvent("ConditionsOfSelectingBestImageByProperty");
+                RaisePropertyChangedEvent();
             }
         }
 

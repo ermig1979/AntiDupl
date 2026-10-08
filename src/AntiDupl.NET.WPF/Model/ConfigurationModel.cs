@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using AntiDupl.NET.Core.Enums;
 using AntiDupl.NET.WPF.Helper;
 using AntiDupl.NET.WPF.ObjectModel;
 using AntiDupl.NET.WPF.ViewModel;
@@ -41,7 +42,7 @@ namespace AntiDupl.NET.WPF.Model
                 _thumbnailWidth = value;
                 //if (ConfigurationChanged != null)
                 //    ConfigurationChanged(this, EventArgs.Empty);.
-                RaisePropertyChangedEvent("ThumbnailWidth");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -53,7 +54,7 @@ namespace AntiDupl.NET.WPF.Model
             {
                 _criterions = value;
                 _criterions.CollectionChanged += criterions_CollectionChanged;
-                RaisePropertyChangedEvent("Criterions");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -106,7 +107,114 @@ namespace AntiDupl.NET.WPF.Model
 
         public SerializableCultureInfo Language { get; set; }
 
+        // ==== Deep (DINOv2) search: configuration of the AntiDupl.NET.Deep pipeline ====
+
+        // Дефолт — true, как в оригинале (SearchSettings.GeometricCheckEnabled = true):
+        // без WGC-верификации DINOv2-кластеры возвращают кучу ложных пар.
+        bool _verifyByLightGlue = true;
+        public bool VerifyByLightGlue
+        {
+            get { return _verifyByLightGlue; }
+            set { _verifyByLightGlue = value; RaisePropertyChangedEvent(); }
+        }
+
+        string _lightGlueModelPath = "";
+        public string LightGlueModelPath
+        {
+            get { return _lightGlueModelPath; }
+            set { _lightGlueModelPath = value; RaisePropertyChangedEvent(); }
+        }
+
+        string _dinov2ModelPath = "";
+        public string Dinov2ModelPath
+        {
+            get { return _dinov2ModelPath; }
+            set { _dinov2ModelPath = value; RaisePropertyChangedEvent(); }
+        }
+
+        string _dinov2ModelUrl = "";
+        public string Dinov2ModelUrl
+        {
+            get { return _dinov2ModelUrl; }
+            set { _dinov2ModelUrl = value; RaisePropertyChangedEvent(); }
+        }
+
+        // Каталоги CUDA/cuDNN (как в оригинале: добавляются в PATH при старте, чтобы
+        // ONNX Runtime нашел cudart/cublas/cudnn). После изменения — перезапуск приложения.
+        string _cudaPath = "";
+        public string CudaPath
+        {
+            get { return _cudaPath; }
+            set { _cudaPath = value; RaisePropertyChangedEvent(); }
+        }
+
+        string _cudnnPath = "";
+        public string CudnnPath
+        {
+            get { return _cudnnPath; }
+            set { _cudnnPath = value; RaisePropertyChangedEvent(); }
+        }
+
+        // ==== Параметры deep-пайплайна (паритет SearchSettings референс-проекта) ====
+        // Дефолты = оригинал, кроме MinMatchScore: 0.6 (осознанно строже оригинальных 0.5 —
+        // меньше мягких ложных пар); WgcParallelism: 0 = авто (processor count / 2).
+        // Старые configuration.xml без этих элементов: XmlSerializer оставит дефолты.
+
+        double _deepMinSimilarityForPair = 0.5;
+        public double DeepMinSimilarityForPair
+        {
+            get { return _deepMinSimilarityForPair; }
+            set { _deepMinSimilarityForPair = value; RaisePropertyChangedEvent(); }
+        }
+
+        int _deepMaxClusterSize = 50;
+        public int DeepMaxClusterSize
+        {
+            get { return _deepMaxClusterSize; }
+            set { _deepMaxClusterSize = value; RaisePropertyChangedEvent(); }
+        }
+
+        double _deepTransitivityRatio = 0.7;
+        public double DeepTransitivityRatio
+        {
+            get { return _deepTransitivityRatio; }
+            set { _deepTransitivityRatio = value; RaisePropertyChangedEvent(); }
+        }
+
+        int _deepWgcParallelism = 0;
+        public int DeepWgcParallelism
+        {
+            get { return _deepWgcParallelism; }
+            set { _deepWgcParallelism = value; RaisePropertyChangedEvent(); }
+        }
+
+        double _deepMinMatchScore = 0.6;
+        public double DeepMinMatchScore
+        {
+            get { return _deepMinMatchScore; }
+            set { _deepMinMatchScore = value; RaisePropertyChangedEvent(); }
+        }
+
+        // Производительность пайплайна (паритет SearchSettings оригинала: batchSize=32, prefetch=2).
+        int _deepBatchSize = 32;
+        public int DeepBatchSize
+        {
+            get { return _deepBatchSize; }
+            set { _deepBatchSize = value; RaisePropertyChangedEvent(); }
+        }
+
+        int _deepPrefetchCount = 2;
+        public int DeepPrefetchCount
+        {
+            get { return _deepPrefetchCount; }
+            set { _deepPrefetchCount = value; RaisePropertyChangedEvent(); }
+        }
+
         public string LastResultFile { get; set; }
+
+        // Выбранный режим поиска (тулбар). null = не выбирался — по умолчанию DINOv2
+        // (если ядро поддерживает). Сохраняется в configuration.xml.
+        public AlgorithmComparing? CompareAlgorithm { get; set; }
 
         public uint UndoRedoStackSize { get; set; }
 
@@ -121,7 +229,7 @@ namespace AntiDupl.NET.WPF.Model
             set
             {
                 _goodColor = value;
-                RaisePropertyChangedEvent("GoodColor");
+                RaisePropertyChangedEvent();
             }
         }
         Color _badColor;
@@ -131,7 +239,7 @@ namespace AntiDupl.NET.WPF.Model
             set
             {
                 _badColor = value;
-                RaisePropertyChangedEvent("BadColor");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -153,7 +261,7 @@ namespace AntiDupl.NET.WPF.Model
             set
             {
                 _folderAreDiffrentColor = value;
-                RaisePropertyChangedEvent("FolderAreDiffrentColor");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -164,7 +272,7 @@ namespace AntiDupl.NET.WPF.Model
 			set
 			{
 				_loadResultOnOpen = value;
-				RaisePropertyChangedEvent("LoadResultOnOpen");
+				RaisePropertyChangedEvent();
 			}
 		}
 
@@ -175,7 +283,7 @@ namespace AntiDupl.NET.WPF.Model
 			set
 			{
 				_saveResultOnClose = value;
-				RaisePropertyChangedEvent("SaveResultOnClose");
+				RaisePropertyChangedEvent();
 			}
 		}
 

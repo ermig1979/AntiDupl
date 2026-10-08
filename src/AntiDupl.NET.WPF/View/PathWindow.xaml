@@ -29,7 +29,7 @@
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Delete current" 
-                                  Command="{Binding LocationsModel.DeleteCurrentLocationCommand}"
+                                  Command="{Binding LocationsModel.DeleteLocationCommand}"
                                   CommandParameter="{Binding}" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>

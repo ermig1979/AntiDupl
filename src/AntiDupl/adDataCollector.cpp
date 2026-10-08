@@ -35,6 +35,38 @@
 
 namespace ad
 {
+    // Агрегация сумм по BLOCKINESS_SIZE-блокам: (max−next)/(max+next)×100.
+    static double GetBlockinessSums(const std::vector<unsigned int> & sums)
+    {
+        std::vector<unsigned int> block(BLOCKINESS_SIZE, 0);
+        size_t end = (sums.size() - 1)/block.size()*block.size(); 
+        for(size_t i = 0; i < end; ++i)
+            block[i%block.size()] += sums[i];
+        std::sort(block.rbegin(), block.rend());
+        return double(block[0] - block[1])/double(block[0] + block[1])*100.0;
+    }
+
+    // Алгоритм идентичен классическому пайплайну (TDataCollector::GetBlockiness):
+    // суммы |dY| по строкам и |dX| по столбцам серого растра, агрегация по 8×8-блокам,
+    // (max−next)/(max+next)×100 по минимальному из двух направлений.
+    double ComputeBlockiness(const TView & gray)
+    {
+        AD_FUNCTION_PERFORMANCE_TEST
+
+        if(gray.height < BLOCKINESS_SIZE + 1 || gray.width < BLOCKINESS_SIZE + 1)
+            return 0;
+
+        std::vector<unsigned int> rowSums(gray.height);
+        Simd::GetAbsDyRowSums(gray, &rowSums[0]);
+        double verticalBlockiness = GetBlockinessSums(rowSums);
+
+        std::vector<unsigned int> colSums(gray.width);
+        Simd::GetAbsDxColSums(gray, &colSums[0]);
+        double horizontalBlockiness = GetBlockinessSums(colSums);
+
+        return std::min(verticalBlockiness, horizontalBlockiness);
+    }
+
     TDataCollector::TDataCollector(TEngine *pEngine)
         :m_pOptions(pEngine->Options()),
         m_pResult(pEngine->Result())
@@ -166,29 +198,11 @@ namespace ad
 
 	double TDataCollector::GetBlockiness(const TView & gray)
 	{
-		AD_FUNCTION_PERFORMANCE_TEST
-
-		if(gray.height < BLOCKINESS_SIZE + 1 || gray.width < BLOCKINESS_SIZE + 1)
-			return 0;
-
-		std::vector<unsigned int> rowSums(gray.height);
-		Simd::GetAbsDyRowSums(gray, &rowSums[0]);
-		double verticalBlockiness = GetBlockiness(rowSums);
-
-		std::vector<unsigned int> colSums(gray.width);
-		Simd::GetAbsDxColSums(gray, &colSums[0]);
-		double horizontalBlockiness = GetBlockiness(colSums);
-
-		return std::min(verticalBlockiness, horizontalBlockiness);
+		return ComputeBlockiness(gray);
 	}
 
 	double TDataCollector::GetBlockiness(const std::vector<unsigned int> & sums)
 	{
-		std::vector<unsigned int> block(BLOCKINESS_SIZE, 0);
-		size_t end = (sums.size() - 1)/block.size()*block.size(); 
-		for(size_t i = 0; i < end; ++i)
-			block[i%block.size()] += sums[i];
-		std::sort(block.rbegin(), block.rend());
-		return double(block[0] - block[1])/double(block[0] + block[1])*100.0;
+		return GetBlockinessSums(sums);
 	}
 }

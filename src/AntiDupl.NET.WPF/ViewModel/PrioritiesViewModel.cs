@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
@@ -38,7 +38,7 @@ namespace AntiDupl.NET.WPF.ViewModel
             set
             {
                 _criterions = value;
-                RaisePropertyChangedEvent("Criterions");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -91,7 +91,7 @@ namespace AntiDupl.NET.WPF.ViewModel
             set
             {
                 _fillingMode = value;
-                RaisePropertyChangedEvent("FillingMode");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -104,7 +104,7 @@ namespace AntiDupl.NET.WPF.ViewModel
                 _howMuch = value;
                 if (_howMuch <= 0)
                     throw new ArgumentException("_howMuch <= 0! (_howMuch=" + _howMuch + ")");
-                RaisePropertyChangedEvent("HowMuch");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -134,7 +134,7 @@ namespace AntiDupl.NET.WPF.ViewModel
             set
             {
                 _howMuchText = value;
-                RaisePropertyChangedEvent("HowMuchText");
+                RaisePropertyChangedEvent();
             }
         }
 

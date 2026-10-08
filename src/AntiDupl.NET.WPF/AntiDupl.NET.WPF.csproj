@@ -218,6 +218,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AntiDupl.NET.Core\AntiDupl.NET.Core.csproj" />
+    <ProjectReference Include="..\AntiDupl.NET.Deep\AntiDupl.NET.Deep.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">

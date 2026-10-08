@@ -195,6 +195,31 @@ namespace AntiDupl.NET.WPF.ViewModel
         [XmlIgnoreAttribute]
         public ImageInfoClass AfterSecondFile { get; set; }
 
+        // Метрики LightGlue/WGC deep-пары (для пар ядерного поиска не заполняются).
+        /// <summary>Пара прошла геометрическую верификацию SuperPoint+LightGlue (WGC).</summary>
+        [XmlIgnoreAttribute]
+        public bool DeepWgcVerified { get; set; }
+        /// <summary>Номер группы (клика) из deep-поиска; -1 = классический режим (группы — транзитивное замыкание по общим файлам).</summary>
+        [XmlIgnoreAttribute]
+        public int DeepGroupId { get; set; } = -1;
+        /// <summary>Число совпадений keypoints (4-й элемент кортежа IGeometricVerifier).</summary>
+        [XmlIgnoreAttribute]
+        public int DeepWgcMatches { get; set; }
+        /// <summary>Средняя уверенность совпадений LightGlue, % (5-й элемент кортежа).</summary>
+        [XmlIgnoreAttribute]
+        public int DeepWgcScorePercent { get; set; }
+
+        /// <summary>Текст колонки LightGlue: «97% (551)» — PASS; «—» — WGC отключён (FAIL-пар в результат не попадают).</summary>
+        [XmlIgnoreAttribute]
+        public string DeepWgcDisplay
+        {
+            get
+            {
+                if (!DeepWgcVerified) return "—";
+                return $"{DeepWgcScorePercent}% ({DeepWgcMatches})";
+            }
+        }
+
         [XmlIgnoreAttribute]
         public IConfigurableAction ConfigurableAction { get; set; }
 

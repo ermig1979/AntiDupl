@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -43,7 +43,7 @@ namespace AntiDupl.NET.WPF.ViewModel
             set
             {
                 _image = value;
-                RaisePropertyChangedEvent("Image");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -62,7 +62,7 @@ namespace AntiDupl.NET.WPF.ViewModel
                     //    base.RemoveError(dictionaryKey);
 
                     //ValidateSearchInSubfolder();
-                    RaisePropertyChangedEvent("SearchInSubfolder");
+                    RaisePropertyChangedEvent();
                 }
             }
         }
@@ -78,7 +78,7 @@ namespace AntiDupl.NET.WPF.ViewModel
                 string error;
                 if (!_model.SetPath(value, out error))
                     throw new ApplicationException(error);
-                RaisePropertyChangedEvent("Path");
+                RaisePropertyChangedEvent();
                 RaisePropertyChangedEvent("IsDirectory");
                 UpdateImage();
             }

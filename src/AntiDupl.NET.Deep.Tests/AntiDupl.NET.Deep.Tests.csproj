@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <AssemblyVersion>2.4.0.0</AssemblyVersion>
+    <FileVersion>2.4.0.0</FileVersion>
+    <Version>2.4.0</Version>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <Platforms>x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
+    <Configurations>Debug;Release;Publish</Configurations>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AnalysisMode>None</AnalysisMode>
+    <Authors>ErmIg;Gigas002</Authors>
+    <Description>Интеграционные тесты deep-пайплайна (DINOv2 + SuperPoint/LightGlue) на реальных AntiDupl.dll и наборе TestCropHard</Description>
+    <Copyright>ErmIg © 2002-2023</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <BaseOutputPath>..\..\bin\Debug\</BaseOutputPath>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <BaseOutputPath>..\..\bin\Release\</BaseOutputPath>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+      <Private>false</Private>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AntiDupl.NET.Core\AntiDupl.NET.Core.csproj" />
+    <ProjectReference Include="..\AntiDupl.NET.Deep\AntiDupl.NET.Deep.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Детерминизация: коллекции тестов последовательно. Одновременно живы
+         только один fixture-стек (DINOv2+LightGlue ORT-сессии) + стек текущего
+         проба; много живых ORT-стеков в одном процессе даёт спорадические 0-matches
+         в WGC-инференсе (см. диагностические пробы). -->
+    <None Include="xunit.runner.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

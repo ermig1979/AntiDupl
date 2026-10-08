@@ -33,6 +33,19 @@ namespace ad
     typedef TImageData* TImageDataPtr;
     typedef std::list<TImageDataPtr> TImageDataPtrs;
 
+    // Candidate captured by a scan-only run (adScanCandidatesW): path/size/time of a
+    // file that passed the TSearcher filters. Plain value type so it outlives the
+    // TImageData objects owned by TImageDataStorage.
+    struct TScanCandidate
+    {
+        TString path;
+        adUInt64 size;
+        adUInt64 time;
+
+        TScanCandidate() : size(0), time(0) {}
+        TScanCandidate(const TString& path_, adUInt64 size_, adUInt64 time_) : path(path_), size(size_), time(time_) {}
+    };
+
 	class TInit;
     class TStatus;
     class TResultStorage;
@@ -56,6 +69,11 @@ namespace ad
 
         void Search();
 
+        // Scan-only pass (no collect/compare). Two-call pattern: the first call with
+        // *pCandidateSize == 0 re-runs the scan and reports the required count;
+        // the second call fills pCandidates from the cached scan result.
+        adError ScanCandidates(adCandidateInfoPtrW pCandidates, adSizePtr pCandidateSize);
+
         const TString & UserPath() const { return _userPath; }
         TStatus* Status() {return m_pStatus;}
         TOptions* Options() {return m_pOptions;};
@@ -68,6 +86,7 @@ namespace ad
     private:
         TString _userPath;
         TImageDataPtrs *m_pImageDataPtrs;
+        std::vector<TScanCandidate> *m_pScanCandidates; // cached scan-only result (adScanCandidatesW)
         TCompareManager *m_pCompareManager;
         TCollectManager *m_pCollectManager;
         TStatus *m_pStatus;

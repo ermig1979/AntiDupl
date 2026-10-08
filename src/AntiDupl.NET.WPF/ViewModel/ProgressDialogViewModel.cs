@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
@@ -168,7 +168,7 @@ public class ProgressDialogViewModel : PropertyChangedBase
         set
         {
             _progress = value;
-            RaisePropertyChangedEvent(nameof(Progress));
+            RaisePropertyChangedEvent();
         }
     }
 
@@ -184,7 +184,7 @@ public class ProgressDialogViewModel : PropertyChangedBase
         set
         {
             _progressMax = value;
-            RaisePropertyChangedEvent(nameof(ProgressMax));
+            RaisePropertyChangedEvent();
         }
     }
 
@@ -197,7 +197,7 @@ public class ProgressDialogViewModel : PropertyChangedBase
         set
         {
             _progressMessage = value;
-            RaisePropertyChangedEvent(nameof(ProgressMessage));
+            RaisePropertyChangedEvent();
         }
     }
 
@@ -223,7 +223,7 @@ public class ProgressDialogViewModel : PropertyChangedBase
         set
         {
             _state = value;
-            RaisePropertyChangedEvent(nameof(State));
+            RaisePropertyChangedEvent();
         }
     }
 
@@ -235,7 +235,7 @@ public class ProgressDialogViewModel : PropertyChangedBase
         set
         {
             _currentSecond = value;
-            RaisePropertyChangedEvent(nameof(CurrentSecond));
+            RaisePropertyChangedEvent();
         }
     }
 

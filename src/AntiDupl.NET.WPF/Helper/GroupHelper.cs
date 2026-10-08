@@ -12,8 +12,28 @@ namespace AntiDupl.NET.WPF.Helper
     {
         public static void ConvertToGroup(IList<DuplicateGroup> groups, IEnumerable<DuplPairViewModel> resultList)
         {
+            var byId = new Dictionary<int, DuplicateGroup>();
             foreach (var result in resultList)
             {
+                if (result.DeepGroupId >= 0)
+                {
+                    // Deep-режим: номер группы присвоен поиском (группа = клик WGC-графа).
+                    // Слияние по общим файлам НЕ делается: файл может входить в несколько
+                    // групп (семантика референса) — пары из разных групп остаются отдельными.
+                    if (!byId.TryGetValue(result.DeepGroupId, out var deepGroup))
+                    {
+                        deepGroup = new DuplicateGroup(result);
+                        byId[result.DeepGroupId] = deepGroup;
+                        groups.Add(deepGroup);
+                    }
+                    else
+                    {
+                        deepGroup.AddResult(result);
+                    }
+                    continue;
+                }
+
+                // Классический режим: транзитивное замыкание по общим файлам (семантика ядра).
                 DuplicateGroup finded = null;
                 foreach (var group in groups)
                 {

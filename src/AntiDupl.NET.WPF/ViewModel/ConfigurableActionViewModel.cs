@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -41,7 +41,7 @@ namespace AntiDupl.NET.WPF.ViewModel
             set
             {
                 _configurableAction = value;
-                RaisePropertyChangedEvent("ConfigurableAction");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -113,7 +113,7 @@ namespace AntiDupl.NET.WPF.ViewModel
             set
             {
                 _allIConditionMode = value;
-                RaisePropertyChangedEvent("AllIConditionMode");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -124,7 +124,7 @@ namespace AntiDupl.NET.WPF.ViewModel
             set
             {
                 _algorithmsOfGettingNumberFromFileName = value;
-                RaisePropertyChangedEvent("AlgorithmsOfGettingNumberFromFileName");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -146,7 +146,7 @@ namespace AntiDupl.NET.WPF.ViewModel
             set
             {
                 _bestSelectingByPathList = value;
-                RaisePropertyChangedEvent("BestSelectingByPathList");
+                RaisePropertyChangedEvent();
             }
         }  
 
@@ -173,7 +173,7 @@ namespace AntiDupl.NET.WPF.ViewModel
             set
             {
                 _allDirectoryFilters = value;
-                RaisePropertyChangedEvent("AllDirectoryFilters");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -240,7 +240,7 @@ namespace AntiDupl.NET.WPF.ViewModel
             set
             {
                 _filteredResults = value;
-                RaisePropertyChangedEvent("FilteredResults");
+                RaisePropertyChangedEvent();
             }
         }
 

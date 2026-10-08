@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,6 +27,8 @@ using Microsoft.Win32;
 
 using AntiDupl.NET.Core;
 using AntiDupl.NET.Core.Enums;
+using AntiDupl.NET.Deep.Core;
+using AntiDupl.NET.Deep.Logging;
 
 namespace AntiDupl.NET.WPF.ViewModel
 {
@@ -63,6 +65,15 @@ namespace AntiDupl.NET.WPF.ViewModel
         IgnoreStorage _ignoreStorage;
         ILanguageService _languageService;
 
+        /// <summary>
+        /// C#-пайплайн deep (DINOv2) поиска (AntiDupl.NET.Deep). Инжектится App.xaml.cs
+        /// после BuildServiceProvider; null — deep-режим недоступен.
+        /// </summary>
+        public DeepSearchService DeepSearchService { get; private set; }
+
+        /// <summary>Логгер deep-пайплайна (для команд/окон, работающих с моделями).</summary>
+        public IDeepLogger DeepLogger { get; private set; }
+
         IViewModeModel _viewModeModel;
         public IViewModeModel ViewModeModel //используется для скрытия табов
         {
@@ -92,7 +103,7 @@ namespace AntiDupl.NET.WPF.ViewModel
             set
             {
                 _groupsCollection = value;
-                this.RaisePropertyChangedEvent("GroupsCollection");
+                this.RaisePropertyChangedEvent();
                 SelectedTabPageIndex = 1;
             }
         }
@@ -106,11 +117,17 @@ namespace AntiDupl.NET.WPF.ViewModel
             IThumbnailProvider thumbnailProvider,
             IUndoRedoEngine undoRedoEngine,
             IViewModeModel viewModeModel,
+            DeepSearchService deepSearchService,
+            IDeepLogger deepLogger,
             ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<MainViewModel>();
             _languageService = languageService;
             _windowService = new WindowService(_logger);
+
+            // Deep-сервис и логгер — конструкторной инъекцией из DI (без post-build-присваивания).
+            DeepSearchService = deepSearchService;
+            DeepLogger = deepLogger;
 
             _thumbnailProvider = thumbnailProvider;
             _core = coreLib;
@@ -119,14 +136,14 @@ namespace AntiDupl.NET.WPF.ViewModel
             Options = new CoreOptions(_core);
             _ignoreStorage = IgnoreStorage.Load();
 
+            Configuration = configuration;
+            Configuration.PropertyChanged += OnConfigurationPropertyChanged;
+
             _languageService.LanguageChanged += OnLanguageChanged;
             InitializeCompareModeOptions();
 
             _logger.LogInformation("MainViewModel: инициализирован (режим={Algorithm}, порог={Threshold}%)",
                 Options.compareOptions.AlgorithmComparing, Options.compareOptions.ThresholdDifference);
-
-            Configuration = configuration;
-            Configuration.PropertyChanged += OnConfigurationPropertyChanged;
 
             _undoRedoEngine = undoRedoEngine;
             _undoRedoEngine.PropertyChanged += OnUndoRedoEnginePropertyChanged;
@@ -316,7 +333,7 @@ namespace AntiDupl.NET.WPF.ViewModel
                     ((ICollectionView)_result).CollectionChanged -= Result_CollectionChanged;
                 }
                 _result = value;
-                RaisePropertyChangedEvent("Result");
+                RaisePropertyChangedEvent();
                 RaisePropertyChangedEvent("TotalInfo");
                 ((ICollectionView)_result).CurrentChanged += Result_CurrentChanged;
                 ((ICollectionView)_result).CollectionChanged += Result_CollectionChanged;
@@ -365,8 +382,29 @@ namespace AntiDupl.NET.WPF.ViewModel
             set
             {
                 _selectedResultIndex = value;
-                RaisePropertyChangedEvent("SelectedResultIndex");
+                RaisePropertyChangedEvent();
             }
+        }
+
+        void SetResultCountStatus()
+        {
+            // Статус результата в соответствии с текущим видом таблицы.
+            if (_viewModeModel.ViewMode == ViewMode.Group && _groups != null)
+                SetStatus($"Готово: {Plural(_groups.Count, "группа", "группы", "групп")}");
+            else if (_resultList != null && _resultList.Any())
+                SetStatus($"Готово: {Plural(_resultList.Count, "пара", "пары", "пар")}");
+            else
+                SetStatus(string.Empty);
+        }
+
+        private static string Plural(int n, string one, string few, string many)
+        {
+            int m10 = n % 10, m100 = n % 100;
+            if (m10 == 1 && m100 != 11)
+                return $"{n} {one}";
+            if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14))
+                return $"{n} {few}";
+            return $"{n} {many}";
         }
 
         public void SetResult(DuplPairViewModel[] result)
@@ -433,8 +471,29 @@ namespace AntiDupl.NET.WPF.ViewModel
 
             RefreshCompareModeOptions();
 
+            // Вид по умолчанию — «Группами». Сразу после получения результата
+            // автоматически строим группы и переключаемся на вкладку «Группы»;
+            // возврат к виду «Парами» — вручную через меню (ConvertToDuplPairCommand).
+            if (count > 0)
+            {
+                GroupHelper.ConvertToGroup(_groups, _resultList);
+                _resultList.Clear();
+
+                if (GroupsCollection == null)
+                    GroupsCollection = CollectionViewSource.GetDefaultView(_groups); // setter сам ставит вкладку 1
+                else
+                    SelectedTabPageIndex = 1;
+
+                _viewModeModel.ViewMode = ViewMode.Group;
+            }
+
             _logger.LogInformation("SetResult: готово за {Ms} мс (пар: {Count})", stopwatch.ElapsedMilliseconds, count);
-            SetStatus(string.Empty);
+            // Финальный статус со счётчиком по текущему виду
+            // (по умолчанию вид «Группами» — показываем число групп, не пар).
+            if (count == 0)
+                SetStatus(string.Empty);
+            else
+                SetResultCountStatus();
         }
 
 
@@ -460,7 +519,7 @@ namespace AntiDupl.NET.WPF.ViewModel
                 if (_status != value)
                 {
                     _status = value;
-                    RaisePropertyChangedEvent("Status");
+                    RaisePropertyChangedEvent();
                 }
             }
         }
@@ -703,8 +762,10 @@ namespace AntiDupl.NET.WPF.ViewModel
 
         const int THRESHOLD_DIFFERENCE_MAX_SQUARED_SUM = 15;
         const int THRESHOLD_DIFFERENCE_MAX_SSIM = 50;
+        const int THRESHOLD_DIFFERENCE_MAX_DINOV2 = 100;
         const int THRESHOLD_DIFFERENCE_DEFAULT_SQUARED_SUM = 5;
         const int THRESHOLD_DIFFERENCE_DEFAULT_SSIM = 20;
+        const int THRESHOLD_DIFFERENCE_DEFAULT_DINOV2 = 45;
 
         ObservableCollection<AlgorithmComparingItem> _algorithmItems = new ObservableCollection<AlgorithmComparingItem>();
         /// <summary>
@@ -726,20 +787,31 @@ namespace AntiDupl.NET.WPF.ViewModel
         }
 
         /// <summary>
-        /// Текущий режим (алгоритм) сравнения изображений.
+        /// Текущий режим (алгоритм) сравнения изображений — источник истины UI.
+        /// Для Dinov2 ядро не участвует в сравнении (в ядре такого алгоритма нет).
         /// </summary>
+        private AlgorithmComparing _uiAlgorithm = AlgorithmComparing.SquaredSum;
+
         public AlgorithmComparing AlgorithmComparing
         {
-            get { return Options != null ? Options.compareOptions.AlgorithmComparing : AlgorithmComparing.SquaredSum; }
+            get { return _uiAlgorithm; }
             set
             {
-                if (value == AlgorithmComparing)
+                if (value == _uiAlgorithm)
                     return;
 
+                _uiAlgorithm = value;
                 RebuildThresholdItems(GetMaxThresholdDifference(value));
                 ApplyCompareOptions(value, GetDefaultThresholdDifference(value));
 
-                RaisePropertyChangedEvent("AlgorithmComparing");
+                // Запоминаем режим между перезапусками (configuration.xml).
+                if (Configuration != null)
+                {
+                    Configuration.CompareAlgorithm = value;
+                    Configuration.Save();
+                }
+
+                RaisePropertyChangedEvent();
                 RaisePropertyChangedEvent("ThresholdDifference");
             }
         }
@@ -761,25 +833,37 @@ namespace AntiDupl.NET.WPF.ViewModel
                     return;
 
                 ApplyCompareOptions(AlgorithmComparing, value);
-                RaisePropertyChangedEvent("ThresholdDifference");
+                RaisePropertyChangedEvent();
             }
         }
 
         static int GetMaxThresholdDifference(AlgorithmComparing algorithm)
         {
-            return algorithm == AlgorithmComparing.SSIM ? THRESHOLD_DIFFERENCE_MAX_SSIM : THRESHOLD_DIFFERENCE_MAX_SQUARED_SUM;
+            if (algorithm == AlgorithmComparing.SSIM)
+                return THRESHOLD_DIFFERENCE_MAX_SSIM;
+            if (algorithm == AlgorithmComparing.Dinov2)
+                return THRESHOLD_DIFFERENCE_MAX_DINOV2;
+            return THRESHOLD_DIFFERENCE_MAX_SQUARED_SUM;
         }
 
         static int GetDefaultThresholdDifference(AlgorithmComparing algorithm)
         {
-            return algorithm == AlgorithmComparing.SSIM ? THRESHOLD_DIFFERENCE_DEFAULT_SSIM : THRESHOLD_DIFFERENCE_DEFAULT_SQUARED_SUM;
+            if (algorithm == AlgorithmComparing.SSIM)
+                return THRESHOLD_DIFFERENCE_DEFAULT_SSIM;
+            if (algorithm == AlgorithmComparing.Dinov2)
+                return THRESHOLD_DIFFERENCE_DEFAULT_DINOV2;
+            return THRESHOLD_DIFFERENCE_DEFAULT_SQUARED_SUM;
         }
 
         static string GetCompareAlgorithmName(AlgorithmComparing algorithm)
         {
-            string key = algorithm == AlgorithmComparing.SSIM
-                ? "toolBar_compareAlgorithm_ssim"
-                : "toolBar_compareAlgorithm_squaredSum";
+            string key;
+            if (algorithm == AlgorithmComparing.SSIM)
+                key = "toolBar_compareAlgorithm_ssim";
+            else if (algorithm == AlgorithmComparing.Dinov2)
+                key = "toolBar_compareAlgorithm_dinov2";
+            else
+                key = "toolBar_compareAlgorithm_squaredSum";
             if (Application.Current != null)
             {
                 object value = Application.Current.TryFindResource(key);
@@ -794,23 +878,44 @@ namespace AntiDupl.NET.WPF.ViewModel
             _algorithmItems.Add(new AlgorithmComparingItem(AlgorithmComparing.SquaredSum, GetCompareAlgorithmName(AlgorithmComparing.SquaredSum)));
             _algorithmItems.Add(new AlgorithmComparingItem(AlgorithmComparing.SSIM, GetCompareAlgorithmName(AlgorithmComparing.SSIM)));
 
+            // Deep (DINOv2) режим показываем только если ядро поддерживает scan-only поиск
+            // (экспорт adScanCandidatesW, AntiDupl.dll 2.4.0+). Старая dll → режим скрыт.
+            if (_core.DeepSearchSupported)
+                _algorithmItems.Add(new AlgorithmComparingItem(AlgorithmComparing.Dinov2, GetCompareAlgorithmName(AlgorithmComparing.Dinov2)));
+
             // Снимок Options, созданный конструктором CoreOptions(_core), несёт дефолтные
             // значения (побочный эффект SetDefaultOptions в SetDefault), поэтому
             // берём реальные текущие значения опций из ядра:
+            // (ядро не знает Dinov2 — из него всегда приходит SquaredSum/SSIM)
             CoreCompareOptions coreCompare = _core.compareOptions;
-            AlgorithmComparing algorithm = coreCompare.algorithmComparing;
+            bool dinoSupported = _core.DeepSearchSupported;
 
-            RebuildThresholdItems(GetMaxThresholdDifference(algorithm));
+            // Режим поиска: восстанавливаем выбранный пользователем (configuration.xml);
+            // если не выбран — классический режим (SquaredSum) по умолчанию.
+            // Dino на старом ядре (нет adScanCandidatesW) — откат на SquaredSum.
+            var savedMode = Configuration.CompareAlgorithm;
+            AlgorithmComparing selected;
+            if (savedMode == AlgorithmComparing.Dinov2 && !dinoSupported)
+                selected = AlgorithmComparing.SquaredSum;
+            else if (savedMode.HasValue)
+                selected = savedMode.Value;
+            else
+                selected = AlgorithmComparing.SquaredSum;
+            _uiAlgorithm = selected;
 
-            int threshold = coreCompare.thresholdDifference;
-            int max = GetMaxThresholdDifference(algorithm);
+            RebuildThresholdItems(GetMaxThresholdDifference(selected));
+
+            int threshold = selected == AlgorithmComparing.Dinov2
+                ? GetDefaultThresholdDifference(AlgorithmComparing.Dinov2)
+                : coreCompare.thresholdDifference;
+            int max = GetMaxThresholdDifference(selected);
             if (threshold < 0)
                 threshold = 0;
             if (threshold > max)
                 threshold = max;
-            if (algorithm != Options.compareOptions.AlgorithmComparing ||
+            if (selected != Options.compareOptions.AlgorithmComparing ||
                 threshold != Options.compareOptions.ThresholdDifference)
-                ApplyCompareOptions(algorithm, threshold);
+                ApplyCompareOptions(selected, threshold);
         }
 
         void RebuildThresholdItems(int max)
@@ -831,6 +936,11 @@ namespace AntiDupl.NET.WPF.ViewModel
                 Options.compareOptions.algorithmComparing = algorithm;
                 Options.compareOptions.thresholdDifference = threshold;
             }
+            // ВАЖНО: C++ adAlgorithmComparing не имеет Dinov2 (2 = SIZE там!).
+            // Deep-режиму ядро не получает алгоритм/порог — их использует только
+            // C#-пайплайн (DeepSearchService) по снимку Options.
+            if (algorithm == AlgorithmComparing.Dinov2)
+                return;
             if (_core != null)
             {
                 CoreCompareOptions coreOptions = _core.compareOptions;
@@ -838,6 +948,23 @@ namespace AntiDupl.NET.WPF.ViewModel
                 coreOptions.thresholdDifference = threshold;
                 _core.compareOptions = coreOptions;
             }
+        }
+
+        /// <summary>
+        /// Заменяет снимок опций после поиска. В deep (Dinov2) режиме снимок ядра
+        /// несёт реальные значения ядра (deep-значения ядру не передавались),
+        /// поэтому копируем deep-значение алгоритма/порога из старого снимка.
+        /// </summary>
+        public void SetOptions(CoreOptions newOptions)
+        {
+            if (newOptions == null)
+                return;
+            if (_uiAlgorithm == AlgorithmComparing.Dinov2 && Options != null)
+            {
+                newOptions.compareOptions.algorithmComparing = AlgorithmComparing.Dinov2;
+                newOptions.compareOptions.thresholdDifference = Options.compareOptions.ThresholdDifference;
+            }
+            Options = newOptions;
         }
 
         void OnLanguageChanged(object sender, EventArgs e)
@@ -849,13 +976,14 @@ namespace AntiDupl.NET.WPF.ViewModel
         /// <summary>
         /// После поиска объект Options заменяется на новый снимок опций ядра,
         /// поэтому обновляем выпадающие списки режимов работы.
+        /// Алгоритм берём из _uiAlgorithm (источник истины UI), порог — из снимка.
         /// </summary>
         void RefreshCompareModeOptions()
         {
             if (Options == null)
                 return;
 
-            AlgorithmComparing algorithm = Options.compareOptions.AlgorithmComparing;
+            AlgorithmComparing algorithm = _uiAlgorithm;
             int max = GetMaxThresholdDifference(algorithm);
             if (_thresholdItems.Count != max + 1)
                 RebuildThresholdItems(max);
@@ -910,7 +1038,7 @@ namespace AntiDupl.NET.WPF.ViewModel
             {
                 return _openConfigurationCommand ?? (_openConfigurationCommand = new RelayCommand(arg =>
                 {
-                    ConfigurationViewModel vm = new ConfigurationViewModel(Configuration, _windowService, _core, Options, _thumbnailProvider);
+                    ConfigurationViewModel vm = new ConfigurationViewModel(Configuration, _windowService, _core, Options, _thumbnailProvider, DeepLogger);
                     _windowService.ShowDialogWindow<ConfigurationWindow>(vm);
                 }, arg => Configuration != null));
             }
@@ -1034,7 +1162,9 @@ namespace AntiDupl.NET.WPF.ViewModel
                         GroupsCollection = CollectionViewSource.GetDefaultView(_groups);
                     _resultList.Clear();
                     SelectedTabPageIndex = 1;
+                    _viewModeModel.ViewMode = ViewMode.Group;
                     _windowService.ClosePleaseWait();
+                    SetResultCountStatus(); // F17
                 }, arg => _resultList != null && _resultList.Any()));
             }
         }
@@ -1055,7 +1185,9 @@ namespace AntiDupl.NET.WPF.ViewModel
                     Result = (IEditableCollectionView)res;
                     _groups.Clear();
                     SelectedTabPageIndex = 0;
+                    _viewModeModel.ViewMode = ViewMode.Pair;
                     _windowService.ClosePleaseWait();
+                    SetResultCountStatus(); // F17
                 }, arg => _groups != null && _groups.Any()));
             }
         }
@@ -1197,7 +1329,7 @@ namespace AntiDupl.NET.WPF.ViewModel
                 if (_selectedTabPageIndex != value)
                 {
                     _selectedTabPageIndex = value;
-                    this.RaisePropertyChangedEvent("SelectedTabPageIndex");
+                    this.RaisePropertyChangedEvent();
                     //if (Result != null)
                     //{
                     //    if (_selectedTabPageIndex == COMPARE_TAB_INDEX)
@@ -1389,7 +1521,7 @@ namespace AntiDupl.NET.WPF.ViewModel
             set
             {
                 _title = value;
-                RaisePropertyChangedEvent("Title");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -1430,7 +1562,8 @@ namespace AntiDupl.NET.WPF.ViewModel
             {
                 return _clearFilterResultCommand ?? (_clearFilterResultCommand = new RelayCommand(arg =>
                 {
-                    ((ICollectionView)Result).Filter = null;
+                    if (Result != null)
+                        ((ICollectionView)Result).Filter = null;
                 }));
             }
         }

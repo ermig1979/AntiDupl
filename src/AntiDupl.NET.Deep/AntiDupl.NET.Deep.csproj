@@ -1,0 +1,74 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <AssemblyVersion>2.4.0.0</AssemblyVersion>
+    <FileVersion>2.4.0.0</FileVersion>
+    <Version>2.4.0</Version>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <Platforms>x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
+    <Configurations>Debug;Release;Publish</Configurations>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- WIC-декод (BitmapImage) для эталонного варианта препроцессинга (A/B замер). -->
+    <UseWPF>true</UseWPF>
+    <!-- Проект — перенос из DinoDuplicateSearchWPF (net8.0), анализаторы отключены -->
+    <AnalysisMode>None</AnalysisMode>
+    <Authors>ErmIg;Gigas002</Authors>
+    <Description>Deep (DINOv2 + SuperPoint/LightGlue) duplicate image search pipeline</Description>
+    <Copyright>ErmIg © 2002-2023</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+  </PropertyGroup>
+
+  <!-- UseWPF (WindowsDesktop SDK) сбрасывает default implicit-usings — восстанавливаем явно. -->
+  <ItemGroup>
+    <Using Include="System" />
+    <Using Include="System.Collections.Generic" />
+    <Using Include="System.IO" />
+    <Using Include="System.Linq" />
+    <Using Include="System.Net.Http" />
+    <Using Include="System.Threading" />
+    <Using Include="System.Threading.Tasks" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <BaseOutputPath>..\..\bin\Debug\</BaseOutputPath>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <BaseOutputPath>..\..\bin\Release\</BaseOutputPath>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Publish|x64'">
+    <BaseOutputPath>..\..\bin\Publish\</BaseOutputPath>
+    <OutputPath>..\..\bin\Publish\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- ORT-пакет вынесен в AntiDupl.NET.Onnx (единственный носитель).
+         Здесь — только DI-абстракции для клей-метода AddDeepSearch. -->
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AntiDupl.NET.Core\AntiDupl.NET.Core.csproj" />
+    <ProjectReference Include="..\AntiDupl.NET.Deep.Abstractions\AntiDupl.NET.Deep.Abstractions.csproj" />
+    <ProjectReference Include="..\AntiDupl.NET.Onnx\AntiDupl.NET.Onnx.csproj" />
+  </ItemGroup>
+
+</Project>

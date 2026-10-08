@@ -19,7 +19,7 @@ namespace AntiDupl.NET.WPF.ObjectModel
                 if (_name != value)
                 {
                     _name = value;
-                    RaisePropertyChangedEvent("Name");
+                    RaisePropertyChangedEvent();
                 }
             }
         }

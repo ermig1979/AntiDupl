@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +23,7 @@ namespace AntiDupl.NET.WPF.ViewModel
                 if (_color != value)
                 {
                     _color = value;
-                    RaisePropertyChangedEvent("Color");
+                    RaisePropertyChangedEvent();
 
                     RedChannel = (int)_color.R;
                     GreenChannel = (int)_color.G;
@@ -43,7 +43,7 @@ namespace AntiDupl.NET.WPF.ViewModel
                 if (_redChannel != value)
                 {
                     _redChannel = value;
-                    RaisePropertyChangedEvent("RedChannel");
+                    RaisePropertyChangedEvent();
                     DoColorChange((int)value, c => c.R, () => Color.FromArgb(Color.A, ((byte)(int)value), Color.G, Color.B));
                 }
             }
@@ -73,7 +73,7 @@ namespace AntiDupl.NET.WPF.ViewModel
                 if (_blueChannel != value)
                 {
                     _blueChannel = value;
-                    RaisePropertyChangedEvent("BlueChannel");
+                    RaisePropertyChangedEvent();
                     DoColorChange((int)value, c => c.B, () => Color.FromArgb(Color.A, Color.R, Color.G, (byte)(int)value));
                 }
             }
@@ -88,7 +88,7 @@ namespace AntiDupl.NET.WPF.ViewModel
                 if (_alphaChannel != value)
                 {
                     _alphaChannel = value;
-                    RaisePropertyChangedEvent("AlphaChannel");
+                    RaisePropertyChangedEvent();
                     DoColorChange((int)value, c => c.A, () => Color.FromArgb((byte)(int)value, Color.R, Color.G, Color.B));
                 }
             }
@@ -103,7 +103,7 @@ namespace AntiDupl.NET.WPF.ViewModel
                 if (_colourValue != value)
                 {
                     _colourValue = value;
-                    RaisePropertyChangedEvent("ColourValue");
+                    RaisePropertyChangedEvent();
 
                     Color? newColour = null;
                     try

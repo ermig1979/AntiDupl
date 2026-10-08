@@ -35,6 +35,12 @@ namespace ad
     struct TPixelData; 
     class TEngine;
     class TResultStorage;
+
+    //-------------------------------------------------------------------------
+    // Блочность на сером растре (алгоритм 1-в-1 с классическим пайплайном:
+    // TDataCollector::GetBlockiness). Свободная функция — вызывается и из
+    // TDataCollector, и из adLoadBitmapLetterboxMetricsW (deep-пайплайн).
+    double ComputeBlockiness(const TView & gray);
     //-------------------------------------------------------------------------
     class TDataCollector
     {

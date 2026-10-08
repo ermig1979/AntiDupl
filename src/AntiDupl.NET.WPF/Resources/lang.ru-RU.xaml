@@ -64,6 +64,8 @@
     <v:String x:Key="mainwindow_GridColumn_SearchSubfolders">Поиск в каталогах</v:String>
     <v:String x:Key="mainwindow_GridColumn_Image">Изображение</v:String>
     <v:String x:Key="mainwindow_GridColumn_ImageInfo">Информация</v:String>
+    <v:String x:Key="mainwindow_GridColumn_DeepWgc">LightGlue (WGC)</v:String>
+    <v:String x:Key="mainwindow_GridColumn_DeepWgc_Tooltip">Формат значения: «55% (59)». 55% — средняя уверенность LightGlue по совпадениям пары; (59) — число совпадений (супер-точек SuperPoint+LightGlue). Пара считается дубликатом, если: совпадений ≥ 10, угловой консенсус ≥ 5 голосов и средняя уверенность ≥ «Мин. средняя уверенность совпадений LightGlue» (настройки). «—» — геометрическая верификация не пройдена (или WGC отключён в настройках).</v:String>
     <v:String x:Key="mainwindow_GridColumn_CountOfHashes">Количество хещей</v:String>
 
     <v:String x:Key="mainwindow_tooltip_FileSize">Размер файла</v:String>
@@ -84,6 +86,7 @@
     <v:String x:Key="toolBar_compareAlgorithm">Алгоритм сравнения изображений</v:String>
     <v:String x:Key="toolBar_compareAlgorithm_squaredSum">Среднеквадратичная разность</v:String>
     <v:String x:Key="toolBar_compareAlgorithm_ssim">SSIM</v:String>
+    <v:String x:Key="toolBar_compareAlgorithm_dinov2">DINOv2 (deep)</v:String>
 
     <v:String x:Key="configurationWindow_thumbnailWidth">Ширина эскизов</v:String>
     <v:String x:Key="configurationWindow_maxCachedThumbnail">Максимальное количество эскизов в кеше</v:String>
@@ -94,6 +97,29 @@
     <v:String x:Key="configurationWindow_FolderAreDiffrentColor">Цвет если различны директории</v:String>
     <v:String x:Key="configurationWindow_DeleteHashesForResizedIimages">Удалить хеши для изображенний с измененным разрешением</v:String>
     <v:String x:Key="configurationWindow_RemoveHashesForFilesIsNotAvailable">Удалить хеши для недоступных файлов</v:String>
+    <v:String x:Key="configurationWindow_deepHeader">Deep (DINOv2)</v:String>
+    <v:String x:Key="configurationWindow_deepVerifyByLightGlue">Верификация пар LightGlue (SuperPoint + LightGlue)</v:String>
+    <v:String x:Key="configurationWindow_deepLightGlueModelPath">Путь к модели LightGlue (пусто = каталог по умолчанию, скачивается при необходимости)</v:String>
+    <v:String x:Key="configurationWindow_deepDownloadModel">Скачать модель</v:String>
+    <v:String x:Key="configurationWindow_deepDinov2ModelPath">Путь к модели DINOv2 (официальный файл не распространяется; разместите вручную или задайте URL скачивания ниже)</v:String>
+    <v:String x:Key="configurationWindow_deepDinov2ModelUrl">URL скачивания DINOv2 (пусто = авто-скачивание при отсутствии модели отключено)</v:String>
+    <v:String x:Key="configurationWindow_deepCudaPath">Каталог bin CUDA (например C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.4\bin; добавляется в PATH при старте, нужен перезапуск)</v:String>
+    <v:String x:Key="configurationWindow_deepGroupModels">Модели</v:String>
+    <v:String x:Key="configurationWindow_deepGroupSearchParams">Параметры поиска</v:String>
+    <v:String x:Key="configurationWindow_deepGroupCuda">CUDA / cuDNN</v:String>
+    <v:String x:Key="configurationWindow_deepGroupPerformance">Производительность</v:String>
+    <v:String x:Key="configurationWindow_deepBatchSize">Размер батча DINOv2-инференса (по умолчанию 32; меньше = меньше памяти GPU)</v:String>
+    <v:String x:Key="configurationWindow_deepPrefetchCount">Глубина очереди предзагрузки батчей (0 = выкл., по умолчанию 2; больше = ровнее загрузка GPU, больше памяти)</v:String>
+    <v:String x:Key="configurationWindow_deepMinSimilarity">Мин. сходство пары для включения в группу (0..1; по умолчанию 0.5)</v:String>
+    <v:String x:Key="configurationWindow_deepMaxClusterSize">Макс. размер кластера; большие кластеры распускаются на одиночные (по умолчанию 50)</v:String>
+    <v:String x:Key="configurationWindow_deepTransitivityRatio">Коэффициент транзитивности, умножается на порог расстояния (0..1; по умолчанию 0.7; меньше — строже)</v:String>
+    <v:String x:Key="configurationWindow_deepWgcParallelism">Параллелизм верификации LightGlue (0 = авто, половина числа процессоров)</v:String>
+    <v:String x:Key="configurationWindow_deepMinMatchScore">Мин. средняя уверенность совпадений LightGlue (0..1; по умолчанию 0.6)</v:String>
+    <v:String x:Key="configurationWindow_deepCudnnPath">Каталог bin cuDNN (например C:\Program Files\NVIDIA\CUDNN\v9.23\bin\12.9\x64; добавляется в PATH при старте, нужен перезапуск)</v:String>
+    <v:String x:Key="configurationWindow_deepDownloadDinov2Model">Скачать DINOv2</v:String>
+    <v:String x:Key="configurationWindow_deepModelDownloaded">Модель скачана: {0}</v:String>
+    <v:String x:Key="configurationWindow_deepModelDownloadFailed">Не удалось скачать модель: {0}</v:String>
+    <v:String x:Key="configurationWindow_deepDownloading">Скачивание модели…</v:String>
 
     <v:String x:Key="comparatorWindow_DeleteOther">Удалить остальные</v:String>
 

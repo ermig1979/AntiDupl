@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,7 +22,7 @@ namespace AntiDupl.NET.WPF.ObjectModel
             set
             {
                 _parametr = value;
-                RaisePropertyChangedEvent("Parametr");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -33,7 +33,7 @@ namespace AntiDupl.NET.WPF.ObjectModel
             set
             {
                 _mode = value;
-                RaisePropertyChangedEvent("Mode");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -44,7 +44,7 @@ namespace AntiDupl.NET.WPF.ObjectModel
             set
             {
                 _valueDouble = value;
-                RaisePropertyChangedEvent("ValueDouble");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -55,7 +55,7 @@ namespace AntiDupl.NET.WPF.ObjectModel
             set
             {
                 _valueUint = value;
-                RaisePropertyChangedEvent("ValueUint");
+                RaisePropertyChangedEvent();
             }
         }
 

@@ -26,5 +26,48 @@
             <param name="groupId"></param>
             <returns></returns>
         </member>
+        <member name="M:AntiDupl.NET.Core.CoreLib.LoadBitmap(System.String,AntiDupl.NET.Core.Original.AdBitmap[])">
+            <summary>
+            Загружает изображение из файла в пользовательский буфер (ядро AntiDupl.dll,
+            <c>adLoadBitmapW</c>) — используется в DINOv2-конвейере вместо OpenCV ImRead.
+            Массив <paramref name="pBitmap"/> фиксируется (pin) на время P/Invoke: без фиксации
+            GC может переместить небольшой сегмент с описанием буфера во время native-вызова,
+            и ядро получит устаревший адрес (AV).
+            </summary>
+        </member>
+        <member name="P:AntiDupl.NET.Core.CoreLib.SupportsLoadBitmapLetterbox">
+            <summary>True if the core provides the adLoadBitmapLetterboxW export (aspect-preserving decode).</summary>
+        </member>
+        <member name="P:AntiDupl.NET.Core.CoreLib.SupportsLoadBitmapEx">
+            <summary>True if the core provides the adLoadBitmapExW export (native dimensions reporting).</summary>
+        </member>
+        <member name="P:AntiDupl.NET.Core.CoreLib.SupportsLoadBitmapLetterboxMetrics">
+            <summary>True if the core provides the adLoadBitmapLetterboxMetricsW export (native metrics: blurring/blockiness).</summary>
+        </member>
+        <member name="M:AntiDupl.NET.Core.CoreLib.LoadBitmapLetterbox(System.String,System.UInt32,System.UInt32,AntiDupl.NET.Core.Original.AdBitmap[])">
+            <summary>
+            Загружает изображение в латербокс-канвас <paramref name="maxW"/>×<paramref name="maxH"/>
+            (ядро AntiDupl.dll, <c>adLoadBitmapLetterboxW</c>): изображение вписывается в канвас
+            без изменения пропорций и без увеличения, канвас зачёрнен, изображение — в левый верхний угол.
+            Массив <paramref name="pBitmap"/> фиксируется (pin) на время P/Invoke: без фиксации
+            GC может переместить сегмент с описанием буфера во время native-вызова (AV).
+            </summary>
+        </member>
+        <member name="M:AntiDupl.NET.Core.CoreLib.LoadBitmapEx(System.String,AntiDupl.NET.Core.Original.AdBitmap[],System.Int32@,System.Int32@)">
+            <summary>
+            <c>adLoadBitmapExW</c>: то же, что <see cref="M:AntiDupl.NET.Core.CoreLib.LoadBitmap(System.String,AntiDupl.NET.Core.Original.AdBitmap[])"/>, но дополнительно
+            возвращает нативные (до ресайза) размеры изображения — ядро и так их знает
+            после TImage::Load, повторного чтения файла нет. Массивы pBitmap/pNative* пинятся
+            на время P/Invoke (иначе GC может переместить сегменты во время native-вызова — AV).
+            </summary>
+        </member>
+        <member name="M:AntiDupl.NET.Core.CoreLib.LoadBitmapLetterboxMetrics(System.String,System.UInt32,System.UInt32,AntiDupl.NET.Core.Original.AdBitmap[],System.Int32@,System.Int32@,System.Double@,System.Double@)">
+            <summary>
+            <c>adLoadBitmapLetterboxMetricsW</c>: то же, что <see cref="M:AntiDupl.NET.Core.CoreLib.LoadBitmapLetterbox(System.String,System.UInt32,System.UInt32,AntiDupl.NET.Core.Original.AdBitmap[])"/>, плюс
+            нативные размеры и метрики качества файла (blurring/blockiness на нативном сером растре,
+            алгоритмы классического пайплайна). Повторного чтения файла нет: метрики считаются
+            на растре, который ядро уже декодировало для letterbox-канваса.
+            </summary>
+        </member>
     </members>
 </doc>

@@ -64,6 +64,8 @@
     <v:String x:Key="mainwindow_GridColumn_SearchSubfolders">Search in subfolders</v:String>
     <v:String x:Key="mainwindow_GridColumn_Image">Image</v:String>
     <v:String x:Key="mainwindow_GridColumn_ImageInfo">Image info</v:String>
+    <v:String x:Key="mainwindow_GridColumn_DeepWgc">LightGlue (WGC)</v:String>
+    <v:String x:Key="mainwindow_GridColumn_DeepWgc_Tooltip">Value format: “55% (59)”. 55% — average LightGlue confidence of the pair’s matches; (59) — number of matches (SuperPoint+LightGlue keypoints). A pair counts as a duplicate when: matches ≥ 10, angle consensus ≥ 5 votes and average confidence ≥ “Minimum average LightGlue match score” (settings). “—” — geometric verification failed (or WGC is disabled in settings).</v:String>
     <v:String x:Key="mainwindow_GridColumn_CountOfHashes">Count of hashes</v:String>
 
     <v:String x:Key="mainwindow_tooltip_FileSize">File size</v:String>
@@ -84,6 +86,7 @@
     <v:String x:Key="toolBar_compareAlgorithm">Algorithm of comparing of images</v:String>
     <v:String x:Key="toolBar_compareAlgorithm_squaredSum">Mean square difference</v:String>
     <v:String x:Key="toolBar_compareAlgorithm_ssim">SSIM</v:String>
+    <v:String x:Key="toolBar_compareAlgorithm_dinov2">DINOv2 (deep)</v:String>
 
     <v:String x:Key="configurationWindow_thumbnailWidth">Thumbnail Width</v:String>
     <v:String x:Key="configurationWindow_maxCachedThumbnail">Max cached thumbnail</v:String>
@@ -94,6 +97,29 @@
     <v:String x:Key="configurationWindow_FolderAreDiffrentColor">Folder are diffrent color</v:String>
     <v:String x:Key="configurationWindow_DeleteHashesForResizedIimages">Delete hashes for resized images</v:String>
     <v:String x:Key="configurationWindow_RemoveHashesForFilesIsNotAvailable">Remove hashes for files is not available</v:String>
+    <v:String x:Key="configurationWindow_deepHeader">Deep (DINOv2)</v:String>
+    <v:String x:Key="configurationWindow_deepVerifyByLightGlue">Verify pairs with LightGlue (SuperPoint + LightGlue)</v:String>
+    <v:String x:Key="configurationWindow_deepLightGlueModelPath">LightGlue model path (empty = default, downloaded on demand)</v:String>
+    <v:String x:Key="configurationWindow_deepDownloadModel">Download model</v:String>
+    <v:String x:Key="configurationWindow_deepDinov2ModelPath">DINOv2 model path (the official file is not distributed; place it manually or give a download URL below)</v:String>
+    <v:String x:Key="configurationWindow_deepDinov2ModelUrl">DINOv2 download URL (empty = no auto-download when the model is missing)</v:String>
+    <v:String x:Key="configurationWindow_deepCudaPath">CUDA toolkit bin directory (e.g. C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.4\bin; added to PATH at startup, restart required)</v:String>
+    <v:String x:Key="configurationWindow_deepGroupModels">Models</v:String>
+    <v:String x:Key="configurationWindow_deepGroupSearchParams">Search parameters</v:String>
+    <v:String x:Key="configurationWindow_deepGroupCuda">CUDA / cuDNN</v:String>
+    <v:String x:Key="configurationWindow_deepGroupPerformance">Performance</v:String>
+    <v:String x:Key="configurationWindow_deepBatchSize">DINOv2 inference batch size (default 32; lower = less GPU memory)</v:String>
+    <v:String x:Key="configurationWindow_deepPrefetchCount">Prefetch queue depth for decode/embedding batches (0 = off, default 2; higher = smoother GPU utilization, more memory)</v:String>
+    <v:String x:Key="configurationWindow_deepMinSimilarity">Minimum pair similarity for joining a group (0..1; default 0.5)</v:String>
+    <v:String x:Key="configurationWindow_deepMaxClusterSize">Maximum cluster size; larger clusters are broken into singletons (default 50)</v:String>
+    <v:String x:Key="configurationWindow_deepTransitivityRatio">Transitivity ratio, multiplied by the distance threshold (0..1; default 0.7; lower = stricter chain merging)</v:String>
+    <v:String x:Key="configurationWindow_deepWgcParallelism">LightGlue verification parallelism (0 = auto, half of the processor count)</v:String>
+    <v:String x:Key="configurationWindow_deepMinMatchScore">Minimum average LightGlue match score (0..1; default 0.6)</v:String>
+    <v:String x:Key="configurationWindow_deepCudnnPath">cuDNN bin directory (e.g. C:\Program Files\NVIDIA\CUDNN\v9.23\bin\12.9\x64; added to PATH at startup, restart required)</v:String>
+    <v:String x:Key="configurationWindow_deepDownloadDinov2Model">Download DINOv2</v:String>
+    <v:String x:Key="configurationWindow_deepModelDownloaded">Model downloaded: {0}</v:String>
+    <v:String x:Key="configurationWindow_deepModelDownloadFailed">Model download failed: {0}</v:String>
+    <v:String x:Key="configurationWindow_deepDownloading">Downloading model…</v:String>
 
     <v:String x:Key="comparatorWindow_DeleteOther">DeleteOther</v:String>
 

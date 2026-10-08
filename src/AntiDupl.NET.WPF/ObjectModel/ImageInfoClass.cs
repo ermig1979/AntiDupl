@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -81,7 +81,7 @@ namespace AntiDupl.NET.WPF.ObjectModel
                     FileName = System.IO.Path.GetFileName(_path);
                     Directory = System.IO.Path.GetDirectoryName(_path);
                 }
-                RaisePropertyChangedEvent("Path");
+                RaisePropertyChangedEvent();
                 RaisePropertyChangedEvent("FileName");
                 RaisePropertyChangedEvent("Directory");
             }
@@ -100,7 +100,7 @@ namespace AntiDupl.NET.WPF.ObjectModel
             set
             {
                 _jpegPeaks = value;
-                RaisePropertyChangedEvent("JpegPeaks");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -132,7 +132,7 @@ namespace AntiDupl.NET.WPF.ObjectModel
                     throw;
                 }
 
-                RaisePropertyChangedEvent("Width");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -197,7 +197,7 @@ namespace AntiDupl.NET.WPF.ObjectModel
                     throw new Exception("value = _dumbImage");
                 //Debug.WriteLine("Для картинки " + Path + " устанавливается изображение");
                 _image = value;
-                RaisePropertyChangedEvent("Image");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -276,7 +276,7 @@ namespace AntiDupl.NET.WPF.ObjectModel
             set
             {
                 _utilityIndex = value;
-                RaisePropertyChangedEvent("UtilityIndex");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -293,7 +293,7 @@ namespace AntiDupl.NET.WPF.ObjectModel
             set
             {
                 _utilityIndexCalculateDecription = value;
-                RaisePropertyChangedEvent("UtilityIndexCalculateDecription");
+                RaisePropertyChangedEvent();
             }
         }
 

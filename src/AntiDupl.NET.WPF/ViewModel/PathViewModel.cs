@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +18,21 @@ namespace AntiDupl.NET.WPF.ViewModel
         public LocationsModel LocationsModel 
         { 
             get { return _locationsModel; } 
+        }
+
+        // Связь с TabControl.SelectedIndex в PathWindow.xaml (Mode=TwoWay).
+        private int _selectedTabPageIndex;
+        public int SelectedTabPageIndex
+        {
+            get { return _selectedTabPageIndex; }
+            set
+            {
+                if (_selectedTabPageIndex != value)
+                {
+                    _selectedTabPageIndex = value;
+                    this.RaisePropertyChangedEvent();
+                }
+            }
         }
 
         public PathViewModel(Model.LocationsModel LocationsModel)

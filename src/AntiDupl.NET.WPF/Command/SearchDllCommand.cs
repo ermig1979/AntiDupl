@@ -15,7 +15,9 @@ using AntiDupl.NET.WPF.ViewModel;
 using Microsoft.Extensions.Logging;
 
 using AntiDupl.NET.Core;
+using AntiDupl.NET.Core.Enums;
 using AntiDupl.NET.Core.Original;
+using AntiDupl.NET.Deep.Models;
 using System.Runtime.InteropServices;
 using System.Drawing;
 using System.ComponentModel.Composition.Primitives;
@@ -34,10 +36,20 @@ namespace AntiDupl.NET.WPF.Command
         private int _lastLoggedPct10 = -1;
         DispatcherTimer _timer;
         ProgressDialogViewModel _progressDialogViewModel;
+
+        // ==== Deep (DINOv2) поиск (C#-пайплайн AntiDupl.NET.Deep) ====
+        private bool _deepMode;
+        private CancellationTokenSource _deepCts;
+        /// <summary>Последний прогресс, записанный фоновым потоком (читает UI-таймер).</summary>
+        private volatile DeepProgress _deepProgress;
+        /// <summary>Синхронизация «воркер начал поиск» → окно прогресса (заменяет Thread.Sleep).</summary>
+        private TaskCompletionSource<bool> _startedTcs;
+        private IDeepSearchRunner _deepRunner;
+        /// <summary>Адаптер deep-политики (конфигурация/модели/ошибки/результаты) — F4.</summary>
+        private IDeepSearchRunner DeepRunner => _deepRunner ??= new DeepSearchRunner(_mainViewModel, _core, _logger);
         public enum StateEnum
         {
             Start,
-            Work,
             Stopped,
             Finish
         }
@@ -80,17 +92,45 @@ namespace AntiDupl.NET.WPF.Command
                 _running = false;
                 RaiseCanExecuteChanged();
                 _logger.LogInformation("Поиск: завершён, получение результатов");
-                _mainViewModel.SetStatus("Поиск завершён, получение результатов…");
+                _mainViewModel.SetStatus(_progressDialogViewModel.IsCancelled
+                    ? "Поиск остановлен, получение результатов…"
+                    : "Поиск завершён, получение результатов…");
 
                 var closeProgressWindow = new Action(_windowService.CloseProgressWindow);
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, closeProgressWindow);
 
-                GetResultsAndSetResult();
+                if (_deepMode)
+                    DeepRunner.DeliverResults();
+                else
+                    GetResultsAndSetResult();
             }
             if (_state == StateEnum.Stopped)
             {
                 _progressDialogViewModel.State = "Stopped";
                 _progressDialogViewModel.ProgressMessage = "Stopped";
+            }
+            else if (_deepMode)
+            {
+                // Deep-прогресс: проценты C#-пайплайна (ProgressMax=100),
+                // статус + текущий файл из DeepProgress.
+                var dp = _deepProgress;
+                if (dp != null)
+                {
+                    if (_progressDialogViewModel.ProgressMax != 100)
+                        _progressDialogViewModel.ProgressMax = 100;
+                    _progressDialogViewModel.Progress = (uint)Math.Clamp(dp.Percent, 0, 100);
+                    _progressDialogViewModel.CurrentSecond = 0;
+                    _progressDialogViewModel.ProgressMessage =
+                        dp.Status + (string.IsNullOrEmpty(dp.FilePath) ? string.Empty : "  [" + dp.FilePath + "]");
+
+                    int pct = (int)dp.Percent;
+                    if (pct / 10 != _lastLoggedPct10)
+                    {
+                        _lastLoggedPct10 = pct / 10;
+                        _logger.LogInformation("Deep-поиск: прогресс {Pct}%: {Status}", pct, dp.Status);
+                        _mainViewModel.SetStatus(string.Format("Идёт deep-поиск… {0}%", pct));
+                    }
+                }
             }
             else
             {
@@ -189,12 +229,23 @@ namespace AntiDupl.NET.WPF.Command
             _progressDialogViewModel.TokenSource = new CancellationTokenSource();
             _progressDialogViewModel.TokenSource.Token.Register(() => OnCancel());
 
+            _startedTcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             _state = StateEnum.Start;
             _lastLoggedPct10 = -1;
             _running = true;
+            _deepMode = _mainViewModel.AlgorithmComparing == AlgorithmComparing.Dinov2;
+            _deepProgress = null;
+            _deepCts = new CancellationTokenSource();
             RaiseCanExecuteChanged();
             _logger.LogInformation("Поиск: старт");
-            _mainViewModel.SetStatus("Подготовка поиска…");
+            // Deep-режим: в статусе — ключевые параметры запуска, чтобы в UI сразу было
+            // видно, с каким порогом мин. уверенности LightGlue идёт поиск (диагностика
+            // «настроил 0.6, а ложные пары на месте» — сверить со строкой minMatch в логе).
+            _mainViewModel.SetStatus(_deepMode
+                ? string.Format("Подготовка deep-поиска… (WGC-порог minMatch={0})",
+                    _mainViewModel.Configuration.DeepMinMatchScore.ToString("0.###",
+                        System.Globalization.CultureInfo.InvariantCulture))
+                : "Подготовка поиска…");
 
             Thread thread = new Thread(new ThreadStart(RunProcess));
             thread.IsBackground = true; //make them a daemon - prevent thread callback issues
@@ -203,14 +254,15 @@ namespace AntiDupl.NET.WPF.Command
 
             _timer.Start();
 
-            Thread.Sleep(200);
-
-            if (_state != StateEnum.Finish)
+            // Окно прогресса открывается, когда воркер сообщил о старте (сигнал в
+            // RunProcess/DeepRunProcess после State="Search"); вместо Thread.Sleep(200).
+            // Если поиск завершился раньше — окно не показываем (таймер закроет штатно).
+            var uiContext = System.Windows.Threading.Dispatcher.CurrentDispatcher;
+            _startedTcs.Task.ContinueWith(_ =>
             {
-                // Announce that work is starting
-                //_mainViewModel.RaiseWorkStartedEvent();
-                _windowService.OpenProgressWindow(_progressDialogViewModel);
-            }
+                if (_state != StateEnum.Finish)
+                    uiContext.BeginInvoke(new Action(() => _windowService.OpenProgressWindow(_progressDialogViewModel)));
+            });
         }
 
         /// <summary>
@@ -220,7 +272,14 @@ namespace AntiDupl.NET.WPF.Command
         {
             var watch = Stopwatch.StartNew();
 
+            if (_deepMode)
+            {
+                DeepRunProcess();
+                return;
+            }
+
             _progressDialogViewModel.State = "Search";
+            _startedTcs?.TrySetResult(true);
             _mainViewModel.SetStatus("Подготовка: передача параметров ядру…");
 
             // ВАЖНО: НЕ делать здесь _mainViewModel.Options = new CoreOptions(_core) —
@@ -242,6 +301,45 @@ namespace AntiDupl.NET.WPF.Command
             finally
             {
                 _logger.LogInformation("Поиск: ядро завершено за {Ms} мс", watch.ElapsedMilliseconds);
+            }
+
+            _state = StateEnum.Finish;
+        }
+
+        /// <summary>
+        /// Deep (DINOv2) поиск: политика (конфигурация, модели/скачивание, маппинг фатальных
+        /// ошибок, конвертация результатов) — <see cref="IDeepSearchRunner"/>;
+        /// команда — только окно прогресса, state-машина и отмена.
+        /// Алгоритм/порог ядру НЕ передаются (C++ adAlgorithmComparing не знает Dinov2).
+        /// </summary>
+        void DeepRunProcess()
+        {
+            var watch = Stopwatch.StartNew();
+
+            _progressDialogViewModel.State = "Search";
+            _startedTcs?.TrySetResult(true);
+
+            // Прогресс общий для скачивания моделей и самого поиска.
+            var progress = new Progress<DeepProgress>(p => _deepProgress = p);
+            try
+            {
+                DeepRunner.Run(progress, _deepCts.Token);
+                _logger.LogInformation("Deep-поиск: завершён за {Ms} мс", watch.ElapsedMilliseconds);
+            }
+            catch (OperationCanceledException)
+            {
+                // OnCancel перевёл состояние в Stopped, а deep-пайплайн остановлен токеном:
+                // переводим в Finish (как в core-пути — RunProcess безоговорочно ставит Finish
+                // после возврата _core.Search()), чтобы OnTimerTick закрыл окно прогресса
+                // и вернул кнопку поиска. Частичного результата у deep-пайплайна нет
+                // (пары строятся в конце).
+                _logger.LogWarning("Deep-поиск: остановлен пользователем");
+            }
+            catch (Exception ex)
+            {
+                // Известные ошибки раннер уже маппировал в MessageBox — здесь непредвиденные.
+                _logger.LogError(ex, "Deep-поиск: ошибка");
+                _mainViewModel.SetStatus("Ошибка deep-поиска: " + ex.Message);
             }
 
             _state = StateEnum.Finish;
@@ -272,7 +370,16 @@ namespace AntiDupl.NET.WPF.Command
                 return;
 
             _logger.LogWarning("Поиск: остановлен пользователем");
-            _core.Stop();
+            if (_deepMode)
+            {
+                // Deep-поиск выполняется в C#: останавливаем токенотменением. Остановка
+                // действует на границах этапов (скан ядра неделим — завершится сам).
+                _deepCts?.Cancel();
+            }
+            else
+            {
+                _core.Stop();
+            }
             _state = StateEnum.Stopped;
             _progressDialogViewModel.IsCancelled = true;
             _running = false;

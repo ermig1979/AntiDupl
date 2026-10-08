@@ -25,6 +25,12 @@
         <convertor:DeleteBackgroundValueConverter x:Key="deleteBackgroundValueConverter"/>
         <convertor:DifferenceValueConverter x:Key="differenceValueConverter"/>
 
+        <!-- Заголовок колонки LightGlue (WGC): расшифровка формата «55% (59)» и критерия PASS -->
+        <Style x:Key="deepWgcHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="ToolTip" Value="{DynamicResource mainwindow_GridColumn_DeepWgc_Tooltip}"/>
+            <Setter Property="ToolTipService.ShowDuration" Value="10000"/>
+        </Style>
+
         <Style TargetType="{x:Type Image}">
             <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
             <Setter Property="Stretch" Value="Fill" />
@@ -334,6 +340,12 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
+
+                            <!-- LightGlue/WGC (deep-поиск): средняя уверенность совпадений % и число совпадений; «—» при отключённом WGC -->
+                            <DataGridTextColumn Binding="{Binding DeepWgcDisplay, Mode=OneWay}"
+                            Header="{DynamicResource mainwindow_GridColumn_DeepWgc}"
+                            IsReadOnly="True" ElementStyle="{StaticResource VerticalAlignmentCenter}"
+                            HeaderStyle="{StaticResource deepWgcHeaderStyle}" />
 
                             <DataGridTextColumn Binding="{Binding Transform, Mode=OneWay}"
                             Header="Transform"

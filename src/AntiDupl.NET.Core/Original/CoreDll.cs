@@ -439,6 +439,20 @@ namespace AntiDupl.NET.Core.Original
             public IntPtr data;
         }
 
+        // NEW: candidate descriptor returned by the scan-only export adScanCandidatesW.
+        // ВНИМАНИЕ: использовать ТОЛЬКО как справочник нативного макета.
+        // В массивах (adCandidateInfoW[]) CLR кладёт поля string по ссылке (шаг 24 байта
+        // вместо 65552), и записи ядра выйдут за пределы массива (AV).
+        // CoreLib.ScanCandidates работает с сырым char[]-буфером (как GetPath/SetPath).
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        public struct adCandidateInfoW
+        {
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH_EX)]
+            public string path;
+            public ulong size;
+            public ulong time;
+        }
+
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct adPathWithSubFolderW
         {
@@ -473,6 +487,11 @@ namespace AntiDupl.NET.Core.Original
         public delegate Error adSearch_fn(IntPtr handle);
         [DynamicModuleApi]
         public adSearch_fn adSearch = null;
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+        public delegate Error adScanCandidatesW_fn(IntPtr handle, IntPtr pCandidates, IntPtr pCandidateSize);
+        [DynamicModuleApi]
+        public adScanCandidatesW_fn adScanCandidatesW = null;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
         public delegate Error adLoadW_fn(IntPtr handle, FileType fileType, string fileName, int check);
@@ -623,5 +642,26 @@ namespace AntiDupl.NET.Core.Original
         public delegate Error adLoadBitmapW_fn(IntPtr handle, string fileName, IntPtr pBitmap);
         [DynamicModuleApi]
         public adLoadBitmapW_fn adLoadBitmapW = null;
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+        public delegate Error adLoadBitmapLetterboxW_fn(IntPtr handle, string fileName, uint maxW, uint maxH, IntPtr pBitmap);
+        [DynamicModuleApi]
+        public adLoadBitmapLetterboxW_fn adLoadBitmapLetterboxW = null;
+
+        // NEW: adLoadBitmapW + нативные (до ресайза) размеры изображения.
+        // pNativeWidth/pNativeHeight — указатели на adUInt32 (NULL = не сообщать).
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+        public delegate Error adLoadBitmapExW_fn(IntPtr handle, string fileName, IntPtr pBitmap, IntPtr pNativeWidth, IntPtr pNativeHeight);
+        [DynamicModuleApi]
+        public adLoadBitmapExW_fn adLoadBitmapExW = null;
+
+        // NEW: adLoadBitmapLetterboxW + нативные размеры и метрики качества файла
+        // (blurring, blockiness — те же алгоритмы, что в классическом пайплайне).
+        // Выводные указатели опциональны (NULL = не вычислять).
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+        public delegate Error adLoadBitmapLetterboxMetricsW_fn(IntPtr handle, string fileName, uint maxW, uint maxH, IntPtr pBitmap,
+            IntPtr pNativeWidth, IntPtr pNativeHeight, IntPtr pBlurring, IntPtr pBlockiness);
+        [DynamicModuleApi]
+        public adLoadBitmapLetterboxMetricsW_fn adLoadBitmapLetterboxMetricsW = null;
     }
 }

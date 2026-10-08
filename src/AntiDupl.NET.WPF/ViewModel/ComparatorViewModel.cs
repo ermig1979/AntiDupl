@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -91,7 +91,7 @@ namespace AntiDupl.NET.WPF.ViewModel
             set
             {
                 _current = value;
-                RaisePropertyChangedEvent("Current");
+                RaisePropertyChangedEvent();
                 RaisePropertyChangedEvent("CurrentInfo");
                 RaisePropertyChangedEvent("Image");
             }
