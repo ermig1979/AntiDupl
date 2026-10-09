@@ -120,7 +120,7 @@ namespace AntiDupl.NET.WinForms
             m_pictureBox.Location = new Point(0, 0);
             m_pictureBox.ClientSize = m_options.resultsOptions.thumbnailSizeMax;
             m_pictureBox.SizeMode = PictureBoxSizeMode.Zoom; 
-            m_pictureBox.BorderStyle = BorderStyle.Fixed3D;
+            ThemeColors.SetBorder(m_pictureBox);
             m_pictureBox.Image = null;
             m_pictureBox.Padding = new Padding(0);
             m_pictureBox.Margin = new Padding(0);
@@ -161,7 +161,7 @@ namespace AntiDupl.NET.WinForms
             label.Margin = new Padding(0, 0, 0, 0);
             label.TextAlign = ContentAlignment.TopCenter;
             label.AutoSize = false;
-            label.BorderStyle = BorderStyle.Fixed3D;
+            ThemeColors.SetBorder(label);
             label.Height = label.Font.Height + 2;
             label.FlatStyle = FlatStyle.System;
             label.Text = "0";

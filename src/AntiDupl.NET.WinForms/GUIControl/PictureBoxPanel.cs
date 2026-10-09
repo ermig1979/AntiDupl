@@ -98,7 +98,7 @@ namespace AntiDupl.NET.WinForms
         {
             Location = new System.Drawing.Point(0, 0);
             Dock = DockStyle.Fill;
-            BorderStyle = BorderStyle.Fixed3D;
+            ThemeColors.SetBorder(this);
             BackColor = ThemeColors.PreviewBackground;
             DoubleBuffered = true;
 
