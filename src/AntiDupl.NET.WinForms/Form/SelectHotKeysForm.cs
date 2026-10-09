@@ -55,6 +55,7 @@ namespace AntiDupl.NET.WinForms
             m_options = options;
             m_newHotKeyOptions = new HotKeyOptions(m_options.hotKeyOptions);
             InitializeComponents();
+            ThemeColors.Apply(this);
             UpdateStrings();
             UpdateBottomsEnabling();
             VerifyValidness();
@@ -281,7 +282,7 @@ namespace AntiDupl.NET.WinForms
                 if (m_newHotKeyOptions.Valid((HotKeyOptions.Action)i))
                 {
                     m_toolTip.SetToolTip(m_hotKeyItems[i].edit, "");
-                    m_hotKeyItems[i].edit.ForeColor = TextBox.DefaultForeColor;
+                    m_hotKeyItems[i].edit.ForeColor = ThemeColors.Text;
                     m_hotKeyItems[i].edit.BackColor = TextBox.DefaultBackColor;
                 }
                 else

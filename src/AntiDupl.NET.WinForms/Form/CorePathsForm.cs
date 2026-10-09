@@ -71,6 +71,7 @@ namespace AntiDupl.NET.WinForms
             m_oldCoreOptions = coreOptions;
             m_newCoreOptions = m_oldCoreOptions.Clone();
             InitializeComponent();
+            ThemeColors.Apply(this);
             UpdateStrings();
             UpdatePath();
             m_ignoreFilterTextBox.Text = m_newCoreOptions.ignoreFilenameFilter ?? "";

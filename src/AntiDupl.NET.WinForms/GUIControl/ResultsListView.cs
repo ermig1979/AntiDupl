@@ -174,9 +174,12 @@ namespace AntiDupl.NET.WinForms
                 // Visual-style headers are drawn light whatever the color mode.
                 EnableHeadersVisualStyles = false;
                 ColumnHeadersDefaultCellStyle.BackColor = SystemColors.Control;
-                ColumnHeadersDefaultCellStyle.ForeColor = SystemColors.ControlText;
+                ColumnHeadersDefaultCellStyle.ForeColor = ThemeColors.Text;
                 ColumnHeadersDefaultCellStyle.SelectionBackColor = SystemColors.Control;
-                ColumnHeadersDefaultCellStyle.SelectionForeColor = SystemColors.ControlText;
+                ColumnHeadersDefaultCellStyle.SelectionForeColor = ThemeColors.Text;
+                DefaultCellStyle.ForeColor = ThemeColors.Text;
+                DefaultCellStyle.SelectionBackColor = ThemeColors.Selection;
+                DefaultCellStyle.SelectionForeColor = ThemeColors.SelectionText;
                 GridColor = SystemColors.ControlDark;
             }
             ReadOnly = true;

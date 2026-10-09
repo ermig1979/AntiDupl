@@ -35,6 +35,30 @@ namespace AntiDupl.NET.WinForms
     {
         static private bool Dark { get { return Application.IsDarkModeEnabled; } }
 
+        /// <summary>
+        /// Text. In dark mode the framework mixes pure white (ControlText)
+        /// and #F0F0F0 (WindowText, MenuText); all text uses #F0F0F0.
+        /// </summary>
+        static public Color Text { get { return Dark ? Color.FromArgb(0xF0, 0xF0, 0xF0) : SystemColors.ControlText; } }
+
+        /// <summary>
+        /// Selected rows of the results table. The dark-mode highlight is a
+        /// darker blue than the system one, for the light text on it (the
+        /// system pairs it with black text).
+        /// </summary>
+        static public Color Selection { get { return Dark ? Color.FromArgb(0x1E, 0x4C, 0x8A) : SystemColors.Highlight; } }
+        static public Color SelectionText { get { return Dark ? Text : SystemColors.HighlightText; } }
+
+        /// <summary>The dotted outline of the current row: light mode only.</summary>
+        static public bool CurrentRowOutline { get { return !Dark; } }
+
+        /// <summary>The form's text colour, which its controls inherit unless they set their own.</summary>
+        static public void Apply(Form form)
+        {
+            if (Dark)
+                form.ForeColor = Text;
+        }
+
         /// <summary>Text of the value that is worse than the other image's.</summary>
         static public Color Worse { get { return Dark ? Color.FromArgb(0xFF, 0x70, 0x70) : Color.Red; } }
 

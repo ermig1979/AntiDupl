@@ -42,7 +42,7 @@ namespace AntiDupl.NET.WinForms
               (DataGridViewElementStates)((int)rowState & ~(int)DataGridViewElementStates.Selected) |
               (selected ? DataGridViewElementStates.Selected : 0);
             base.Paint(graphics, clipBounds, rowBounds, rowIndex, state, isFirstDisplayedRow, isLastVisibleRow);
-            if (current)
+            if (current && ThemeColors.CurrentRowOutline)
             {
                 int cellsWidth = 0;
                 for (int i = 0; i < Cells.Count; i++)

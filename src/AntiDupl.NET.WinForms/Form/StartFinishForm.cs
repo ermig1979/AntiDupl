@@ -67,6 +67,7 @@ namespace AntiDupl.NET.WinForms
             m_options = options;
 
             InitializeComponent();
+            ThemeColors.Apply(this);
         }
 
         private void InitializeComponent()

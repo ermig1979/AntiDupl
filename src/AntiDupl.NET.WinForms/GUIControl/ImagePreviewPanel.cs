@@ -222,33 +222,33 @@ namespace AntiDupl.NET.WinForms
                 {
                     m_imageSizeLabel.ForeColor =
                             m_currentImageInfo.height * m_currentImageInfo.width < m_neighbourImageInfo.height * m_neighbourImageInfo.width ?
-                            ThemeColors.Worse : TableLayoutPanel.DefaultForeColor;
+                            ThemeColors.Worse : ThemeColors.Text;
                     m_imageTypeLabel.ForeColor = m_currentImageInfo.type != m_neighbourImageInfo.type ?
-                            ThemeColors.Worse : TableLayoutPanel.DefaultForeColor;
+                            ThemeColors.Worse : ThemeColors.Text;
                     m_fileSizeLabel.ForeColor = m_currentImageInfo.size < m_neighbourImageInfo.size ?
-                            ThemeColors.Worse : TableLayoutPanel.DefaultForeColor;
+                            ThemeColors.Worse : ThemeColors.Text;
                     m_imageBlocknessLabel.ForeColor = m_currentImageInfo.blockiness > m_neighbourImageInfo.blockiness ?
-                            ThemeColors.Worse : TableLayoutPanel.DefaultForeColor;
+                            ThemeColors.Worse : ThemeColors.Text;
                     m_imageBlurringLabel.ForeColor = m_currentImageInfo.blurring > m_neighbourImageInfo.blurring ?
-                            ThemeColors.Worse : TableLayoutPanel.DefaultForeColor;
+                            ThemeColors.Worse : ThemeColors.Text;
                     m_imageExifLabel.ForeColor = ExifEqual(m_currentImageInfo.exifInfo, m_neighbourImageInfo.exifInfo) ?
-                        TableLayoutPanel.DefaultForeColor : ThemeColors.Worse;
+                        ThemeColors.Text : ThemeColors.Worse;
                 }
             }
             else if (m_neighbourImageInfo != null)
             {
                 m_imageSizeLabel.ForeColor = m_currentImageInfo.height * m_currentImageInfo.width < m_neighbourImageInfo.height * m_neighbourImageInfo.width ?
-                        ThemeColors.Worse : TableLayoutPanel.DefaultForeColor;
+                        ThemeColors.Worse : ThemeColors.Text;
                 m_imageTypeLabel.ForeColor = m_currentImageInfo.type != m_neighbourImageInfo.type ?
-                        ThemeColors.Worse : TableLayoutPanel.DefaultForeColor;
+                        ThemeColors.Worse : ThemeColors.Text;
                 m_fileSizeLabel.ForeColor = m_currentImageInfo.size < m_neighbourImageInfo.size ?
-                        ThemeColors.Worse : TableLayoutPanel.DefaultForeColor;
+                        ThemeColors.Worse : ThemeColors.Text;
                 m_imageBlocknessLabel.ForeColor = m_currentImageInfo.blockiness > m_neighbourImageInfo.blockiness ?
-                        ThemeColors.Worse : TableLayoutPanel.DefaultForeColor;
+                        ThemeColors.Worse : ThemeColors.Text;
                 m_imageBlurringLabel.ForeColor = m_currentImageInfo.blurring > m_neighbourImageInfo.blurring ?
-                        ThemeColors.Worse : TableLayoutPanel.DefaultForeColor;
+                        ThemeColors.Worse : ThemeColors.Text;
                 m_imageExifLabel.ForeColor = ExifEqual(m_currentImageInfo.exifInfo, m_neighbourImageInfo.exifInfo) ?
-                    TableLayoutPanel.DefaultForeColor : ThemeColors.Worse;
+                    ThemeColors.Text : ThemeColors.Worse;
             }
             if (updateCurrent || updateNeighbour)
             {
