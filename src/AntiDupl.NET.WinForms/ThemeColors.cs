@@ -37,9 +37,9 @@ namespace AntiDupl.NET.WinForms
 
         /// <summary>
         /// Text. In dark mode the framework mixes pure white (ControlText)
-        /// and #F0F0F0 (WindowText, MenuText); all text uses #F0F0F0.
+        /// and #F0F0F0 (WindowText, MenuText); all text uses #F8F8F8.
         /// </summary>
-        static public Color Text { get { return Dark ? Color.FromArgb(0xF0, 0xF0, 0xF0) : SystemColors.ControlText; } }
+        static public Color Text { get { return Dark ? Color.FromArgb(0xF8, 0xF8, 0xF8) : SystemColors.ControlText; } }
 
         /// <summary>
         /// Selected rows of the results table. The dark-mode highlight is a
@@ -136,6 +136,8 @@ namespace AntiDupl.NET.WinForms
             if (Dark)
             {
                 label.BorderSides = ToolStripStatusLabelBorderSides.None;
+                // The dark status bar draws its text grey otherwise.
+                label.ForeColor = Text;
                 label.Paint += new PaintEventHandler(OnPaintDivider);
             }
             else
