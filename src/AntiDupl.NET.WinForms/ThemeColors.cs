@@ -136,9 +136,10 @@ namespace AntiDupl.NET.WinForms
             if (Dark)
             {
                 label.BorderSides = ToolStripStatusLabelBorderSides.None;
-                // The dark status bar draws its text grey otherwise.
-                label.ForeColor = Text;
-                label.Paint += new PaintEventHandler(OnPaintDivider);
+                // The dark status bar draws item text in a low-contrast grey
+                // whatever ForeColor says, so the label draws its own text.
+                label.DisplayStyle = ToolStripItemDisplayStyle.None;
+                label.Paint += new PaintEventHandler(OnPaintStatusLabel);
             }
             else
             {
@@ -147,9 +148,12 @@ namespace AntiDupl.NET.WinForms
             }
         }
 
-        static private void OnPaintDivider(object sender, PaintEventArgs e)
+        static private void OnPaintStatusLabel(object sender, PaintEventArgs e)
         {
             ToolStripItem item = (ToolStripItem)sender;
+            Rectangle text = new Rectangle(2, 0, item.Width - 5, item.Height);
+            TextRenderer.DrawText(e.Graphics, item.Text, item.Font, text, Text,
+                TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.EndEllipsis);
             using (Pen pen = new Pen(SystemColors.ControlDark))
                 e.Graphics.DrawLine(pen, item.Width - 1, 2, item.Width - 1, item.Height - 3);
         }
@@ -166,8 +170,11 @@ namespace AntiDupl.NET.WinForms
         {
             if (!Dark)
                 return textBox;
+            // Read before the border goes: the frame keeps the bordered
+            // height, so the layouts around it don't change.
+            int height = textBox.PreferredHeight;
             textBox.BorderStyle = BorderStyle.None;
-            return new FrameHost(textBox);
+            return new FrameHost(textBox, height);
         }
 
         /// <summary>The same for a number box.</summary>
@@ -175,31 +182,33 @@ namespace AntiDupl.NET.WinForms
         {
             if (!Dark)
                 return numericUpDown;
+            int height = numericUpDown.PreferredHeight;
             numericUpDown.BorderStyle = BorderStyle.None;
-            return new FrameHost(numericUpDown);
+            return new FrameHost(numericUpDown, height);
         }
 
         /// <summary>
         /// A panel in the inner control's background colour with a 1 px
         /// ControlDark line, taking over the inner control's place (size,
-        /// margin, dock, anchor) in the layout.
+        /// margin, dock, anchor) in the layout; the borderless control sits
+        /// in it vertically centred.
         /// </summary>
         private class FrameHost : Panel
         {
             private readonly Control m_inner;
 
-            public FrameHost(Control inner)
+            public FrameHost(Control inner, int height)
             {
                 m_inner = inner;
-                Padding = new Padding(3, 3, 3, 2);
                 Margin = inner.Margin;
                 Dock = inner.Dock;
                 Anchor = inner.Anchor;
-                Size = new Size(inner.Width + Padding.Horizontal, inner.Height + Padding.Vertical);
+                Size = new Size(inner.Width, height);
                 BackColor = inner.BackColor;
                 ResizeRedraw = true;
                 inner.Margin = new Padding(0);
-                inner.Dock = DockStyle.Fill;
+                inner.Dock = DockStyle.None;
+                inner.Anchor = AnchorStyles.Left | AnchorStyles.Top;
                 // The hot-key boxes change their background while the window is open.
                 inner.BackColorChanged += new System.EventHandler(OnInnerBackColorChanged);
                 Controls.Add(inner);
@@ -208,6 +217,14 @@ namespace AntiDupl.NET.WinForms
             private void OnInnerBackColorChanged(object sender, System.EventArgs e)
             {
                 BackColor = m_inner.BackColor;
+            }
+
+            protected override void OnLayout(LayoutEventArgs e)
+            {
+                base.OnLayout(e);
+                int height = m_inner is TextBoxBase textBox ? textBox.PreferredHeight :
+                    m_inner is UpDownBase upDown ? upDown.PreferredHeight : m_inner.Height;
+                m_inner.SetBounds(3, (Height - height) / 2, Width - 5, height);
             }
 
             protected override void OnPaint(PaintEventArgs e)

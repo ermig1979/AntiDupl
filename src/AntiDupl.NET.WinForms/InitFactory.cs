@@ -152,7 +152,7 @@ namespace AntiDupl.NET.WinForms
         {
             public static System.Windows.Forms.ListBox Create(EventHandler selectedIndexChanged, EventHandler doubleClick)
             {
-                System.Windows.Forms.ListBox listBox = new System.Windows.Forms.ListBox();
+                System.Windows.Forms.ListBox listBox = new ThemedListBox();
                 listBox.Location = new System.Drawing.Point(0, 0);
                 listBox.Dock = DockStyle.Fill;
                 listBox.SelectedIndexChanged += new EventHandler(selectedIndexChanged);
@@ -165,7 +165,7 @@ namespace AntiDupl.NET.WinForms
         {
             public static System.Windows.Forms.CheckedListBox Create(EventHandler selectedIndexChanged, EventHandler doubleClick, ItemCheckEventHandler itemCheck)
             {
-                System.Windows.Forms.CheckedListBox checkBox = new System.Windows.Forms.CheckedListBox();
+                System.Windows.Forms.CheckedListBox checkBox = new ThemedCheckedListBox();
                 checkBox.Location = new System.Drawing.Point(0, 0);
                 checkBox.Dock = DockStyle.Fill;
                 checkBox.SelectedIndexChanged += new EventHandler(selectedIndexChanged);
