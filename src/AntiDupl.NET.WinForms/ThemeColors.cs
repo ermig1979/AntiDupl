@@ -99,5 +99,33 @@ namespace AntiDupl.NET.WinForms
 
         /// <summary>The border of the main window's split area: none in dark mode.</summary>
         static public BorderStyle SplitContainerBorder { get { return Dark ? BorderStyle.None : BorderStyle.Fixed3D; } }
+
+        /// <summary>The results table's frame: none in dark mode.</summary>
+        static public BorderStyle ResultsTableBorder { get { return Dark ? BorderStyle.None : BorderStyle.FixedSingle; } }
+
+        /// <summary>
+        /// A sunken box in light mode; in dark mode, where that box is drawn
+        /// light, a 1 px ControlDark divider on the right.
+        /// </summary>
+        static public void SetBorder(ToolStripStatusLabel label)
+        {
+            if (Dark)
+            {
+                label.BorderSides = ToolStripStatusLabelBorderSides.None;
+                label.Paint += new PaintEventHandler(OnPaintDivider);
+            }
+            else
+            {
+                label.BorderStyle = Border3DStyle.SunkenOuter;
+                label.BorderSides = ToolStripStatusLabelBorderSides.All;
+            }
+        }
+
+        static private void OnPaintDivider(object sender, PaintEventArgs e)
+        {
+            ToolStripItem item = (ToolStripItem)sender;
+            using (Pen pen = new Pen(SystemColors.ControlDark))
+                e.Graphics.DrawLine(pen, item.Width - 1, 2, item.Width - 1, item.Height - 3);
+        }
     }
 }

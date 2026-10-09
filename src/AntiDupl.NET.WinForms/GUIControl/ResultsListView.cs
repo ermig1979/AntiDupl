@@ -168,6 +168,7 @@ namespace AntiDupl.NET.WinForms
             AllowUserToDeleteRows = false;
             AllowUserToOrderColumns = true;
             this.BackgroundColor = SystemColors.Window;
+            BorderStyle = ThemeColors.ResultsTableBorder;
             if (Application.IsDarkModeEnabled)
             {
                 // Visual-style headers are drawn light whatever the color mode.
