@@ -116,7 +116,7 @@ namespace AntiDupl.NET.WinForms
                 item.text.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
                 hotKeysTableLayoutPanel.Controls.Add(item.text, 1, i);
                 
-                item.ckeck = new CheckBox();
+                item.ckeck = new ThemedCheckBox();
                 item.ckeck.Location = new System.Drawing.Point(0, 0);
                 item.ckeck.Size = new System.Drawing.Size(20, 20);
                 item.ckeck.Dock = DockStyle.Fill;
@@ -131,7 +131,7 @@ namespace AntiDupl.NET.WinForms
                 item.edit.Multiline = false;
                 item.edit.KeyDown += new KeyEventHandler(OnTextBoxKeyDown);
                 item.edit.Tag = i;
-                hotKeysTableLayoutPanel.Controls.Add(item.edit, 3, i);
+                hotKeysTableLayoutPanel.Controls.Add(ThemeColors.Framed(item.edit), 3, i);
                 
                 m_hotKeyItems[i] = item;
             }

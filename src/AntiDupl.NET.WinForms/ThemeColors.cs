@@ -153,5 +153,69 @@ namespace AntiDupl.NET.WinForms
             using (Pen pen = new Pen(SystemColors.ControlDark))
                 e.Graphics.DrawLine(pen, item.Width - 1, 2, item.Width - 1, item.Height - 3);
         }
+
+        /// <summary>Drop-down lists: the standard style is drawn light in dark mode.</summary>
+        static public FlatStyle ComboBoxStyle { get { return Dark ? FlatStyle.Popup : FlatStyle.Standard; } }
+
+        /// <summary>
+        /// The control to add to a layout for a text box: the box itself in
+        /// light mode; in dark mode, where its own border is drawn thick and
+        /// light, the box without a border inside a FrameHost.
+        /// </summary>
+        static public Control Framed(TextBox textBox)
+        {
+            if (!Dark)
+                return textBox;
+            textBox.BorderStyle = BorderStyle.None;
+            return new FrameHost(textBox);
+        }
+
+        /// <summary>The same for a number box.</summary>
+        static public Control Framed(NumericUpDown numericUpDown)
+        {
+            if (!Dark)
+                return numericUpDown;
+            numericUpDown.BorderStyle = BorderStyle.None;
+            return new FrameHost(numericUpDown);
+        }
+
+        /// <summary>
+        /// A panel in the inner control's background colour with a 1 px
+        /// ControlDark line, taking over the inner control's place (size,
+        /// margin, dock, anchor) in the layout.
+        /// </summary>
+        private class FrameHost : Panel
+        {
+            private readonly Control m_inner;
+
+            public FrameHost(Control inner)
+            {
+                m_inner = inner;
+                Padding = new Padding(3, 3, 3, 2);
+                Margin = inner.Margin;
+                Dock = inner.Dock;
+                Anchor = inner.Anchor;
+                Size = new Size(inner.Width + Padding.Horizontal, inner.Height + Padding.Vertical);
+                BackColor = inner.BackColor;
+                ResizeRedraw = true;
+                inner.Margin = new Padding(0);
+                inner.Dock = DockStyle.Fill;
+                // The hot-key boxes change their background while the window is open.
+                inner.BackColorChanged += new System.EventHandler(OnInnerBackColorChanged);
+                Controls.Add(inner);
+            }
+
+            private void OnInnerBackColorChanged(object sender, System.EventArgs e)
+            {
+                BackColor = m_inner.BackColor;
+            }
+
+            protected override void OnPaint(PaintEventArgs e)
+            {
+                base.OnPaint(e);
+                using (Pen pen = new Pen(SystemColors.ControlDark))
+                    e.Graphics.DrawRectangle(pen, 0, 0, Width - 1, Height - 1);
+            }
+        }
     }
 }

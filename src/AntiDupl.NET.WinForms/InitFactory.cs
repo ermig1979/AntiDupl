@@ -141,7 +141,7 @@ namespace AntiDupl.NET.WinForms
         {
             public static System.Windows.Forms.CheckBox Create(EventHandler checkedChanged)
             {
-                System.Windows.Forms.CheckBox checkBox = new System.Windows.Forms.CheckBox();
+                System.Windows.Forms.CheckBox checkBox = new ThemedCheckBox();
                 checkBox.CheckedChanged += new EventHandler(checkedChanged);
                 checkBox.AutoSize = true;
                 return checkBox;

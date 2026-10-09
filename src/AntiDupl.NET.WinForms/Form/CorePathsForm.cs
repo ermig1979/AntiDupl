@@ -148,7 +148,7 @@ namespace AntiDupl.NET.WinForms
             m_ignoreFilterTextBox.Dock = DockStyle.Fill;
             m_ignoreFilterTextBox.Margin = new Padding(3);
             m_ignoreFilterTextBox.TextChanged += new EventHandler(OnIgnoreFilterTextChanged);
-            filterLayout.Controls.Add(m_ignoreFilterTextBox, 1, 0);
+            filterLayout.Controls.Add(ThemeColors.Framed(m_ignoreFilterTextBox), 1, 0);
 
             m_validTabPage = new TabPage();
             m_validTabPage.Tag = CoreDll.PathType.Valid;

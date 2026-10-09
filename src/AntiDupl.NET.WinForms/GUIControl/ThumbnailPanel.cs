@@ -105,7 +105,7 @@ namespace AntiDupl.NET.WinForms
 
             m_controlLayout = InitFactory.Layout.Create(1, 1, 0, 0);
             m_controlLayout.Height = 16;
-            m_checkBox = new CheckBox();
+            m_checkBox = new ThemedCheckBox();
             m_checkBox.Location = new Point(0, 0);
             m_checkBox.Margin = new Padding(0);
             m_checkBox.Padding = new Padding(0);
