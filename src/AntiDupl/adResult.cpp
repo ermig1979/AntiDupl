@@ -60,61 +60,81 @@ namespace ad
     {
     }
 
-    bool TResult::ImageInfoLesser(TImageInfoPtr pFirst, TImageInfoPtr pSecond, TSortType sortType, bool increasing)
+    int TResult::ImageInfoCompare(TImageInfoPtr pFirst, TImageInfoPtr pSecond, TSortType sortType)
     {
         switch(sortType)
         {
         case AD_SORT_BY_SORTED_PATH:
-            return (increasing ? 
-                TPath::LesserByPath(pFirst->path, pSecond->path) : 
-                TPath::BiggerByPath(pFirst->path, pSecond->path));
+            return TPath::NaturalCompareByPath(pFirst->path, pSecond->path);
         case AD_SORT_BY_SORTED_NAME:
-            return (increasing ?
-                TPath::LesserByNameWithExtension(pFirst->path, pSecond->path) : 
-                TPath::BiggerByNameWithExtension(pFirst->path, pSecond->path));
+            return TPath::NaturalCompareByNameWithExtension(pFirst->path, pSecond->path);
         case AD_SORT_BY_SORTED_DIRECTORY:
-            return (increasing ?
-                TPath::LesserByDirectory(pFirst->path, pSecond->path) : 
-                TPath::BiggerByDirectory(pFirst->path, pSecond->path));
+            return TPath::NaturalCompareByDirectory(pFirst->path, pSecond->path);
         case AD_SORT_BY_SORTED_SIZE:
-            return (increasing ? 
-                pFirst->size < pSecond->size : 
-                pFirst->size > pSecond->size);
+            return CompareValues(pFirst->size, pSecond->size);
         case AD_SORT_BY_SORTED_TIME:
-            return (increasing ? 
-                pFirst->time < pSecond->time : 
-                pFirst->time > pSecond->time);
+            return CompareValues(pFirst->time, pSecond->time);
         case AD_SORT_BY_SORTED_TYPE:
-            return (increasing ? 
-                pFirst->type < pSecond->type : 
-                pFirst->type > pSecond->type);
+            return CompareValues(pFirst->type, pSecond->type);
         case AD_SORT_BY_SORTED_WIDTH:
-            return (increasing ? 
-                pFirst->width < pSecond->width : 
-                pFirst->width > pSecond->width);
+            return CompareValues(pFirst->width, pSecond->width);
         case AD_SORT_BY_SORTED_HEIGHT:
-            return (increasing ? 
-                pFirst->height < pSecond->height : 
-                pFirst->height > pSecond->height);
+            return CompareValues(pFirst->height, pSecond->height);
         case AD_SORT_BY_SORTED_AREA:
-            return (increasing ? 
-                pFirst->width*pFirst->height < pSecond->width*pSecond->height : 
-                pFirst->width*pFirst->height > pSecond->width*pSecond->height);
+            return CompareValues((TUInt64)pFirst->width*pFirst->height, (TUInt64)pSecond->width*pSecond->height);
         case AD_SORT_BY_SORTED_RATIO:
-            return (increasing ? 
-                pFirst->width*pSecond->height < pSecond->width*pFirst->height : 
-                pFirst->width*pSecond->height > pSecond->width*pFirst->height);
-		case AD_SORT_BY_SORTED_BLOCKINESS:
-			return (increasing ? 
-                pFirst->blockiness < pSecond->blockiness : 
-                pFirst->blockiness > pSecond->blockiness);
-		case AD_SORT_BY_SORTED_BLURRING:
-			return (increasing ? 
-                pFirst->blurring < pSecond->blurring : 
-                pFirst->blurring > pSecond->blurring);
+            return CompareValues((TUInt64)pFirst->width*pSecond->height, (TUInt64)pSecond->width*pFirst->height);
+        case AD_SORT_BY_SORTED_BLOCKINESS:
+            return CompareValues(pFirst->blockiness, pSecond->blockiness);
+        case AD_SORT_BY_SORTED_BLURRING:
+            return CompareValues(pFirst->blurring, pSecond->blurring);
         }
+        return 0;
+    }
 
-        return false;
+    bool TResult::ImageInfoLesser(TImageInfoPtr pFirst, TImageInfoPtr pSecond, TSortType sortType, bool increasing)
+    {
+        int result = ImageInfoCompare(pFirst, pSecond, sortType);
+        return increasing ? result < 0 : result > 0;
+    }
+
+    void TResult::OrientByPath()
+    {
+        if(type == AD_RESULT_DUPL_IMAGE_PAIR && TPath::NaturalCompareByPath(second->path, first->path) < 0)
+            Swap();
+    }
+
+    int TResult::SortedImage(TSortType sortType)
+    {
+        if(sortType >= AD_SORT_BY_SORTED_PATH && sortType < AD_SORT_BY_SECOND_PATH)
+            return 1;
+        if(sortType >= AD_SORT_BY_SECOND_PATH && sortType < AD_SORT_BY_DEFECT)
+            return 2;
+        return 0;
+    }
+
+    TSortType TResult::ImageSortType(TSortType sortType)
+    {
+        if(sortType >= AD_SORT_BY_SECOND_PATH)
+            return adSortType(sortType + AD_SORT_BY_SORTED_PATH - AD_SORT_BY_SECOND_PATH);
+        if(sortType >= AD_SORT_BY_FIRST_PATH)
+            return adSortType(sortType + AD_SORT_BY_SORTED_PATH - AD_SORT_BY_FIRST_PATH);
+        return sortType;
+    }
+
+    void TResult::OrientFor(TSortType sortType, bool increasing)
+    {
+        int image = SortedImage(sortType);
+        if(type != AD_RESULT_DUPL_IMAGE_PAIR || image == 0)
+            return;
+        // Negative: the second image comes first in the sort's order.
+        int order = ImageInfoCompare(second, first, ImageSortType(sortType));
+        if(order == 0)
+            order = TPath::NaturalCompareByPath(second->path, first->path);
+        if(!increasing)
+            order = -order;
+        if((image == 1 && order < 0) || (image == 2 && order > 0))
+            Swap();
     }
 
     void TResult::Swap()
@@ -204,60 +224,96 @@ namespace ad
     {
     }
 
+    int TResultPtrLesser::Compare(TResultPtr pFirst, TResultPtr pSecond) const
+    {
+        switch(TResult::SortedImage(m_sortType))
+        {
+        case 1:
+            return TResult::ImageInfoCompare(pFirst->first, pSecond->first, TResult::ImageSortType(m_sortType));
+        case 2:
+            return TResult::ImageInfoCompare(pFirst->second, pSecond->second, TResult::ImageSortType(m_sortType));
+        }
+        switch(m_sortType)
+        {
+        case AD_SORT_BY_TYPE:
+            return CompareValues(pFirst->type, pSecond->type);
+        case AD_SORT_BY_DEFECT:
+            return CompareValues(pFirst->defect, pSecond->defect);
+        case AD_SORT_BY_DIFFERENCE:
+            return CompareValues(pFirst->difference, pSecond->difference);
+        case AD_SORT_BY_TRANSFORM:
+            return CompareValues(pFirst->transform, pSecond->transform);
+        case AD_SORT_BY_GROUP:
+            return CompareValues(pFirst->group, pSecond->group);
+        case AD_SORT_BY_GROUP_SIZE:
+            return CompareValues(pFirst->groupSize, pSecond->groupSize);
+        case AD_SORT_BY_HINT:
+            return CompareValues(pFirst->hint, pSecond->hint);
+        }
+        return 0;
+    }
+
+    // The same property of the pair's other image, for sorts by one image's
+    // property: sorting by the first image's directory then orders the rows
+    // of each directory by the second image's directory.
+    int TResultPtrLesser::CompareOtherImage(TResultPtr pFirst, TResultPtr pSecond) const
+    {
+        switch(TResult::SortedImage(m_sortType))
+        {
+        case 1:
+            return TResult::ImageInfoCompare(pFirst->second, pSecond->second, TResult::ImageSortType(m_sortType));
+        case 2:
+            return TResult::ImageInfoCompare(pFirst->first, pSecond->first, TResult::ImageSortType(m_sortType));
+        }
+        return 0;
+    }
+
+    // The paths of the sorted image, then of the other image.
+    int TResultPtrLesser::CompareImagePaths(TResultPtr pFirst, TResultPtr pSecond) const
+    {
+        int result = 0;
+        switch(TResult::SortedImage(m_sortType))
+        {
+        case 1:
+            result = TPath::NaturalCompareByPath(pFirst->first->path, pSecond->first->path);
+            if(result == 0)
+                result = TPath::NaturalCompareByPath(pFirst->second->path, pSecond->second->path);
+            break;
+        case 2:
+            result = TPath::NaturalCompareByPath(pFirst->second->path, pSecond->second->path);
+            if(result == 0)
+                result = TPath::NaturalCompareByPath(pFirst->first->path, pSecond->first->path);
+            break;
+        }
+        return result;
+    }
+
+    // A sort by one image's property orders by that property, the other
+    // image's same property, then the sorted image's path and the other
+    // image's path, all in the sort's direction - like a sort of single
+    // images by that property, then by path. Whatever is still equal goes in
+    // a fixed ascending order: type, first path, second path, difference,
+    // then id, which is unique and makes the order total, so the same sort
+    // always gives the same rows whatever the previous order was.
     bool TResultPtrLesser::operator() (TResultPtr pFirst, TResultPtr pSecond)
     {
-        if(m_sortType > AD_SORT_BY_TYPE && m_sortType < AD_SORT_BY_DEFECT)
-        {
-            if(m_sortType < AD_SORT_BY_FIRST_PATH)
-            {
-                return TResult::ImageInfoLesser(pFirst->first, pSecond->first, m_sortType, m_increasing);
-            }
-            else if(m_sortType < AD_SORT_BY_SECOND_PATH)
-            {
-                return TResult::ImageInfoLesser(pFirst->first, pSecond->first, 
-                    adSortType(m_sortType + AD_SORT_BY_SORTED_PATH - AD_SORT_BY_FIRST_PATH), m_increasing);
-            }
-            else
-            {
-                return TResult::ImageInfoLesser(pFirst->second, pSecond->second, 
-                    adSortType(m_sortType + AD_SORT_BY_SORTED_PATH - AD_SORT_BY_SECOND_PATH), m_increasing);
-            }
-        }
-        else
-        {
-            switch(m_sortType)
-            {
-            case AD_SORT_BY_TYPE:
-                return m_increasing ? 
-                    pFirst->type < pSecond->type : 
-                    pFirst->type > pSecond->type;
-            case AD_SORT_BY_DEFECT:
-                return m_increasing ? 
-                    pFirst->defect < pSecond->defect : 
-                    pFirst->defect > pSecond->defect;
-            case AD_SORT_BY_DIFFERENCE:
-                return m_increasing ? 
-                    pFirst->difference < pSecond->difference : 
-                    pFirst->difference > pSecond->difference;
-            case AD_SORT_BY_TRANSFORM:
-                return m_increasing ? 
-                    pFirst->transform < pSecond->transform  : 
-                    pFirst->transform  > pSecond->transform ;
-            case AD_SORT_BY_GROUP:
-                return m_increasing ? 
-                    pFirst->group < pSecond->group : 
-                    pFirst->group > pSecond->group;
-			case AD_SORT_BY_GROUP_SIZE:
-                return m_increasing ? 
-                    pFirst->groupSize < pSecond->groupSize : 
-                    pFirst->groupSize > pSecond->groupSize;
-            case AD_SORT_BY_HINT:
-                return m_increasing ? 
-                    pFirst->hint < pSecond->hint : 
-                    pFirst->hint > pSecond->hint;
-            }
-        }
+        int result = Compare(pFirst, pSecond);
+        if(result == 0)
+            result = CompareOtherImage(pFirst, pSecond);
+        if(result == 0)
+            result = CompareImagePaths(pFirst, pSecond);
+        if(result != 0)
+            return m_increasing ? result < 0 : result > 0;
 
-        return false;
+        result = CompareValues(pFirst->type, pSecond->type);
+        if(result == 0)
+            result = TPath::NaturalCompareByPath(pFirst->first->path, pSecond->first->path);
+        if(result == 0)
+            result = TPath::NaturalCompareByPath(pFirst->second->path, pSecond->second->path);
+        if(result == 0)
+            result = CompareValues(pFirst->difference, pSecond->difference);
+        if(result == 0)
+            result = CompareValues(pFirst->id, pSecond->id);
+        return result < 0;
     }
 }

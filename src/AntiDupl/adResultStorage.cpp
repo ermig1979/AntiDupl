@@ -94,6 +94,7 @@ namespace ad
             delete pResult;
             return false;
         }
+        pResult->OrientByPath();
         m_pUndoRedoEngine->Current()->results.push_back(pResult);
         pResult->id = m_nextId++;
         pResult->first->links++;
@@ -367,6 +368,7 @@ namespace ad
 						{
 							m_pStatus->AddDuplImagePair();
 							results.push_back(new TResult(result));
+							results.back()->OrientByPath();
 							results.back()->id = m_nextId++;
 							results.back()->first->links++;
 							results.back()->second->links++;
