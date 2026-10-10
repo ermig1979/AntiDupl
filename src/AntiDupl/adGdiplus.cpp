@@ -282,6 +282,32 @@ namespace ad
         return NULL;
     }
 
+    // For images another library decodes. GDI+ decodes the pixels only on
+    // LockBits or DrawImage, so reading the properties costs no decoding.
+    bool TGdiplus::LoadExif(HGLOBAL hGlobal, TImageExif & imageExif)
+    {
+        bool loaded = false;
+        IStream* pStream = NULL;
+        if(hGlobal && ::CreateStreamOnHGlobal(hGlobal, FALSE, &pStream) == S_OK)
+        {
+            try
+            {
+                Gdiplus::Bitmap *pBitmap = Gdiplus::Bitmap::FromStream(pStream);
+                if(pBitmap && pBitmap->GetLastStatus() == Gdiplus::Ok)
+                {
+                    GetExifProperty(pBitmap, &imageExif);
+                    loaded = true;
+                }
+                delete pBitmap;
+            }
+            catch(...)
+            {
+            }
+            pStream->Release();
+        }
+        return loaded;
+    }
+
     bool TGdiplus::Save(const TView *pView, const TChar * fileName, TImage::TFormat format)
     {
         Gdiplus::PixelFormat pixelFormat;
