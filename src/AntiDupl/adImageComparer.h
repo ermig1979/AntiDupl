@@ -139,9 +139,8 @@ namespace ad
 		virtual bool IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference);
 
     private:
-		float C1;
-		float C2;
-		TImageDataStorage *m_pImageDataStorage;
+		double C1;
+		double C2;
     };
     //-------------------------------------------------------------------------
     TImageComparer* CreateImageComparer(TEngine *pEngine);

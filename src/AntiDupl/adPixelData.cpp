@@ -34,7 +34,9 @@ namespace ad
         main(fast + FAST_DATA_SIZE),
         filled(false),
 		average(0),
-		varianceSquare(0)
+		varianceSquare(0),
+		sum(0),
+		sumSquare(0)
     {
     }
 
@@ -46,7 +48,9 @@ namespace ad
         main(fast + FAST_DATA_SIZE),
         filled(false),
 		average(pixelData.average),
-		varianceSquare(pixelData.varianceSquare)
+		varianceSquare(pixelData.varianceSquare),
+		sum(pixelData.sum),
+		sumSquare(pixelData.sumSquare)
     {
         if(pixelData.filled)
         {
@@ -58,6 +62,19 @@ namespace ad
     TPixelData::~TPixelData()
     {
         SimdFree((void*)fast);
+    }
+
+    // Before each search, while one thread owns the image: the compare
+    // threads then only read the sums.
+    void TPixelData::FillMoments()
+    {
+        sum = 0;
+        sumSquare = 0;
+        SimdValueSum(main, side, side, side, &sum);
+        SimdSquareSum(main, side, side, side, &sumSquare);
+        const double mean = double(sum) / size;
+        average = float(mean);
+        varianceSquare = float(double(sumSquare) / size - mean * mean);
     }
 
 	// Делаем очень уменьшенное изображение (4x4) для быстрого сравнения.
