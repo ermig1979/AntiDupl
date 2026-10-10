@@ -56,7 +56,7 @@ namespace ad
             if (width == 0 || height == 0)
                 return NULL;
             TView * pView = new TView(width, height, TView::Bgra32, NULL, 4);
-            if (::tjDecompress2(_handle, data, size, pView->data, width, 0, height, ::TJPF_RGBA, flags) != 0 && ::tjGetErrorCode(_handle) != ::TJERR_WARNING)
+            if (::tjDecompress2(_handle, data, size, pView->data, width, 0, height, ::TJPF_BGRA, flags) != 0 && ::tjGetErrorCode(_handle) != ::TJERR_WARNING)
             {
                 //int code = ::tjGetErrorCode(_handle);
                 //const char * str = ::tjGetErrorStr2(_handle);
