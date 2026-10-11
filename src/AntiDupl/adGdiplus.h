@@ -32,6 +32,7 @@ namespace ad
     {
     public:
         static TGdiplus* Load(HGLOBAL hGlobal);
+        static bool LoadExif(HGLOBAL hGlobal, TImageExif & imageExif);
         static bool Save(const TView *pView, const TChar * fileName, TImage::TFormat format);
     };
 }
