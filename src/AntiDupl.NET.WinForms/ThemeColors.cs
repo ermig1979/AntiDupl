@@ -22,6 +22,7 @@
 * SOFTWARE.
 */
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace AntiDupl.NET.WinForms
@@ -187,19 +188,33 @@ namespace AntiDupl.NET.WinForms
             return new FrameHost(numericUpDown, height);
         }
 
+        /// <summary>The same for a list, which fills its frame.</summary>
+        static public Control Framed(ListBox listBox)
+        {
+            if (!Dark)
+                return listBox;
+            listBox.BorderStyle = BorderStyle.None;
+            return new FrameHost(listBox, listBox.Height);
+        }
+
         /// <summary>
         /// A panel in the inner control's background colour with a 1 px
         /// ControlDark line, taking over the inner control's place (size,
-        /// margin, dock, anchor) in the layout; the borderless control sits
-        /// in it vertically centred.
+        /// margin, dock, anchor) in the layout. A list fills it; the
+        /// borderless text or number box sits in it vertically centred.
         /// </summary>
         private class FrameHost : Panel
         {
             private readonly Control m_inner;
+            private readonly TextPartPlacer m_textPart;
 
             public FrameHost(Control inner, int height)
             {
                 m_inner = inner;
+                if (inner is UpDownBase)
+                    foreach (Control child in inner.Controls)
+                        if (child is TextBoxBase)
+                            m_textPart = new TextPartPlacer(child);
                 Margin = inner.Margin;
                 Dock = inner.Dock;
                 Anchor = inner.Anchor;
@@ -222,9 +237,82 @@ namespace AntiDupl.NET.WinForms
             protected override void OnLayout(LayoutEventArgs e)
             {
                 base.OnLayout(e);
-                int height = m_inner is TextBoxBase textBox ? textBox.PreferredHeight :
-                    m_inner is UpDownBase upDown ? upDown.PreferredHeight : m_inner.Height;
-                m_inner.SetBounds(3, (Height - height) / 2, Width - 5, height);
+                if (m_inner is ListBox)
+                {
+                    m_inner.SetBounds(1, 1, Width - 2, Height - 2);
+                    return;
+                }
+                // Both boxes draw their text line at the top of their text
+                // part. Capitals and digits sit a pixel high in the line, so
+                // an odd pixel of room goes above it.
+                int line = m_inner.Font.Height;
+                int lineTop = (Height - line + 1) / 2;
+                if (m_textPart != null)
+                {
+                    // The number box keeps its own height, its arrows
+                    // centred; only its text part is moved.
+                    m_inner.SetBounds(3, (Height - m_inner.Height) / 2, Width - 5, m_inner.Height);
+                    m_textPart.Place(lineTop - m_inner.Top, line);
+                }
+                else
+                    m_inner.SetBounds(3, lineTop, Width - 5, line);
+            }
+
+            /// <summary>
+            /// Keeps a number box's text part at the given top and one text
+            /// line tall. The number box lays it out at its own full height
+            /// with the text at the top, on every resize, font change and
+            /// layout, so the position is changed on its way to the window.
+            /// </summary>
+            private class TextPartPlacer : NativeWindow
+            {
+                private const int WM_WINDOWPOSCHANGING = 0x0046;
+                private const int SWP_NOSIZE = 0x0001;
+                private const int SWP_NOMOVE = 0x0002;
+
+                [StructLayout(LayoutKind.Sequential)]
+                private struct WINDOWPOS
+                {
+                    public System.IntPtr hwnd, hwndInsertAfter;
+                    public int x, y, cx, cy, flags;
+                }
+
+                private readonly Control m_control;
+                private int m_top, m_height;
+
+                public TextPartPlacer(Control control)
+                {
+                    m_control = control;
+                    control.HandleCreated += delegate { AssignHandle(control.Handle); };
+                    control.HandleDestroyed += delegate { ReleaseHandle(); };
+                    if (control.IsHandleCreated)
+                        AssignHandle(control.Handle);
+                }
+
+                public void Place(int top, int height)
+                {
+                    m_top = top;
+                    m_height = height;
+                    if (m_control.Top != top || m_control.Height != height)
+                        m_control.SetBounds(m_control.Left, top, m_control.Width, height);
+                }
+
+                protected override void WndProc(ref Message m)
+                {
+                    if (m.Msg == WM_WINDOWPOSCHANGING && m_height > 0)
+                    {
+                        WINDOWPOS pos = Marshal.PtrToStructure<WINDOWPOS>(m.LParam);
+                        if ((pos.flags & SWP_NOMOVE) != 0)
+                            pos.x = m_control.Left;
+                        if ((pos.flags & SWP_NOSIZE) != 0)
+                            pos.cx = m_control.Width;
+                        pos.y = m_top;
+                        pos.cy = m_height;
+                        pos.flags &= ~(SWP_NOMOVE | SWP_NOSIZE);
+                        Marshal.StructureToPtr(pos, m.LParam, false);
+                    }
+                    base.WndProc(ref m);
+                }
             }
 
             protected override void OnPaint(PaintEventArgs e)
