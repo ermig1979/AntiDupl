@@ -48,7 +48,6 @@ namespace AntiDupl.NET.WinForms
             m_comboBox.Padding = new Padding(0, 0, 0, 0);
             m_comboBox.Margin = new Padding(0, 0, 0, 0);
             m_comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            m_comboBox.FlatStyle = ThemeColors.ComboBoxStyle;
             m_comboBox.SelectedIndexChanged += new EventHandler(selectedIndexChanged);
             Controls.Add(m_comboBox, 0, 0);
 

@@ -159,9 +159,6 @@ namespace AntiDupl.NET.WinForms
                 e.Graphics.DrawLine(pen, item.Width - 1, 2, item.Width - 1, item.Height - 3);
         }
 
-        /// <summary>Drop-down lists: the standard style is drawn light in dark mode.</summary>
-        static public FlatStyle ComboBoxStyle { get { return Dark ? FlatStyle.Popup : FlatStyle.Standard; } }
-
         /// <summary>
         /// The control to add to a layout for a text box: the box itself in
         /// light mode; in dark mode, where its own border is drawn thick and
