@@ -53,11 +53,29 @@ namespace AntiDupl.NET.WinForms
         /// <summary>The dotted outline of the current row: light mode only.</summary>
         static public bool CurrentRowOutline { get { return !Dark; } }
 
-        /// <summary>The form's text colour, which its controls inherit unless they set their own.</summary>
+        /// <summary>
+        /// The form's text colour, which its controls inherit unless they
+        /// set their own, and the style of its buttons.
+        /// </summary>
         static public void Apply(Form form)
         {
-            if (Dark)
-                form.ForeColor = Text;
+            if (!Dark)
+                return;
+            form.ForeColor = Text;
+            SetButtonStyle(form);
+        }
+
+        // In dark mode Windows draws a standard button with a white frame
+        // when it has the focus or is the default button; .NET's flat style
+        // has a grey one, and marks the default button with a second line.
+        static private void SetButtonStyle(Control parent)
+        {
+            foreach (Control control in parent.Controls)
+            {
+                if (control is Button button)
+                    button.FlatStyle = FlatStyle.Flat;
+                SetButtonStyle(control);
+            }
         }
 
         /// <summary>Text of the value that is worse than the other image's.</summary>
