@@ -66,21 +66,46 @@ namespace AntiDupl.NET.WinForms
                 m_coreOptions = new CoreOptions(m_core);
             }
             Resources.Strings.SetCurrent(m_options.Language);
-            if (commandLine.SearchPaths != null)
-                UseCommandLineSearchPaths(commandLine.SearchPaths);
+            UseCommandLineFolders(commandLine);
 
             StartFinishForm startFinishForm = new StartFinishForm(m_core, m_options);
-            startFinishForm.UseResultsFile = m_coreOptions.profileSearchPath == null;
+            startFinishForm.UseResultsFile = !m_coreOptions.IsOneOffRun;
             startFinishForm.ExecuteStart();
 
             InitializeComponents();
         }
 
-        // The folders replace the profile's search folders for this run
-        // only (CoreOptions.profileSearchPath), and the profile's results file
-        // is neither read nor written, so a one-off search leaves the usual
-        // one as it was. Folders that don't exist are reported and skipped.
-        private void UseCommandLineSearchPaths(string[] paths)
+        // -search replaces the profile's search folders and -ignore adds to
+        // its ignore list, for this run only (CoreOptions.profileSearchPath,
+        // profileIgnorePath); the profile's results file is neither read nor
+        // written, so a one-off run leaves the usual one as it was.
+        private void UseCommandLineFolders(CommandLine commandLine)
+        {
+            if (commandLine.SearchPaths != null)
+            {
+                CorePathWithSubFolder[] found = ExistingFolders(commandLine.SearchPaths, Resources.Strings.Current.MainForm_SearchFoldersNotFound);
+                if (found.Length > 0)
+                {
+                    m_coreOptions.profileSearchPath = m_coreOptions.searchPath;
+                    m_coreOptions.searchPath = found;
+                }
+            }
+            if (commandLine.IgnorePaths != null)
+            {
+                CorePathWithSubFolder[] found = ExistingFolders(commandLine.IgnorePaths, Resources.Strings.Current.MainForm_IgnoreFoldersNotFound);
+                if (found.Length > 0)
+                {
+                    m_coreOptions.profileIgnorePath = m_coreOptions.ignorePath;
+                    List<CorePathWithSubFolder> ignore = new List<CorePathWithSubFolder>(m_coreOptions.ignorePath);
+                    ignore.AddRange(found);
+                    m_coreOptions.ignorePath = ignore.ToArray();
+                }
+            }
+        }
+
+        // The folders that exist, with their subfolders; the others are
+        // reported with the given message and left out.
+        private static CorePathWithSubFolder[] ExistingFolders(string[] paths, string missingMessage)
         {
             List<CorePathWithSubFolder> found = new List<CorePathWithSubFolder>();
             List<string> missing = new List<string>();
@@ -92,12 +117,9 @@ namespace AntiDupl.NET.WinForms
                     missing.Add(path);
             }
             if (missing.Count > 0)
-                MessageBox.Show(string.Format(Resources.Strings.Current.MainForm_SearchFoldersNotFound, string.Join("\n", missing)),
+                MessageBox.Show(string.Format(missingMessage, string.Join("\n", missing)),
                     Resources.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            if (found.Count == 0)
-                return;
-            m_coreOptions.profileSearchPath = m_coreOptions.searchPath;
-            m_coreOptions.searchPath = found.ToArray();
+            return found.ToArray();
         }
 
         private void InitializeComponents()
@@ -137,7 +159,7 @@ namespace AntiDupl.NET.WinForms
             m_options.Save();
 
             StartFinishForm startFinishForm = new StartFinishForm(m_core, m_options);
-            startFinishForm.UseResultsFile = m_coreOptions.profileSearchPath == null;
+            startFinishForm.UseResultsFile = !m_coreOptions.IsOneOffRun;
             startFinishForm.ExecuteFinish();
             m_core.Dispose();
         }

@@ -54,6 +54,23 @@ namespace AntiDupl.NET.WinForms
         [XmlIgnore]
         public CorePathWithSubFolder[] profileSearchPath;
 
+        /// <summary>The same for the ignore list, which -ignore adds to.</summary>
+        [XmlIgnore]
+        public CorePathWithSubFolder[] profileIgnorePath;
+
+        /// <summary>Whether the command line changes the profile's folders for this run.</summary>
+        public bool IsOneOffRun { get { return profileSearchPath != null || profileIgnorePath != null; } }
+
+        /// <summary>
+        /// Makes the folders in use the profile's own, e.g. after a profile
+        /// is opened or the one-off folders are saved as a profile.
+        /// </summary>
+        public void EndOneOffRun()
+        {
+            profileSearchPath = null;
+            profileIgnorePath = null;
+        }
+
         public CoreOptions()
         {
             searchOptions = new CoreSearchOptions();
@@ -276,10 +293,16 @@ namespace AntiDupl.NET.WinForms
         public void Save(string fileName)
         {
             CorePathWithSubFolder[] oneOffSearchPath = null;
+            CorePathWithSubFolder[] oneOffIgnorePath = null;
             if (profileSearchPath != null)
             {
                 oneOffSearchPath = searchPath;
                 searchPath = profileSearchPath;
+            }
+            if (profileIgnorePath != null)
+            {
+                oneOffIgnorePath = ignorePath;
+                ignorePath = profileIgnorePath;
             }
             TextWriter writer = null;
             try
@@ -295,6 +318,8 @@ namespace AntiDupl.NET.WinForms
                 writer.Close();
             if (oneOffSearchPath != null)
                 searchPath = oneOffSearchPath;
+            if (oneOffIgnorePath != null)
+                ignorePath = oneOffIgnorePath;
         }
 
         public string GetImageDataBasePath()

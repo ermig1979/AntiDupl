@@ -41,6 +41,7 @@ namespace AntiDupl.NET.WinForms
 
             s.ErrorMessage_FileAlreadyExists = "Can't rename file because file with this name already is exists!";
             s.MainForm_SearchFoldersNotFound = "These folders from the command line don't exist and are left out of the search:\n{0}";
+            s.MainForm_IgnoreFoldersNotFound = "These folders to ignore from the command line don't exist and are skipped:\n{0}";
 
             s.WarningMessage_ChangeFileExtension = "Do you really want to change file extension?";
 

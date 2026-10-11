@@ -32,6 +32,9 @@ namespace AntiDupl.NET.WinForms
     ///   -search &lt;folder&gt; [&lt;folder&gt; ...] search these folders, with their
     ///                              subfolders, instead of the profile's,
     ///                              for this run only;
+    ///   -ignore &lt;folder&gt; [&lt;folder&gt; ...] also ignore these folders, with
+    ///                              their subfolders, for this run only (in
+    ///                              addition to the profile's ignore list);
     ///   -start                     start the search when the window opens.
     /// Other arguments are ignored.
     /// </summary>
@@ -40,9 +43,11 @@ namespace AntiDupl.NET.WinForms
         public string UserPath;
         /// <summary>Null when -search is absent.</summary>
         public string[] SearchPaths;
+        /// <summary>Null when -ignore is absent.</summary>
+        public string[] IgnorePaths;
         public bool StartSearch;
 
-        private static readonly string[] OPTIONS = { "-s", "-search", "-start" };
+        private static readonly string[] OPTIONS = { "-s", "-search", "-ignore", "-start" };
 
         static public CommandLine Parse(string[] args)
         {
@@ -56,10 +61,10 @@ namespace AntiDupl.NET.WinForms
                             commandLine.UserPath = args[++i];
                         break;
                     case "-search":
-                        List<string> paths = new List<string>();
-                        while (i + 1 < args.Length && Array.IndexOf(OPTIONS, args[i + 1]) < 0)
-                            paths.Add(args[++i]);
-                        commandLine.SearchPaths = paths.ToArray();
+                        commandLine.SearchPaths = Folders(args, ref i);
+                        break;
+                    case "-ignore":
+                        commandLine.IgnorePaths = Folders(args, ref i);
                         break;
                     case "-start":
                         commandLine.StartSearch = true;
@@ -67,6 +72,15 @@ namespace AntiDupl.NET.WinForms
                 }
             }
             return commandLine;
+        }
+
+        // The arguments after args[i] up to the next option; i ends on the last one taken.
+        static private string[] Folders(string[] args, ref int i)
+        {
+            List<string> paths = new List<string>();
+            while (i + 1 < args.Length && Array.IndexOf(OPTIONS, args[i + 1]) < 0)
+                paths.Add(args[++i]);
+            return paths.ToArray();
         }
     }
 }

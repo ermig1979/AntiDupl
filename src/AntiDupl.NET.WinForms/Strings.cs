@@ -44,6 +44,7 @@ namespace AntiDupl.NET.WinForms
 
         public string ErrorMessage_FileAlreadyExists;
         public string MainForm_SearchFoldersNotFound;
+        public string MainForm_IgnoreFoldersNotFound;
         
         public string WarningMessage_ChangeFileExtension;
 

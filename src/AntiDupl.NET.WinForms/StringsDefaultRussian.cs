@@ -41,6 +41,7 @@ namespace AntiDupl.NET.WinForms
 
             s.ErrorMessage_FileAlreadyExists = "Невозможно переименовать файл, так как файл с таким именем уже существует!";
             s.MainForm_SearchFoldersNotFound = "Эти папки из командной строки не существуют и не включены в поиск:\n{0}";
+            s.MainForm_IgnoreFoldersNotFound = "Эти папки для исключения из командной строки не существуют и пропущены:\n{0}";
 
             s.WarningMessage_ChangeFileExtension = "Вы действительно хотите изменить расширение файла?";
 
