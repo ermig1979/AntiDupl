@@ -95,8 +95,12 @@ public class DeepSearchService : IDisposable
         // Размер каждого кандидата ядро уже знает после скана (adScanCandidatesW)
         // — берём для заполнения результатов, без повторного обращения к диску.
         var candidateSizes = new Dictionary<string, long>(candidates.Count, StringComparer.OrdinalIgnoreCase);
+        var candidateTimes = new Dictionary<string, long>(candidates.Count, StringComparer.OrdinalIgnoreCase);
         foreach (var c in candidates)
+        {
             candidateSizes[c.Path] = c.Size;
+            candidateTimes[c.Path] = c.Time;
+        }
 
         // Статистика декодирования (нативные размеры, метрики) — на каждый поиск свежая;
         // если декоды попадают в feature-кэш (ядро не вызывается), восстанавливаем
@@ -334,7 +338,7 @@ public class DeepSearchService : IDisposable
 
         try { _cache.Save(); } catch { }
 
-        FillFileStats(allPairs, candidateSizes, fileStats);
+        FillFileStats(allPairs, candidateSizes, candidateTimes, fileStats);
 
         // Персист пер-файловой статистики: при повторном поиске (декоды из кэша)
         // результаты всё равно будут нести разрешение/метрики.
@@ -354,7 +358,7 @@ public class DeepSearchService : IDisposable
     /// без какого-либо дополнительного чтения файлов.
     /// </summary>
     private void FillFileStats(List<DeepPair> pairs, IReadOnlyDictionary<string, long> candidateSizes,
-        IDeepImageFileStats? stats)
+        IReadOnlyDictionary<string, long> candidateTimes, IDeepImageFileStats? stats)
     {
         foreach (var p in pairs)
         {
@@ -362,6 +366,8 @@ public class DeepSearchService : IDisposable
             // передавать как out/ref-аргумент (CS0206), только переменные/поля.
             if (candidateSizes.TryGetValue(p.Path1, out long size1)) { p.Size1 = size1; }
             if (candidateSizes.TryGetValue(p.Path2, out long size2)) { p.Size2 = size2; }
+            if (candidateTimes.TryGetValue(p.Path1, out long time1)) { p.Time1 = time1; }
+            if (candidateTimes.TryGetValue(p.Path2, out long time2)) { p.Time2 = time2; }
             if (stats != null)
             {
                 if (stats.TryGetNativeSize(p.Path1, out int w1, out int h1)) { p.Width1 = w1; p.Height1 = h1; }
@@ -463,6 +469,8 @@ public class DeepSearchService : IDisposable
         GeometricScaleVotes = p.GeometricScaleVotes,
         Size1 = p.Size1,
         Size2 = p.Size2,
+        Time1 = p.Time1,
+        Time2 = p.Time2,
         Width1 = p.Width1,
         Height1 = p.Height1,
         Width2 = p.Width2,

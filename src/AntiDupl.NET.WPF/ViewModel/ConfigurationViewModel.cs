@@ -309,6 +309,20 @@ namespace AntiDupl.NET.WPF.ViewModel
             }
         }
 
+        /// <summary>Размер очереди отмены (Advanced, зеркало WF UndoQueueSize). Текстовая форма.</summary>
+        public string UndoRedoStackSizeText
+        {
+            get { return Configuration.UndoRedoStackSize.ToString(); }
+            set
+            {
+                if (uint.TryParse(value, out uint v))
+                {
+                    Configuration.UndoRedoStackSize = v;
+                    RaisePropertyChangedEvent();
+                }
+            }
+        }
+
         /// <summary>Разбор числа из TextBox: допускает запятую как десятичный разделитель.</summary>
         private static bool TryParseDouble(string? text, out double value)
         {

@@ -189,7 +189,6 @@ namespace AntiDupl.NET.WPF.ObjectModel
                 //return new BitmapImage(new Uri("pack://application:,,,/loading.jpg", UriKind.Absolute));
                 //Debug.WriteLine("Возвращаем заглушку для " + Path);
                 return _dumbImage;
-                ///ImageComparerGUIWPF;component/Images/undo-3-32.png
             }
             set
             {
@@ -298,6 +297,30 @@ namespace AntiDupl.NET.WPF.ObjectModel
         }
 
         public CoreDll.ImageType Type { get; set; }
+
+        /// <summary>
+        /// Время изменения файла (adImageInfoW.time, FILETIME; колонки таблицы результатов — колонка «Time»).
+        /// 0 = не заполнено.
+        /// </summary>
+        public ulong Time { get; set; }
+
+        /// <summary>Время изменения файла для вывода в колонке таблицы.</summary>
+        public string TimeDisplay
+        {
+            get
+            {
+                if (Time == 0)
+                    return "";
+                try
+                {
+                    return DateTime.FromFileTime((long)Time).ToLocalTime().ToString("g");
+                }
+                catch (Exception)
+                {
+                    return "";
+                }
+            }
+        }
 
 
     }

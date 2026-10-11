@@ -224,6 +224,9 @@ namespace AntiDupl.NET.WPF.Command
                     vm.SecondFile.Path = p.Path2;
                     if (p.Size1 > 0) vm.FirstFile.FileSize = (ulong)p.Size1;
                     if (p.Size2 > 0) vm.SecondFile.FileSize = (ulong)p.Size2;
+                    // Время изменения файлов (сырой FILETIME из скана ядра) — в колонку «Time».
+                    if (p.Time1 > 0) vm.FirstFile.Time = (ulong)p.Time1;
+                    if (p.Time2 > 0) vm.SecondFile.Time = (ulong)p.Time2;
                     if (p.Width1 > 0) { vm.FirstFile.Width = (uint)p.Width1; vm.FirstFile.Height = (uint)p.Height1; }
                     if (p.Width2 > 0) { vm.SecondFile.Width = (uint)p.Width2; vm.SecondFile.Height = (uint)p.Height2; }
                     // Метрики качества (blurring/blockiness) — только если ядро их посчитало

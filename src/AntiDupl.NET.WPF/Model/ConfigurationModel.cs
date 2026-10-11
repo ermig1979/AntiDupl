@@ -212,6 +212,29 @@ namespace AntiDupl.NET.WPF.Model
 
         public string LastResultFile { get; set; }
 
+        /// <summary>
+        /// Регулярное выражение — фильтр имён файлов для ignore-списка путей
+        /// (зеркало WF options.xml → ignoreFilenameFilter).
+        /// </summary>
+        public string IgnoreFilenameFilter { get; set; }
+
+        /// <summary>
+        /// Вид таблицы результатов (пары/группы) — восстанавливается при перезапуске
+        /// и сохраняется в configuration.xml при смене режима.
+        /// </summary>
+        public ViewMode ResultsViewMode { get; set; } = ViewMode.Pair;
+
+        /// <summary>
+        /// Горячие клавиши (зеркало WF options.xml → hotKeyOptions).
+        /// </summary>
+        public HotKeyOptions HotKeys { get; set; }
+
+        /// <summary>
+        /// Видимость колонок таблицы результатов. null = все колонки видимы.
+        /// Сохраняется при закрытии окна, применяется при загрузке.
+        /// </summary>
+        public ResultsColumnsOptions ResultsColumns { get; set; }
+
         // Выбранный режим поиска (тулбар). null = не выбирался — по умолчанию DINOv2
         // (если ядро поддерживает). Сохраняется в configuration.xml.
         public AlgorithmComparing? CompareAlgorithm { get; set; }
@@ -220,7 +243,35 @@ namespace AntiDupl.NET.WPF.Model
 
         public uint MaxCachedThumbnail { get; set; }
 
-        public bool SaveResultInCurrentFile { get; set; }
+
+        /// <summary>
+        /// При загрузке результата проверять существование файлов (лог прогресс-окна,
+        /// зеркало WF options.xml → checkResultsAtLoading).
+        /// </summary>
+        public bool CheckResultsAtLoading { get; set; } = true;
+
+        /// <summary>
+        /// При загрузке результата фильтровать пары из ignore-списка (лог прогресс-окна,
+        /// зеркало WF options.xml → checkMistakesAtLoading).
+        /// </summary>
+        public bool CheckMistakesAtLoading { get; set; } = true;
+
+        /// <summary>
+        /// Путь к внешней diff-утилите (зеркало WF imageDiffExecutablePath).
+        /// </summary>
+        public string ImageDiffExecutablePath { get; set; }
+
+        /// <summary>
+        /// Аргументы внешней diff-утилиты, плейсхолдеры %1/%2
+        /// (зеркало WF imageDiffExecutableArguments).
+        /// </summary>
+        public string ImageDiffExecutableArguments { get; set; }
+
+        /// <summary>
+        /// Использовать только один путь поиска (зеркало WF options.xml → onePath):
+        /// в ядро передаётся только первый путь из списка search-путей.
+        /// </summary>
+        public bool UseSinglePath { get; set; }
 
         Color _goodColor;
         public Color GoodColor
@@ -265,7 +316,7 @@ namespace AntiDupl.NET.WPF.Model
             }
         }
 
-		bool _loadResultOnOpen;
+		bool _loadResultOnOpen = true;
 		public bool LoadResultOnOpen
 		{
 			get { return _loadResultOnOpen; }
@@ -276,7 +327,7 @@ namespace AntiDupl.NET.WPF.Model
 			}
 		}
 
-		bool _saveResultOnClose;
+		bool _saveResultOnClose = true;
 		public bool SaveResultOnClose
 		{
 			get { return _saveResultOnClose; }
@@ -305,6 +356,9 @@ namespace AntiDupl.NET.WPF.Model
             {
                 model.Criterions = model.GetDefaultCriterions();
             }
+
+            if (model.HotKeys == null)
+                model.HotKeys = new HotKeyOptions();
 
             return model;
         }

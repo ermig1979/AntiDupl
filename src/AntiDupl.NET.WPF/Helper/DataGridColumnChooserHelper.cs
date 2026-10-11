@@ -28,6 +28,7 @@ namespace AntiDupl.NET.WPF.Helper
     {
         private static readonly Dictionary<string, DataGrid> ms_Grids = new Dictionary<string, DataGrid>();
         private static readonly Dictionary<Button, string> ms_Buttons = new Dictionary<Button, string>(ReferenceEqualityComparer<Button>.DefaultInstance);
+        private static readonly Dictionary<MenuItem, string> ms_MenuItems = new Dictionary<MenuItem, string>(ReferenceEqualityComparer<MenuItem>.DefaultInstance);
 
         public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.RegisterAttached(
             "IsEnabled",
@@ -59,6 +60,10 @@ namespace AntiDupl.NET.WPF.Helper
             if (grid != null)
             {
                 ms_Grids[key] = grid;
+                // Перерегистрация при каждом возвращении в визуальное дерево:
+                // TabControl выгружает контент невывиденных вкладок (Unloaded),
+                // иначе кнопка-chooser после переключения вкладок молча переставает работать.
+                grid.Loaded += (s, e2) => { ms_Grids[key] = grid; };
                 grid.Unloaded += GridOnUnloaded;
                 return;
             }
@@ -69,6 +74,17 @@ namespace AntiDupl.NET.WPF.Helper
                 ms_Buttons[btn] = key;
                 btn.Click += BtnOnClick;
                 btn.Unloaded += BtnOnUnloaded;
+                return;
+            }
+
+            // Зеркало WF: «Select columns» — пункт View-меню (m_view_selectColumnsMenuItem),
+            // не кнопка тулбара.
+            var mnu = d as MenuItem;
+            if (mnu != null)
+            {
+                ms_MenuItems[mnu] = key;
+                mnu.Click += MenuItemOnClick;
+                mnu.Unloaded += MenuItemOnUnloaded;
             }
         }
 
@@ -87,11 +103,29 @@ namespace AntiDupl.NET.WPF.Helper
             ms_Buttons.Remove(btn);
         }
 
+        private static void MenuItemOnUnloaded(object sender, RoutedEventArgs routedEventArgs)
+        {
+            var mnu = (MenuItem)sender;
+            mnu.Click -= MenuItemOnClick;
+            ms_MenuItems.Remove(mnu);
+        }
+
+        private static void MenuItemOnClick(object sender, RoutedEventArgs routedEventArgs)
+        {
+            var mnu = (MenuItem)sender;
+            OpenChooser(mnu, ms_MenuItems[mnu]);
+        }
+
         private static void BtnOnClick(object sender, RoutedEventArgs routedEventArgs)
         {
             var btn = (Button)sender;
+            OpenChooser(btn, ms_Buttons[btn]);
+        }
+
+        private static void OpenChooser(UIElement anchor, string key)
+        {
             DataGrid grid;
-            if (!ms_Grids.TryGetValue(ms_Buttons[btn], out grid))
+            if (!ms_Grids.TryGetValue(key, out grid))
                 return;
 
             var mnu = new ContextMenu();
@@ -118,7 +152,7 @@ namespace AntiDupl.NET.WPF.Helper
                 menuItem.StaysOpenOnClick = true;
                 mnu.Items.Add(menuItem);
             }
-            btn.ContextMenu = mnu;
+            mnu.PlacementTarget = anchor;
             mnu.IsOpen = true;
         }
 

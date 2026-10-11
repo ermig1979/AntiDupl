@@ -78,7 +78,6 @@ namespace AntiDupl.NET.WPF.ViewModel
             AllDirectoryFilters = new ObservableCollection<IDirectoryFilter>();
             AllDirectoryFilters.Add(new AnywhereDirectoryFilter());
             AllDirectoryFilters.Add(new SameDirectory());
-            AllDirectoryFilters.Add(new OneImageInDir1OtherInDir2());
 
             ConfigurableActionGenerator allBestGenerator = new AllBestGenerator(AlgorithmsOfGettingNumberFromFileName,
                 BestSelectingByPathList, AllDirectoryFilters, _undoRedoEngine);

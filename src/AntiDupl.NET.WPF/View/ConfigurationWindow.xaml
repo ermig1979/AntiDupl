@@ -5,7 +5,7 @@
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:behavior="clr-namespace:AntiDupl.NET.WPF.Behavior"
         xmlns:core="clr-namespace:AntiDupl.NET.Core.Enums;assembly=AntiDupl.NET.Core"
-        Title="ConfigurationWindow"
+        Title="{DynamicResource configurationWindow_title}"
         Height="720" Width="640" MinHeight="480" MinWidth="520"
         ResizeMode="CanResizeWithGrip"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -64,7 +64,7 @@
     </Window.Resources>
 
     <TabControl>
-        <TabItem Header="Main">
+        <TabItem Header="{DynamicResource configurationWindow_tabMain}">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="8">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -77,49 +77,76 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Column="0" Grid.Row="0" Text="{DynamicResource configurationWindow_thumbnailWidth}" />
+                    <TextBlock Grid.Column="0" Grid.Row="0"
+                               Text="{DynamicResource configurationWindow_thumbnailWidth}"
+                               ToolTip="{DynamicResource configurationWindow_tooltip_thumbnailWidth}" />
                     <TextBox Grid.Column="1" Grid.Row="0"
+                             ToolTip="{DynamicResource configurationWindow_tooltip_thumbnailWidth}"
                              Text="{Binding ThumbnailWidth, UpdateSourceTrigger=PropertyChanged}" />
 
-                    <TextBlock Grid.Column="0" Grid.Row="1" Text="{DynamicResource configurationWindow_maxCachedThumbnail}" />
+                    <TextBlock Grid.Column="0" Grid.Row="1"
+                               Text="{DynamicResource configurationWindow_maxCachedThumbnail}"
+                               ToolTip="{DynamicResource configurationWindow_tooltip_maxCachedThumbnail}" />
                     <TextBox Grid.Column="1" Grid.Row="1"
+                             ToolTip="{DynamicResource configurationWindow_tooltip_maxCachedThumbnail}"
                              Text="{Binding Configuration.MaxCachedThumbnail, UpdateSourceTrigger=PropertyChanged}" />
 
-                    <TextBlock Grid.Column="0" Grid.Row="2" Text="{DynamicResource configurationWindow_GoodColor}" />
+                    <TextBlock Grid.Column="0" Grid.Row="2"
+                               Text="{DynamicResource configurationWindow_GoodColor}"
+                               ToolTip="{DynamicResource configurationWindow_tooltip_GoodColor}" />
                     <Button Grid.Column="1" Grid.Row="2"
+                            ToolTip="{DynamicResource configurationWindow_tooltip_GoodColor}"
                             Command="{Binding ChangeGoodColorCommand}"
                             Style="{StaticResource ColorSelectButtonStyle}"
                             Background="{Binding Configuration.GoodColor, Converter={StaticResource ColorToSolidColorBrushConverter}}" />
 
-                    <TextBlock Grid.Column="0" Grid.Row="3" Text="{DynamicResource configurationWindow_BadColor}" />
+                    <TextBlock Grid.Column="0" Grid.Row="3"
+                               Text="{DynamicResource configurationWindow_BadColor}"
+                               ToolTip="{DynamicResource configurationWindow_tooltip_BadColor}" />
                     <Button Grid.Column="1" Grid.Row="3"
+                            ToolTip="{DynamicResource configurationWindow_tooltip_BadColor}"
                             Command="{Binding ChangeBadColorCommand}"
                             Style="{StaticResource ColorSelectButtonStyle}"
                             Background="{Binding Configuration.BadColor, Converter={StaticResource ColorToSolidColorBrushConverter}}" />
 
                     <CheckBox Grid.Column="0" Grid.Row="4"
-                              Content="{DynamicResource configurationWindow_SaveResultInCurrentFile}"
-                              IsChecked="{Binding Configuration.SaveResultInCurrentFile, UpdateSourceTrigger=PropertyChanged}" />
+                              Content="{DynamicResource configurationWindow_CheckResultsAtLoading}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_CheckResultsAtLoading}"
+                              IsChecked="{Binding Configuration.CheckResultsAtLoading, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <CheckBox Grid.Column="0" Grid.Row="5"
+                              Content="{DynamicResource configurationWindow_CheckMistakesAtLoading}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_CheckMistakesAtLoading}"
+                              IsChecked="{Binding Configuration.CheckMistakesAtLoading, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <!-- UseSinglePath (зеркало WF onePath) -->
+                    <CheckBox Grid.Column="0" Grid.Row="6"
+                              Content="{DynamicResource configurationWindow_UseSinglePath}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_UseSinglePath}"
+                              IsChecked="{Binding Configuration.UseSinglePath}" />
                 </Grid>
             </ScrollViewer>
         </TabItem>
-        <TabItem Header="SearchOption">
+        <TabItem Header="{DynamicResource configurationWindow_tabSearch}">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="8">
-                <Grid DataContext="{Binding Option.searchOptions}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <CheckBox Grid.Row="0" Content="system" IsChecked="{Binding System}" />
-                    <CheckBox Grid.Row="1" Content="hidden" IsChecked="{Binding Hidden}" />
-                </Grid>
+                <StackPanel>
+                    <CheckBox Content="{DynamicResource configurationWindow_searchSystem}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_searchSystem}"
+                              IsChecked="{Binding Option.searchOptions.System, Mode=TwoWay}" />
+                    <CheckBox Content="{DynamicResource configurationWindow_searchHidden}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_searchHidden}"
+                              IsChecked="{Binding Option.searchOptions.Hidden, Mode=TwoWay}" />
+                    <!-- Выбор типов файлов не переносится (решение пользователя): поиск всегда по всем типам. -->
+                </StackPanel>
             </ScrollViewer>
         </TabItem>
-        <TabItem Header="CompareOption">
+        <TabItem Header="{DynamicResource configurationWindow_tabCompare}">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="8">
-                <Grid DataContext="{Binding Option.compareOptions}">
+                <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="75" />
@@ -138,120 +165,86 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <CheckBox Grid.Column="0" Grid.Row="0" Content="CheckOnEquality" IsChecked="{Binding CheckOnEquality}" />
-                    <CheckBox Grid.Column="0" Grid.Row="1" Content="TransformedImage"
-                              IsChecked="{Binding TransformedImage}" />
-                    <CheckBox Grid.Column="0" Grid.Row="2" Content="SizeControl" IsChecked="{Binding SizeControl}" />
-                    <CheckBox Grid.Column="0" Grid.Row="3" Content="TypeControl" IsChecked="{Binding TypeControl}" />
-                    <CheckBox Grid.Column="0" Grid.Row="4" Content="RatioControl" IsChecked="{Binding RatioControl}" />
+                    <CheckBox Grid.Column="0" Grid.Row="0"
+                              Content="{DynamicResource configurationWindow_checkOnEquality}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_checkOnEquality}"
+                              IsChecked="{Binding Option.compareOptions.CheckOnEquality}" />
+                    <CheckBox Grid.Column="0" Grid.Row="1"
+                              Content="{DynamicResource configurationWindow_transformedImage}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_transformedImage}"
+                              IsChecked="{Binding Option.compareOptions.TransformedImage}" />
+                    <CheckBox Grid.Column="0" Grid.Row="2"
+                              Content="{DynamicResource configurationWindow_sizeControl}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_sizeControl}"
+                              IsChecked="{Binding Option.compareOptions.SizeControl}" />
+                    <CheckBox Grid.Column="0" Grid.Row="3"
+                              Content="{DynamicResource configurationWindow_typeControl}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_typeControl}"
+                              IsChecked="{Binding Option.compareOptions.TypeControl}" />
+                    <CheckBox Grid.Column="0" Grid.Row="4"
+                              Content="{DynamicResource configurationWindow_ratioControl}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_ratioControl}"
+                              IsChecked="{Binding Option.compareOptions.RatioControl}" />
 
                     <Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="Algorithm" />
-                        <ComboBox Grid.Column="1" ItemsSource="{Binding Source={StaticResource Algorithms}}"
-                                  SelectedItem="{Binding Path=AlgorithmComparing}" />
+                        <TextBlock Grid.Column="0"
+                                   Text="{DynamicResource configurationWindow_algorithm}"
+                                   ToolTip="{DynamicResource configurationWindow_tooltip_algorithm}" />
+                        <ComboBox Grid.Column="1"
+                                  ToolTip="{DynamicResource configurationWindow_tooltip_algorithm}"
+                                  ItemsSource="{Binding Source={StaticResource Algorithms}}"
+                                  SelectedItem="{Binding Path=Option.compareOptions.AlgorithmComparing, RelativeSource={RelativeSource AncestorType=Window}}" />
                     </Grid>
 
-                    <TextBlock Grid.Column="0" Grid.Row="6" Text="ThresholdDifference" />
+                    <TextBlock Grid.Column="0" Grid.Row="6"
+                               Text="{DynamicResource configurationWindow_thresholdDifference}"
+                               ToolTip="{DynamicResource configurationWindow_tooltip_thresholdDifference}" />
                     <TextBox Grid.Column="1" Grid.Row="6"
-                             Text="{Binding ThresholdDifference, UpdateSourceTrigger=PropertyChanged}">
+                             ToolTip="{DynamicResource configurationWindow_tooltip_thresholdDifference}"
+                             Text="{Binding Option.compareOptions.ThresholdDifference, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType=Window}}">
                         <i:Interaction.Behaviors>
                             <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="3" />
                         </i:Interaction.Behaviors>
                     </TextBox>
 
-                    <TextBlock Grid.Column="0" Grid.Row="7" Text="MinimalImageSize" />
+                    <TextBlock Grid.Column="0" Grid.Row="7"
+                               Text="{DynamicResource configurationWindow_minimalImageSize}"
+                               ToolTip="{DynamicResource configurationWindow_tooltip_minimalImageSize}" />
                     <TextBox Grid.Column="1" Grid.Row="7"
-                             Text="{Binding MinimalImageSize, UpdateSourceTrigger=PropertyChanged}">
+                             ToolTip="{DynamicResource configurationWindow_tooltip_minimalImageSize}"
+                             Text="{Binding Option.compareOptions.MinimalImageSize, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType=Window}}">
                         <i:Interaction.Behaviors>
                             <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
                         </i:Interaction.Behaviors>
                     </TextBox>
 
-                    <TextBlock Grid.Column="0" Grid.Row="8" Text="MaximalImageSize" />
+                    <TextBlock Grid.Column="0" Grid.Row="8"
+                               Text="{DynamicResource configurationWindow_maximalImageSize}"
+                               ToolTip="{DynamicResource configurationWindow_tooltip_maximalImageSize}" />
                     <TextBox Grid.Column="1" Grid.Row="8"
-                             Text="{Binding MaximalImageSize, UpdateSourceTrigger=PropertyChanged}">
+                             ToolTip="{DynamicResource configurationWindow_tooltip_maximalImageSize}"
+                             Text="{Binding Option.compareOptions.MaximalImageSize, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType=Window}}">
                         <i:Interaction.Behaviors>
                             <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
                         </i:Interaction.Behaviors>
                     </TextBox>
 
-                    <CheckBox Grid.Column="0" Grid.Row="9" Content="CompareInsideOneFolder"
-                              IsChecked="{Binding CompareInsideOneFolder}" />
-                    <CheckBox Grid.Column="0" Grid.Row="10" Content="CompareInsideOneSearchPath"
-                              IsChecked="{Binding CompareInsideOneSearchPath}" />
+                    <CheckBox Grid.Column="0" Grid.Row="9"
+                              Content="{DynamicResource configurationWindow_compareInsideOneFolder}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_compareInsideOneFolder}"
+                              IsChecked="{Binding Option.compareOptions.CompareInsideOneFolder}" />
+                    <CheckBox Grid.Column="0" Grid.Row="10"
+                              Content="{DynamicResource configurationWindow_compareInsideOneSearchPath}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_compareInsideOneSearchPath}"
+                              IsChecked="{Binding Option.compareOptions.CompareInsideOneSearchPath}" />
                 </Grid>
             </ScrollViewer>
         </TabItem>
-        <TabItem Header="AdvancedOption">
-            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="8">
-                <Grid DataContext="{Binding Option.advancedOptions}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="75" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Column="0" Grid.Row="1" Text="RatioResolution" />
-                    <TextBox Grid.Column="1" Grid.Row="1"
-                             Text="{Binding RatioResolution, UpdateSourceTrigger=PropertyChanged}">
-                        <i:Interaction.Behaviors>
-                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
-                        </i:Interaction.Behaviors>
-                    </TextBox>
-
-                    <TextBlock Grid.Column="0" Grid.Row="2" Text="CompareThreadCount" />
-                    <TextBox Grid.Column="1" Grid.Row="2"
-                             Text="{Binding CompareThreadCount, UpdateSourceTrigger=PropertyChanged}">
-                        <i:Interaction.Behaviors>
-                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
-                        </i:Interaction.Behaviors>
-                    </TextBox>
-
-                    <TextBlock Grid.Column="0" Grid.Row="3" Text="CollectThreadCount" />
-                    <TextBox Grid.Column="1" Grid.Row="3"
-                             Text="{Binding CollectThreadCount, UpdateSourceTrigger=PropertyChanged}">
-                        <i:Interaction.Behaviors>
-                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
-                        </i:Interaction.Behaviors>
-                    </TextBox>
-
-                    <TextBlock Grid.Column="0" Grid.Row="4" Text="ReducedImageSize" />
-                    <TextBox Grid.Column="1" Grid.Row="4"
-                             Text="{Binding ReducedImageSize, UpdateSourceTrigger=PropertyChanged}">
-                        <i:Interaction.Behaviors>
-                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
-                        </i:Interaction.Behaviors>
-                    </TextBox>
-                    <TextBlock Grid.Column="0" Grid.Row="5" Text="ResultCountMax" />
-                    <TextBox Grid.Column="1" Grid.Row="5"
-                             Text="{Binding ResultCountMax, UpdateSourceTrigger=PropertyChanged}">
-                        <i:Interaction.Behaviors>
-                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
-                        </i:Interaction.Behaviors>
-                    </TextBox>
-                    <TextBlock Grid.Column="0" Grid.Row="6" Text="IgnoreFrameWidth" />
-                    <TextBox Grid.Column="1" Grid.Row="6"
-                             Text="{Binding IgnoreFrameWidth, UpdateSourceTrigger=PropertyChanged}">
-                        <i:Interaction.Behaviors>
-                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
-                        </i:Interaction.Behaviors>
-                    </TextBox>
-                </Grid>
-            </ScrollViewer>
-        </TabItem>
-        <TabItem Header="DefectOption">
+        <TabItem Header="{DynamicResource configurationWindow_tabAdvanced}">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="8">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -272,28 +265,150 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <CheckBox Grid.Column="0" Grid.Row="0" Content="CheckOnDefect"
-                              IsChecked="{Binding Option.defectOptions.CheckOnDefect}" />
-                    <CheckBox Grid.Column="0" Grid.Row="1" Content="CheckOnBlockiness"
-                              IsChecked="{Binding Option.defectOptions.CheckOnBlockiness}" />
+                    <CheckBox Grid.Column="0" Grid.Row="0"
+                              Content="{DynamicResource configurationWindow_deleteToRecycleBin}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_deleteToRecycleBin}"
+                              IsChecked="{Binding Option.advancedOptions.DeleteToRecycleBin, Mode=TwoWay}" />
+                    <CheckBox Grid.Column="0" Grid.Row="1"
+                              Content="{DynamicResource configurationWindow_mistakeDataBase}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_mistakeDataBase}"
+                              IsChecked="{Binding Option.advancedOptions.MistakeDataBase, Mode=TwoWay}" />
 
-
-                    <TextBlock Grid.Column="0" Grid.Row="2" Text="BlockinessThreshold" />
+                    <TextBlock Grid.Column="0" Grid.Row="2"
+                               Text="{DynamicResource configurationWindow_ratioResolution}"
+                               ToolTip="{DynamicResource configurationWindow_tooltip_ratioResolution}" />
                     <TextBox Grid.Column="1" Grid.Row="2"
-                             Text="{Binding Option.defectOptions.BlockinessThreshold, UpdateSourceTrigger=PropertyChanged}">
+                             ToolTip="{DynamicResource configurationWindow_tooltip_ratioResolution}"
+                             Text="{Binding Option.advancedOptions.RatioResolution, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=Window}}">
+                        <i:Interaction.Behaviors>
+                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
+                        </i:Interaction.Behaviors>
+                    </TextBox>
+
+                    <TextBlock Grid.Column="0" Grid.Row="3"
+                               Text="{DynamicResource configurationWindow_compareThreadCount}"
+                               ToolTip="{DynamicResource configurationWindow_tooltip_compareThreadCount}" />
+                    <TextBox Grid.Column="1" Grid.Row="3"
+                             ToolTip="{DynamicResource configurationWindow_tooltip_compareThreadCount}"
+                             Text="{Binding Option.advancedOptions.CompareThreadCount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=Window}}">
+                        <i:Interaction.Behaviors>
+                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
+                        </i:Interaction.Behaviors>
+                    </TextBox>
+
+                    <TextBlock Grid.Column="0" Grid.Row="4"
+                               Text="{DynamicResource configurationWindow_collectThreadCount}"
+                               ToolTip="{DynamicResource configurationWindow_tooltip_collectThreadCount}" />
+                    <TextBox Grid.Column="1" Grid.Row="4"
+                             ToolTip="{DynamicResource configurationWindow_tooltip_collectThreadCount}"
+                             Text="{Binding Option.advancedOptions.CollectThreadCount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=Window}}">
+                        <i:Interaction.Behaviors>
+                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
+                        </i:Interaction.Behaviors>
+                    </TextBox>
+
+                    <TextBlock Grid.Column="0" Grid.Row="5"
+                               Text="{DynamicResource configurationWindow_reducedImageSize}"
+                               ToolTip="{DynamicResource configurationWindow_tooltip_reducedImageSize}" />
+                    <TextBox Grid.Column="1" Grid.Row="5"
+                             ToolTip="{DynamicResource configurationWindow_tooltip_reducedImageSize}"
+                             Text="{Binding Option.advancedOptions.ReducedImageSize, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=Window}}">
+                        <i:Interaction.Behaviors>
+                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
+                        </i:Interaction.Behaviors>
+                    </TextBox>
+
+                    <TextBlock Grid.Column="0" Grid.Row="6"
+                               Text="{DynamicResource configurationWindow_undoQueueSize}"
+                               ToolTip="{DynamicResource configurationWindow_tooltip_undoQueueSize}" />
+                    <TextBox Grid.Column="1" Grid.Row="6"
+                             ToolTip="{DynamicResource configurationWindow_tooltip_undoQueueSize}"
+                             Text="{Binding UndoRedoStackSizeText, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Behaviors>
+                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
+                        </i:Interaction.Behaviors>
+                    </TextBox>
+
+                    <TextBlock Grid.Column="0" Grid.Row="7"
+                               Text="{DynamicResource configurationWindow_resultCountMax}"
+                               ToolTip="{DynamicResource configurationWindow_tooltip_resultCountMax}" />
+                    <TextBox Grid.Column="1" Grid.Row="7"
+                             ToolTip="{DynamicResource configurationWindow_tooltip_resultCountMax}"
+                             Text="{Binding Option.advancedOptions.ResultCountMax, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=Window}}">
+                        <i:Interaction.Behaviors>
+                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
+                        </i:Interaction.Behaviors>
+                    </TextBox>
+
+                    <TextBlock Grid.Column="0" Grid.Row="8"
+                               Text="{DynamicResource configurationWindow_ignoreFrameWidth}"
+                               ToolTip="{DynamicResource configurationWindow_tooltip_ignoreFrameWidth}" />
+                    <TextBox Grid.Column="1" Grid.Row="8"
+                             ToolTip="{DynamicResource configurationWindow_tooltip_ignoreFrameWidth}"
+                             Text="{Binding Option.advancedOptions.IgnoreFrameWidth, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=Window}}">
+                        <i:Interaction.Behaviors>
+                            <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="50" />
+                        </i:Interaction.Behaviors>
+                    </TextBox>
+
+                    <CheckBox Grid.Column="0" Grid.Row="9"
+                              Content="{DynamicResource configurationWindow_useLibJpegTurbo}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_useLibJpegTurbo}"
+                              IsChecked="{Binding Option.advancedOptions.UseLibJpegTurbo, Mode=TwoWay}" />
+                </Grid>
+            </ScrollViewer>
+        </TabItem>
+        <TabItem Header="{DynamicResource configurationWindow_tabDefect}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="8">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="75" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <CheckBox Grid.Column="0" Grid.Row="0"
+                              Content="{DynamicResource configurationWindow_checkOnDefect}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_checkOnDefect}"
+                              IsChecked="{Binding Option.defectOptions.CheckOnDefect, Mode=TwoWay}" />
+                    <CheckBox Grid.Column="0" Grid.Row="1"
+                              Content="{DynamicResource configurationWindow_checkOnBlockiness}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_checkOnBlockiness}"
+                              IsChecked="{Binding Option.defectOptions.CheckOnBlockiness, Mode=TwoWay}" />
+
+                    <TextBlock Grid.Column="0" Grid.Row="2"
+                               Text="{DynamicResource configurationWindow_blockinessThreshold}"
+                               ToolTip="{DynamicResource configurationWindow_tooltip_blockinessThreshold}" />
+                    <TextBox Grid.Column="1" Grid.Row="2"
+                             ToolTip="{DynamicResource configurationWindow_tooltip_blockinessThreshold}"
+                             Text="{Binding Option.defectOptions.BlockinessThreshold, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=Window}}">
                         <i:Interaction.Behaviors>
                             <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="3" />
                         </i:Interaction.Behaviors>
                     </TextBox>
-                    <CheckBox Grid.Column="0" Grid.Row="3" Content="CheckOnBlockinessOnlyNotJpeg"
-                              IsChecked="{Binding Option.defectOptions.CheckOnBlockinessOnlyNotJpeg}" />
-                    <CheckBox Grid.Column="0" Grid.Row="4" Content="CheckOnBlurring"
-                              IsChecked="{Binding Option.defectOptions.CheckOnBlurring}" />
 
+                    <CheckBox Grid.Column="0" Grid.Row="3"
+                              Content="{DynamicResource configurationWindow_checkOnBlockinessOnlyNotJpeg}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_checkOnBlockinessOnlyNotJpeg}"
+                              IsChecked="{Binding Option.defectOptions.CheckOnBlockinessOnlyNotJpeg, Mode=TwoWay}" />
+                    <CheckBox Grid.Column="0" Grid.Row="4"
+                              Content="{DynamicResource configurationWindow_checkOnBlurring}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_checkOnBlurring}"
+                              IsChecked="{Binding Option.defectOptions.CheckOnBlurring, Mode=TwoWay}" />
 
-                    <TextBlock Grid.Column="0" Grid.Row="5" Text="BlurringThreshold" />
+                    <TextBlock Grid.Column="0" Grid.Row="5"
+                               Text="{DynamicResource configurationWindow_blurringThreshold}"
+                               ToolTip="{DynamicResource configurationWindow_tooltip_blurringThreshold}" />
                     <TextBox Grid.Column="1" Grid.Row="5"
-                             Text="{Binding Option.defectOptions.BlurringThreshold, UpdateSourceTrigger=PropertyChanged}">
+                             ToolTip="{DynamicResource configurationWindow_tooltip_blurringThreshold}"
+                             Text="{Binding Option.defectOptions.BlurringThreshold, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=Window}}">
                         <i:Interaction.Behaviors>
                             <behavior:AllowableCharactersTextBoxBehavior RegularExpression="^[0-9.\-]+$" MaxLength="3" />
                         </i:Interaction.Behaviors>
@@ -301,7 +416,36 @@
                 </Grid>
             </ScrollViewer>
         </TabItem>
-        <TabItem Header="Deep">
+        <!-- Внешний diff-инструмент (зеркало WF ImageDiffTabPage) -->
+        <TabItem Header="{DynamicResource configurationWindow_tabImageDiff}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="8">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Column="0" Grid.Row="0"
+                               Text="{DynamicResource configurationWindow_imageDiffExecutablePath}"
+                               ToolTip="{DynamicResource configurationWindow_tooltip_imageDiffExecutablePath}" />
+                    <TextBox Grid.Column="1" Grid.Row="0" Width="380"
+                             ToolTip="{DynamicResource configurationWindow_tooltip_imageDiffExecutablePath}"
+                             Text="{Binding Configuration.ImageDiffExecutablePath, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <TextBlock Grid.Column="0" Grid.Row="1"
+                               Text="{DynamicResource configurationWindow_imageDiffExecutableArguments}"
+                               ToolTip="{DynamicResource configurationWindow_tooltip_imageDiffExecutableArguments}" />
+                    <TextBox Grid.Column="1" Grid.Row="1" Width="380"
+                             ToolTip="{DynamicResource configurationWindow_tooltip_imageDiffExecutableArguments}"
+                             Text="{Binding Configuration.ImageDiffExecutableArguments, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+            </ScrollViewer>
+        </TabItem>
+        <TabItem Header="{DynamicResource configurationWindow_tabDeep}">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="8">
                 <StackPanel>
                     <TextBlock FontSize="14" Margin="4,0,4,8"

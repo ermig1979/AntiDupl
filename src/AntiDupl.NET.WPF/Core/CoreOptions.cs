@@ -153,6 +153,23 @@ namespace AntiDupl.NET.WPF.Core
             }
         }
 
+        /// <summary>
+        /// WPF: передаёт в ядро полный комплект опций (search/compare/defect/advanced).
+        /// Выбор типов файлов в WPF-настройках отсутствует — все 17 типов всегда включены
+        /// (решение пользователя), system/hidden берутся из настроек. Пути НЕ трогаем —
+        /// их передаёт LocationsModel.CopyToDll (там же учитывается UseSinglePath).
+        /// </summary>
+        public void ApplyOptionsTo(CoreLib core)
+        {
+            // Search-опции передаются как есть: ядро (adOptions.cpp) по умолчанию
+            // включает все 17 типов — решение «всегда все типы» обеспечивается
+            // дефолтами ядра (вариант O2, 2026-10-11).
+            core.searchOptions = searchOptions.Clone();
+            core.compareOptions = compareOptions.Clone();
+            core.defectOptions = defectOptions.Clone();
+            core.advancedOptions = advancedOptions.Clone();   // в т.ч. useLibJpegTurbo
+        }
+
         public void Validate(CoreLib core, bool onePath)
         {
             Set(core, onePath);

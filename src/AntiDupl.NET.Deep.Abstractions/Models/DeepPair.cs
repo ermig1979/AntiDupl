@@ -35,6 +35,11 @@ public class DeepPair
     /// <summary>Размер файла 2, байт (из скана ядра adScanCandidatesW).</summary>
     public long Size2 { get; set; }
 
+    /// <summary>Время изменения файла 1 — сырой FILETIME (из скана ядра adScanCandidatesW); 0 = неизвестно.</summary>
+    public long Time1 { get; set; }
+    /// <summary>Время изменения файла 2 — сырой FILETIME (из скана ядра adScanCandidatesW); 0 = неизвестно.</summary>
+    public long Time2 { get; set; }
+
     /// <summary>Нативные размеры файла 1 (до ресайза), из adLoadBitmapExW; 0 = неизвестно.</summary>
     public int Width1 { get; set; }
     public int Height1 { get; set; }

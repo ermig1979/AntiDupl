@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AntiDupl.NET.WPF.Core;
+using AntiDupl.NET.WPF.Helper;
 using AntiDupl.NET.WPF.View;
 using AntiDupl.NET.WPF.ViewModel;
 using Microsoft.Extensions.Logging;
@@ -100,7 +101,9 @@ namespace AntiDupl.NET.WPF.Command
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, closeProgressWindow);
 
                 if (_deepMode)
+                {
                     DeepRunner.DeliverResults();
+                }
                 else
                     GetResultsAndSetResult();
             }
@@ -128,7 +131,7 @@ namespace AntiDupl.NET.WPF.Command
                     {
                         _lastLoggedPct10 = pct / 10;
                         _logger.LogInformation("Deep-поиск: прогресс {Pct}%: {Status}", pct, dp.Status);
-                        _mainViewModel.SetStatus(string.Format("Идёт deep-поиск… {0}%", pct));
+                        _mainViewModel.SetStatus(LocalizationHelper.S("status_searching_deep", pct));
                     }
                 }
             }
@@ -199,8 +202,7 @@ namespace AntiDupl.NET.WPF.Command
                             _lastLoggedPct10 = pct / 10;
                             _logger.LogInformation("Поиск: прогресс {Pct}% ({Cur}/{Tot}), файл: {Path}",
                                 pct, currentFirst, total, path);
-                            _mainViewModel.SetStatus(string.Format("Идёт поиск… {0}% ({1}/{2})",
-                                pct, currentFirst, total));
+                            _mainViewModel.SetStatus(LocalizationHelper.S("status_searching", pct, currentFirst, total));
                         }
                     }
                 }
@@ -242,10 +244,10 @@ namespace AntiDupl.NET.WPF.Command
             // видно, с каким порогом мин. уверенности LightGlue идёт поиск (диагностика
             // «настроил 0.6, а ложные пары на месте» — сверить со строкой minMatch в логе).
             _mainViewModel.SetStatus(_deepMode
-                ? string.Format("Подготовка deep-поиска… (WGC-порог minMatch={0})",
+                ? LocalizationHelper.S("status_preparing_deep",
                     _mainViewModel.Configuration.DeepMinMatchScore.ToString("0.###",
                         System.Globalization.CultureInfo.InvariantCulture))
-                : "Подготовка поиска…");
+                : LocalizationHelper.S("status_preparing"));
 
             Thread thread = new Thread(new ThreadStart(RunProcess));
             thread.IsBackground = true; //make them a daemon - prevent thread callback issues
@@ -287,6 +289,10 @@ namespace AntiDupl.NET.WPF.Command
             // и снимок оказывается заполнен дефолтными значениями (алгоритм/порог),
             // что после поиска приводит к сбросу выпадающих списков. Снимок Options
             // синхронизируется с ядром в ApplyCompareOptions, а пути передаются CopyToDll.
+            // Полный комплект опций (search/compare/defect/advanced) передаём в ядро перед
+            // поиском: иначе чекбоксы настроек (System/Hidden, defect, useLibJpegTurbo и др.)
+            // не отражались бы в DLL. Типы файлов — всегда все (см. CoreOptions.ApplyOptionsTo).
+            _mainViewModel.Options.ApplyOptionsTo(_core);
             _mainViewModel.LocationsModel.CopyToDll();
             _logger.LogInformation("Поиск: параметры переданы ядру за {Ms} мс (режим={Algo}, порог={Th}%)",
                 watch.ElapsedMilliseconds,

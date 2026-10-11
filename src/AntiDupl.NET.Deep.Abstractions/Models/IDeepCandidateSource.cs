@@ -14,15 +14,24 @@ public sealed class DeepCandidate
     }
 
     public DeepCandidate(string path, long size)
+        : this(path, size, 0)
+    {
+    }
+
+    public DeepCandidate(string path, long size, long time)
     {
         Path = path;
         Size = size;
+        Time = time;
     }
 
     public string Path { get; }
 
     /// <summary>Размер файла, байт (из скана ядра); 0 = драйвер не сообщает.</summary>
     public long Size { get; }
+
+    /// <summary>Время изменения файла — сырой FILETIME, 100-нс тики от 1601 (== TImageInfo::time); 0 = драйвер не сообщает.</summary>
+    public long Time { get; }
 }
 
 /// <summary>

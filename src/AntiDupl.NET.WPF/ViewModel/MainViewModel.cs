@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -27,6 +28,7 @@ using Microsoft.Win32;
 
 using AntiDupl.NET.Core;
 using AntiDupl.NET.Core.Enums;
+using AntiDupl.NET.Core.Original;
 using AntiDupl.NET.Deep.Core;
 using AntiDupl.NET.Deep.Logging;
 
@@ -39,6 +41,9 @@ namespace AntiDupl.NET.WPF.ViewModel
         
         CoreLib _core;
         IWindowService _windowService;
+        ClipboardService _clipboardService;
+        /// <summary>Запуск внешней diff-утилиты (diff-утилита; конкретный класс — политика команды).</summary>
+        ExternalToolLauncher _externalToolLauncher;
         ILogger _logger;
         public LocationsModel LocationsModel { get; set; }
         public CoreOptions Options { get; set; }
@@ -119,11 +124,14 @@ namespace AntiDupl.NET.WPF.ViewModel
             IViewModeModel viewModeModel,
             DeepSearchService deepSearchService,
             IDeepLogger deepLogger,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            ICoreLocationSync locationSync)
         {
             _logger = loggerFactory.CreateLogger<MainViewModel>();
             _languageService = languageService;
             _windowService = new WindowService(_logger);
+            _clipboardService = new ClipboardService();
+            _externalToolLauncher = new ExternalToolLauncher();
 
             // Deep-сервис и логгер — конструкторной инъекцией из DI (без post-build-присваивания).
             DeepSearchService = deepSearchService;
@@ -131,12 +139,13 @@ namespace AntiDupl.NET.WPF.ViewModel
 
             _thumbnailProvider = thumbnailProvider;
             _core = coreLib;
-            //LocationsModel = new LocationsModel(_core);
-            LocationsModel = LocationsModel.Load(_core);
+            LocationsModel = LocationsModel.Load(locationSync);
             Options = new CoreOptions(_core);
             _ignoreStorage = IgnoreStorage.Load();
 
             Configuration = configuration;
+            // Фильтр имён ignore-списка живёт в configuration.xml (зеркало WF options.xml).
+            LocationsModel.IgnoreFilenameFilter = Configuration.IgnoreFilenameFilter;
             Configuration.PropertyChanged += OnConfigurationPropertyChanged;
 
             _languageService.LanguageChanged += OnLanguageChanged;
@@ -149,21 +158,34 @@ namespace AntiDupl.NET.WPF.ViewModel
             _undoRedoEngine.PropertyChanged += OnUndoRedoEnginePropertyChanged;
 
             _viewModeModel = viewModeModel;
+            // Вид таблицы результатов (пары/группы): восстановить из настроек и
+            // сохранять обратно при смене режима (configuration.xml при закрытии).
+            _viewModeModel.ViewMode = Configuration.ResultsViewMode;
+            _viewModeModel.PropertyChanged += OnViewModeModelPropertyChanged;
 
             _thumbnailProvider.PropertyChanged += OnThumbnailProviderPropertyChanged;
+        }
+
+        void OnViewModeModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ViewModeModel.ViewMode))
+                Configuration.ResultsViewMode = _viewModeModel.ViewMode;
         }
 
         public void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             _logger.LogInformation("MainViewModel: закрытие окна");
             Configuration.PropertyChanged -= OnConfigurationPropertyChanged;
+            _viewModeModel.PropertyChanged -= OnViewModeModelPropertyChanged;
             _undoRedoEngine.PropertyChanged -= OnUndoRedoEnginePropertyChanged;
             _languageService.LanguageChanged -= OnLanguageChanged;
             //_dllModel.SaveSettings();
             _core.Dispose();
 
             LocationsModel.Save();
+            SaveResultsColumnsVisibility();
             Configuration.Save();
+            _ignoreStorage.Save();
             _undoRedoEngine.Clear();
 
 			if (Configuration.SaveResultOnClose && !String.IsNullOrEmpty(Configuration.LastResultFile))
@@ -177,6 +199,38 @@ namespace AntiDupl.NET.WPF.ViewModel
                 _logger.LogInformation("MainViewModel: загрузка результата при открытии: {File}", Configuration.LastResultFile);
                 LoadResults(Configuration.LastResultFile);
             }
+
+            // выбор колонок: применяем сохранённую видимость колонок таблицы результатов.
+            ApplyResultsColumnsVisibility();
+        }
+
+        /// <summary>
+        /// выбор колонок: применяет к таблице результатов сохранённую видимость колонок
+        /// (Configuration.ResultsColumns, по порядковому индексу колонок).
+        /// </summary>
+        public void ApplyResultsColumnsVisibility()
+        {
+            bool[] visible = Configuration.ResultsColumns?.Visible;
+            if (ResultGrid == null || visible == null || visible.Length == 0)
+                return;
+
+            for (int i = 0; i < ResultGrid.Columns.Count && i < visible.Length; i++)
+                ResultGrid.Columns[i].Visibility = visible[i] ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        /// <summary>
+        /// выбор колонок: читает текущую видимость колонок таблицы результатов
+        /// в Configuration.ResultsColumns (сохраняется в configuration.xml).
+        /// </summary>
+        public void SaveResultsColumnsVisibility()
+        {
+            if (ResultGrid == null)
+                return;
+
+            bool[] visible = new bool[ResultGrid.Columns.Count];
+            for (int i = 0; i < visible.Length; i++)
+                visible[i] = ResultGrid.Columns[i].Visibility == Visibility.Visible;
+            Configuration.ResultsColumns = new ResultsColumnsOptions { Visible = visible };
         }
 
         void OnUndoRedoEnginePropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -272,18 +326,6 @@ namespace AntiDupl.NET.WPF.ViewModel
             }
         }
 
-        ICommand _calculateHistogramPeaksCommand;
-        public ICommand CalculateHistogramPeaksCommand
-        {
-            get
-            {
-                //var resultEnum = (IEnumerable<DuplPairViewModel>)_resultList;
-                return _calculateHistogramPeaksCommand ?? (_calculateHistogramPeaksCommand
-                    = new CalculateHistogramPeaksCommand(this, _core, _windowService, _resultList));
-                //return new CalculateHistogramPeaksCommand(this, _core, _windowService, _resultList);
-            }
-        }
-
         ICommand _openPathCommand;
         public ICommand OpenPathCommand
         {
@@ -291,8 +333,17 @@ namespace AntiDupl.NET.WPF.ViewModel
             {
                 return _openPathCommand ?? (_openPathCommand = new RelayCommand(arg =>
                 {
+                    // Окно путей (: вкладки Search/Ignore/Valid/Delete).
+                    LocationsModel.IgnoreFilenameFilter = Configuration.IgnoreFilenameFilter;
                     PathViewModel vm = new PathViewModel(LocationsModel);
                     _windowService.ShowDialogWindow<PathWindow>(vm);
+                    // Фильтр имён, изменённый в окне, сохраняем в configuration.xml и в ядро.
+                    if (!String.Equals(LocationsModel.IgnoreFilenameFilter, Configuration.IgnoreFilenameFilter))
+                    {
+                        Configuration.IgnoreFilenameFilter = LocationsModel.IgnoreFilenameFilter;
+                        Configuration.Save();
+                    }
+                    LocationsModel.CopyToDll();
                 }, arg => true));
             }
         }
@@ -317,6 +368,398 @@ namespace AntiDupl.NET.WPF.ViewModel
                 }, arg => true));
             }
         }
+
+        /// <summary>
+        /// Ссылка на таблицу результатов (заполняется вью из MainWindow после загрузки).
+        /// </summary>
+        public System.Windows.Controls.DataGrid ResultGrid { get; set; }
+
+        ICommand _selectAllCommand;
+        /// <summary>
+        /// Выбрать все строки таблицы результатов (текущая отфильтрованная видовка).
+        /// Основа для пакетных операций из контекстного меню (ignore/delete всех видимых пар).
+        /// </summary>
+        public ICommand SelectAllCommand
+        {
+            get
+            {
+                return _selectAllCommand ?? (_selectAllCommand = new RelayCommand(arg =>
+                {
+                    ResultGrid?.SelectAll();
+                }, arg => ResultGrid != null && Result != null
+                    && Result is ICollectionView view && !view.IsEmpty));   // .NET 10: ICollectionView в System.ComponentModel, CollectionCount/IsSourceEmpty убраны
+            }
+        }
+
+        ICommand _copyCommand;
+        /// <summary>
+        /// Копировать результаты в буфер обмена (Ctrl+C): выбранные строки,
+        /// либо (если выделение пусто) все видимые пары; parameter = пара из
+        /// контекстного меню одиночного ряда.
+        /// </summary>
+        public ICommand CopyCommand
+        {
+            get
+            {
+                return _copyCommand ?? (_copyCommand = new RelayCommand(arg =>
+                {
+                    _clipboardService.CopyText(ClipboardContentBuilder.Build(GetPairsForClipboard(arg as DuplPairViewModel)));
+                }, arg => Result != null));
+            }
+        }
+
+        ICommand _copyPathsCommand;
+        /// <summary>
+        /// Копировать пути файлов результатов в буфер обмена:
+        /// выбранные строки либо все видимые пары; parameter = пара из контекстного меню.
+        /// </summary>
+        public ICommand CopyPathsCommand
+        {
+            get
+            {
+                return _copyPathsCommand ?? (_copyPathsCommand = new RelayCommand(arg =>
+                {
+                    _clipboardService.CopyText(ClipboardContentBuilder.BuildPaths(GetPairsForClipboard(arg as DuplPairViewModel)));
+                }, arg => Result != null));
+            }
+        }
+
+        /// <summary>
+        /// Пара(ы) для копирования: если передана пара (контекстное меню одиночного ряда) —
+        /// она; иначе выделенные строки таблицы (без дублей); иначе все видимые (отфильтрованные) пары.
+        /// </summary>
+        List<DuplPairViewModel> GetPairsForClipboard(DuplPairViewModel single)
+        {
+            if (single != null)
+                return new List<DuplPairViewModel> { single };
+
+            if (ResultGrid != null && ResultGrid.SelectedItems.Count > 0)
+            {
+                List<DuplPairViewModel> result = new List<DuplPairViewModel>();
+                HashSet<DuplPairViewModel> seen = new HashSet<DuplPairViewModel>(ReferenceEqualityComparer<DuplPairViewModel>.DefaultInstance);
+                foreach (var item in ResultGrid.SelectedItems)
+                {
+                    if (item is DuplPairViewModel pair && seen.Add(pair))
+                        result.Add(pair);
+                }
+                return result;
+            }
+
+            List<DuplPairViewModel> all = new List<DuplPairViewModel>();
+            if (Result is IEnumerable enumerable)
+            {
+                foreach (var item in enumerable)
+                    if (item is DuplPairViewModel pair)
+                        all.Add(pair);
+            }
+            return all;
+        }
+
+        #region Hot keys (mirror of WF SelectHotKeysForm + HotKeyOptions)
+
+        /// <summary>Поднимаем в MainWindow для пересборки InputBindings после изменения привязок.</summary>
+        public event EventHandler HotKeysChanged;
+
+        ICommand _openHotKeysCommand;
+        /// <summary>Открывает окно выбора горячих клавиш (зеркало WF View → SelectHotKeysForm).</summary>
+        public ICommand OpenHotKeysCommand
+        {
+            get
+            {
+                return _openHotKeysCommand ?? (_openHotKeysCommand = new RelayCommand(arg =>
+                {
+                    SelectHotKeysViewModel dialogViewModel = new SelectHotKeysViewModel(Configuration.HotKeys);
+                    bool? result = _windowService.ShowDialogWindow<View.SelectHotKeysWindow>(dialogViewModel);
+                    if (result == true)
+                    {
+                        Configuration.HotKeys = dialogViewModel.Options;
+                        Configuration.Save();
+                        HotKeysChanged?.Invoke(this, EventArgs.Empty);
+                    }
+                }, arg => true));
+            }
+        }
+
+        #region Help/About (зеркало WF Help-меню и AboutProgramPanel)
+
+        /// <summary>Открыть страницу справки (URL зависит от текущего языка).</summary>
+        ICommand _openHelpCommand;
+        public ICommand OpenHelpCommand
+        {
+            get
+            {
+                return _openHelpCommand ?? (_openHelpCommand = new RelayCommand(arg =>
+                {
+                    CultureInfo culture = _languageService != null ? _languageService.Language : CultureInfo.CurrentUICulture;
+                    bool russian = culture != null && culture.TwoLetterISOLanguageName == "ru";
+                    OpenUrl(VersionInfoProvider.GetHelpUrl(russian));
+                }, arg => true));
+            }
+        }
+
+        /// <summary>Окно "О программе" (версия, сайт, справка, проверка обновлений).</summary>
+        ICommand _openAboutCommand;
+        public ICommand OpenAboutCommand
+        {
+            get
+            {
+                return _openAboutCommand ?? (_openAboutCommand = new RelayCommand(arg =>
+                {
+                    AboutViewModel dialogViewModel = new AboutViewModel(_core);
+                    _windowService.ShowDialogWindow<View.AboutWindow>(dialogViewModel);
+                }, arg => true));
+            }
+        }
+
+        /// <summary>
+        /// Проверить наличие нового релиза по version.xml на сайте (зеркало WF
+        /// NewVersionMenuItem) и сообщить о результате.
+        /// </summary>
+        /// <summary>Защита от повторного клика, пока проверка идёт в фоне.</summary>
+        bool _checkForUpdatesRunning;
+
+        ICommand _checkForUpdatesCommand;
+        /// <summary>
+        /// Проверить новую версию по version.xml на сайте (фон, таймаут 15 c, зеркало WF
+        /// NewVersionMenuItem). Результат — MessageBox; любой сетевой сбой — «не удалось».
+        /// </summary>
+        public ICommand CheckForUpdatesCommand
+        {
+            get
+            {
+                return _checkForUpdatesCommand ?? (_checkForUpdatesCommand = new RelayCommand(
+                    arg => CheckForUpdatesAsync(),
+                    arg => !_checkForUpdatesRunning));
+            }
+        }
+
+        async void CheckForUpdatesAsync()
+        {
+            if (_checkForUpdatesRunning)
+            {
+                return;
+            }
+            _checkForUpdatesRunning = true;
+            try
+            {
+                string latest = await VersionInfoProvider.GetLatestVersionFromWebAsync();
+                if (latest == null)
+                {
+                    _windowService.ShowMessage(
+                        Application.Current.Resources["aboutwindow_check_failed"] as string);
+                    return;
+                }
+                _windowService.ShowMessage(String.Format(
+                    Application.Current.Resources["aboutwindow_update_available"] as string,
+                    latest,
+                    VersionInfoProvider.BaseUrl));
+            }
+            finally
+            {
+                _checkForUpdatesRunning = false;
+            }
+        }
+
+        static void OpenUrl(string url)
+        {
+            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Команда горячего действия, привязываемая к клавише (зеркало WF ApplyHotKeysCommand).
+        /// Действия над текущей парой из Result; ShowNeighbours переключает на вкладку сравнения.
+        /// </summary>
+        public ICommand GetHotKeyCommand(HotKeyAction action)
+        {
+            switch (action)
+            {
+                case HotKeyAction.DeleteFirst:
+                    return new RelayCommand(arg => DeleteImageCommand.Execute(GetCurrentPair()?.FirstFile), arg => CanActOnCurrentPair());
+                case HotKeyAction.DeleteSecond:
+                    return new RelayCommand(arg => DeleteImageCommand.Execute(GetCurrentPair()?.SecondFile), arg => CanActOnCurrentPair());
+                case HotKeyAction.DeleteBoth:
+                    return new RelayCommand(arg =>
+                    {
+                        DeleteImageCommand.Execute(GetCurrentPair()?.FirstFile);
+                        DeleteImageCommand.Execute(GetCurrentPair()?.SecondFile);
+                    }, arg => CanActOnCurrentPair());
+                case HotKeyAction.RenameFirstToSecond:
+                    return new RelayCommand(arg => RenameFirstLikeSecondCommand.Execute(GetCurrentPair()), arg => CanActOnCurrentPair());
+                case HotKeyAction.RenameSecondToFirst:
+                    return new RelayCommand(arg => RenameSecondLikeFirstCommand.Execute(GetCurrentPair()), arg => CanActOnCurrentPair());
+                case HotKeyAction.Mistake:
+                    return new RelayCommand(arg => ExecuteIgnorePairCommand.Execute(GetCurrentPair()), arg => CanActOnCurrentPair());
+                case HotKeyAction.ShowNeighbours:
+                    return new RelayCommand(arg => SelectedTabPageIndex = 1, arg => CanActOnCurrentPair());
+                case HotKeyAction.OpenImageDiff:
+                    return OpenImageDiffCommand;
+                case HotKeyAction.DeleteDefect:
+                    return DeleteDefectCommand;
+                default:
+                    return null;
+            }
+        }
+
+        DuplPairViewModel GetCurrentPair()
+        {
+            return (Result as System.ComponentModel.ICollectionView)?.CurrentItem as DuplPairViewModel;
+        }
+
+        bool CanActOnCurrentPair()
+        {
+            return GetCurrentPair() != null;
+        }
+
+        /// <summary>
+        /// Открыть текущую пару во внешней diff-утилите (зеркало WF
+        /// ImageDiffOpener; путь/аргументы — Configuration.ImageDiffExecutablePath/Arguments).
+        /// </summary>
+        ICommand _openImageDiffCommand;
+        public ICommand OpenImageDiffCommand
+        {
+            get
+            {
+                return _openImageDiffCommand ?? (_openImageDiffCommand = new RelayCommand(arg =>
+                {
+                    DuplPairViewModel pair = GetCurrentPair();
+                    if (pair == null)
+                        return;
+                    if (String.IsNullOrEmpty(Configuration.ImageDiffExecutablePath))
+                    {
+                        _windowService.ShowMessage(
+                            Application.Current.Resources["comparatorWindow_externalToolNotSet"] as string);
+                        return;
+                    }
+                    string error = _externalToolLauncher.OpenFiles(pair.FirstFile.Path, pair.SecondFile.Path,
+                        Configuration.ImageDiffExecutablePath, Configuration.ImageDiffExecutableArguments);
+                    if (error != null)
+                        _windowService.ShowMessage(error);
+                }, arg => CanActOnCurrentPair()));
+            }
+        }
+
+        /// <summary>
+        /// Удаление дефекта из текущей строки результата (дефекты; локальный
+        /// вариант зеркала WF ApplyToResult(DeleteDefect), см. UndoRedo.DeleteDefectCommand).
+        /// </summary>
+        ICommand _deleteDefectCommand;
+        public ICommand DeleteDefectCommand
+        {
+            get
+            {
+                return _deleteDefectCommand ?? (_deleteDefectCommand = new RelayCommand(arg =>
+                {
+                    DuplPairViewModel pair = GetCurrentPair();
+                    if (pair == null || !pair.IsDefect)
+                        return;
+                    ImageInfoClass file = pair.FirstFile;
+                    if (file == null || String.IsNullOrEmpty(file.Path) || !File.Exists(file.Path))
+                        return;
+                    IUCommand uCommand = new UndoRedo.DeleteDefectCommand(pair, file, _resultList);
+                    _undoRedoEngine.ExecuteCommand(uCommand);
+                }, arg =>
+                {
+                    DuplPairViewModel pair = GetCurrentPair();
+                    return pair != null && pair.IsDefect;
+                }));
+            }
+        }
+
+        #endregion
+
+        #region Панель инструментов (зеркало WF MainToolStrip)
+
+        /// <summary>
+        /// Режим пар (вкладка 0). Кнопки действий панели (Mistake/PerformHint/Delete…)
+        /// имеют смысл только здесь — в WF они видны только в режимах
+        /// VerticalPairTable/HorizontalPairTable (MainToolStrip.SetViewMode).
+        /// </summary>
+        public bool IsPairMode
+        {
+            get { return _selectedTabPageIndex == 0; }
+        }
+
+        /// <summary>
+        /// Пометить текущую пару как ошибочную (зеркало WF MistakesButton).
+        /// WPF — локальный ignore-хранилище (дефекты), а не mistakeDataBase ядра.
+        /// </summary>
+        ICommand _toolMistakeCommand;
+        public ICommand ToolMistakeCommand
+        {
+            get
+            {
+                return _toolMistakeCommand ?? (_toolMistakeCommand = new RelayCommand(arg =>
+                {
+                    DuplPairViewModel pair = GetCurrentPair();
+                    if (pair != null)
+                        ExecuteIgnorePairCommand.Execute(pair);
+                }, arg => CanActOnCurrentPair()));
+            }
+        }
+
+        /// <summary>
+        /// Автоматически обработать текущую пару по подсказке ядра (зеркало WF
+        /// PerformHintButton: ApplyToResult(PerformHint, Selected)). После успеха
+        /// результаты перечитываются из ядра (аналог WF-обновления списка).
+        /// </summary>
+        ICommand _performHintCommand;
+        public ICommand PerformHintCommand
+        {
+            get
+            {
+                return _performHintCommand ?? (_performHintCommand = new RelayCommand(arg =>
+                {
+                    if (!CanActOnCurrentPair() || _core == null)
+                        return;
+                    if (_core.ApplyToResult(CoreDll.LocalActionType.PerformHint, CoreDll.TargetType.Selected))
+                    {
+                        DuplPairViewModel[] result = (SearchCommand as SearchDllCommand)?.GetResults();
+                        SetResult(result);
+                    }
+                }, arg => CanActOnCurrentPair() && _core != null &&
+                         _core.CanApply(CoreDll.ActionEnableType.PerformHint)));
+            }
+        }
+
+        /// <summary>Удалить первую картинку текущей пары (зеркало WF DeleteFirsts*Button).</summary>
+        ICommand _toolDeleteFirstCommand;
+        public ICommand ToolDeleteFirstCommand
+        {
+            get
+            {
+                return _toolDeleteFirstCommand ?? (_toolDeleteFirstCommand = new RelayCommand(arg =>
+                    DeleteImageCommand.Execute(GetCurrentPair()?.FirstFile), arg => CanActOnCurrentPair()));
+            }
+        }
+
+        /// <summary>Удалить вторую картинку текущей пары (зеркало WF DeleteSeconds*Button).</summary>
+        ICommand _toolDeleteSecondCommand;
+        public ICommand ToolDeleteSecondCommand
+        {
+            get
+            {
+                return _toolDeleteSecondCommand ?? (_toolDeleteSecondCommand = new RelayCommand(arg =>
+                    DeleteImageCommand.Execute(GetCurrentPair()?.SecondFile), arg => CanActOnCurrentPair()));
+            }
+        }
+
+        /// <summary>Удалить обе картинки текущей пары (зеркало WF DeleteBothes*Button).</summary>
+        ICommand _toolDeleteBothCommand;
+        public ICommand ToolDeleteBothCommand
+        {
+            get
+            {
+                return _toolDeleteBothCommand ?? (_toolDeleteBothCommand = new RelayCommand(arg =>
+                {
+                    DeleteImageCommand.Execute(GetCurrentPair()?.FirstFile);
+                    DeleteImageCommand.Execute(GetCurrentPair()?.SecondFile);
+                }, arg => CanActOnCurrentPair()));
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Коллекция для вывода, с фильтрацией и т.д.
@@ -390,11 +833,24 @@ namespace AntiDupl.NET.WPF.ViewModel
         {
             // Статус результата в соответствии с текущим видом таблицы.
             if (_viewModeModel.ViewMode == ViewMode.Group && _groups != null)
-                SetStatus($"Готово: {Plural(_groups.Count, "группа", "группы", "групп")}");
+                SetStatus(LocalizationHelper.S("status_ready", Noun(_groups.Count, "группа", "группы", "групп", "group", "groups")));
             else if (_resultList != null && _resultList.Any())
-                SetStatus($"Готово: {Plural(_resultList.Count, "пара", "пары", "пар")}");
+                SetStatus(LocalizationHelper.S("status_ready", Noun(_resultList.Count, "пара", "пары", "пар", "pair", "pairs")));
             else
                 SetStatus(string.Empty);
+        }
+
+        /// <summary>
+        /// Склонение слова результата по языку интерфейса (RU — русские формы, иначе EN).
+        /// </summary>
+        string Noun(int n, string ruOne, string ruFew, string ruMany, string enOne, string enMany)
+        {
+            bool russian = _languageService != null &&
+                           _languageService.Language != null &&
+                           _languageService.Language.Name.StartsWith("ru", StringComparison.OrdinalIgnoreCase);
+            if (russian)
+                return Plural(n, ruOne, ruFew, ruMany);
+            return $"{n} {(n == 1 ? enOne : enMany)}";
         }
 
         private static string Plural(int n, string one, string few, string many)
@@ -411,7 +867,7 @@ namespace AntiDupl.NET.WPF.ViewModel
         {
             int count = result != null ? result.Length : 0;
             _logger.LogInformation("SetResult: получено пар: {Count}", count);
-            SetStatus(string.Format("Показ результатов в таблице ({0} пар)…", count));
+            SetStatus(LocalizationHelper.S("status_showingResults", count));
             Stopwatch stopwatch = Stopwatch.StartNew();
 
             Action fillOnUi = () =>
@@ -420,7 +876,8 @@ namespace AntiDupl.NET.WPF.ViewModel
                     _groups.Clear();
                 if (_resultList != null)
                     _resultList.Clear();
-                _viewModeModel.ViewMode = ViewMode.Pair;
+                // Режим показа (пары/группы) не сбрасываем — сохраняется между поисками
+                // и перезапусками (Configuration.ResultsViewMode).
                 _thumbnailProvider.ClearThumbnailCache();
 
                 if (count == 0)
@@ -443,7 +900,7 @@ namespace AntiDupl.NET.WPF.ViewModel
                     }
                     if (index % (batchSize * 5) == 0 || index >= count)
                     {
-                        SetStatus(string.Format("Заполнение таблицы… ({0}/{1})", Math.Min(index, count), count));
+                        SetStatus(LocalizationHelper.S("status_fillingTable", Math.Min(index, count), count));
                     }
 
                     if (index >= count)
@@ -471,10 +928,9 @@ namespace AntiDupl.NET.WPF.ViewModel
 
             RefreshCompareModeOptions();
 
-            // Вид по умолчанию — «Группами». Сразу после получения результата
-            // автоматически строим группы и переключаемся на вкладку «Группы»;
-            // возврат к виду «Парами» — вручную через меню (ConvertToDuplPairCommand).
-            if (count > 0)
+            // Вид таблицы — тот, что выбран пользователем (сохраняется в Configuration.ResultsViewMode):
+            // «Группами» — сразу строим группы; «Парами» — оставляем пары в таблице.
+            if (count > 0 && _viewModeModel.ViewMode == ViewMode.Group)
             {
                 GroupHelper.ConvertToGroup(_groups, _resultList);
                 _resultList.Clear();
@@ -483,13 +939,15 @@ namespace AntiDupl.NET.WPF.ViewModel
                     GroupsCollection = CollectionViewSource.GetDefaultView(_groups); // setter сам ставит вкладку 1
                 else
                     SelectedTabPageIndex = 1;
-
-                _viewModeModel.ViewMode = ViewMode.Group;
+            }
+            else
+            {
+                SelectedTabPageIndex = 0;
             }
 
             _logger.LogInformation("SetResult: готово за {Ms} мс (пар: {Count})", stopwatch.ElapsedMilliseconds, count);
             // Финальный статус со счётчиком по текущему виду
-            // (по умолчанию вид «Группами» — показываем число групп, не пар).
+            // Финальный статус со счётчиком по текущему виду (пары или группы).
             if (count == 0)
                 SetStatus(string.Empty);
             else
@@ -563,7 +1021,7 @@ namespace AntiDupl.NET.WPF.ViewModel
                             _undoRedoEngine.ExecuteCommand(secondToFirstUCommand);
                         }, arg => secondToFirstUCommand != null);
 
-                        BindableMenuItem[] menu = new BindableMenuItem[8];
+                        BindableMenuItem[] menu = new BindableMenuItem[12];
                         menu[0] = new BindableMenuItem();
                         menu[0].Name = firstToSecond;
                         menu[0].Command = firstToSecondCommand;
@@ -613,15 +1071,15 @@ namespace AntiDupl.NET.WPF.ViewModel
                         menu[5].Name = String.Format("Delete _{0}", result.SecondFile.FileName);
                         menu[5].Command = deleteSecondCommand;
 
-                       /* IUCommand ignoreUCommand = new IgnorePairCommand(_resultList, Result, _ignoreStorage.IgnoreList,
-                            SelectedResultIndex);
+                        // Пункт «Ignore pair» (текущая пара) — восстановлен (аудит зеркала WF: потерянные пункты меню).
+                        IUCommand ignoreUCommand = new IgnorePairCommand(_resultList, Result, _ignoreStorage.IgnoreList);
                         ICommand ignoreCommand = new RelayCommand(arg =>
                         {
                             _undoRedoEngine.ExecuteCommand(ignoreUCommand);
                         }, arg => ignoreUCommand != null);
-                        menu[2] = new BindableMenuItem();
-                        menu[2].Name = Application.Current.Resources["mainwindow_contextmenu_IgnorePair"] as string;
-                        menu[2].Command = ignoreCommand;*/
+                        menu[6] = new BindableMenuItem();
+                        menu[6].Name = Application.Current.Resources["mainwindow_contextmenu_IgnorePair"] as string;
+                        menu[6].Command = ignoreCommand;
 
                         ICommand openComparatorCommand = new RelayCommand(arg =>
                         {
@@ -629,14 +1087,14 @@ namespace AntiDupl.NET.WPF.ViewModel
                                 _undoRedoEngine, _windowService, Configuration);
                             _windowService.OpenComparatorWindow(vm);
                         }, arg => _windowService != null);
-                        menu[6] = new BindableMenuItem();
-                        menu[6].Name = Application.Current.Resources["mainwindow_contextmenu_OpenСomparator"] as string;
-                        menu[6].Command = openComparatorCommand;
-
-
                         menu[7] = new BindableMenuItem();
-                        menu[7].Name = "ShowDiffrenceInPercent";
-                        menu[7].Command = new RelayCommand(arg =>
+                        menu[7].Name = Application.Current.Resources["mainwindow_contextmenu_OpenСomparator"] as string;
+                        menu[7].Command = openComparatorCommand;
+
+
+                        menu[8] = new BindableMenuItem();
+                        menu[8].Name = Application.Current.Resources["mainwindow_contextmenu_ShowDiffInPercent"] as string;
+                        menu[8].Command = new RelayCommand(arg =>
                             {
                                 if (result != null && result is DuplPairViewModel)
                                 {
@@ -649,6 +1107,32 @@ namespace AntiDupl.NET.WPF.ViewModel
                                 }
                             }, arg => result != null);
 
+                        // Копирование в буфер: текущая пара.
+                        menu[9] = new BindableMenuItem();
+                        menu[9].Name = Application.Current.Resources["mainwindow_menu_edit_copy"] as string;
+                        menu[9].Command = new RelayCommand(arg =>
+                            {
+                                _clipboardService.CopyText(ClipboardContentBuilder.Build(GetPairsForClipboard(result)));
+                            }, arg => result != null);
+
+                        menu[10] = new BindableMenuItem();
+                        menu[10].Name = Application.Current.Resources["mainwindow_menu_edit_copy_paths"] as string;
+                        menu[10].Command = new RelayCommand(arg =>
+                            {
+                                _clipboardService.CopyText(ClipboardContentBuilder.BuildPaths(GetPairsForClipboard(result)));
+                            }, arg => result != null);
+
+                        // Пункт «Delete defect» (дефекты) — только для строк-дефектов.
+                        if (result.IsDefect)
+                        {
+                            IUCommand deleteDefectUCommand = new UndoRedo.DeleteDefectCommand(result, result.FirstFile, _resultList);
+                            menu[11] = new BindableMenuItem();
+                            menu[11].Name = Application.Current.Resources["mainwindow_contextmenu_DeleteDefect"] as string;
+                            menu[11].Command = new RelayCommand(arg =>
+                                {
+                                    _undoRedoEngine.ExecuteCommand(deleteDefectUCommand);
+                                }, arg => deleteDefectUCommand != null);
+                        }
 
                         return menu;
                     }
@@ -702,16 +1186,17 @@ namespace AntiDupl.NET.WPF.ViewModel
                 {
                     if (group != null)
                     {
-                        /*IUCommand ignoreUCommand = new IgnoreGroupCommand(_groups, Groups, _ignoreStorage.IgnoreList);
+                        // Пункт «Ignore group» — восстановлен (аудит зеркала WF: потерянные пункты меню).
+                        IUCommand ignoreUCommand = new IgnoreGroupCommand(_groups, GroupsCollection, _resultList, _ignoreStorage.IgnoreList, group);
                         ICommand ignoreCommand = new RelayCommand(arg =>
                         {
                             _undoRedoEngine.ExecuteCommand(ignoreUCommand);
-                        }, arg => ignoreUCommand != null);*/
+                        }, arg => ignoreUCommand != null);
 
-                        BindableMenuItem[] menu = new BindableMenuItem[1];
-                        /*menu[0] = new BindableMenuItem();
+                        BindableMenuItem[] menu = new BindableMenuItem[2];
+                        menu[0] = new BindableMenuItem();
                         menu[0].Name = Application.Current.Resources["mainwindow_contextmenu_IgnoreGroup"] as string;
-                        menu[0].Command = ignoreCommand;*/
+                        menu[0].Command = ignoreCommand;
 
                         ICommand openComparatorCommand = new RelayCommand(arg =>
                         {
@@ -719,9 +1204,9 @@ namespace AntiDupl.NET.WPF.ViewModel
                                 _undoRedoEngine, _windowService, Configuration);
                             _windowService.OpenComparatorWindow(vm);
                         }, arg => _windowService != null);
-                        menu[0] = new BindableMenuItem();
-                        menu[0].Name = Application.Current.Resources["mainwindow_contextmenu_OpenСomparator"] as string;
-                        menu[0].Command = openComparatorCommand;
+                        menu[1] = new BindableMenuItem();
+                        menu[1].Name = Application.Current.Resources["mainwindow_contextmenu_OpenСomparator"] as string;
+                        menu[1].Command = openComparatorCommand;
                         return menu;
                     }
                     return null;
@@ -1071,29 +1556,35 @@ namespace AntiDupl.NET.WPF.ViewModel
         }
 
         ICommand _undoCommand;
+        /// <summary>
+        /// Отменить одно последнее действие (пункт меню «Undo» / Ctrl+Z).
+        /// </summary>
         public ICommand UndoCommand
         {
             get
             {
                 return _undoCommand ?? (_undoCommand = new RelayCommand(arg =>
                 {
-                    while (_undoRedoEngine.UndoEnable)
-                    {
-                        _undoRedoEngine.Undo();
-                    }
+                    _undoRedoEngine.Undo();
                 }, arg => _undoRedoEngine.UndoEnable));
             }
         }
 
 
         ICommand _undoAllCommand;
+        /// <summary>
+        /// Отменить все действия до состояния сразу после получения результата (пункт «Undo all»).
+        /// </summary>
         public ICommand UndoAllCommand
         {
             get
             {
                 return _undoAllCommand ?? (_undoAllCommand = new RelayCommand(arg =>
                 {
-                    _undoRedoEngine.Undo();
+                    while (_undoRedoEngine.UndoEnable)
+                    {
+                        _undoRedoEngine.Undo();
+                    }
                 }, arg => _undoRedoEngine.UndoEnable));
             }
         }
@@ -1241,6 +1732,18 @@ namespace AntiDupl.NET.WPF.ViewModel
                    _logger.LogInformation("LoadResults: файл прочитан за {Ms} мс (пар: {Count})",
                        loadWatch.ElapsedMilliseconds, readed.Length);
                    progressDialogViewModel.ProgressMax = (uint)readed.Length;
+
+                   // лог прогресс-окна (зеркало WF checkResultsAtLoading/checkMistakesAtLoading):
+                   // при загрузке — проверка существования файлов и фильтрация
+                   // пар из ignore-списка (mistakes).
+                   bool checkResults = Configuration.CheckResultsAtLoading;
+                   bool checkMistakes = Configuration.CheckMistakesAtLoading;
+                   HashSet<DuplPairViewModel> ignored = checkMistakes
+                       && _ignoreStorage != null && _ignoreStorage.IgnoreList != null
+                           ? new HashSet<DuplPairViewModel>(_ignoreStorage.IgnoreList)
+                           : null;
+                   List<DuplPairViewModel> kept = new List<DuplPairViewModel>(readed.Length);
+
                    try
                    {
                        int statusStep = Math.Max(1, readed.Length / 20);
@@ -1255,18 +1758,26 @@ namespace AntiDupl.NET.WPF.ViewModel
                        //TODO переделать чтобы запускалось по требоыванию
                        //долго выполняется
                        //item.SetNeighboursFileNames();
+
+                       bool keep = true;
+                       if (checkResults && !item.CheckAllExist())
+                           keep = false;
+                       if (ignored != null && ignored.Contains(item))
+                           keep = false;
+                       if (keep)
+                           kept.Add(item);
                       // if (item.CheckAllExist())
                        //    filtered.Add(item);
 
                        progressDialogViewModel.Progress++;
                        processed++;
                        if (processed % statusStep == 0)
-                           SetStatus(string.Format("Загрузка результатов… ({0}/{1})", processed, readed.Length));
+                           SetStatus(LocalizationHelper.S("status_loadingResults", processed, readed.Length));
                        if (progressDialogViewModel.IsCancelled)
                            break;
                    }
 
-                    SetStatus(string.Format("Обработка завершена ({0} пар), показ в таблице…", readed.Length));
+                    SetStatus(LocalizationHelper.S("status_processed", kept.Count, readed.Length));
                    }
                    catch (Exception ex)
                    {
@@ -1275,7 +1786,7 @@ namespace AntiDupl.NET.WPF.ViewModel
                    }
                    try
                    {
-                       SetResult(readed);
+                       SetResult(kept.ToArray());
                    }
                    catch (Exception)
                    {
@@ -1330,6 +1841,7 @@ namespace AntiDupl.NET.WPF.ViewModel
                 {
                     _selectedTabPageIndex = value;
                     this.RaisePropertyChangedEvent();
+                    this.RaisePropertyChangedEvent(nameof(IsPairMode));
                     //if (Result != null)
                     //{
                     //    if (_selectedTabPageIndex == COMPARE_TAB_INDEX)

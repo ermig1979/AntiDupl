@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -72,11 +72,37 @@ namespace AntiDupl.NET.WPF.Model
         int DeepPrefetchCount { get; set; }
         string LastResultFile { get; set; }
 
+        /// <summary>Regex filter for file names of the ignore path list (paths window, mirror of WF options.xml).</summary>
+        string IgnoreFilenameFilter { get; set; }
+
+        /// <summary>Results table view mode (pairs/groups) — restored on app restart.</summary>
+        ViewMode ResultsViewMode { get; set; }
+
+        /// <summary>Hot keys (mirror of WF options.xml → hotKeyOptions).</summary>
+        HotKeyOptions HotKeys { get; set; }
+
+        /// <summary>Visibility of the results table columns (columns chooser). null = all columns visible.</summary>
+        ResultsColumnsOptions ResultsColumns { get; set; }
+
         /// <summary>Selected search mode (toolbar). null = not selected — default DINOv2 (when the core supports it).</summary>
         AlgorithmComparing? CompareAlgorithm { get; set; }
         uint UndoRedoStackSize { get; set; }
         uint MaxCachedThumbnail { get; set; }
-        bool SaveResultInCurrentFile { get; set; }
+
+        /// <summary>Check file existence on result loading (progress log, mirror of WF options.xml).</summary>
+        bool CheckResultsAtLoading { get; set; }
+
+        /// <summary>Filter pairs from the ignore list on result loading (progress log, mirror of WF options.xml).</summary>
+        bool CheckMistakesAtLoading { get; set; }
+
+        /// <summary>External diff tool path (mirror of WF imageDiffExecutablePath).</summary>
+        string ImageDiffExecutablePath { get; set; }
+
+        /// <summary>External diff tool arguments with %1/%2 placeholders (mirror of WF).</summary>
+        string ImageDiffExecutableArguments { get; set; }
+
+        /// <summary>Use only the first search path (mirror of WF options.xml → onePath).</summary>
+        bool UseSinglePath { get; set; }
 
         Color GoodColor { get; set; }
         Color BadColor { get; set; }

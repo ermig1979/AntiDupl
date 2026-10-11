@@ -26,7 +26,7 @@ public sealed class CoreLibCandidateSource : IDeepCandidateSource
 
         var result = new DeepCandidate[candidates.Length];
         for (int i = 0; i < candidates.Length; i++)
-            result[i] = new DeepCandidate(candidates[i].path, (long)candidates[i].size);
+            result[i] = new DeepCandidate(candidates[i].path, (long)candidates[i].size, (long)candidates[i].time);
         return result;
     }
 }

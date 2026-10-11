@@ -27,6 +27,22 @@ namespace AntiDupl.NET.WPF
             Startup += Application_Startup;
         }
 
+        /// <summary>
+        /// Читает параметр вида "&lt;name&gt; &lt;value&gt;" из аргументов командной строки
+        /// (зеркало WF Program.GetParameter).
+        /// </summary>
+        static string GetParameter(string[] args, string name)
+        {
+            if (args == null)
+                return null;
+            for (int i = 0; i < args.Length - 1; i++)
+            {
+                if (String.Compare(args[i], name, true) == 0)
+                    return args[i + 1];
+            }
+            return null;
+        }
+
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             AppDomain.CurrentDomain.UnhandledException +=
@@ -48,13 +64,26 @@ namespace AntiDupl.NET.WPF
             services.AddSingleton<IConfigurationModel>(ConfigurationModel.Load());
             services.AddSingleton<ILanguageService, LanguageService>();
 
-            AntiDupl.NET.WPF.Resources.Resources.UserPath = AntiDupl.NET.WPF.Resources.Resources.GetDefaultUserPath();
+            // CLI: -s <dir> — кастомный user path (зеркало WF Program.cs); иначе — дефолтный.
+            string customSavePath = GetParameter(e.Args, "-s");
+            if (customSavePath != null)
+            {
+                if (!Directory.Exists(customSavePath))
+                    throw new Exception(string.Format("The directory '{0}' is not exists!", customSavePath));
+                AntiDupl.NET.WPF.Resources.Resources.UserPath = customSavePath;
+            }
+            else
+            {
+                AntiDupl.NET.WPF.Resources.Resources.UserPath = AntiDupl.NET.WPF.Resources.Resources.GetDefaultUserPath();
+            }
             services.AddSingleton(new CoreLib(AntiDupl.NET.WPF.Resources.Resources.UserPath));
             services.AddSingleton<IImageLoader, ImageLoader>();
             services.AddSingleton<IThumbnailProvider, ThumbnailProvider>();
 
             services.AddSingleton<IUndoRedoEngine, UndoRedoEngine>();
             services.AddSingleton<IViewModeModel, ViewModeModel>();
+            // Синхронизация списков путей (search/ignore/valid/delete) UI → ядро (окно путей).
+            services.AddSingleton<ICoreLocationSync, CoreLibLocationSync>();
 
             // Deep (DINOv2) поиск: C#-пайплайн (AntiDupl.NET.Deep).
             // Модели: <UserPath>\models (DINOv2 — путь или пользовательский URL, LightGlue —
@@ -92,6 +121,22 @@ namespace AntiDupl.NET.WPF
 
             _serviceProvider = services.BuildServiceProvider();
             ServiceLocator.Provider = _serviceProvider;
+
+            // Повреждённые файлы настроек: лог + сообщение пользователю.
+            // SerializeHelper сам диалог не показывает (аудит зеркала WF: диалог → событие) —
+            // обработка здесь, в UI-слое.
+            Helper.SerializeHelperEvents.LoadErrorOccurred += (s, e) =>
+            {
+                if (_serviceProvider != null)
+                    _serviceProvider.GetRequiredService<ILoggerFactory>()
+                        .CreateLogger("SerializeHelper")
+                        .LogError("SerializeHelper failed to load {File}: {Message}", e.FilePath, e.Message);
+                string format = Application.Current?.Resources["serialize_load_error"] as string
+                    ?? "File {0} is corrupted and has been reset to default settings";
+                MessageBox.Show(string.Format(format, e.FilePath),
+                    Application.Current?.Resources["mainwindow_title"] as string ?? "AntiDupl",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+            };
 
             ILoggerFactory loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             loggerFactory.CreateLogger<App>()

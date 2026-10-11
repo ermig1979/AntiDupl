@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:control="clr-namespace:AntiDupl.NET.WPF.Control"
         xmlns:convertor="clr-namespace:AntiDupl.NET.WPF.Convertor"
-        Title="PrioritiesWindow" Height="300" Width="300">
+        Title="{DynamicResource prioritieswindow_title}" Height="300" Width="300">
     <Window.Resources>
         <convertor:InverseBooleanConverter x:Key="inverseBooleanConverter"/>
     </Window.Resources>

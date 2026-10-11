@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using AntiDupl.NET.WPF.Helper;
 using AntiDupl.NET.WPF.ObjectModel;
 
@@ -38,13 +39,13 @@ namespace AntiDupl.NET.WPF.UndoRedo
             {
                 _deletedFileWithTempExtension = _result.FirstFile.Path + Const.ForDeleteEXTENSION;
                 File.Move(_result.FirstFile.Path, _deletedFileWithTempExtension);
-                _description = String.Format("Удалили {0}", _result.FirstFile.Path);
+                _description = String.Format(Application.Current.Resources["desc_deleteImage"] as string ?? "Delete image {0}", _result.FirstFile.Path);
             }  //удаляем вторую картинку
             else if (_positionInDuplPair == PositionInDuplPair.Second)
             {
                 _deletedFileWithTempExtension = _result.SecondFile.Path + Const.ForDeleteEXTENSION;
                 File.Move(_result.SecondFile.Path, _deletedFileWithTempExtension);
-                _description = String.Format("Удалили {0}", _result.SecondFile.Path, _result.FirstFile.Path);
+                _description = String.Format(Application.Current.Resources["desc_deleteImage"] as string ?? "Delete image {0}", _result.SecondFile.Path);
             }
             else
                 throw new ArgumentException("Неизвестный тип PositionInDuplPair " + _positionInDuplPair);

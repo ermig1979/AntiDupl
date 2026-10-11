@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,6 +25,16 @@ namespace AntiDupl.NET.WPF.ViewModel
         public CoreDll.TransformType Transform { get; set; }
         public CoreDll.ResultType Type { get; set; }
 
+        /// <summary>Тип дефекта (дефекты; для пар дублей — None).</summary>
+        public CoreDll.DefectType Defect { get; set; }
+
+        /// <summary>Подсказка ядра по обработке пары (колонки таблицы результатов; None — нет).</summary>
+        public CoreDll.HintType Hint { get; set; }
+
+        [XmlIgnoreAttribute]
+        /// <summary>Строка результата — дефектное изображение, а не пара дублей (дефекты).</summary>
+        public bool IsDefect { get { return Type == CoreDll.ResultType.DefectImage; } }
+
         [XmlIgnoreAttribute]
         /// <summary>
         /// Каталоги файлов отличаются
@@ -48,6 +58,8 @@ namespace AntiDupl.NET.WPF.ViewModel
             Difference = core_results.difference;
             Transform = core_results.transform;
             Type = core_results.type;
+            Defect = core_results.defect;
+            Hint = core_results.hint;
 
             FirstFile.Path = core_results.first.path;
             FirstFile.JpegPeaks = core_results.first.jpegPeaks;
@@ -57,6 +69,7 @@ namespace AntiDupl.NET.WPF.ViewModel
             FirstFile.Width = core_results.first.width;
             FirstFile.Height = core_results.first.height;
             FirstFile.Type = core_results.first.type;
+            FirstFile.Time = core_results.first.time;
 
             SecondFile.Path = core_results.second.path;
             SecondFile.JpegPeaks = core_results.second.jpegPeaks;
@@ -66,6 +79,7 @@ namespace AntiDupl.NET.WPF.ViewModel
             SecondFile.Width = core_results.second.width;
             SecondFile.Height = core_results.second.height;
             SecondFile.Type = core_results.second.type;
+            SecondFile.Time = core_results.second.time;
 
             //SaatiHelper.CalculateIndex(this, _configuration);
             _configuration = ServiceLocator.Resolve<IConfigurationModel>();
@@ -80,6 +94,8 @@ namespace AntiDupl.NET.WPF.ViewModel
             Difference = a.difference;
             Transform = a.transform;
             Type = a.type;
+            Defect = a.defect;
+            Hint = a.hint;
 
             FirstFile.Path = a.first.path;
             FirstFile.JpegPeaks = a.first.jpegPeaks;
@@ -89,6 +105,7 @@ namespace AntiDupl.NET.WPF.ViewModel
             FirstFile.Width = a.first.width;
             FirstFile.Height = a.first.height;
             FirstFile.Type = a.first.type;
+            FirstFile.Time = a.first.time;
 
             SecondFile.Path = a.second.path;
             SecondFile.JpegPeaks = a.second.jpegPeaks;
@@ -98,6 +115,7 @@ namespace AntiDupl.NET.WPF.ViewModel
             SecondFile.Width = a.second.width;
             SecondFile.Height = a.second.height;
             SecondFile.Type = a.second.type;
+            SecondFile.Time = a.second.time;
 
             SaatiHelper.CalculateIndex(this, _configuration);
             FillFolderAreDiffrent();
