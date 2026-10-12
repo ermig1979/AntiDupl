@@ -21,6 +21,8 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace AntiDupl.NET.WinForms
 {
@@ -66,6 +68,22 @@ namespace AntiDupl.NET.WinForms
         static public string ToExactString(double difference)
         {
             return difference.ToString("0.######");
+        }
+
+        /// <summary>
+        /// The text colour for a difference: green for the same file bytes,
+        /// orange for the same image in different files, otherwise the given
+        /// colour. Dark shades on the light theme and light ones on the dark
+        /// theme, each at least 4.5:1 against the grid's background.
+        /// </summary>
+        static public Color GetColor(double difference, Color other)
+        {
+            bool dark = Application.IsDarkModeEnabled;
+            if (IsByteIdentical(difference))
+                return dark ? Color.LightGreen : Color.Green;
+            if (IsIdentical(difference))
+                return dark ? Color.FromArgb(0xFF, 0xB3, 0x66) : Color.FromArgb(0xB3, 0x59, 0x00);
+            return other;
         }
     }
 }
