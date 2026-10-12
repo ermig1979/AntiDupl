@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using System.Windows.Media;
 using AntiDupl.NET.Core.Enums;
 using AntiDupl.NET.WPF.Helper;
 using AntiDupl.NET.WPF.ObjectModel;
+using AntiDupl.NET.WPF.Resources;
 using AntiDupl.NET.WPF.ViewModel;
 
 namespace AntiDupl.NET.WPF.Model
@@ -347,7 +349,7 @@ namespace AntiDupl.NET.WPF.Model
         {
             //return new ConfigurationModel();
 
-            ConfigurationModel model = SerializeHelper<ConfigurationModel>.Load(_fileName);
+            ConfigurationModel model = SerializeHelper<ConfigurationModel>.Load(GetFilePath());
             if (model == null)
             {
                 model = new ConfigurationModel();
@@ -376,7 +378,10 @@ namespace AntiDupl.NET.WPF.Model
 
         public void Save()
         {
-            SerializeHelper<ConfigurationModel>.Save(this, _fileName);
+            SerializeHelper<ConfigurationModel>.Save(this, GetFilePath());
         }
+
+        /// <summary>Полный путь: пользовательские данные — в <c>user\</c> (зеркало WF UserPath).</summary>
+        static string GetFilePath() => Path.Combine(AntiDupl.NET.WPF.Resources.Resources.UserPath, _fileName);
     }
 }

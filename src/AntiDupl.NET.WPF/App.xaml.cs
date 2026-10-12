@@ -22,6 +22,9 @@ namespace AntiDupl.NET.WPF
     {
         static ServiceProvider _serviceProvider;
 
+        /// <summary>Диалог «GPU недоступен» показывается один раз за запуск.</summary>
+        static bool _gpuFallbackShown;
+
         public App()
         {
             Startup += Application_Startup;
@@ -61,10 +64,9 @@ namespace AntiDupl.NET.WPF
                 builder.AddProvider(fileLogProvider);
             });
 
-            services.AddSingleton<IConfigurationModel>(ConfigurationModel.Load());
-            services.AddSingleton<ILanguageService, LanguageService>();
-
             // CLI: -s <dir> — кастомный user path (зеркало WF Program.cs); иначе — дефолтный.
+            // ВАЖНО: UserPath задаётся до ConfigurationModel.Load() — файлы настроек
+            // читаются из user\ (ранее — относительный путь в CWD).
             string customSavePath = GetParameter(e.Args, "-s");
             if (customSavePath != null)
             {
@@ -76,6 +78,10 @@ namespace AntiDupl.NET.WPF
             {
                 AntiDupl.NET.WPF.Resources.Resources.UserPath = AntiDupl.NET.WPF.Resources.Resources.GetDefaultUserPath();
             }
+
+            services.AddSingleton<IConfigurationModel>(ConfigurationModel.Load());
+            services.AddSingleton<ILanguageService, LanguageService>();
+
             services.AddSingleton(new CoreLib(AntiDupl.NET.WPF.Resources.Resources.UserPath));
             services.AddSingleton<IImageLoader, ImageLoader>();
             services.AddSingleton<IThumbnailProvider, ThumbnailProvider>();
@@ -86,30 +92,54 @@ namespace AntiDupl.NET.WPF
             services.AddSingleton<ICoreLocationSync, CoreLibLocationSync>();
 
             // Deep (DINOv2) поиск: C#-пайплайн (AntiDupl.NET.Deep).
-            // Модели: <UserPath>\models (DINOv2 — путь или пользовательский URL, LightGlue —
-            // авто-скачивание); кэш эмбеддингов/вердиктов: рядом с программой,
-            // <BaseDirectory>\deep; логи deep-пайплайна — в общий каталог logs.
-            // (решение пользователя: не в %TEMP% и не в AppData).
-            string userPath = AntiDupl.NET.WPF.Resources.Resources.UserPath;
+            // Модели: рядом с бинарником <BaseDirectory>\models (DINOv2 — путь или
+            // пользовательский URL, LightGlue — авто-скачивание); кэш эмбеддингов/вердиктов:
+            // рядом с программой, <BaseDirectory>\deep; логи deep-пайплайна — в общий
+            // каталог logs. (решение пользователя: модели — не в user-каталоге, чтобы
+            // -s <dir> переносил только данные, а не гигабайты весов).
             services.AddDeepSearch(
                 () =>
                 {
-                    // Единственный источник раскладки моделей: DeepModelManager.GetModelsDirectory.
-                    string modelsDirectory = AntiDupl.NET.Deep.Infra.DeepModelManager.GetModelsDirectory(userPath);
+                    // Единственный источник раскладки моделей: DeepModelManager.GetModelsDirectory
+                    // (рядом с бинарником — модели одинаковы для всех пользователей).
+                    string modelsDirectory = AntiDupl.NET.Deep.Infra.DeepModelManager.GetModelsDirectory(AppContext.BaseDirectory);
                     Directory.CreateDirectory(modelsDirectory);
                     string cacheDirectory = Path.Combine(AppContext.BaseDirectory, "deep");
                     Directory.CreateDirectory(cacheDirectory);
                     string logDirectory = Path.Combine(AppContext.BaseDirectory, "logs");
                     return (ModelsDirectory: modelsDirectory, CacheDirectory: cacheDirectory, LogDirectory: logDirectory);
                 },
-                // Явное уведомление (MessageBox на UI-потоке), если GPU недоступен
-                // и поиск идёт на CPU; текст дублируется в deep.log.
+                // Уведомление (окно выбора каталогов CUDA/cuDNN на UI-потоке), если GPU
+                // недоступен и поиск идёт на CPU; текст дублируется в deep.log.
+                // Диалог показывается один раз за запуск (хук вызывается на обе модели).
                 message =>
                 {
                     try
                     {
+                        if (_gpuFallbackShown)
+                            return;
+                        _gpuFallbackShown = true;
                         Application.Current?.Dispatcher.BeginInvoke(new Action(() =>
-                            MessageBox.Show(message, "Deep-поиск", MessageBoxButton.OK, MessageBoxImage.Information)));
+                        {
+                            IConfigurationModel configuration =
+                                _serviceProvider.GetRequiredService<IConfigurationModel>();
+                            var window = new GpuFallbackWindow(configuration)
+                            {
+                                CudaPath = configuration.CudaPath ?? "",
+                                CudnnPath = configuration.CudnnPath ?? ""
+                            };
+                            if (window.ShowDialog() == true)
+                            {
+                                // Пути вступают в силу после перезапуска (PATH выставляется
+                                // на старте, нативные DLL ORT уже загружены).
+                                configuration.CudaPath = window.CudaPath;
+                                configuration.CudnnPath = window.CudnnPath;
+                                configuration.Save();
+                                MessageBox.Show(LocalizationHelper.S("gpufallback_restart"),
+                                    LocalizationHelper.S("gpufallback_title"),
+                                    MessageBoxButton.OK, MessageBoxImage.Information);
+                            }
+                        }));
                     }
                     catch
                     {

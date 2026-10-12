@@ -114,8 +114,6 @@ namespace AntiDupl.NET.WPF.Control
                 Inlines.Clear();
                 if (!string.IsNullOrEmpty(text))
                     Inlines.Add(new Run(text) { Foreground = Foreground });
-                // Временная диагностика (убрать после проверки)
-                ToolTip = $"DiffTextBlock: нет сравнения (text='{Truncate(text)}' other='{Truncate(other)}')";
                 return;
             }
 
@@ -123,13 +121,10 @@ namespace AntiDupl.NET.WPF.Control
             {
                 Inlines.Clear();
                 Inlines.Add(new Run(text) { Foreground = Foreground });
-                // Временная диагностика (убрать после проверки)
-                ToolTip = $"DiffTextBlock: строки идентичны ('{Truncate(text)}')";
                 return;
             }
 
             Inlines.Clear();
-            int redSegments = 0;
             foreach (DiffSegment segment in BuildDiffSegments(text, other))
             {
                 if (string.IsNullOrEmpty(segment.Text))
@@ -138,19 +133,7 @@ namespace AntiDupl.NET.WPF.Control
                 {
                     Foreground = segment.IsDifferent ? MarkerBrush : Foreground
                 });
-                if (segment.IsDifferent)
-                    redSegments++;
             }
-
-            // Временная диагностика (убрать после проверки)
-            ToolTip = $"DiffTextBlock: найдено красных сегментов: {redSegments} ('{Truncate(text)}' vs '{Truncate(other)}')";
-        }
-
-        static string Truncate(string s)
-        {
-            if (string.IsNullOrEmpty(s))
-                return "<пусто>";
-            return s.Length <= 40 ? s : s.Substring(0, 40) + "…";
         }
 
         struct DiffSegment

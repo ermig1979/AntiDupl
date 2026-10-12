@@ -269,6 +269,22 @@
     <v:String x:Key="colorwindow_alpha">Прозрачность</v:String>
     <v:String x:Key="colorwindow_value">Значение цвета</v:String>
 
+    <!-- ==== GPU fallback: диалог выбора каталогов CUDA/cuDNN ==== -->
+    <v:String x:Key="gpufallback_title">GPU недоступен</v:String>
+    <v:String x:Key="gpufallback_message">ONNX Runtime не нашёл CUDA/cuDNN. Поиск выполняется на CPU.</v:String>
+    <v:String x:Key="gpufallback_message2">Укажите каталоги bin CUDA и cuDNN (cudart64_*.dll / cudnn*.dll) или продолжайте на CPU.</v:String>
+    <v:String x:Key="gpufallback_cuda">Каталог CUDA:</v:String>
+    <v:String x:Key="gpufallback_cudnn">Каталог cuDNN:</v:String>
+    <v:String x:Key="gpufallback_browse">Обзор...</v:String>
+    <v:String x:Key="gpufallback_save">Сохранить и перезапустить</v:String>
+    <v:String x:Key="gpufallback_cancel">Продолжить на CPU</v:String>
+    <v:String x:Key="gpufallback_restart">Настройки сохранены. Перезапустите приложение, чтобы использовать GPU.</v:String>
+    <v:String x:Key="gpufallback_detecting">определяю...</v:String>
+    <v:String x:Key="gpufallback_detected">найдено</v:String>
+    <v:String x:Key="gpufallback_notFound">в типовых местах не найдено — укажите папку вручную или оставьте пустым</v:String>
+    <v:String x:Key="gpufallback_saved">сохранено в настройках (вступит в силу после перезапуска)</v:String>
+    <v:String x:Key="gpufallback_saveFailed">не удалось сохранить в настройках</v:String>
+
     <!-- ==== Configuration: заголовки вкладок ==== -->
     <v:String x:Key="configurationWindow_title">Опции</v:String>
     <v:String x:Key="configurationWindow_tabMain">Главная</v:String>

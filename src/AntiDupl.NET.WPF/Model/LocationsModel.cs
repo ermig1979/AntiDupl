@@ -142,7 +142,7 @@ namespace AntiDupl.NET.WPF.Model
 
         static List<Location> LoadList(string fileName)
         {
-            List<Location> list = SerializeHelper<List<Location>>.Load(fileName);
+            List<Location> list = SerializeHelper<List<Location>>.Load(GetFilePath(fileName));
             return list ?? new List<Location>();
         }
 
@@ -157,8 +157,11 @@ namespace AntiDupl.NET.WPF.Model
         static void SaveList(ObservableCollection<SearchPathViewModel> collection, string fileName)
         {
             var locations = collection.Select(l => l.Model).ToList();
-            SerializeHelper<List<Location>>.Save(locations, fileName);
+            SerializeHelper<List<Location>>.Save(locations, GetFilePath(fileName));
         }
+
+        /// <summary>Полный путь: пользовательские данные — в <c>user\</c> (зеркало WF UserPath).</summary>
+        static string GetFilePath(string fileName) => System.IO.Path.Combine(AntiDupl.NET.WPF.Resources.Resources.UserPath, fileName);
 
         /// <summary>Коллекция выбранного вида путей.</summary>
         public ObservableCollection<SearchPathViewModel> GetCollection(PathType type)

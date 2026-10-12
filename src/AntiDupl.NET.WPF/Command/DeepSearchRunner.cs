@@ -76,7 +76,9 @@ namespace AntiDupl.NET.WPF.Command
             _vm.LocationsModel.CopyToDll();
 
             // Каталог моделей — единственный источник раскладки: DeepModelManager.
-            string modelsDir = DeepModelManager.GetModelsDirectory(AntiDupl.NET.WPF.Resources.Resources.UserPath);
+            // Модели — рядом с бинарником (<BaseDirectory>\models); одинаковы для всех
+            // пользователей, поэтому не зависят от user-каталога (CLI -s).
+            string modelsDir = DeepModelManager.GetModelsDirectory(System.AppContext.BaseDirectory);
 
             var settings = new DeepSettings
             {
