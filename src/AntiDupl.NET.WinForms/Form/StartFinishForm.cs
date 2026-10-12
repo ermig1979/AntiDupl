@@ -79,6 +79,9 @@ namespace AntiDupl.NET.WinForms
             ControlBox = false;
             MaximizeBox = false;
             MinimizeBox = false;
+            // Without a title or a close button the window has no title bar
+            // and an old-style light frame, until the timer sets the title.
+            Text = Resources.ProductName;
 
             TableLayoutPanel mainTableLayoutPanel = InitFactory.Layout.Create(1, 2, 5);
             mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 90F));

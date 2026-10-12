@@ -55,8 +55,9 @@ namespace AntiDupl.NET.WinForms
 
         /// <summary>
         /// The form's text colour, which its controls inherit unless they
-        /// set their own, the style of its buttons, and the theme of the
-        /// drop-down lists on its tab pages.
+        /// set their own, the style of its buttons, the theme of the
+        /// drop-down lists on its tab pages, and no white flash when it
+        /// opens.
         /// </summary>
         static public void Apply(Form form)
         {
@@ -64,6 +65,49 @@ namespace AntiDupl.NET.WinForms
                 return;
             form.ForeColor = Text;
             ApplyToControls(form);
+            HideUntilPainted(form);
+        }
+
+        [DllImport("dwmapi.dll")]
+        static private extern int DwmSetWindowAttribute(System.IntPtr hwnd, int attribute, ref int value, int size);
+
+        [DllImport("user32.dll")]
+        static private extern bool RedrawWindow(System.IntPtr hwnd, System.IntPtr rect, System.IntPtr region, uint flags);
+
+        private const int DWMWA_CLOAK = 13;
+        private const uint RDW_INVALIDATE = 0x0001, RDW_ALLCHILDREN = 0x0080, RDW_UPDATENOW = 0x0100;
+
+        // A new window shows each of its controls as a white box until the
+        // control has painted itself once, a white flash on a dark window.
+        // The window manager keeps the window hidden (cloaked) from its
+        // creation until it and all its controls have been painted. Only
+        // before it is first shown: a window created again later stays
+        // visible, since nothing would uncloak it.
+        static private void HideUntilPainted(Form form)
+        {
+            bool shown = false;
+            form.HandleCreated += delegate
+            {
+                if (!shown)
+                    SetCloak(form, true);
+            };
+            form.Shown += delegate
+            {
+                shown = true;
+                form.BeginInvoke(new System.Action(() =>
+                {
+                    if (form.IsDisposed || !form.IsHandleCreated)
+                        return;
+                    RedrawWindow(form.Handle, System.IntPtr.Zero, System.IntPtr.Zero, RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_UPDATENOW);
+                    SetCloak(form, false);
+                }));
+            };
+        }
+
+        static private void SetCloak(Form form, bool cloak)
+        {
+            int value = cloak ? 1 : 0;
+            DwmSetWindowAttribute(form.Handle, DWMWA_CLOAK, ref value, sizeof(int));
         }
 
         static private void ApplyToControls(Control parent)
