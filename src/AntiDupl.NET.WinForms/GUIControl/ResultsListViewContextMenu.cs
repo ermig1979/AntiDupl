@@ -70,6 +70,7 @@ namespace AntiDupl.NET.WinForms
         private void InitializeComponents()
         {
             RenderMode = ToolStripRenderMode.System;
+            ThemedToolStripRenderer.Set(this);
 
             m_deleteDefectItem = InitFactory.MenuItem.Create("DeleteDefectsVerticalMenu", CoreDll.LocalActionType.DeleteDefect, MakeAction);
             m_deleteFirstItem = InitFactory.MenuItem.Create("DeleteFirstsVerticalMenu", CoreDll.LocalActionType.DeleteFirst, MakeAction);

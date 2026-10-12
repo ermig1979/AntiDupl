@@ -55,26 +55,56 @@ namespace AntiDupl.NET.WinForms
 
         /// <summary>
         /// The form's text colour, which its controls inherit unless they
-        /// set their own, and the style of its buttons.
+        /// set their own, the style of its buttons, and the theme of the
+        /// drop-down lists on its tab pages.
         /// </summary>
         static public void Apply(Form form)
         {
             if (!Dark)
                 return;
             form.ForeColor = Text;
-            SetButtonStyle(form);
+            ApplyToControls(form);
         }
 
-        // In dark mode Windows draws a standard button with a white frame
-        // when it has the focus or is the default button; .NET's flat style
-        // has a grey one, and marks the default button with a second line.
-        static private void SetButtonStyle(Control parent)
+        static private void ApplyToControls(Control parent)
         {
             foreach (Control control in parent.Controls)
             {
+                // In dark mode Windows draws a standard button with a white
+                // frame when it has the focus or is the default button;
+                // .NET's flat style has a grey one, and marks the default
+                // button with a second line.
                 if (control is Button button)
                     button.FlatStyle = FlatStyle.Flat;
-                SetButtonStyle(control);
+                if (control is TabControl tabControl)
+                    tabControl.HandleCreated += new System.EventHandler(OnTabControlHandleCreated);
+                ApplyToControls(control);
+            }
+        }
+
+        [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
+        static private extern int SetWindowTheme(System.IntPtr hwnd, string appName, string idList);
+
+        // Once its handle is created, .NET's TabControl gives every window on
+        // its selected page Explorer's dark theme. The drop-down lists there
+        // already have the dark combo-box theme, which this replaces, and
+        // they draw light; it is set again once the tab control is done.
+        static private void OnTabControlHandleCreated(object sender, System.EventArgs e)
+        {
+            TabControl tabControl = (TabControl)sender;
+            tabControl.BeginInvoke(new System.Action(() => SetComboBoxTheme(tabControl)));
+        }
+
+        static private void SetComboBoxTheme(Control parent)
+        {
+            foreach (Control control in parent.Controls)
+            {
+                if (control is ComboBox && control.IsHandleCreated)
+                {
+                    SetWindowTheme(control.Handle, "DarkMode_CFD", null);
+                    control.Invalidate();
+                }
+                SetComboBoxTheme(control);
             }
         }
 

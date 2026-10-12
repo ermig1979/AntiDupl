@@ -102,6 +102,7 @@ namespace AntiDupl.NET.WinForms
         private void InitializeComponents()
         {
             RenderMode = ToolStripRenderMode.System;
+            ThemedToolStripRenderer.Set(this);
             BackColor = SystemColors.Control;
             ShowItemToolTips = true;
 
