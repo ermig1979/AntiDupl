@@ -33,8 +33,43 @@
 #include "adPixelData.h"
 #include "adBlurringDetector.h"
 
+#define XXH_INLINE_ALL
+#include <xxhash.h>
+
 namespace ad
 {
+    // XXH3-64 of the image as BGRA rows, the layout most decoders give; the
+    // others are converted row by row, so the same pixels hash the same
+    // whatever the file format. 0 is kept for "unknown".
+    static uint64_t GetPixelHash(const TView & view)
+    {
+        if (view.format != TView::Bgra32 && view.format != TView::Rgba32 && view.format != TView::Rgb24)
+            return 0;
+        XXH3_state_t * state = XXH3_createState();
+        if (state == NULL)
+            return 0;
+        XXH3_64bits_reset(state);
+        const size_t rowSize = view.width * 4;
+        std::vector<TUInt8> row(rowSize);
+        for (size_t y = 0; y < view.height; ++y)
+        {
+            const TUInt8 * src = view.data + y * view.stride;
+            if (view.format == TView::Bgra32)
+            {
+                XXH3_64bits_update(state, src, rowSize);
+                continue;
+            }
+            if (view.format == TView::Rgba32)
+                SimdBgraToRgba(src, view.width, 1, view.stride, row.data(), rowSize); // swaps red and blue
+            else
+                SimdRgbToBgra(src, view.width, 1, view.stride, row.data(), rowSize, 0xFF);
+            XXH3_64bits_update(state, row.data(), rowSize);
+        }
+        uint64_t hash = XXH3_64bits_digest(state);
+        XXH3_freeState(state);
+        return hash == 0 ? 1 : hash;
+    }
+
     TDataCollector::TDataCollector(TEngine *pEngine)
         :m_pOptions(pEngine->Options()),
         m_pResult(pEngine->Result())
@@ -104,6 +139,7 @@ namespace ad
 			TPixelData & data = *pImageData->data;
             TView reducedView(data.side, data.side, data.side, TView::Gray8, data.main);
             ReduceGray2x2(*m_pGrayBuffers.back(), reducedView);
+            data.pixelHash = GetPixelHash(*pImage->View());
             data.filled = true;
 
 			delete pImage;

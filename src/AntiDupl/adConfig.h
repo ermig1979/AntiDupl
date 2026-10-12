@@ -93,6 +93,9 @@ namespace ad
     const TUInt32 AUTO_DELETE_DIFFERENCE_FACTOR = 2;
     const TUInt32 AUTO_DELETE_DIFFERENCE_MAX = TUInt32(DENOMINATOR*0.050);
     const double ADDITIONAL_DIFFERENCE_FOR_DIFFERENT_CRC32 = 0.000001;
+    // The least difference of images whose decoded pixels differ: their
+    // reduced images can be equal, which would give 0.
+    const double MIN_DIFFERENCE_OF_DIFFERENT_PIXELS = 0.0001;
     const TUInt32 D0_SEARCHED_FILE_NUMBER_MAX = 1000;
     const TUInt32 D1_SEARCHED_FILE_NUMBER_MAX = 10000;
     const TUInt32 D3_THRESHOLD_DIFFERENCE_MAX = TUInt32(DENOMINATOR*0.100);
@@ -106,7 +109,9 @@ namespace ad
 	const size_t IMAGE_DATA_FILE_SIZE_MAX = 0x10000;
 	// Version 5: images decoded by TurboJPEG had red and blue swapped before,
 	// so their cached pixel data, blockiness and blurring are recomputed.
-	const TUInt32 FILE_VERSION = 5;
+	// Version 6: the image database stores a hash of the decoded pixels;
+	// images from an older database are decoded again for it.
+	const TUInt32 FILE_VERSION = 6;
 	const size_t SIZE_CHECK_LIMIT = 2147483646; //string.max_size()
 
 	const size_t BLOCKINESS_SIZE = 8;

@@ -107,6 +107,7 @@ namespace ad
 			data->varianceSquare = imageData.data->varianceSquare;
 			data->sum = imageData.data->sum;
 			data->sumSquare = imageData.data->sumSquare;
+			data->pixelHash = imageData.data->pixelHash;
 		}
 		return *this;
 	}
