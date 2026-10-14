@@ -51,8 +51,11 @@ namespace AntiDupl.NET.WinForms
         private MainToolStrip m_mainToolStrip;
         private MainStatusStrip m_mainStatusStrip;
 
-        public MainForm(Options options)
+        private CommandLine m_commandLine;
+
+        public MainForm(Options options, CommandLine commandLine)
         {
+            m_commandLine = commandLine;
             m_core = new CoreLib(Resources.UserPath);
             m_options = options;
             if (m_options.loadProfileOnLoading)
@@ -63,12 +66,65 @@ namespace AntiDupl.NET.WinForms
                 m_coreOptions = new CoreOptions(m_core);
             }
             Resources.Strings.SetCurrent(m_options.Language);
+            if (m_options.LoadProblem != null)
+                m_options.LoadProblem.Show(null);
+            if (m_coreOptions.LoadProblem != null)
+                m_coreOptions.LoadProblem.Show(null);
+            UseCommandLineFolders(commandLine);
 
             StartFinishForm startFinishForm = new StartFinishForm(m_core, m_options);
+            startFinishForm.UseResultsFile = !m_coreOptions.IsOneOffRun;
             startFinishForm.ExecuteStart();
 
             InitializeComponents();
             ThemeColors.Apply(this);
+        }
+
+        // -search replaces the profile's search folders and -ignore adds to
+        // its ignore list, for this run only (CoreOptions.profileSearchPath,
+        // profileIgnorePath); the profile's results file is neither read nor
+        // written, so a one-off run leaves the usual one as it was.
+        private void UseCommandLineFolders(CommandLine commandLine)
+        {
+            if (commandLine.SearchPaths != null)
+            {
+                CorePathWithSubFolder[] found = ExistingFolders(commandLine.SearchPaths, Resources.Strings.Current.MainForm_SearchFoldersNotFound);
+                if (found.Length > 0)
+                {
+                    m_coreOptions.profileSearchPath = m_coreOptions.searchPath;
+                    m_coreOptions.searchPath = found;
+                }
+            }
+            if (commandLine.IgnorePaths != null)
+            {
+                CorePathWithSubFolder[] found = ExistingFolders(commandLine.IgnorePaths, Resources.Strings.Current.MainForm_IgnoreFoldersNotFound);
+                if (found.Length > 0)
+                {
+                    m_coreOptions.profileIgnorePath = m_coreOptions.ignorePath;
+                    List<CorePathWithSubFolder> ignore = new List<CorePathWithSubFolder>(m_coreOptions.ignorePath);
+                    ignore.AddRange(found);
+                    m_coreOptions.ignorePath = ignore.ToArray();
+                }
+            }
+        }
+
+        // The folders that exist, with their subfolders; the others are
+        // reported with the given message and left out.
+        private static CorePathWithSubFolder[] ExistingFolders(string[] paths, string missingMessage)
+        {
+            List<CorePathWithSubFolder> found = new List<CorePathWithSubFolder>();
+            List<string> missing = new List<string>();
+            foreach (string path in paths)
+            {
+                if (Directory.Exists(path))
+                    found.Add(new CorePathWithSubFolder(Path.GetFullPath(path), true));
+                else
+                    missing.Add(path);
+            }
+            if (missing.Count > 0)
+                MessageBox.Show(string.Format(missingMessage, string.Join("\n", missing)),
+                    Resources.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return found.ToArray();
         }
 
         private void InitializeComponents()
@@ -108,6 +164,7 @@ namespace AntiDupl.NET.WinForms
             m_options.Save();
 
             StartFinishForm startFinishForm = new StartFinishForm(m_core, m_options);
+            startFinishForm.UseResultsFile = !m_coreOptions.IsOneOffRun;
             startFinishForm.ExecuteFinish();
             m_core.Dispose();
         }
@@ -151,11 +208,22 @@ namespace AntiDupl.NET.WinForms
         {
             SetLoadedViewOptions();
             m_mainSplitContainer.SetViewMode(m_options.resultsOptions.viewMode);
+            // After the window has been drawn, so the search dialog opens over it.
+            if (m_commandLine.StartSearch)
+                BeginInvoke(new Action(() => m_mainMenu.StartSearchAction(this, EventArgs.Empty)));
         }
 
         public void UpdateCaption()
         {
             Text = string.Format("{0} - {1}", Resources.ProductName, Path.GetFileNameWithoutExtension(m_options.coreOptionsFileName));
+            if (m_coreOptions.profileSearchPath != null)
+            {
+                // A one-off search names its folders, so it isn't taken for the profile's.
+                List<string> names = new List<string>();
+                foreach (CorePathWithSubFolder path in m_coreOptions.searchPath)
+                    names.Add(Path.GetFileName(path.path.TrimEnd('\\')));
+                Text += " - " + string.Join(", ", names);
+            }
         }
     }
 }

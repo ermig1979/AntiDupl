@@ -72,7 +72,7 @@
 	</ItemGroup>
 
   <Target Name="GenerateSources" BeforeTargets="BeforeBuild">
-    <Exec Command="$(SolutionDir)\Antidupl.NET.Core\External.cmd $(SolutionDir)\Antidupl.NET.Core" />
+    <Exec Command="&quot;$(SolutionDir)\Antidupl.NET.Core\External.cmd&quot; &quot;$(SolutionDir)\Antidupl.NET.Core&quot;" />
     <ItemGroup>
        <Compile Include="$(SolutionDir)\Antidupl.NET.Core\External.cs" />
     </ItemGroup>

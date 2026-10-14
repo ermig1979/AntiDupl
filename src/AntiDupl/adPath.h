@@ -162,6 +162,29 @@ namespace ad
 		static inline bool BiggerByNameWithExtension(const TPath& path1, const TPath& path2) {return CompareByNameWithExtension(path1, path2) > 0;}
 		static inline bool BiggerByExtension(const TPath& path1, const TPath& path2) {return CompareByPath(path1, path2) > 0;}
 
+		// Order for displaying results: like the Compare* functions, but runs
+		// of digits compare by their numeric value ("p2" before "p10"). The
+		// sorted containers keep using the plain order.
+		static inline int NaturalCompareByPath(const TPath& path1, const TPath& path2)
+		{
+			return NaturalCompare(path1.m_compare.directory.first, path1.m_compare.extension.second,
+				path2.m_compare.directory.first, path2.m_compare.extension.second);
+		}
+
+		static inline int NaturalCompareByDirectory(const TPath& path1, const TPath& path2)
+		{
+			return NaturalCompare(path1.m_compare.directory.first, path1.m_compare.directory.second,
+				path2.m_compare.directory.first, path2.m_compare.directory.second);
+		}
+
+		static inline int NaturalCompareByNameWithExtension(const TPath& path1, const TPath& path2)
+		{
+			return NaturalCompare(path1.m_compare.name.first, path1.m_compare.extension.second,
+				path2.m_compare.name.first, path2.m_compare.extension.second);
+		}
+
+		static int NaturalCompare(const TChar* begin1, const TChar* end1, const TChar* begin2, const TChar* end2);
+
 		static bool Valid(size_t size);
 	};
 

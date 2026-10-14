@@ -78,6 +78,10 @@ namespace AntiDupl.NET.WinForms
 
         public string coreOptionsFileName = GetDefaultCoreOptionsFileName();
 
+        /// <summary>Set when Load fell back to the defaults.</summary>
+        [XmlIgnore]
+        public UnreadableSettingsFile LoadProblem;
+
         public string GetResultsFileName()
         {
             return Path.ChangeExtension(coreOptionsFileName, ".adr");
@@ -105,11 +109,13 @@ namespace AntiDupl.NET.WinForms
                     fileStream.Close();
                     return options;
                 }
-                catch
+                catch (Exception exception)
                 {
                     if (fileStream != null)
                         fileStream.Close();
-                    return new Options();
+                    Options options = new Options();
+                    options.LoadProblem = new UnreadableSettingsFile(Options.GetOptionsFileName(), exception);
+                    return options;
                 }
             }
             else
