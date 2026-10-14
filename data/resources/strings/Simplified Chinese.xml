@@ -43,6 +43,7 @@
   <CoreOptionsForm_CompareTabPage_Text>比较</CoreOptionsForm_CompareTabPage_Text>
   <CoreOptionsForm_CheckOnEqualityCheckBox_Text>搜索重复图片</CoreOptionsForm_CheckOnEqualityCheckBox_Text>
   <CoreOptionsForm_TransformedImageCheckBox_Text>搜索经旋转或镜像的重复图片</CoreOptionsForm_TransformedImageCheckBox_Text>
+  <CoreOptionsForm_ShiftedImageCheckBox_Text>搜索经平移的重复图片</CoreOptionsForm_ShiftedImageCheckBox_Text>
   <CoreOptionsForm_SizeControlCheckBox_Text>控制图片大小</CoreOptionsForm_SizeControlCheckBox_Text>
   <CoreOptionsForm_TypeControlCheckBox_Text>控制图片类型</CoreOptionsForm_TypeControlCheckBox_Text>
   <CoreOptionsForm_RatioControlCheckBox_Text>控制图片宽度/高度比例</CoreOptionsForm_RatioControlCheckBox_Text>

@@ -301,6 +301,7 @@ namespace AntiDupl.NET.Core.Original
         {
             public int checkOnEquality;
             public int transformedImage;
+            public int shiftedImage;
             public int sizeControl;
             public int typeControl;
             public int ratioControl;
