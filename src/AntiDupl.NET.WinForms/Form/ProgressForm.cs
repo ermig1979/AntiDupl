@@ -140,6 +140,7 @@ namespace AntiDupl.NET.WinForms
             m_coreOptions = coreOptions;
             m_mainSplitContainer = mainSplitContainer;
             InitializeComponent();
+            ThemeColors.Apply(this);
             UpdateStrings();
         }
 

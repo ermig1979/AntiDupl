@@ -109,14 +109,14 @@ namespace AntiDupl.NET.WinForms
             
             m_fileSizeLabel = new Label();
             m_fileSizeLabel.Dock = DockStyle.Fill;
-            m_fileSizeLabel.BorderStyle = BorderStyle.Fixed3D;
+            ThemeColors.SetBorder(m_fileSizeLabel);
             m_fileSizeLabel.Padding = new Padding(1, 3, 1, 0);
             m_fileSizeLabel.TextAlign = ContentAlignment.TopCenter;
             m_fileSizeLabel.AutoSize = true;
             
             m_imageSizeLabel = new Label();
             m_imageSizeLabel.Dock = DockStyle.Fill;
-            m_imageSizeLabel.BorderStyle = BorderStyle.Fixed3D;
+            ThemeColors.SetBorder(m_imageSizeLabel);
             m_imageSizeLabel.Padding = new Padding(1, 3, 1, 0);
             m_imageSizeLabel.Margin = new Padding(IBW, 0, 0, 0);
             m_imageSizeLabel.TextAlign = ContentAlignment.TopCenter;
@@ -124,7 +124,7 @@ namespace AntiDupl.NET.WinForms
 
             m_imageBlocknessLabel = new Label();
             m_imageBlocknessLabel.Dock = DockStyle.Fill;
-            m_imageBlocknessLabel.BorderStyle = BorderStyle.Fixed3D;
+            ThemeColors.SetBorder(m_imageBlocknessLabel);
             m_imageBlocknessLabel.Padding = new Padding(1, 3, 1, 0);
             m_imageBlocknessLabel.Margin = new Padding(IBW, 0, 0, 0);
             m_imageBlocknessLabel.TextAlign = ContentAlignment.TopCenter;
@@ -132,7 +132,7 @@ namespace AntiDupl.NET.WinForms
 
             m_imageBlurringLabel = new Label();
             m_imageBlurringLabel.Dock = DockStyle.Fill;
-            m_imageBlurringLabel.BorderStyle = BorderStyle.Fixed3D;
+            ThemeColors.SetBorder(m_imageBlurringLabel);
             m_imageBlurringLabel.Padding = new Padding(1, 3, 1, 0);
             m_imageBlurringLabel.Margin = new Padding(IBW, 0, 0, 0);
             m_imageBlurringLabel.TextAlign = ContentAlignment.TopCenter;
@@ -140,7 +140,7 @@ namespace AntiDupl.NET.WinForms
 
             m_imageTypeLabel = new Label();
             m_imageTypeLabel.Dock = DockStyle.Fill;
-            m_imageTypeLabel.BorderStyle = BorderStyle.Fixed3D;
+            ThemeColors.SetBorder(m_imageTypeLabel);
             m_imageTypeLabel.Padding = new Padding(1, 3, 1, 0);
             m_imageTypeLabel.Margin = new Padding(IBW, 0, 0, 0);
             m_imageTypeLabel.TextAlign = ContentAlignment.TopCenter;
@@ -148,7 +148,7 @@ namespace AntiDupl.NET.WinForms
 
             m_imageExifLabel = new Label();
             m_imageExifLabel.Dock = DockStyle.Fill;
-            m_imageExifLabel.BorderStyle = BorderStyle.Fixed3D;
+            ThemeColors.SetBorder(m_imageExifLabel);
             m_imageExifLabel.Padding = new Padding(1, 3, 1, 0);
             m_imageExifLabel.Margin = new Padding(IBW, 0, 0, 0);
             m_imageExifLabel.TextAlign = ContentAlignment.TopCenter;
@@ -159,7 +159,7 @@ namespace AntiDupl.NET.WinForms
             m_pathLabel = new Label();
             m_pathLabel.Location = new Point(0, 0);
             m_pathLabel.Dock = DockStyle.Fill;
-            m_pathLabel.BorderStyle = BorderStyle.Fixed3D;
+            ThemeColors.SetBorder(m_pathLabel);
             m_pathLabel.Padding = new Padding(1, 3, 1, 0);
             m_pathLabel.AutoEllipsis = true;
             m_pathLabel.DoubleClick += new EventHandler(RenameImage);
@@ -222,33 +222,33 @@ namespace AntiDupl.NET.WinForms
                 {
                     m_imageSizeLabel.ForeColor =
                             m_currentImageInfo.height * m_currentImageInfo.width < m_neighbourImageInfo.height * m_neighbourImageInfo.width ?
-                            Color.Red : TableLayoutPanel.DefaultForeColor;
+                            ThemeColors.Worse : ThemeColors.Text;
                     m_imageTypeLabel.ForeColor = m_currentImageInfo.type != m_neighbourImageInfo.type ?
-                            Color.Red : TableLayoutPanel.DefaultForeColor;
+                            ThemeColors.Worse : ThemeColors.Text;
                     m_fileSizeLabel.ForeColor = m_currentImageInfo.size < m_neighbourImageInfo.size ?
-                            Color.Red : TableLayoutPanel.DefaultForeColor;
+                            ThemeColors.Worse : ThemeColors.Text;
                     m_imageBlocknessLabel.ForeColor = m_currentImageInfo.blockiness > m_neighbourImageInfo.blockiness ?
-                            Color.Red : TableLayoutPanel.DefaultForeColor;
+                            ThemeColors.Worse : ThemeColors.Text;
                     m_imageBlurringLabel.ForeColor = m_currentImageInfo.blurring > m_neighbourImageInfo.blurring ?
-                            Color.Red : TableLayoutPanel.DefaultForeColor;
+                            ThemeColors.Worse : ThemeColors.Text;
                     m_imageExifLabel.ForeColor = ExifEqual(m_currentImageInfo.exifInfo, m_neighbourImageInfo.exifInfo) ?
-                        TableLayoutPanel.DefaultForeColor : Color.Red;
+                        ThemeColors.Text : ThemeColors.Worse;
                 }
             }
             else if (m_neighbourImageInfo != null)
             {
                 m_imageSizeLabel.ForeColor = m_currentImageInfo.height * m_currentImageInfo.width < m_neighbourImageInfo.height * m_neighbourImageInfo.width ?
-                        Color.Red : TableLayoutPanel.DefaultForeColor;
+                        ThemeColors.Worse : ThemeColors.Text;
                 m_imageTypeLabel.ForeColor = m_currentImageInfo.type != m_neighbourImageInfo.type ?
-                        Color.Red : TableLayoutPanel.DefaultForeColor;
+                        ThemeColors.Worse : ThemeColors.Text;
                 m_fileSizeLabel.ForeColor = m_currentImageInfo.size < m_neighbourImageInfo.size ?
-                        Color.Red : TableLayoutPanel.DefaultForeColor;
+                        ThemeColors.Worse : ThemeColors.Text;
                 m_imageBlocknessLabel.ForeColor = m_currentImageInfo.blockiness > m_neighbourImageInfo.blockiness ?
-                        Color.Red : TableLayoutPanel.DefaultForeColor;
+                        ThemeColors.Worse : ThemeColors.Text;
                 m_imageBlurringLabel.ForeColor = m_currentImageInfo.blurring > m_neighbourImageInfo.blurring ?
-                        Color.Red : TableLayoutPanel.DefaultForeColor;
+                        ThemeColors.Worse : ThemeColors.Text;
                 m_imageExifLabel.ForeColor = ExifEqual(m_currentImageInfo.exifInfo, m_neighbourImageInfo.exifInfo) ?
-                    TableLayoutPanel.DefaultForeColor : Color.Red;
+                    ThemeColors.Text : ThemeColors.Worse;
             }
             if (updateCurrent || updateNeighbour)
             {

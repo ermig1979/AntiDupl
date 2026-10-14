@@ -69,6 +69,8 @@ namespace AntiDupl.NET.WinForms
         public bool saveProfileOnClosing = true;
         public string imageDiffExecutablePath = "";
         public string imageDiffExecutableArguments = "";
+        /// <summary>Light (Classic), Dark or as Windows is set (System); applied at start-up.</summary>
+        public SystemColorMode colorMode = SystemColorMode.Classic;
 
         public MainFormOptions mainFormOptions = new MainFormOptions();
         public ResultsOptions resultsOptions = new ResultsOptions();
@@ -141,6 +143,7 @@ namespace AntiDupl.NET.WinForms
             saveProfileOnClosing = options.saveProfileOnClosing;
             imageDiffExecutablePath = options.imageDiffExecutablePath;
             imageDiffExecutableArguments = options.imageDiffExecutableArguments;
+            colorMode = options.colorMode;
         }
 
         public void Save()
@@ -181,6 +184,7 @@ namespace AntiDupl.NET.WinForms
             options.saveProfileOnClosing = saveProfileOnClosing;
             options.imageDiffExecutablePath = imageDiffExecutablePath;
             options.imageDiffExecutableArguments = imageDiffExecutableArguments;
+            options.colorMode = colorMode;
         }
 
         public static void PathCopy(string[] source, ref string[] destination)

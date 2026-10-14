@@ -39,8 +39,8 @@ namespace AntiDupl.NET.WinForms
         const int TOP_INTEND = 2;
         const int RIGHT_INTEND = 1;
 
-        private Color m_separatorColor = Color.LightGray;
-        private Color m_markerColor = Color.Red;
+        private Color m_separatorColor = ThemeColors.CellSeparator;
+        private Color m_markerColor = ThemeColors.Worse;
 
         public Color separatorColor { get { return m_separatorColor; } set { m_separatorColor = value; } }
         public Color markerColor { get { return m_markerColor; } set { m_markerColor = value; } }

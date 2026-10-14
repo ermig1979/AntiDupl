@@ -50,7 +50,7 @@ namespace AntiDupl.NET.WinForms
 
         private void InitializeComponents()
         {
-            m_trueIcon = Resources.Images.GetImageWithBlackCircle(16, 16, 3.5);
+            m_trueIcon = Resources.Images.GetImageWithCircle(16, 16, 3.5);
             m_falseIcon = Resources.Images.GetNullImage();
 
             m_items = new ToolStripMenuItem[Resources.Strings.Count];

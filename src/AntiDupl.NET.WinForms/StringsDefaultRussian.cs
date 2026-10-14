@@ -314,6 +314,12 @@ namespace AntiDupl.NET.WinForms
             s.ViewModeMenuItem_HorizontalPairTableMenuItem_Text = "Таблица горизонтальных пар";
             s.ViewModeMenuItem_GroupedThumbnailsMenuItem_Text = "Сгруппированные миниатюры";
 
+            s.ColorModeMenuItem_Text = "Тема";
+            s.ColorModeMenuItem_SystemMenuItem_Text = "Как в Windows";
+            s.ColorModeMenuItem_LightMenuItem_Text = "Светлая";
+            s.ColorModeMenuItem_DarkMenuItem_Text = "Тёмная";
+            s.ColorModeMenuItem_RestartMessage = "Тема изменится при следующем запуске программы.";
+
             s.ImagePreviewContextMenu_CopyPathItem_Text = "Скопировать путь";
             s.ImagePreviewContextMenu_CopyFileNameItem_Text = "Скопировать имя картинки";
             s.ImagePreviewContextMenu_OpenImageItem_Text = "Открыть картинку";

@@ -73,6 +73,7 @@ namespace AntiDupl.NET.WinForms
         private void InitializeComponents()
         {
             RenderMode = ToolStripRenderMode.System;
+            ThemedToolStripRenderer.Set(this);
 
             m_copyPathItem = InitFactory.MenuItem.Create(null, null, CopyPath);
             m_copyFileNameItem = InitFactory.MenuItem.Create(null, null, new EventHandler(this.CopyFileName));

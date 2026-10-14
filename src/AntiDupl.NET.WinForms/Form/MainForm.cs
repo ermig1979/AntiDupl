@@ -53,11 +53,11 @@ namespace AntiDupl.NET.WinForms
 
         private CommandLine m_commandLine;
 
-        public MainForm(CommandLine commandLine)
+        public MainForm(Options options, CommandLine commandLine)
         {
             m_commandLine = commandLine;
             m_core = new CoreLib(Resources.UserPath);
-            m_options = Options.Load();
+            m_options = options;
             if (m_options.loadProfileOnLoading)
                 m_coreOptions = CoreOptions.Load(m_options.coreOptionsFileName, m_core, m_options.onePath);
             else
@@ -77,6 +77,7 @@ namespace AntiDupl.NET.WinForms
             startFinishForm.ExecuteStart();
 
             InitializeComponents();
+            ThemeColors.Apply(this);
         }
 
         // -search replaces the profile's search folders and -ignore adds to

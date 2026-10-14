@@ -317,6 +317,12 @@ namespace AntiDupl.NET.WinForms
         public string ViewModeMenuItem_HorizontalPairTableMenuItem_Text;
         public string ViewModeMenuItem_GroupedThumbnailsMenuItem_Text;
 
+        public string ColorModeMenuItem_Text;
+        public string ColorModeMenuItem_SystemMenuItem_Text;
+        public string ColorModeMenuItem_LightMenuItem_Text;
+        public string ColorModeMenuItem_DarkMenuItem_Text;
+        public string ColorModeMenuItem_RestartMessage;
+
         public string ImagePreviewContextMenu_CopyPathItem_Text;
         public string ImagePreviewContextMenu_CopyFileNameItem_Text;
         public string ImagePreviewContextMenu_OpenImageItem_Text;

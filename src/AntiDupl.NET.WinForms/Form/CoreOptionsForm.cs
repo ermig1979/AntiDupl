@@ -147,6 +147,7 @@ namespace AntiDupl.NET.WinForms
             m_defaultCoreOptions = new CoreOptions(m_core, m_options.onePath); //default options
             m_oldResultsOptions = m_options.resultsOptions.Clone();
             InitializeComponent();
+            ThemeColors.Apply(this);
             UpdateStrings();
             GetOptions();
             UpdateItemsEnabling();
