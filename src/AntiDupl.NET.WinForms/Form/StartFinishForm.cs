@@ -61,6 +61,9 @@ namespace AntiDupl.NET.WinForms
         private AboutProgramPanel m_aboutProgramPanel;
         private ProgressBar m_progressBar;
 
+        /// <summary>Whether the profile's results file is read at the start and written at the end.</summary>
+        public bool UseResultsFile = true;
+
         public StartFinishForm(CoreLib core, Options options)
         {
             m_core = core;
@@ -111,8 +114,11 @@ namespace AntiDupl.NET.WinForms
             m_state = State.LoadMistakes;
             m_core.Load(CoreDll.FileType.MistakeDataBase, Options.GetMistakeDataBaseFileName(), m_options.checkMistakesAtLoading);
 
-            m_state = State.LoadResults;
-            m_core.Load(CoreDll.FileType.Result, m_options.GetResultsFileName(), m_options.checkResultsAtLoading);
+            if (UseResultsFile)
+            {
+                m_state = State.LoadResults;
+                m_core.Load(CoreDll.FileType.Result, m_options.GetResultsFileName(), m_options.checkResultsAtLoading);
+            }
 
             TimeSpan viewTime = DateTime.Now - startTime;
             if (viewTime < VIEW_START_TIME_MIN)
@@ -129,8 +135,11 @@ namespace AntiDupl.NET.WinForms
             m_state = State.SaveMistakes;
             m_core.Save(CoreDll.FileType.MistakeDataBase, Options.GetMistakeDataBaseFileName());
 
-            m_state = State.SaveResults;
-            m_core.Save(CoreDll.FileType.Result, m_options.GetResultsFileName());
+            if (UseResultsFile)
+            {
+                m_state = State.SaveResults;
+                m_core.Save(CoreDll.FileType.Result, m_options.GetResultsFileName());
+            }
 
             m_state = State.ClearResults;
             m_core.Clear(CoreDll.FileType.Result);
