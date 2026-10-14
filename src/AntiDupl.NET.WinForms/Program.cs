@@ -37,8 +37,9 @@ namespace AntiDupl.NET.WinForms
             if (IsDotNet4Installed)
 #endif
             {
-                string customSavePath = null;
-                if (GetParameter(args, "-s", ref customSavePath))
+                CommandLine commandLine = CommandLine.Parse(args);
+                string customSavePath = commandLine.UserPath;
+                if (customSavePath != null)
                 {
                     DirectoryInfo directoryInfo = new DirectoryInfo(customSavePath);
                     if (!directoryInfo.Exists)
@@ -52,26 +53,17 @@ namespace AntiDupl.NET.WinForms
                 Resources.Strings.Initialize();
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new MainForm());
+                // The color mode can't change once a window exists, so the
+                // options are read here, before the main window.
+                Options options = Options.Load();
+                Application.SetColorMode(options.colorMode);
+                Application.Run(new MainForm(options, commandLine));
             }
 #if !PUBLISH
             else if (MessageBox.Show("You need Microsoft .NET Framework 4.8 in order to run this program. Do you want to download .Net Framework 4.8?", "Warning",
                         MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
                 System.Diagnostics.Process.Start("https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48");
 #endif
-        }
-
-        static bool GetParameter(string[] args, string name, ref string value)
-        {
-            for(int i = 0; i < args.Length - 1; i++)
-            {
-                if(String.Compare(args[i], name) == 0)
-                {
-                    value = args[i + 1];
-                    return true;
-                }
-            }
-            return false;
         }
 
         private static bool IsDotNet4Installed

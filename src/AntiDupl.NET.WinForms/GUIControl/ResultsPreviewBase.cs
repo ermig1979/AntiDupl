@@ -169,7 +169,7 @@ namespace AntiDupl.NET.WinForms
         }
     }
 
-    internal class CustomToolStripSystemRenderer : ToolStripSystemRenderer
+    internal class CustomToolStripSystemRenderer : ThemedToolStripRenderer
     {
         protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
         {

@@ -50,6 +50,7 @@ namespace AntiDupl.NET.WinForms
             m_options = options;
             m_newResultOptions = new ResultsOptions(m_options.resultsOptions);
             InitializeComponents();
+            ThemeColors.Apply(this);
             UpdateStrings();
             UpdateItemsEnabling();
             GetOptions();

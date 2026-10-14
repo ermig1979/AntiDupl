@@ -78,6 +78,7 @@ namespace AntiDupl.NET.WinForms
             m_mainForm = mainForm;
             m_mainFormWindowState = m_mainForm.WindowState;
             InitializeComponent();
+            ThemeColors.Apply(this);
             UpdateStrings();
             Owner = m_mainForm;
             m_mainForm.Resize += new EventHandler(OnMainFormResize);

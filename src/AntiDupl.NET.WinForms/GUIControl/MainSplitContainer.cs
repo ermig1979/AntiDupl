@@ -96,7 +96,7 @@ namespace AntiDupl.NET.WinForms
 
         private void InitializeComponents()
         {
-            BorderStyle = BorderStyle.Fixed3D;
+            BorderStyle = ThemeColors.SplitContainerBorder;
             Dock = DockStyle.Fill;
             Location = new Point(0, 0);
             SplitterWidth = 2;

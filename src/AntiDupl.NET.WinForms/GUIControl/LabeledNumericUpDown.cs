@@ -117,7 +117,7 @@ namespace AntiDupl.NET.WinForms
             m_numericUpDown.Minimum = minimum;
             m_numericUpDown.Value = value;
             m_numericUpDown.ValueChanged += new System.EventHandler(OnValueChanged); //вызов сначала внутренней функции
-            Controls.Add(m_numericUpDown, 0, 0);
+            Controls.Add(ThemeColors.Framed(m_numericUpDown), 0, 0);
 
             m_label = new System.Windows.Forms.Label();
             m_label.AutoSize = true;

@@ -71,6 +71,7 @@ namespace AntiDupl.NET.WinForms
             m_oldCoreOptions = coreOptions;
             m_newCoreOptions = m_oldCoreOptions.Clone();
             InitializeComponent();
+            ThemeColors.Apply(this);
             UpdateStrings();
             UpdatePath();
             m_ignoreFilterTextBox.Text = m_newCoreOptions.ignoreFilenameFilter ?? "";
@@ -116,7 +117,7 @@ namespace AntiDupl.NET.WinForms
             m_toolTip.ShowAlways = true;
 
             m_searchCheckedList = InitFactory.CheckedListBox.Create(OnSelectedIndexChanged, OnListBoxDoubleClick, OnItemCheck);
-            m_searchTabPage.Controls.Add(m_searchCheckedList);
+            m_searchTabPage.Controls.Add(ThemeColors.Framed(m_searchCheckedList));
 
             m_ignoreTabPage = new TabPage();
             m_ignoreTabPage.Tag = CoreDll.PathType.Ignore;
@@ -129,7 +130,7 @@ namespace AntiDupl.NET.WinForms
 
             m_ignoreListBox = InitFactory.ListBox.Create(OnSelectedIndexChanged, OnListBoxDoubleClick);
             m_ignoreListBox.Dock = DockStyle.Fill;
-            ignoreLayout.Controls.Add(m_ignoreListBox, 0, 0);
+            ignoreLayout.Controls.Add(ThemeColors.Framed(m_ignoreListBox), 0, 0);
 
             TableLayoutPanel filterLayout = InitFactory.Layout.Create(2, 1);
             filterLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 160F));
@@ -147,21 +148,21 @@ namespace AntiDupl.NET.WinForms
             m_ignoreFilterTextBox.Dock = DockStyle.Fill;
             m_ignoreFilterTextBox.Margin = new Padding(3);
             m_ignoreFilterTextBox.TextChanged += new EventHandler(OnIgnoreFilterTextChanged);
-            filterLayout.Controls.Add(m_ignoreFilterTextBox, 1, 0);
+            filterLayout.Controls.Add(ThemeColors.Framed(m_ignoreFilterTextBox), 1, 0);
 
             m_validTabPage = new TabPage();
             m_validTabPage.Tag = CoreDll.PathType.Valid;
             m_tabControl.Controls.Add(m_validTabPage);
 
             m_validListBox = InitFactory.ListBox.Create(OnSelectedIndexChanged, OnListBoxDoubleClick);
-            m_validTabPage.Controls.Add(m_validListBox);
+            m_validTabPage.Controls.Add(ThemeColors.Framed(m_validListBox));
 
             m_deleteTabPage = new TabPage();
             m_deleteTabPage.Tag = CoreDll.PathType.Delete;
             m_tabControl.Controls.Add(m_deleteTabPage);
 
             m_deleteListBox = InitFactory.ListBox.Create(OnSelectedIndexChanged, OnListBoxDoubleClick);
-            m_deleteTabPage.Controls.Add(m_deleteListBox);
+            m_deleteTabPage.Controls.Add(ThemeColors.Framed(m_deleteListBox));
 
             TableLayoutPanel pathButtonsTableLayoutPanel = InitFactory.Layout.Create(4, 1);
             pathButtonsTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
