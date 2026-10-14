@@ -388,6 +388,8 @@ namespace AntiDupl.NET.WinForms
                 }
 
                 CoreOptions coreOptions = CoreOptions.Load(m_options.coreOptionsFileName, m_core, m_options.onePath);
+                if (coreOptions.LoadProblem != null)
+                    coreOptions.LoadProblem.Show(m_mainForm);
                 coreOptions.CopyTo(ref m_coreOptions);
                 // The opened profile's own folders are in use: a one-off run ends here.
                 m_coreOptions.EndOneOffRun();

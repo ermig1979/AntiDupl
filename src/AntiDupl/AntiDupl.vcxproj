@@ -78,6 +78,12 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
+      <!-- link.exe cuts the /LTCGOUT (.iobj) and incremental-LTCG (.ipdb) paths
+           at a comma, so a checkout under a folder like "Coding, etc" fails with
+           C1083/LNK1104. Plain /LTCG with no /LTCGOUT needs neither file; the
+           empty element is what drops /LTCGOUT. -->
+      <LinkTimeCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|x64'">UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <LinkTimeCodeGenerationObjectFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'"></LinkTimeCodeGenerationObjectFile>
     </Link>
     <PreBuildEvent>
       <Command>"$(ProjectDir)".\adExternal.cmd</Command>

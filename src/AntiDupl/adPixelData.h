@@ -39,12 +39,18 @@ namespace ad
         bool filled; //true, если создано уменьшенное изображение в main
 		float average; //average of image - среднее
 		float varianceSquare; //variance of image - Дисперсия случайной величины
+		// Exact sums over main, for the SSIM comparer. average and
+		// varianceSquare are derived from them and only kept for the image
+		// database file, which stores them.
+		uint64_t sum;
+		uint64_t sumSquare;
 
         TPixelData(size_t side_);
         TPixelData(const TPixelData& pixelData);
         ~TPixelData();
 
         void FillFast(int ignoreFrameWidth);
+        void FillMoments();
         void Turn(TUInt8 *buffer);
         void Mirror(TUInt8 *buffer);
     };

@@ -309,12 +309,11 @@ namespace ad
     }
 	//-------------------------------------------------------------------------
     TImageComparer_SSIM::TImageComparer_SSIM(TEngine *pEngine)
-        :TImageComparer(pEngine),
-		m_pImageDataStorage(pEngine->ImageDataStorage())
+        :TImageComparer(pEngine)
     {
 		//константы
-		C1 = (float)pow(0.01 * PIXEL_MAX_DIFFERENCE, 2);
-        C2 = (float)pow(0.03 * PIXEL_MAX_DIFFERENCE, 2);
+		C1 = pow(0.01 * PIXEL_MAX_DIFFERENCE, 2);
+        C2 = pow(0.03 * PIXEL_MAX_DIFFERENCE, 2);
         m_sets.resize(1);
     }
 
@@ -352,61 +351,30 @@ namespace ad
 		if(m_pOptions->compare.compareInsideOneSearchPath == FALSE && pFirst->index == pSecond->index)
             return false;
 
-		if (pFirst->data->average == 0)
-		{
-			uint64_t sum = 0;
-			SimdValueSum(pFirst->data->main,  m_pOptions->advanced.reducedImageSize, 
-					m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize, &sum);
-			pFirst->data->average = (float)sum / (m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize);
-			m_pImageDataStorage->SetSaveState(true);
-		}
-		if (pSecond->data->average == 0)
-		{
-			uint64_t sum = 0;
-			SimdValueSum(pSecond->data->main,  m_pOptions->advanced.reducedImageSize, 
-					m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize, &sum);
-			pSecond->data->average = (float)sum / (m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize);
-			m_pImageDataStorage->SetSaveState(true);
-		}
-
-		if (pFirst->data->varianceSquare == 0)
-		{
-			uint64_t sumSquare = 0;
-			SimdSquareSum(pFirst->data->main,  m_pOptions->advanced.reducedImageSize, 
-						m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize, &sumSquare);
-			float averageSquare = (float)sumSquare / (m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize);
-			pFirst->data->varianceSquare = fabs(averageSquare - (pFirst->data->average * pFirst->data->average));
-			m_pImageDataStorage->SetSaveState(true);
-		}
-
-		if (pSecond->data->varianceSquare == 0)
-		{
-			uint64_t sumSquare = 0;
-			SimdSquareSum(pSecond->data->main,  m_pOptions->advanced.reducedImageSize, 
-						m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize, &sumSquare);
-			float averageSquareSecond = (float)sumSquare / (m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize);
-			pSecond->data->varianceSquare = fabs(averageSquareSecond - (pSecond->data->average * pSecond->data->average));
-			m_pImageDataStorage->SetSaveState(true);
-		}
-
+        const size_t side = pFirst->data->side;
         uint64_t correlationSum = 0;
-        SimdCorrelationSum(
-            pFirst->data->main, m_pOptions->advanced.reducedImageSize, 
-            pSecond->data->main, m_pOptions->advanced.reducedImageSize, 
-            m_pOptions->advanced.reducedImageSize, m_pOptions->advanced.reducedImageSize, &correlationSum);
-        float sigmaOfBoth = (float)correlationSum/(m_pOptions->advanced.reducedImageSize * m_pOptions->advanced.reducedImageSize) - 
-            pFirst->data->average*pSecond->data->average;
+        SimdCorrelationSum(pFirst->data->main, side, pSecond->data->main, side, side, side, &correlationSum);
 
-		float res = (2 * pFirst->data->average * pSecond->data->average + C1) * (2 * sigmaOfBoth + C2) / 
-			((pow(pFirst->data->average, 2) + pow(pSecond->data->average, 2) + C1) * 
-			(pFirst->data->varianceSquare + pSecond->data->varianceSquare + C2));  
-
-		if (res > 2 || res < -2) // может быть равным 1.0000000594991703 и должно быть от 0 до 1
-			return false;
-
-		double difference = 100 - (res * 100);
-		if (difference < 0)
-			difference = 0;
+        double difference;
+        // Sum(a*b) == Sum(a*a) == Sum(b*b) only for equal planes, since then
+        // Sum((a-b)^2) is 0. The integer test makes equal planes exactly 0,
+        // which floating point rounding (and /fp:fast) cannot promise.
+        if (correlationSum == pFirst->data->sumSquare && correlationSum == pSecond->data->sumSquare)
+            difference = 0;
+        else
+        {
+            const double n = double(pFirst->data->size);
+            const double average1 = double(pFirst->data->sum) / n;
+            const double average2 = double(pSecond->data->sum) / n;
+            const double variance1 = double(pFirst->data->sumSquare) / n - average1 * average1;
+            const double variance2 = double(pSecond->data->sumSquare) / n - average2 * average2;
+            const double covariance = double(correlationSum) / n - average1 * average2;
+            const double ssim = (2 * average1 * average2 + C1) * (2 * covariance + C2) /
+                ((average1 * average1 + average2 * average2 + C1) * (variance1 + variance2 + C2));
+            difference = 100 * (1 - ssim);
+            if (difference < 0)
+                difference = 0;
+        }
 		// если различие больше заданного, то не дубликаты
 		if (difference > m_pOptions->compare.thresholdDifference)
 			return false;

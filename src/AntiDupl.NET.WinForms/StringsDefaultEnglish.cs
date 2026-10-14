@@ -42,6 +42,8 @@ namespace AntiDupl.NET.WinForms
             s.ErrorMessage_FileAlreadyExists = "Can't rename file because file with this name already is exists!";
             s.MainForm_SearchFoldersNotFound = "These folders from the command line don't exist and are left out of the search:\n{0}";
             s.MainForm_IgnoreFoldersNotFound = "These folders to ignore from the command line don't exist and are skipped:\n{0}";
+            s.ErrorMessage_SettingsFileUnreadable = "Can't read the settings file\n{0}\n\n{1}\n\nThe default settings are used instead and will be saved to this file when the program closes. A copy of the unreadable file was kept as\n{2}";
+            s.ErrorMessage_SettingsFileUnreadableNotCopied = "Can't read the settings file\n{0}\n\n{1}\n\nThe default settings are used instead and will be saved to this file when the program closes. The file could not be copied: to keep it, copy it elsewhere before closing the program.";
 
             s.WarningMessage_ChangeFileExtension = "Do you really want to change file extension?";
 
