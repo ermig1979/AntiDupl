@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -78,6 +79,7 @@ public class DeepSearchService : IDisposable
     /// </summary>
     public DeepPair[] Search(DeepSettings settings, IProgress<DeepProgress>? progress = null, CancellationToken ct = default)
     {
+        Debug.Assert(settings is not null, nameof(settings));
         _currentVerifier = settings.GeometricCheckEnabled ? CreateVerifier(settings) : null;
         LastVerificationBackend = _currentVerifier?.Name ?? "Off";
         _minMatchScore = settings.MinMatchScore;
@@ -123,6 +125,7 @@ public class DeepSearchService : IDisposable
 
         progress?.Report(new DeepProgress(5, "Computing embeddings..."));
         var embs = extractor.EmbedImagesBatch(paths, ct);
+        Debug.Assert(embs.Length == paths.Count, "extractor must return one embedding per file");
 
         ct.ThrowIfCancellationRequested();
         progress?.Report(new DeepProgress(40, "Clustering images..."));
@@ -136,6 +139,10 @@ public class DeepSearchService : IDisposable
         {
             labels = AgglomerativeClustering.FitPredict(embs, settings.DistanceThreshold, progress, settings.TransitivityRatio);
         }
+
+        // Одна метка на файл — иначе clusters соберутся по чужим индексам.
+        Debug.Assert(labels.Length == paths.Count,
+            $"clustering must return one label per image ({labels.Length} != {paths.Count})");
 
         // Кластеры больше MaxClusterSize распускаются на одиночные метки (как в референсе).
         int maxClusterSize = settings.MaxClusterSize;

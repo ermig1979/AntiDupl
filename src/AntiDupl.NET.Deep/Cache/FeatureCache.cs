@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -117,6 +118,9 @@ public sealed class FeatureCache : IFeatureCache
 
     public void SetEmbedding(string path, double mtime, float[] embedding)
     {
+        Debug.Assert(!string.IsNullOrEmpty(path), nameof(path));
+        // Нулевой/отсутствующий эмбеддинг ломает zlib-контракт файла кэша.
+        Debug.Assert(embedding is not null && embedding.Length > 0, "embedding must be non-empty");
         lock (_gate)
         {
             ulong size = 0;
@@ -149,6 +153,8 @@ public sealed class FeatureCache : IFeatureCache
     public void SetWgc(string path1, string path2, double mtime1, double mtime2, float minMatchScore,
         bool result, float angle, float scale, int angleVotes, int scaleVotes)
     {
+        // Пустой путь в канон-ключе засоряет кэш вердиктов.
+        Debug.Assert(!string.IsNullOrEmpty(path1) && !string.IsNullOrEmpty(path2), "pair paths must be set");
         (string p1, string p2, double t1, double t2) = Canonicalize(path1, path2, mtime1, mtime2);
         lock (_gate)
         {
@@ -428,6 +434,7 @@ public sealed class FeatureCache : IFeatureCache
 
     private static void WritePath(BinaryWriter bw, string path)
     {
+        Debug.Assert(!string.IsNullOrEmpty(path), "cache path must be set");
         byte[] bytes = Encoding.UTF8.GetBytes(path);
         if (bytes.Length > int.MaxValue) throw new InvalidDataException("path too long");
         bw.Write(bytes.Length);

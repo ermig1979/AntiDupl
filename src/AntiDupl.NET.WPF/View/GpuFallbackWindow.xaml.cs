@@ -18,6 +18,11 @@ namespace AntiDupl.NET.WPF.View
         public GpuFallbackWindow(IConfigurationModel configuration = null)
         {
             InitializeComponent();
+            // Сначала — сохранённые значения (до DataContext): иначе конструктор видел бы
+            // пустые поля, детекция запускалась бы всегда и могла перезаписать явно
+            // заданные пути, а боксы показывали бы пусто до завершения детекции.
+            CudaPath = configuration?.CudaPath ?? "";
+            CudnnPath = configuration?.CudnnPath ?? "";
             DataContext = this;
             _configuration = configuration;
 

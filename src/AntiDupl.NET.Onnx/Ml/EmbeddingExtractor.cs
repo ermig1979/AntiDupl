@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -91,6 +92,7 @@ public class EmbeddingExtractor : IEmbeddingExtractor, IDisposable
         // "seq_len" — при батче >1 это смещало CLS-обрезки во все последующие слоты.)
         var outputMeta = _session.Session.OutputMetadata["last_hidden_state"];
         var dims = outputMeta.Dimensions;
+        _logger.Write($"[MODEL] Outputs: {string.Join(", ", _session.Session.OutputMetadata.Keys)}");
         _logger.Write($"[MODEL] Output last_hidden_state dims: {string.Join("x", dims.Select(d => d >= 0 ? d.ToString() : "?"))}");
 
         _progress?.Report(new DeepProgress(100, "Model loaded"));
@@ -198,9 +200,14 @@ public class EmbeddingExtractor : IEmbeddingExtractor, IDisposable
                                 for (int x = 0; x < 224; x++)
                                     batchTensor[slot, c, y, x] = tensor[c, y, x];
 
-                        batchMeta.Add((index, path, mtime));
+                    batchMeta.Add((index, path, mtime));
                         slot++;
                     }
+
+                    // Слот тензора и метка файла должны быть в строгом соответствии,
+                    // иначе эмбеддинг запишется чужому файлу.
+                    Debug.Assert(slot == validCount,
+                        $"slot ({slot}) must equal valid tensor count ({validCount})");
 
                     queue.Add(new PreparedBatch(batchStart, toEmbed.Count, batchMeta, batchTensor));
                 }
@@ -225,7 +232,13 @@ public class EmbeddingExtractor : IEmbeddingExtractor, IDisposable
             };
 
             using var gpuResults = _session!.Session.Run(inputs);
-            var outTensor = gpuResults.First().AsTensor<float>();
+            // Модель может иметь несколько выходов (last_hidden_state + pooler_output и т.п.) —
+            // берём по имени, а не по порядку/количеству.
+            Debug.Assert(gpuResults.Any(r => r.Name == "last_hidden_state"),
+                "DINOv2 model must output last_hidden_state");
+            var outTensor = gpuResults.First(r => r.Name == "last_hidden_state").AsTensor<float>();
+            Debug.Assert(outTensor.Dimensions.Length == 3 && outTensor.Dimensions[2] == 768,
+                "last_hidden_state must be (N, L, 768) — check dinov2-base.onnx is not replaced");
 
             for (int b = 0; b < batch.Meta.Count; b++)
             {
@@ -245,6 +258,11 @@ public class EmbeddingExtractor : IEmbeddingExtractor, IDisposable
                 catch { }
             }
         }
+
+        // Каждый файл обязан получить результат: из кэша, от модели или нулевой
+        // вектор при сбое декода — иначе ниже NRE/мусорные пары.
+        Debug.Assert(result.All(r => r is not null),
+            "every file must have an embedding result (cache, model output or zero vector)");
 
         producer.Wait();
         return result;
@@ -298,6 +316,11 @@ public class EmbeddingExtractor : IEmbeddingExtractor, IDisposable
                 slot++;
             }
 
+            // Слот тензора и метка файла должны быть в строгом соответствии,
+            // иначе эмбеддинг запишется чужому файлу.
+            Debug.Assert(slot == validCount,
+                $"slot ({slot}) must equal valid tensor count ({validCount})");
+
             var inputs = new List<NamedOnnxValue>
             {
                 NamedOnnxValue.CreateFromTensor("pixel_values", batchTensor)
@@ -311,7 +334,13 @@ public class EmbeddingExtractor : IEmbeddingExtractor, IDisposable
                 : $"Batch {batchNum}/{totalBatches} on CPU ({validCount})..."));
 
             using var gpuResults = _session!.Session.Run(inputs);
-            var outTensor = gpuResults.First().AsTensor<float>();
+            // Модель может иметь несколько выходов (last_hidden_state + pooler_output и т.п.) —
+            // берём по имени, а не по порядку/количеству.
+            Debug.Assert(gpuResults.Any(r => r.Name == "last_hidden_state"),
+                "DINOv2 model must output last_hidden_state");
+            var outTensor = gpuResults.First(r => r.Name == "last_hidden_state").AsTensor<float>();
+            Debug.Assert(outTensor.Dimensions.Length == 3 && outTensor.Dimensions[2] == 768,
+                "last_hidden_state must be (N, L, 768) — check dinov2-base.onnx is not replaced");
 
             for (int b = 0; b < batchMeta.Count; b++)
             {

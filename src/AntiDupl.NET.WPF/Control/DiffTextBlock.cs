@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -155,6 +156,10 @@ namespace AntiDupl.NET.WPF.Control
 
             while (i < text.Length || j < otherText.Length)
             {
+                // Указатели алгоритма не должны уходить за пределы строк — иначе
+                // Substring/индексация ниже дадут неинформативный краш.
+                Debug.Assert(i <= text.Length && j <= otherText.Length,
+                    "diff pointers must stay within string bounds");
                 if (i < text.Length && j < otherText.Length && text[i] == otherText[j])
                 {
                     // Совпадающие символы

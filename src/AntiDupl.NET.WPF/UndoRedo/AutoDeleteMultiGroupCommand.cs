@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -40,12 +41,18 @@ namespace AntiDupl.NET.WPF.UndoRedo
 
         public bool Execute()
         {
+            // После UnExecute файлы вернулись на места: перечитаем список с нуля,
+            // иначе redo добавит те же записи повторно и следующий undo/dispose
+            // упадёт на повторном FileMove отсутствующего временного пути.
+            _renamedFiles.Clear();
             foreach (DuplicateGroup group in _groupsForDeleteCopy)
             {
                 if (group == null || group.FileList == null || group.FileList.Count == 0)
                     continue;
 
                 ImageInfoClass bestImageInfo = GetBestImage(group);
+                // Группа непустая (пустые пропущены выше) — лучший файл обязан быть.
+                Debug.Assert(bestImageInfo != null, "non-empty group must have a best image");
                 foreach (var image in group.FileList)
                 {
                     if (bestImageInfo != null && !image.Equals(bestImageInfo))
@@ -68,6 +75,10 @@ namespace AntiDupl.NET.WPF.UndoRedo
                 renamed.ImageInfo = image;
                 renamed.PathWithTempExtension = image.Path + Const.ForDeleteEXTENSION;
                 _renamedFiles.Add(renamed);
+                // Занятый временный путь — двойное переименование одного файла:
+                // FileMove бросит только на самом Move с неясной причиной.
+                Debug.Assert(!File.Exists(renamed.PathWithTempExtension),
+                    $"temp path must be free: {renamed.PathWithTempExtension}");
                 File.Move(image.Path, renamed.PathWithTempExtension);
             }
         }

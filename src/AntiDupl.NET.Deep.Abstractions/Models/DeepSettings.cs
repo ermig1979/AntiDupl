@@ -1,3 +1,5 @@
+using System;
+
 namespace AntiDupl.NET.Deep.Models;
 
 /// <summary>
@@ -35,7 +37,8 @@ public class DeepSettings
     public float TransitivityRatio { get; set; } = 0.7f;
 
     /// <summary>Параллелизм верификации пар.</summary>
-    public int WgcParallelism { get; set; } = Environment.ProcessorCount / 2;
+    /// <summary>Параллелизм WGC-верификации (0 = авто: половина процессоров).</summary>
+    public int WgcParallelism { get; set; } = Math.Max(1, Environment.ProcessorCount / 2);
 
     /// <summary>
     /// Полный путь к модели DINOv2-base (resolves хостом: DeepModelManager.

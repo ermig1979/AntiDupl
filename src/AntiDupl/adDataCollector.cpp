@@ -43,7 +43,9 @@ namespace ad
         for(size_t i = 0; i < end; ++i)
             block[i%block.size()] += sums[i];
         std::sort(block.rbegin(), block.rend());
-        return double(block[0] - block[1])/double(block[0] + block[1])*100.0;
+        const double denominator = double(block[0]) + double(block[1]);
+        // Плоское изображение (суммы нулевые) — нулевой знаменатель: 0 вместо NaN.
+        return denominator == 0.0 ? 0.0 : double(block[0] - block[1])/denominator*100.0;
     }
 
     // Алгоритм идентичен классическому пайплайну (TDataCollector::GetBlockiness):

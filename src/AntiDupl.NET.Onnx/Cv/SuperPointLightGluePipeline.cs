@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using AntiDupl.NET.Deep.Logging;
 using AntiDupl.NET.Onnx;
 using Microsoft.ML.OnnxRuntime;
@@ -39,6 +40,8 @@ public class SuperPointLightGluePipeline : IDisposable
         int inputHeight = 600,
         int inputWidth = 800)
     {
+        Debug.Assert(!string.IsNullOrWhiteSpace(modelPath), nameof(modelPath));
+        Debug.Assert(logger is not null, nameof(logger));
         _modelPath = modelPath;
         _logger = logger;
         _onGpuFallback = onGpuFallback;
@@ -78,6 +81,11 @@ public class SuperPointLightGluePipeline : IDisposable
             int h = _inputHeight;
             int w = _inputWidth;
 
+            Debug.Assert(gray0.GetLength(0) == h && gray0.GetLength(1) == w,
+                "gray0 must be letterboxed to the model input size");
+            Debug.Assert(gray1.GetLength(0) == h && gray1.GetLength(1) == w,
+                "gray1 must be letterboxed to the model input size");
+
             var inputTensor = new DenseTensor<float>(new[] { 2, 1, h, w });
             for (int y = 0; y < h; y++)
                 for (int x = 0; x < w; x++)
@@ -93,7 +101,16 @@ public class SuperPointLightGluePipeline : IDisposable
 
             using var results = _session!.Session.Run(inputs);
 
+            // Фьюжн-модель обязана вернуть все три выхода — иначе First(r => r.Name == ...) ниже
+            // упадёт с неинформативным исключением.
+            Debug.Assert(results.Any(r => r.Name == "keypoints")
+                && results.Any(r => r.Name == "matches")
+                && results.Any(r => r.Name == "mscores"),
+                "SuperPoint-LightGlue model must output keypoints/matches/mscores");
+
             var kpsTensor = results.First(r => r.Name == "keypoints").AsTensor<long>();
+            Debug.Assert(kpsTensor.Dimensions.Length == 3 && kpsTensor.Dimensions[0] == 2,
+                "keypoints must be (2, K, 2)");
             var matchTensor = results.First(r => r.Name == "matches").AsTensor<long>();
             var scoreTensor = results.First(r => r.Name == "mscores").AsTensor<float>();
 

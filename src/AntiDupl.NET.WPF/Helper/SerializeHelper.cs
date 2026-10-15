@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -51,6 +52,8 @@ namespace AntiDupl.NET.WPF.Helper
         /// </summary>
         public static void Save(T target, string xmlFileName)
         {
+            Debug.Assert(target is not null, nameof(target));
+            Debug.Assert(!string.IsNullOrWhiteSpace(xmlFileName), nameof(xmlFileName));
             try
             {
                 string directory = Path.GetDirectoryName(xmlFileName);
@@ -96,6 +99,7 @@ namespace AntiDupl.NET.WPF.Helper
 
         public static T Load(string filePath)
         {
+            Debug.Assert(!string.IsNullOrWhiteSpace(filePath), nameof(filePath));
             if (File.Exists(filePath))
             {
                 FileInfo fileInfo = new FileInfo(filePath);

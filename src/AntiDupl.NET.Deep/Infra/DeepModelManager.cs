@@ -1,6 +1,8 @@
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 using AntiDupl.NET.Deep.Logging;
 using AntiDupl.NET.Deep.Models;
 
@@ -60,9 +62,12 @@ public static class DeepModelManager
     /// <summary>
     /// Скачивает модель в <paramref name="destPath"/> (создаётся models-каталог).
     /// Прогресс — 0..100. Блок-вызов: выполнять из фонового потока.
+    /// Отмена (<paramref name="ct"/>) прерывает запрос и чтение потока.
     /// </summary>
-    public static void DownloadModel(string url, string destPath, IDeepLogger logger, IProgress<DeepProgress>? progress = null)
+    public static void DownloadModel(string url, string destPath, IDeepLogger logger, IProgress<DeepProgress>? progress = null, CancellationToken ct = default)
     {
+        Debug.Assert(!string.IsNullOrWhiteSpace(url) && !string.IsNullOrWhiteSpace(destPath),
+            "url and destPath must be set");
         string directory = Path.GetDirectoryName(destPath) ?? "";
         if (directory.Length > 0)
             Directory.CreateDirectory(directory);
@@ -72,7 +77,7 @@ public static class DeepModelManager
 
         using var http = new HttpClient { Timeout = TimeSpan.FromMinutes(30) };
         var request = new HttpRequestMessage(HttpMethod.Get, url);
-        using HttpResponseMessage response = http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).GetAwaiter().GetResult();
+        using HttpResponseMessage response = http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ct).GetAwaiter().GetResult();
         response.EnsureSuccessStatusCode();
 
         long total = response.Content.Headers.ContentLength ?? -1;
@@ -84,7 +89,7 @@ public static class DeepModelManager
             long read = 0;
             int readLen;
             int lastPct = -1;
-            while ((readLen = contentStream.Read(buffer, 0, buffer.Length)) > 0)
+            while ((readLen = contentStream.ReadAsync(buffer, 0, buffer.Length, ct).GetAwaiter().GetResult()) > 0)
             {
                 fileStream.Write(buffer, 0, readLen);
                 read += readLen;

@@ -23,6 +23,7 @@
 */
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -45,6 +46,7 @@ namespace AntiDupl.NET.Core
 
         public CoreLib(string userPath)
         {
+            Debug.Assert(!string.IsNullOrEmpty(userPath), nameof(userPath));
             try
             {
                 m_dll = new CoreDll();
@@ -57,6 +59,9 @@ namespace AntiDupl.NET.Core
             if (Version.Compatible(GetVersion(CoreDll.VersionType.AntiDupl)))
             {
                 m_handle = m_dll.adCreateW(userPath);
+                // Нулевой handle — движок не создан (невалидный userPath и т.п.):
+                // дальше каждый вызов уйдёт в никуда с неясной причиной.
+                Debug.Assert(m_handle != IntPtr.Zero, "adCreateW returned an invalid engine handle");
             }
             else
                 throw new Exception("Incompatible core library version!");
@@ -177,7 +182,8 @@ namespace AntiDupl.NET.Core
                 GCHandle sizeH = GCHandle.Alloc(size, GCHandleType.Pinned);
                 try
                 {
-                    if (m_dll.adScanCandidatesW(m_handle, new IntPtr(1), sizeH.AddrOfPinnedObject()) ==
+                    // Первый вызов двухшагового соглашения: буфер не нужен (NULL допустим).
+                    if (m_dll.adScanCandidatesW(m_handle, IntPtr.Zero, sizeH.AddrOfPinnedObject()) ==
                                     Error.OutputBufferIsTooSmall)
                     {
                         int count = size[0].ToInt32();

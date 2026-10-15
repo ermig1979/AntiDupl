@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.ML.OnnxRuntime;
 using AntiDupl.NET.Deep.Logging;
 
@@ -19,6 +20,7 @@ public static class OnnxSessionFactory
         IDeepLogger logger,
         Action<string>? onGpuFallback = null)
     {
+        Debug.Assert(!string.IsNullOrWhiteSpace(modelPath), "model path must be set before session creation");
         // Режим детерминизации (тесты): DEEP_FORCE_CPU=1 → сессии сразу на CPU
         // (GPU-инференс ORT не детерминирован: CUDA ScatterND-атомарные, порядок
         // редукций — WGC-голоса «плавают», флейк-тесты).
@@ -68,6 +70,7 @@ public sealed class OnnxSession
 {
     public OnnxSession(InferenceSession session, bool isGpu)
     {
+        Debug.Assert(session is not null, nameof(session));
         Session = session;
         IsGpu = isGpu;
     }

@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Diagnostics;
 
 namespace AntiDupl.NET.WPF.Helper
 {
@@ -10,6 +11,8 @@ namespace AntiDupl.NET.WPF.Helper
     {
         public static string S(string key, params object[] args)
         {
+            // Пустой ключ — опечатка на вызывающей стороне: fallback к key её маскировал бы.
+            Debug.Assert(!string.IsNullOrEmpty(key), nameof(key));
             string template = (Application.Current != null &&
                                Application.Current.TryFindResource(key) is string s)
                 ? s

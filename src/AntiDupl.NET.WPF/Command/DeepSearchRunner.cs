@@ -136,12 +136,17 @@ namespace AntiDupl.NET.WPF.Command
                     {
                         _logger.LogInformation("Deep-поиск: скачивание модели DINOv2: {Url} -> {Target}", url, target);
                         _vm.SetStatus("Скачивание модели DINOv2…");
-                        DeepModelManager.DownloadModel(url, target, _vm.DeepLogger, progress);
+                        DeepModelManager.DownloadModel(url, target, _vm.DeepLogger, progress, ct);
                         if (System.IO.File.Exists(target))
                         {
                             settings.Dinov2ModelPath = target;
                             _logger.LogInformation("Deep-поиск: модель DINOv2 скачана: {Path}", target);
                         }
+                    }
+                    catch (OperationCanceledException) when (ct.IsCancellationRequested)
+                    {
+                        // Отмена поиска — не фатальная ошибка скачивания.
+                        throw;
                     }
                     catch (Exception ex)
                     {
@@ -178,12 +183,17 @@ namespace AntiDupl.NET.WPF.Command
                 {
                     _logger.LogInformation("Deep-поиск: скачивание модели SuperPoint+LightGlue: {Url}", DeepModelManager.LightGluePipelineUrl);
                     _vm.SetStatus("Скачивание модели SuperPoint+LightGlue…");
-                    DeepModelManager.DownloadModel(DeepModelManager.LightGluePipelineUrl, target, _vm.DeepLogger, progress);
+                    DeepModelManager.DownloadModel(DeepModelManager.LightGluePipelineUrl, target, _vm.DeepLogger, progress, ct);
                     if (System.IO.File.Exists(target))
                     {
                         settings.LightGlueModelPath = target;
                         _logger.LogInformation("Deep-поиск: модель SuperPoint+LightGlue скачана: {Path}", target);
                     }
+                }
+                catch (OperationCanceledException) when (ct.IsCancellationRequested)
+                {
+                    // Отмена поиска — не фатальная ошибка скачивания.
+                    throw;
                 }
                 catch (Exception ex)
                 {

@@ -94,9 +94,10 @@ namespace AntiDupl.NET.WPF
             // Deep (DINOv2) поиск: C#-пайплайн (AntiDupl.NET.Deep).
             // Модели: рядом с бинарником <BaseDirectory>\models (DINOv2 — путь или
             // пользовательский URL, LightGlue — авто-скачивание); кэш эмбеддингов/вердиктов:
-            // рядом с программой, <BaseDirectory>\deep; логи deep-пайплайна — в общий
-            // каталог logs. (решение пользователя: модели — не в user-каталоге, чтобы
-            // -s <dir> переносил только данные, а не гигабайты весов).
+            // в user-каталоге <UserPath>\deep (данные пользователя: выживает clean-ом,
+            // переносится вместе с -s <dir>); логи deep-пайплайна — в общий каталог logs.
+            // (решение пользователя: модели — не в user-каталоге, чтобы -s <dir>
+            // переносил только данные, а не гигабайты весов).
             services.AddDeepSearch(
                 () =>
                 {
@@ -104,7 +105,9 @@ namespace AntiDupl.NET.WPF
                     // (рядом с бинарником — модели одинаковы для всех пользователей).
                     string modelsDirectory = AntiDupl.NET.Deep.Infra.DeepModelManager.GetModelsDirectory(AppContext.BaseDirectory);
                     Directory.CreateDirectory(modelsDirectory);
-                    string cacheDirectory = Path.Combine(AppContext.BaseDirectory, "deep");
+                    // Кэш — в user-каталоге (dev: %LOCALAPPDATA%, release: рядом с exe):
+                    // это данные пользователя, а не артефакт сборки.
+                    string cacheDirectory = Path.Combine(AntiDupl.NET.WPF.Resources.Resources.UserPath, "deep");
                     Directory.CreateDirectory(cacheDirectory);
                     string logDirectory = Path.Combine(AppContext.BaseDirectory, "logs");
                     return (ModelsDirectory: modelsDirectory, CacheDirectory: cacheDirectory, LogDirectory: logDirectory);
@@ -123,11 +126,7 @@ namespace AntiDupl.NET.WPF
                         {
                             IConfigurationModel configuration =
                                 _serviceProvider.GetRequiredService<IConfigurationModel>();
-                            var window = new GpuFallbackWindow(configuration)
-                            {
-                                CudaPath = configuration.CudaPath ?? "",
-                                CudnnPath = configuration.CudnnPath ?? ""
-                            };
+                            var window = new GpuFallbackWindow(configuration);
                             if (window.ShowDialog() == true)
                             {
                                 // Пути вступают в силу после перезапуска (PATH выставляется

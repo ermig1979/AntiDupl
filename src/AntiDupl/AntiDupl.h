@@ -622,7 +622,8 @@ extern "C"
     // reports the candidate list (path/size/time) without collect/compare.
     // Two-call pattern: the first call with *pCandidateSize == 0 runs the scan,
     // sets *pCandidateSize to the required count and returns
-    // AD_ERROR_OUTPUT_BUFFER_IS_TOO_SMALL; the second call fills the caller array.
+    // AD_ERROR_OUTPUT_BUFFER_IS_TOO_SMALL (pCandidates may be NULL there);
+    // the second call fills the caller array.
     DLLAPI adError adScanCandidatesW(adEngineHandle handle, adCandidateInfoPtrW pCandidates, adSizePtr pCandidateSize);
 
     DLLAPI adError adLoadA(adEngineHandle handle, adFileType fileType, const adCharA* fileName, adBool check);

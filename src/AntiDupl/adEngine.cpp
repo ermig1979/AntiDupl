@@ -125,7 +125,11 @@ namespace ad
 
     adError TEngine::ScanCandidates(adCandidateInfoPtrW pCandidates, adSizePtr pCandidateSize)
     {
-        if(pCandidates == NULL || pCandidateSize == NULL)
+        // pCandidateSize обязателен всегда; pCandidates — только при ненулевой ёмкости.
+        // Первый вызов двухшагового соглашения (size=0, запрос размера) разрешает NULL-буфер.
+        if(pCandidateSize == NULL)
+            return AD_ERROR_INVALID_POINTER;
+        if(*pCandidateSize != 0 && pCandidates == NULL)
             return AD_ERROR_INVALID_POINTER;
 
         if(*pCandidateSize == 0)

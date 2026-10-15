@@ -35,10 +35,12 @@
     <BaseOutputPath>..\..\bin\Debug\</BaseOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <DefineConstants>$(DefineConstants);PUBLISH</DefineConstants>
     <BaseOutputPath>..\..\bin\Release\</BaseOutputPath>
     <OutputPath>..\..\bin\Release\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Publish|x64'">
+    <DefineConstants>$(DefineConstants);PUBLISH</DefineConstants>
     <BaseOutputPath>..\..\bin\Publish\</BaseOutputPath>
     <OutputPath>..\..\bin\Publish\</OutputPath>
   </PropertyGroup>
