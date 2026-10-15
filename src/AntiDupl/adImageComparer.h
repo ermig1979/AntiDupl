@@ -65,6 +65,11 @@ namespace ad
         void AddToSet(Set &set, TImageDataPtr pImageData);
         void CompareWithSet(const Set &set, TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform);
 
+        // A metric's value for two images, made 0 exactly when their decoded
+        // pixels are the same: reduced images can be equal for images that
+        // differ, which then get MIN_DIFFERENCE_OF_DIFFERENT_PIXELS at least.
+        static double PixelDifference(TImageDataPtr pFirst, TImageDataPtr pSecond, double metric);
+
     private:
         TResultStorage *m_pResult;
         TImageData *m_pTransformedImageData;

@@ -187,10 +187,21 @@ namespace ad
         if(mainDifference > m_mainThreshold)
             return false;
 
-        *pDifference = sqrt(double(mainDifference)/m_maxDifference)*100;
+        double difference = PixelDifference(pFirst, pSecond, sqrt(double(mainDifference)/m_maxDifference)*100);
+        if (difference > m_pOptions->compare.thresholdDifference)
+            return false;
+        *pDifference = difference;
         if(pFirst->crc32c != pSecond->crc32c)
             *pDifference += ADDITIONAL_DIFFERENCE_FOR_DIFFERENT_CRC32;
         return true;
+    }
+
+    double TImageComparer::PixelDifference(TImageDataPtr pFirst, TImageDataPtr pSecond, double metric)
+    {
+        if (pFirst->data->pixelHash != 0 && pFirst->data->pixelHash == pSecond->data->pixelHash &&
+            pFirst->width == pSecond->width && pFirst->height == pSecond->height)
+            return 0;
+        return std::max(metric, MIN_DIFFERENCE_OF_DIFFERENT_PIXELS);
     }
     //-------------------------------------------------------------------------
     TImageComparer_0D::TImageComparer_0D(TEngine *pEngine)
@@ -375,6 +386,7 @@ namespace ad
             if (difference < 0)
                 difference = 0;
         }
+        difference = PixelDifference(pFirst, pSecond, difference);
 		// если различие больше заданного, то не дубликаты
 		if (difference > m_pOptions->compare.thresholdDifference)
 			return false;

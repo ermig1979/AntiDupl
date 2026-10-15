@@ -36,7 +36,8 @@ namespace ad
 		average(0),
 		varianceSquare(0),
 		sum(0),
-		sumSquare(0)
+		sumSquare(0),
+		pixelHash(0)
     {
     }
 
@@ -50,7 +51,8 @@ namespace ad
 		average(pixelData.average),
 		varianceSquare(pixelData.varianceSquare),
 		sum(pixelData.sum),
-		sumSquare(pixelData.sumSquare)
+		sumSquare(pixelData.sumSquare),
+		pixelHash(pixelData.pixelHash)
     {
         if(pixelData.filled)
         {
@@ -131,6 +133,7 @@ namespace ad
         }
 
         memcpy(fast, buffer, full);
+        pixelHash = 0;
 
         if(inner)
             SimdFree(buffer);
@@ -166,6 +169,7 @@ namespace ad
         }
 
         memcpy(fast, buffer, full);
+        pixelHash = 0;
 
         if(inner)
             SimdFree(buffer);

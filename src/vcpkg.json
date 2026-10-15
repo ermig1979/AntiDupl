@@ -9,7 +9,8 @@
     "libheif",
     "simd",
     "libavif",
-    "libjxl"
+    "libjxl",
+    "xxhash"
   ],
   "builtin-baseline": "3b9d086009cc1c2256e9c28ad44a00036fbd9b26",
   "vcpkg-configuration": {
