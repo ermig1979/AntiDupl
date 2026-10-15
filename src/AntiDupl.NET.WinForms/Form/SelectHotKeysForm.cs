@@ -55,6 +55,7 @@ namespace AntiDupl.NET.WinForms
             m_options = options;
             m_newHotKeyOptions = new HotKeyOptions(m_options.hotKeyOptions);
             InitializeComponents();
+            ThemeColors.Apply(this);
             UpdateStrings();
             UpdateBottomsEnabling();
             VerifyValidness();
@@ -115,7 +116,7 @@ namespace AntiDupl.NET.WinForms
                 item.text.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
                 hotKeysTableLayoutPanel.Controls.Add(item.text, 1, i);
                 
-                item.ckeck = new CheckBox();
+                item.ckeck = new ThemedCheckBox();
                 item.ckeck.Location = new System.Drawing.Point(0, 0);
                 item.ckeck.Size = new System.Drawing.Size(20, 20);
                 item.ckeck.Dock = DockStyle.Fill;
@@ -130,7 +131,7 @@ namespace AntiDupl.NET.WinForms
                 item.edit.Multiline = false;
                 item.edit.KeyDown += new KeyEventHandler(OnTextBoxKeyDown);
                 item.edit.Tag = i;
-                hotKeysTableLayoutPanel.Controls.Add(item.edit, 3, i);
+                hotKeysTableLayoutPanel.Controls.Add(ThemeColors.Framed(item.edit), 3, i);
                 
                 m_hotKeyItems[i] = item;
             }
@@ -283,13 +284,13 @@ namespace AntiDupl.NET.WinForms
                 if (m_newHotKeyOptions.Valid((HotKeyOptions.Action)i))
                 {
                     m_toolTip.SetToolTip(m_hotKeyItems[i].edit, "");
-                    m_hotKeyItems[i].edit.ForeColor = TextBox.DefaultForeColor;
+                    m_hotKeyItems[i].edit.ForeColor = ThemeColors.Text;
                     m_hotKeyItems[i].edit.BackColor = TextBox.DefaultBackColor;
                 }
                 else
                 {
                     m_toolTip.SetToolTip(m_hotKeyItems[i].edit, m_invalidHotKeyToolTipText);
-                    m_hotKeyItems[i].edit.ForeColor = Color.Red;
+                    m_hotKeyItems[i].edit.ForeColor = ThemeColors.Worse;
                     m_hotKeyItems[i].edit.BackColor = TextBox.DefaultBackColor;
                 }
             }

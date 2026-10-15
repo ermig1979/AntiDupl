@@ -59,6 +59,7 @@ namespace AntiDupl.NET.WinForms
         private ToolStripMenuItem m_view_toolMenuItem;
         private ToolStripMenuItem m_view_statusMenuItem;
         private ToolStripMenuItem m_view_languageMenuItem;
+        private ToolStripMenuItem m_view_colorModeMenuItem;
         private ToolStripMenuItem m_view_modeMenuItem;
         private ToolStripMenuItem m_view_selectColumnsMenuItem;
         private ToolStripMenuItem m_view_hotKeysMenuItem;
@@ -101,6 +102,7 @@ namespace AntiDupl.NET.WinForms
         private void InitializeComponents()
         {
             RenderMode = ToolStripRenderMode.System;
+            ThemedToolStripRenderer.Set(this);
             BackColor = SystemColors.Control;
             ShowItemToolTips = true;
 
@@ -132,6 +134,7 @@ namespace AntiDupl.NET.WinForms
             m_view_toolMenuItem = InitFactory.MenuItem.Create(null, null, ViewItemCheckChangeAction, m_options.mainFormOptions.toolStripView);
             m_view_statusMenuItem = InitFactory.MenuItem.Create(null, null, ViewItemCheckChangeAction, m_options.mainFormOptions.statusStripView);
             m_view_languageMenuItem = new LanguageMenuItem(m_options);
+            m_view_colorModeMenuItem = new ColorModeMenuItem(m_options);
             m_view_modeMenuItem = new ViewModeMenuItem(m_options);
             m_view_selectColumnsMenuItem = InitFactory.MenuItem.Create(null, null, OnSelectColumnsClick);
             m_view_hotKeysMenuItem = InitFactory.MenuItem.Create(null, null, OnHotKeysClick);
@@ -144,6 +147,7 @@ namespace AntiDupl.NET.WinForms
             m_viewMenuItem.DropDownItems.Add(m_view_statusMenuItem);
             m_viewMenuItem.DropDownItems.Add(new ToolStripSeparator());
             m_viewMenuItem.DropDownItems.Add(m_view_languageMenuItem);
+            m_viewMenuItem.DropDownItems.Add(m_view_colorModeMenuItem);
             m_viewMenuItem.DropDownItems.Add(new ToolStripSeparator());
             m_viewMenuItem.DropDownItems.Add(m_view_modeMenuItem);
             m_viewMenuItem.DropDownItems.Add(m_view_selectColumnsMenuItem);
@@ -349,6 +353,9 @@ namespace AntiDupl.NET.WinForms
                     saveProgressForm.Execute();
                     m_options.coreOptionsFileName = dialog.FileName;
                 }*/
+                // A one-off run saved under a new name keeps its folders
+                // and becomes that profile.
+                m_coreOptions.EndOneOffRun();
                 m_options.coreOptionsFileName = dialog.FileName;
                 m_coreOptions.Save(m_options.coreOptionsFileName);
                 ProgressForm progressForm = new ProgressForm(ProgressForm.Type.SaveResults, m_core, m_options, m_coreOptions, m_mainSplitContainer);
@@ -375,13 +382,21 @@ namespace AntiDupl.NET.WinForms
                 if (string.Compare(dialog.FileName, m_options.coreOptionsFileName) != 0)
                 {
                     m_coreOptions.Save(m_options.coreOptionsFileName);
-                    ProgressForm saveProgressForm = new ProgressForm(ProgressForm.Type.SaveResults, m_core, m_options, m_coreOptions, m_mainSplitContainer);
-                    saveProgressForm.Execute();
+                    // A one-off run leaves the profile's results file as it was.
+                    if (!m_coreOptions.IsOneOffRun)
+                    {
+                        ProgressForm saveProgressForm = new ProgressForm(ProgressForm.Type.SaveResults, m_core, m_options, m_coreOptions, m_mainSplitContainer);
+                        saveProgressForm.Execute();
+                    }
                     m_options.coreOptionsFileName = dialog.FileName;
                 }
 
                 CoreOptions coreOptions = CoreOptions.Load(m_options.coreOptionsFileName, m_core, m_options.onePath);
+                if (coreOptions.LoadProblem != null)
+                    coreOptions.LoadProblem.Show(m_mainForm);
                 coreOptions.CopyTo(ref m_coreOptions);
+                // The opened profile's own folders are in use: a one-off run ends here.
+                m_coreOptions.EndOneOffRun();
                 ProgressForm loadProgressForm = new ProgressForm(ProgressForm.Type.LoadResults, m_core, m_options, m_coreOptions, m_mainSplitContainer);
                 loadProgressForm.Execute();
 

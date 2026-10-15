@@ -167,7 +167,21 @@ namespace AntiDupl.NET.WinForms
             AllowUserToResizeRows = false;
             AllowUserToDeleteRows = false;
             AllowUserToOrderColumns = true;
-            this.BackgroundColor = Color.White;
+            this.BackgroundColor = SystemColors.Window;
+            BorderStyle = ThemeColors.ResultsTableBorder;
+            if (Application.IsDarkModeEnabled)
+            {
+                // Visual-style headers are drawn light whatever the color mode.
+                EnableHeadersVisualStyles = false;
+                ColumnHeadersDefaultCellStyle.BackColor = SystemColors.Control;
+                ColumnHeadersDefaultCellStyle.ForeColor = ThemeColors.Text;
+                ColumnHeadersDefaultCellStyle.SelectionBackColor = SystemColors.Control;
+                ColumnHeadersDefaultCellStyle.SelectionForeColor = ThemeColors.Text;
+                DefaultCellStyle.ForeColor = ThemeColors.Text;
+                DefaultCellStyle.SelectionBackColor = ThemeColors.Selection;
+                DefaultCellStyle.SelectionForeColor = ThemeColors.SelectionText;
+                GridColor = SystemColors.ControlDark;
+            }
             ReadOnly = true;
             ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
             DoubleBuffered = true;

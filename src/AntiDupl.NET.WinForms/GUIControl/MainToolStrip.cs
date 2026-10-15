@@ -86,6 +86,7 @@ namespace AntiDupl.NET.WinForms
         {
             Visible = m_options.mainFormOptions.toolStripView;
             RenderMode = ToolStripRenderMode.System;
+            ThemedToolStripRenderer.Set(this);
             BackColor = SystemColors.Control;
             GripStyle = ToolStripGripStyle.Hidden;
 

@@ -70,15 +70,12 @@ namespace ad
 
     void TUndoRedoStage::Sort(TSortType sortType, bool increasing)
     {
+        // A sort by one image's property (the vertical table, the horizontal
+        // table's first/second columns) also decides which image of each
+        // pair is in the sorted place. Sorts by a property of the whole pair
+        // (difference, group ...) leave the pairs as they are.
         for(TResultPtrVector::iterator it = results.begin(); it != results.end(); ++it)
-        {
-            TResultPtr pResult = *it;
-            if(pResult->type == AD_RESULT_DUPL_IMAGE_PAIR && 
-                !TResult::ImageInfoLesser(pResult->first, pResult->second, sortType, increasing))
-            {
-                pResult->Swap();
-            }
-        }
+            (*it)->OrientFor(sortType, increasing);
         std::sort(results.begin(), results.end(), TResultPtrLesser(sortType, increasing));
         UpdateCurrentIndex();
     }

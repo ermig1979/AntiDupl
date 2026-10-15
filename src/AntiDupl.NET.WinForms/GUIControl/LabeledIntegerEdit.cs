@@ -109,7 +109,7 @@ namespace AntiDupl.NET.WinForms
             m_textBox.Margin = new Padding(0, 0, 0, 0);
             m_textBox.Multiline = false;
             m_textBox.KeyUp += new KeyEventHandler(OnTextBoxKeyUp);
-            Controls.Add(m_textBox, 0, 0);
+            Controls.Add(ThemeColors.Framed(m_textBox), 0, 0);
 
             m_label = new System.Windows.Forms.Label();
             m_label.AutoSize = true;

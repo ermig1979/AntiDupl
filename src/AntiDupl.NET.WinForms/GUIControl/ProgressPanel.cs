@@ -44,7 +44,7 @@ namespace AntiDupl.NET.WinForms
 
         private void InitializeComponent()
         {
-            BorderStyle = BorderStyle.Fixed3D;
+            ThemeColors.SetBorder(this);
             Location = new Point(0, 0);
             Dock = DockStyle.Fill;
             Margin = new Padding(1);
@@ -64,7 +64,7 @@ namespace AntiDupl.NET.WinForms
             m_totalLabel.Location = new Point(0, 0);
             m_totalLabel.Dock = DockStyle.Fill;
             m_totalLabel.Width = (int)tableLayoutPanel.ColumnStyles[0].Width;
-            m_totalLabel.BorderStyle = BorderStyle.Fixed3D;
+            ThemeColors.SetBorder(m_totalLabel);
             m_totalLabel.TextAlign = ContentAlignment.MiddleCenter;
             m_totalLabel.Margin = new Padding(0, 0, 1, 0);
             tableLayoutPanel.Controls.Add(m_totalLabel, 0, 0);
@@ -73,7 +73,7 @@ namespace AntiDupl.NET.WinForms
             m_currentLabel.Location = new Point(0, 0);
             m_currentLabel.Dock = DockStyle.Fill;
             m_currentLabel.Width = (int)tableLayoutPanel.ColumnStyles[1].Width;
-            m_currentLabel.BorderStyle = BorderStyle.Fixed3D;
+            ThemeColors.SetBorder(m_currentLabel);
             m_currentLabel.TextAlign = ContentAlignment.MiddleCenter;
             m_currentLabel.Margin = new Padding(0, 0, 1, 0);
             tableLayoutPanel.Controls.Add(m_currentLabel, 1, 0);
@@ -89,7 +89,7 @@ namespace AntiDupl.NET.WinForms
             m_pathLabel.Location = new Point(0, 0);
             m_pathLabel.Dock = DockStyle.Fill;
             m_pathLabel.Width = (int)tableLayoutPanel.ColumnStyles[3].Width;
-            m_pathLabel.BorderStyle = BorderStyle.Fixed3D;
+            ThemeColors.SetBorder(m_pathLabel);
             m_pathLabel.TextAlign = ContentAlignment.MiddleLeft;
             m_pathLabel.Margin = new Padding(1, 0, 0, 0);
             tableLayoutPanel.Controls.Add(m_pathLabel, 3, 0);

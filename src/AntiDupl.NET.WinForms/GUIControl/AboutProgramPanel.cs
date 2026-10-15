@@ -168,6 +168,12 @@ namespace AntiDupl.NET.WinForms
             linkLabel.Dock = DockStyle.Fill;
             linkLabel.LinkBehavior = LinkBehavior.HoverUnderline;
             linkLabel.Padding = new System.Windows.Forms.Padding(2);
+            if (!ThemeColors.Link.IsEmpty)
+            {
+                linkLabel.LinkColor = ThemeColors.Link;
+                linkLabel.ActiveLinkColor = ThemeColors.Link;
+                linkLabel.VisitedLinkColor = ThemeColors.Link;
+            }
             linkLabel.Links.Add(new LinkLabel.Link(0, text.Length, link));
             linkLabel.LinkClicked += new LinkLabelLinkClickedEventHandler(OnLinkLabelLinkClicked);
             linkLabel.TextAlign = ContentAlignment.MiddleCenter;

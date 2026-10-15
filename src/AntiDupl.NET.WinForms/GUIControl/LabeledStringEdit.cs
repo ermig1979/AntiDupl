@@ -75,7 +75,7 @@ namespace AntiDupl.NET.WinForms
             m_textBox.Margin = new Padding(0, 0, 0, 0);
             m_textBox.Multiline = false;
             m_textBox.KeyUp += new KeyEventHandler(OnTextBoxKeyUp);
-            Controls.Add(m_textBox, 0, 2);
+            Controls.Add(ThemeColors.Framed(m_textBox), 0, 2);
         }
 
         private void OnTextBoxKeyUp(object sender, KeyEventArgs e)

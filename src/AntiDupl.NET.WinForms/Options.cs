@@ -71,12 +71,18 @@ namespace AntiDupl.NET.WinForms
         public string imageDiffExecutableArguments = "";
         public string imageDiff2ExecutablePath = "";
         public string imageDiff2ExecutableArguments = "";
+        /// <summary>Light (Classic), Dark or as Windows is set (System); applied at start-up.</summary>
+        public SystemColorMode colorMode = SystemColorMode.Classic;
 
         public MainFormOptions mainFormOptions = new MainFormOptions();
         public ResultsOptions resultsOptions = new ResultsOptions();
         public HotKeyOptions hotKeyOptions= new HotKeyOptions();
 
         public string coreOptionsFileName = GetDefaultCoreOptionsFileName();
+
+        /// <summary>Set when Load fell back to the defaults.</summary>
+        [XmlIgnore]
+        public UnreadableSettingsFile LoadProblem;
 
         public string GetResultsFileName()
         {
@@ -105,11 +111,13 @@ namespace AntiDupl.NET.WinForms
                     fileStream.Close();
                     return options;
                 }
-                catch
+                catch (Exception exception)
                 {
                     if (fileStream != null)
                         fileStream.Close();
-                    return new Options();
+                    Options options = new Options();
+                    options.LoadProblem = new UnreadableSettingsFile(Options.GetOptionsFileName(), exception);
+                    return options;
                 }
             }
             else
@@ -139,6 +147,7 @@ namespace AntiDupl.NET.WinForms
             imageDiffExecutableArguments = options.imageDiffExecutableArguments;
             imageDiff2ExecutablePath = options.imageDiff2ExecutablePath;
             imageDiff2ExecutableArguments = options.imageDiff2ExecutableArguments;
+            colorMode = options.colorMode;
         }
 
         public void Save()
@@ -181,6 +190,7 @@ namespace AntiDupl.NET.WinForms
             options.imageDiffExecutableArguments = imageDiffExecutableArguments;
             options.imageDiff2ExecutablePath = imageDiff2ExecutablePath;
             options.imageDiff2ExecutableArguments = imageDiff2ExecutableArguments;
+            options.colorMode = colorMode;
         }
 
         public static void PathCopy(string[] source, ref string[] destination)
