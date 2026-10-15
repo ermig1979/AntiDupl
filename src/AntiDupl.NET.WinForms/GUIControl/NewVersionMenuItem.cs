@@ -62,7 +62,7 @@ namespace AntiDupl.NET.WinForms
         private void InitializeComponents()
         {
             Visible = false;
-            ForeColor = Color.Red;
+            ForeColor = ThemeColors.Worse;
             Click += new EventHandler(OnClick);
             Resources.Strings.OnCurrentChange += new Resources.Strings.CurrentChangeHandler(UpdateStrings);
 

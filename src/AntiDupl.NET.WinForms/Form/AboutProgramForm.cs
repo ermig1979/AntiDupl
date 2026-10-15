@@ -42,6 +42,7 @@ namespace AntiDupl.NET.WinForms
         {
             m_core = core;
             InitializeComponent();
+            ThemeColors.Apply(this);
             UpdateStrings();
         }
 

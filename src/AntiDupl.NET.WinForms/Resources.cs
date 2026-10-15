@@ -98,9 +98,11 @@ namespace AntiDupl.NET.WinForms
                 return bitmap;
             }
 
-            static public Image GetImageWithBlackCircle(int width, int height, double radius)
+            /// <summary>The dot of a selected menu choice, in the menu text colour.</summary>
+            static public Image GetImageWithCircle(int width, int height, double radius)
             {
                 Bitmap bitmap = new Bitmap(width, height);
+                Color color = SystemColors.MenuText;
                 for (int x = 0; x < width; x++)
                 {
                     int xx = x - width / 2;
@@ -108,7 +110,7 @@ namespace AntiDupl.NET.WinForms
                     {
                         int yy = y - height / 2;
                         if (xx * xx + yy * yy < radius * radius)
-                            bitmap.SetPixel(x, y, Color.FromArgb(0xFF, 0, 0, 0));
+                            bitmap.SetPixel(x, y, Color.FromArgb(0xFF, color.R, color.G, color.B));
                         else
                             bitmap.SetPixel(x, y, Color.FromArgb(0, 0, 0, 0));
                     }

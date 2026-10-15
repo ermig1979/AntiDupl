@@ -42,7 +42,7 @@ namespace AntiDupl.NET.WinForms
               (DataGridViewElementStates)((int)rowState & ~(int)DataGridViewElementStates.Selected) |
               (selected ? DataGridViewElementStates.Selected : 0);
             base.Paint(graphics, clipBounds, rowBounds, rowIndex, state, isFirstDisplayedRow, isLastVisibleRow);
-            if (current)
+            if (current && ThemeColors.CurrentRowOutline)
             {
                 int cellsWidth = 0;
                 for (int i = 0; i < Cells.Count; i++)
@@ -62,10 +62,10 @@ namespace AntiDupl.NET.WinForms
                     (int)graphics.VisibleClipBounds.Height - 1);
                 visibleClipBounds.Intersect(cellsBounds);
 
-                Pen pen = new Pen(Color.White);
+                Pen pen = new Pen(SystemColors.Window);
                 graphics.DrawRectangle(pen, visibleClipBounds);
                 pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
-                pen.Color = Color.Black;
+                pen.Color = SystemColors.WindowText;
                 graphics.DrawRectangle(pen, visibleClipBounds);
             }
         }

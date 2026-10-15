@@ -40,6 +40,10 @@ namespace AntiDupl.NET.WinForms
             s.SetDefaultButton_Text = "По умолчанию";
 
             s.ErrorMessage_FileAlreadyExists = "Невозможно переименовать файл, так как файл с таким именем уже существует!";
+            s.MainForm_SearchFoldersNotFound = "Эти папки из командной строки не существуют и не включены в поиск:\n{0}";
+            s.MainForm_IgnoreFoldersNotFound = "Эти папки для исключения из командной строки не существуют и пропущены:\n{0}";
+            s.ErrorMessage_SettingsFileUnreadable = "Не удалось прочитать файл настроек\n{0}\n\n{1}\n\nВместо него используются настройки по умолчанию; при закрытии программы они будут сохранены в этот файл. Копия нечитаемого файла сохранена как\n{2}";
+            s.ErrorMessage_SettingsFileUnreadableNotCopied = "Не удалось прочитать файл настроек\n{0}\n\n{1}\n\nВместо него используются настройки по умолчанию; при закрытии программы они будут сохранены в этот файл. Скопировать файл не удалось: чтобы сохранить его, скопируйте его в другое место до закрытия программы.";
 
             s.WarningMessage_ChangeFileExtension = "Вы действительно хотите изменить расширение файла?";
 
@@ -309,6 +313,12 @@ namespace AntiDupl.NET.WinForms
             s.ViewModeMenuItem_VerticalPairTableMenuItem_Text = "Таблица вертикальных пар";
             s.ViewModeMenuItem_HorizontalPairTableMenuItem_Text = "Таблица горизонтальных пар";
             s.ViewModeMenuItem_GroupedThumbnailsMenuItem_Text = "Сгруппированные миниатюры";
+
+            s.ColorModeMenuItem_Text = "Тема";
+            s.ColorModeMenuItem_SystemMenuItem_Text = "Как в Windows";
+            s.ColorModeMenuItem_LightMenuItem_Text = "Светлая";
+            s.ColorModeMenuItem_DarkMenuItem_Text = "Тёмная";
+            s.ColorModeMenuItem_RestartMessage = "Тема изменится при следующем запуске программы.";
 
             s.ImagePreviewContextMenu_CopyPathItem_Text = "Скопировать путь";
             s.ImagePreviewContextMenu_CopyFileNameItem_Text = "Скопировать имя картинки";

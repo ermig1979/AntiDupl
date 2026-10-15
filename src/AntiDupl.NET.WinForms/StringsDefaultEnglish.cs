@@ -40,6 +40,10 @@ namespace AntiDupl.NET.WinForms
             s.SetDefaultButton_Text = "Set default";
 
             s.ErrorMessage_FileAlreadyExists = "Can't rename file because file with this name already is exists!";
+            s.MainForm_SearchFoldersNotFound = "These folders from the command line don't exist and are left out of the search:\n{0}";
+            s.MainForm_IgnoreFoldersNotFound = "These folders to ignore from the command line don't exist and are skipped:\n{0}";
+            s.ErrorMessage_SettingsFileUnreadable = "Can't read the settings file\n{0}\n\n{1}\n\nThe default settings are used instead and will be saved to this file when the program closes. A copy of the unreadable file was kept as\n{2}";
+            s.ErrorMessage_SettingsFileUnreadableNotCopied = "Can't read the settings file\n{0}\n\n{1}\n\nThe default settings are used instead and will be saved to this file when the program closes. The file could not be copied: to keep it, copy it elsewhere before closing the program.";
 
             s.WarningMessage_ChangeFileExtension = "Do you really want to change file extension?";
 
@@ -309,6 +313,12 @@ namespace AntiDupl.NET.WinForms
             s.ViewModeMenuItem_VerticalPairTableMenuItem_Text = "Table of vertical pairs";
             s.ViewModeMenuItem_HorizontalPairTableMenuItem_Text = "Table of horizontal pairs";
             s.ViewModeMenuItem_GroupedThumbnailsMenuItem_Text = "Grouped thumbnails";
+
+            s.ColorModeMenuItem_Text = "Theme";
+            s.ColorModeMenuItem_SystemMenuItem_Text = "As in Windows";
+            s.ColorModeMenuItem_LightMenuItem_Text = "Light";
+            s.ColorModeMenuItem_DarkMenuItem_Text = "Dark";
+            s.ColorModeMenuItem_RestartMessage = "The theme changes the next time the program starts.";
 
             s.ImagePreviewContextMenu_CopyPathItem_Text = "Copy path";
             s.ImagePreviewContextMenu_CopyFileNameItem_Text = "Copy image name";

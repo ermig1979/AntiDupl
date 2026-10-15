@@ -111,11 +111,16 @@ namespace ad
         else if (THeif::Supported(hGlobal))
             return THeif::Load(hGlobal);
 #ifdef AD_TURBO_JPEG_ENABLE
+        // One decoder for every JPEG, so files with the same pixels get the
+        // same planes whatever their metadata segments. GDI+ takes what
+        // libjpeg-turbo can't decode (CMYK into BGRA, for one).
         if (pOptions->advanced.useLibJpegTurbo && TTurboJpeg::Supported(hGlobal))
-            return TTurboJpeg::Load(hGlobal);
+        {
+            if (TImage* pImage = TTurboJpeg::Load(hGlobal))
+                return pImage;
+        }
 #endif//AD_TURBO_JPEG_ENABLE
-        else
-            return TGdiplus::Load(hGlobal);
+        return TGdiplus::Load(hGlobal);
     }
     
     TImage* TImage::Load(const TChar * fileName, const TOptions* pOptions)
