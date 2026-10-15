@@ -178,10 +178,10 @@ namespace AntiDupl.NET.WinForms
                 ColumnHeadersDefaultCellStyle.SelectionBackColor = SystemColors.Control;
                 ColumnHeadersDefaultCellStyle.SelectionForeColor = ThemeColors.Text;
                 DefaultCellStyle.ForeColor = ThemeColors.Text;
-                DefaultCellStyle.SelectionBackColor = ThemeColors.Selection;
-                DefaultCellStyle.SelectionForeColor = ThemeColors.SelectionText;
                 GridColor = SystemColors.ControlDark;
             }
+            DefaultCellStyle.SelectionBackColor = ThemeColors.GridSelection;
+            DefaultCellStyle.SelectionForeColor = ThemeColors.GridSelectionText;
             ReadOnly = true;
             ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
             DoubleBuffered = true;

@@ -21,6 +21,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
+using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -49,6 +50,14 @@ namespace AntiDupl.NET.WinForms
         /// </summary>
         static public Color Selection { get { return Dark ? Color.FromArgb(0x1E, 0x4C, 0x8A) : SystemColors.Highlight; } }
         static public Color SelectionText { get { return Dark ? Text : SystemColors.HighlightText; } }
+
+        /// <summary>
+        /// Selected rows of the results table, in both themes the dark
+        /// theme's highlight and text (user's choice), so coloured values
+        /// keep their dark-theme colours there (OnSelection).
+        /// </summary>
+        static public Color GridSelection { get { return Color.FromArgb(0x1E, 0x4C, 0x8A); } }
+        static public Color GridSelectionText { get { return Color.FromArgb(0xF8, 0xF8, 0xF8); } }
 
         /// <summary>The dotted outline of the current row: light mode only.</summary>
         static public bool CurrentRowOutline { get { return !Dark; } }
@@ -154,6 +163,83 @@ namespace AntiDupl.NET.WinForms
 
         /// <summary>Text of the value that is worse than the other image's.</summary>
         static public Color Worse { get { return Dark ? Color.FromArgb(0xFF, 0x70, 0x70) : Color.Red; } }
+
+        /// <summary>
+        /// A coloured text on a selected row of the results table
+        /// (GridSelection): the light theme's own colours become their dark
+        /// versions; any other keeps its hue and saturation, its lightness
+        /// moved away from the highlight only as far as a contrast of
+        /// SELECTION_CONTRAST needs. Color.Empty for a grey
+        /// (white, black or between): it takes the selection's own text
+        /// colour.
+        /// </summary>
+        static public Color OnSelection(Color color)
+        {
+            if (color.IsEmpty || color.GetSaturation() < 0.25f || IsGreyish(color))
+                return Color.Empty;
+            // The light theme's colours for worse values and identical
+            // pairs become their dark-theme versions on the shared highlight.
+            // Both sides of each pair must match Worse and
+            // DifferenceFormat.GetColor, or the colour falls through to the
+            // contrast search below.
+            int argb = color.ToArgb();
+            if (argb == Color.Red.ToArgb())
+                return Color.FromArgb(0xFF, 0x70, 0x70);
+            if (argb == Color.Green.ToArgb())
+                return Color.LightGreen;
+            if (argb == Color.FromArgb(0xB3, 0x59, 0x00).ToArgb())
+                return Color.FromArgb(0xFF, 0xB3, 0x66);
+            Color back = GridSelection;
+            if (Contrast(color, back) >= SELECTION_CONTRAST)
+                return color;
+            bool darken = Contrast(Color.Black, back) >= Contrast(Color.White, back);
+            float h = color.GetHue(), s = color.GetSaturation(), l = color.GetBrightness();
+            Color candidate = color;
+            for (int step = 1; step <= 100; ++step)
+            {
+                float l2 = darken ? l * (1 - step / 100f) : l + (1 - l) * step / 100f;
+                candidate = FromHsl(h, s, l2);
+                if (Contrast(candidate, back) >= SELECTION_CONTRAST)
+                    break;
+            }
+            return candidate;
+        }
+
+        // WCAG's minimum for large text and for graphics.
+        const double SELECTION_CONTRAST = 3.0;
+
+        static bool IsGreyish(Color c)
+        {
+            return Math.Max(c.R, Math.Max(c.G, c.B)) - Math.Min(c.R, Math.Min(c.G, c.B)) < 32;
+        }
+
+        static double Luminance(Color c)
+        {
+            Func<int, double> lin = v => { double x = v / 255.0; return x <= 0.04045 ? x / 12.92 : Math.Pow((x + 0.055) / 1.055, 2.4); };
+            return 0.2126 * lin(c.R) + 0.7152 * lin(c.G) + 0.0722 * lin(c.B);
+        }
+
+        static double Contrast(Color a, Color b)
+        {
+            double la = Luminance(a), lb = Luminance(b);
+            return (Math.Max(la, lb) + 0.05) / (Math.Min(la, lb) + 0.05);
+        }
+
+        static Color FromHsl(float h, float s, float l)
+        {
+            float c = (1 - Math.Abs(2 * l - 1)) * s;
+            float x = c * (1 - Math.Abs(h / 60f % 2 - 1));
+            float m = l - c / 2;
+            float r, g, b;
+            if (h < 60) { r = c; g = x; b = 0; }
+            else if (h < 120) { r = x; g = c; b = 0; }
+            else if (h < 180) { r = 0; g = c; b = x; }
+            else if (h < 240) { r = 0; g = x; b = c; }
+            else if (h < 300) { r = x; g = 0; b = c; }
+            else { r = c; g = 0; b = x; }
+            Func<float, int> to = v => Math.Max(0, Math.Min(255, (int)Math.Round((v + m) * 255)));
+            return Color.FromArgb(to(r), to(g), to(b));
+        }
 
         /// <summary>Background around the previewed images.</summary>
         static public Color PreviewBackground { get { return Dark ? Color.FromArgb(0x2B, 0x2B, 0x2B) : Color.DarkGray; } }
