@@ -44,6 +44,11 @@ namespace ad
 		// database file, which stores them.
 		uint64_t sum;
 		uint64_t sumSquare;
+		// Hash of the full decoded image, filled with main: equal hashes and
+		// dimensions mean the same pixels whatever the file. 0 = unknown,
+		// also after Turn or Mirror, so a transformed copy never counts as
+		// pixel-identical.
+		uint64_t pixelHash;
 
         TPixelData(size_t side_);
         TPixelData(const TPixelData& pixelData);

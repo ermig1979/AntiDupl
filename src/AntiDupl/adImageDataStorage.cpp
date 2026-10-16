@@ -437,6 +437,12 @@ namespace ad
 				if(Find(imageData) == m_storage.end())
 					Insert(new TImageData(imageData));
 			}
+			// Records of an older format are filled again during the search
+			// (TInputFileStream::Load). Unless the database is saved then, it
+			// keeps the old records, and every search decodes those images
+			// again.
+			if(inputFile.Version() < FILE_VERSION)
+				m_needToSave = true;
 		}
 		catch (TException e)
 		{

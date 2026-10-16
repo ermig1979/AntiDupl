@@ -214,6 +214,9 @@ namespace AntiDupl.NET.WinForms
             s.ResultRowSetter_MirrorTurn_180_Icon_ToolTip_Text = "Horizontally flipped and rotated on 180°";
             s.ResultRowSetter_MirrorTurn_270_Icon_ToolTip_Text = "Horizontally flipped and rotated on 270°";
 
+            s.ResultRowSetter_Difference_ByteIdentical_ToolTip_Text = "Identical files";
+            s.ResultRowSetter_Difference_PixelIdentical_ToolTip_Text = "Identical images, the files differ";
+
             s.ResultsListView_Type_Column_Text = "Type";
             s.ResultsListView_Group_Column_Text = "Group";
             s.ResultsListView_GroupSize_Column_Text = "Size of group";

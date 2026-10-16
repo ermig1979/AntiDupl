@@ -96,6 +96,9 @@ namespace AntiDupl.NET.WinForms
         private string m_mirrorTurn_180_IconToolTipText;
         private string m_mirrorTurn_270_IconToolTipText;
 
+        private string m_byteIdenticalToolTipText;
+        private string m_pixelIdenticalToolTipText;
+
         public ResultRowSetter(AntiDupl.NET.WinForms.Options options, DataGridView dataGridView)
         {
             m_options = options;
@@ -164,6 +167,9 @@ namespace AntiDupl.NET.WinForms
             m_mirrorTurn_90_IconToolTipText = s.ResultRowSetter_MirrorTurn_90_Icon_ToolTip_Text;
             m_mirrorTurn_180_IconToolTipText = s.ResultRowSetter_MirrorTurn_180_Icon_ToolTip_Text;
             m_mirrorTurn_270_IconToolTipText = s.ResultRowSetter_MirrorTurn_270_Icon_ToolTip_Text;
+
+            m_byteIdenticalToolTipText = s.ResultRowSetter_Difference_ByteIdentical_ToolTip_Text;
+            m_pixelIdenticalToolTipText = s.ResultRowSetter_Difference_PixelIdentical_ToolTip_Text;
         }
 
         public void Set(CoreResult result, DataGridViewCustomRow row) 
@@ -322,12 +328,16 @@ namespace AntiDupl.NET.WinForms
             cells[(int)ResultsListView.ColumnsTypeHorizontal.GroupSize].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             cells[(int)ResultsListView.ColumnsTypeHorizontal.Difference] = new DataGridViewTextBoxCell();
-            cells[(int)ResultsListView.ColumnsTypeHorizontal.Difference].Value = result.difference.ToString("F2");
+            cells[(int)ResultsListView.ColumnsTypeHorizontal.Difference].Value = DifferenceFormat.ToString(result.difference);
             cells[(int)ResultsListView.ColumnsTypeHorizontal.Difference].Style.Font =
-                new Font(DataGridView.DefaultFont, result.difference == 0 ? FontStyle.Bold : FontStyle.Regular);
+                new Font(DataGridView.DefaultFont, DifferenceFormat.IsByteIdentical(result.difference) ? FontStyle.Bold : FontStyle.Regular);
             cells[(int)ResultsListView.ColumnsTypeHorizontal.Difference].Style.ForeColor =
-                result.difference == 0 ? Color.LightGreen : ThemeColors.Text;
+                DifferenceFormat.GetColor(result.difference, ThemeColors.Text);
             cells[(int)ResultsListView.ColumnsTypeHorizontal.Difference].Style.Alignment = DataGridViewContentAlignment.MiddleRight;
+            cells[(int)ResultsListView.ColumnsTypeHorizontal.Difference].ToolTipText =
+                DifferenceFormat.IsByteIdentical(result.difference) ? m_byteIdenticalToolTipText :
+                DifferenceFormat.IsIdentical(result.difference) ? m_pixelIdenticalToolTipText :
+                DifferenceFormat.ToExactString(result.difference);
 
             cells[(int)ResultsListView.ColumnsTypeHorizontal.Defect] = new DataGridViewTextBoxCell();
             cells[(int)ResultsListView.ColumnsTypeHorizontal.Defect].Value = "";
