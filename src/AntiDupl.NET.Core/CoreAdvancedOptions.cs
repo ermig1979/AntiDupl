@@ -27,6 +27,68 @@ using System.ComponentModel;
 using System.Text;
 using AntiDupl.NET.Core.Original;
 
+
+namespace AntiDupl.NET.Core
+{
+    /// <summary>
+    /// Contains advanced options for AntiDupl core processing.
+    /// </summary>
+    public class CoreAdvancedOptions : INotifyPropertyChanged
+    {
+        /// <summary>
+        /// Specifies whether deleted files are moved to the Recycle Bin.
+        /// </summary>
+        public bool deleteToRecycleBin;
+
+        /// <summary>
+        /// Specifies whether the mistake database is enabled.
+        /// </summary>
+        public bool mistakeDataBase;
+
+        /// <summary>
+        /// Specifies the resolution ratio setting used by the core.
+        /// </summary>
+        public int ratioResolution;
+
+        /// <summary>
+        /// Specifies the number of threads used to compare images.
+        /// </summary>
+        public int compareThreadCount;
+
+        /// <summary>
+        /// Specifies the number of threads used to collect image data.
+        /// </summary>
+        public int collectThreadCount;
+
+        /// <summary>
+        /// Specifies the reduced image size used during processing.
+        /// </summary>
+        public int reducedImageSize;
+
+        /// <summary>
+        /// Specifies the maximum size of the undo queue.
+        /// </summary>
+        public int undoQueueSize;
+
+        /// <summary>
+        /// Specifies the maximum number of comparison results.
+        /// </summary>
+        public int resultCountMax;
+
+        /// <summary>
+        /// Specifies the frame width ignored during processing.
+        /// </summary>
+        public int ignoreFrameWidth;
+
+        /// <summary>
+        /// Specifies whether libjpeg-turbo is used for JPEG processing.
+        /// </summary>
+        public bool useLibJpegTurbo;
+
+        // 保留原本的建構函式、方法及屬性。
+    }
+}
+
 namespace AntiDupl.NET.Core
 {
     public class CoreAdvancedOptions : INotifyPropertyChanged
