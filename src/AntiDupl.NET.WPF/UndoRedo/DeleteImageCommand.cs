@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using AntiDupl.NET.WPF.Helper;
 using AntiDupl.NET.WPF.ObjectModel;
 using AntiDupl.NET.WPF.ViewModel;
@@ -37,7 +38,7 @@ namespace AntiDupl.NET.WPF.UndoRedo
         {
             _deletedFileWithTempExtension = _forDelete.Path + Const.ForDeleteEXTENSION;
             File.Move(_forDelete.Path, _deletedFileWithTempExtension);
-            _description = String.Format("Удалили {0}", _forDelete.Path);
+            _description = String.Format(Application.Current.Resources["desc_deleteImage"] as string ?? "Delete image {0}", _forDelete.Path);
 
             _resultList.Remove(_result);
 

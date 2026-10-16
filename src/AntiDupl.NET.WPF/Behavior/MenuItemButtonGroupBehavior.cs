@@ -8,8 +8,7 @@ using System.Windows.Controls;
 using Microsoft.Xaml.Behaviors;
 using AntiDupl.NET.WPF.Model;
 using AntiDupl.NET.WPF.ObjectModel;
-using TinyIoC;
-
+using AntiDupl.NET.WPF.Service;
 namespace AntiDupl.NET.WPF.Behavior
 {
     public class MenuItemButtonGroupBehavior : Behavior<MenuItem>
@@ -21,7 +20,7 @@ namespace AntiDupl.NET.WPF.Behavior
         {
             if (_viewModeModel == null)
             {
-                _viewModeModel = TinyIoCContainer.Current.Resolve<IViewModeModel>();
+                _viewModeModel = ServiceLocator.Resolve<IViewModeModel>();
             }
 
             if (_viewModeModel == null)

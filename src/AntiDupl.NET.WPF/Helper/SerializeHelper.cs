@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,40 @@ using System.Xml.Serialization;
 
 namespace AntiDupl.NET.WPF.Helper
 {
+    /// <summary>
+    /// Аргументы события о повреждённом файле настроек.
+    /// </summary>
+    public class FileLoadErrorEventArgs : EventArgs
+    {
+        /// <summary>Путь к повреждённому файлу.</summary>
+        public string FilePath { get; set; }
+
+        /// <summary>Текст ошибки десериализации.</summary>
+        public string Message { get; set; }
+
+        public FileLoadErrorEventArgs(string filePath, string message)
+        {
+            FilePath = filePath;
+            Message = message;
+        }
+    }
+
+    /// <summary>
+    /// Негeneric-контейнер события: Load() сериализатора не показывает диалог
+    /// (аудит зеркала WF: диалог → событие), а лишь поднимает событие; подписчик в UI-слое
+    /// (App.xaml.cs) логирует и показывает сообщение пользователю.
+    /// </summary>
+    public static class SerializeHelperEvents
+    {
+        public static event EventHandler<FileLoadErrorEventArgs> LoadErrorOccurred;
+
+        public static void Raise(string filePath, string message)
+        {
+            if (LoadErrorOccurred != null)
+                LoadErrorOccurred(null, new FileLoadErrorEventArgs(filePath, message));
+        }
+    }
+
     public class SerializeHelper<T>
     {
         /// <summary>
@@ -17,6 +52,8 @@ namespace AntiDupl.NET.WPF.Helper
         /// </summary>
         public static void Save(T target, string xmlFileName)
         {
+            Debug.Assert(target is not null, nameof(target));
+            Debug.Assert(!string.IsNullOrWhiteSpace(xmlFileName), nameof(xmlFileName));
             try
             {
                 string directory = Path.GetDirectoryName(xmlFileName);
@@ -62,6 +99,7 @@ namespace AntiDupl.NET.WPF.Helper
 
         public static T Load(string filePath)
         {
+            Debug.Assert(!string.IsNullOrWhiteSpace(filePath), nameof(filePath));
             if (File.Exists(filePath))
             {
                 FileInfo fileInfo = new FileInfo(filePath);
@@ -88,10 +126,9 @@ namespace AntiDupl.NET.WPF.Helper
                     {
                         //throw new Exception("Error on deserialize: " + ex.Message);
 
-                        if (File.Exists(filePath))
-                            if (MessageBox.Show(String.Format("Delete corrupted {0}?", filePath), "Delete target",
-                                MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                                File.Delete(filePath);
+                        // Диалог не показываем здесь: подписчики LoadErrorOccurred
+                        // (App.xaml.cs) решают, как сообщить пользователю.
+                        SerializeHelperEvents.Raise(filePath, ex.Message);
                     }
                 }
             }

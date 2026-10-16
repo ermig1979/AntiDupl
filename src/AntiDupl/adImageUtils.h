@@ -33,6 +33,31 @@ namespace ad
     //-------------------------------------------------------------------------
 
     adError LoadBitmap(const TString& fileName, adBitmapPtr pBitmap, const TOptions * pOptions);
+
+    // Aspect-preserving decode: the image is fitted into maxW x maxH without upscaling
+    // (target sizes are multiples of 8, minimum 8 — same formula as the original
+    // SuperPoint/LightGlue preprocessing) and placed at the top-left corner of the
+    // caller's maxW x maxH ARGB32 canvas (stride = maxW*4); the rest of the canvas
+    // is zeroed. Pure addition: LoadBitmap (stretch) keeps its semantics.
+    adError LoadBitmapLetterbox(const TString& fileName, adUInt32 maxW, adUInt32 maxH, adBitmapPtr pBitmap, const TOptions * pOptions);
+
+    // Расширенные варианты декодирования для deep-пайплайна (DINOv2):
+    // возвращают те же растры, что и базовые функции, но дополнительно сообщают
+    // метаданные нативного изображения, которые ядро и так знает после TImage::Load
+    // (без повторного чтения файла).
+    //
+    // pNativeWidth/pNativeHeight — опциональные (NULL = не вычислять): нативные
+    // размеры изображения (до какого-либо ресайза).
+    adError LoadBitmapEx(const TString & fileName, adBitmapPtr pBitmap, const TOptions * pOptions,
+                         adUInt32 * pNativeWidth, adUInt32 * pNativeHeight);
+
+    // То же, что LoadBitmapLetterbox, плюс опциональные метрики качества файла,
+    // вычисляемые на нативном сером растре теми же алгоритмами, что в классическом
+    // пайплайне (TDataCollector::FillPixelData): ComputeBlockiness + TBlurringDetector.
+    // pNativeWidth/pNativeHeight/pBlurring/pBlockiness — опциональные (NULL = не вычислять).
+    adError LoadBitmapLetterboxMetrics(const TString & fileName, adUInt32 maxW, adUInt32 maxH, adBitmapPtr pBitmap, const TOptions * pOptions,
+                                       adUInt32 * pNativeWidth, adUInt32 * pNativeHeight,
+                                       double * pBlurring, double * pBlockiness);
 }
 #endif//__adImages_h__
 

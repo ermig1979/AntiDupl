@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -44,7 +44,7 @@ namespace AntiDupl.NET.WPF.ObjectModel.ActionGenerator
             set
             {
                 _selectingBestImageByProperty = value;
-                RaisePropertyChangedEvent("SelectingBestImageByProperty");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -66,7 +66,7 @@ namespace AntiDupl.NET.WPF.ObjectModel.ActionGenerator
             set
             {
                 _algorithmOfGettingNumberFromFileName = value;
-                RaisePropertyChangedEvent("AlgorithmOfGettingNumberFromFileName");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -78,7 +78,7 @@ namespace AntiDupl.NET.WPF.ObjectModel.ActionGenerator
             set
             {
                 _directoryFilter = value;
-                RaisePropertyChangedEvent("DirectoryFilter");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -100,7 +100,7 @@ namespace AntiDupl.NET.WPF.ObjectModel.ActionGenerator
             set
             {
                 _bestByPath = value;
-                RaisePropertyChangedEvent("BestByPath");
+                RaisePropertyChangedEvent();
             }
         }
 

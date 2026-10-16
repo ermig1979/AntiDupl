@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:v="clr-namespace:System;assembly=mscorlib">
     <v:String x:Key="desc_ignorePair">Added to ignored pair {0}-{1}</v:String>
@@ -20,6 +20,8 @@
     <v:String x:Key="mainwindow_menu_edit_undo_all">Undo all</v:String>
     <v:String x:Key="mainwindow_menu_edit_redo">Redo</v:String>
     <v:String x:Key="mainwindow_menu_edit_select_all">Select all</v:String>
+    <v:String x:Key="mainwindow_menu_edit_copy">Copy (Ctrl-C)</v:String>
+    <v:String x:Key="mainwindow_menu_edit_copy_paths">Copy paths</v:String>
 
     <v:String x:Key="mainwindow_menu_result">Results</v:String>
     <v:String x:Key="mainwindow_menu_result_load">Load</v:String>
@@ -37,6 +39,10 @@
     <v:String x:Key="mainwindow_contextmenu_ShowMatches">Show matches</v:String>
     <v:String x:Key="mainwindow_contextmenu_IgnoreGroup">Ignore group</v:String>
     <v:String x:Key="mainwindow_contextmenu_AutoDeleteBySaati">Auto delete by Saati index</v:String>
+    <v:String x:Key="mainwindow_contextmenu_ShowDiffInPercent">Show difference in percent</v:String>
+    <v:String x:Key="desc_renameLike">Renamed like neighbour</v:String>
+    <v:String x:Key="desc_ignoreGroup">Added to ignored group ({0} files)</v:String>
+    <v:String x:Key="serialize_load_error">File {0} is corrupted and has been reset to default settings</v:String>
 
     <v:String x:Key="mainwindow_tabControl_setting_header">Setting</v:String>
     <v:String x:Key="mainwindow_tabControl_setting_path">Paths</v:String>
@@ -64,6 +70,8 @@
     <v:String x:Key="mainwindow_GridColumn_SearchSubfolders">Search in subfolders</v:String>
     <v:String x:Key="mainwindow_GridColumn_Image">Image</v:String>
     <v:String x:Key="mainwindow_GridColumn_ImageInfo">Image info</v:String>
+    <v:String x:Key="mainwindow_GridColumn_DeepWgc">LightGlue (WGC)</v:String>
+    <v:String x:Key="mainwindow_GridColumn_DeepWgc_Tooltip">Value format: “55% (59)”. 55% — average LightGlue confidence of the pair’s matches; (59) — number of matches (SuperPoint+LightGlue keypoints). A pair counts as a duplicate when: matches ≥ 10, angle consensus ≥ 5 votes and average confidence ≥ “Minimum average LightGlue match score” (settings). “—” — geometric verification failed (or WGC is disabled in settings).</v:String>
     <v:String x:Key="mainwindow_GridColumn_CountOfHashes">Count of hashes</v:String>
 
     <v:String x:Key="mainwindow_tooltip_FileSize">File size</v:String>
@@ -79,17 +87,57 @@
     <v:String x:Key="mainwindow_tooltip_ReplaseNeighbour">Replase neighbour</v:String>
 
     <v:String x:Key="toolBar_Configuration">Configuration</v:String>
+
+    <v:String x:Key="pathwindow_title">Paths</v:String>
+    <v:String x:Key="pathwindow_tab_Search">Search path</v:String>
+    <v:String x:Key="pathwindow_tab_Ignore">Ignore paths</v:String>
+    <v:String x:Key="pathwindow_tab_Valid">Valid paths</v:String>
+    <v:String x:Key="pathwindow_tab_Delete">Delete paths</v:String>
+    <v:String x:Key="pathwindow_column_Icon">Icon</v:String>
+    <v:String x:Key="pathwindow_column_Path">Path</v:String>
+    <v:String x:Key="pathwindow_column_SearchSubfolders">Search in subfolders</v:String>
+    <v:String x:Key="pathwindow_button_SelectDirectory">Select directories</v:String>
+    <v:String x:Key="pathwindow_button_SelectImages">Select files</v:String>
+    <v:String x:Key="pathwindow_context_DeleteCurrent">Delete current</v:String>
+    <v:String x:Key="pathwindow_IgnoreFilenameFilter">File name filter (regex)</v:String>
     <v:String x:Key="toolBar_setSaati">Set priorities for criterions for method Saati</v:String>
+    <v:String x:Key="toolBar_thresholdDifference">Threshold difference</v:String>
+    <v:String x:Key="toolBar_compareAlgorithm">Algorithm of comparing of images</v:String>
+    <v:String x:Key="toolBar_compareAlgorithm_squaredSum">Mean square difference</v:String>
+    <v:String x:Key="toolBar_compareAlgorithm_ssim">SSIM</v:String>
+    <v:String x:Key="toolBar_compareAlgorithm_dinov2">DINOv2 (deep)</v:String>
 
     <v:String x:Key="configurationWindow_thumbnailWidth">Thumbnail Width</v:String>
     <v:String x:Key="configurationWindow_maxCachedThumbnail">Max cached thumbnail</v:String>
-    <v:String x:Key="configurationWindow_SaveResultInCurrentFile">Save result in current file</v:String>
     <v:String x:Key="configurationWindow_BadColor">Bad color</v:String>
     <v:String x:Key="configurationWindow_GoodColor">Good color</v:String>
     <v:String x:Key="configurationWindow_AlternateColor">Alternate color</v:String>
     <v:String x:Key="configurationWindow_FolderAreDiffrentColor">Folder are diffrent color</v:String>
     <v:String x:Key="configurationWindow_DeleteHashesForResizedIimages">Delete hashes for resized images</v:String>
     <v:String x:Key="configurationWindow_RemoveHashesForFilesIsNotAvailable">Remove hashes for files is not available</v:String>
+    <v:String x:Key="configurationWindow_deepHeader">Deep (DINOv2)</v:String>
+    <v:String x:Key="configurationWindow_deepVerifyByLightGlue">Verify pairs with LightGlue (SuperPoint + LightGlue)</v:String>
+    <v:String x:Key="configurationWindow_deepLightGlueModelPath">LightGlue model path (empty = default, downloaded on demand)</v:String>
+    <v:String x:Key="configurationWindow_deepDownloadModel">Download model</v:String>
+    <v:String x:Key="configurationWindow_deepDinov2ModelPath">DINOv2 model path (the official file is not distributed; place it manually or give a download URL below)</v:String>
+    <v:String x:Key="configurationWindow_deepDinov2ModelUrl">DINOv2 download URL (empty = no auto-download when the model is missing)</v:String>
+    <v:String x:Key="configurationWindow_deepCudaPath">CUDA toolkit bin directory (e.g. C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.4\bin; added to PATH at startup, restart required)</v:String>
+    <v:String x:Key="configurationWindow_deepGroupModels">Models</v:String>
+    <v:String x:Key="configurationWindow_deepGroupSearchParams">Search parameters</v:String>
+    <v:String x:Key="configurationWindow_deepGroupCuda">CUDA / cuDNN</v:String>
+    <v:String x:Key="configurationWindow_deepGroupPerformance">Performance</v:String>
+    <v:String x:Key="configurationWindow_deepBatchSize">DINOv2 inference batch size (default 32; lower = less GPU memory)</v:String>
+    <v:String x:Key="configurationWindow_deepPrefetchCount">Prefetch queue depth for decode/embedding batches (0 = off, default 2; higher = smoother GPU utilization, more memory)</v:String>
+    <v:String x:Key="configurationWindow_deepMinSimilarity">Minimum pair similarity for joining a group (0..1; default 0.5)</v:String>
+    <v:String x:Key="configurationWindow_deepMaxClusterSize">Maximum cluster size; larger clusters are broken into singletons (default 50)</v:String>
+    <v:String x:Key="configurationWindow_deepTransitivityRatio">Transitivity ratio, multiplied by the distance threshold (0..1; default 0.7; lower = stricter chain merging)</v:String>
+    <v:String x:Key="configurationWindow_deepWgcParallelism">LightGlue verification parallelism (0 = auto, half of the processor count)</v:String>
+    <v:String x:Key="configurationWindow_deepMinMatchScore">Minimum average LightGlue match score (0..1; default 0.6)</v:String>
+    <v:String x:Key="configurationWindow_deepCudnnPath">cuDNN bin directory (e.g. C:\Program Files\NVIDIA\CUDNN\v9.23\bin\12.9\x64; added to PATH at startup, restart required)</v:String>
+    <v:String x:Key="configurationWindow_deepDownloadDinov2Model">Download DINOv2</v:String>
+    <v:String x:Key="configurationWindow_deepModelDownloaded">Model downloaded: {0}</v:String>
+    <v:String x:Key="configurationWindow_deepModelDownloadFailed">Model download failed: {0}</v:String>
+    <v:String x:Key="configurationWindow_deepDownloading">Downloading model…</v:String>
 
     <v:String x:Key="comparatorWindow_DeleteOther">DeleteOther</v:String>
 
@@ -111,4 +159,225 @@
     <v:String x:Key="criterion_SmallerFileSize">SmallerFileSize</v:String>
     <v:String x:Key="criterion_Blockiness">Blockiness</v:String>
     <v:String x:Key="criterion_Bluring">Bluring</v:String>
+
+    <!-- Hot keys (mirror of WF SelectHotKeysForm) -->
+    <v:String x:Key="mainwindow_menu_view_hotkeys">Hot keys...</v:String>
+    <v:String x:Key="mainwindow_menu_view_selectColumns">Select columns</v:String>
+    <v:String x:Key="selecthotkeys_title">Hot keys</v:String>
+    <v:String x:Key="selecthotkeys_column_Action">Action</v:String>
+    <v:String x:Key="selecthotkeys_column_Enabled">Enabled</v:String>
+    <v:String x:Key="selecthotkeys_column_Key">Hot key</v:String>
+    <v:String x:Key="selecthotkeys_hint">Click and press a key combination (Escape clears)</v:String>
+    <v:String x:Key="selecthotkeys_invalid">This hot key is in use or reserved by the application</v:String>
+    <v:String x:Key="selecthotkeys_button_SetDefault">Set default</v:String>
+    <v:String x:Key="selecthotkeys_button_OK">OK</v:String>
+    <v:String x:Key="selecthotkeys_button_Cancel">Cancel</v:String>
+    <v:String x:Key="hotkey_DeleteDefect">Delete defect</v:String>
+    <v:String x:Key="hotkey_DeleteFirst">Delete first image</v:String>
+    <v:String x:Key="hotkey_DeleteSecond">Delete second image</v:String>
+    <v:String x:Key="hotkey_DeleteBoth">Delete both images</v:String>
+    <v:String x:Key="hotkey_RenameFirstToSecond">Rename first like second</v:String>
+    <v:String x:Key="hotkey_RenameSecondToFirst">Rename second like first</v:String>
+    <v:String x:Key="hotkey_Mistake">Mark as mistake (ignore pair)</v:String>
+    <v:String x:Key="hotkey_ShowNeighbours">Show neighbours (compare tab)</v:String>
+    <v:String x:Key="hotkey_OpenImageDiff">Open image diff (external tool)</v:String>
+
+    <!-- Progress dialog log grid (progress log) -->
+    <v:String x:Key="progressdialog_title">Progress</v:String>
+    <v:String x:Key="progressdialog_button_Cancel">Cancel</v:String>
+    <v:String x:Key="progressdialog_column_Time">Time</v:String>
+    <v:String x:Key="progressdialog_column_Message">Message</v:String>
+
+
+    <!-- Check on result loading (progress log, mirror of WF options) -->
+    <v:String x:Key="configurationWindow_CheckResultsAtLoading">Check file existence on result loading</v:String>
+    <v:String x:Key="configurationWindow_CheckMistakesAtLoading">Filter ignored pairs on result loading</v:String>
+
+    <!-- Missing columns (results table columns) / defects () -->
+    <v:String x:Key="mainwindow_GridColumn_Time">Time</v:String>
+    <v:String x:Key="mainwindow_GridColumn_Transform">Transform</v:String>
+    <v:String x:Key="mainwindow_TransformTurn0ToolTip">Original</v:String>
+    <v:String x:Key="mainwindow_TransformTurn90ToolTip">Rotated on 90°</v:String>
+    <v:String x:Key="mainwindow_TransformTurn180ToolTip">Rotated on 180°</v:String>
+    <v:String x:Key="mainwindow_TransformTurn270ToolTip">Rotated on 270°</v:String>
+    <v:String x:Key="mainwindow_TransformMirrorTurn0ToolTip">Horizontally flipped</v:String>
+    <v:String x:Key="mainwindow_TransformMirrorTurn90ToolTip">Horizontally flipped and rotated on 90°</v:String>
+    <v:String x:Key="mainwindow_TransformMirrorTurn180ToolTip">Horizontally flipped and rotated on 180°</v:String>
+    <v:String x:Key="mainwindow_TransformMirrorTurn270ToolTip">Horizontally flipped and rotated on 270°</v:String>
+    <v:String x:Key="mainwindow_DuplPairIconToolTip">Dubbed picture pair</v:String>
+    <v:String x:Key="mainwindow_DefectIconToolTip">Defect picture</v:String>
+    <v:String x:Key="mainwindow_UnknownDefectIconToolTip">Unknown defect</v:String>
+    <v:String x:Key="mainwindow_JpegEndMarkerIsAbsentIconToolTip">JPEG file end marker is absent</v:String>
+    <v:String x:Key="mainwindow_BlockinessIconToolTip">Image with blockiness</v:String>
+    <v:String x:Key="mainwindow_BlurringIconToolTip">Blurred image</v:String>
+    <v:String x:Key="mainwindow_GridColumn_Type">Type</v:String>
+    <v:String x:Key="mainwindow_GridColumn_Defect">Defect</v:String>
+    <v:String x:Key="mainwindow_GridColumn_Hint">Hint</v:String>
+    <v:String x:Key="mainwindow_contextmenu_DeleteDefect">Delete defect</v:String>
+    <v:String x:Key="desc_deleteDefect">Delete defect {0}</v:String>
+
+    <!-- External diff tool () -->
+    <v:String x:Key="configurationWindow_imageDiffExecutablePath">Executable path:</v:String>
+    <v:String x:Key="configurationWindow_imageDiffExecutableArguments">Executable arguments (given by "%1" "%2"):</v:String>
+    <v:String x:Key="comparatorWindow_ExternalDiff">Open in diff tool</v:String>
+    <v:String x:Key="comparatorWindow_externalToolNotSet">External diff tool is not set (Configuration → Main)</v:String>
+
+    <!-- UseSinglePath / Help-About -->
+    <v:String x:Key="configurationWindow_UseSinglePath">Use single search path</v:String>
+    <v:String x:Key="mainwindow_menu_help">Help</v:String>
+    <v:String x:Key="mainwindow_menu_help_help">Help</v:String>
+    <v:String x:Key="mainwindow_menu_help_check_updates">Check for updates</v:String>
+    <v:String x:Key="mainwindow_menu_help_about">About</v:String>
+    <v:String x:Key="aboutwindow_title">About AntiDupl</v:String>
+    <v:String x:Key="aboutwindow_button_OK">OK</v:String>
+    <v:String x:Key="aboutwindow_column_Component">Component</v:String>
+    <v:String x:Key="aboutwindow_column_Version">Version</v:String>
+    <v:String x:Key="aboutwindow_copyright0">Copyright (c) 2002-2026 Yermalayeu Ihar, </v:String>
+    <v:String x:Key="aboutwindow_copyright1">2013-2026 Borisov Dmitry,</v:String>
+    <v:String x:Key="aboutwindow_copyright2">2023-2026 Edi61.</v:String>
+    <v:String x:Key="aboutwindow_update_available">Latest release: v{0}. Download: {1}</v:String>
+    <v:String x:Key="aboutwindow_check_failed">Could not check for updates (offline or network error).</v:String>
+<!-- ==== Панель инструментов: действия над текущей парой (зеркало WF MainToolStrip) ==== -->
+    <v:String x:Key="toolBar_mistake">Mark the current pair as a mistake</v:String>
+    <v:String x:Key="toolBar_performHint">Process the current pair automatically</v:String>
+    <v:String x:Key="toolBar_deleteFirst">Delete the first picture of the current pair</v:String>
+    <v:String x:Key="toolBar_deleteSecond">Delete the second picture of the current pair</v:String>
+    <v:String x:Key="toolBar_deleteBoth">Delete both pictures of the current pair</v:String>
+    <v:String x:Key="toolBar_deleteDefect">Delete the defective picture in the current result</v:String>
+    <v:String x:Key="toolBar_tuning">Tuning</v:String>
+    <v:String x:Key="toolBar_paths">Paths</v:String>
+    <v:String x:Key="toolBar_search">Search</v:String>
+    <v:String x:Key="toolBar_refresh">Refresh</v:String>
+    <v:String x:Key="toolBar_configurableAction">Configurable action</v:String>
+    <v:String x:Key="mainwindow_GridColumn_Difference">Difference</v:String>
+    <v:String x:Key="comparatorwindow_title">Comparator</v:String>
+    <v:String x:Key="colorwindow_title">Color</v:String>
+    <v:String x:Key="configurableactionwindow_title">Configurable action</v:String>
+    <v:String x:Key="prioritieswindow_title">Priorities</v:String>
+    <v:String x:Key="status_searching">Searching… {0}%</v:String>
+    <v:String x:Key="status_searching_deep">Deep search… {0}%</v:String>
+    <v:String x:Key="status_showingResults">Showing results in table ({0} pairs) …</v:String>
+    <v:String x:Key="status_fillingTable">Filling table… ({0}/{1})</v:String>
+    <v:String x:Key="status_loadingResults">Loading results… ({0}/{1})</v:String>
+    <v:String x:Key="status_processed">Processing finished ({0} of {1} pairs), showing in table…</v:String>
+    <v:String x:Key="status_ready">Ready: {0}</v:String>
+    <v:String x:Key="status_preparing">Preparing search…</v:String>
+    <v:String x:Key="status_preparing_deep">Preparing deep search… (WGC threshold minMatch={0})</v:String>
+    <v:String x:Key="colorwindow_red">Red</v:String>
+    <v:String x:Key="colorwindow_green">Green</v:String>
+    <v:String x:Key="colorwindow_blue">Blue</v:String>
+    <v:String x:Key="colorwindow_alpha">Alpha</v:String>
+    <v:String x:Key="colorwindow_value">Colour value</v:String>
+
+    <!-- ==== GPU fallback: диалог выбора каталогов CUDA/cuDNN ==== -->
+    <v:String x:Key="gpufallback_title">GPU is Unavailable</v:String>
+    <v:String x:Key="gpufallback_message">ONNX Runtime could not find CUDA/cuDNN. The search is running on CPU.</v:String>
+    <v:String x:Key="gpufallback_message2">Specify the CUDA and cuDNN bin directories (cudart64_*.dll / cudnn*.dll), or continue on CPU.</v:String>
+    <v:String x:Key="gpufallback_cuda">CUDA directory:</v:String>
+    <v:String x:Key="gpufallback_cudnn">cuDNN directory:</v:String>
+    <v:String x:Key="gpufallback_browse">Browse...</v:String>
+    <v:String x:Key="gpufallback_save">Save and Restart</v:String>
+    <v:String x:Key="gpufallback_cancel">Continue on CPU</v:String>
+    <v:String x:Key="gpufallback_restart">Settings saved. Restart the application to use the GPU.</v:String>
+    <v:String x:Key="gpufallback_detecting">detecting...</v:String>
+    <v:String x:Key="gpufallback_detected">detected</v:String>
+    <v:String x:Key="gpufallback_notFound">not found in standard locations — specify the folder manually or leave empty</v:String>
+    <v:String x:Key="gpufallback_saved">saved to settings (takes effect after restart)</v:String>
+    <v:String x:Key="gpufallback_saveFailed">could not be saved to settings</v:String>
+
+    <!-- ==== Configuration: заголовки вкладок ==== -->
+    <v:String x:Key="configurationWindow_title">Options</v:String>
+    <v:String x:Key="configurationWindow_tabMain">Main</v:String>
+    <v:String x:Key="configurationWindow_tabSearch">Search</v:String>
+    <v:String x:Key="configurationWindow_tabCompare">Compare</v:String>
+    <v:String x:Key="configurationWindow_tabAdvanced">Advanced</v:String>
+    <v:String x:Key="configurationWindow_tabDefect">Defects</v:String>
+    <v:String x:Key="configurationWindow_tabImageDiff">Image Difftool</v:String>
+    <v:String x:Key="configurationWindow_tabDeep">Deep (DINOv2)</v:String>
+
+    <!-- ==== Search ==== -->
+    <v:String x:Key="configurationWindow_searchSystem">Search system folders/files</v:String>
+    <v:String x:Key="configurationWindow_searchHidden">Search hidden folders/files</v:String>
+    <v:String x:Key="configurationWindow_tooltip_searchSystem">Include system directories and files (e.g. Windows, Program Files) in the search.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_searchHidden">Include hidden directories and files in the search.</v:String>
+
+    <!-- ==== Compare (подписи) ==== -->
+    <v:String x:Key="configurationWindow_checkOnEquality">Search image dupls</v:String>
+    <v:String x:Key="configurationWindow_transformedImage">Search rotated and mirror image dupls</v:String>
+    <v:String x:Key="configurationWindow_sizeControl">Control image size</v:String>
+    <v:String x:Key="configurationWindow_typeControl">Control image type</v:String>
+    <v:String x:Key="configurationWindow_ratioControl">Control image width/height ratio</v:String>
+    <v:String x:Key="configurationWindow_algorithm">Algorithm of comparing of images</v:String>
+    <v:String x:Key="configurationWindow_thresholdDifference">Threshold difference</v:String>
+    <v:String x:Key="configurationWindow_minimalImageSize">Minimal image width/height</v:String>
+    <v:String x:Key="configurationWindow_maximalImageSize">Maximal image width/height</v:String>
+    <v:String x:Key="configurationWindow_compareInsideOneFolder">Compare images inside one directory</v:String>
+    <v:String x:Key="configurationWindow_compareInsideOneSearchPath">Compare images from one path of search with one another</v:String>
+
+    <!-- ==== Advanced (подписи) ==== -->
+    <v:String x:Key="configurationWindow_deleteToRecycleBin">Delete to recycle bin</v:String>
+    <v:String x:Key="configurationWindow_mistakeDataBase">Remember mistakes</v:String>
+    <v:String x:Key="configurationWindow_ratioResolution">Image width/height ratio precision</v:String>
+    <v:String x:Key="configurationWindow_compareThreadCount">Compare thread count</v:String>
+    <v:String x:Key="configurationWindow_collectThreadCount">Load thread count</v:String>
+    <v:String x:Key="configurationWindow_reducedImageSize">Normalized image size</v:String>
+    <v:String x:Key="configurationWindow_undoQueueSize">Queue size of undo</v:String>
+    <v:String x:Key="configurationWindow_resultCountMax">Maximal count of results</v:String>
+    <v:String x:Key="configurationWindow_ignoreFrameWidth">Width of ignored frame of image</v:String>
+    <v:String x:Key="configurationWindow_useLibJpegTurbo">Use libjpeg-turbo</v:String>
+
+    <!-- ==== Defect (подписи) ==== -->
+    <v:String x:Key="configurationWindow_checkOnDefect">Check on defect</v:String>
+    <v:String x:Key="configurationWindow_checkOnBlockiness">Check on blockiness</v:String>
+    <v:String x:Key="configurationWindow_blockinessThreshold">Blockiness threshold</v:String>
+    <v:String x:Key="configurationWindow_checkOnBlockinessOnlyNotJpeg">Check on blockiness only on not Jpeg</v:String>
+    <v:String x:Key="configurationWindow_checkOnBlurring">Check on blurring</v:String>
+    <v:String x:Key="configurationWindow_blurringThreshold">Blurring threshold</v:String>
+
+    <!-- ==== Tooltips: Main ==== -->
+    <v:String x:Key="configurationWindow_tooltip_thumbnailWidth">Size in pixels of the thumbnails in the results list.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_maxCachedThumbnail">Maximum number of thumbnails kept in the cache (less disk I/O, more RAM).</v:String>
+    <v:String x:Key="configurationWindow_tooltip_GoodColor">Color used to highlight matching (identical) areas of an image pair.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_BadColor">Color used to highlight the differences between the two images of a pair.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_CheckResultsAtLoading">When loading a result, check that the files still exist and remove pairs with missing files.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_CheckMistakesAtLoading">When loading a result, remove pairs marked as mistakes (ignored pairs).</v:String>
+    <v:String x:Key="configurationWindow_tooltip_UseSinglePath">Pass only the first search path to the core (the remaining paths are ignored).</v:String>
+
+    <!-- ==== Tooltips: Compare ==== -->
+    <v:String x:Key="configurationWindow_tooltip_checkOnEquality">Search for duplicate images (identical or nearly identical pictures).</v:String>
+    <v:String x:Key="configurationWindow_tooltip_transformedImage">Also search for duplicates rotated or mirrored relative to the original.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_sizeControl">Treat images as different if their pixel size (width/height) differs.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_typeControl">Treat images as different if their file format (type) differs.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_ratioControl">Treat images as different if their width/height ratio differs.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_algorithm">Algorithm used to compare two images.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_thresholdDifference">Difference threshold in percent: pairs with a difference below this value are considered duplicates (lower = stricter).</v:String>
+    <v:String x:Key="configurationWindow_tooltip_minimalImageSize">Images with width or height below this value (px) are not searched.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_maximalImageSize">Images with width or height above this value (px) are not searched.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_compareInsideOneFolder">Compare images only within the same directory.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_compareInsideOneSearchPath">Compare images with each other only if they come from the same search path.</v:String>
+
+    <!-- ==== Tooltips: Advanced ==== -->
+    <v:String x:Key="configurationWindow_tooltip_deleteToRecycleBin">When deleting images, move them to the Recycle Bin instead of deleting permanently.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_mistakeDataBase">Remember 'mistake' marks in the database: the same pairs will not be shown again.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_ratioResolution">Precision of the width/height ratio comparison (1/8, 1/16, ...).</v:String>
+    <v:String x:Key="configurationWindow_tooltip_compareThreadCount">Number of threads used to compare images (0 = automatic).</v:String>
+    <v:String x:Key="configurationWindow_tooltip_collectThreadCount">Number of threads used to load files (0 = automatic).</v:String>
+    <v:String x:Key="configurationWindow_tooltip_reducedImageSize">Normalized image size used for fast pre-comparison (16, 32, 64, 128 px).</v:String>
+    <v:String x:Key="configurationWindow_tooltip_undoQueueSize">Maximum number of undo operations kept in memory.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_resultCountMax">Maximum number of results returned by the core (0 = unlimited).</v:String>
+    <v:String x:Key="configurationWindow_tooltip_ignoreFrameWidth">Width in pixels of the border around the image that is ignored when comparing.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_useLibJpegTurbo">Use libjpeg-turbo for decoding JPEG (faster on most CPUs).</v:String>
+
+    <!-- ==== Tooltips: Defect ==== -->
+    <v:String x:Key="configurationWindow_tooltip_checkOnDefect">Detect defective images (blockiness, blurring) in addition to duplicates.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_checkOnBlockiness">Detect blocky (strongly compressed) JPEG images.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_blockinessThreshold">Blockiness threshold in percent: images with blockiness above this value are marked as defective.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_checkOnBlockinessOnlyNotJpeg">Check blockiness only for files in formats other than JPEG.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_checkOnBlurring">Detect blurred images.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_blurringThreshold">Blurring threshold in percent: images with blur above this value are marked as defective.</v:String>
+
+    <!-- ==== Tooltips: Image Diff ==== -->
+    <v:String x:Key="configurationWindow_tooltip_imageDiffExecutablePath">Path to the external image diff application used by the 'Open in diff tool' command.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_imageDiffExecutableArguments">Command line arguments passed to the diff tool; %1 and %2 are replaced with the first and second image paths.</v:String>
+
 </ResourceDictionary>

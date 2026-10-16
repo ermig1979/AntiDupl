@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using AntiDupl.NET.WPF.Helper;
 using AntiDupl.NET.WPF.ViewModel;
+using Microsoft.Extensions.Logging;
 
 namespace AntiDupl.NET.WPF.View
 {
@@ -12,6 +15,17 @@ namespace AntiDupl.NET.WPF.View
     {
         ProgressDialog _viewOfProgress;
         ComparatorWindow _viewComparator;
+        readonly ILogger _logger;
+
+        public WindowService()
+            : this(null)
+        {
+        }
+
+        public WindowService(ILogger logger)
+        {
+            _logger = logger;
+        }
 
         public Window ActiveWindow
         {
@@ -37,6 +51,8 @@ namespace AntiDupl.NET.WPF.View
             Window activeWindow = ActiveWindow;
             if (activeWindow != null)
             {
+                _logger?.LogInformation("Окно прогресса: открыто (активное окно '{Window}', поток {Thread})",
+                    activeWindow.Title, ThreadHelper.CurrentThreadName());
                 //throw new NullReferenceException("ActiveWindow");
 
                 //Application.Current.Dispatcher.Invoke(() =>
@@ -69,6 +85,12 @@ namespace AntiDupl.NET.WPF.View
         {
             if (_viewOfProgress != null)
             {
+                // Программное закрытие: окно не должно трактовать его как отмену
+                var vm = _viewOfProgress.DataContext as ProgressDialogViewModel;
+                if (vm != null)
+                    vm.IsProgrammaticClose = true;
+
+                _logger?.LogInformation("Окно прогресса: закрыто (поток {Thread})", ThreadHelper.CurrentThreadName());
                 //Application.Current.Dispatcher.Invoke(() =>
                 //{
                 _viewOfProgress.Close();

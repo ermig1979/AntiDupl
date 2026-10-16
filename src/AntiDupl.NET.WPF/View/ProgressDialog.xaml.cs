@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
+using System.ComponentModel;
 using System.Windows;
 using AntiDupl.NET.WPF.ViewModel;
 
@@ -20,11 +18,15 @@ public partial class ProgressDialog : Window
     {
         base.OnClosing(e);
 
-        //find out, if the close button was pressed or if the window was closed by win.close()
-        if (new StackTrace().GetFrames().FirstOrDefault(x => x.GetMethod() == typeof(Window).GetMethod("Close")) != null) return;
+        var vm = DataContext as ProgressDialogViewModel;
 
-        //if close button was pressed, cancel execution
-        var vm = (ProgressDialogViewModel)DataContext;
+        // Программное закрытие (поиск завершён) или окно уже отменено — просто закрываемся.
+        if (vm == null || vm.IsProgrammaticClose || vm.IsCancelled)
+            return;
+
+        // Пользователь нажал крестик: останавливаем поиск,
+        // окно остаётся открытым (видно статус «Остановлено»);
+        // повторный клик по крестику закроет его (см. vm.IsCancelled выше).
         vm.CancelCommand.Execute(null);
         e.Cancel = true;
     }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using AntiDupl.NET.WPF.ObjectModel;
 using AntiDupl.NET.WPF.ViewModel;
 
@@ -68,7 +69,7 @@ namespace AntiDupl.NET.WPF.UndoRedo
 
         public string Description
         {
-            get { return "Переименовали как соседа"; }
+            get { return Application.Current.Resources["desc_renameLike"] as string ?? "Renamed like neighbour"; }
         }
     }
 }

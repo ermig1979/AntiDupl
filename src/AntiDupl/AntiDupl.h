@@ -597,6 +597,16 @@ extern "C"
     };
     typedef adBitmap* adBitmapPtr;
 
+    // NEW: candidate descriptor returned by the scan-only export (adScanCandidatesW).
+    // Describes a file that passed the scan filters (TSearcher) without image data collection.
+    struct adCandidateInfoW
+    {
+        adPathW  path;   // adCharW[MAX_PATH_EX], NUL-terminated
+        adUInt64 size;   // file size in bytes
+        adUInt64 time;   // file last-write time (== TImageInfo::time, raw FILETIME)
+    };
+    typedef adCandidateInfoW* adCandidateInfoPtrW;
+
     /*------------Functions-------------------------------------------------------*/
 
     DLLAPI adError adVersionGet(adVersionType versionType, adCharA * pVersion, adSizePtr pVersionSize);
@@ -607,6 +617,14 @@ extern "C"
 
 	DLLAPI adError adStop(adEngineHandle handle);
     DLLAPI adError adSearch(adEngineHandle handle);
+
+    // Scan-only export: runs the TSearcher scan with all current filter options and
+    // reports the candidate list (path/size/time) without collect/compare.
+    // Two-call pattern: the first call with *pCandidateSize == 0 runs the scan,
+    // sets *pCandidateSize to the required count and returns
+    // AD_ERROR_OUTPUT_BUFFER_IS_TOO_SMALL (pCandidates may be NULL there);
+    // the second call fills the caller array.
+    DLLAPI adError adScanCandidatesW(adEngineHandle handle, adCandidateInfoPtrW pCandidates, adSizePtr pCandidateSize);
 
     DLLAPI adError adLoadA(adEngineHandle handle, adFileType fileType, const adCharA* fileName, adBool check);
     DLLAPI adError adLoadW(adEngineHandle handle, adFileType fileType, const adCharW* fileName, adBool check);
@@ -658,6 +676,25 @@ extern "C"
 
     DLLAPI adError adLoadBitmapA(adEngineHandle handle, const adCharA* fileName, adBitmapPtr pBitmap);
     DLLAPI adError adLoadBitmapW(adEngineHandle handle, const adCharW* fileName, adBitmapPtr pBitmap);
+    // NEW: aspect-preserving decode (letterbox): the image is fitted into maxW x maxH
+    // without upscaling (target sizes are multiples of 8, minimum 8) and placed at the
+    // top-left corner of the caller's maxW x maxH ARGB32 canvas (stride = maxW*4);
+    // the rest of the canvas is zeroed.
+    DLLAPI adError adLoadBitmapLetterboxW(adEngineHandle handle, const adCharW* fileName, adUInt32 maxW, adUInt32 maxH, adBitmapPtr pBitmap);
+
+    // NEW: same as adLoadBitmapW, but additionally reports the native (pre-resize)
+    // image dimensions. pNativeWidth/pNativeHeight are optional (NULL = not reported).
+    DLLAPI adError adLoadBitmapExW(adEngineHandle handle, const adCharW* fileName, adBitmapPtr pBitmap,
+                                   adUInt32* pNativeWidth, adUInt32* pNativeHeight);
+
+    // NEW: same as adLoadBitmapLetterboxW, but additionally reports native dimensions
+    // and per-file quality metrics (blurring, blockiness) computed on the native
+    // grayscale raster with the same algorithms as the classic search pipeline
+    // (TDataCollector::FillPixelData). All output pointers are optional (NULL = skipped).
+    DLLAPI adError adLoadBitmapLetterboxMetricsW(adEngineHandle handle, const adCharW* fileName,
+                                                 adUInt32 maxW, adUInt32 maxH, adBitmapPtr pBitmap,
+                                                 adUInt32* pNativeWidth, adUInt32* pNativeHeight,
+                                                 double* pBlurring, double* pBlockiness);
 
     /*------------Unicode/Ansi defines-------------------------------------------*/
 

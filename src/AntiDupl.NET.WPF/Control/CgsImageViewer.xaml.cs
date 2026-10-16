@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -241,7 +241,6 @@ namespace AntiDupl.NET.WPF.Control
         {
             _rotationAngle -= 90;
             imgCurrent.LayoutTransform = new RotateTransform(_rotationAngle);
-
 
             ZoomLevel = 0;
             ScaleToFit();

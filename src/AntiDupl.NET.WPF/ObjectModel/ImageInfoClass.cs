@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -13,8 +13,7 @@ using System.Xml.Serialization;
 using AntiDupl.NET.WPF.Model;
 using AntiDupl.NET.WPF.Service;
 using AntiDupl.NET.WPF.ViewModel;
-using TinyIoC;
-
+using AntiDupl.NET.WPF.Service;
 using AntiDupl.NET.Core.Original;
 
 namespace AntiDupl.NET.WPF.ObjectModel
@@ -48,11 +47,11 @@ namespace AntiDupl.NET.WPF.ObjectModel
                        });
 
 
-            _configuration = TinyIoCContainer.Current.Resolve<IConfigurationModel>();
+            _configuration = ServiceLocator.Resolve<IConfigurationModel>();
             _configuration.PropertyChanged += _configuration_PropertyChanged;
 
-            _imageLoader = TinyIoC.TinyIoCContainer.Current.Resolve<IImageLoader>();
-            _thumbnailProvider = TinyIoC.TinyIoCContainer.Current.Resolve<IThumbnailProvider>();
+            _imageLoader = ServiceLocator.Resolve<IImageLoader>();
+            _thumbnailProvider = ServiceLocator.Resolve<IThumbnailProvider>();
         }
 
         ~ImageInfoClass()
@@ -82,7 +81,7 @@ namespace AntiDupl.NET.WPF.ObjectModel
                     FileName = System.IO.Path.GetFileName(_path);
                     Directory = System.IO.Path.GetDirectoryName(_path);
                 }
-                RaisePropertyChangedEvent("Path");
+                RaisePropertyChangedEvent();
                 RaisePropertyChangedEvent("FileName");
                 RaisePropertyChangedEvent("Directory");
             }
@@ -101,7 +100,7 @@ namespace AntiDupl.NET.WPF.ObjectModel
             set
             {
                 _jpegPeaks = value;
-                RaisePropertyChangedEvent("JpegPeaks");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -133,7 +132,7 @@ namespace AntiDupl.NET.WPF.ObjectModel
                     throw;
                 }
 
-                RaisePropertyChangedEvent("Width");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -190,7 +189,6 @@ namespace AntiDupl.NET.WPF.ObjectModel
                 //return new BitmapImage(new Uri("pack://application:,,,/loading.jpg", UriKind.Absolute));
                 //Debug.WriteLine("Возвращаем заглушку для " + Path);
                 return _dumbImage;
-                ///ImageComparerGUIWPF;component/Images/undo-3-32.png
             }
             set
             {
@@ -198,7 +196,7 @@ namespace AntiDupl.NET.WPF.ObjectModel
                     throw new Exception("value = _dumbImage");
                 //Debug.WriteLine("Для картинки " + Path + " устанавливается изображение");
                 _image = value;
-                RaisePropertyChangedEvent("Image");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -277,7 +275,7 @@ namespace AntiDupl.NET.WPF.ObjectModel
             set
             {
                 _utilityIndex = value;
-                RaisePropertyChangedEvent("UtilityIndex");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -294,11 +292,35 @@ namespace AntiDupl.NET.WPF.ObjectModel
             set
             {
                 _utilityIndexCalculateDecription = value;
-                RaisePropertyChangedEvent("UtilityIndexCalculateDecription");
+                RaisePropertyChangedEvent();
             }
         }
 
         public CoreDll.ImageType Type { get; set; }
+
+        /// <summary>
+        /// Время изменения файла (adImageInfoW.time, FILETIME; колонки таблицы результатов — колонка «Time»).
+        /// 0 = не заполнено.
+        /// </summary>
+        public ulong Time { get; set; }
+
+        /// <summary>Время изменения файла для вывода в колонке таблицы.</summary>
+        public string TimeDisplay
+        {
+            get
+            {
+                if (Time == 0)
+                    return "";
+                try
+                {
+                    return DateTime.FromFileTime((long)Time).ToLocalTime().ToString("g");
+                }
+                catch (Exception)
+                {
+                    return "";
+                }
+            }
+        }
 
 
     }

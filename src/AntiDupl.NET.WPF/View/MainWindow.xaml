@@ -15,6 +15,12 @@
         Height="350" Width="625"
         d:DataContext="{d:DesignInstance viewModel:MainViewModel, IsDesignTimeCreatable=False}"
         UseLayoutRounding="True">
+    <Window.InputBindings>
+        <KeyBinding Key="A" Modifiers="Ctrl" Command="{Binding SelectAllCommand}"/>
+        <KeyBinding Key="C" Modifiers="Ctrl" Command="{Binding CopyCommand}"/>
+        <KeyBinding Key="Z" Modifiers="Ctrl" Command="{Binding UndoCommand}"/>
+        <KeyBinding Key="Y" Modifiers="Ctrl" Command="{Binding RedoCommand}"/>
+    </Window.InputBindings>
     <Window.Resources>
         <convertor:DuplResultMultiValueConverter x:Key="duplResultMultiValueConverter"/>
         <convertor:FileSizeConverter x:Key="fileSizeConverter"/>
@@ -24,6 +30,19 @@
         <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
         <convertor:DeleteBackgroundValueConverter x:Key="deleteBackgroundValueConverter"/>
         <convertor:DifferenceValueConverter x:Key="differenceValueConverter"/>
+        <convertor:TransformTypeToImageSourceConverter x:Key="transformTypeToImageSourceConverter"/>
+        <convertor:TransformTypeToToolTipConverter x:Key="transformTypeToToolTipConverter"/>
+        <convertor:ResultTypeToIconConverter x:Key="resultTypeToIconConverter"/>
+        <convertor:ResultTypeToToolTipConverter x:Key="resultTypeToToolTipConverter"/>
+        <convertor:DefectTypeToIconConverter x:Key="defectTypeToIconConverter"/>
+        <convertor:DefectTypeToToolTipConverter x:Key="defectTypeToToolTipConverter"/>
+        <convertor:EditModeToVisibilityConverter x:Key="editModeToVisibilityConverter"/>
+
+        <!-- Заголовок колонки LightGlue (WGC): расшифровка формата «55% (59)» и критерия PASS -->
+        <Style x:Key="deepWgcHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="ToolTip" Value="{DynamicResource mainwindow_GridColumn_DeepWgc_Tooltip}"/>
+            <Setter Property="ToolTipService.ShowDuration" Value="10000"/>
+        </Style>
 
         <Style TargetType="{x:Type Image}">
             <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
@@ -48,13 +67,13 @@
                 <MenuItem Header="{DynamicResource mainwindow_menu_file_open_search_profile}"
                           Command="{Binding LoadResultsCommand}">
                     <MenuItem.Icon>
-                        <Image Source="../Image/img/ProfileOpenMenu.png" />
+                        <Image Source="../Image/wf/ProfileOpenMenu.img" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="{DynamicResource mainwindow_menu_file_save_search_profile_as}"
                           Command="{Binding SaveResultsCommand}">
                     <MenuItem.Icon>
-                        <Image Source="../Image/img/ProfileSaveAsMenu.png" />
+                        <Image Source="../Image/wf/ProfileSaveAsMenu.img" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
@@ -73,23 +92,29 @@
                 <MenuItem Header="{DynamicResource mainwindow_menu_edit_undo}"
                           Command="{Binding UndoCommand}">
                     <MenuItem.Icon>
-                        <Image Source="../Image/img/UndoMenu.png" />
+                        <Image Source="../Image/wf/UndoMenu.img" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="{DynamicResource mainwindow_menu_edit_undo_all}"
                           Command="{Binding UndoAllCommand}">
                     <MenuItem.Icon>
-                        <Image Source="../Image/img/UndoMenu.png" />
+                        <Image Source="../Image/wf/UndoMenu.img" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="{DynamicResource mainwindow_menu_edit_redo}"
                           Command="{Binding RedoCommand}">
                     <MenuItem.Icon>
-                        <Image Source="../Image/img/RedoMenu.png" />
+                        <Image Source="../Image/wf/RedoMenu.img" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="{DynamicResource mainwindow_menu_edit_select_all}" />
+                <MenuItem Header="{DynamicResource mainwindow_menu_edit_copy}"
+                          Command="{Binding CopyCommand}" />
+                <MenuItem Header="{DynamicResource mainwindow_menu_edit_copy_paths}"
+                          Command="{Binding CopyPathsCommand}" />
+                <Separator />
+                <MenuItem Header="{DynamicResource mainwindow_menu_edit_select_all}"
+                          Command="{Binding SelectAllCommand}" />
             </MenuItem>
 
             <MenuItem Header="{DynamicResource mainwindow_menu_view}">
@@ -123,6 +148,28 @@
                         <behavior:MenuItemButtonGroupBehavior />
                     </i:Interaction.Behaviors>
                 </MenuItem>
+                <!-- Зеркало WF: «Select columns» — пункт View-меню (не кнопка тулбара);
+                     только в режиме пар (chooser работает с гридом пар). -->
+                <MenuItem Header="{DynamicResource mainwindow_menu_view_selectColumns}"
+                          helper:DataGridColumnChooserHelper.ChooserId="ResultPairs"
+                          Visibility="{Binding ViewModeModel.ViewMode,
+                              Converter={StaticResource viewModeToVisibilityConverter},
+                              ConverterParameter={x:Static objectModel:ViewMode.Pair}}" />
+                <MenuItem Header="{DynamicResource mainwindow_menu_view_hotkeys}"
+                          Command="{Binding OpenHotKeysCommand}" />
+            </MenuItem>
+            <!-- Справка/О программе (зеркало WF Help-меню) -->
+            <MenuItem Header="{DynamicResource mainwindow_menu_help}">
+                <MenuItem Header="{DynamicResource mainwindow_menu_help_help}"
+                          Command="{Binding OpenHelpCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="../Image/wf/HelpMenu.img" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{DynamicResource mainwindow_menu_help_check_updates}"
+                          Command="{Binding CheckForUpdatesCommand}" />
+                <MenuItem Header="{DynamicResource mainwindow_menu_help_about}"
+                          Command="{Binding OpenAboutCommand}" />
             </MenuItem>
         </Menu>
 
@@ -135,41 +182,84 @@
             </ToolBar.Resources>
             <Button Command="{Binding UndoCommand}"
                     ToolTip="{Binding UndoTooltip, Mode=OneWay}">
-                <Image Source="../Image/undo-3-32.png" />
+                <Image Source="../Image/wf/UndoButton.img" />
             </Button>
-            <Menu Height="26" HorizontalContentAlignment="Center">
-                <MenuItem Header="Menu">
-                    <MenuItem Header="Undo all" Command="{Binding UndoAllCommand}" />
-                </MenuItem>
-            </Menu>
             <Button Command="{Binding RedoCommand}">
-                <Image Source="../Image/redo-3-32.png" />
+                <Image Source="../Image/wf/RedoButton.img" />
             </Button>
             <Separator />
-            <Button Command="{Binding OpenConfigurationCommand}" ToolTip="Configuration">
-                <Image Source="../Image/img/OptionsButton.png" />
+            <Button Command="{Binding OpenConfigurationCommand}" ToolTip="{DynamicResource toolBar_Configuration}">
+                <Image Source="../Image/wf/OptionsButton.img" />
             </Button>
             <Menu>
-                <MenuItem Header="Tuning">
+                <MenuItem Header="{DynamicResource toolBar_tuning}">
                     <MenuItem Header="{DynamicResource toolBar_setSaati}"
                               Command="{Binding SetPrioritiesCommand}" />
-                    <MenuItem Header="Calculate histogram peaks for DCT coefficient"
-                              Command="{Binding CalculateHistogramPeaksCommand}" />
                 </MenuItem>
             </Menu>
             
             <Separator />
-            <Button Command="{Binding OpenPathCommand}" ToolTip="Path">
-                <Image Source="../Image/img/PathsButton.png" />
+            <Button Command="{Binding OpenPathCommand}" ToolTip="{DynamicResource toolBar_paths}">
+                <Image Source="../Image/wf/PathsButton.img" />
             </Button>
-            <Button ToolTip="Search" Command="{Binding SearchCommand}">
-                <Image Source="../Image/img/StartButton.png" />
+            <Button ToolTip="{DynamicResource toolBar_search}" Command="{Binding SearchCommand}">
+                <Image Source="../Image/wf/StartButton.img" />
             </Button>
-            <Button Content="Configurable action" Command="{Binding ConfigurableActionCommand}" />
+            <Button Content="{DynamicResource toolBar_configurableAction}" Command="{Binding ConfigurableActionCommand}" />
 
-            <Button ToolTip="Refresh" Command="{Binding RefreshCommand}">
-                <Image Source="../Image/img/RefreshButton.png" />
+            <Button ToolTip="{DynamicResource toolBar_refresh}" Command="{Binding RefreshCommand}">
+                <Image Source="../Image/wf/RefreshButton.img" />
             </Button>
+
+            <!-- Действия над текущей парой (зеркало WF MainToolStrip) — только в режиме пар -->
+            <Separator Visibility="{Binding IsPairMode, Converter={StaticResource booleanToVisibilityConverter}}" />
+            <Button ToolTip="{DynamicResource toolBar_mistake}"
+                    Command="{Binding ToolMistakeCommand}"
+                    Visibility="{Binding IsPairMode, Converter={StaticResource booleanToVisibilityConverter}}">
+                <Image Source="../Image/wf/MistakesButton.img" />
+            </Button>
+            <Button ToolTip="{DynamicResource toolBar_performHint}"
+                    Command="{Binding PerformHintCommand}"
+                    Visibility="{Binding IsPairMode, Converter={StaticResource booleanToVisibilityConverter}}">
+                <Image Source="../Image/wf/PerformHintButton.img" />
+            </Button>
+            <Separator Visibility="{Binding IsPairMode, Converter={StaticResource booleanToVisibilityConverter}}" />
+            <Button ToolTip="{DynamicResource toolBar_deleteFirst}"
+                    Command="{Binding ToolDeleteFirstCommand}"
+                    Visibility="{Binding IsPairMode, Converter={StaticResource booleanToVisibilityConverter}}">
+                <Image Source="../Image/wf/DeleteFirstsVerticalButton.img" />
+            </Button>
+            <Button ToolTip="{DynamicResource toolBar_deleteSecond}"
+                    Command="{Binding ToolDeleteSecondCommand}"
+                    Visibility="{Binding IsPairMode, Converter={StaticResource booleanToVisibilityConverter}}">
+                <Image Source="../Image/wf/DeleteSecondsVerticalButton.img" />
+            </Button>
+            <Button ToolTip="{DynamicResource toolBar_deleteBoth}"
+                    Command="{Binding ToolDeleteBothCommand}"
+                    Visibility="{Binding IsPairMode, Converter={StaticResource booleanToVisibilityConverter}}">
+                <Image Source="../Image/wf/DeleteBothesVerticalButton.img" />
+            </Button>
+            <Separator Visibility="{Binding IsPairMode, Converter={StaticResource booleanToVisibilityConverter}}" />
+            <Button ToolTip="{DynamicResource toolBar_deleteDefect}"
+                    Command="{Binding DeleteDefectCommand}"
+                    Visibility="{Binding IsPairMode, Converter={StaticResource booleanToVisibilityConverter}}">
+                <Image Source="../Image/wf/DeleteDefectsVerticalButton.img" />
+            </Button>
+
+            <Separator />
+            <!-- Подписи убраны (освобождают место в тулбаре), названия — в ToolTip'ах (решение пользователя) -->
+            <ComboBox ItemsSource="{Binding ThresholdItems, Mode=OneWay}"
+                      SelectedItem="{Binding ThresholdDifference, Mode=TwoWay}"
+                      Width="50"
+                      VerticalContentAlignment="Center"
+                      ToolTip="{DynamicResource toolBar_thresholdDifference}" />
+            <ComboBox ItemsSource="{Binding AlgorithmItems, Mode=OneWay}"
+                      DisplayMemberPath="Name"
+                      SelectedValuePath="Value"
+                      SelectedValue="{Binding AlgorithmComparing, Mode=TwoWay}"
+                      MinWidth="150"
+                      VerticalContentAlignment="Center"
+                      ToolTip="{DynamicResource toolBar_compareAlgorithm}" />
         </ToolBar>
 
         <StatusBar DockPanel.Dock="Bottom" >
@@ -179,6 +269,10 @@
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
 
+            <StatusBarItem DockPanel.Dock="Left">
+                <TextBlock Text="{Binding Status, Mode=OneWay}" />
+            </StatusBarItem>
+            <Separator DockPanel.Dock="Left" />
             <StatusBarItem DockPanel.Dock="Left">
                 <TextBlock Text="{Binding TotalInfo, Mode=OneWay}" />
             </StatusBarItem>
@@ -215,12 +309,13 @@
                                            Grid.Row="0"/>
 
 
-                    <DataGrid Grid.Row="1"
+                    <DataGrid x:Name="ResultDataGrid" Grid.Row="1"
                         ItemsSource="{Binding Result}" 
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   IsSynchronizedWithCurrentItem="True"
-                        helper:DataGridColumnChooserHelper.IsEnabled="True">
+                        helper:DataGridColumnChooserHelper.IsEnabled="True"
+                        helper:DataGridColumnChooserHelper.ChooserId="ResultPairs">
                         <!--SelectedIndex="{Binding SelectedResultIndex}"-->
                         <i:Interaction.Behaviors>
                             <behavior:DataGridContextMenuItemSourceBindingOnOpenBehavior 
@@ -254,7 +349,7 @@
                                         <Button ToolTip="{DynamicResource mainwindow_tabControl_duplPair_ignore}" 
                                     Command="{Binding DataContext.ExecuteIgnorePairCommand, Source={x:Reference dummyElement}}"
                                     CommandParameter="{Binding}" >
-                                            <Image Source ="/AntiDupl.NET.WPF;component/Image/MistakeButton.png" MaxHeight="24" />
+                                            <Image Source ="/AntiDupl.NET.WPF;component/Image/wf/MistakeButton.img" MaxHeight="24" />
                                         </Button>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -303,7 +398,7 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Header="Difference">
+                            <DataGridTemplateColumn Header="{DynamicResource mainwindow_GridColumn_Difference}">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Difference, Mode=OneWay, StringFormat={}{0:F3}}"
@@ -313,8 +408,80 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTextColumn Binding="{Binding Transform, Mode=OneWay}"
-                            Header="Transform"
+                            <!-- LightGlue/WGC (deep-поиск): средняя уверенность совпадений % и число совпадений; «—» при отключённом WGC -->
+                            <DataGridTextColumn Binding="{Binding DeepWgcDisplay, Mode=OneWay}"
+                            Header="{DynamicResource mainwindow_GridColumn_DeepWgc}"
+                            IsReadOnly="True" ElementStyle="{StaticResource VerticalAlignmentCenter}"
+                            HeaderStyle="{StaticResource deepWgcHeaderStyle}" />
+
+                            <!-- Transform (колонки таблицы результатов): иконка трансформации пары (зеркало WF ResultRowSetter) -->
+                            <DataGridTemplateColumn Header="{DynamicResource mainwindow_GridColumn_Transform}" Width="40">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image Source="{Binding Transform, Mode=OneWay, Converter={StaticResource transformTypeToImageSourceConverter}}"
+                                             ToolTip="{Binding Transform, Mode=OneWay, Converter={StaticResource transformTypeToToolTipConverter}}"
+                                             MaxHeight="24"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             RenderOptions.BitmapScalingMode="HighQuality" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- Time (колонки таблицы результатов): время изменения файлов пары, один под другим
+                                 (TextBox + Bottom/Top — тот же паттерн, что в колонках Directory/FileSize) -->
+                            <DataGridTemplateColumn Header="{DynamicResource mainwindow_GridColumn_Time}" Width="200">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBox Grid.Row="0"
+                                                     Text="{Binding FirstFile.TimeDisplay, Mode=OneWay}"
+                                                     IsReadOnly="True"
+                                                     VerticalAlignment="Bottom" />
+                                            <TextBox Grid.Row="1"
+                                                     Text="{Binding SecondFile.TimeDisplay, Mode=OneWay}"
+                                                     IsReadOnly="True"
+                                                     VerticalAlignment="Top" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- Type (колонки таблицы результатов): иконка — пара дублей / дефектный кадр (зеркало WF ResultRowSetter) -->
+                            <DataGridTemplateColumn Header="{DynamicResource mainwindow_GridColumn_Type}" Width="40">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image Source="{Binding Type, Mode=OneWay, Converter={StaticResource resultTypeToIconConverter}}"
+                                             ToolTip="{Binding Type, Mode=OneWay, Converter={StaticResource resultTypeToToolTipConverter}}"
+                                             MaxHeight="24"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             RenderOptions.BitmapScalingMode="HighQuality" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- Defect (дефекты): иконка типа дефекта (None — пусто) -->
+                            <DataGridTemplateColumn Header="{DynamicResource mainwindow_GridColumn_Defect}" Width="40">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image Source="{Binding Defect, Mode=OneWay, Converter={StaticResource defectTypeToIconConverter}}"
+                                             ToolTip="{Binding Defect, Mode=OneWay, Converter={StaticResource defectTypeToToolTipConverter}}"
+                                             MaxHeight="24"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             RenderOptions.BitmapScalingMode="HighQuality" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- Hint (колонки таблицы результатов): подсказка ядра по обработке -->
+                            <DataGridTextColumn Binding="{Binding Hint, Mode=OneWay}"
+                            Header="{DynamicResource mainwindow_GridColumn_Hint}"
                             IsReadOnly="True" ElementStyle="{StaticResource VerticalAlignmentCenter}" />
 
                             <DataGridTemplateColumn Header="{DynamicResource mainwindow_GridColumn_ImageInfo}" >
@@ -334,8 +501,6 @@
                                                 <ColumnDefinition Width="Auto" />
                                                 <!--Bluring-->
                                                 <ColumnDefinition Width="Auto" />
-                                                <!--JpegPeaks-->
-                                                <ColumnDefinition Width="Auto" />
                                                 <!--UtilityIndex-->
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
@@ -344,11 +509,13 @@
                                                 <RowDefinition />
                                             </Grid.RowDefinitions>
 
-                                            <TextBox Grid.Row="0" Grid.Column="0"
-                                        Text="{Binding FirstFile.Directory, Mode=OneWay}" 
-                                        IsReadOnly="True" >
-                                                <TextBox.Style>
-                                                    <Style TargetType="{x:Type TextBox}">
+                                            <!-- Пути с побуквенным diff (зеркало WF BuildDiffSegments) -->
+                                            <control:DiffTextBlock Grid.Row="0" Grid.Column="0"
+                                        SourceText="{Binding FirstFile.Directory, Mode=OneWay}"
+                                        DiffAgainst="{Binding SecondFile.Directory, Mode=OneWay}"
+                                        Margin="2">
+                                                <control:DiffTextBlock.Style>
+                                                    <Style TargetType="{x:Type control:DiffTextBlock}">
                                                         <Setter Property="Grid.RowSpan" Value="1" />
                                                         <Setter Property="VerticalAlignment" Value="Bottom" />
                                                         <Style.Triggers>
@@ -358,14 +525,15 @@
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
-                                                </TextBox.Style>
-                                            </TextBox>
+                                                </control:DiffTextBlock.Style>
+                                            </control:DiffTextBlock>
 
-                                            <TextBox Grid.Row="1" Grid.Column="0"
-                                        Text="{Binding SecondFile.Directory, Mode=OneWay}" 
-                                        IsReadOnly="True"
+                                            <control:DiffTextBlock Grid.Row="1" Grid.Column="0"
+                                        SourceText="{Binding SecondFile.Directory, Mode=OneWay}"
+                                        DiffAgainst="{Binding FirstFile.Directory, Mode=OneWay}"
                                         VerticalAlignment="Top" 
-                                    Visibility="{Binding FolderAreDiffrent, 
+                                        Margin="2"
+                                        Visibility="{Binding FolderAreDiffrent, 
                                 Converter={StaticResource booleanToVisibilityConverter}}"/>
 
                                             <!--<TextBox Grid.Row="0" Grid.Column="3"
@@ -378,19 +546,45 @@
                                     IsReadOnly="True"
                                     VerticalAlignment="Top" />-->
 
-                                            <control:RenameImageTextBox Grid.Row="0" Grid.Column="1"
+                                            <!-- Имя файла: редактируемый RenameImageTextBox + поверх него diff-оверлей
+                                                 (DiffTextBlock) — в WPF в TextBox нельзя красить отдельные буквы, поэтому
+                                                 побуквенная подсветка различий имени рисуется оверлеем; двойной клик по
+                                                 оверлею переводит TextBox в режим редактирования -->
+                                            <control:RenameImageTextBox x:Name="NameBox1" Grid.Row="0" Grid.Column="1"
                                                                 VerticalAlignment="Bottom"
                                                                 ImageInfo="{Binding FirstFile}"
                                                                 EnableEdit="True"
-                                                                ShowFullPath="False" >
+                                                                ShowFullPath="False"
+                                                                Visibility="{Binding EditMode, ElementName=NameBox1, 
+                                                                            Converter={StaticResource editModeToVisibilityConverter}, 
+                                                                            ConverterParameter=box}">
                                             </control:RenameImageTextBox>
 
-                                            <control:RenameImageTextBox Grid.Row="1" Grid.Column="1"
+                                            <control:RenameImageTextBox x:Name="NameBox2" Grid.Row="1" Grid.Column="1"
                                                                      VerticalAlignment="Top"
                                                                      ImageInfo="{Binding SecondFile}"
                                                                      EnableEdit="True"
-                                                                     ShowFullPath="False" >
+                                                                     ShowFullPath="False"
+                                                                     Visibility="{Binding EditMode, ElementName=NameBox2,
+                                                                                 Converter={StaticResource editModeToVisibilityConverter},
+                                                                                 ConverterParameter=box}">
                                             </control:RenameImageTextBox>
+
+                                            <control:DiffTextBlock Grid.Row="0" Grid.Column="1"
+                                                SourceText="{Binding FirstFile.FileName, Mode=OneWay}"
+                                                DiffAgainst="{Binding SecondFile.FileName, Mode=OneWay}"
+                                                VerticalAlignment="Bottom"
+                                                Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                                                Visibility="{Binding EditMode, ElementName=NameBox1,
+                                                                    Converter={StaticResource editModeToVisibilityConverter}}" />
+
+                                            <control:DiffTextBlock Grid.Row="1" Grid.Column="1"
+                                                SourceText="{Binding SecondFile.FileName, Mode=OneWay}"
+                                                DiffAgainst="{Binding FirstFile.FileName, Mode=OneWay}"
+                                                VerticalAlignment="Top"
+                                                Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                                                Visibility="{Binding EditMode, ElementName=NameBox2,
+                                                                    Converter={StaticResource editModeToVisibilityConverter}}" />
 
                                             <TextBox  Grid.Row="0" Grid.Column="2"
                                                   Text="{Binding FirstFile.FileSize, Mode=OneWay, Converter={StaticResource fileSizeConverter}}" 
@@ -547,38 +741,8 @@
                                                 </TextBox.Background>
                                             </TextBox>
 
+                                            <!-- JpegPeaks-колонка удалена (фича отсутствует в ядре v2.4.0) -->
                                             <TextBox Grid.Row="0" Grid.Column="6"
-                                                 Text="{Binding FirstFile.JpegPeaks, Mode=OneWay}" 
-                                                 IsReadOnly="True"
-                                                 VerticalAlignment="Bottom" 
-                                                     ToolTip="JpegPeaks">
-                                                <TextBox.Background>
-                                                    <MultiBinding Converter="{StaticResource duplResultMultiValueConverter}" 
-                                                              ConverterParameter="{x:Static convertor:MaxProperty.JpegPeaks}" >
-                                                        <Binding Mode="OneWay" />
-                                                        <Binding Source="{x:Static objectModel:PositionInDuplPair.First}" />
-                                                        <Binding Path="DataContext.Configuration.GoodColor" Mode="OneWay" Source="{x:Reference dummyElement}" />
-                                                        <Binding Path="DataContext.Configuration.BadColor" Mode="OneWay" Source="{x:Reference dummyElement}" />
-                                                    </MultiBinding>
-                                                </TextBox.Background>
-                                            </TextBox>
-                                            <TextBox Grid.Row="1" Grid.Column="6"
-                                                 Text="{Binding SecondFile.JpegPeaks, Mode=OneWay}" 
-                                                 IsReadOnly="True"
-                                                 VerticalAlignment="Top"
-                                                     ToolTip="JpegPeaks">
-                                                <TextBox.Background>
-                                                    <MultiBinding Converter="{StaticResource duplResultMultiValueConverter}" 
-                                                              ConverterParameter="{x:Static convertor:MaxProperty.JpegPeaks}" >
-                                                        <Binding Mode="OneWay" />
-                                                        <Binding Source="{x:Static objectModel:PositionInDuplPair.Second}" />
-                                                        <Binding Path="DataContext.Configuration.GoodColor" Mode="OneWay" Source="{x:Reference dummyElement}" />
-                                                        <Binding Path="DataContext.Configuration.BadColor" Mode="OneWay" Source="{x:Reference dummyElement}" />
-                                                    </MultiBinding>
-                                                </TextBox.Background>
-                                            </TextBox>
-
-                                            <TextBox Grid.Row="0" Grid.Column="7"
                                                  Text="{Binding FirstFile.UtilityIndex, Mode=OneWay, StringFormat=G3}" 
                                                  IsReadOnly="True"
                                                  ToolTip="{Binding FirstFile.UtilityIndexCalculateDecription, Mode=OneWay}"
@@ -595,7 +759,7 @@
                                                     </MultiBinding>
                                                 </TextBox.Background>
                                             </TextBox>
-                                            <TextBox Grid.Row="1" Grid.Column="7"
+                                            <TextBox Grid.Row="1" Grid.Column="6"
                                                  Text="{Binding SecondFile.UtilityIndex, Mode=OneWay, StringFormat=G3}"
                                                  IsReadOnly="True"
                                                  ToolTip="{Binding SecondFile.UtilityIndexCalculateDecription, Mode=OneWay}" 
@@ -649,7 +813,7 @@
                         </ContextMenu>
                     </DataGrid.ContextMenu>
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn Header="Image" MinWidth="150"
+                        <DataGridTemplateColumn Header="{DynamicResource mainwindow_GridColumn_Image}" MinWidth="150"
                                                 Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -866,7 +1030,7 @@
                                     Command="{Binding MoveFirstToNeighbourDirectoryCommand}"
                                     CommandParameter="{Binding Result}" 
                                     Style="{StaticResource CollapsedButton}" >
-                                    <Image Source ="/AntiDupl.NET.WPF;component/Image/MoveFirstToSecondVerticalButton.png" 
+                                    <Image Source ="/AntiDupl.NET.WPF;component/Image/wf/MoveFirstToSecondVerticalButton.img" 
                                            MaxHeight="24" />
                                 </Button>
                                 <Button ToolTip="{Binding RenameFirstLikeSecondText, Mode=OneWay}"
@@ -893,7 +1057,7 @@
                                     ToolTip="{DynamicResource mainwindow_tooltip_Ignore}" 
                                     Command="{Binding ExecuteIgnorePairCommand}" 
                                     CommandParameter="{Binding Result}" >
-                                <Image Source ="/AntiDupl.NET.WPF;component/Image/MistakeButton.png" 
+                                <Image Source ="/AntiDupl.NET.WPF;component/Image/wf/MistakeButton.img" 
                                        MaxHeight="24" />
                             </Button>
 
@@ -904,7 +1068,7 @@
                                     Command="{Binding MoveSecondToNeighbourDirectoryCommand}"
                                     CommandParameter="{Binding Result}" 
                                     Style="{StaticResource CollapsedButton}" >
-                                    <Image Source ="/AntiDupl.NET.WPF;component/Image/MoveSecondToFirstVerticalButton.png" 
+                                    <Image Source ="/AntiDupl.NET.WPF;component/Image/wf/MoveSecondToFirstVerticalButton.img" 
                                            MaxHeight="24" />
                                 </Button>
                                 <Button ToolTip="{Binding RenameSecondLikeFirstText, Mode=OneWay}"
@@ -948,7 +1112,7 @@
                         RowStyle="{StaticResource BackgroundControlAlternation}">
 
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="Difference">
+                            <DataGridTemplateColumn Header="{DynamicResource mainwindow_GridColumn_Difference}">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Difference, Mode=OneWay, StringFormat={}{0:F3}}"
@@ -989,28 +1153,29 @@
                                                 </ContextMenu>
                                             </Grid.ContextMenu>
 
-                                            <TextBox Grid.Row="0" Grid.Column="0"
-                                                     Text="{Binding FirstFile.Path, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
-                                                     IsReadOnly="True"
-                                                     VerticalAlignment="Bottom" >
-                                                <TextBox.Background>
+                                            <!-- Пути с побуквенным diff (зеркало WF BuildDiffSegments) -->
+                                            <control:DiffTextBlock Grid.Row="0" Grid.Column="0"
+                                                     SourceText="{Binding FirstFile.Path, Mode=OneWay}"
+                                                     DiffAgainst="{Binding SecondFile.Path, Mode=OneWay}"
+                                                     VerticalAlignment="Bottom" Margin="2">
+                                                <control:DiffTextBlock.Background>
                                                     <MultiBinding Converter="{StaticResource folderAreDiffrentMultuValueConverter}" >
                                                         <Binding Path="FolderAreDiffrent" Mode="OneWay" />
                                                         <Binding Path="DataContext.Configuration.FolderAreDiffrentColor" Mode="OneWay" Source="{x:Reference dummyElement}" />
                                                     </MultiBinding>
-                                                </TextBox.Background>
-                                            </TextBox>
-                                            <TextBox Grid.Row="1" Grid.Column="0"
-                                                     Text="{Binding SecondFile.Path, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
-                                                     IsReadOnly="True"
-                                                     VerticalAlignment="Top" >
-                                                <TextBox.Background>
+                                                </control:DiffTextBlock.Background>
+                                            </control:DiffTextBlock>
+                                            <control:DiffTextBlock Grid.Row="1" Grid.Column="0"
+                                                     SourceText="{Binding SecondFile.Path, Mode=OneWay}"
+                                                     DiffAgainst="{Binding FirstFile.Path, Mode=OneWay}"
+                                                     VerticalAlignment="Top" Margin="2">
+                                                <control:DiffTextBlock.Background>
                                                     <MultiBinding Converter="{StaticResource folderAreDiffrentMultuValueConverter}" >
                                                         <Binding Path="FolderAreDiffrent" Mode="OneWay" />
                                                         <Binding Path="DataContext.Configuration.FolderAreDiffrentColor" Mode="OneWay" Source="{x:Reference dummyElement}" />
                                                     </MultiBinding>
-                                                </TextBox.Background>
-                                            </TextBox>
+                                                </control:DiffTextBlock.Background>
+                                            </control:DiffTextBlock>
                                             <TextBox  Grid.Row="0" 
                                                       Grid.Column="1"
                                                       Text="{Binding FirstFile.FileSize, Mode=OneWay, Converter={StaticResource fileSizeConverter}}" 

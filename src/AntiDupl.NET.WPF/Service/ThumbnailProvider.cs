@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -12,8 +12,7 @@ using System.Windows.Threading;
 using AntiDupl.NET.WPF.Model;
 using AntiDupl.NET.WPF.ObjectModel;
 using AntiDupl.NET.WPF.ViewModel;
-using TinyIoC;
-
+using AntiDupl.NET.WPF.Service;
 namespace AntiDupl.NET.WPF.Service
 {
     class ThumbnailProvider : PropertyChangedBase, AntiDupl.NET.WPF.Service.IThumbnailProvider
@@ -42,7 +41,7 @@ namespace AntiDupl.NET.WPF.Service
             _thumbnailLoaderThread.Priority = ThreadPriority.Lowest;
             _thumbnailLoaderThread.Start();
 
-            _configuration = TinyIoCContainer.Current.Resolve<IConfigurationModel>();
+            _configuration = ServiceLocator.Resolve<IConfigurationModel>();
             _configuration.PropertyChanged += _configuration_PropertyChanged;
 
             _thumbnailCache = new ThumbnailCache(_configuration);
@@ -246,7 +245,7 @@ namespace AntiDupl.NET.WPF.Service
             set
             {
                 _thumbnailCacheStatus = value;
-                RaisePropertyChangedEvent("ThumbnailCacheStatus");
+                RaisePropertyChangedEvent();
             }
         }
     }

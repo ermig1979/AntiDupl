@@ -53,6 +53,7 @@ namespace ad
         m_pRecycleBin = new TRecycleBin(this);        
         m_pResult = new TResultStorage(this);
         m_pImageDataPtrs = new TImageDataPtrs();
+        m_pScanCandidates = new std::vector<TScanCandidate>();
         m_pCriticalSection = new TCriticalSection();
         m_pCompareManager = new TCompareManager(this);
         m_pCollectManager = new TCollectManager(this, m_pCompareManager);
@@ -65,6 +66,7 @@ namespace ad
         delete m_pImageDataStorage;
         delete m_pResult;
         delete m_pImageDataPtrs;
+        delete m_pScanCandidates;
         delete m_pCriticalSection;
         delete m_pInit;
         delete m_pCompareManager;
@@ -119,5 +121,64 @@ namespace ad
 
         m_pImageDataPtrs->clear();
         m_pStatus->Reset();
+    }
+
+    adError TEngine::ScanCandidates(adCandidateInfoPtrW pCandidates, adSizePtr pCandidateSize)
+    {
+        // pCandidateSize обязателен всегда; pCandidates — только при ненулевой ёмкости.
+        // Первый вызов двухшагового соглашения (size=0, запрос размера) разрешает NULL-буфер.
+        if(pCandidateSize == NULL)
+            return AD_ERROR_INVALID_POINTER;
+        if(*pCandidateSize != 0 && pCandidates == NULL)
+            return AD_ERROR_INVALID_POINTER;
+
+        if(*pCandidateSize == 0)
+        {
+            // First call of the two-call pattern: run the scan-only pass
+            // (TSearcher filters: hidden/system, ignore/valid paths,
+            // ignoreFilenameFilter regex, per-format flags, subfolders)
+            // and cache the result as plain path/size/time triples.
+            m_pStatus->ClearStatistic();
+            m_pStatus->SetProgress(0, 0);
+
+            m_pImageDataPtrs->clear();
+            m_pSearcher->SearchImages();
+
+            m_pScanCandidates->clear();
+            for(TImageDataPtrs::iterator it = m_pImageDataPtrs->begin(); 
+                it != m_pImageDataPtrs->end(); ++it)
+            {
+                TImageDataPtr pImageData = *it;
+                m_pScanCandidates->push_back(
+                    TScanCandidate(pImageData->path.Original(), pImageData->size, pImageData->time));
+            }
+
+            // Release TImageData objects back to the storage pool: the plain
+            // triple copy above is what the caller consumes, so a following
+            // adSearch starts from an empty candidate list as usual.
+            m_pImageDataPtrs->clear();
+            m_pStatus->Reset();
+        }
+
+        if(m_pScanCandidates->size() > *pCandidateSize)
+        {
+            *pCandidateSize = m_pScanCandidates->size();
+            return AD_ERROR_OUTPUT_BUFFER_IS_TOO_SMALL;
+        }
+
+        for(size_t i = 0; i < m_pScanCandidates->size(); i++)
+        {
+            const TScanCandidate &candidate = (*m_pScanCandidates)[i];
+            if(candidate.path.length() >= MAX_PATH_EX)
+                return AD_ERROR_PATH_TO_LONG;
+
+            candidate.path.CopyTo(pCandidates[i].path, MAX_PATH_EX);
+            pCandidates[i].size = candidate.size;
+            pCandidates[i].time = candidate.time;
+        }
+
+        *pCandidateSize = m_pScanCandidates->size();
+
+        return AD_OK;
     }
 }

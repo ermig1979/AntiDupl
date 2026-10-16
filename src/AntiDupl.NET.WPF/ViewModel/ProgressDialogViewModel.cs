@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
@@ -48,6 +48,12 @@ public class ProgressDialogViewModel : PropertyChangedBase
     ///     button-click, and once for the window-close.
     /// </remarks>
     public bool IsCancelled { get; set; }
+
+    /// <summary>
+    /// Программное закрытие окна (поиск завершён) — OnClosing не должен
+    /// трактовать его как отмену пользователем.
+    /// </summary>
+    public bool IsProgrammaticClose { get; set; }
 
     /// <summary>
     ///     A cancellation token source for the background operations.
@@ -162,7 +168,7 @@ public class ProgressDialogViewModel : PropertyChangedBase
         set
         {
             _progress = value;
-            RaisePropertyChangedEvent(nameof(Progress));
+            RaisePropertyChangedEvent();
         }
     }
 
@@ -178,7 +184,7 @@ public class ProgressDialogViewModel : PropertyChangedBase
         set
         {
             _progressMax = value;
-            RaisePropertyChangedEvent(nameof(ProgressMax));
+            RaisePropertyChangedEvent();
         }
     }
 
@@ -191,7 +197,7 @@ public class ProgressDialogViewModel : PropertyChangedBase
         set
         {
             _progressMessage = value;
-            RaisePropertyChangedEvent(nameof(ProgressMessage));
+            RaisePropertyChangedEvent();
         }
     }
 
@@ -217,7 +223,7 @@ public class ProgressDialogViewModel : PropertyChangedBase
         set
         {
             _state = value;
-            RaisePropertyChangedEvent(nameof(State));
+            RaisePropertyChangedEvent();
         }
     }
 
@@ -229,7 +235,7 @@ public class ProgressDialogViewModel : PropertyChangedBase
         set
         {
             _currentSecond = value;
-            RaisePropertyChangedEvent(nameof(CurrentSecond));
+            RaisePropertyChangedEvent();
         }
     }
 

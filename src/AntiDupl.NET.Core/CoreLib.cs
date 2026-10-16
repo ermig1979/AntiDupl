@@ -23,6 +23,7 @@
 */
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -45,6 +46,7 @@ namespace AntiDupl.NET.Core
 
         public CoreLib(string userPath)
         {
+            Debug.Assert(!string.IsNullOrEmpty(userPath), nameof(userPath));
             try
             {
                 m_dll = new CoreDll();
@@ -57,6 +59,9 @@ namespace AntiDupl.NET.Core
             if (Version.Compatible(GetVersion(CoreDll.VersionType.AntiDupl)))
             {
                 m_handle = m_dll.adCreateW(userPath);
+                // Нулевой handle — движок не создан (невалидный userPath и т.п.):
+                // дальше каждый вызов уйдёт в никуда с неясной причиной.
+                Debug.Assert(m_handle != IntPtr.Zero, "adCreateW returned an invalid engine handle");
             }
             else
                 throw new Exception("Incompatible core library version!");
@@ -143,6 +148,84 @@ namespace AntiDupl.NET.Core
         public bool Search()
         {
             return m_dll.adSearch(m_handle) == Error.Ok;
+        }
+
+        // Поддерживает ли ядро deep (DINOv2) поиск: есть ли экспорт adScanCandidatesW.
+        // Старая AntiDupl.dll без нового экспорта даёт null — deep-режим должен быть отключён.
+        public bool DeepSearchSupported
+        {
+            get
+            {
+                return m_dll != null && m_dll.adScanCandidatesW != null;
+            }
+        }
+
+        // Scan-only поиск: ядро запускает TSearcher с текущими фильтрами и возвращает
+        // список кандидатов (path/size/time) без collect/compare. Two-call паттерн:
+        // первый вызов (size=0) выполняет скан и сообщает требуемое количество,
+        // второй заполняет буфер. Блокирующий синхронный вызов — вызывать из фонового потока.
+        public CoreCandidate[] ScanCandidates()
+        {
+            CoreCandidate[] candidates = new CoreCandidate[0];
+            try
+            {
+                if (m_dll.adScanCandidatesW == null)
+                    return candidates;
+
+                // Буфер — сырой char[], закреплённый GCHandle (как в GetPath/SetPath),
+                // а НЕ массив adCandidateInfoW[]: CLR раскладывает struct-массивы с другим
+                // шагом элемента (поле string в массиве хранится ссылкой — 24 байта вместо
+                // 65552), и записи ядра с нативным шагом ушли бы за пределы массива (AV).
+                // Нативная запись записи: path — MAX_PATH_EX wchar, затем size (8), time (8).
+                const int entryChars = CoreDll.MAX_PATH_EX + 8; // 8 char = 16 байт под size+time
+                IntPtr[] size = new IntPtr[1];
+                GCHandle sizeH = GCHandle.Alloc(size, GCHandleType.Pinned);
+                try
+                {
+                    // Первый вызов двухшагового соглашения: буфер не нужен (NULL допустим).
+                    if (m_dll.adScanCandidatesW(m_handle, IntPtr.Zero, sizeH.AddrOfPinnedObject()) ==
+                                    Error.OutputBufferIsTooSmall)
+                    {
+                        int count = size[0].ToInt32();
+                        if (count > 0)
+                        {
+                            char[] buffer = new char[count * entryChars];
+                            GCHandle bufferH = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+                            try
+                            {
+                                if (m_dll.adScanCandidatesW(m_handle, bufferH.AddrOfPinnedObject(),
+                                    sizeH.AddrOfPinnedObject()) == Error.Ok)
+                                {
+                                    count = size[0].ToInt32();
+                                    candidates = new CoreCandidate[count];
+                                    IntPtr basePtr = bufferH.AddrOfPinnedObject();
+                                    for (int i = 0; i < count; ++i)
+                                    {
+                                        IntPtr entry = basePtr + i * entryChars * 2;
+                                        CoreCandidate candidate = new CoreCandidate();
+                                        candidate.path = Marshal.PtrToStringUni(entry);
+                                        candidate.size = (ulong)Marshal.ReadInt64(entry + CoreDll.MAX_PATH_EX * 2);
+                                        candidate.time = (ulong)Marshal.ReadInt64(entry + (CoreDll.MAX_PATH_EX + 4) * 2);
+                                        candidates[i] = candidate;
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                bufferH.Free();
+                            }
+                        }
+                    }
+                }
+                finally
+                {
+                    sizeH.Free();
+                }
+            }
+            catch (Exception)
+            {
+            }
+            return candidates;
         }
 
         public bool Load(CoreDll.FileType fileType, string fileName, bool check)
@@ -517,9 +600,137 @@ namespace AntiDupl.NET.Core
         {
             return m_dll.adImageInfoRenameW(m_handle, new IntPtr(groupId), new IntPtr(index), newFileName) == Error.Ok;
         }
+        /// <summary>
+        /// Загружает изображение из файла в пользовательский буфер (ядро AntiDupl.dll,
+        /// <c>adLoadBitmapW</c>) — используется в DINOv2-конвейере вместо OpenCV ImRead.
+        /// Массив <paramref name="pBitmap"/> фиксируется (pin) на время P/Invoke: без фиксации
+        /// GC может переместить небольшой сегмент с описанием буфера во время native-вызова,
+        /// и ядро получит устаревший адрес (AV).
+        /// </summary>
         public Error LoadBitmap(string path, AdBitmap[] pBitmap)
         {
-            return m_dll.adLoadBitmapW(m_handle, path, Marshal.UnsafeAddrOfPinnedArrayElement(pBitmap, 0));
+            if (pBitmap == null || pBitmap.Length == 0)
+                return Error.InvalidPointer;
+
+            GCHandle h = GCHandle.Alloc(pBitmap, GCHandleType.Pinned);
+            try
+            {
+                return m_dll.adLoadBitmapW(m_handle, path, h.AddrOfPinnedObject());
+            }
+            finally
+            {
+                h.Free();
+            }
+        }
+
+        /// <summary>True if the core provides the adLoadBitmapLetterboxW export (aspect-preserving decode).</summary>
+        public bool SupportsLoadBitmapLetterbox => m_dll.adLoadBitmapLetterboxW != null;
+
+        /// <summary>True if the core provides the adLoadBitmapExW export (native dimensions reporting).</summary>
+        public bool SupportsLoadBitmapEx => m_dll.adLoadBitmapExW != null;
+
+        /// <summary>True if the core provides the adLoadBitmapLetterboxMetricsW export (native metrics: blurring/blockiness).</summary>
+        public bool SupportsLoadBitmapLetterboxMetrics => m_dll.adLoadBitmapLetterboxMetricsW != null;
+
+        /// <summary>
+        /// Загружает изображение в латербокс-канвас <paramref name="maxW"/>×<paramref name="maxH"/>
+        /// (ядро AntiDupl.dll, <c>adLoadBitmapLetterboxW</c>): изображение вписывается в канвас
+        /// без изменения пропорций и без увеличения, канвас зачёрнен, изображение — в левый верхний угол.
+        /// Массив <paramref name="pBitmap"/> фиксируется (pin) на время P/Invoke: без фиксации
+        /// GC может переместить сегмент с описанием буфера во время native-вызова (AV).
+        /// </summary>
+        public Error LoadBitmapLetterbox(string path, uint maxW, uint maxH, AdBitmap[] pBitmap)
+        {
+            if (pBitmap == null || pBitmap.Length == 0)
+                return Error.InvalidPointer;
+
+            GCHandle h = GCHandle.Alloc(pBitmap, GCHandleType.Pinned);
+            try
+            {
+                return m_dll.adLoadBitmapLetterboxW(m_handle, path, maxW, maxH, h.AddrOfPinnedObject());
+            }
+            finally
+            {
+                h.Free();
+            }
+        }
+
+        /// <summary>
+        /// <c>adLoadBitmapExW</c>: то же, что <see cref="LoadBitmap"/>, но дополнительно
+        /// возвращает нативные (до ресайза) размеры изображения — ядро и так их знает
+        /// после TImage::Load, повторного чтения файла нет. Массивы pBitmap/pNative* пинятся
+        /// на время P/Invoke (иначе GC может переместить сегменты во время native-вызова — AV).
+        /// </summary>
+        public Error LoadBitmapEx(string path, AdBitmap[] pBitmap, out int nativeWidth, out int nativeHeight)
+        {
+            nativeWidth = 0;
+            nativeHeight = 0;
+            if (pBitmap == null || pBitmap.Length == 0)
+                return Error.InvalidPointer;
+
+            int[] nw = new int[1];
+            int[] nh = new int[1];
+            GCHandle h = GCHandle.Alloc(pBitmap, GCHandleType.Pinned);
+            GCHandle hnw = GCHandle.Alloc(nw, GCHandleType.Pinned);
+            GCHandle hnh = GCHandle.Alloc(nh, GCHandleType.Pinned);
+            try
+            {
+                Error e = m_dll.adLoadBitmapExW(m_handle, path, h.AddrOfPinnedObject(), hnw.AddrOfPinnedObject(), hnh.AddrOfPinnedObject());
+                nativeWidth = nw[0];
+                nativeHeight = nh[0];
+                return e;
+            }
+            finally
+            {
+                h.Free();
+                hnw.Free();
+                hnh.Free();
+            }
+        }
+
+        /// <summary>
+        /// <c>adLoadBitmapLetterboxMetricsW</c>: то же, что <see cref="LoadBitmapLetterbox"/>, плюс
+        /// нативные размеры и метрики качества файла (blurring/blockiness на нативном сером растре,
+        /// алгоритмы классического пайплайна). Повторного чтения файла нет: метрики считаются
+        /// на растре, который ядро уже декодировало для letterbox-канваса.
+        /// </summary>
+        public Error LoadBitmapLetterboxMetrics(string path, uint maxW, uint maxH, AdBitmap[] pBitmap,
+            out int nativeWidth, out int nativeHeight, out double blurring, out double blockiness)
+        {
+            nativeWidth = 0;
+            nativeHeight = 0;
+            blurring = 0;
+            blockiness = 0;
+            if (pBitmap == null || pBitmap.Length == 0)
+                return Error.InvalidPointer;
+
+            int[] nw = new int[1];
+            int[] nh = new int[1];
+            double[] blur = new double[1];
+            double[] block = new double[1];
+            GCHandle h = GCHandle.Alloc(pBitmap, GCHandleType.Pinned);
+            GCHandle hnw = GCHandle.Alloc(nw, GCHandleType.Pinned);
+            GCHandle hnh = GCHandle.Alloc(nh, GCHandleType.Pinned);
+            GCHandle hblur = GCHandle.Alloc(blur, GCHandleType.Pinned);
+            GCHandle hblock = GCHandle.Alloc(block, GCHandleType.Pinned);
+            try
+            {
+                Error e = m_dll.adLoadBitmapLetterboxMetricsW(m_handle, path, maxW, maxH, h.AddrOfPinnedObject(),
+                    hnw.AddrOfPinnedObject(), hnh.AddrOfPinnedObject(), hblur.AddrOfPinnedObject(), hblock.AddrOfPinnedObject());
+                nativeWidth = nw[0];
+                nativeHeight = nh[0];
+                blurring = blur[0];
+                blockiness = block[0];
+                return e;
+            }
+            finally
+            {
+                h.Free();
+                hnw.Free();
+                hnh.Free();
+                hblur.Free();
+                hblock.Free();
+            }
         }
 
         //-----------Public properties----------------------------------------------

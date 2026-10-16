@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0-windows7.0</TargetFramework>
     <OutputType>WinExe</OutputType>
@@ -17,6 +17,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <ApplicationIcon>..\AntiDupl.NET.WinForms\Icon.ico</ApplicationIcon>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
@@ -34,10 +35,12 @@
     <BaseOutputPath>..\..\bin\Debug\</BaseOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <DefineConstants>$(DefineConstants);PUBLISH</DefineConstants>
     <BaseOutputPath>..\..\bin\Release\</BaseOutputPath>
     <OutputPath>..\..\bin\Release\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Publish|x64'">
+    <DefineConstants>$(DefineConstants);PUBLISH</DefineConstants>
     <BaseOutputPath>..\..\bin\Publish\</BaseOutputPath>
     <OutputPath>..\..\bin\Publish\</OutputPath>
   </PropertyGroup>
@@ -52,8 +55,6 @@
     <Resource Include="Image\loading.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Image\redo-3-32.png" />
-    <Resource Include="Image\undo-3-32.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Image\arrow-190-64-left.png" />
@@ -65,9 +66,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Image\DeleteIcon16.png" />
-    <Resource Include="Image\MistakeButton.png" />
-    <Resource Include="Image\MoveFirstToSecondVerticalButton.png" />
-    <Resource Include="Image\MoveSecondToFirstVerticalButton.png" />
     <Resource Include="Image\ReplaceFirstVerticalButton.png" />
     <Resource Include="Image\ReplaceSecondVerticalButton.png" />
   </ItemGroup>
@@ -75,6 +73,111 @@
     <Resource Include="Image\AB.jpg" />
     <Resource Include="Image\MoveAndRenameFirstLikeSecondVertical.png" />
     <Resource Include="Image\MoveAndRenameSecondLikeFirstVertical.png" />
+  </ItemGroup>
+
+  <!-- WF icons: originals from docs/data/resources (V2 - embedded via Link; WPF decodes by content, .img extension is not significant) -->
+  <ItemGroup>
+    <Resource Include="..\..\docs\data\resources\images\BlockinessIcon.img" Link="Image\wf\BlockinessIcon.img" />
+    <Resource Include="..\..\docs\data\resources\images\BlurringIcon.img" Link="Image\wf\BlurringIcon.img" />
+    <Resource Include="..\..\docs\data\resources\images\DefectIcon.img" Link="Image\wf\DefectIcon.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteBothHorizontalButton.img" Link="Image\wf\DeleteBothHorizontalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteBothVerticalButton.img" Link="Image\wf\DeleteBothVerticalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteBothesHorizontalButton.img" Link="Image\wf\DeleteBothesHorizontalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteBothesHorizontalMenu.img" Link="Image\wf\DeleteBothesHorizontalMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteBothesVerticalButton.img" Link="Image\wf\DeleteBothesVerticalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteBothesVerticalMenu.img" Link="Image\wf\DeleteBothesVerticalMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteDefectHorizontalButton.img" Link="Image\wf\DeleteDefectHorizontalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteDefectIcon.img" Link="Image\wf\DeleteDefectIcon.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteDefectVerticalButton.img" Link="Image\wf\DeleteDefectVerticalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteDefectsHorizontalButton.img" Link="Image\wf\DeleteDefectsHorizontalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteDefectsHorizontalMenu.img" Link="Image\wf\DeleteDefectsHorizontalMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteDefectsVerticalButton.img" Link="Image\wf\DeleteDefectsVerticalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteDefectsVerticalMenu.img" Link="Image\wf\DeleteDefectsVerticalMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteFirstHorizontalButton.img" Link="Image\wf\DeleteFirstHorizontalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteFirstHorizontalIcon.img" Link="Image\wf\DeleteFirstHorizontalIcon.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteFirstVerticalButton.img" Link="Image\wf\DeleteFirstVerticalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteFirstVerticalIcon.img" Link="Image\wf\DeleteFirstVerticalIcon.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteFirstsHorizontalButton.img" Link="Image\wf\DeleteFirstsHorizontalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteFirstsHorizontalMenu.img" Link="Image\wf\DeleteFirstsHorizontalMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteFirstsVerticalButton.img" Link="Image\wf\DeleteFirstsVerticalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteFirstsVerticalMenu.img" Link="Image\wf\DeleteFirstsVerticalMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteSecondHorizontalButton.img" Link="Image\wf\DeleteSecondHorizontalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteSecondHorizontalIcon.img" Link="Image\wf\DeleteSecondHorizontalIcon.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteSecondVerticalButton.img" Link="Image\wf\DeleteSecondVerticalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteSecondVerticalIcon.img" Link="Image\wf\DeleteSecondVerticalIcon.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteSecondsHorizontalButton.img" Link="Image\wf\DeleteSecondsHorizontalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteSecondsHorizontalMenu.img" Link="Image\wf\DeleteSecondsHorizontalMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteSecondsVerticalButton.img" Link="Image\wf\DeleteSecondsVerticalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\DeleteSecondsVerticalMenu.img" Link="Image\wf\DeleteSecondsVerticalMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\DuplPairHorizontalIcon.img" Link="Image\wf\DuplPairHorizontalIcon.img" />
+    <Resource Include="..\..\docs\data\resources\images\DuplPairVerticalIcon.img" Link="Image\wf\DuplPairVerticalIcon.img" />
+    <Resource Include="..\..\docs\data\resources\images\HelpButton.img" Link="Image\wf\HelpButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\HelpMenu.img" Link="Image\wf\HelpMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\JpegEndMarkerIsAbsentIcon.img" Link="Image\wf\JpegEndMarkerIsAbsentIcon.img" />
+    <Resource Include="..\..\docs\data\resources\images\MirrorTurn_0_Icon.img" Link="Image\wf\MirrorTurn_0_Icon.img" />
+    <Resource Include="..\..\docs\data\resources\images\MirrorTurn_180_Icon.img" Link="Image\wf\MirrorTurn_180_Icon.img" />
+    <Resource Include="..\..\docs\data\resources\images\MirrorTurn_270_Icon.img" Link="Image\wf\MirrorTurn_270_Icon.img" />
+    <Resource Include="..\..\docs\data\resources\images\MirrorTurn_90_Icon.img" Link="Image\wf\MirrorTurn_90_Icon.img" />
+    <Resource Include="..\..\docs\data\resources\images\MistakeButton.img" Link="Image\wf\MistakeButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\MistakesButton.img" Link="Image\wf\MistakesButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\MistakesMenu.img" Link="Image\wf\MistakesMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\MoveFirstToSecondHorizontalButton.img" Link="Image\wf\MoveFirstToSecondHorizontalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\MoveFirstToSecondHorizontalMenu.img" Link="Image\wf\MoveFirstToSecondHorizontalMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\MoveFirstToSecondVerticalButton.img" Link="Image\wf\MoveFirstToSecondVerticalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\MoveFirstToSecondVerticalMenu.img" Link="Image\wf\MoveFirstToSecondVerticalMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\MoveSecondToFirstHorizontalButton.img" Link="Image\wf\MoveSecondToFirstHorizontalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\MoveSecondToFirstHorizontalMenu.img" Link="Image\wf\MoveSecondToFirstHorizontalMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\MoveSecondToFirstVerticalButton.img" Link="Image\wf\MoveSecondToFirstVerticalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\MoveSecondToFirstVerticalMenu.img" Link="Image\wf\MoveSecondToFirstVerticalMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\NextButton.img" Link="Image\wf\NextButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\OpenBothFoldersButton.png" Link="Image\wf\OpenBothFoldersButton.png" />
+    <Resource Include="..\..\docs\data\resources\images\OpenBothImagesButton.png" Link="Image\wf\OpenBothImagesButton.png" />
+    <Resource Include="..\..\docs\data\resources\images\OpenExternDiffImagesButton.png" Link="Image\wf\OpenExternDiffImagesButton.png" />
+    <Resource Include="..\..\docs\data\resources\images\OptionsButton.img" Link="Image\wf\OptionsButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\OptionsMenu.img" Link="Image\wf\OptionsMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\PathsButton.img" Link="Image\wf\PathsButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\PathsMenu.img" Link="Image\wf\PathsMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\PerformHintButton.img" Link="Image\wf\PerformHintButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\PerformHintMenu.img" Link="Image\wf\PerformHintMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\PreviousButton.img" Link="Image\wf\PreviousButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\ProfileOpenButton.img" Link="Image\wf\ProfileOpenButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\ProfileOpenMenu.img" Link="Image\wf\ProfileOpenMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\ProfileSaveAsButton.img" Link="Image\wf\ProfileSaveAsButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\ProfileSaveAsMenu.img" Link="Image\wf\ProfileSaveAsMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\RedoButton.img" Link="Image\wf\RedoButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\RedoMenu.img" Link="Image\wf\RedoMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\RefreshButton.img" Link="Image\wf\RefreshButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\RefreshMenu.img" Link="Image\wf\RefreshMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\RenameFirstLikeSecondHorizontalButton.img" Link="Image\wf\RenameFirstLikeSecondHorizontalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\RenameFirstLikeSecondHorizontalMenu.img" Link="Image\wf\RenameFirstLikeSecondHorizontalMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\RenameFirstLikeSecondVerticalButton.img" Link="Image\wf\RenameFirstLikeSecondVerticalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\RenameFirstLikeSecondVerticalMenu.img" Link="Image\wf\RenameFirstLikeSecondVerticalMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\RenameFirstToSecondHorizontalButton.img" Link="Image\wf\RenameFirstToSecondHorizontalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\RenameFirstToSecondHorizontalIcon.img" Link="Image\wf\RenameFirstToSecondHorizontalIcon.img" />
+    <Resource Include="..\..\docs\data\resources\images\RenameFirstToSecondHorizontalMenu.img" Link="Image\wf\RenameFirstToSecondHorizontalMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\RenameFirstToSecondVerticalButton.img" Link="Image\wf\RenameFirstToSecondVerticalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\RenameFirstToSecondVerticalIcon.img" Link="Image\wf\RenameFirstToSecondVerticalIcon.img" />
+    <Resource Include="..\..\docs\data\resources\images\RenameFirstToSecondVerticalMenu.img" Link="Image\wf\RenameFirstToSecondVerticalMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\RenameSecondLikeFirstHorizontalButton.img" Link="Image\wf\RenameSecondLikeFirstHorizontalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\RenameSecondLikeFirstHorizontalMenu.img" Link="Image\wf\RenameSecondLikeFirstHorizontalMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\RenameSecondLikeFirstVerticalButton.img" Link="Image\wf\RenameSecondLikeFirstVerticalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\RenameSecondLikeFirstVerticalMenu.img" Link="Image\wf\RenameSecondLikeFirstVerticalMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\RenameSecondToFirstHorizontalButton.img" Link="Image\wf\RenameSecondToFirstHorizontalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\RenameSecondToFirstHorizontalIcon.img" Link="Image\wf\RenameSecondToFirstHorizontalIcon.img" />
+    <Resource Include="..\..\docs\data\resources\images\RenameSecondToFirstHorizontalMenu.img" Link="Image\wf\RenameSecondToFirstHorizontalMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\RenameSecondToFirstVerticalButton.img" Link="Image\wf\RenameSecondToFirstVerticalButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\RenameSecondToFirstVerticalIcon.img" Link="Image\wf\RenameSecondToFirstVerticalIcon.img" />
+    <Resource Include="..\..\docs\data\resources\images\RenameSecondToFirstVerticalMenu.img" Link="Image\wf\RenameSecondToFirstVerticalMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\StartButton.img" Link="Image\wf\StartButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\StartMenu.img" Link="Image\wf\StartMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\Turn_0_Icon.img" Link="Image\wf\Turn_0_Icon.img" />
+    <Resource Include="..\..\docs\data\resources\images\Turn_180_Icon.img" Link="Image\wf\Turn_180_Icon.img" />
+    <Resource Include="..\..\docs\data\resources\images\Turn_270_Icon.img" Link="Image\wf\Turn_270_Icon.img" />
+    <Resource Include="..\..\docs\data\resources\images\Turn_90_Icon.img" Link="Image\wf\Turn_90_Icon.img" />
+    <Resource Include="..\..\docs\data\resources\images\UndoButton.img" Link="Image\wf\UndoButton.img" />
+    <Resource Include="..\..\docs\data\resources\images\UndoMenu.img" Link="Image\wf\UndoMenu.img" />
+    <Resource Include="..\..\docs\data\resources\images\UnknownDefectIcon.img" Link="Image\wf\UnknownDefectIcon.img" />
+    <Resource Include="..\..\docs\data\resources\icons\Icon.ico" Link="Image\wf\Icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8">
@@ -93,119 +196,10 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Image\img\PathsButton.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Image\img\BlockinessIcon.png" />
-    <Resource Include="Image\img\BlurringIcon.png" />
-    <Resource Include="Image\img\DefectIcon.png" />
-    <Resource Include="Image\img\DeleteBothesHorizontalButton.png" />
-    <Resource Include="Image\img\DeleteBothesHorizontalMenu.png" />
-    <Resource Include="Image\img\DeleteBothesVerticalButton.png" />
-    <Resource Include="Image\img\DeleteBothesVerticalMenu.png" />
-    <Resource Include="Image\img\DeleteBothHorizontalButton.png" />
-    <Resource Include="Image\img\DeleteBothVerticalButton.png" />
-    <Resource Include="Image\img\DeleteDefectHorizontalButton.png" />
-    <Resource Include="Image\img\DeleteDefectIcon.png" />
-    <Resource Include="Image\img\DeleteDefectsHorizontalButton.png" />
-    <Resource Include="Image\img\DeleteDefectsHorizontalMenu.png" />
-    <Resource Include="Image\img\DeleteDefectsVerticalButton.png" />
-    <Resource Include="Image\img\DeleteDefectsVerticalMenu.png" />
-    <Resource Include="Image\img\DeleteDefectVerticalButton.png" />
-    <Resource Include="Image\img\DeleteFirstHorizontalButton.png" />
-    <Resource Include="Image\img\DeleteFirstHorizontalIcon.png" />
-    <Resource Include="Image\img\DeleteFirstsHorizontalButton.png" />
-    <Resource Include="Image\img\DeleteFirstsHorizontalMenu.png" />
-    <Resource Include="Image\img\DeleteFirstsVerticalButton.png" />
-    <Resource Include="Image\img\DeleteFirstsVerticalMenu.png" />
-    <Resource Include="Image\img\DeleteFirstVerticalButton.png" />
-    <Resource Include="Image\img\DeleteFirstVerticalIcon.png" />
-    <Resource Include="Image\img\DeleteSecondHorizontalButton.png" />
-    <Resource Include="Image\img\DeleteSecondHorizontalIcon.png" />
-    <Resource Include="Image\img\DeleteSecondsHorizontalButton.png" />
-    <Resource Include="Image\img\DeleteSecondsHorizontalMenu.png" />
-    <Resource Include="Image\img\DeleteSecondsVerticalButton.png" />
-    <Resource Include="Image\img\DeleteSecondsVerticalMenu.png" />
-    <Resource Include="Image\img\DeleteSecondVerticalButton.png" />
-    <Resource Include="Image\img\DeleteSecondVerticalIcon.png" />
-    <Resource Include="Image\img\DuplPairHorizontalIcon.png" />
-    <Resource Include="Image\img\DuplPairVerticalIcon.png" />
-    <Resource Include="Image\img\HelpButton.png" />
-    <Resource Include="Image\img\HelpMenu.png" />
-    <Resource Include="Image\img\JpegEndMarkerIsAbsentIcon.png" />
-    <Resource Include="Image\img\MirrorTurn_0_Icon.png" />
-    <Resource Include="Image\img\MirrorTurn_180_Icon.png" />
-    <Resource Include="Image\img\MirrorTurn_270_Icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Image\img\MirrorTurn_90_Icon.png" />
-    <Resource Include="Image\img\MistakeButton.png" />
-    <Resource Include="Image\img\MistakesButton.png" />
-    <Resource Include="Image\img\MistakesMenu.png" />
-    <Resource Include="Image\img\MoveFirstToSecondHorizontalButton.png" />
-    <Resource Include="Image\img\MoveFirstToSecondHorizontalMenu.png" />
-    <Resource Include="Image\img\MoveFirstToSecondVerticalButton.png" />
-    <Resource Include="Image\img\MoveFirstToSecondVerticalMenu.png" />
-    <Resource Include="Image\img\MoveSecondToFirstHorizontalButton.png" />
-    <Resource Include="Image\img\MoveSecondToFirstHorizontalMenu.png" />
-    <Resource Include="Image\img\MoveSecondToFirstVerticalButton.png" />
-    <Resource Include="Image\img\MoveSecondToFirstVerticalMenu.png" />
-    <Resource Include="Image\img\NextButton.png" />
-    <Resource Include="Image\img\OptionsButton.png" />
-    <Resource Include="Image\img\OptionsMenu.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Image\img\PathsMenu.png" />
-    <Resource Include="Image\img\PerformHintButton.png" />
-    <Resource Include="Image\img\PerformHintMenu.png" />
-    <Resource Include="Image\img\PreviousButton.png" />
-    <Resource Include="Image\img\ProfileOpenButton.png" />
-    <Resource Include="Image\img\ProfileOpenMenu.png" />
-    <Resource Include="Image\img\ProfileSaveAsButton.png" />
-    <Resource Include="Image\img\ProfileSaveAsMenu.png" />
-    <Resource Include="Image\img\RedoButton.png" />
-    <Resource Include="Image\img\RedoMenu.png" />
-    <Resource Include="Image\img\RefreshButton.png" />
-    <Resource Include="Image\img\RefreshMenu.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Image\img\RenameFirstLikeSecondHorizontalButton.png" />
-    <Resource Include="Image\img\RenameFirstLikeSecondHorizontalMenu.png" />
-    <Resource Include="Image\img\RenameFirstLikeSecondVerticalButton.png" />
-    <Resource Include="Image\img\RenameFirstLikeSecondVerticalMenu.png" />
-    <Resource Include="Image\img\RenameFirstToSecondHorizontalButton.png" />
-    <Resource Include="Image\img\RenameFirstToSecondHorizontalIcon.png" />
-    <Resource Include="Image\img\RenameFirstToSecondHorizontalMenu.png" />
-    <Resource Include="Image\img\RenameFirstToSecondVerticalButton.png" />
-    <Resource Include="Image\img\RenameFirstToSecondVerticalIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Image\img\RenameFirstToSecondVerticalMenu.png" />
-    <Resource Include="Image\img\RenameSecondLikeFirstHorizontalButton.png" />
-    <Resource Include="Image\img\RenameSecondLikeFirstHorizontalMenu.png" />
-    <Resource Include="Image\img\RenameSecondLikeFirstVerticalButton.png" />
-    <Resource Include="Image\img\RenameSecondLikeFirstVerticalMenu.png" />
-    <Resource Include="Image\img\RenameSecondToFirstHorizontalButton.png" />
-    <Resource Include="Image\img\RenameSecondToFirstHorizontalIcon.png" />
-    <Resource Include="Image\img\RenameSecondToFirstHorizontalMenu.png" />
-    <Resource Include="Image\img\RenameSecondToFirstVerticalButton.png" />
-    <Resource Include="Image\img\RenameSecondToFirstVerticalIcon.png" />
-    <Resource Include="Image\img\RenameSecondToFirstVerticalMenu.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Image\img\StartButton.png" />
-    <Resource Include="Image\img\StartMenu.png" />
-    <Resource Include="Image\img\Turn_0_Icon.png" />
-    <Resource Include="Image\img\Turn_180_Icon.png" />
-    <Resource Include="Image\img\Turn_270_Icon.png" />
-    <Resource Include="Image\img\Turn_90_Icon.png" />
-    <Resource Include="Image\img\UndoButton.png" />
-    <Resource Include="Image\img\UndoMenu.png" />
-    <Resource Include="Image\img\UnknownDefectIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
+<ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.8" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
@@ -216,6 +210,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AntiDupl.NET.Core\AntiDupl.NET.Core.csproj" />
+    <ProjectReference Include="..\AntiDupl.NET.Deep\AntiDupl.NET.Deep.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">

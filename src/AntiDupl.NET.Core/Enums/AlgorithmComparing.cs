@@ -4,5 +4,6 @@
     {
         SquaredSum = 0,
         SSIM = 1,
+        Dinov2 = 2,
     };
 }

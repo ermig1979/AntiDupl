@@ -1,0 +1,48 @@
+<Window x:Class="AntiDupl.NET.WPF.View.GpuFallbackWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{DynamicResource gpufallback_title}"
+        Height="230" Width="520"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="3" Margin="0,0,0,10">
+            <TextBlock TextWrapping="Wrap" Text="{DynamicResource gpufallback_message}" />
+            <TextBlock TextWrapping="Wrap" Margin="0,6,0,0" Text="{DynamicResource gpufallback_message2}" />
+        </StackPanel>
+
+        <TextBlock Grid.Row="1" Text="{DynamicResource gpufallback_cuda}" VerticalAlignment="Center" />
+        <TextBox x:Name="cudaPathBox" Grid.Row="1" Grid.Column="1" Margin="5,2" VerticalAlignment="Center"
+                 Text="{Binding CudaPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <Button Grid.Row="1" Grid.Column="2" Margin="5,2" Padding="10,2" Click="BrowseCudaClick"
+                Content="{DynamicResource gpufallback_browse}" />
+
+        <TextBlock Grid.Row="2" Text="{DynamicResource gpufallback_cudnn}" VerticalAlignment="Center" />
+        <TextBox x:Name="cudnnPathBox" Grid.Row="2" Grid.Column="1" Margin="5,2" VerticalAlignment="Center"
+                 Text="{Binding CudnnPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <Button Grid.Row="2" Grid.Column="2" Margin="5,2" Padding="10,2" Click="BrowseCudnnClick"
+                Content="{DynamicResource gpufallback_browse}" />
+
+        <TextBlock x:Name="statusBox" Grid.Row="3" Grid.ColumnSpan="3" Margin="0,8,0,0" Foreground="Gray"
+                   TextWrapping="Wrap" />
+
+        <Button Grid.Row="4" Grid.Column="0" Margin="0,15,0,0" Padding="15,5" IsDefault="True"
+                Click="SaveClick" Content="{DynamicResource gpufallback_save}" />
+        <Button Grid.Row="4" Grid.Column="1" Margin="5,15,0,0" Padding="15,5" IsCancel="True"
+                HorizontalAlignment="Left" Click="CancelClick" Content="{DynamicResource gpufallback_cancel}" />
+    </Grid>
+</Window>

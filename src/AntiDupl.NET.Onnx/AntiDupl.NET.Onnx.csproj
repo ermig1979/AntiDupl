@@ -1,0 +1,62 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <AssemblyVersion>2.4.0.0</AssemblyVersion>
+    <FileVersion>2.4.0.0</FileVersion>
+    <Version>2.4.0</Version>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <Platforms>x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
+    <Configurations>Debug;Release;Publish</Configurations>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- Проект — перенос из DinoDuplicateSearchWPF (net8.0), анализаторы отключены -->
+    <AnalysisMode>None</AnalysisMode>
+    <Authors>ErmIg;Gigas002</Authors>
+    <Description>ONNX Runtime layer: session factory (GPU→CPU fallback) and model runners (DINOv2, SuperPoint+LightGlue). Единственный носитель пакета Microsoft.ML.OnnxRuntime.</Description>
+    <Copyright>ErmIg © 2002-2023</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <BaseOutputPath>..\..\bin\Debug\</BaseOutputPath>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <BaseOutputPath>..\..\bin\Release\</BaseOutputPath>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Publish|x64'">
+    <BaseOutputPath>..\..\bin\Publish\</BaseOutputPath>
+    <OutputPath>..\..\bin\Publish\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- ORT: единый пакет с GPU (CUDA) + CPU фолбэком. Стабильная линия,
+         как в референс-проекте DinoDuplicateSearchWPF (там 1.21.x). -->
+    <!-- Та же версия ORT, что в оригинале (1.21.x → CUDA 12 / cuDNN 8),
+         чтобы GPU-сценарий воспроизводился точно как в референсе.
+         Пакет живёт только здесь: AntiDupl.NET.Deep зависит от этой сборки, а не от ORT. -->
+    <PackageReference Include="Microsoft.ML.OnnxRuntime.Gpu" Version="1.21.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AntiDupl.NET.Deep.Abstractions\AntiDupl.NET.Deep.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

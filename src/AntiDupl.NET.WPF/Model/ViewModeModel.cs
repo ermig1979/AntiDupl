@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +17,7 @@ namespace AntiDupl.NET.WPF.Model
             set
             {
                 _viewMode = value;
-                RaisePropertyChangedEvent("ViewMode");
+                RaisePropertyChangedEvent();
             }
         }
     }

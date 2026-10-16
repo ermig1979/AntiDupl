@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -6,12 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using AntiDupl.NET.WPF.Command;
 using AntiDupl.NET.WPF.Helper;
 using AntiDupl.NET.WPF.Model;
 using AntiDupl.NET.WPF.ObjectModel;
+using AntiDupl.NET.WPF.Service;
 using AntiDupl.NET.WPF.UndoRedo;
 using AntiDupl.NET.WPF.View;
 
@@ -91,7 +93,7 @@ namespace AntiDupl.NET.WPF.ViewModel
             set
             {
                 _current = value;
-                RaisePropertyChangedEvent("Current");
+                RaisePropertyChangedEvent();
                 RaisePropertyChangedEvent("CurrentInfo");
                 RaisePropertyChangedEvent("Image");
             }
@@ -183,5 +185,36 @@ namespace AntiDupl.NET.WPF.ViewModel
                 }));
             }
         }
+
+        #region External diff tool (diff tool, mirror of WF OnOpenExternDiffImagesClicked)
+
+        readonly ExternalToolLauncher _externalToolLauncher = new ExternalToolLauncher();
+
+        ICommand _openExternalDiffCommand;
+        /// <summary>Открыть пару во внешней diff-утилите (зеркало WF OnOpenExternDiffImagesClicked).</summary>
+        public ICommand OpenExternalDiffCommand
+        {
+            get
+            {
+                return _openExternalDiffCommand ?? (_openExternalDiffCommand = new RelayCommand(arg =>
+                {
+                    ImageInfoClass first = _list != null ? _list.First.Value : null;
+                    ImageInfoClass last = _list != null ? _list.Last.Value : null;
+                    if (first == null || last == null
+                        || String.IsNullOrEmpty(_configuration.ImageDiffExecutablePath))
+                    {
+                        _windowService.ShowMessage(
+                            Application.Current.Resources["comparatorWindow_externalToolNotSet"] as string);
+                        return;
+                    }
+                    string error = _externalToolLauncher.OpenFiles(first.Path, last.Path,
+                        _configuration.ImageDiffExecutablePath, _configuration.ImageDiffExecutableArguments);
+                    if (error != null)
+                        _windowService.ShowMessage(error);
+                }, arg => _list != null && _list.First != null && _list.First.Next != null));
+            }
+        }
+
+        #endregion
     }
 }

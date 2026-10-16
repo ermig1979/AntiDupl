@@ -24,7 +24,7 @@ namespace AntiDupl.NET.WPF.Model
         public static IgnoreStorage Load()
         {
             IgnoreStorage model;
-            model = SerializeHelper<IgnoreStorage>.Load(_fileName);
+            model = SerializeHelper<IgnoreStorage>.Load(GetFilePath());
             if (model == null)
                 model = new IgnoreStorage();
             return model;
@@ -32,7 +32,10 @@ namespace AntiDupl.NET.WPF.Model
 
         public void Save()
         {
-            SerializeHelper<IgnoreStorage>.Save(this, _fileName);
+            SerializeHelper<IgnoreStorage>.Save(this, GetFilePath());
         }
+
+        /// <summary>Полный путь: пользовательские данные — в <c>user\</c> (зеркало WF UserPath).</summary>
+        static string GetFilePath() => System.IO.Path.Combine(AntiDupl.NET.WPF.Resources.Resources.UserPath, _fileName);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,6 +40,7 @@ namespace AntiDupl.NET.WPF.UndoRedo
                 //    OnActoinAppledEvent();
                 RaisePropertyChangedEvent("UndoEnable");
                 RaisePropertyChangedEvent("RedoEnable");
+                RaisePropertyChangedEvent("UndoTooltip");
                 return true;
             }
             return false;
@@ -55,6 +57,7 @@ namespace AntiDupl.NET.WPF.UndoRedo
                 //    OnActoinAppledEvent();
                 RaisePropertyChangedEvent("UndoEnable");
                 RaisePropertyChangedEvent("RedoEnable");
+                RaisePropertyChangedEvent("UndoTooltip");
                 return true;
             }
             return false;
@@ -92,6 +95,7 @@ namespace AntiDupl.NET.WPF.UndoRedo
 
         public void ExecuteCommand(IUCommand command)
         {
+            Debug.Assert(command is not null, nameof(command));
             if (_undoCommandStack.Count + 1 > _configuration.UndoRedoStackSize)
             {
                 IUCommand commandForDispose = _undoCommandStack.Pop();

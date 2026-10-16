@@ -3,11 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:behavior="clr-namespace:AntiDupl.NET.WPF.Behavior"
-        Title="PathWindow" Height="300" Width="300">
+        Title="{DynamicResource pathwindow_title}" Height="300" Width="300">
     <TabControl SelectedIndex="{Binding SelectedTabPageIndex, 
                                             Mode=TwoWay,
                                             UpdateSourceTrigger=PropertyChanged}" >
-        <TabItem Header="Search path">
+        <TabItem Header="{DynamicResource pathwindow_tab_Search}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -28,14 +28,14 @@
                 </i:Interaction.Behaviors>
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Delete current" 
-                                  Command="{Binding LocationsModel.DeleteCurrentLocationCommand}"
+                        <MenuItem Header="{DynamicResource pathwindow_context_DeleteCurrent}" 
+                                  Command="{Binding LocationsModel.DeleteLocationCommand}"
                                   CommandParameter="{Binding}" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
 
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="Icon" >
+                    <DataGridTemplateColumn Header="{DynamicResource pathwindow_column_Icon}" >
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Image Source="{Binding Image, Mode=OneWay}" />
@@ -44,8 +44,8 @@
                     </DataGridTemplateColumn>
 
                     <DataGridTextColumn Binding="{Binding Path, Mode=TwoWay}"
-                                        Header="Path"/>
-                    <DataGridTemplateColumn Header="SearchSubfolders" >
+                                        Header="{DynamicResource pathwindow_column_Path}"/>
+                    <DataGridTemplateColumn Header="{DynamicResource pathwindow_column_SearchSubfolders}" >
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <CheckBox IsChecked="{Binding SearchInSubfolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -57,9 +57,200 @@
             </DataGrid>
 
                 <Button Grid.Row="1"
-                    Command="{Binding SelectDirectoryCommand}">Select directory</Button>
+                    Command="{Binding SelectDirectoryCommand}">
+                    <TextBlock Text="{DynamicResource pathwindow_button_SelectDirectory}"/>
+                </Button>
                 <Button Grid.Row="2"
-                    Command="{Binding SelectImagesCommand}">Select images</Button>
+                    Command="{Binding SelectImagesCommand}">
+                    <TextBlock Text="{DynamicResource pathwindow_button_SelectImages}"/>
+                </Button>
+            </Grid>
+        </TabItem>
+
+        <TabItem Header="{DynamicResource pathwindow_tab_Ignore}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <DataGrid Grid.Row="0"
+                    MinHeight="100"
+                    AutoGenerateColumns="False"
+                    CanUserAddRows="True"
+                    CanUserDeleteRows="True"
+                    ItemsSource="{Binding LocationsModel.IgnoreLocations, ValidatesOnNotifyDataErrors=True}"
+                    IsSynchronizedWithCurrentItem="True"
+                    SelectedItem="{Binding LocationsModel.Current}">
+                    <i:Interaction.Behaviors>
+                        <behavior:FrameworkElementDropBehavior/>
+                    </i:Interaction.Behaviors>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="{DynamicResource pathwindow_context_DeleteCurrent}" 
+                                      Command="{Binding LocationsModel.DeleteLocationCommand}"
+                                      CommandParameter="{Binding}" />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="{DynamicResource pathwindow_column_Icon}" >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Source="{Binding Image, Mode=OneWay}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTextColumn Binding="{Binding Path, Mode=TwoWay}"
+                                            Header="{DynamicResource pathwindow_column_Path}"/>
+                        <DataGridTemplateColumn Header="{DynamicResource pathwindow_column_SearchSubfolders}" >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding SearchInSubfolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                           HorizontalAlignment="Center" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <Button Grid.Row="1"
+                    Command="{Binding SelectDirectoryCommand}">
+                    <TextBlock Text="{DynamicResource pathwindow_button_SelectDirectory}"/>
+                </Button>
+                <Button Grid.Row="2"
+                    Command="{Binding SelectImagesCommand}">
+                    <TextBlock Text="{DynamicResource pathwindow_button_SelectImages}"/>
+                </Button>
+                <StackPanel Grid.Row="3" Orientation="Horizontal">
+                    <TextBlock Text="{DynamicResource pathwindow_IgnoreFilenameFilter}"
+                               VerticalAlignment="Center" Margin="0,0,6,0"/>
+                    <TextBox Width="150"
+                             Text="{Binding LocationsModel.IgnoreFilenameFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+
+        <TabItem Header="{DynamicResource pathwindow_tab_Valid}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <DataGrid Grid.Row="0"
+                    MinHeight="100"
+                    AutoGenerateColumns="False"
+                    CanUserAddRows="True"
+                    CanUserDeleteRows="True"
+                    ItemsSource="{Binding LocationsModel.ValidLocations, ValidatesOnNotifyDataErrors=True}"
+                    IsSynchronizedWithCurrentItem="True"
+                    SelectedItem="{Binding LocationsModel.Current}">
+                    <i:Interaction.Behaviors>
+                        <behavior:FrameworkElementDropBehavior/>
+                    </i:Interaction.Behaviors>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="{DynamicResource pathwindow_context_DeleteCurrent}" 
+                                      Command="{Binding LocationsModel.DeleteLocationCommand}"
+                                      CommandParameter="{Binding}" />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="{DynamicResource pathwindow_column_Icon}" >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Source="{Binding Image, Mode=OneWay}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTextColumn Binding="{Binding Path, Mode=TwoWay}"
+                                            Header="{DynamicResource pathwindow_column_Path}"/>
+                        <DataGridTemplateColumn Header="{DynamicResource pathwindow_column_SearchSubfolders}" >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding SearchInSubfolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                           HorizontalAlignment="Center" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <Button Grid.Row="1"
+                    Command="{Binding SelectDirectoryCommand}">
+                    <TextBlock Text="{DynamicResource pathwindow_button_SelectDirectory}"/>
+                </Button>
+                <Button Grid.Row="2"
+                    Command="{Binding SelectImagesCommand}">
+                    <TextBlock Text="{DynamicResource pathwindow_button_SelectImages}"/>
+                </Button>
+            </Grid>
+        </TabItem>
+
+        <TabItem Header="{DynamicResource pathwindow_tab_Delete}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <DataGrid Grid.Row="0"
+                    MinHeight="100"
+                    AutoGenerateColumns="False"
+                    CanUserAddRows="True"
+                    CanUserDeleteRows="True"
+                    ItemsSource="{Binding LocationsModel.DeleteLocations, ValidatesOnNotifyDataErrors=True}"
+                    IsSynchronizedWithCurrentItem="True"
+                    SelectedItem="{Binding LocationsModel.Current}">
+                    <i:Interaction.Behaviors>
+                        <behavior:FrameworkElementDropBehavior/>
+                    </i:Interaction.Behaviors>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="{DynamicResource pathwindow_context_DeleteCurrent}" 
+                                      Command="{Binding LocationsModel.DeleteLocationCommand}"
+                                      CommandParameter="{Binding}" />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="{DynamicResource pathwindow_column_Icon}" >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Source="{Binding Image, Mode=OneWay}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                    <DataGridTextColumn Binding="{Binding Path, Mode=TwoWay}"
+                                        Header="{DynamicResource pathwindow_column_Path}"/>
+                    <DataGridTemplateColumn Header="{DynamicResource pathwindow_column_SearchSubfolders}" >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding SearchInSubfolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                       HorizontalAlignment="Center" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+                </DataGrid>
+
+                <Button Grid.Row="1"
+                    Command="{Binding SelectDirectoryCommand}">
+                    <TextBlock Text="{DynamicResource pathwindow_button_SelectDirectory}"/>
+                </Button>
+                <Button Grid.Row="2"
+                    Command="{Binding SelectImagesCommand}">
+                    <TextBlock Text="{DynamicResource pathwindow_button_SelectImages}"/>
+                </Button>
             </Grid>
         </TabItem>
     </TabControl>

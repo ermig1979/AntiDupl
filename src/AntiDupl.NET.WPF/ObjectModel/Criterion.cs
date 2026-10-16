@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +17,7 @@ namespace AntiDupl.NET.WPF.ObjectModel
             set
             {
                 _name = value;
-                RaisePropertyChangedEvent("Name");
+                RaisePropertyChangedEvent();
             }
         }*/
 
@@ -38,7 +38,7 @@ namespace AntiDupl.NET.WPF.ObjectModel
             set
             {
                 _weight = value;
-                RaisePropertyChangedEvent("Weight");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -49,7 +49,7 @@ namespace AntiDupl.NET.WPF.ObjectModel
             set
             {
                 _isUse = value;
-                RaisePropertyChangedEvent("IsUse");
+                RaisePropertyChangedEvent();
             }
         }
     }

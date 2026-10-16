@@ -188,6 +188,13 @@ DLLAPI adError adSearch(adEngineHandle handle)
 	return AD_OK;
 }
 
+DLLAPI adError adScanCandidatesW(adEngineHandle handle, adCandidateInfoPtrW pCandidates, adSizePtr pCandidateSize)
+{
+	CHECK_HANDLE CHECK_ACCESS LOCK
+
+	return handle->ScanCandidates(pCandidates, pCandidateSize);
+}
+
 template <class TChar> adError Load(adEngineHandle handle, adFileType fileType, const TChar *fileName, adBool check)
 {
 	CHECK_HANDLE CHECK_ACCESS LOCK
@@ -631,5 +638,27 @@ DLLAPI adError adLoadBitmapW(adEngineHandle handle, const adCharW* fileName, adB
     CHECK_HANDLE CHECK_POINTER(fileName)
 
     return ad::LoadBitmap(fileName, pBitmap, handle->Options());
+}
+
+DLLAPI adError adLoadBitmapLetterboxW(adEngineHandle handle, const adCharW* fileName, adUInt32 maxW, adUInt32 maxH, adBitmapPtr pBitmap)
+{
+    CHECK_HANDLE CHECK_POINTER(fileName)
+
+    return ad::LoadBitmapLetterbox(fileName, maxW, maxH, pBitmap, handle->Options());
+}
+
+DLLAPI adError adLoadBitmapExW(adEngineHandle handle, const adCharW* fileName, adBitmapPtr pBitmap, adUInt32* pNativeWidth, adUInt32* pNativeHeight)
+{
+    CHECK_HANDLE CHECK_POINTER(fileName)
+
+    return ad::LoadBitmapEx(fileName, pBitmap, handle->Options(), pNativeWidth, pNativeHeight);
+}
+
+DLLAPI adError adLoadBitmapLetterboxMetricsW(adEngineHandle handle, const adCharW* fileName, adUInt32 maxW, adUInt32 maxH, adBitmapPtr pBitmap,
+                                             adUInt32* pNativeWidth, adUInt32* pNativeHeight, double* pBlurring, double* pBlockiness)
+{
+    CHECK_HANDLE CHECK_POINTER(fileName)
+
+    return ad::LoadBitmapLetterboxMetrics(fileName, maxW, maxH, pBitmap, handle->Options(), pNativeWidth, pNativeHeight, pBlurring, pBlockiness);
 }
 

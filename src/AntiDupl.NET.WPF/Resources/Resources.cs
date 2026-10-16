@@ -52,7 +52,16 @@ namespace AntiDupl.NET.WPF.Resources
 
         static public string GetDefaultUserPath()
         {
+#if PUBLISH
+            // Релизная сборка — portable: данные рядом с бинарником (как в WinForms PUBLISH).
             return CreateIfNotExists(string.Format("{0}\\user", Application.StartupPath));
+#else
+            // Dev-сборки — %LOCALAPPDATA%\AntiDupl.NET\user (зеркало WinForms non-PUBLISH):
+            // не смывается clean-ом и не живёт в дереве репо.
+            return CreateIfNotExists(System.IO.Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "AntiDupl.NET", "user"));
+#endif
         }
 
         static private string m_userPath = null;

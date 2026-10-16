@@ -7,8 +7,7 @@ using System.Windows;
 using Microsoft.Xaml.Behaviors;
 using System.Windows.Controls;
 using AntiDupl.NET.WPF.Helper;
-using TinyIoC;
-using AntiDupl.NET.WPF.Model;
+using AntiDupl.NET.WPF.Service;using AntiDupl.NET.WPF.Model;
 
 namespace AntiDupl.NET.WPF.Behavior
 {
@@ -20,7 +19,7 @@ namespace AntiDupl.NET.WPF.Behavior
         {
             if (_iConfigurationModel == null)
             {
-                _iConfigurationModel = TinyIoCContainer.Current.Resolve<IConfigurationModel>();
+                _iConfigurationModel = ServiceLocator.Resolve<IConfigurationModel>();
             }
 
             if (_iConfigurationModel == null)

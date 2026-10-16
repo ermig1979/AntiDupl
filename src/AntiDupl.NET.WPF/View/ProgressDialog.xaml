@@ -1,59 +1,68 @@
-﻿<Window x:Class="AntiDupl.NET.WPF.View.ProgressDialog"
+<Window x:Class="AntiDupl.NET.WPF.View.ProgressDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:viewModel="clr-namespace:AntiDupl.NET.WPF.ViewModel"
         xmlns:control="clr-namespace:AntiDupl.NET.WPF.Control"
-        Title="ProgressDialog" Height="80" Width="600">
+        Title="{DynamicResource progressdialog_title}" Height="300" Width="600">
     <Window.DataContext>
         <viewModel:ProgressDialogViewModel/>
     </Window.DataContext>
     <Grid >
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.05" MinWidth="50"/>
-            <ColumnDefinition Width="0.05" MinWidth="50"/>
-            <ColumnDefinition Width="0.10" MinWidth="100"/>
-            <ColumnDefinition Width="0.75*" MinWidth="300"/>
-            <ColumnDefinition Width="0.05" MinWidth="50"/>
-        </Grid.ColumnDefinitions>
-        <Border Grid.Column="0" BorderBrush="LightGray" BorderThickness="1">
-            <TextBlock VerticalAlignment="Center"
-                       HorizontalAlignment="Center"
-                       Text="{Binding ProgressMax, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-        </Border>
-        <Border Grid.Column="1" BorderBrush="LightGray" BorderThickness="1">
-            <TextBlock VerticalAlignment="Center"
-                       HorizontalAlignment="Center"
-                       Text="{Binding Progress, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-        </Border>
-        <Border Grid.Column="2" BorderBrush="LightGray" BorderThickness="1" >
-            <control:ComplexProgressBar CurrentFirst="{Binding Progress, Mode=OneWay}"
-                                        CurrentSecond="{Binding CurrentSecond, Mode=OneWay}"
-                                        Maximum="{Binding ProgressMax, Mode=OneWay}"/>
-        </Border>
-        <!-- Progress Message -->
-        <Border Grid.Column="3" BorderBrush="LightGray" BorderThickness="1" >
-            <TextBlock VerticalAlignment="Center" 
-                       HorizontalAlignment="Left"
-                       TextWrapping="Wrap"
-                       Text="{Binding ProgressMessage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-        </Border>
-        <Button Grid.Column="4" Content="Cancel" Command="{Binding CancelCommand}" />
-        <!--<TextBlock Text="{Binding Path=LogMessage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
-                   HorizontalAlignment="Center"  />-->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-        <!--<DataGrid Grid.Row="1" Grid.ColumnSpan="6"
-                      ItemsSource="{Binding LogItems}" 
-                      x:Name="logGrid"
-                      AutoGenerateColumns="False" 
-                      IsReadOnly="True"
-			          HorizontalScrollBarVisibility="Auto" 
-                      VerticalScrollBarVisibility="Auto"
-                      IsSynchronizedWithCurrentItem="True" 
-                  SelectedItem="{Binding SelectedLogItem, Mode=TwoWay}">
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.05" MinWidth="50"/>
+                <ColumnDefinition Width="0.05" MinWidth="50"/>
+                <ColumnDefinition Width="0.10" MinWidth="100"/>
+                <ColumnDefinition Width="0.75*" MinWidth="300"/>
+                <ColumnDefinition Width="0.05" MinWidth="50"/>
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" BorderBrush="LightGray" BorderThickness="1">
+                <TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Text="{Binding ProgressMax, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </Border>
+            <Border Grid.Column="1" BorderBrush="LightGray" BorderThickness="1">
+                <TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Text="{Binding Progress, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </Border>
+            <Border Grid.Column="2" BorderBrush="LightGray" BorderThickness="1" >
+                <control:ComplexProgressBar CurrentFirst="{Binding Progress, Mode=OneWay}"
+                                            CurrentSecond="{Binding CurrentSecond, Mode=OneWay}"
+                                            Maximum="{Binding ProgressMax, Mode=OneWay}"/>
+            </Border>
+            <!-- Progress Message -->
+            <Border Grid.Column="3" BorderBrush="LightGray" BorderThickness="1" >
+                <TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           TextWrapping="Wrap"
+                           Text="{Binding ProgressMessage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </Border>
+            <Button Grid.Column="4" Content="{DynamicResource progressdialog_button_Cancel}" Command="{Binding CancelCommand}" />
+        </Grid>
+
+        <!-- Лог-грид (зеркало WF ProgressForm-лога) -->
+        <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding LogItems}"
+                  x:Name="logGrid"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  IsSynchronizedWithCurrentItem="True"
+                  HorizontalScrollBarVisibility="Auto"
+                  VerticalScrollBarVisibility="Auto"
+                  CanUserAddRows="False"
+                  Margin="0,2,0,0">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Time" Binding="{Binding Time, Mode=OneWay}" />
-                <DataGridTextColumn Header="Message" Binding="{Binding Message, Mode=OneWay}" />
+                <DataGridTextColumn Header="{DynamicResource progressdialog_column_Time}"
+                                    Binding="{Binding Time, Mode=OneWay}" Width="120" />
+                <DataGridTextColumn Header="{DynamicResource progressdialog_column_Message}"
+                                    Binding="{Binding Message, Mode=OneWay}" Width="*" />
             </DataGrid.Columns>
-        </DataGrid>-->
+        </DataGrid>
     </Grid>
 </Window>
