@@ -69,6 +69,8 @@ namespace AntiDupl.NET.WinForms
         public bool saveProfileOnClosing = true;
         public string imageDiffExecutablePath = "";
         public string imageDiffExecutableArguments = "";
+        public string imageDiff2ExecutablePath = "";
+        public string imageDiff2ExecutableArguments = "";
         /// <summary>Light (Classic), Dark or as Windows is set (System); applied at start-up.</summary>
         public SystemColorMode colorMode = SystemColorMode.Classic;
 
@@ -143,6 +145,8 @@ namespace AntiDupl.NET.WinForms
             saveProfileOnClosing = options.saveProfileOnClosing;
             imageDiffExecutablePath = options.imageDiffExecutablePath;
             imageDiffExecutableArguments = options.imageDiffExecutableArguments;
+            imageDiff2ExecutablePath = options.imageDiff2ExecutablePath;
+            imageDiff2ExecutableArguments = options.imageDiff2ExecutableArguments;
             colorMode = options.colorMode;
         }
 
@@ -184,6 +188,8 @@ namespace AntiDupl.NET.WinForms
             options.saveProfileOnClosing = saveProfileOnClosing;
             options.imageDiffExecutablePath = imageDiffExecutablePath;
             options.imageDiffExecutableArguments = imageDiffExecutableArguments;
+            options.imageDiff2ExecutablePath = imageDiff2ExecutablePath;
+            options.imageDiff2ExecutableArguments = imageDiff2ExecutableArguments;
             options.colorMode = colorMode;
         }
 
@@ -251,6 +257,10 @@ namespace AntiDupl.NET.WinForms
             if (imageDiffExecutablePath != options.imageDiffExecutablePath)
                 return false;
             if (imageDiffExecutableArguments != options.imageDiffExecutableArguments)
+                return false;
+            if (imageDiff2ExecutablePath != options.imageDiff2ExecutablePath)
+                return false;
+            if (imageDiff2ExecutableArguments != options.imageDiff2ExecutableArguments)
                 return false;
             if (m_language != options.m_language)
                 return false;

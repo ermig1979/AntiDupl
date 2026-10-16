@@ -138,6 +138,8 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_ImageDiffTabPage_Text = "Image Difftool";
             s.CoreOptionsForm_ImageDiffExecutablePathLabeledStringEdit_Text = "Executable path:";
             s.CoreOptionsForm_ImageDiffExecutableArgumentsLabeledStringEdit_Text = "Executable arguments (given by \"%1\" \"%2\"):";
+            s.CoreOptionsForm_ImageDiff2ExecutablePathLabeledStringEdit_Text = "Second tool, executable path:";
+            s.CoreOptionsForm_ImageDiff2ExecutableArgumentsLabeledStringEdit_Text = "Second tool, executable arguments (given by \"%1\" \"%2\"):";
 
             s.CorePathsForm_Text = "Paths";
             s.CorePathsForm_SearchTabPage_Text = "Search";
@@ -187,6 +189,7 @@ namespace AntiDupl.NET.WinForms
             s.ResultsPreviewDuplPair_OpenBothFoldersButton_ToolTip_Text = "Open both containing folders";
             s.ResultsPreviewDuplPair_OpenBothImagesButton_ToolTip_Text = "Open both images";
             s.ResultsPreviewDuplPair_ExternDiffImagesButton_ToolTip_Text = "Open image difference with external tool";
+            s.ResultsPreviewDuplPair_ExternDiffImages2Button_ToolTip_Text = "Open image difference with the second external tool";
 
             s.ResultsPreviewDefect_DeleteButton_ToolTip_Text = "Delete picture";
             s.ResultsPreviewDefect_MistakeButton_ToolTip_Text = "Mark current result as a mistake";

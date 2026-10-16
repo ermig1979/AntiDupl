@@ -64,7 +64,7 @@ namespace AntiDupl.NET.WinForms
 
         private void InitializeComponents()
         {
-            ClientSize = new System.Drawing.Size(450, 340);
+            ClientSize = new System.Drawing.Size(450, 372);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             StartPosition = FormStartPosition.CenterScreen;
             ShowInTaskbar = false;
@@ -184,6 +184,7 @@ namespace AntiDupl.NET.WinForms
             m_hotKeyItems[(int)HotKeyOptions.Action.CurrentMistake].icon.Image = Resources.Images.Get("MistakeButton");
             // Icon for external image diff
             m_hotKeyItems[(int)HotKeyOptions.Action.OpenImageDiff].icon.Image = Resources.Images.Get("OpenExternDiffImagesButton.png");
+            m_hotKeyItems[(int)HotKeyOptions.Action.OpenImageDiff2].icon.Image = Resources.Images.Get("OpenExternDiffImages2Button.png");
         }
 
         private void UpdateStrings()
@@ -207,6 +208,7 @@ namespace AntiDupl.NET.WinForms
             m_hotKeyItems[(int)HotKeyOptions.Action.CurrentMistake].text.Text = s.ResultsPreviewDuplPair_MistakeButton_ToolTip_Text;
             m_hotKeyItems[(int)HotKeyOptions.Action.ShowNeighbours].text.Text = s.MainMenu_View_ShowNeighbourImageMenuItem_Text;
             m_hotKeyItems[(int)HotKeyOptions.Action.OpenImageDiff].text.Text = s.ResultsPreviewDuplPair_ExternDiffImagesButton_ToolTip_Text;
+            m_hotKeyItems[(int)HotKeyOptions.Action.OpenImageDiff2].text.Text = s.ResultsPreviewDuplPair_ExternDiffImages2Button_ToolTip_Text;
         }
 
         private void OnButtonClick(object sender, EventArgs e)

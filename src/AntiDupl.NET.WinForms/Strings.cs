@@ -141,6 +141,8 @@ namespace AntiDupl.NET.WinForms
         public string CoreOptionsForm_ImageDiffTabPage_Text;
         public string CoreOptionsForm_ImageDiffExecutablePathLabeledStringEdit_Text;
         public string CoreOptionsForm_ImageDiffExecutableArgumentsLabeledStringEdit_Text;
+        public string CoreOptionsForm_ImageDiff2ExecutablePathLabeledStringEdit_Text;
+        public string CoreOptionsForm_ImageDiff2ExecutableArgumentsLabeledStringEdit_Text;
 
         public string CorePathsForm_Text;
         public string CorePathsForm_SearchTabPage_Text;
@@ -190,6 +192,7 @@ namespace AntiDupl.NET.WinForms
         public string ResultsPreviewDuplPair_OpenBothFoldersButton_ToolTip_Text;
         public string ResultsPreviewDuplPair_OpenBothImagesButton_ToolTip_Text;
         public string ResultsPreviewDuplPair_ExternDiffImagesButton_ToolTip_Text;
+        public string ResultsPreviewDuplPair_ExternDiffImages2Button_ToolTip_Text;
 
         public string ResultsPreviewDefect_DeleteButton_ToolTip_Text;
         public string ResultsPreviewDefect_MistakeButton_ToolTip_Text;

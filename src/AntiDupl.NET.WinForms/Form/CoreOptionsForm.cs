@@ -132,6 +132,8 @@ namespace AntiDupl.NET.WinForms
         private TabPage m_imageDiffTabPage;
         private LabeledStringEdit m_imageDiffExecutablePathLabeledStringEdit;
         private LabeledStringEdit m_imageDiffExecutableArgumentsLabeledStringEdit;
+        private LabeledStringEdit m_imageDiff2ExecutablePathLabeledStringEdit;
+        private LabeledStringEdit m_imageDiff2ExecutableArgumentsLabeledStringEdit;
 
         /// <summary>
         /// Все компоненты иницализированы.
@@ -520,6 +522,14 @@ namespace AntiDupl.NET.WinForms
             m_imageDiffExecutableArgumentsLabeledStringEdit = new LabeledStringEdit(COMBO_BOX_WIDTH + 300, COMBO_BOX_HEIGHT, OnOptionChanged);
             m_imageDiffExecutableArgumentsLabeledStringEdit.Value = m_options.imageDiffExecutableArguments;
             imageDiffTableLayoutPanel.Controls.Add(m_imageDiffExecutableArgumentsLabeledStringEdit, 0, 12);
+
+            m_imageDiff2ExecutablePathLabeledStringEdit = new LabeledStringEdit(COMBO_BOX_WIDTH + 300, COMBO_BOX_HEIGHT, OnOptionChanged);
+            m_imageDiff2ExecutablePathLabeledStringEdit.Value = m_options.imageDiff2ExecutablePath;
+            imageDiffTableLayoutPanel.Controls.Add(m_imageDiff2ExecutablePathLabeledStringEdit, 0, 13);
+
+            m_imageDiff2ExecutableArgumentsLabeledStringEdit = new LabeledStringEdit(COMBO_BOX_WIDTH + 300, COMBO_BOX_HEIGHT, OnOptionChanged);
+            m_imageDiff2ExecutableArgumentsLabeledStringEdit.Value = m_options.imageDiff2ExecutableArguments;
+            imageDiffTableLayoutPanel.Controls.Add(m_imageDiff2ExecutableArgumentsLabeledStringEdit, 0, 14);
         }
 
         private void OnHighlightChanged(object sender, EventArgs e)
@@ -629,6 +639,8 @@ namespace AntiDupl.NET.WinForms
 
             m_imageDiffExecutablePathLabeledStringEdit.Value = m_options.imageDiffExecutablePath;
             m_imageDiffExecutableArgumentsLabeledStringEdit.Value = m_options.imageDiffExecutableArguments;
+            m_imageDiff2ExecutablePathLabeledStringEdit.Value = m_options.imageDiff2ExecutablePath;
+            m_imageDiff2ExecutableArgumentsLabeledStringEdit.Value = m_options.imageDiff2ExecutableArguments;
         }
 
         /// <summary>
@@ -688,6 +700,8 @@ namespace AntiDupl.NET.WinForms
 
             m_options.imageDiffExecutablePath = m_imageDiffExecutablePathLabeledStringEdit.Value;
             m_options.imageDiffExecutableArguments = m_imageDiffExecutableArgumentsLabeledStringEdit.Value;
+            m_options.imageDiff2ExecutablePath = m_imageDiff2ExecutablePathLabeledStringEdit.Value;
+            m_options.imageDiff2ExecutableArguments = m_imageDiff2ExecutableArgumentsLabeledStringEdit.Value;
         }
 
         private void UpdateStrings()
@@ -771,6 +785,8 @@ namespace AntiDupl.NET.WinForms
             m_imageDiffTabPage.Text = s.CoreOptionsForm_ImageDiffTabPage_Text;
             m_imageDiffExecutablePathLabeledStringEdit.Text = s.CoreOptionsForm_ImageDiffExecutablePathLabeledStringEdit_Text;
             m_imageDiffExecutableArgumentsLabeledStringEdit.Text = s.CoreOptionsForm_ImageDiffExecutableArgumentsLabeledStringEdit_Text;
+            m_imageDiff2ExecutablePathLabeledStringEdit.Text = s.CoreOptionsForm_ImageDiff2ExecutablePathLabeledStringEdit_Text;
+            m_imageDiff2ExecutableArgumentsLabeledStringEdit.Text = s.CoreOptionsForm_ImageDiff2ExecutableArgumentsLabeledStringEdit_Text;
         }
 
         /// <summary>

@@ -51,6 +51,7 @@ namespace AntiDupl.NET.WinForms
         private ToolStripButton m_openBothFoldersButton;
         private ToolStripButton m_openBothImagesButton;
         private ToolStripButton m_openExternDiffImagesButton;
+        private ToolStripButton m_openExternDiffImages2Button;
 
         private struct RectanglesWithSimilarity
         {
@@ -89,6 +90,7 @@ namespace AntiDupl.NET.WinForms
             m_openBothFoldersButton = InitFactory.ToolButton.Create("OpenBothFoldersButton.png", null, OnOpenBothFoldersButtonClicked);
             m_openBothImagesButton = InitFactory.ToolButton.Create("OpenBothImagesButton.png", null, OnOpenBothImagesButtonClicked);
             m_openExternDiffImagesButton = InitFactory.ToolButton.Create("OpenExternDiffImagesButton.png", null, OnOpenExternDiffImagesClicked);
+            m_openExternDiffImages2Button = InitFactory.ToolButton.Create("OpenExternDiffImages2Button.png", null, OnOpenExternDiffImages2Clicked);
 
             /* m_difrentNumericUpDown = new System.Windows.Forms.NumericUpDown();
             m_difrentNumericUpDown.Size = new System.Drawing.Size(62, 17);
@@ -132,6 +134,7 @@ namespace AntiDupl.NET.WinForms
             m_openBothFoldersButton.ToolTipText = s.ResultsPreviewDuplPair_OpenBothFoldersButton_ToolTip_Text;
             m_openBothImagesButton.ToolTipText = s.ResultsPreviewDuplPair_OpenBothImagesButton_ToolTip_Text;
             m_openExternDiffImagesButton.ToolTipText = s.ResultsPreviewDuplPair_ExternDiffImagesButton_ToolTip_Text;
+            m_openExternDiffImages2Button.ToolTipText = s.ResultsPreviewDuplPair_ExternDiffImages2Button_ToolTip_Text;
 
             // Для обновления EXIF.
             if (m_currentSearchResult != null)
@@ -222,9 +225,17 @@ namespace AntiDupl.NET.WinForms
                 m_secondImagePreviewPanel.CurrentImageInfo.path, m_options.imageDiffExecutablePath, m_options.imageDiffExecutableArguments);
         }
 
+        private void OnOpenExternDiffImages2Clicked(object sender, System.EventArgs e)
+        {
+            ImageDiffOpener.OpenFiles(m_firstImagePreviewPanel.CurrentImageInfo.path,
+                m_secondImagePreviewPanel.CurrentImageInfo.path, m_options.imageDiff2ExecutablePath, m_options.imageDiff2ExecutableArguments);
+        }
+
         private void OnOptionsChanged()
         {
             m_mistakeButton.Enabled = m_coreOptions.advancedOptions.mistakeDataBase;
+            // The second tool is optional: its button shows once a path is set.
+            m_openExternDiffImages2Button.Visible = !string.IsNullOrEmpty(m_options.imageDiff2ExecutablePath);
         }
 
         protected override void AddItems(ResultsOptions.ViewMode viewMode)
@@ -260,6 +271,7 @@ namespace AntiDupl.NET.WinForms
 
             m_toolStrip.Items.Add(m_openBothImagesButton);
             m_toolStrip.Items.Add(m_openExternDiffImagesButton);
+            m_toolStrip.Items.Add(m_openExternDiffImages2Button);
             m_toolStrip.Items.Add(m_openBothFoldersButton);
             m_toolStrip.Items.Add(new ToolStripSeparator());
             m_toolStrip.Items.Add(m_deleteBothButton);

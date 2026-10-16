@@ -382,6 +382,12 @@ namespace AntiDupl.NET.WinForms
                         var result = m_results[m_currentRowIndex];
                         ImageDiffOpener.OpenFiles(result.first.path, result.second.path, m_options.imageDiffExecutablePath, m_options.imageDiffExecutableArguments);
                     }
+                    else if (hotKey == m_options.hotKeyOptions.Get(HotKeyOptions.Action.OpenImageDiff2)
+                        && !string.IsNullOrEmpty(m_options.imageDiff2ExecutablePath))
+                    {
+                        var result = m_results[m_currentRowIndex];
+                        ImageDiffOpener.OpenFiles(result.first.path, result.second.path, m_options.imageDiff2ExecutablePath, m_options.imageDiff2ExecutableArguments);
+                    }
                     return;
                 }
             }
