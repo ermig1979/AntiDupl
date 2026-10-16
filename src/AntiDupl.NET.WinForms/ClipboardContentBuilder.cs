@@ -74,7 +74,7 @@ namespace AntiDupl.NET.WinForms
             if (options[(int)TypeVertical.Group].visible)
                 Append(result.group);
             if (options[(int)TypeVertical.Difference].visible)
-                Append(result.difference.ToString("F2"));
+                Append(DifferenceFormat.ToString(result.difference));
             if (options[(int)TypeVertical.Defect].visible)
                 Append(result.defect);
             if (options[(int)TypeVertical.Transform].visible)
