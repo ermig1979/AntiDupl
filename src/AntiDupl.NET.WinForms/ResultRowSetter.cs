@@ -183,6 +183,14 @@ namespace AntiDupl.NET.WinForms
                     SetDuplPairToRow(row.Cells, result);
                     break;
             }
+            // A selected row keeps each cell's colour, adapted to the
+            // selection; rows are reused, so a cell back to the plain text
+            // colour clears its selection colour too.
+            foreach (DataGridViewCell cell in row.Cells)
+            {
+                if (cell.HasStyle)
+                    cell.Style.SelectionForeColor = ThemeColors.OnSelection(cell.Style.ForeColor);
+            }
         }
 
         private void SetDefectToRow(DataGridViewCellCollection cells, CoreResult result)
