@@ -32,31 +32,39 @@
 
 namespace ad
 {
+    // Whether this process is long path aware, with long paths enabled in
+    // Windows (Windows 10 1607 and later).
+    static bool ProcessUsesLongPaths()
+    {
+        typedef BOOLEAN (NTAPI *TRtlAreLongPathsEnabled)();
+        static const TRtlAreLongPathsEnabled rtlAreLongPathsEnabled = (TRtlAreLongPathsEnabled)
+            ::GetProcAddress(::GetModuleHandle(TEXT("ntdll.dll")), "RtlAreLongPathsEnabled");
+        return rtlAreLongPathsEnabled != NULL && rtlAreLongPathsEnabled() != FALSE;
+    }
+
     bool FileDelete(const TChar *fileName, bool toRecycle)
     {
-        TChar buffer[MAX_PATH + 1];
-        SHFILEOPSTRUCT shFileOpStruct;
-        errno_t error;
-        size_t length;
-
-        length = _tcsnlen(fileName, MAX_PATH + 1);
-        if (length >= MAX_PATH)
+        TString path(fileName);
+        if (path.size() >= MAX_PATH)
         {
-#ifdef UNICODE
-            return ::DeleteFile(fileName) != FALSE;
-#else
-            return false;
-#endif
+            if (!toRecycle)
+                return ::DeleteFile(fileName) != FALSE;
+            // The shell refuses the \\?\ prefix but recycles the plain path,
+            // whatever its length, in a process that isn't long path aware.
+            // In one that is, it reports success and deletes the file for
+            // good, so the file stays.
+            if (ProcessUsesLongPaths())
+                return false;
+            if (path.compare(0, EXTENDED_PATH_PREFIX_SIZE, EXTENDED_PATH_PREFIX) == 0)
+                path.erase(0, EXTENDED_PATH_PREFIX_SIZE);
         }
-        error = _tcscpy_s(buffer, MAX_PATH + 1, fileName);
-        if(error != 0)
-            return false;
-        buffer[length + 1] = 0;
+        path.push_back(0); // SHFileOperation takes a list that ends in two zeros
 
+        SHFILEOPSTRUCT shFileOpStruct;
         ZeroMemory(&shFileOpStruct, sizeof(shFileOpStruct));
         shFileOpStruct.wFunc = FO_DELETE;
         shFileOpStruct.pTo = NULL;
-        shFileOpStruct.pFrom = buffer;
+        shFileOpStruct.pFrom = path.c_str();
         shFileOpStruct.fFlags = FOF_SILENT | FOF_NOCONFIRMATION | FOF_NOERRORUI;
         if(toRecycle)
             shFileOpStruct.fFlags |= FOF_ALLOWUNDO;
