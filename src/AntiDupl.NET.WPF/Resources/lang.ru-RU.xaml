@@ -304,6 +304,7 @@
     <!-- ==== Compare (подписи) ==== -->
     <v:String x:Key="configurationWindow_checkOnEquality">Искать дублирующие картинки</v:String>
     <v:String x:Key="configurationWindow_transformedImage">Искать повернутые и зеркальные дубликаты</v:String>
+    <v:String x:Key="configurationWindow_shiftedImage">Искать дубликаты со сдвигом изображения</v:String>
     <v:String x:Key="configurationWindow_sizeControl">Учитывать размер картинок</v:String>
     <v:String x:Key="configurationWindow_typeControl">Учитывать тип картинок</v:String>
     <v:String x:Key="configurationWindow_ratioControl">Учитывать соотношение ширины/высоты картинок</v:String>
@@ -346,6 +347,7 @@
     <!-- ==== Tooltips: Compare ==== -->
     <v:String x:Key="configurationWindow_tooltip_checkOnEquality">Искать дубликаты картинок (идентичные или почти идентичные).</v:String>
     <v:String x:Key="configurationWindow_tooltip_transformedImage">Искать также дубликаты, повёрнутые или зеркально отражённые относительно оригинала.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_shiftedImage">Искать также дубликаты, смещённые относительно оригинала.</v:String>
     <v:String x:Key="configurationWindow_tooltip_sizeControl">Считать картинки разными, если их размер в пикселях (ширина/высота) отличается.</v:String>
     <v:String x:Key="configurationWindow_tooltip_typeControl">Считать картинки разными, если у них разный формат (тип) файла.</v:String>
     <v:String x:Key="configurationWindow_tooltip_ratioControl">Считать картинки разными, если у них разное соотношение ширины/высоты.</v:String>
