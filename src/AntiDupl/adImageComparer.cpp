@@ -123,14 +123,14 @@ namespace ad
 			// Сравниваем с набором проверенных
             for(TImageDataPtrList::const_iterator i = set.valid.begin(); i != set.valid.end(); ++i)
             {
-                if(IsDuplPair(pTransformed, *i, &difference))
+                if(IsDuplPairAny(pTransformed, *i, &difference))
                     m_pResult->AddDuplImagePair(pOriginal, *i, difference, transform);
             }
         }
 		// Сравниваем с набором остальных
 		for(TImageDataPtrList::const_iterator i = set.other.begin(); i != set.other.end(); ++i)
 		{
-			if(IsDuplPair(pTransformed, *i, &difference))
+			if(IsDuplPairAny(pTransformed, *i, &difference))
 				m_pResult->AddDuplImagePair(pOriginal, *i, difference, transform);
 		}
 	}
@@ -194,6 +194,169 @@ namespace ad
         if(pFirst->crc32c != pSecond->crc32c)
             *pDifference += ADDITIONAL_DIFFERENCE_FOR_DIFFERENT_CRC32;
         return true;
+    }
+
+    //Common checks of an image pair before the difference calculation (type, size, ratio, paths).
+    bool TImageComparer::PassControls(TImageDataPtr pFirst, TImageDataPtr pSecond)
+    {
+        if(m_pOptions->compare.typeControl == TRUE && 
+            pFirst->type != pSecond->type)
+            return false;
+
+        if(m_pOptions->compare.sizeControl == TRUE &&
+            (pFirst->height != pSecond->height || 
+            pFirst->width != pSecond->width))
+            return false;
+
+        if(m_pOptions->compare.ratioControl == TRUE)
+        {
+            if(Simd::Square(pFirst->ratio - pSecond->ratio) > Simd::Square(RATIO_THRESHOLD_DIFFERENCE))
+                return false;
+        }
+
+        if(m_pOptions->compare.compareInsideOneFolder == FALSE && TPath::EqualByDirectory(pFirst->path, pSecond->path))
+            return false;
+
+        if(m_pOptions->compare.compareInsideOneSearchPath == FALSE && pFirst->index == pSecond->index)
+            return false;
+
+        return true;
+    }
+
+    //Absolute value of an int.
+    static int AbsInt(int value)
+    {
+        return value < 0 ? -value : value;
+    }
+
+    //Squared difference of two images on the overlap area at shift (dx, dy): pFirst[y][x] ~ pSecond[y + dy][x + dx].
+    static uint64_t ShiftedSquaredDifference(const TUInt8 *pFirst, const TUInt8 *pSecond, size_t side, 
+        int dx, int dy, int x0, int y0, int width, int height)
+    {
+        uint64_t sum = 0, row = 0;
+        for(int y = y0; y < y0 + height; ++y)
+        {
+            SimdSquaredDifferenceSum(pFirst + y*side + x0, side, pSecond + (y + dy)*side + x0 + dx, side, width, 1, &row);
+            sum += row;
+        }
+        return sum;
+    }
+
+    //Search of a nonzero shift of the second reduced image relative to the first one.
+    //Two-stage search on the reduced images: a strided global scan over the whole admissible range locates a rough minimum, then a dense window of one stride around it refines the shift to pixel precision. Both stages keep only candidates whose area-normalized squared difference passes the relaxed threshold and whose overlap covers at least a half of the image.
+    //Returns false if no suitable nonzero shift is found.
+    bool TImageComparer::FindShift(TImageDataPtr pFirst, TImageDataPtr pSecond, int &dx, int &dy)
+    {
+        const size_t side = m_pOptions->advanced.reducedImageSize;
+        const int maxShift = int(side)/2;
+        const int stride = std::max(2, int(side)/8);
+        const uint64_t mainThreshold = uint64_t(SHIFT_COARSE_FACTOR)*m_mainThreshold;
+        const size_t minArea = Simd::Square(side)/2;
+
+        int bestDx = 0, bestDy = 0;
+        uint64_t bestMain = uint64_t(-1);
+        for(int pass = 0; pass < 2; ++pass)
+        {
+            const int centerDx = pass == 0 ? 0 : bestDx;
+            const int centerDy = pass == 0 ? 0 : bestDy;
+            const int border = pass == 0 ? maxShift : stride;
+            const int step = pass == 0 ? stride : 1;
+            uint64_t passBest = bestMain; //keep the previous stage result as the fallback
+            int passDx = bestDx, passDy = bestDy;
+            for(int sy = centerDy - border; sy <= centerDy + border; sy += step)
+            {
+                for(int sx = centerDx - border; sx <= centerDx + border; sx += step)
+                {
+                    if(sx == 0 && sy == 0)
+                        continue;
+                    if(AbsInt(sx) > maxShift || AbsInt(sy) > maxShift)
+                        continue;
+                    int x0 = std::max(0, -sx);
+                    int y0 = std::max(0, -sy);
+                    int width = int(side) - AbsInt(sx);
+                    int height = int(side) - AbsInt(sy);
+                    if(size_t(width)*size_t(height) < minArea)
+                        continue;
+                    uint64_t difference = ShiftedSquaredDifference(pFirst->data->main, pSecond->data->main, side, sx, sy, x0, y0, width, height);
+                    if(difference*size_t(side)*size_t(side) > mainThreshold*size_t(width)*size_t(height))
+                        continue;
+                    if(difference < passBest)
+                    {
+                        passBest = difference;
+                        passDx = sx;
+                        passDy = sy;
+                    }
+                }
+            }
+            if(passBest == uint64_t(-1))
+                return false;
+            bestMain = passBest;
+            bestDx = passDx;
+            bestDy = passDy;
+        }
+
+        dx = bestDx;
+        dy = bestDy;
+        return true;
+    }
+
+    //Comparison of images with shift compensation: the shift minimizing the difference is found, and the difference is computed on the overlap area normalized by its area.
+    bool TImageComparer::ShiftedDifference(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference)
+    {
+        int dx, dy;
+        if(!FindShift(pFirst, pSecond, dx, dy))
+            return false;
+
+        const size_t side = m_pOptions->advanced.reducedImageSize;
+        int frame = m_pOptions->GetIgnoreWidthFrame();
+
+        //Overlap area in coordinates of the first image, taking the ignored frame into account.
+        int x0 = std::max(frame, frame - dx);
+        int y0 = std::max(frame, frame - dy);
+        int x1 = std::min(int(side) - frame, int(side) - frame - dx);
+        int y1 = std::min(int(side) - frame, int(side) - frame - dy);
+        int width = x1 - x0, height = y1 - y0;
+        if(width <= 0 || height <= 0)
+            return false;
+
+        uint64_t sum = 0, row = 0;
+        for(int y = y0; y < y1; ++y)
+        {
+            SimdSquaredDifferenceSum(pFirst->data->main + y*side + x0, side,
+                pSecond->data->main + (y + dy)*side + x0 + dx, side, width, 1, &row);
+            sum += row;
+        }
+
+        double difference = PixelDifference(pFirst, pSecond,
+            sqrt(double(sum)/(Simd::Square(PIXEL_MAX_DIFFERENCE)*double(width)*double(height)))*100);
+        if(difference > m_pOptions->compare.thresholdDifference)
+            return false;
+        *pDifference = difference;
+        return true;
+    }
+
+    //Comparison of an image pair without shift and (if the option is enabled) with shift compensation.
+    //When the option is enabled, the smaller of the two differences is chosen, so that the compensation improves the estimate even when the images match without any shift.
+    bool TImageComparer::IsDuplPairAny(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference)
+    {
+        bool matched = IsDuplPair(pFirst, pSecond, pDifference);
+        if(m_pOptions->compare.shiftedImage == TRUE &&
+            m_pOptions->compare.checkOnEquality == TRUE &&
+            PassControls(pFirst, pSecond))
+        {
+            double shiftedDifference;
+            if(ShiftedDifference(pFirst, pSecond, &shiftedDifference))
+            {
+                if(pFirst->crc32c != pSecond->crc32c)
+                    shiftedDifference += ADDITIONAL_DIFFERENCE_FOR_DIFFERENT_CRC32;
+                if(!matched || shiftedDifference < *pDifference)
+                {
+                    *pDifference = shiftedDifference;
+                    matched = true;
+                }
+            }
+        }
+        return matched;
     }
 
     double TImageComparer::PixelDifference(TImageDataPtr pFirst, TImageDataPtr pSecond, double metric)
@@ -394,6 +557,59 @@ namespace ad
 		*pDifference = difference;
         if(pFirst->crc32c != pSecond->crc32c)
             *pDifference += ADDITIONAL_DIFFERENCE_FOR_DIFFERENT_CRC32;
+        return true;
+    }
+
+	// Comparison of two images by the SSIM method with shift compensation on the overlap area.
+    bool TImageComparer_SSIM::ShiftedDifference(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference)
+    {
+        int dx, dy;
+        if(!FindShift(pFirst, pSecond, dx, dy))
+            return false;
+
+        const size_t side = m_pOptions->advanced.reducedImageSize;
+        int frame = m_pOptions->GetIgnoreWidthFrame();
+
+        int x0 = std::max(frame, frame - dx);
+        int y0 = std::max(frame, frame - dy);
+        int x1 = std::min(int(side) - frame, int(side) - frame - dx);
+        int y1 = std::min(int(side) - frame, int(side) - frame - dy);
+        int width = x1 - x0, height = y1 - y0;
+        if(width <= 0 || height <= 0)
+            return false;
+        float area = float(width*height);
+
+        uint64_t sum1 = 0, sum2 = 0, squareSum1 = 0, squareSum2 = 0, correlationSum = 0, row = 0;
+        for(int y = y0; y < y1; ++y)
+        {
+            const TUInt8 *pRow1 = pFirst->data->main + y*side + x0;
+            const TUInt8 *pRow2 = pSecond->data->main + (y + dy)*side + x0 + dx;
+            SimdValueSum(pRow1, side, width, 1, &row);       sum1 += row;
+            SimdValueSum(pRow2, side, width, 1, &row);       sum2 += row;
+            SimdSquareSum(pRow1, side, width, 1, &row);      squareSum1 += row;
+            SimdSquareSum(pRow2, side, width, 1, &row);      squareSum2 += row;
+            SimdCorrelationSum(pRow1, side, pRow2, side, width, 1, &row); correlationSum += row;
+        }
+
+        float average1 = float(sum1)/area;
+        float average2 = float(sum2)/area;
+        float varianceSquare1 = fabs(float(squareSum1)/area - average1*average1);
+        float varianceSquare2 = fabs(float(squareSum2)/area - average2*average2);
+        float sigmaOfBoth = float(correlationSum)/area - average1*average2;
+
+        float res = (2*average1*average2 + C1)*(2*sigmaOfBoth + C2)/
+            ((average1*average1 + average2*average2 + C1)*(varianceSquare1 + varianceSquare2 + C2));
+        if(res > 2 || res < -2)
+            return false;
+
+        double difference = 100 - double(res)*100;
+        if(difference < 0)
+            difference = 0;
+        difference = PixelDifference(pFirst, pSecond, difference);
+        if(difference > m_pOptions->compare.thresholdDifference)
+            return false;
+
+        *pDifference = difference;
         return true;
     }
     //-------------------------------------------------------------------------

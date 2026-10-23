@@ -304,6 +304,7 @@
     <!-- ==== Compare (подписи) ==== -->
     <v:String x:Key="configurationWindow_checkOnEquality">Search image dupls</v:String>
     <v:String x:Key="configurationWindow_transformedImage">Search rotated and mirror image dupls</v:String>
+    <v:String x:Key="configurationWindow_shiftedImage">Search shifted image dupls</v:String>
     <v:String x:Key="configurationWindow_sizeControl">Control image size</v:String>
     <v:String x:Key="configurationWindow_typeControl">Control image type</v:String>
     <v:String x:Key="configurationWindow_ratioControl">Control image width/height ratio</v:String>
@@ -346,6 +347,7 @@
     <!-- ==== Tooltips: Compare ==== -->
     <v:String x:Key="configurationWindow_tooltip_checkOnEquality">Search for duplicate images (identical or nearly identical pictures).</v:String>
     <v:String x:Key="configurationWindow_tooltip_transformedImage">Also search for duplicates rotated or mirrored relative to the original.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_shiftedImage">Also search for duplicates translated relative to the original.</v:String>
     <v:String x:Key="configurationWindow_tooltip_sizeControl">Treat images as different if their pixel size (width/height) differs.</v:String>
     <v:String x:Key="configurationWindow_tooltip_typeControl">Treat images as different if their file format (type) differs.</v:String>
     <v:String x:Key="configurationWindow_tooltip_ratioControl">Treat images as different if their width/height ratio differs.</v:String>

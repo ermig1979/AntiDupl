@@ -42,6 +42,7 @@
   <CoreOptionsForm_CompareTabPage_Text>Vergleichen</CoreOptionsForm_CompareTabPage_Text>
   <CoreOptionsForm_CheckOnEqualityCheckBox_Text>Bildduplikate suchen</CoreOptionsForm_CheckOnEqualityCheckBox_Text>
   <CoreOptionsForm_TransformedImageCheckBox_Text>gedrehte und spiegelbildliche Duplikate suchen</CoreOptionsForm_TransformedImageCheckBox_Text>
+  <CoreOptionsForm_ShiftedImageCheckBox_Text>verschobene Duplikate suchen</CoreOptionsForm_ShiftedImageCheckBox_Text>
   <CoreOptionsForm_SizeControlCheckBox_Text>Bildgröße überprüfen</CoreOptionsForm_SizeControlCheckBox_Text>
   <CoreOptionsForm_TypeControlCheckBox_Text>Bildtyp überprüfen</CoreOptionsForm_TypeControlCheckBox_Text>
   <CoreOptionsForm_RatioControlCheckBox_Text>Verhältnis von Bildbreite und -höhe überprüfen</CoreOptionsForm_RatioControlCheckBox_Text>
