@@ -163,6 +163,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
                     <CheckBox Grid.Column="0" Grid.Row="0"
@@ -174,19 +175,23 @@
                               ToolTip="{DynamicResource configurationWindow_tooltip_transformedImage}"
                               IsChecked="{Binding Option.compareOptions.TransformedImage}" />
                     <CheckBox Grid.Column="0" Grid.Row="2"
+                              Content="{DynamicResource configurationWindow_shiftedImage}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_shiftedImage}"
+                              IsChecked="{Binding Option.compareOptions.ShiftedImage}" />
+                    <CheckBox Grid.Column="0" Grid.Row="3"
                               Content="{DynamicResource configurationWindow_sizeControl}"
                               ToolTip="{DynamicResource configurationWindow_tooltip_sizeControl}"
                               IsChecked="{Binding Option.compareOptions.SizeControl}" />
-                    <CheckBox Grid.Column="0" Grid.Row="3"
+                    <CheckBox Grid.Column="0" Grid.Row="4"
                               Content="{DynamicResource configurationWindow_typeControl}"
                               ToolTip="{DynamicResource configurationWindow_tooltip_typeControl}"
                               IsChecked="{Binding Option.compareOptions.TypeControl}" />
-                    <CheckBox Grid.Column="0" Grid.Row="4"
+                    <CheckBox Grid.Column="0" Grid.Row="5"
                               Content="{DynamicResource configurationWindow_ratioControl}"
                               ToolTip="{DynamicResource configurationWindow_tooltip_ratioControl}"
                               IsChecked="{Binding Option.compareOptions.RatioControl}" />
 
-                    <Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="5">
+                    <Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
@@ -200,10 +205,10 @@
                                   SelectedItem="{Binding Path=Option.compareOptions.AlgorithmComparing, RelativeSource={RelativeSource AncestorType=Window}}" />
                     </Grid>
 
-                    <TextBlock Grid.Column="0" Grid.Row="6"
+                    <TextBlock Grid.Column="0" Grid.Row="7"
                                Text="{DynamicResource configurationWindow_thresholdDifference}"
                                ToolTip="{DynamicResource configurationWindow_tooltip_thresholdDifference}" />
-                    <TextBox Grid.Column="1" Grid.Row="6"
+                    <TextBox Grid.Column="1" Grid.Row="7"
                              ToolTip="{DynamicResource configurationWindow_tooltip_thresholdDifference}"
                              Text="{Binding Option.compareOptions.ThresholdDifference, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType=Window}}">
                         <i:Interaction.Behaviors>
@@ -211,10 +216,10 @@
                         </i:Interaction.Behaviors>
                     </TextBox>
 
-                    <TextBlock Grid.Column="0" Grid.Row="7"
+                    <TextBlock Grid.Column="0" Grid.Row="8"
                                Text="{DynamicResource configurationWindow_minimalImageSize}"
                                ToolTip="{DynamicResource configurationWindow_tooltip_minimalImageSize}" />
-                    <TextBox Grid.Column="1" Grid.Row="7"
+                    <TextBox Grid.Column="1" Grid.Row="8"
                              ToolTip="{DynamicResource configurationWindow_tooltip_minimalImageSize}"
                              Text="{Binding Option.compareOptions.MinimalImageSize, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType=Window}}">
                         <i:Interaction.Behaviors>
@@ -222,10 +227,10 @@
                         </i:Interaction.Behaviors>
                     </TextBox>
 
-                    <TextBlock Grid.Column="0" Grid.Row="8"
+                    <TextBlock Grid.Column="0" Grid.Row="9"
                                Text="{DynamicResource configurationWindow_maximalImageSize}"
                                ToolTip="{DynamicResource configurationWindow_tooltip_maximalImageSize}" />
-                    <TextBox Grid.Column="1" Grid.Row="8"
+                    <TextBox Grid.Column="1" Grid.Row="9"
                              ToolTip="{DynamicResource configurationWindow_tooltip_maximalImageSize}"
                              Text="{Binding Option.compareOptions.MaximalImageSize, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType=Window}}">
                         <i:Interaction.Behaviors>
@@ -233,11 +238,11 @@
                         </i:Interaction.Behaviors>
                     </TextBox>
 
-                    <CheckBox Grid.Column="0" Grid.Row="9"
+                    <CheckBox Grid.Column="0" Grid.Row="10"
                               Content="{DynamicResource configurationWindow_compareInsideOneFolder}"
                               ToolTip="{DynamicResource configurationWindow_tooltip_compareInsideOneFolder}"
                               IsChecked="{Binding Option.compareOptions.CompareInsideOneFolder}" />
-                    <CheckBox Grid.Column="0" Grid.Row="10"
+                    <CheckBox Grid.Column="0" Grid.Row="11"
                               Content="{DynamicResource configurationWindow_compareInsideOneSearchPath}"
                               ToolTip="{DynamicResource configurationWindow_tooltip_compareInsideOneSearchPath}"
                               IsChecked="{Binding Option.compareOptions.CompareInsideOneSearchPath}" />
