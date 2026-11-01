@@ -169,8 +169,10 @@ namespace AntiDupl.NET.WinForms
             Resources.Help.Bind(this, Resources.Help.Options);
 
             TableLayoutPanel mainTableLayoutPanel = InitFactory.Layout.Create(1, 2, 5);
-            mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 87F));
-            mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 13F));
+            // The buttons need less than their row's share; the Compare tab's
+            // last check box gets the rest, clear of the tab's bottom edge.
+            mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 89F));
+            mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 11F));
             Controls.Add(mainTableLayoutPanel);
 
             m_mainTabControl = new TabControl();
