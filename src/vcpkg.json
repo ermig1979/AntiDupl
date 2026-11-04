@@ -8,7 +8,10 @@
     "libwebp",
     "libheif",
     "simd",
-    "libavif",
+    {
+      "name": "libavif",
+      "features": [ "dav1d" ]
+    },
     "libjxl",
     "xxhash"
   ],

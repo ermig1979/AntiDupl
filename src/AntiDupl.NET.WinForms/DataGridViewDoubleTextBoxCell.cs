@@ -78,7 +78,8 @@ namespace AntiDupl.NET.WinForms
             if ((cellState & DataGridViewElementStates.Selected) != 0)
             {
                 ordinaryColor = cellStyle.SelectionForeColor;
-                markColor = m_markerColor;
+                Color onSelection = ThemeColors.OnSelection(m_markerColor);
+                markColor = onSelection.IsEmpty ? ordinaryColor : onSelection;
             }
             else
             {
@@ -172,8 +173,8 @@ namespace AntiDupl.NET.WinForms
             if (m_markType == MarkType.Both)
             {
                 // Diff-Highlighting: nur unterschiedliche Teile rot markieren
-                DrawTextWithDiff(graphics, firstBounds, m_first?.ToString() ?? "", m_second?.ToString() ?? "", cellStyle, format);
-                DrawTextWithDiff(graphics, secondBounds, m_second?.ToString() ?? "", m_first?.ToString() ?? "", cellStyle, format);
+                DrawTextWithDiff(graphics, firstBounds, m_first?.ToString() ?? "", m_second?.ToString() ?? "", cellStyle, format, ordinaryColor, markColor);
+                DrawTextWithDiff(graphics, secondBounds, m_second?.ToString() ?? "", m_first?.ToString() ?? "", cellStyle, format, ordinaryColor, markColor);
             }
             else
             {
@@ -221,11 +222,12 @@ namespace AntiDupl.NET.WinForms
             return preferedSize;
         }
 
-        private void DrawTextWithDiff(Graphics g, Rectangle bounds, string text, string otherText, DataGridViewCellStyle style, StringFormat format)
+        private void DrawTextWithDiff(Graphics g, Rectangle bounds, string text, string otherText, DataGridViewCellStyle style,
+            StringFormat format, Color ordinaryColor, Color markColor)
         {
             if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(otherText) || text == otherText)
             {
-                g.DrawString(text ?? "", style.Font, new SolidBrush(style.ForeColor), bounds, format);
+                g.DrawString(text ?? "", style.Font, new SolidBrush(ordinaryColor), bounds, format);
                 return;
             }
 
@@ -255,7 +257,7 @@ namespace AntiDupl.NET.WinForms
                 if (string.IsNullOrEmpty(segment.Text))
                     continue;
 
-                Color color = segment.IsDifferent ? m_markerColor : style.ForeColor;
+                Color color = segment.IsDifferent ? markColor : ordinaryColor;
                 g.DrawString(segment.Text, style.Font, new SolidBrush(color), x, y, measureFormat);
                 x += g.MeasureString(segment.Text, style.Font, int.MaxValue, measureFormat).Width;
             }
