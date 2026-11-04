@@ -937,8 +937,8 @@ namespace AntiDupl.NET.WinForms
             m_setDefaultButton.Enabled = !m_defaultCoreOptions.Equals(m_newCoreOptions);
 
             m_transformedImageCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
-            // Only these two have it: local colour's differences aren't the
-            // mean square the shift is measured in.
+            // Only these two have it: the other algorithms' differences aren't
+            // the mean square the shift is measured in.
             m_shiftedImageCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality &&
               (m_newCoreOptions.compareOptions.algorithmComparing == AlgorithmComparing.SquaredSum ||
                m_newCoreOptions.compareOptions.algorithmComparing == AlgorithmComparing.SSIM);
