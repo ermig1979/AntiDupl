@@ -64,6 +64,8 @@ By default, this option is enabled.
 <b>Algorithm of comparing of images</b> - algorithm by means of which pictures are compared. In standard fast algorithm - <b>'Mean square difference'</b> calculate a mean square deviation of brightness for each couple of images. He fast, but has big percent of false positives for pictures with a big uniform background and can not find strongly changed images. When comparing pictures by means of an index of structural similarity (<b>'SSIM'</b>) can find duplicates among strongly changed pictures, and also images with a big uniform background are better compared, but calculation more slowly. Also <b>'SSIM'</b> is very sensitive to the normalized size of image. It is better not to use him at the sizes less than 128x128.
 In algorithm <b>'Local colour difference'</b> each image keeps a 64x64 colour thumbnail, and the difference of two images is the root mean square colour difference of their worst 4x4 block.
 A change of colour or a small local edit therefore counts in full instead of vanishing in an average over the whole picture, so this algorithm tells copies of a picture from its other versions much better, at about the speed of <b>'SSIM'</b>.
+Algorithm <b>'Perceptual (Butteraugli)'</b> judges how visible a difference is to the eye: copies that were compressed or resized score low, while an edit stands out, however small.
+It is too slow to compare every pair, so it scores only the pairs that <b>'Local colour difference'</b> finds within 10%, and it keeps the scores for the next search in the file <b>butteraugli.adp</b> in the user folder.
 The default setting is <b>'Mean square difference'</b>.
 This parameter is duplicated on the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>.
  </p></li>
@@ -74,8 +76,17 @@ If it is equal to zero then program will be able to find only fully identical im
 If he set too high, then increase the likelihood of false positives.
 Also worth noting that the increase in this parameter leads to a slower speed of the algorithm and vice versa.
 It can vary in the range from 0 to 15% for algorithm <b>'Mean square difference'</b> and from 0 to 50% for algorithms <b>'SSIM'</b> and <b>'Local colour difference'</b>.
+For algorithm <b>'Perceptual (Butteraugli)'</b> it is a score without a unit, from 0 to 50.
 By default, this parameter is equal to 5% for algorithm <b>'Mean square difference'</b>, 20% for algorithm <b>'SSIM'</b> and 4% for algorithm <b>'Local colour difference'</b>.
+For algorithm <b>'Perceptual (Butteraugli)'</b> the default follows <b>Size Butteraugli compares at</b>, and beside the list are the two values worth using at that size: at 768 px, 8.5 finds copies and leaves out the other versions of a picture, and 15 also finds the copies that 8.5 misses, along with some of those versions, so look at those results before deleting.
 This parameter is duplicated on the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>.
+ </p></li>
+ <li><p align="justify">
+<b>Size Butteraugli compares at (longest side)</b> - the size to which algorithm <b>'Perceptual (Butteraugli)'</b> reduces larger images before comparing them.
+A larger size sees smaller differences and takes longer: 1024 px takes about six times as long as 384 px.
+Scores grow with this size, so the default threshold and the values shown beside the list follow it.
+It can be 384, 512, 768 or 1024 px.
+By default, this parameter is equal to 768 px.
  </p></li>
  <li><p align="justify">
 <b>Minimal image width/height</b> - sets the minimum width/height of images is necessary that they will be checked for the presence of defects or duplicates.
