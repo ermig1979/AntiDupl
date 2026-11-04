@@ -153,21 +153,18 @@ namespace ad
 
      bool TRecycleBin::ClearTemporaryFile(TRecord *pRecord, bool permanent)
      {
-         if(permanent || m_pOptions->advanced.deleteToRecycleBin != TRUE || IsFileExists(pRecord->oldPath.c_str()))
-         {
+         if(permanent || m_pOptions->advanced.deleteToRecycleBin != TRUE)
              return (::DeleteFile(pRecord->newPath.c_str()) != FALSE);
-         }
-         else
-         {
-             if(::MoveFile(pRecord->newPath.c_str(), pRecord->oldPath.c_str()) != FALSE)
-             {
-                 ::SetFileAttributes(pRecord->oldPath.c_str(), pRecord->attribute);
-                 return FileDelete(pRecord->oldPath.c_str(), true);
-             }
-             else
-             {
-                 return FileDelete(pRecord->newPath.c_str(), true);
-             }
-         }
+
+         // To the Recycle Bin under its own name, or under a free one beside
+         // it when another file has taken that name (a replace moves the
+         // other image there).
+         ::SetFileAttributes(pRecord->newPath.c_str(), pRecord->attribute);
+         TString target = pRecord->oldPath;
+         if(IsFileExists(target.c_str()))
+             target = GetSimilarPath(TPath(target));
+         if(::MoveFile(pRecord->newPath.c_str(), target.c_str()) != FALSE)
+             return FileDelete(target.c_str(), true);
+         return FileDelete(pRecord->newPath.c_str(), true);
      }
 }

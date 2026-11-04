@@ -423,6 +423,7 @@ extern "C"
     {
         adBool checkOnEquality;    
         adBool transformedImage;    
+        adBool shiftedImage;
         adBool sizeControl;
         adBool typeControl;
         adBool ratioControl;

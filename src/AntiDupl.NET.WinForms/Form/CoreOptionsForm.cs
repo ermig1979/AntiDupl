@@ -134,7 +134,7 @@ namespace AntiDupl.NET.WinForms
         static public int IGNORE_FRAME_WIDTH_STEP = 3;
         
         static public int FORM_WIDTH = 450;
-        static public int FORM_HEIGHT = 430;
+        static public int FORM_HEIGHT = 470;
         static public int COMBO_BOX_WIDTH = 65;
         static public int COMBO_BOX_HEIGHT = 20;
 
@@ -154,6 +154,7 @@ namespace AntiDupl.NET.WinForms
         private TabPage m_compareTabPage;
         private CheckBox m_checkOnEqualityCheckBox;
         private CheckBox m_transformedImageCheckBox;
+        private CheckBox m_shiftedImageCheckBox;
         private CheckBox m_sizeControlCheckBox;
         private CheckBox m_typeControlCheckBox;
         private CheckBox m_ratioControlCheckBox;
@@ -311,7 +312,7 @@ namespace AntiDupl.NET.WinForms
             m_compareTabPage = new TabPage();
             m_mainTabControl.Controls.Add(m_compareTabPage);
 
-            TableLayoutPanel checkTableLayoutPanel = InitFactory.Layout.Create(1, 10, 5); //column, row, padding
+            TableLayoutPanel checkTableLayoutPanel = InitFactory.Layout.Create(1, 13, 5); //column, row, padding
             checkTableLayoutPanel.AutoScroll = true;
             m_compareTabPage.Controls.Add(checkTableLayoutPanel);
 
@@ -321,47 +322,50 @@ namespace AntiDupl.NET.WinForms
             m_transformedImageCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
             checkTableLayoutPanel.Controls.Add(m_transformedImageCheckBox, 0, 1);
 
+            m_shiftedImageCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
+            checkTableLayoutPanel.Controls.Add(m_shiftedImageCheckBox, 0, 2);
+
             m_sizeControlCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            checkTableLayoutPanel.Controls.Add(m_sizeControlCheckBox, 0, 2);
+            checkTableLayoutPanel.Controls.Add(m_sizeControlCheckBox, 0, 3);
 
             m_typeControlCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            checkTableLayoutPanel.Controls.Add(m_typeControlCheckBox, 0, 3);
+            checkTableLayoutPanel.Controls.Add(m_typeControlCheckBox, 0, 4);
 
             m_ratioControlCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            checkTableLayoutPanel.Controls.Add(m_ratioControlCheckBox, 0, 4);
+            checkTableLayoutPanel.Controls.Add(m_ratioControlCheckBox, 0, 5);
 
             m_algorithmComparingLabeledComboBox = new LabeledComboBox(COMBO_BOX_WIDTH + 115, COMBO_BOX_HEIGHT, OnOptionChanged);
             m_algorithmComparingLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value(0, Resources.Strings.Current.CoreOptionsForm_AlgorithmComparingLabeledComboBox_SquaredSum));
             m_algorithmComparingLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value(1, "SSIM"));
             m_algorithmComparingLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value((int)AlgorithmComparing.LocalColor, Resources.Strings.Current.CoreOptionsForm_AlgorithmComparingLabeledComboBox_LocalColor));
             m_algorithmComparingLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value((int)AlgorithmComparing.Butteraugli, Resources.Strings.Current.CoreOptionsForm_AlgorithmComparingLabeledComboBox_Butteraugli));
-            checkTableLayoutPanel.Controls.Add(m_algorithmComparingLabeledComboBox, 0, 5);
+            checkTableLayoutPanel.Controls.Add(m_algorithmComparingLabeledComboBox, 0, 6);
 
             m_thresholdDifferenceLabeledComboBox = new LabeledComboBox(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
             m_thresholdAlgorithm = m_newCoreOptions.compareOptions.algorithmComparing;
             m_thresholdButteraugliSize = m_newCoreOptions.compareOptions.butteraugliSize;
             FillThresholds(m_thresholdDifferenceLabeledComboBox.comboBox, m_thresholdAlgorithm);
-            checkTableLayoutPanel.Controls.Add(m_thresholdDifferenceLabeledComboBox, 0, 6);
+            checkTableLayoutPanel.Controls.Add(m_thresholdDifferenceLabeledComboBox, 0, 7);
 
             m_butteraugliSizeLabeledComboBox = new LabeledComboBox(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
             foreach (int size in CoreCompareOptions.BUTTERAUGLI_SIZES)
                 m_butteraugliSizeLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value(size, string.Format("{0} px", size)));
-            checkTableLayoutPanel.Controls.Add(m_butteraugliSizeLabeledComboBox, 0, 7);
+            checkTableLayoutPanel.Controls.Add(m_butteraugliSizeLabeledComboBox, 0, 8);
 
             m_minimalImageSizeLabeledIntegerEdit = new LabeledIntegerEdit(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
             m_minimalImageSizeLabeledIntegerEdit.Min = 0;
             m_minimalImageSizeLabeledIntegerEdit.Default = m_defaultCoreOptions.compareOptions.minimalImageSize;
-            checkTableLayoutPanel.Controls.Add(m_minimalImageSizeLabeledIntegerEdit, 0, 8);
+            checkTableLayoutPanel.Controls.Add(m_minimalImageSizeLabeledIntegerEdit, 0, 9);
 
             m_maximalImageSizeLabeledIntegerEdit = new LabeledIntegerEdit(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
             m_maximalImageSizeLabeledIntegerEdit.Min = 0;
             m_maximalImageSizeLabeledIntegerEdit.Default = m_defaultCoreOptions.compareOptions.maximalImageSize;
-            checkTableLayoutPanel.Controls.Add(m_maximalImageSizeLabeledIntegerEdit, 0, 9);
+            checkTableLayoutPanel.Controls.Add(m_maximalImageSizeLabeledIntegerEdit, 0, 10);
 
             m_compareInsideOneFolderCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            checkTableLayoutPanel.Controls.Add(m_compareInsideOneFolderCheckBox, 0, 10);
+            checkTableLayoutPanel.Controls.Add(m_compareInsideOneFolderCheckBox, 0, 11);
             m_compareInsideOneSearchPathCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            checkTableLayoutPanel.Controls.Add(m_compareInsideOneSearchPathCheckBox, 0, 11);
+            checkTableLayoutPanel.Controls.Add(m_compareInsideOneSearchPathCheckBox, 0, 12);
         }
 
         private void InitilizeDefectTabPage()
@@ -687,6 +691,7 @@ namespace AntiDupl.NET.WinForms
         {
             m_checkOnEqualityCheckBox.Checked = m_newCoreOptions.compareOptions.checkOnEquality;
             m_transformedImageCheckBox.Checked = m_newCoreOptions.compareOptions.transformedImage;
+            m_shiftedImageCheckBox.Checked = m_newCoreOptions.compareOptions.shiftedImage;
             m_sizeControlCheckBox.Checked = m_newCoreOptions.compareOptions.sizeControl;
             m_typeControlCheckBox.Checked = m_newCoreOptions.compareOptions.typeControl;
             m_ratioControlCheckBox.Checked = m_newCoreOptions.compareOptions.ratioControl;
@@ -749,6 +754,7 @@ namespace AntiDupl.NET.WinForms
         {
             m_newCoreOptions.compareOptions.checkOnEquality = m_checkOnEqualityCheckBox.Checked;
             m_newCoreOptions.compareOptions.transformedImage = m_transformedImageCheckBox.Checked;
+            m_newCoreOptions.compareOptions.shiftedImage = m_shiftedImageCheckBox.Checked;
             m_newCoreOptions.compareOptions.sizeControl = m_sizeControlCheckBox.Checked;
             m_newCoreOptions.compareOptions.typeControl = m_typeControlCheckBox.Checked;
             m_newCoreOptions.compareOptions.ratioControl = m_ratioControlCheckBox.Checked;
@@ -816,6 +822,7 @@ namespace AntiDupl.NET.WinForms
             m_compareTabPage.Text = s.CoreOptionsForm_CompareTabPage_Text;
             m_checkOnEqualityCheckBox.Text = s.CoreOptionsForm_CheckOnEqualityCheckBox_Text;
             m_transformedImageCheckBox.Text = s.CoreOptionsForm_TransformedImageCheckBox_Text;
+            m_shiftedImageCheckBox.Text = s.CoreOptionsForm_ShiftedImageCheckBox_Text;
             m_sizeControlCheckBox.Text = s.CoreOptionsForm_SizeControlCheckBox_Text;
             m_typeControlCheckBox.Text = s.CoreOptionsForm_TypeControlCheckBox_Text;
             m_ratioControlCheckBox.Text = s.CoreOptionsForm_RatioControlCheckBox_Text;
@@ -930,6 +937,11 @@ namespace AntiDupl.NET.WinForms
             m_setDefaultButton.Enabled = !m_defaultCoreOptions.Equals(m_newCoreOptions);
 
             m_transformedImageCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
+            // Only these two have it: local colour's differences aren't the
+            // mean square the shift is measured in.
+            m_shiftedImageCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality &&
+              (m_newCoreOptions.compareOptions.algorithmComparing == AlgorithmComparing.SquaredSum ||
+               m_newCoreOptions.compareOptions.algorithmComparing == AlgorithmComparing.SSIM);
             m_sizeControlCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
             m_typeControlCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
             m_ratioControlCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality &&
