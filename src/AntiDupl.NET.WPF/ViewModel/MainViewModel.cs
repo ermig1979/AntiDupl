@@ -1262,11 +1262,11 @@ namespace AntiDupl.NET.WPF.ViewModel
             get { return _algorithmItems; }
         }
 
-        ObservableCollection<int> _thresholdItems = new ObservableCollection<int>();
+        ObservableCollection<double> _thresholdItems = new ObservableCollection<double>();
         /// <summary>
         /// Допустимые значения пороговой разности для текущего режима сравнения.
         /// </summary>
-        public ObservableCollection<int> ThresholdItems
+        public ObservableCollection<double> ThresholdItems
         {
             get { return _thresholdItems; }
         }
@@ -1304,16 +1304,12 @@ namespace AntiDupl.NET.WPF.ViewModel
         /// <summary>
         /// Пороговая разность (в процентах) для текущего режима сравнения.
         /// </summary>
-        public int ThresholdDifference
+        public double ThresholdDifference
         {
             get { return Options != null ? Options.compareOptions.ThresholdDifference : 0; }
             set
             {
-                int max = GetMaxThresholdDifference(AlgorithmComparing);
-                if (value < 0)
-                    value = 0;
-                if (value > max)
-                    value = max;
+                value = CoreCompareOptions.NearestThresholdStep(value, GetMaxThresholdDifference(AlgorithmComparing));
                 if (value == ThresholdDifference)
                     return;
 
@@ -1390,14 +1386,9 @@ namespace AntiDupl.NET.WPF.ViewModel
 
             RebuildThresholdItems(GetMaxThresholdDifference(selected));
 
-            int threshold = selected == AlgorithmComparing.Dinov2
+            double threshold = CoreCompareOptions.NearestThresholdStep(selected == AlgorithmComparing.Dinov2
                 ? GetDefaultThresholdDifference(AlgorithmComparing.Dinov2)
-                : coreCompare.thresholdDifference;
-            int max = GetMaxThresholdDifference(selected);
-            if (threshold < 0)
-                threshold = 0;
-            if (threshold > max)
-                threshold = max;
+                : coreCompare.thresholdDifference, GetMaxThresholdDifference(selected));
             if (selected != Options.compareOptions.AlgorithmComparing ||
                 threshold != Options.compareOptions.ThresholdDifference)
                 ApplyCompareOptions(selected, threshold);
@@ -1406,15 +1397,15 @@ namespace AntiDupl.NET.WPF.ViewModel
         void RebuildThresholdItems(int max)
         {
             _thresholdItems.Clear();
-            for (int i = 0; i <= max; i++)
-                _thresholdItems.Add(i);
+            foreach (double step in CoreCompareOptions.ThresholdSteps(max))
+                _thresholdItems.Add(step);
         }
 
         /// <summary>
         /// Сохраняет режим сравнения и пороговую разность: в текущий снимок Options
         /// и в опции ядра (dll), которые используются при следующем поиске.
         /// </summary>
-        void ApplyCompareOptions(AlgorithmComparing algorithm, int threshold)
+        void ApplyCompareOptions(AlgorithmComparing algorithm, double threshold)
         {
             if (Options != null)
             {
@@ -1470,18 +1461,12 @@ namespace AntiDupl.NET.WPF.ViewModel
 
             AlgorithmComparing algorithm = _uiAlgorithm;
             int max = GetMaxThresholdDifference(algorithm);
-            if (_thresholdItems.Count != max + 1)
+            if (_thresholdItems.Count != CoreCompareOptions.ThresholdSteps(max).Length)
                 RebuildThresholdItems(max);
 
-            int threshold = Options.compareOptions.ThresholdDifference;
-            if (threshold < 0 || threshold > max)
-            {
-                if (threshold < 0)
-                    threshold = 0;
-                if (threshold > max)
-                    threshold = max;
+            double threshold = CoreCompareOptions.NearestThresholdStep(Options.compareOptions.ThresholdDifference, max);
+            if (threshold != Options.compareOptions.ThresholdDifference)
                 ApplyCompareOptions(algorithm, threshold);
-            }
 
             RaisePropertyChangedEvent("AlgorithmComparing");
             RaisePropertyChangedEvent("ThresholdDifference");

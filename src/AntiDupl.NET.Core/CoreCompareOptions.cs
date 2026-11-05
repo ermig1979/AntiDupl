@@ -39,7 +39,8 @@ namespace AntiDupl.NET.Core
         public bool sizeControl;
         public bool typeControl;
         public bool ratioControl;
-        public int thresholdDifference;
+        /// <summary>Percent; fractions allowed. Whole numbers in settings files saved before load as they are.</summary>
+        public double thresholdDifference;
         public int minimalImageSize;
         public int maximalImageSize;
         public bool compareInsideOneFolder;
@@ -101,6 +102,28 @@ namespace AntiDupl.NET.Core
         public CoreCompareOptions Clone()
         {
             return new CoreCompareOptions(this);
+        }
+
+        /// <summary>
+        /// The thresholds the option lists offer, up to max: quarters of a
+        /// percent under 1 %, then whole percents.
+        /// </summary>
+        public static double[] ThresholdSteps(int max)
+        {
+            var steps = new List<double> { 0, 0.25, 0.5, 0.75 };
+            for (int i = 1; i <= max; i++)
+                steps.Add(i);
+            return steps.ToArray();
+        }
+
+        /// <summary>The listed threshold up to max nearest to the value.</summary>
+        public static double NearestThresholdStep(double value, int max)
+        {
+            double best = 0;
+            foreach (double step in ThresholdSteps(max))
+                if (Math.Abs(step - value) < Math.Abs(best - value))
+                    best = step;
+            return best;
         }
 
         public bool Equals(CoreCompareOptions compareOptions)
@@ -180,7 +203,7 @@ namespace AntiDupl.NET.Core
             }
         }
 
-        public int ThresholdDifference
+        public double ThresholdDifference
         {
             get { return thresholdDifference; }
             set

@@ -423,7 +423,7 @@ extern "C"
         adBool sizeControl;
         adBool typeControl;
         adBool ratioControl;
-        adInt32 thresholdDifference;
+        double thresholdDifference; // percent, fractions allowed
         adInt32 minimalImageSize;
 		adInt32 maximalImageSize;
         adBool compareInsideOneFolder;

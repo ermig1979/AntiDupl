@@ -4,6 +4,18 @@
         <name>AntiDupl.NET.Core</name>
     </assembly>
     <members>
+        <member name="F:AntiDupl.NET.Core.CoreCompareOptions.thresholdDifference">
+            <summary>Percent; fractions allowed. Whole numbers in settings files saved before load as they are.</summary>
+        </member>
+        <member name="M:AntiDupl.NET.Core.CoreCompareOptions.ThresholdSteps(System.Int32)">
+            <summary>
+            The thresholds the option lists offer, up to max: quarters of a
+            percent under 1 %, then whole percents.
+            </summary>
+        </member>
+        <member name="M:AntiDupl.NET.Core.CoreCompareOptions.NearestThresholdStep(System.Double,System.Int32)">
+            <summary>The listed threshold up to max nearest to the value.</summary>
+        </member>
         <member name="M:AntiDupl.NET.Core.CoreLib.GetGroupSize">
             <summary>
             Возврашает общее количество групп.
