@@ -352,6 +352,7 @@ namespace AntiDupl.NET.WinForms
             FillThresholds(m_thresholdDifferenceLabeledComboBox.comboBox, m_thresholdAlgorithm);
             m_thresholdHintLabel = InitFactory.Label.Create();
             m_thresholdHintLabel.Padding = new Padding(0, 5, 0, 5);
+            m_thresholdHintLabel.ForeColor = ThemeColors.Remark;
             m_thresholdDifferenceLabeledComboBox.ColumnCount = 3;
             m_thresholdDifferenceLabeledComboBox.Controls.Add(m_thresholdHintLabel, 2, 0);
             checkTableLayoutPanel.Controls.Add(m_thresholdDifferenceLabeledComboBox, 0, 7);

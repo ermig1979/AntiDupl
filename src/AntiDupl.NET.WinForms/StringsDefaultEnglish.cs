@@ -99,7 +99,7 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_AlgorithmComparingLabeledComboBox_LocalColor = "Local colour difference";
             s.CoreOptionsForm_AlgorithmComparingLabeledComboBox_Butteraugli = "Perceptual (Butteraugli)";
             s.CoreOptionsForm_ThresholdDifferenceLabeledComboBox_Text = "Threshold difference";
-            s.CoreOptionsForm_ThresholdHintLabel_Text = "{0:0.##} copies only, {1:0.##} also variants";
+            s.CoreOptionsForm_ThresholdHintLabel_Text = "{0:0.##}: copies only; {1:0.##}: also variants";
             s.CoreOptionsForm_ButteraugliSizeLabeledComboBox_Text = "Size Butteraugli compares at (longest side)";
             s.CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text = "Minimal image width/height";
             s.CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text = "Maximal image width/height";
