@@ -429,6 +429,7 @@ extern "C"
         adBool compareInsideOneFolder;
 		adBool compareInsideOneSearchPath;
 		adAlgorithmComparing algorithmComparing;
+        adBool skipHardlinks;
     };
     typedef adCompareOptions* adCompareOptionsPtr;
 	

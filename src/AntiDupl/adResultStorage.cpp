@@ -74,6 +74,12 @@ namespace ad
         double difference, 
         TTransformType transform)
     {
+        // Before the lock, as it opens both files. Hard links have one size,
+        // so that spares nearly every other pair the opening.
+        if(m_pOptions->compare.skipHardlinks == TRUE && first->size == second->size &&
+           IsSameFile(first->path.Original().c_str(), second->path.Original().c_str()))
+            return false;
+
         TCriticalSection::TLocker locker(m_pCriticalSection);
 
         if(m_pUndoRedoEngine->Current()->results.size() >= (size_t)m_pOptions->advanced.resultCountMax)

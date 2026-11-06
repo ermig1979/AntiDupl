@@ -100,6 +100,7 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text = "Minimal image width/height";
             s.CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text = "Maximal image width/height";
             s.CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text = "Compare images from one path of search with one another";
+            s.CoreOptionsForm_SkipHardlinksCheckBox_Text = "Do not compare hardlinked duplicates";
             s.CoreOptionsForm_CompareInsideOneFolderCheckBox_Text = "Compare images inside one directory";
 
             s.CoreOptionsForm_DefectTabPage_Text = "Defects";

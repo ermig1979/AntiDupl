@@ -314,6 +314,7 @@
     <v:String x:Key="configurationWindow_maximalImageSize">Максимальная ширина/высота картинок</v:String>
     <v:String x:Key="configurationWindow_compareInsideOneFolder">Сравнивать картинки внутри одного каталога</v:String>
     <v:String x:Key="configurationWindow_compareInsideOneSearchPath">Сравнивать картинки из одного пути поиска друг с другом</v:String>
+    <v:String x:Key="configurationWindow_skipHardlinks">Не сравнивать жесткие ссылки на один файл</v:String>
 
     <!-- ==== Advanced (подписи) ==== -->
     <v:String x:Key="configurationWindow_deleteToRecycleBin">Удалять в корзину</v:String>
@@ -357,6 +358,7 @@
     <v:String x:Key="configurationWindow_tooltip_maximalImageSize">Картинки с шириной или высотой больше этого значения (px) не ищутся.</v:String>
     <v:String x:Key="configurationWindow_tooltip_compareInsideOneFolder">Сравнивать картинки только внутри одного каталога.</v:String>
     <v:String x:Key="configurationWindow_tooltip_compareInsideOneSearchPath">Сравнивать картинки между собой только в пределах одного пути поиска.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_skipHardlinks">Жесткие ссылки - это несколько имен одного файла, поэтому такая пара не показывается.</v:String>
 
     <!-- ==== Tooltips: Advanced ==== -->
     <v:String x:Key="configurationWindow_tooltip_deleteToRecycleBin">При удалении картинок перемещать их в корзину, а не удалять безвозвратно.</v:String>
