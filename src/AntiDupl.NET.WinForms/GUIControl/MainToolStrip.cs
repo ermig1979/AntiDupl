@@ -89,6 +89,9 @@ namespace AntiDupl.NET.WinForms
             ThemedToolStripRenderer.Set(this);
             BackColor = SystemColors.Control;
             GripStyle = ToolStripGripStyle.Hidden;
+            // Without it a ToolStrip only activates an inactive window on the
+            // first click, and the button needs a second one.
+            AllowClickThrough = true;
 
             m_profileOpenButton = InitFactory.ToolButton.Create("ProfileOpenButton", null, m_mainMenu.ProfileOpenAction);
             m_profileSaveAsButton = InitFactory.ToolButton.Create("ProfileSaveAsButton", null, m_mainMenu.ProfileSaveAsAction);
