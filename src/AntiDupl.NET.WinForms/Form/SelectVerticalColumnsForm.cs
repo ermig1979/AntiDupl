@@ -125,6 +125,7 @@ namespace AntiDupl.NET.WinForms
             m_cancelButton = new Button();
             m_cancelButton.Click += new System.EventHandler(OnButtonClick);
             buttonsTableLayoutPanel.Controls.Add(m_cancelButton, 2, 0);
+            CancelButton = m_cancelButton;
         }
 
         private void UpdateStrings()
