@@ -245,7 +245,7 @@ namespace AntiDupl.NET.WinForms
             s.ResultsListView_FirstBlockiness_Column_Text = "1: Blockiness";
             s.ResultsListView_FirstBlurring_Column_Text = "1: Blurring";
             s.ResultsListView_FirstFileSize_Column_Text = "1: Size";
-            s.ResultsListView_FirstFileTime_Column_Text = "1: First Date modified";
+            s.ResultsListView_FirstFileTime_Column_Text = "1: Date modified";
             s.ResultsListView_SecondFileName_Column_Text = "2: Name";
             s.ResultsListView_SecondFileDirectory_Column_Text = "2: In folder";
             s.ResultsListView_SecondImageSize_Column_Text = "2: Dimensions";

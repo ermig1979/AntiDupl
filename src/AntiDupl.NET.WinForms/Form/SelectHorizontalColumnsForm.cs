@@ -37,6 +37,7 @@ namespace AntiDupl.NET.WinForms
         private ResultsOptions m_newResultOptions;
         private bool m_inited = false;
 
+        private TableLayoutPanel m_columnsTableLayoutPanel;
         private CheckBox[] m_checkBoxes;
         private Button m_okButton;
         private Button m_cancelButton;
@@ -52,6 +53,7 @@ namespace AntiDupl.NET.WinForms
             InitializeComponents();
             ThemeColors.Apply(this);
             UpdateStrings();
+            InitFactory.Layout.GrowToFit(this, m_columnsTableLayoutPanel);
             UpdateItemsEnabling();
             GetOptions();
             m_inited = true;
@@ -72,6 +74,7 @@ namespace AntiDupl.NET.WinForms
             Controls.Add(mainTableLayoutPanel);
 
             TableLayoutPanel columnsTableLayoutPanel = InitFactory.Layout.Create(3, 8, 5); //columns, rows, padding
+            m_columnsTableLayoutPanel = columnsTableLayoutPanel;
             columnsTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33F));
             columnsTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34F));
             columnsTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33F));
