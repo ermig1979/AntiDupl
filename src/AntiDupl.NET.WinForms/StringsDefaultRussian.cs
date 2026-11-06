@@ -100,6 +100,7 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text = "Минимальная ширина/высота картинок";
             s.CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text = "Максимальная ширина/высота картинок";
             s.CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text = "Сравнивать картинки из одного пути поиска друг с другом";
+            s.CoreOptionsForm_SkipHardlinksCheckBox_Text = "Не сравнивать жесткие ссылки на один файл";
             s.CoreOptionsForm_CompareInsideOneFolderCheckBox_Text = "Сравнивать картинки внутри одного каталога";
 
             s.CoreOptionsForm_DefectTabPage_Text = "Дефекты";
@@ -218,6 +219,7 @@ namespace AntiDupl.NET.WinForms
             s.ResultRowSetter_MirrorTurn_180_Icon_ToolTip_Text = "Горизонтально отраженный и повернутый на 180°";
             s.ResultRowSetter_MirrorTurn_270_Icon_ToolTip_Text = "Горизонтально отраженный и повернутый на 270°";
 
+            s.ResultRowSetter_Difference_HardLink_ToolTip_Text = "Жесткие ссылки: оба имени - один файл";
             s.ResultRowSetter_Difference_ByteIdentical_ToolTip_Text = "Одинаковые файлы";
             s.ResultRowSetter_Difference_PixelIdentical_ToolTip_Text = "Одинаковые изображения, файлы различаются";
 
