@@ -74,6 +74,7 @@ namespace AntiDupl.NET.WinForms
             m_okButton = new Button();
             m_okButton.Click += new System.EventHandler(OnOkButtonClick);
             okButtonTableLayoutPanel.Controls.Add(m_okButton, 1, 0);
+            CancelButton = m_okButton; // the only button, so Esc closes the window
         }
 
         private void UpdateStrings()

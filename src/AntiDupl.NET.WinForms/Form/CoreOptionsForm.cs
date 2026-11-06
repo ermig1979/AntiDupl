@@ -61,13 +61,48 @@ namespace AntiDupl.NET.WinForms
                 return THRESHOLD_DIFFERENCE_DEFAULT_LOCAL_COLOR;
             return THRESHOLD_DIFFERENCE_DEFAULT_SSIM;
         }
+
+        /// <summary>The thresholds the lists offer for an algorithm.</summary>
+        static public double[] ThresholdValues(AlgorithmComparing algorithm)
+        {
+            return CoreCompareOptions.ThresholdSteps(ThresholdMax(algorithm));
+        }
+
+        /// <summary>
+        /// Fills a list with an algorithm's thresholds. An item's value is the
+        /// threshold in hundredths of a percent, since LabeledComboBox.Value
+        /// holds a whole number.
+        /// </summary>
+        static public void FillThresholds(ComboBox comboBox, AlgorithmComparing algorithm)
+        {
+            comboBox.Items.Clear();
+            foreach (double value in ThresholdValues(algorithm))
+                comboBox.Items.Add(new LabeledComboBox.Value((int)Math.Round(value * 100), string.Format("{0:0.##} %", value)));
+        }
+
+        /// <summary>Selects the listed threshold nearest to the value.</summary>
+        static public void SelectThreshold(ComboBox comboBox, double value)
+        {
+            int best = -1;
+            for (int i = 0; i < comboBox.Items.Count; i++)
+                if (best < 0 || Math.Abs(((LabeledComboBox.Value)comboBox.Items[i]).value - value * 100) <
+                    Math.Abs(((LabeledComboBox.Value)comboBox.Items[best]).value - value * 100))
+                    best = i;
+            comboBox.SelectedIndex = best;
+        }
+
+        static public double SelectedThreshold(ComboBox comboBox)
+        {
+            return ((LabeledComboBox.Value)comboBox.SelectedItem).value / 100.0;
+        }
+
         static public int THRESHOLD_BLOCKINESS_MAX = 60;
         static public int THRESHOLD_BLURRING_MAX = 32;
         static public int IGNORE_FRAME_WIDTH_MAX = 12;
         static public int IGNORE_FRAME_WIDTH_STEP = 3;
         
         static public int FORM_WIDTH = 450;
-        static public int FORM_HEIGHT = 400;
+        static public int FORM_HEIGHT = 430;
         static public int COMBO_BOX_WIDTH = 65;
         static public int COMBO_BOX_HEIGHT = 20;
 
@@ -194,8 +229,10 @@ namespace AntiDupl.NET.WinForms
             Resources.Help.Bind(this, Resources.Help.Options);
 
             TableLayoutPanel mainTableLayoutPanel = InitFactory.Layout.Create(1, 2, 5);
-            mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 87F));
-            mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 13F));
+            // The buttons need less than their row's share; the Compare tab's
+            // last check box gets the rest, clear of the tab's bottom edge.
+            mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 89F));
+            mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 11F));
             Controls.Add(mainTableLayoutPanel);
 
             m_mainTabControl = new TabControl();
@@ -229,6 +266,7 @@ namespace AntiDupl.NET.WinForms
             m_cancelButton = new Button();
             m_cancelButton.Click += new EventHandler(OnCancelButtonClick);
             mainButtonsTableLayoutPanel.Controls.Add(m_cancelButton, 2, 0);
+            CancelButton = m_cancelButton;
 
             m_setDefaultButton = new Button();
             m_setDefaultButton.AutoSize = true;
@@ -272,8 +310,7 @@ namespace AntiDupl.NET.WinForms
 
             m_thresholdDifferenceLabeledComboBox = new LabeledComboBox(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
             m_thresholdAlgorithm = m_newCoreOptions.compareOptions.algorithmComparing;
-            for (int i = 0; i <= ThresholdMax(m_thresholdAlgorithm); i++)
-                m_thresholdDifferenceLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value(i, string.Format("{0} %", i)));
+            FillThresholds(m_thresholdDifferenceLabeledComboBox.comboBox, m_thresholdAlgorithm);
             checkTableLayoutPanel.Controls.Add(m_thresholdDifferenceLabeledComboBox, 0, 7);
 
             m_minimalImageSizeLabeledIntegerEdit = new LabeledIntegerEdit(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
@@ -620,7 +657,7 @@ namespace AntiDupl.NET.WinForms
             m_typeControlCheckBox.Checked = m_newCoreOptions.compareOptions.typeControl;
             m_ratioControlCheckBox.Checked = m_newCoreOptions.compareOptions.ratioControl;
             m_algorithmComparingLabeledComboBox.SelectedValue = (int)m_newCoreOptions.compareOptions.algorithmComparing;
-            m_thresholdDifferenceLabeledComboBox.SelectedValue = m_newCoreOptions.compareOptions.thresholdDifference;
+            SelectThreshold(m_thresholdDifferenceLabeledComboBox.comboBox, m_newCoreOptions.compareOptions.thresholdDifference);
             m_minimalImageSizeLabeledIntegerEdit.Value = m_newCoreOptions.compareOptions.minimalImageSize;
             m_maximalImageSizeLabeledIntegerEdit.Value = m_newCoreOptions.compareOptions.maximalImageSize;
             m_compareInsideOneFolderCheckBox.Checked = m_newCoreOptions.compareOptions.compareInsideOneFolder;
@@ -682,7 +719,7 @@ namespace AntiDupl.NET.WinForms
             m_newCoreOptions.compareOptions.typeControl = m_typeControlCheckBox.Checked;
             m_newCoreOptions.compareOptions.ratioControl = m_ratioControlCheckBox.Checked;
             m_newCoreOptions.compareOptions.algorithmComparing = (AlgorithmComparing)m_algorithmComparingLabeledComboBox.SelectedValue;
-            m_newCoreOptions.compareOptions.thresholdDifference = m_thresholdDifferenceLabeledComboBox.SelectedValue;
+            m_newCoreOptions.compareOptions.thresholdDifference = SelectedThreshold(m_thresholdDifferenceLabeledComboBox.comboBox);
             m_newCoreOptions.compareOptions.minimalImageSize = m_minimalImageSizeLabeledIntegerEdit.Value;
             m_newCoreOptions.compareOptions.maximalImageSize = m_maximalImageSizeLabeledIntegerEdit.Value;
             m_newCoreOptions.compareOptions.compareInsideOneFolder = m_compareInsideOneFolderCheckBox.Checked;
@@ -897,10 +934,8 @@ namespace AntiDupl.NET.WinForms
             if (algorithm != m_thresholdAlgorithm)
             {
                 m_thresholdAlgorithm = algorithm;
-                m_thresholdDifferenceLabeledComboBox.comboBox.Items.Clear();
-                for (int i = 0; i <= ThresholdMax(algorithm); i++)
-                    m_thresholdDifferenceLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value(i, string.Format("{0} %", i)));
-                m_thresholdDifferenceLabeledComboBox.SelectedValue = ThresholdDefault(algorithm);
+                FillThresholds(m_thresholdDifferenceLabeledComboBox.comboBox, algorithm);
+                SelectThreshold(m_thresholdDifferenceLabeledComboBox.comboBox, ThresholdDefault(algorithm));
             }
         }
 

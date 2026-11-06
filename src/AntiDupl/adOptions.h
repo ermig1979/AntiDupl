@@ -34,11 +34,14 @@
 namespace ad
 {
     //-------------------------------------------------------------------------
+    // An integer or a floating-point option: exactly one of the pointers is
+    // set; default, minimum and maximum are kept as double for both.
     class TOption
     {
     public:
-        TOption(int *pValue, const TChar* section, const TChar* key, int, 
+        TOption(int *pValue, const TChar* section, const TChar* key, int,
             int min = INT_MIN, int max = INT_MAX);
+        TOption(double *pValue, const TChar* section, const TChar* key, double, double min, double max);
         ~TOption(){};
 
         void SetDefault();
@@ -48,12 +51,16 @@ namespace ad
         bool Save(const TChar *fileName) const;
 
     private:
+        double Get() const { return m_pValue ? *m_pValue : *m_pDouble; }
+        void Set(double value);
+
         int *m_pValue;
+        double *m_pDouble;
         TString m_key;
         TString m_section;
-        int m_default; //значение по умолчанию
-        int m_min;
-        int m_max;	//максимальное
+        double m_default; //значение по умолчанию
+        double m_min;
+        double m_max;	//максимальное
     };
     //-------------------------------------------------------------------------
     struct TOptions

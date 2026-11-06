@@ -34,6 +34,7 @@ namespace ad
     //---------------------------------------------------------------------------
     TOption::TOption(int *pValue, const TChar* section, const TChar* key, int _default, int min, int max)
         :m_pValue(pValue),
+        m_pDouble(NULL),
         m_section(section),
         m_key(key),
         m_default(_default),
@@ -42,28 +43,52 @@ namespace ad
     {
     }
 
+    TOption::TOption(double *pValue, const TChar* section, const TChar* key, double _default, double min, double max)
+        :m_pValue(NULL),
+        m_pDouble(pValue),
+        m_section(section),
+        m_key(key),
+        m_default(_default),
+        m_min(min),
+        m_max(max)
+    {
+    }
+
+    void TOption::Set(double value)
+    {
+        if(m_pValue)
+            *m_pValue = int(value);
+        else
+            *m_pDouble = value;
+    }
+
     void TOption::SetDefault()
     {
-        *m_pValue = m_default;
+        Set(m_default);
     }
 
 	// Если значение опции меньше минимальной или больше макимальной, то устанавливаем ее дефолтной
     void TOption::Validate()
     {
-        if(*m_pValue < m_min || *m_pValue > m_max)
-            *m_pValue = m_default;
+        if(!(Get() >= m_min && Get() <= m_max))
+            Set(m_default);
     }
 
     void TOption::Load(const TChar *fileName)
     {
         TIniFile iniFile(fileName, m_section.c_str());
-        *m_pValue = iniFile.ReadInteger(m_key.c_str(), m_default);
+        if(m_pValue)
+            *m_pValue = iniFile.ReadInteger(m_key.c_str(), int(m_default));
+        else
+            *m_pDouble = iniFile.ReadFloat(m_key.c_str(), m_default);
     }
 
     bool TOption::Save(const TChar *fileName) const
     {
         TIniFile iniFile(fileName, m_section.c_str());
-        return iniFile.WriteInteger(m_key.c_str(), *m_pValue);
+        if(m_pValue)
+            return iniFile.WriteInteger(m_key.c_str(), *m_pValue);
+        return iniFile.WriteFloat(m_key.c_str(), *m_pDouble);
     }
     //---------------------------------------------------------------------------
 	// Класс опций
@@ -102,7 +127,7 @@ namespace ad
         m_options.push_back(TOption(&compare.sizeControl, TEXT("CompareOptions"), TEXT("SizeControl"), FALSE, FALSE, TRUE));
         m_options.push_back(TOption(&compare.typeControl, TEXT("CompareOptions"), TEXT("TypeControl"), FALSE, FALSE, TRUE));
         m_options.push_back(TOption(&compare.ratioControl, TEXT("CompareOptions"), TEXT("RatioControl"), TRUE, FALSE, TRUE));
-        m_options.push_back(TOption(&compare.thresholdDifference, TEXT("CompareOptions"), TEXT("ThresholdDifference"), 5, 0, 50));
+        m_options.push_back(TOption(&compare.thresholdDifference, TEXT("CompareOptions"), TEXT("ThresholdDifference"), 5.0, 0.0, 50.0));
         m_options.push_back(TOption(&compare.minimalImageSize, TEXT("CompareOptions"), TEXT("MinimalImageSize"), 64, 0, INT_MAX));
 		m_options.push_back(TOption(&compare.maximalImageSize, TEXT("CompareOptions"), TEXT("MaximalImageSize"), 8196, 0, INT_MAX));
         m_options.push_back(TOption(&compare.compareInsideOneFolder, TEXT("CompareOptions"), TEXT("CompareInsideOneFolder"), TRUE, FALSE, TRUE));

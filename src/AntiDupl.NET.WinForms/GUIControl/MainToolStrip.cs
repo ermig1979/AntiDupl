@@ -109,7 +109,7 @@ namespace AntiDupl.NET.WinForms
             
             m_thresholdDifferenceComboBox = new ToolStripComboBox();
             m_thresholdDifferenceComboBox.AutoSize = false;
-            m_thresholdDifferenceComboBox.Size = new System.Drawing.Size(50, 20);
+            m_thresholdDifferenceComboBox.Size = new System.Drawing.Size(60, 20);
             m_thresholdDifferenceComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             m_thresholdDifferenceComboBox.FlatStyle = FlatStyle.Popup;
             m_thresholdDifferenceComboBox.SelectedIndexChanged += new EventHandler(OnThresholdDifferenceChanged);
@@ -221,12 +221,12 @@ namespace AntiDupl.NET.WinForms
             // The options keep their threshold: they were set elsewhere, and
             // only a choice made in this tool bar starts from the default.
             AlgorithmComparing algorithm = m_coreOptions.compareOptions.algorithmComparing;
-            int threshold = m_coreOptions.compareOptions.thresholdDifference;
+            double threshold = m_coreOptions.compareOptions.thresholdDifference;
             m_settingItems = true;
             m_algorithmComparingComboBox.SelectedIndex = Array.IndexOf(ALGORITHMS, algorithm);
             if (algorithm != m_thresholdAlgorithm)
                 FillThresholds(algorithm);
-            m_thresholdDifferenceComboBox.SelectedIndex = Math.Min(threshold, m_thresholdDifferenceComboBox.Items.Count - 1);
+            CoreOptionsForm.SelectThreshold(m_thresholdDifferenceComboBox.ComboBox, threshold);
             m_settingItems = false;
         }
 
@@ -234,9 +234,7 @@ namespace AntiDupl.NET.WinForms
         private void FillThresholds(AlgorithmComparing algorithm)
         {
             m_thresholdAlgorithm = algorithm;
-            m_thresholdDifferenceComboBox.Items.Clear();
-            for (int i = 0; i <= CoreOptionsForm.ThresholdMax(algorithm); i++)
-                m_thresholdDifferenceComboBox.Items.Add(string.Format("{0} %", i));
+            CoreOptionsForm.FillThresholds(m_thresholdDifferenceComboBox.ComboBox, algorithm);
         }
 
         public void SetViewMode(ResultsOptions.ViewMode viewMode)
@@ -291,7 +289,7 @@ namespace AntiDupl.NET.WinForms
             // Clearing the list selects nothing (-1) on its way.
             if (m_settingItems || m_thresholdDifferenceComboBox.SelectedIndex < 0)
                 return;
-            m_coreOptions.compareOptions.thresholdDifference = m_thresholdDifferenceComboBox.SelectedIndex;
+            m_coreOptions.compareOptions.thresholdDifference = CoreOptionsForm.SelectedThreshold(m_thresholdDifferenceComboBox.ComboBox);
         }
 
         private void OnAlgorithmComparingChanged(object sender, EventArgs e)
@@ -307,7 +305,7 @@ namespace AntiDupl.NET.WinForms
                 m_settingItems = true;
                 FillThresholds(algorithm);
                 m_settingItems = false;
-                m_thresholdDifferenceComboBox.SelectedIndex = CoreOptionsForm.ThresholdDefault(algorithm);
+                CoreOptionsForm.SelectThreshold(m_thresholdDifferenceComboBox.ComboBox, CoreOptionsForm.ThresholdDefault(algorithm));
             }
         }
     }

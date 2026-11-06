@@ -47,16 +47,19 @@ namespace ad
         m_pBuffer(NULL),
         m_pMask(NULL) 
     {
-		int thresholdPerPixel = Simd::Square(m_pOptions->compare.thresholdDifference*PIXEL_MAX_DIFFERENCE)/
-			Simd::Square(DENOMINATOR);
-        m_fastThreshold = FAST_DATA_SIZE*thresholdPerPixel;
+        // The threshold may be a fraction of a percent: kept as a double, and
+        // the sums derived from it rounded up, so that they let through
+        // every pair the exact difference is then checked on.
+		double thresholdPerPixel = Simd::Square(m_pOptions->compare.thresholdDifference*PIXEL_MAX_DIFFERENCE)/
+			Simd::Square(double(DENOMINATOR));
+        m_fastThreshold = int(ceil(FAST_DATA_SIZE*thresholdPerPixel));
         m_mainSize = Simd::Square(m_pOptions->advanced.reducedImageSize);
         
         if(m_pOptions->advanced.ignoreFrameWidth > 0)
         {
             int ignoreFrameWidth = m_pOptions->GetIgnoreWidthFrame();
             size_t effectiveMainSize = Simd::Square(m_pOptions->advanced.reducedImageSize - 2*ignoreFrameWidth);
-            m_mainThreshold = int(effectiveMainSize*thresholdPerPixel);
+            m_mainThreshold = int(ceil(effectiveMainSize*thresholdPerPixel));
             m_maxDifference = int(Simd::Square(PIXEL_MAX_DIFFERENCE)*effectiveMainSize);
             m_pMask = (TUInt8*)SimdAllocate(m_mainSize, SimdAlignment());
             memset(m_pMask, 0, m_mainSize);
@@ -70,7 +73,7 @@ namespace ad
         }
         else
         {
-            m_mainThreshold = int(m_mainSize*thresholdPerPixel);
+            m_mainThreshold = int(ceil(m_mainSize*thresholdPerPixel));
             m_maxDifference = int(Simd::Square(PIXEL_MAX_DIFFERENCE)*m_mainSize);
         }
 
@@ -416,7 +419,7 @@ namespace ad
         :TImageComparer(pEngine)
     {
         const int MAX_RANGES[] = {48, 48, 48, 48, 48, 48, 40, 32, 28, 24, 24};
-        m_maxRange = MAX_RANGES[m_pOptions->compare.thresholdDifference/D3_MAX_RANGES_STEP];
+        m_maxRange = MAX_RANGES[TUInt32(m_pOptions->compare.thresholdDifference)/D3_MAX_RANGES_STEP];
 
         m_shift.s = 0;
         m_shift.x = m_maxRange >> 2;

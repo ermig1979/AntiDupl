@@ -204,6 +204,7 @@ namespace AntiDupl.NET.WinForms
             m_cancelButton = new Button();
             m_cancelButton.Click += new EventHandler(OnCancelButtonClick);
             mainButtonsTableLayoutPanel.Controls.Add(m_cancelButton, 2, 0);
+            CancelButton = m_cancelButton;
 
             AllowDrop = true;
             DragDrop += new DragEventHandler(OnDragDrop);
