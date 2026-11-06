@@ -96,6 +96,7 @@ namespace AntiDupl.NET.WinForms
         private string m_mirrorTurn_180_IconToolTipText;
         private string m_mirrorTurn_270_IconToolTipText;
 
+        private string m_hardLinkToolTipText;
         private string m_byteIdenticalToolTipText;
         private string m_pixelIdenticalToolTipText;
 
@@ -168,6 +169,7 @@ namespace AntiDupl.NET.WinForms
             m_mirrorTurn_180_IconToolTipText = s.ResultRowSetter_MirrorTurn_180_Icon_ToolTip_Text;
             m_mirrorTurn_270_IconToolTipText = s.ResultRowSetter_MirrorTurn_270_Icon_ToolTip_Text;
 
+            m_hardLinkToolTipText = s.ResultRowSetter_Difference_HardLink_ToolTip_Text;
             m_byteIdenticalToolTipText = s.ResultRowSetter_Difference_ByteIdentical_ToolTip_Text;
             m_pixelIdenticalToolTipText = s.ResultRowSetter_Difference_PixelIdentical_ToolTip_Text;
         }
@@ -343,6 +345,7 @@ namespace AntiDupl.NET.WinForms
                 DifferenceFormat.GetColor(result.difference, ThemeColors.Text);
             cells[(int)ResultsListView.ColumnsTypeHorizontal.Difference].Style.Alignment = DataGridViewContentAlignment.MiddleRight;
             cells[(int)ResultsListView.ColumnsTypeHorizontal.Difference].ToolTipText =
+                DifferenceFormat.IsHardLink(result.difference) ? m_hardLinkToolTipText :
                 DifferenceFormat.IsByteIdentical(result.difference) ? m_byteIdenticalToolTipText :
                 DifferenceFormat.IsIdentical(result.difference) ? m_pixelIdenticalToolTipText :
                 DifferenceFormat.ToExactString(result.difference);

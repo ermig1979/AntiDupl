@@ -76,9 +76,13 @@ namespace ad
     {
         // Before the lock, as it opens both files. Hard links have one size,
         // so that spares nearly every other pair the opening.
-        if(m_pOptions->compare.skipHardlinks == TRUE && first->size == second->size &&
-           IsSameFile(first->path.Original().c_str(), second->path.Original().c_str()))
-            return false;
+        if(first->size == second->size && IsSameFile(first->path.Original().c_str(), second->path.Original().c_str()))
+        {
+            if(m_pOptions->compare.skipHardlinks == TRUE)
+                return false;
+            difference = HARD_LINK_DIFFERENCE;
+            transform = AD_TRANSFORM_TURN_0;
+        }
 
         TCriticalSection::TLocker locker(m_pCriticalSection);
 

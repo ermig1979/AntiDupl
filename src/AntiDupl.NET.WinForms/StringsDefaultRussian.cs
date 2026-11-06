@@ -219,6 +219,7 @@ namespace AntiDupl.NET.WinForms
             s.ResultRowSetter_MirrorTurn_180_Icon_ToolTip_Text = "Горизонтально отраженный и повернутый на 180°";
             s.ResultRowSetter_MirrorTurn_270_Icon_ToolTip_Text = "Горизонтально отраженный и повернутый на 270°";
 
+            s.ResultRowSetter_Difference_HardLink_ToolTip_Text = "Жесткие ссылки: оба имени - один файл";
             s.ResultRowSetter_Difference_ByteIdentical_ToolTip_Text = "Одинаковые файлы";
             s.ResultRowSetter_Difference_PixelIdentical_ToolTip_Text = "Одинаковые изображения, файлы различаются";
 
