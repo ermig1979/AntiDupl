@@ -219,6 +219,7 @@ namespace AntiDupl.NET.WinForms
             s.ResultRowSetter_MirrorTurn_270_Icon_ToolTip_Text = "Горизонтально отраженный и повернутый на 270°";
 
             s.ResultRowSetter_Difference_ByteIdentical_ToolTip_Text = "Одинаковые файлы";
+            s.SelectableLabel_Copy_Text = "Копировать";
             s.ResultRowSetter_Difference_PixelIdentical_ToolTip_Text = "Одинаковые изображения, файлы различаются";
 
             s.ResultsListView_Type_Column_Text = "Тип";

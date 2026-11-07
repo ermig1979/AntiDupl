@@ -222,6 +222,7 @@ namespace AntiDupl.NET.WinForms
         public string ResultRowSetter_MirrorTurn_270_Icon_ToolTip_Text;
 
         public string ResultRowSetter_Difference_ByteIdentical_ToolTip_Text;
+        public string SelectableLabel_Copy_Text;
         public string ResultRowSetter_Difference_PixelIdentical_ToolTip_Text;
 
         public string ResultsListView_Type_Column_Text;

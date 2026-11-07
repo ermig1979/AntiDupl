@@ -458,10 +458,8 @@ namespace AntiDupl.NET.WinForms
               result.first.GetDirectoryString(), result.second.GetDirectoryString());
 
             doubleCell = new DataGridViewDoubleTextBoxCell(result.first.GetImageSizeString(), result.second.GetImageSizeString());
-            if (result.first.height * result.first.width > result.second.height * result.second.width)
-                doubleCell.markType = DataGridViewDoubleTextBoxCell.MarkType.Second;
-            else if (result.first.height * result.first.width < result.second.height * result.second.width)
-                doubleCell.markType = DataGridViewDoubleTextBoxCell.MarkType.First;
+            doubleCell.firstMarks = DataGridViewMarkedTextBoxCell.LesserNumbers(result.first, result.second);
+            doubleCell.secondMarks = DataGridViewMarkedTextBoxCell.LesserNumbers(result.second, result.first);
             cells[(int)ResultsListView.ColumnsTypeVertical.ImageSize] = doubleCell;
 
             doubleCell = new DataGridViewDoubleTextBoxCell(result.first.GetImageTypeString(), result.second.GetImageTypeString());
@@ -518,6 +516,10 @@ namespace AntiDupl.NET.WinForms
 
             for (int col = (int)ResultsListView.ColumnsTypeHorizontal.FirstFileName; col < (int)ResultsListView.ColumnsTypeHorizontal.Size; col++)
                 cells[col] = new DataGridViewTextBoxCell();
+            cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageSize] = new DataGridViewMarkedTextBoxCell
+                { marks = DataGridViewMarkedTextBoxCell.LesserNumbers(result.first, result.second) };
+            cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageSize] = new DataGridViewMarkedTextBoxCell
+                { marks = DataGridViewMarkedTextBoxCell.LesserNumbers(result.second, result.first) };
             cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileName].Value = Path.GetFileName(result.first.path);
             cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstFileDirectory].Value = result.first.GetDirectoryString();
             cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageSize].Value = result.first.GetImageSizeString();
@@ -542,16 +544,6 @@ namespace AntiDupl.NET.WinForms
             cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileSize].Style.Alignment = DataGridViewContentAlignment.MiddleRight;
             cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondFileTime].Value = result.second.GetFileTimeString();
 
-            if (result.first.height * result.first.width > result.second.height * result.second.width) //подсветка highlight
-            {
-                cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageSize].Style.ForeColor = m_dataGridView.DefaultCellStyle.ForeColor;
-                cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageSize].Style.ForeColor = ThemeColors.Worse;
-            }
-            else if (result.first.height * result.first.width < result.second.height * result.second.width)
-            {
-                cells[(int)ResultsListView.ColumnsTypeHorizontal.FirstImageSize].Style.ForeColor = ThemeColors.Worse;
-                cells[(int)ResultsListView.ColumnsTypeHorizontal.SecondImageSize].Style.ForeColor = m_dataGridView.DefaultCellStyle.ForeColor;
-            }
 
             if (result.first.size > result.second.size)
             {
