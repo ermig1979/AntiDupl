@@ -58,6 +58,7 @@ namespace AntiDupl.NET.WinForms
         private ToolStripMenuItem m_viewMenuItem;
         private ToolStripMenuItem m_view_toolMenuItem;
         private ToolStripMenuItem m_view_statusMenuItem;
+        private ToolStripMenuItem m_view_resultCountsMenuItem;
         private ToolStripMenuItem m_view_languageMenuItem;
         private ToolStripMenuItem m_view_colorModeMenuItem;
         private ToolStripMenuItem m_view_modeMenuItem;
@@ -134,6 +135,7 @@ namespace AntiDupl.NET.WinForms
 
             m_view_toolMenuItem = InitFactory.MenuItem.Create(null, null, ViewItemCheckChangeAction, m_options.mainFormOptions.toolStripView);
             m_view_statusMenuItem = InitFactory.MenuItem.Create(null, null, ViewItemCheckChangeAction, m_options.mainFormOptions.statusStripView);
+            m_view_resultCountsMenuItem = InitFactory.MenuItem.Create(null, null, ViewItemCheckChangeAction, m_options.resultsOptions.ShowResultCounts);
             m_view_languageMenuItem = new LanguageMenuItem(m_options);
             m_view_colorModeMenuItem = new ColorModeMenuItem(m_options);
             m_view_modeMenuItem = new ViewModeMenuItem(m_options);
@@ -145,6 +147,7 @@ namespace AntiDupl.NET.WinForms
  
             m_viewMenuItem = new ToolStripMenuItem();
             m_viewMenuItem.DropDownItems.Add(m_view_toolMenuItem);
+            m_viewMenuItem.DropDownItems.Add(m_view_resultCountsMenuItem);
             m_viewMenuItem.DropDownItems.Add(m_view_statusMenuItem);
             m_viewMenuItem.DropDownItems.Add(new ToolStripSeparator());
             m_viewMenuItem.DropDownItems.Add(m_view_languageMenuItem);
@@ -220,6 +223,7 @@ namespace AntiDupl.NET.WinForms
             m_viewMenuItem.Text = s.MainMenu_ViewMenuItem_Text;
             m_view_toolMenuItem.Text = s.MainMenu_View_ToolMenuItem_Text;
             m_view_statusMenuItem.Text = s.MainMenu_View_StatusMenuItem_Text;
+            m_view_resultCountsMenuItem.Text = s.MainMenu_View_ResultCountsMenuItem_Text;
             m_view_selectColumnsMenuItem.Text = s.MainMenu_View_SelectColumnsMenuItem_Text;
             m_view_hotKeysMenuItem.Text = s.MainMenu_View_HotKeysMenuItem_Text;
             m_view_stretchSmallImageMenuItem.Text = s.MainMenu_View_StretchSmallImagesMenuItem_Text;
@@ -269,6 +273,10 @@ namespace AntiDupl.NET.WinForms
             else if (item == m_view_showNeighbourImageMenuItem)
             {
                 m_options.resultsOptions.ShowNeighboursImages = item.Checked;
+            }
+            else if (item == m_view_resultCountsMenuItem)
+            {
+                m_options.resultsOptions.ShowResultCounts = item.Checked;
             }
             m_mainForm.Refresh();
         }
