@@ -291,6 +291,7 @@ namespace AntiDupl.NET.WinForms
             s.MainMenu_View_HotKeysMenuItem_Text = "Горячие клавиши";
             s.MainMenu_View_StretchSmallImagesMenuItem_Text = "Растягивать небольшие изображения";
             s.MainMenu_View_ProportionalImageSizeMenuItem_Text = "Пропорциональный размер картинок";
+            s.MainMenu_View_AlignImagesToDividerMenuItem_Text = "Прижимать картинки к разделителю";
             s.MainMenu_View_ShowNeighbourImageMenuItem_Text = "Показывать соседние изображения";
 
             s.MainMenu_SearchMenuItem_Text = "Поиск";
