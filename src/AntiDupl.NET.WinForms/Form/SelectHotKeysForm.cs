@@ -258,7 +258,7 @@ namespace AntiDupl.NET.WinForms
             for(int i = 0; i < m_hotKeyItems.Length; i++)
             {
                 m_hotKeyItems[i].ckeck.Checked = m_newHotKeyOptions.keys[i] != Keys.None;
-                m_hotKeyItems[i].edit.Text = m_newHotKeyOptions.keys[i].ToString().Replace(',', '+');
+                m_hotKeyItems[i].edit.Text = HotKeyOptions.Text(m_newHotKeyOptions.keys[i]);
             }
         }
 
