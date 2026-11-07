@@ -65,6 +65,15 @@ namespace AntiDupl.NET.WinForms
 
             m_mainSplitContainer.OnCurrentResultChanged += 
                 new MainSplitContainer.CurrentResultChangedHandler(CurrentResultChanged);
+            m_mainSplitContainer.OnCurrentResultChanged += UpdateResultCounts;
+            m_mainSplitContainer.OnUpdateResults += UpdateResultCounts;
+            m_mainSplitContainer.OnSelectedResultsChanged += UpdateResultCounts;
+        }
+
+        private void UpdateResultCounts()
+        {
+            m_resultsPreviewDefect.UpdateResultCounts();
+            m_resultsPreviewDuplPair.UpdateResultCounts();
         }
 
         private void CurrentResultChanged()

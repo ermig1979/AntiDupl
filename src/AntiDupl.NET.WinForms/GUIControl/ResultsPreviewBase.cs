@@ -48,6 +48,7 @@ namespace AntiDupl.NET.WinForms
 
         protected ToolStripButton m_nextButton;
         protected ToolStripButton m_previousButton;
+        private ResultCountsPanel m_resultCounts;
 
         public ResultsPreviewBase(CoreLib core, Options options, CoreOptions coreOptions, ResultsListView resultsListView)
         {
@@ -69,12 +70,17 @@ namespace AntiDupl.NET.WinForms
             m_toolStrip.Renderer = new CustomToolStripSystemRenderer();
             m_toolStrip.AutoSize = true;
             m_toolStrip.AllowClickThrough = true; // one click on an inactive window, as in MainToolStrip
+            m_toolStrip.LayoutCompleted += delegate { FitVerticalBar(); };
 
             m_toolStripPanel = new ToolStripPanel();
             m_toolStripPanel.BackColor = SystemColors.Control;
 
             m_nextButton = InitFactory.ToolButton.Create("NextButton", null, OnNextButtonClicked);
             m_previousButton = InitFactory.ToolButton.Create("PreviousButton", null, OnPreviousButtonClicked);
+
+            m_resultCounts = new ResultCountsPanel();
+            m_resultCounts.Visible = m_options.resultsOptions.ShowResultCounts;
+            m_options.resultsOptions.OnImageViewChange += delegate { m_resultCounts.Visible = m_options.resultsOptions.ShowResultCounts; };
         }
 
         public void SetViewMode(ResultsOptions.ViewMode viewMode)
@@ -98,6 +104,13 @@ namespace AntiDupl.NET.WinForms
                 m_mainLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
                 m_mainLayout.Controls.Add(m_imageLayout, 0, 0);
                 m_mainLayout.Controls.Add(m_buttonLayout, 1, 0);
+
+                // A size of its own would widen the bar: the text may be cut off instead.
+                m_resultCounts.Stacked = true;
+                m_resultCounts.Size = new Size(1, 1);
+                m_resultCounts.Dock = DockStyle.Fill;
+                m_buttonLayout.Controls.Add(m_resultCounts, 0, 3);
+                m_buttonLayout.SetRowSpan(m_resultCounts, 2);
             }
             if (viewMode == ResultsOptions.ViewMode.HorizontalPairTable)
             {
@@ -115,6 +128,12 @@ namespace AntiDupl.NET.WinForms
                 m_mainLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
                 m_mainLayout.Controls.Add(m_imageLayout, 0, 0);
                 m_mainLayout.Controls.Add(m_buttonLayout, 0, 1);
+
+                m_resultCounts.Dock = DockStyle.None;
+                m_resultCounts.Anchor = AnchorStyles.Left;
+                m_resultCounts.Stacked = false;
+                m_buttonLayout.Controls.Add(m_resultCounts, 3, 0);
+                m_buttonLayout.SetColumnSpan(m_resultCounts, 2);
             }
             m_imageLayout.CellBorderStyle = TableLayoutPanelCellBorderStyle.Inset;
             m_buttonLayout.AutoSize = true;
@@ -125,6 +144,28 @@ namespace AntiDupl.NET.WinForms
         }
 
         protected abstract void AddItems(ResultsOptions.ViewMode viewMode);
+
+        // Ends the buttons' panel at the lowest button shown, for what comes
+        // below it to sit there: buttons hidden after SetViewMode leave the
+        // panel longer than they are.
+        private void FitVerticalBar()
+        {
+            if (m_toolStripPanel.Orientation != Orientation.Vertical)
+                return;
+            int bottom = 0;
+            foreach (ToolStripItem item in m_toolStrip.Items)
+                if (item.Available)
+                    bottom = Math.Max(bottom, item.Bounds.Bottom);
+            if (bottom > 0)
+                m_toolStripPanel.Height = m_toolStrip.Top + bottom;
+        }
+
+        public void UpdateResultCounts()
+        {
+            int total = m_resultsListView.GetTotalResultCount();
+            m_resultCounts.SetCounts(total, total > 0 ? m_resultsListView.GetCurrentRowIndex() + 1 : 0,
+                total > 0 ? m_resultsListView.GetSelectedResultCount() : 0);
+        }
 
         private void OnNextButtonClicked(object sender, System.EventArgs e)
         {
@@ -142,6 +183,9 @@ namespace AntiDupl.NET.WinForms
 
             m_nextButton.ToolTipText = GetToolTip(s.ResultsPreviewBase_NextButton_ToolTip_Text, Keys.Down);
             m_previousButton.ToolTipText = GetToolTip(s.ResultsPreviewBase_PreviousButton_ToolTip_Text, Keys.Up);
+            m_resultCounts.SetTitles(s.MainStatusStrip_TotalLabel_Text.TrimEnd(' ', ':'),
+                s.MainStatusStrip_CurrentLabel_Text.TrimEnd(' ', ':'), s.MainStatusStrip_SelectedLabel_Text.TrimEnd(' ', ':'),
+                s.ResultCountsPanel_CurrentShort_Text, s.ResultCountsPanel_SelectedShort_Text);
         }
         
         protected string GetToolTip(string toolTip, Keys hotKey)

@@ -291,6 +291,9 @@ namespace AntiDupl.NET.WinForms
             s.MainMenu_View_HotKeysMenuItem_Text = "Hot keys";
             s.MainMenu_View_StretchSmallImagesMenuItem_Text = "Stretch small images";
             s.MainMenu_View_ProportionalImageSizeMenuItem_Text = "Proportional size of images";
+            s.MainMenu_View_ResultCountsMenuItem_Text = "Status on toolbar";
+            s.ResultCountsPanel_CurrentShort_Text = "Cur.";
+            s.ResultCountsPanel_SelectedShort_Text = "Select.";
             s.MainMenu_View_ShowNeighbourImageMenuItem_Text = "Show neighbour images";
 
             s.MainMenu_SearchMenuItem_Text = "Search";
