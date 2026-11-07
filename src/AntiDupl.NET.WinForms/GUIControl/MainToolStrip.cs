@@ -65,6 +65,7 @@ namespace AntiDupl.NET.WinForms
         private ToolStripButton m_deleteBothButton;
         private ToolStripButton m_deleteDefectButton;
 
+        private ToolStripButton m_highlightButton;
         private ToolStripButton m_helpButton;
 
         public MainToolStrip(CoreLib core, Options options, CoreOptions coreOptions, MainMenu mainMenu, MainForm mainForm, MainSplitContainer mainSplitContainer)
@@ -86,7 +87,8 @@ namespace AntiDupl.NET.WinForms
         {
             Visible = m_options.mainFormOptions.toolStripView;
             RenderMode = ToolStripRenderMode.System;
-            ThemedToolStripRenderer.Set(this);
+            ThemedToolStripRenderer renderer = new ThemedToolStripRenderer();
+            Renderer = renderer;
             BackColor = SystemColors.Control;
             GripStyle = ToolStripGripStyle.Hidden;
             // Without it a ToolStrip only activates an inactive window on the
@@ -132,6 +134,14 @@ namespace AntiDupl.NET.WinForms
 
             m_deleteDefectButton = InitFactory.ToolButton.Create("DeleteDefectsVerticalButton", CoreDll.LocalActionType.DeleteDefect, MakeAction);
 
+            m_highlightButton = InitFactory.ToolButton.Create("HighlightButton.png", null, OnHighlightButtonClicked);
+            m_highlightButton.CheckOnClick = true;
+            renderer.FramedWhenChecked = m_highlightButton;
+            m_highlightButton.Checked = m_options.resultsOptions.HighlightDifference;
+            m_options.resultsOptions.OnHighlightDifferenceChange += delegate
+            {
+                m_highlightButton.Checked = m_options.resultsOptions.HighlightDifference;
+            };
             m_helpButton = InitFactory.ToolButton.Create("HelpButton", null, m_mainMenu.HelpAction);
 
             Resources.Strings.OnCurrentChange += new Resources.Strings.CurrentChangeHandler(UpdateStrings);
@@ -166,6 +176,7 @@ namespace AntiDupl.NET.WinForms
             m_deleteBothButton.ToolTipText = s.ResultsListViewContextMenu_DeleteBothItem_Text;
             m_deleteDefectButton.ToolTipText = s.ResultsListViewContextMenu_DeleteDefectItem_Text;
 
+            m_highlightButton.ToolTipText = s.CoreOptionsForm_HighlightDifferenceCheckBox_Text;
             m_helpButton.ToolTipText = s.MainMenu_Help_HelpMenuItem_Text;
         }
 
@@ -253,6 +264,7 @@ namespace AntiDupl.NET.WinForms
                 Items.Add(m_deleteDefectButton);
             }
             Items.Add(new ToolStripSeparator());
+            Items.Add(m_highlightButton);
             Items.Add(m_helpButton);
 
             if (viewMode == ResultsOptions.ViewMode.VerticalPairTable)
@@ -269,6 +281,12 @@ namespace AntiDupl.NET.WinForms
                 m_deleteSecondButton.Image = Resources.Images.Get("DeleteSecondsHorizontalButton");
                 m_deleteBothButton.Image = Resources.Images.Get("DeleteBothesHorizontalButton");
             }
+        }
+
+        private void OnHighlightButtonClicked(object sender, EventArgs e)
+        {
+            m_options.resultsOptions.HighlightDifference = m_highlightButton.Checked;
+            m_options.resultsOptions.RaiseEventOnHighlightDifferenceChange();
         }
 
         private void OnThresholdDifferenceChanged(object sender, EventArgs e)
