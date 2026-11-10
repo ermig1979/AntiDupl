@@ -21,6 +21,9 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
+#include <algorithm>
+#include <vector>
+
 #include "adPerformance.h"
 #include "adEngine.h"
 #include "adImageData.h"
@@ -104,6 +107,121 @@ namespace ad
         return hash == 0 ? 1 : hash;
     }
 
+    // For each source column (row): the output column it starts in, and the
+    // share of it that falls there; the rest falls in the next one. A source
+    // pixel never spans more than two outputs when the image shrinks.
+    static void AreaShares(size_t srcSize, size_t dstSize, std::vector<size_t> & index, std::vector<double> & share)
+    {
+        const double scale = double(srcSize) / dstSize;
+        index.resize(srcSize);
+        share.resize(srcSize);
+        for (size_t i = 0; i < srcSize; ++i)
+        {
+            const size_t j = std::min(size_t(i / scale), dstSize - 1);
+            index[i] = j;
+            share[i] = std::max(0.0, std::min(1.0, (j + 1) * scale - i));
+        }
+    }
+
+    // Area averaging, a box filter: each output pixel is the mean of the
+    // input it covers, a partly covered input pixel weighted by its share.
+    // Bilinear samples a few input pixels and aliases, and Simd's
+    // SimdResizeMethodArea comes out darker the more it shrinks (about 2
+    // levels at 1/16, 10 at 1/60), which makes copies of a picture at
+    // different sizes differ. Byte channels, the same format in and out;
+    // an input smaller than the output in either direction is enlarged
+    // bilinearly.
+    static void AreaResize(const TView & src, TView & dst)
+    {
+        if (src.width < dst.width || src.height < dst.height)
+        {
+            Simd::Resize(src, dst, SimdResizeMethodBilinear);
+            return;
+        }
+        const size_t channels = src.ChannelCount();
+        const size_t rowSize = dst.width * channels;
+        std::vector<size_t> col, row;
+        std::vector<double> colShare, rowShare;
+        AreaShares(src.width, dst.width, col, colShare);
+        AreaShares(src.height, dst.height, row, rowShare);
+        std::vector<uint32_t> whole(rowSize);
+        std::vector<double> parts(rowSize), sums(rowSize * dst.height, 0.0);
+        for (size_t y = 0; y < src.height; ++y)
+        {
+            std::fill(whole.begin(), whole.end(), 0);
+            std::fill(parts.begin(), parts.end(), 0.0);
+            const TUInt8 * p = src.data + y * src.stride;
+            for (size_t x = 0; x < src.width; ++x, p += channels)
+            {
+                const size_t j = col[x] * channels;
+                if (colShare[x] >= 1.0)
+                {
+                    for (size_t c = 0; c < channels; ++c)
+                        whole[j + c] += p[c];
+                }
+                else
+                {
+                    for (size_t c = 0; c < channels; ++c)
+                    {
+                        parts[j + c] += p[c] * colShare[x];
+                        if (j + channels < rowSize)
+                            parts[j + channels + c] += p[c] * (1.0 - colShare[x]);
+                    }
+                }
+            }
+            double * first = sums.data() + row[y] * rowSize;
+            double * next = row[y] + 1 < dst.height ? first + rowSize : NULL;
+            for (size_t i = 0; i < rowSize; ++i)
+            {
+                const double v = whole[i] + parts[i];
+                first[i] += v * rowShare[y];
+                if (next && rowShare[y] < 1.0)
+                    next[i] += v * (1.0 - rowShare[y]);
+            }
+        }
+        const double area = double(src.width) / dst.width * double(src.height) / dst.height;
+        for (size_t y = 0; y < dst.height; ++y)
+        {
+            TUInt8 * q = dst.data + y * dst.stride;
+            for (size_t i = 0; i < rowSize; ++i)
+                q[i] = TUInt8(std::min(255.0, sums[y * rowSize + i] / area + 0.5));
+        }
+    }
+
+    // The COLOR_IMAGE_SIZE square colour thumbnail, B, G, R bytes, whatever
+    // the decoder's channel order, so every format compares alike.
+    static void FillColor(const TView & view, TUInt8 * color)
+    {
+        const size_t n = COLOR_IMAGE_SIZE;
+        if (view.format != TView::Bgra32 && view.format != TView::Rgba32 && view.format != TView::Rgb24 &&
+            view.format != TView::Bgr24 && view.format != TView::Gray8)
+        {
+            memset(color, 0, COLOR_DATA_SIZE);
+            return;
+        }
+        TView thumb(n, n, view.format, NULL);
+        AreaResize(view, thumb);
+        switch (view.format)
+        {
+        case TView::Bgra32:
+            SimdBgraToBgr(thumb.data, n, n, thumb.stride, color, n*3);
+            break;
+        case TView::Rgba32:
+            SimdBgraToRgb(thumb.data, n, n, thumb.stride, color, n*3); // swaps red and blue
+            break;
+        case TView::Rgb24:
+            SimdBgrToRgb(thumb.data, n, n, thumb.stride, color, n*3); // swaps red and blue
+            break;
+        case TView::Bgr24:
+            for (size_t y = 0; y < n; ++y)
+                memcpy(color + y*n*3, thumb.data + y*thumb.stride, n*3);
+            break;
+        default:
+            SimdGrayToBgr(thumb.data, n, n, thumb.stride, color, n*3);
+            break;
+        }
+    }
+
     TDataCollector::TDataCollector(TEngine *pEngine)
         :m_pOptions(pEngine->Options()),
         m_pResult(pEngine->Result())
@@ -167,13 +285,14 @@ namespace ad
 
 			pImageData->imageExif = pImage->ImageExif();
 
-			Simd::Resize(gray, *m_pGrayBuffers.front());
+			AreaResize(gray, *m_pGrayBuffers.front());
             for(size_t i = 1; i < m_pGrayBuffers.size(); ++i)
 				Simd::ReduceGray2x2(*m_pGrayBuffers[i - 1], *m_pGrayBuffers[i]);
 			TPixelData & data = *pImageData->data;
             TView reducedView(data.side, data.side, data.side, TView::Gray8, data.main);
             ReduceGray2x2(*m_pGrayBuffers.back(), reducedView);
             data.pixelHash = GetPixelHash(*pImage->View());
+            FillColor(*pImage->View(), data.color);
             data.filled = true;
 
 			delete pImage;

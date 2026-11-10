@@ -21,6 +21,8 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
+#include <vector>
+
 #include "adIO.h"
 #include "adPixelData.h"
 
@@ -32,6 +34,7 @@ namespace ad
         full(Simd::Square(side_) + FAST_DATA_SIZE),
         fast(static_cast<TUInt8*>(SimdAllocate(full, SimdAlignment()))),
         main(fast + FAST_DATA_SIZE),
+        color(static_cast<TUInt8*>(SimdAllocate(COLOR_DATA_SIZE, SimdAlignment()))),
         filled(false),
 		average(0),
 		varianceSquare(0),
@@ -47,6 +50,7 @@ namespace ad
         full(Simd::Square(pixelData.side) + FAST_DATA_SIZE),
         fast(static_cast<TUInt8*>(SimdAllocate(full, SimdAlignment()))),
         main(fast + FAST_DATA_SIZE),
+        color(static_cast<TUInt8*>(SimdAllocate(COLOR_DATA_SIZE, SimdAlignment()))),
         filled(false),
 		average(pixelData.average),
 		varianceSquare(pixelData.varianceSquare),
@@ -57,6 +61,7 @@ namespace ad
         if(pixelData.filled)
         {
             memcpy(fast, pixelData.fast, full);
+            memcpy(color, pixelData.color, COLOR_DATA_SIZE);
             filled = true;
         }
     }
@@ -64,6 +69,23 @@ namespace ad
     TPixelData::~TPixelData()
     {
         SimdFree((void*)fast);
+        SimdFree((void*)color);
+    }
+
+    // The colour thumbnail turned or mirrored the way Turn and Mirror move
+    // main: pixel (x, y) goes to to(x, y), 3 bytes each.
+    template<class To> static void TransformColor(TUInt8 *color, To to)
+    {
+        const size_t n = COLOR_IMAGE_SIZE;
+        std::vector<TUInt8> old(color, color + COLOR_DATA_SIZE);
+        for(size_t y = 0; y < n; ++y)
+        {
+            for(size_t x = 0; x < n; ++x)
+            {
+                const size_t target = to(x, y);
+                memcpy(color + 3*target, old.data() + 3*(y*n + x), 3);
+            }
+        }
     }
 
     // Before each search, while one thread owns the image: the compare
@@ -133,6 +155,8 @@ namespace ad
         }
 
         memcpy(fast, buffer, full);
+        const size_t n = COLOR_IMAGE_SIZE;
+        TransformColor(color, [n](size_t x, size_t y) { return n*(n - 1 - x) + y; });
         pixelHash = 0;
 
         if(inner)
@@ -169,6 +193,8 @@ namespace ad
         }
 
         memcpy(fast, buffer, full);
+        const size_t n = COLOR_IMAGE_SIZE;
+        TransformColor(color, [n](size_t x, size_t y) { return n*y + (n - 1 - x); });
         pixelHash = 0;
 
         if(inner)

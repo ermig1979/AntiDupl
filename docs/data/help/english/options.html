@@ -62,6 +62,8 @@ By default, this option is enabled.
  </p></li>
   <li><p align="justify">
 <b>Algorithm of comparing of images</b> - algorithm by means of which pictures are compared. In standard fast algorithm - <b>'Mean square difference'</b> calculate a mean square deviation of brightness for each couple of images. He fast, but has big percent of false positives for pictures with a big uniform background and can not find strongly changed images. When comparing pictures by means of an index of structural similarity (<b>'SSIM'</b>) can find duplicates among strongly changed pictures, and also images with a big uniform background are better compared, but calculation more slowly. Also <b>'SSIM'</b> is very sensitive to the normalized size of image. It is better not to use him at the sizes less than 128x128.
+In algorithm <b>'Local colour difference'</b> each image keeps a 64x64 colour thumbnail, and the difference of two images is the root mean square colour difference of their worst 4x4 block.
+A change of colour or a small local edit therefore counts in full instead of vanishing in an average over the whole picture, so this algorithm tells copies of a picture from its other versions much better, at about the speed of <b>'SSIM'</b>.
 The default setting is <b>'Mean square difference'</b>.
 This parameter is duplicated on the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>.
  </p></li>
@@ -71,8 +73,8 @@ When setting this option at a low level, the program can not detect some of the 
 If it is equal to zero then program will be able to find only fully identical images.
 If he set too high, then increase the likelihood of false positives.
 Also worth noting that the increase in this parameter leads to a slower speed of the algorithm and vice versa.
-It can vary in the range from 0 to 15% for algorithm <b>'Mean square difference'</b> and from 0 to 50% for algorithm <b>'SSIM'</b>.
-By default, this parameter is equal to 5% for algorithm <b>'Mean square difference'</b> and 30% for algorithm <b>'SSIM'</b>.
+It can vary in the range from 0 to 15% for algorithm <b>'Mean square difference'</b> and from 0 to 50% for algorithms <b>'SSIM'</b> and <b>'Local colour difference'</b>.
+By default, this parameter is equal to 5% for algorithm <b>'Mean square difference'</b>, 20% for algorithm <b>'SSIM'</b> and 4% for algorithm <b>'Local colour difference'</b>.
 This parameter is duplicated on the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>.
  </p></li>
  <li><p align="justify">
