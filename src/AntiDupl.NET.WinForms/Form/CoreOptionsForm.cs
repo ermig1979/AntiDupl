@@ -39,21 +39,44 @@ namespace AntiDupl.NET.WinForms
         static public int THRESHOLD_DIFFERENCE_MAX_SSIM = 50;
         static public int THRESHOLD_DIFFERENCE_DEFAULT_SQUARED_SUM = 5;
         static public int THRESHOLD_DIFFERENCE_DEFAULT_SSIM = 20;
+        static public int THRESHOLD_DIFFERENCE_MAX_LOCAL_COLOR = 50;
+        static public int THRESHOLD_DIFFERENCE_DEFAULT_LOCAL_COLOR = 4;
 
-        static public double[] ThresholdValues(int max)
+        /// <summary>The highest threshold the lists offer for an algorithm.</summary>
+        static public int ThresholdMax(AlgorithmComparing algorithm)
         {
-            return CoreCompareOptions.ThresholdSteps(max);
+            if (algorithm == AlgorithmComparing.SquaredSum)
+                return THRESHOLD_DIFFERENCE_MAX_SQUARED_SUM;
+            if (algorithm == AlgorithmComparing.LocalColor)
+                return THRESHOLD_DIFFERENCE_MAX_LOCAL_COLOR;
+            return THRESHOLD_DIFFERENCE_MAX_SSIM;
+        }
+
+        /// <summary>The threshold an algorithm starts with when it is chosen.</summary>
+        static public int ThresholdDefault(AlgorithmComparing algorithm)
+        {
+            if (algorithm == AlgorithmComparing.SquaredSum)
+                return THRESHOLD_DIFFERENCE_DEFAULT_SQUARED_SUM;
+            if (algorithm == AlgorithmComparing.LocalColor)
+                return THRESHOLD_DIFFERENCE_DEFAULT_LOCAL_COLOR;
+            return THRESHOLD_DIFFERENCE_DEFAULT_SSIM;
+        }
+
+        /// <summary>The thresholds the lists offer for an algorithm.</summary>
+        static public double[] ThresholdValues(AlgorithmComparing algorithm)
+        {
+            return CoreCompareOptions.ThresholdSteps(ThresholdMax(algorithm));
         }
 
         /// <summary>
-        /// Fills a list with the thresholds up to max. An item's value is the
+        /// Fills a list with an algorithm's thresholds. An item's value is the
         /// threshold in hundredths of a percent, since LabeledComboBox.Value
         /// holds a whole number.
         /// </summary>
-        static public void FillThresholds(ComboBox comboBox, int max)
+        static public void FillThresholds(ComboBox comboBox, AlgorithmComparing algorithm)
         {
             comboBox.Items.Clear();
-            foreach (double value in ThresholdValues(max))
+            foreach (double value in ThresholdValues(algorithm))
                 comboBox.Items.Add(new LabeledComboBox.Value((int)Math.Round(value * 100), string.Format("{0:0.##} %", value)));
         }
 
@@ -175,6 +198,8 @@ namespace AntiDupl.NET.WinForms
         /// Все компоненты иницализированы.
         /// </summary>
         private bool m_inited = false;
+        // The algorithm the threshold list was filled for.
+        private AlgorithmComparing m_thresholdAlgorithm;
 
         public CoreOptionsForm(CoreLib core, Options options, CoreOptions coreOptions)
         {
@@ -281,12 +306,12 @@ namespace AntiDupl.NET.WinForms
             m_algorithmComparingLabeledComboBox = new LabeledComboBox(COMBO_BOX_WIDTH + 115, COMBO_BOX_HEIGHT, OnOptionChanged);
             m_algorithmComparingLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value(0, Resources.Strings.Current.CoreOptionsForm_AlgorithmComparingLabeledComboBox_SquaredSum));
             m_algorithmComparingLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value(1, "SSIM"));
+            m_algorithmComparingLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value((int)AlgorithmComparing.LocalColor, Resources.Strings.Current.CoreOptionsForm_AlgorithmComparingLabeledComboBox_LocalColor));
             checkTableLayoutPanel.Controls.Add(m_algorithmComparingLabeledComboBox, 0, 6);
 
             m_thresholdDifferenceLabeledComboBox = new LabeledComboBox(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
-            FillThresholds(m_thresholdDifferenceLabeledComboBox.comboBox,
-                m_newCoreOptions.compareOptions.algorithmComparing == AlgorithmComparing.SquaredSum ?
-                THRESHOLD_DIFFERENCE_MAX_SQUARED_SUM : THRESHOLD_DIFFERENCE_MAX_SSIM);
+            m_thresholdAlgorithm = m_newCoreOptions.compareOptions.algorithmComparing;
+            FillThresholds(m_thresholdDifferenceLabeledComboBox.comboBox, m_thresholdAlgorithm);
             checkTableLayoutPanel.Controls.Add(m_thresholdDifferenceLabeledComboBox, 0, 7);
 
             m_minimalImageSizeLabeledIntegerEdit = new LabeledIntegerEdit(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
@@ -877,7 +902,11 @@ namespace AntiDupl.NET.WinForms
             m_setDefaultButton.Enabled = !m_defaultCoreOptions.Equals(m_newCoreOptions);
 
             m_transformedImageCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
-            m_shiftedImageCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
+            // Only these two have it: local colour's differences aren't the
+            // mean square the shift is measured in.
+            m_shiftedImageCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality &&
+              (m_newCoreOptions.compareOptions.algorithmComparing == AlgorithmComparing.SquaredSum ||
+               m_newCoreOptions.compareOptions.algorithmComparing == AlgorithmComparing.SSIM);
             m_sizeControlCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
             m_typeControlCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
             m_ratioControlCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality &&
@@ -907,18 +936,14 @@ namespace AntiDupl.NET.WinForms
                 m_ignoreFrameWidthLabeledComboBox.SelectedValue = (m_newCoreOptions.advancedOptions.ignoreFrameWidth + step - 1) / step * step;
             }
 
-            int count = m_thresholdDifferenceLabeledComboBox.comboBox.Items.Count;
-            if (m_algorithmComparingLabeledComboBox.SelectedValue == (int)AlgorithmComparing.SquaredSum &&
-                count > ThresholdValues(THRESHOLD_DIFFERENCE_MAX_SQUARED_SUM).Length)
+            // Another algorithm brings its own range and starting threshold:
+            // the same percentage means different things to each.
+            AlgorithmComparing algorithm = (AlgorithmComparing)m_algorithmComparingLabeledComboBox.SelectedValue;
+            if (algorithm != m_thresholdAlgorithm)
             {
-                FillThresholds(m_thresholdDifferenceLabeledComboBox.comboBox, THRESHOLD_DIFFERENCE_MAX_SQUARED_SUM);
-                SelectThreshold(m_thresholdDifferenceLabeledComboBox.comboBox, THRESHOLD_DIFFERENCE_DEFAULT_SQUARED_SUM);
-            }
-            if (m_algorithmComparingLabeledComboBox.SelectedValue == (int)AlgorithmComparing.SSIM &&
-                count < ThresholdValues(THRESHOLD_DIFFERENCE_MAX_SSIM).Length)
-            {
-                FillThresholds(m_thresholdDifferenceLabeledComboBox.comboBox, THRESHOLD_DIFFERENCE_MAX_SSIM);
-                SelectThreshold(m_thresholdDifferenceLabeledComboBox.comboBox, THRESHOLD_DIFFERENCE_DEFAULT_SSIM);
+                m_thresholdAlgorithm = algorithm;
+                FillThresholds(m_thresholdDifferenceLabeledComboBox.comboBox, algorithm);
+                SelectThreshold(m_thresholdDifferenceLabeledComboBox.comboBox, ThresholdDefault(algorithm));
             }
         }
 

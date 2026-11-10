@@ -106,6 +106,11 @@ namespace ad
     const TUInt32 D3_MAX_RANGES_STEP = TUInt32(DENOMINATOR*0.010);
     const TUInt32 INITIAL_REDUCED_IMAGE_SIZE = 256;
     const TUInt32 REDUCED_IMAGE_SIZE_MIN = 16;
+    // The colour thumbnail the local colour comparer reads: COLOR_IMAGE_SIZE
+    // square, B, G, R bytes, compared in COLOR_BLOCK_SIZE square blocks.
+    const size_t COLOR_IMAGE_SIZE = 64;
+    const size_t COLOR_BLOCK_SIZE = 4;
+    const size_t COLOR_DATA_SIZE = COLOR_IMAGE_SIZE*COLOR_IMAGE_SIZE*3;
     const TUInt32 COLLECT_THREAD_QUEUE_SIZE_MAX = 16;
     const TUInt32 DEAFAULT_THREAD_SLEEP_INTERVAL = 10;
     const TUInt32 LARGE_IMAGE_COLLECTION_SIZE_MIN = 100000;
@@ -115,7 +120,9 @@ namespace ad
 	// so their cached pixel data, blockiness and blurring are recomputed.
 	// Version 6: the image database stores a hash of the decoded pixels;
 	// images from an older database are decoded again for it.
-	const TUInt32 FILE_VERSION = 6;
+	// Version 7: the reduced image is area-averaged instead of bilinear, and
+	// the database stores a colour thumbnail; older records are decoded again.
+	const TUInt32 FILE_VERSION = 7;
 	const size_t SIZE_CHECK_LIMIT = 2147483646; //string.max_size()
 
 	const size_t BLOCKINESS_SIZE = 8;
