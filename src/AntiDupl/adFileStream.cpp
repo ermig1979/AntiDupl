@@ -151,6 +151,8 @@ namespace ad
 		}
 		if(m_version > 5)
 			Load(pixelData.pixelHash);
+		if(m_version > 6)
+			Load(pixelData.color, COLOR_DATA_SIZE);
 	}
 
 	void TInputFileStream::Load(TImageData & imageData) const
@@ -174,11 +176,12 @@ namespace ad
 			imageData.blockiness = -1;
 			imageData.blurring = -1;
 		}
-		else if(m_version < 6)
+		else if(m_version < 7)
 		{
-			// Without the hash of the decoded pixels, which the comparers
-			// need to tell pixel-identical images from merely similar ones,
-			// the image is decoded again.
+			// Version 5 has no hash of the decoded pixels, which the
+			// comparers need to tell pixel-identical images from merely
+			// similar ones; version 6 has a bilinear reduced image and no
+			// colour thumbnail. The image is decoded again.
 			imageData.data->filled = false;
 		}
 	}
@@ -293,6 +296,7 @@ namespace ad
 		Save(pixelData.average);
 		Save(pixelData.varianceSquare);
 		Save(pixelData.pixelHash);
+		Save(pixelData.color, COLOR_DATA_SIZE);
 	}
 
 	// Сохранение в потоке изображения
