@@ -36,6 +36,9 @@ namespace ad
         const size_t full; //width * height + FAST_DATA_SIZE
         TUInt8* const fast; //уменьшенное изображение (4x4) для быстрого сравнения
         TUInt8* const main;
+        // COLOR_IMAGE_SIZE square colour thumbnail, B, G, R bytes per pixel,
+        // area-averaged from the full image; filled with main.
+        TUInt8* const color;
         bool filled; //true, если создано уменьшенное изображение в main
 		float average; //average of image - среднее
 		float varianceSquare; //variance of image - Дисперсия случайной величины
