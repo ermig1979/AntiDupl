@@ -386,6 +386,9 @@ extern "C"
 	{
 		AD_COMPARING_SQUARED_SUM = 0,
 		AD_COMPARING_SSIM = 1,
+		// 2 is AlgorithmComparing.Dinov2 in AntiDupl.NET.Core, a search the
+		// .NET side runs itself; the core compares it as SSIM.
+		AD_COMPARING_LOCAL_COLOR = 3,
 		AD_COMPARING_SIZE
 	};
 

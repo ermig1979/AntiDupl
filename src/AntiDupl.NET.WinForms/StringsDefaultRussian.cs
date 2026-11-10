@@ -96,6 +96,7 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_RatioControlCheckBox_Text = "Учитывать соотношение ширины/высоты картинок";
             s.CoreOptionsForm_AlgorithmComparingLabeledComboBox_Text = "Алгоритм сравнения изображений";
             s.CoreOptionsForm_AlgorithmComparingLabeledComboBox_SquaredSum = "Среднеквадратичная разность";
+            s.CoreOptionsForm_AlgorithmComparingLabeledComboBox_LocalColor = "Локальная разность цвета";
             s.CoreOptionsForm_ThresholdDifferenceLabeledComboBox_Text = "Пороговая разность";
             s.CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text = "Минимальная ширина/высота картинок";
             s.CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text = "Максимальная ширина/высота картинок";

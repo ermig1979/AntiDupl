@@ -22,6 +22,8 @@
 * SOFTWARE.
 */
 #include <math.h>
+#include <climits>
+#include <cstdlib>
 
 #include "adEngine.h"
 #include "adImageData.h"
@@ -616,6 +618,103 @@ namespace ad
         return true;
     }
     //-------------------------------------------------------------------------
+    TImageComparer_LocalColor::TImageComparer_LocalColor(TEngine *pEngine)
+        :TImageComparer(pEngine)
+    {
+        m_sets.resize(1);
+        const double threshold = m_pOptions->compare.thresholdDifference*double(PIXEL_MAX_DIFFERENCE)/DENOMINATOR;
+        m_blockThreshold = uint64_t(floor(COLOR_BLOCK_SIZE*COLOR_BLOCK_SIZE*3*threshold*threshold));
+        // A fast-data cell is the mean grey of a sixteenth of the image, a
+        // whole number of blocks. Grey weighs B, G and R with weights whose
+        // squares sum to 0.447, so a cell's grey difference is at most
+        // sqrt(3*0.447) = 1.158 times the RMS colour difference of its worst
+        // block; 3 levels cover the rounding in both thumbnails. Not used with
+        // a frame, whose edge need not fall on a block edge.
+        m_fastCellThreshold = m_pOptions->advanced.ignoreFrameWidth > 0 ? INT_MAX : int(ceil(1.158*threshold)) + 3;
+        const size_t framePixels = (size_t)ceil(COLOR_IMAGE_SIZE*m_pOptions->advanced.ignoreFrameWidth/double(DENOMINATOR));
+        m_frameBlocks = (framePixels + COLOR_BLOCK_SIZE - 1)/COLOR_BLOCK_SIZE;
+    }
+
+    void TImageComparer_LocalColor::Add(TImageDataPtr pImageData)
+    {
+        AddToSet(m_sets[0], pImageData);
+    }
+
+    void TImageComparer_LocalColor::Compare(TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform)
+    {
+        CompareWithSet(m_sets[0], pOriginal, pTransformed, transform);
+    }
+
+    bool TImageComparer_LocalColor::ShiftedDifference(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference)
+    {
+        return false;
+    }
+
+    bool TImageComparer_LocalColor::IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference)
+    {
+        if(m_pOptions->compare.typeControl == TRUE &&
+            pFirst->type != pSecond->type)
+            return false;
+
+        if(m_pOptions->compare.sizeControl == TRUE &&
+            (pFirst->height != pSecond->height ||
+            pFirst->width != pSecond->width))
+            return false;
+
+        if(m_pOptions->compare.ratioControl == TRUE)
+        {
+            if(Simd::Square(pFirst->ratio - pSecond->ratio) > Simd::Square(RATIO_THRESHOLD_DIFFERENCE))
+                return false;
+        }
+
+        if(m_pOptions->compare.compareInsideOneFolder == FALSE && TPath::EqualByDirectory(pFirst->path, pSecond->path))
+            return false;
+
+        if(m_pOptions->compare.compareInsideOneSearchPath == FALSE && pFirst->index == pSecond->index)
+            return false;
+
+        for(size_t i = 0; i < FAST_DATA_SIZE; ++i)
+        {
+            if(abs(int(pFirst->data->fast[i]) - int(pSecond->data->fast[i])) > m_fastCellThreshold)
+                return false;
+        }
+
+        const size_t blocks = COLOR_IMAGE_SIZE/COLOR_BLOCK_SIZE;
+        const size_t stride = COLOR_IMAGE_SIZE*3;
+        const size_t blockWidth = COLOR_BLOCK_SIZE*3;
+        uint64_t worst = 0;
+        for(size_t by = m_frameBlocks; by < blocks - m_frameBlocks; ++by)
+        {
+            for(size_t bx = m_frameBlocks; bx < blocks - m_frameBlocks; ++bx)
+            {
+                uint64_t sum = 0;
+                for(size_t y = by*COLOR_BLOCK_SIZE; y < (by + 1)*COLOR_BLOCK_SIZE; ++y)
+                {
+                    const TUInt8 *a = pFirst->data->color + y*stride + bx*blockWidth;
+                    const TUInt8 *b = pSecond->data->color + y*stride + bx*blockWidth;
+                    for(size_t i = 0; i < blockWidth; ++i)
+                    {
+                        const int d = int(a[i]) - int(b[i]);
+                        sum += uint64_t(d*d);
+                    }
+                }
+                if(sum > m_blockThreshold)
+                    return false;
+                worst = std::max(worst, sum);
+            }
+        }
+
+        const double rms = sqrt(double(worst)/(COLOR_BLOCK_SIZE*COLOR_BLOCK_SIZE*3));
+        double difference = PixelDifference(pFirst, pSecond, rms*DENOMINATOR/PIXEL_MAX_DIFFERENCE);
+        if(difference > m_pOptions->compare.thresholdDifference)
+            return false;
+
+        *pDifference = difference;
+        if(pFirst->crc32c != pSecond->crc32c)
+            *pDifference += ADDITIONAL_DIFFERENCE_FOR_DIFFERENT_CRC32;
+        return true;
+    }
+    //-------------------------------------------------------------------------
 	// Фабрика возврашает движок
     TImageComparer* CreateImageComparer(TEngine *pEngine)
     {
@@ -637,6 +736,8 @@ namespace ad
 				return new TImageComparer_3D(pEngine);
 			}
 		}
+		else if (pEngine->Options()->compare.algorithmComparing == AD_COMPARING_LOCAL_COLOR)
+			return new TImageComparer_LocalColor(pEngine);
 		else
 			return new TImageComparer_SSIM(pEngine);
     }
