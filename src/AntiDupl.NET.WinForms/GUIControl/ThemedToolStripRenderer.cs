@@ -30,23 +30,40 @@ namespace AntiDupl.NET.WinForms
     /// The system look of tool bars and menus; in dark mode the button or
     /// menu item under the mouse, or pressed, or open, is filled with
     /// ThemeColors.Selection, like the selected rows of the results table.
-    /// Its drop-down menus use it too.
+    /// In both themes a menu item left for another one while its sub-menu
+    /// is still open is drawn plain (Left). Its drop-down menus use it too.
     /// </summary>
     public class ThemedToolStripRenderer : ToolStripSystemRenderer
     {
         /// <summary>
-        /// Gives a tool bar or menu this renderer in dark mode; in light mode
-        /// it keeps the system renderer it has.
+        /// Gives a tool bar or menu this renderer. In light mode it draws as
+        /// the system renderer does, apart from Left.
         /// </summary>
         static public void Set(ToolStrip toolStrip)
         {
-            if (Application.IsDarkModeEnabled)
-                toolStrip.Renderer = new ThemedToolStripRenderer();
+            toolStrip.Renderer = new ThemedToolStripRenderer();
+        }
+
+        /// <summary>
+        /// A menu item whose sub-menu is still open while the mouse is on
+        /// another item of its menu. WinForms closes that sub-menu only after
+        /// the hover delay, and until then the item stays pressed, which the
+        /// system renderer draws lit like the item under the mouse: the
+        /// highlight seemed to lag behind the mouse.
+        /// </summary>
+        static private bool Left(ToolStripItem item)
+        {
+            if (item == null || item.Selected || !item.Pressed || !item.IsOnDropDown || item.Owner == null)
+                return false;
+            foreach (ToolStripItem other in item.Owner.Items)
+                if (other != item && other.Selected)
+                    return true;
+            return false;
         }
 
         static private bool Highlighted(ToolStripItem item)
         {
-            return Application.IsDarkModeEnabled && item != null && item.Enabled && (item.Selected || item.Pressed);
+            return Application.IsDarkModeEnabled && item != null && item.Enabled && (item.Selected || item.Pressed) && !Left(item);
         }
 
         static private void Fill(Graphics graphics, Rectangle bounds)
@@ -89,7 +106,7 @@ namespace AntiDupl.NET.WinForms
                     bounds.Inflate(-2, 0);
                 Fill(e.Graphics, bounds);
             }
-            else
+            else if (!Left(e.Item)) // the base would draw it pressed
                 base.OnRenderMenuItemBackground(e);
         }
 
@@ -97,6 +114,8 @@ namespace AntiDupl.NET.WinForms
         {
             if (Highlighted(e.Item))
                 e.TextColor = ThemeColors.SelectionText;
+            else if (Left(e.Item))
+                e.TextColor = e.Item.ForeColor;
             base.OnRenderItemText(e);
         }
 
@@ -104,6 +123,8 @@ namespace AntiDupl.NET.WinForms
         {
             if (Highlighted(e.Item))
                 e.ArrowColor = ThemeColors.SelectionText;
+            else if (Left(e.Item))
+                e.ArrowColor = e.Item.ForeColor;
             base.OnRenderArrow(e);
         }
     }

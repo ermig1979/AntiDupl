@@ -68,6 +68,7 @@ namespace AntiDupl.NET.WinForms
             m_toolStrip.RenderMode = ToolStripRenderMode.System;
             m_toolStrip.Renderer = new CustomToolStripSystemRenderer();
             m_toolStrip.AutoSize = true;
+            m_toolStrip.AllowClickThrough = true; // one click on an inactive window, as in MainToolStrip
 
             m_toolStripPanel = new ToolStripPanel();
             m_toolStripPanel.BackColor = SystemColors.Control;

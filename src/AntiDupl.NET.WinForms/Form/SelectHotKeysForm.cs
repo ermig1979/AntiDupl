@@ -152,6 +152,8 @@ namespace AntiDupl.NET.WinForms
             m_cancelButton = new Button();
             m_cancelButton.Click += new System.EventHandler(OnButtonClick);
             buttonsTableLayoutPanel.Controls.Add(m_cancelButton, 2, 0);
+            // Esc closes the window, so it can't be given to an action here.
+            CancelButton = m_cancelButton;
             
             m_setDefaultButton = new Button();
             m_setDefaultButton.AutoSize = true;

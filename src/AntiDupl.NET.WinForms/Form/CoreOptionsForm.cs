@@ -138,7 +138,7 @@ namespace AntiDupl.NET.WinForms
         static public int IGNORE_FRAME_WIDTH_STEP = 3;
         
         static public int FORM_WIDTH = 450;
-        static public int FORM_HEIGHT = 470;
+        static public int FORM_HEIGHT = 460;
         static public int COMBO_BOX_WIDTH = 65;
         static public int COMBO_BOX_HEIGHT = 20;
 
@@ -269,8 +269,10 @@ namespace AntiDupl.NET.WinForms
             Resources.Help.Bind(this, Resources.Help.Options);
 
             TableLayoutPanel mainTableLayoutPanel = InitFactory.Layout.Create(1, 2, 5);
-            mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 87F));
-            mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 13F));
+            // The buttons need less than their row's share; the Compare tab's
+            // last check box gets the rest, clear of the tab's bottom edge.
+            mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 89F));
+            mainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 11F));
             Controls.Add(mainTableLayoutPanel);
 
             m_mainTabControl = new TabControl();
@@ -304,6 +306,7 @@ namespace AntiDupl.NET.WinForms
             m_cancelButton = new Button();
             m_cancelButton.Click += new EventHandler(OnCancelButtonClick);
             mainButtonsTableLayoutPanel.Controls.Add(m_cancelButton, 2, 0);
+            CancelButton = m_cancelButton;
 
             m_setDefaultButton = new Button();
             m_setDefaultButton.AutoSize = true;
