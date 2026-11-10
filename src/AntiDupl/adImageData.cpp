@@ -103,6 +103,7 @@ namespace ad
 		else
 		{
 			memcpy(data->fast, imageData.data->fast, data->full);
+			memcpy(data->color, imageData.data->color, COLOR_DATA_SIZE);
 			data->average = imageData.data->average;
 			data->varianceSquare = imageData.data->varianceSquare;
 			data->sum = imageData.data->sum;
