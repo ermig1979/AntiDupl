@@ -81,5 +81,8 @@
             на растре, который ядро уже декодировало для letterbox-канваса.
             </summary>
         </member>
+        <member name="F:AntiDupl.NET.Core.Enums.AlgorithmComparing.LocalColor">
+            <summary>The worst 4 × 4 block of 64 × 64 colour thumbnails (core: AD_COMPARING_LOCAL_COLOR).</summary>
+        </member>
     </members>
 </doc>
