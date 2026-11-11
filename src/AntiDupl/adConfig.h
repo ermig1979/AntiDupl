@@ -97,6 +97,9 @@ namespace ad
     // The least difference of images whose decoded pixels differ: their
     // reduced images can be equal, which would give 0.
     const double MIN_DIFFERENCE_OF_DIFFERENT_PIXELS = 0.0001;
+    // Two names of one file: below every real difference, so the pair sorts
+    // first. The program shows it as HL (DifferenceFormat).
+    const double HARD_LINK_DIFFERENCE = -1;
     const TUInt32 D0_SEARCHED_FILE_NUMBER_MAX = 1000;
     const TUInt32 D1_SEARCHED_FILE_NUMBER_MAX = 10000;
     const TUInt32 D3_THRESHOLD_DIFFERENCE_MAX = TUInt32(DENOMINATOR*0.100);

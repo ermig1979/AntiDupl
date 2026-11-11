@@ -311,6 +311,7 @@ namespace AntiDupl.NET.Core.Original
             public int compareInsideOneFolder;
             public int compareInsideOneSearchPath;
             public AlgorithmComparing algorithmComparing;
+            public int skipHardlinks;
         }
 
         [StructLayout(LayoutKind.Sequential)]
