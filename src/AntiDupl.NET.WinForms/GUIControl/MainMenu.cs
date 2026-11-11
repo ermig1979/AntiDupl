@@ -226,7 +226,7 @@ namespace AntiDupl.NET.WinForms
             m_view_proportionalImageViewMenuItem.Text = s.MainMenu_View_ProportionalImageSizeMenuItem_Text;
             Keys showNeighboursHotKey = m_options.hotKeyOptions.Get(HotKeyOptions.Action.ShowNeighbours);
             if (showNeighboursHotKey != Keys.None)
-                m_view_showNeighbourImageMenuItem.Text = s.MainMenu_View_ShowNeighbourImageMenuItem_Text + String.Format(" ({0})", showNeighboursHotKey.ToString().Replace(',', '+'));
+                m_view_showNeighbourImageMenuItem.Text = s.MainMenu_View_ShowNeighbourImageMenuItem_Text + String.Format(" ({0})", HotKeyOptions.Text(showNeighboursHotKey));
             else
                 m_view_showNeighbourImageMenuItem.Text = s.MainMenu_View_ShowNeighbourImageMenuItem_Text;
 

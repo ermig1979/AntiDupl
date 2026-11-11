@@ -133,8 +133,8 @@ namespace AntiDupl.NET.WinForms
             m_mistakeButton.ToolTipText = GetToolTip(s.ResultsPreviewDefect_MistakeButton_ToolTip_Text, HotKeyOptions.Action.CurrentMistake);
             m_openBothFoldersButton.ToolTipText = s.ResultsPreviewDuplPair_OpenBothFoldersButton_ToolTip_Text;
             m_openBothImagesButton.ToolTipText = s.ResultsPreviewDuplPair_OpenBothImagesButton_ToolTip_Text;
-            m_openExternDiffImagesButton.ToolTipText = s.ResultsPreviewDuplPair_ExternDiffImagesButton_ToolTip_Text;
-            m_openExternDiffImages2Button.ToolTipText = s.ResultsPreviewDuplPair_ExternDiffImages2Button_ToolTip_Text;
+            m_openExternDiffImagesButton.ToolTipText = GetToolTip(s.ResultsPreviewDuplPair_ExternDiffImagesButton_ToolTip_Text, HotKeyOptions.Action.OpenImageDiff);
+            m_openExternDiffImages2Button.ToolTipText = GetToolTip(s.ResultsPreviewDuplPair_ExternDiffImages2Button_ToolTip_Text, HotKeyOptions.Action.OpenImageDiff2);
 
             // Для обновления EXIF.
             if (m_currentSearchResult != null)
