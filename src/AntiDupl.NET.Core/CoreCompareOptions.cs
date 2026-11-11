@@ -55,6 +55,8 @@ namespace AntiDupl.NET.Core
         public const int BUTTERAUGLI_SIZE_DEFAULT = 768;
         /// <summary>The working sizes the option lists offer.</summary>
         public static readonly int[] BUTTERAUGLI_SIZES = { 384, 512, 768, 1024 };
+        /// <summary>On in a profile saved before the option existed.</summary>
+        public bool skipHardlinks = true;
 
         public CoreCompareOptions()
         {
@@ -75,6 +77,7 @@ namespace AntiDupl.NET.Core
             compareInsideOneFolder = compareOptions.compareInsideOneFolder;
             compareInsideOneSearchPath = compareOptions.compareInsideOneSearchPath;
             butteraugliSize = compareOptions.butteraugliSize;
+            skipHardlinks = compareOptions.skipHardlinks;
         }
 
         public CoreCompareOptions(ref CoreDll.adCompareOptions compareOptions)
@@ -92,6 +95,7 @@ namespace AntiDupl.NET.Core
             compareInsideOneFolder = compareOptions.compareInsideOneFolder != CoreDll.FALSE;
             compareInsideOneSearchPath = compareOptions.compareInsideOneSearchPath != CoreDll.FALSE;
             butteraugliSize = compareOptions.butteraugliSize;
+            skipHardlinks = compareOptions.skipHardlinks != CoreDll.FALSE;
         }
 
         public void ConvertTo(ref CoreDll.adCompareOptions compareOptions)
@@ -109,6 +113,7 @@ namespace AntiDupl.NET.Core
             compareOptions.compareInsideOneFolder = compareInsideOneFolder ? CoreDll.TRUE : CoreDll.FALSE;
             compareOptions.compareInsideOneSearchPath = compareInsideOneSearchPath ? CoreDll.TRUE : CoreDll.FALSE;
             compareOptions.butteraugliSize = butteraugliSize;
+            compareOptions.skipHardlinks = skipHardlinks ? CoreDll.TRUE : CoreDll.FALSE;
         }
 
         public CoreCompareOptions Clone()
@@ -153,7 +158,8 @@ namespace AntiDupl.NET.Core
                 maximalImageSize == compareOptions.maximalImageSize &&
                 compareInsideOneFolder == compareOptions.compareInsideOneFolder &&
                 compareInsideOneSearchPath == compareOptions.compareInsideOneSearchPath &&
-                butteraugliSize == compareOptions.butteraugliSize;
+                butteraugliSize == compareOptions.butteraugliSize &&
+                skipHardlinks == compareOptions.skipHardlinks;
         }
 
         public bool CheckOnEquality
@@ -263,6 +269,16 @@ namespace AntiDupl.NET.Core
             {
                 compareInsideOneSearchPath = value;
                 NotifyPropertyChanged("CompareInsideOneSearchPath");
+            }
+        }
+
+        public bool SkipHardlinks
+        {
+            get { return skipHardlinks; }
+            set
+            {
+                skipHardlinks = value;
+                NotifyPropertyChanged("SkipHardlinks");
             }
         }
 

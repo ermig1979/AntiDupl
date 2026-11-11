@@ -164,6 +164,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
                     <CheckBox Grid.Column="0" Grid.Row="0"
@@ -246,6 +247,10 @@
                               Content="{DynamicResource configurationWindow_compareInsideOneSearchPath}"
                               ToolTip="{DynamicResource configurationWindow_tooltip_compareInsideOneSearchPath}"
                               IsChecked="{Binding Option.compareOptions.CompareInsideOneSearchPath}" />
+                    <CheckBox Grid.Column="0" Grid.Row="12"
+                              Content="{DynamicResource configurationWindow_skipHardlinks}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_skipHardlinks}"
+                              IsChecked="{Binding Option.compareOptions.SkipHardlinks}" />
                 </Grid>
             </ScrollViewer>
         </TabItem>

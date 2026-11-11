@@ -434,6 +434,7 @@ extern "C"
 		adBool compareInsideOneSearchPath;
 		adAlgorithmComparing algorithmComparing;
 		adInt32 butteraugliSize; // longest side of the images Butteraugli compares
+        adBool skipHardlinks;
     };
     typedef adCompareOptions* adCompareOptionsPtr;
 	

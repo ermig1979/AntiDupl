@@ -108,6 +108,7 @@ namespace AntiDupl.NET.WinForms
         public string CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text;
         public string CoreOptionsForm_CompareInsideOneFolderCheckBox_Text;
         public string CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text;
+        public string CoreOptionsForm_SkipHardlinksCheckBox_Text;
 
         public string CoreOptionsForm_DefectTabPage_Text;
         public string CoreOptionsForm_CheckOnDefectCheckBox_Text;
@@ -225,6 +226,7 @@ namespace AntiDupl.NET.WinForms
         public string ResultRowSetter_MirrorTurn_180_Icon_ToolTip_Text;
         public string ResultRowSetter_MirrorTurn_270_Icon_ToolTip_Text;
 
+        public string ResultRowSetter_Difference_HardLink_ToolTip_Text;
         public string ResultRowSetter_Difference_ByteIdentical_ToolTip_Text;
         public string ResultRowSetter_Difference_PixelIdentical_ToolTip_Text;
 

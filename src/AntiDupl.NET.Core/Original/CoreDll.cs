@@ -312,6 +312,7 @@ namespace AntiDupl.NET.Core.Original
             public int compareInsideOneSearchPath;
             public AlgorithmComparing algorithmComparing;
             public int butteraugliSize;
+            public int skipHardlinks;
         }
 
         [StructLayout(LayoutKind.Sequential)]
