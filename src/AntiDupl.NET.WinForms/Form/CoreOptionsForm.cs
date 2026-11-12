@@ -46,12 +46,12 @@ namespace AntiDupl.NET.WinForms
         // compressed or resized copy and the closest version in test pictures.
         static public int THRESHOLD_DIFFERENCE_MAX_BUTTERAUGLI = 50;
         static private readonly Dictionary<int, double> THRESHOLD_DIFFERENCE_DEFAULT_BUTTERAUGLI =
-            new Dictionary<int, double> { { 384, 5 }, { 512, 6 }, { 768, 8.5 }, { 1024, 9.5 } };
+            new Dictionary<int, double> { { 384, 7.5 }, { 512, 9 }, { 768, 12 }, { 1024, 13 } };
         // The second threshold worth using, shown beside the list: it adds the
         // copies the default misses, and some versions. Above it, on pairs
         // judged by hand, versions outnumber copies.
         static private readonly Dictionary<int, double> THRESHOLD_DIFFERENCE_WIDE_BUTTERAUGLI =
-            new Dictionary<int, double> { { 384, 12 }, { 512, 14 }, { 768, 15 }, { 1024, 16 } };
+            new Dictionary<int, double> { { 384, 11 }, { 512, 13 }, { 768, 15 }, { 1024, 16 } };
 
         /// <summary>The highest threshold the lists offer for an algorithm.</summary>
         static public int ThresholdMax(AlgorithmComparing algorithm)

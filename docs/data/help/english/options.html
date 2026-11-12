@@ -78,12 +78,12 @@ Also worth noting that the increase in this parameter leads to a slower speed of
 It can vary in the range from 0 to 15% for algorithm <b>'Mean square difference'</b> and from 0 to 50% for algorithms <b>'SSIM'</b> and <b>'Local colour difference'</b>.
 For algorithm <b>'Perceptual (Butteraugli)'</b> this parameter is a score without a unit, from 0 to 50, <b>not</b> a percent difference between the two images.
 By default, this parameter is equal to 5% for algorithm <b>'Mean square difference'</b>, 20% for algorithm <b>'SSIM'</b> and 4% for algorithm <b>'Local colour difference'</b>.
-For algorithm <b>'Perceptual (Butteraugli)'</b> the default value changes depending on <b>Size Butteraugli compares at</b>, and beside the list are the two values worth using at that size: e.g. at 768 px, 8.5 finds copies and leaves out the other versions of a picture, and 15 finds the copies that 8.5 misses, but also some of those versions, so look at those results more closely.
+For algorithm <b>'Perceptual (Butteraugli)'</b> the default value changes depending on <b>Size Butteraugli compares at</b>, and beside the list are the two values worth using at that size: e.g. at 768 px, 12 finds copies and leaves out the other versions of a picture, and 15 finds the copies that 12 misses, but also some of those versions, so look at those results more closely.
 This parameter is duplicated on the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>.
  </p></li>
  <li><p align="justify">
 <b>Size Butteraugli compares at (longest side)</b> - the size to which algorithm <b>'Perceptual (Butteraugli)'</b> reduces larger images before comparing them.
-A larger size sees smaller differences and takes longer: compared with the default of 768 px, 1024 px takes about one and a half times as long, and 384 px about a quarter of the time.
+A larger size sees smaller differences and takes longer: compared with the default of 768 px, 1024 px takes nearly twice as long, and 384 px about a quarter of the time.
 Scores grow with this size, so the threshold values shown beside the list follow it.
 It can be 384, 512, 768 or 1024 px.
 By default, this parameter is equal to 768 px.
