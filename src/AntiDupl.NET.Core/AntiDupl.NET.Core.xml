@@ -15,6 +15,7 @@
         </member>
         <member name="F:AntiDupl.NET.Core.CoreCompareOptions.BUTTERAUGLI_SIZES">
             <summary>The working sizes the option lists offer.</summary>
+        </member>
         <member name="F:AntiDupl.NET.Core.CoreCompareOptions.skipHardlinks">
             <summary>On in a profile saved before the option existed.</summary>
         </member>
