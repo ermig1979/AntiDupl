@@ -192,7 +192,7 @@ namespace ad
         int m_fastCellThreshold; // so does a fast-data cell difference above this
     };
     //-------------------------------------------------------------------------
-    // Butteraugli (google/butteraugli), a model of how visible a difference
+    // Butteraugli (libjxl's), a model of how visible a difference
     // is, which discounts what texture hides: re-saved and resized copies
     // stay low while a local edit stands out. Too slow for every pair, it
     // scores the pairs local colour finds within

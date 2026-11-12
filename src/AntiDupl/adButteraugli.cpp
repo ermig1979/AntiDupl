@@ -22,7 +22,22 @@
 #include <math.h>
 #include <fstream>
 
-#include "butteraugli/butteraugli.h"
+// libjxl's Butteraugli, compiled into the static jxl.lib, with headers the
+// overlay port src/ports/libjxl installs. Its headers turn their debug
+// checks on unless NDEBUG is defined, which this project's release builds
+// don't define: the inline functions compiled here would then differ from
+// the ones in vcpkg's release jxl.lib. NDEBUG follows the runtime library,
+// as vcpkg's choice between its debug and release libraries does.
+#if !defined(_DEBUG) && !defined(NDEBUG)
+#define NDEBUG
+#define AD_JXL_NDEBUG
+#endif
+#include "lib/jxl/butteraugli/butteraugli.h"
+#include "lib/jxl/memory_manager_internal.h"
+#ifdef AD_JXL_NDEBUG
+#undef NDEBUG
+#undef AD_JXL_NDEBUG
+#endif
 
 #include "adButteraugli.h"
 #include "adDataCollector.h"
@@ -38,7 +53,8 @@ namespace ad
     static const TUInt32 SCORE_FILE_SIGNATURE = 0x53424441; // "ADBS"
     static const TUInt32 SCORE_FILE_FORMAT = 1;
 
-    // Butteraugli wants linear light on a 0..255 scale.
+    // Butteraugli wants linear light, 1.0 for white at its intensity target
+    // (ButteraugliParams, 80 nits as in libjxl's own tools).
     static const float * LinearLut()
     {
         static const std::vector<float> lut = []
@@ -47,11 +63,24 @@ namespace ad
             for (int i = 0; i < 256; ++i)
             {
                 const double c = i / 255.0;
-                lut[i] = float(255.0 * (c <= 0.04045 ? c / 12.92 : pow((c + 0.055) / 1.055, 2.4)));
+                lut[i] = float(c <= 0.04045 ? c / 12.92 : pow((c + 0.055) / 1.055, 2.4));
             }
             return lut;
         }();
         return lut.data();
+    }
+
+    // libjxl's default allocator; its images take one.
+    static JxlMemoryManager * MemoryManager()
+    {
+        static JxlMemoryManager manager = []
+        {
+            JxlMemoryManager manager;
+            if (!jxl::MemoryManagerInit(&manager, nullptr))
+                manager = JxlMemoryManager{};
+            return manager;
+        }();
+        return &manager;
     }
 
     // The turn TImageComparer::Accept gives its reduced images: a mirror
@@ -98,13 +127,13 @@ namespace ad
         return a->size < b->size;
     }
 
-    static void ToLinear(const TView & bgr, std::vector<butteraugli::ImageF> & rgb)
+    static void ToLinear(const TView & bgr, jxl::Image3F & rgb)
     {
         const float * lut = LinearLut();
         for (size_t y = 0; y < bgr.height; ++y)
         {
             const TUInt8 * p = bgr.data + y * bgr.stride;
-            float * r = rgb[0].Row(y), * g = rgb[1].Row(y), * b = rgb[2].Row(y);
+            float * r = rgb.PlaneRow(0, y), * g = rgb.PlaneRow(1, y), * b = rgb.PlaneRow(2, y);
             for (size_t x = 0; x < bgr.width; ++x, p += 3)
             {
                 b[x] = lut[p[0]];
@@ -112,6 +141,17 @@ namespace ad
                 r[x] = lut[p[2]];
             }
         }
+    }
+
+    // Butteraugli's map of two B, G, R views of the same size, the first
+    // taken as the reference; fails only when memory runs out.
+    static jxl::Status Diffmap(const TView & first, const TView & second, jxl::ImageF & diffmap)
+    {
+        JXL_ASSIGN_OR_RETURN(jxl::Image3F rgb0, jxl::Image3F::Create(MemoryManager(), first.width, first.height));
+        JXL_ASSIGN_OR_RETURN(jxl::Image3F rgb1, jxl::Image3F::Create(MemoryManager(), second.width, second.height));
+        ToLinear(first, rgb0);
+        ToLinear(second, rgb1);
+        return jxl::ButteraugliDiffmap(rgb0, rgb1, jxl::ButteraugliParams(), diffmap);
     }
     //-------------------------------------------------------------------------
     bool TButteraugliStore::TKey::operator==(const TKey & key) const
@@ -169,7 +209,7 @@ namespace ad
             return -1;
         const double score = Compute(*first->bgr, *second->bgr, transform);
 
-        if (keyed)
+        if (keyed && score >= 0)
         {
             std::lock_guard<std::mutex> lock(m_mutex);
             m_scores[key] = score;
@@ -305,13 +345,10 @@ namespace ad
         const TView a = pReference->Region(fx, fy, w - fx, h - fy);
         const TView b = other.Region(fx, fy, w - fx, h - fy);
 
-        std::vector<butteraugli::ImageF> rgb0 = butteraugli::CreatePlanes<float>(a.width, a.height, 3);
-        std::vector<butteraugli::ImageF> rgb1 = butteraugli::CreatePlanes<float>(b.width, b.height, 3);
-        ToLinear(a, rgb0);
-        ToLinear(b, rgb1);
-        butteraugli::ImageF diffmap;
-        butteraugli::ButteraugliDiffmap(rgb0, rgb1, 1.0, diffmap);
-        return butteraugli::ButteraugliScoreFromDiffmap(diffmap);
+        jxl::ImageF diffmap;
+        if (!Diffmap(a, b, diffmap))
+            return -1;
+        return jxl::ButteraugliScoreFromDiffmap(diffmap);
     }
 
     void TButteraugliStore::Load()

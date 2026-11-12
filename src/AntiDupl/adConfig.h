@@ -122,7 +122,7 @@ namespace ad
     const size_t BUTTERAUGLI_IMAGE_CACHE_BYTES = size_t(512) << 20;
     // Part of the stored scores' key: a change to how a score is computed
     // (the working images, the metric) makes the stored ones stale.
-    const TUInt32 BUTTERAUGLI_SCORE_VERSION = 1;
+    const TUInt32 BUTTERAUGLI_SCORE_VERSION = 2;
     const TUInt32 COLLECT_THREAD_QUEUE_SIZE_MAX = 16;
     const TUInt32 DEAFAULT_THREAD_SLEEP_INTERVAL = 10;
     const TUInt32 LARGE_IMAGE_COLLECTION_SIZE_MIN = 100000;
