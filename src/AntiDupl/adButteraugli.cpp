@@ -53,8 +53,8 @@ namespace ad
     static const TUInt32 SCORE_FILE_SIGNATURE = 0x53424441; // "ADBS"
     static const TUInt32 SCORE_FILE_FORMAT = 1;
 
-    // Butteraugli wants linear light, 1.0 for white at its intensity target
-    // (ButteraugliParams, 80 nits as in libjxl's own tools).
+    // Butteraugli wants linear light, 1.0 for white, which it takes to be
+    // shown at BUTTERAUGLI_INTENSITY_TARGET.
     static const float * LinearLut()
     {
         static const std::vector<float> lut = []
@@ -151,7 +151,9 @@ namespace ad
         JXL_ASSIGN_OR_RETURN(jxl::Image3F rgb1, jxl::Image3F::Create(MemoryManager(), second.width, second.height));
         ToLinear(first, rgb0);
         ToLinear(second, rgb1);
-        return jxl::ButteraugliDiffmap(rgb0, rgb1, jxl::ButteraugliParams(), diffmap);
+        jxl::ButteraugliParams params;
+        params.intensity_target = BUTTERAUGLI_INTENSITY_TARGET;
+        return jxl::ButteraugliDiffmap(rgb0, rgb1, params, diffmap);
     }
     //-------------------------------------------------------------------------
     bool TButteraugliStore::TKey::operator==(const TKey & key) const
