@@ -77,8 +77,10 @@ namespace ad
   
     // XXH3-64 of the image as BGRA rows, the layout most decoders give; the
     // others are converted row by row, so the same pixels hash the same
-    // whatever the file format. 0 is kept for "unknown".
-    static uint64_t GetPixelHash(const TView & view)
+    // whatever the file format. 0 is kept for "unknown". With hideUnseen,
+    // the colour under fully transparent pixels counts as black: two files
+    // that differ only there show the same picture.
+    static uint64_t GetPixelHash(const TView & view, bool hideUnseen)
     {
         if (view.format != TView::Bgra32 && view.format != TView::Rgba32 && view.format != TView::Rgb24)
             return 0;
@@ -91,15 +93,25 @@ namespace ad
         for (size_t y = 0; y < view.height; ++y)
         {
             const TUInt8 * src = view.data + y * view.stride;
-            if (view.format == TView::Bgra32)
+            if (view.format == TView::Bgra32 && !hideUnseen)
             {
                 XXH3_64bits_update(state, src, rowSize);
                 continue;
             }
-            if (view.format == TView::Rgba32)
+            if (view.format == TView::Bgra32)
+                memcpy(row.data(), src, rowSize);
+            else if (view.format == TView::Rgba32)
                 SimdBgraToRgba(src, view.width, 1, view.stride, row.data(), rowSize); // swaps red and blue
             else
                 SimdRgbToBgra(src, view.width, 1, view.stride, row.data(), rowSize, 0xFF);
+            if (hideUnseen)
+            {
+                for (size_t x = 0; x < rowSize; x += 4)
+                {
+                    if (row[x + 3] == 0)
+                        row[x] = row[x + 1] = row[x + 2] = 0;
+                }
+            }
             XXH3_64bits_update(state, row.data(), rowSize);
         }
         uint64_t hash = XXH3_64bits_digest(state);
@@ -222,6 +234,55 @@ namespace ad
         }
     }
 
+    static void ToGray(const TView & view, TView & gray)
+    {
+        if (view.format == TView::Format::Rgb24)
+            Simd::RgbToGray(view, gray);
+        else if (view.format == TView::Format::Rgba32)
+            Simd::RgbaToGray(view, gray);
+        else
+            Simd::BgraToGray(view, gray);
+    }
+
+    // Whether a four-channel image has transparent pixels: some alpha under
+    // 255, but not every alpha 0, which is how a 32-bit BMP with an unused
+    // fourth byte decodes, and would otherwise show nothing at all.
+    static bool HasTransparency(const TView & view)
+    {
+        if (view.format != TView::Bgra32 && view.format != TView::Rgba32)
+            return false;
+        bool below = false, above = false;
+        for (size_t y = 0; y < view.height && !(below && above); ++y)
+        {
+            const TUInt8 * p = view.data + y * view.stride;
+            for (size_t x = 0; x < view.width; ++x)
+            {
+                below |= p[4*x + 3] < 0xFF;
+                above |= p[4*x + 3] > 0;
+            }
+        }
+        return below && above;
+    }
+
+    // The image laid over a background of one grey level (0 or 255), as a
+    // viewer shows it: same channel order, every pixel opaque.
+    static void LayOver(const TView & view, int background, TView & shown)
+    {
+        shown.Recreate(view.width, view.height, view.format);
+        for (size_t y = 0; y < view.height; ++y)
+        {
+            const TUInt8 * p = view.data + y * view.stride;
+            TUInt8 * q = shown.data + y * shown.stride;
+            for (size_t x = 0; x < 4 * view.width; x += 4)
+            {
+                const int a = p[x + 3];
+                for (size_t c = 0; c < 3; ++c)
+                    q[x + c] = TUInt8((p[x + c] * a + background * (0xFF - a) + 0x7F) / 0xFF);
+                q[x + 3] = 0xFF;
+            }
+        }
+    }
+
     TDataCollector::TDataCollector(TEngine *pEngine)
         :m_pOptions(pEngine->Options()),
         m_pResult(pEngine->Result())
@@ -264,19 +325,23 @@ namespace ad
             pImageData->width = (TUInt32)pImage->View()->width;
             pImageData->type = (TImageType)pImage->Format();
 
-			TView gray(pImage->View()->width, pImage->View()->height, TView::Gray8, NULL);
-            if (pImage->View()->format == TView::Format::Rgb24)
-            {
-                Simd::RgbToGray(*pImage->View(), gray);
-            }
-            else if (pImage->View()->format == TView::Format::Rgba32)
-            {
-                Simd::RgbaToGray(*pImage->View(), gray);
-            }
-            else
-            {
-                Simd::BgraToGray(*pImage->View(), gray);
-            }
+			// With transparency shown, an image with transparent pixels is
+			// judged as laid over white (blockiness, blurring and the main
+			// thumbnails) and its thumbnails are made over black as well:
+			// what lies under a transparent pixel is never seen.
+			const TView & view = *pImage->View();
+			const bool asShown = m_pOptions->compare.transparentAsShown == TRUE;
+			const bool alpha = asShown && HasTransparency(view);
+			TView white, black;
+			if (alpha)
+			{
+				LayOver(view, 0xFF, white);
+				LayOver(view, 0, black);
+			}
+			const TView & source = alpha ? white : view;
+
+			TView gray(view.width, view.height, TView::Gray8, NULL);
+			ToGray(source, gray);
 
 			pImageData->blockiness = GetBlockiness(gray);
 
@@ -285,14 +350,18 @@ namespace ad
 
 			pImageData->imageExif = pImage->ImageExif();
 
-			AreaResize(gray, *m_pGrayBuffers.front());
-            for(size_t i = 1; i < m_pGrayBuffers.size(); ++i)
-				Simd::ReduceGray2x2(*m_pGrayBuffers[i - 1], *m_pGrayBuffers[i]);
 			TPixelData & data = *pImageData->data;
-            TView reducedView(data.side, data.side, data.side, TView::Gray8, data.main);
-            ReduceGray2x2(*m_pGrayBuffers.back(), reducedView);
-            data.pixelHash = GetPixelHash(*pImage->View());
-            FillColor(*pImage->View(), data.color);
+			data.asShown = asShown;
+			data.SetAlpha(alpha);
+			Reduce(gray, data.main);
+            data.pixelHash = GetPixelHash(view, alpha);
+            FillColor(source, data.color);
+			if (alpha)
+			{
+				ToGray(black, gray);
+				Reduce(gray, data.mainBlack);
+				FillColor(black, data.colorBlack);
+			}
             data.filled = true;
 
 			delete pImage;
@@ -304,6 +373,17 @@ namespace ad
             pImageData->type = AD_IMAGE_NONE;
         }
     }
+
+	// The grey image reduced to the main thumbnail, written to main.
+	void TDataCollector::Reduce(const TView & gray, TUInt8 * main)
+	{
+		AreaResize(gray, *m_pGrayBuffers.front());
+		for(size_t i = 1; i < m_pGrayBuffers.size(); ++i)
+			Simd::ReduceGray2x2(*m_pGrayBuffers[i - 1], *m_pGrayBuffers[i]);
+		const size_t side = m_pOptions->advanced.reducedImageSize;
+		TView reducedView(side, side, side, TView::Gray8, main);
+		ReduceGray2x2(*m_pGrayBuffers.back(), reducedView);
+	}
 
     void TDataCollector::CheckOnDefect(TImageData* pImageData)
     {

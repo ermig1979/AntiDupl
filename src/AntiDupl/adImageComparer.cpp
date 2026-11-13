@@ -45,8 +45,17 @@ namespace ad
         m_pResult(pEngine->Result()),
         m_pTransformedImageData(NULL),
         m_pBuffer(NULL),
-        m_pMask(NULL) 
+        m_pMask(NULL),
+        m_asShown(pEngine->Options()->compare.transparentAsShown == TRUE),
+        m_pIncomingBlack(NULL),
+        m_pFilled(NULL)
     {
+        if(m_asShown)
+        {
+            m_pIncomingBlack = new TImageData(m_pOptions->advanced.reducedImageSize);
+            m_pFilled = new TImageData(m_pOptions->advanced.reducedImageSize);
+        }
+        m_ignoreTransparent = m_asShown && m_pOptions->compare.ignoreTransparent == TRUE;
         // The threshold may be a fraction of a percent: kept as a double, and
         // the sums derived from it rounded up, so that they let through
         // every pair the exact difference is then checked on.
@@ -94,12 +103,26 @@ namespace ad
         if(m_pOptions->compare.transformedImage == TRUE)
         {
             delete m_pTransformedImageData;
-            SimdFree(m_pBuffer); 
+            SimdFree(m_pBuffer);
         }
+
+        delete m_pIncomingBlack;
+        delete m_pFilled;
+        for(std::map<TImageDataPtr, TImageData*>::iterator i = m_blackTwins.begin(); i != m_blackTwins.end(); ++i)
+            delete i->second;
+        for(std::map<TImageDataPtr, TOpaquePart*>::iterator i = m_opaqueParts.begin(); i != m_opaqueParts.end(); ++i)
+            delete i->second;
     }
 
     void TImageComparer::Accept(TImageDataPtr pImageData, bool add)
     {
+        const bool alpha = m_asShown && pImageData->data->alpha;
+        if(alpha)
+        {
+            MakeBlack(m_pIncomingBlack, pImageData);
+            if(m_ignoreTransparent)
+                MakeOpaquePart(m_incomingPart, pImageData, m_pIncomingBlack);
+        }
         Compare(pImageData, pImageData, AD_TRANSFORM_TURN_0);
         if(m_pOptions->compare.transformedImage == TRUE)
         {
@@ -109,6 +132,12 @@ namespace ad
                 m_pTransformedImageData->Turn(m_pBuffer);
                 if(i_transform == AD_TRANSFORM_MIRROR_TURN_0)
                     m_pTransformedImageData->Mirror(m_pBuffer);
+                if(alpha)
+                {
+                    MakeBlack(m_pIncomingBlack, m_pTransformedImageData);
+                    if(m_ignoreTransparent)
+                        MakeOpaquePart(m_incomingPart, m_pTransformedImageData, m_pIncomingBlack);
+                }
                 Compare(pImageData, m_pTransformedImageData, (adTransformType)i_transform);
             }
         }
@@ -128,14 +157,14 @@ namespace ad
 			// Сравниваем с набором проверенных
             for(TImageDataPtrList::const_iterator i = set.valid.begin(); i != set.valid.end(); ++i)
             {
-                if(IsDuplPairAny(pTransformed, *i, &difference))
+                if(IsDuplPairShown(pTransformed, m_pIncomingBlack, *i, &difference))
                     m_pResult->AddDuplImagePair(pOriginal, *i, difference, transform);
             }
         }
 		// Сравниваем с набором остальных
 		for(TImageDataPtrList::const_iterator i = set.other.begin(); i != set.other.end(); ++i)
 		{
-			if(IsDuplPairAny(pTransformed, *i, &difference))
+			if(IsDuplPairShown(pTransformed, m_pIncomingBlack, *i, &difference))
 				m_pResult->AddDuplImagePair(pOriginal, *i, difference, transform);
 		}
 	}
@@ -146,6 +175,287 @@ namespace ad
 			set.valid.push_back(pImageData);
 		else
 			set.other.push_back(pImageData);
+		if(m_asShown && pImageData->data->alpha)
+		{
+			TImageData *pBlack = new TImageData(m_pOptions->advanced.reducedImageSize);
+			MakeBlack(pBlack, pImageData);
+			m_blackTwins[pImageData] = pBlack;
+			if(m_ignoreTransparent)
+			{
+				TOpaquePart *pPart = new TOpaquePart;
+				MakeOpaquePart(*pPart, pImageData, pBlack);
+				m_opaqueParts[pImageData] = pPart;
+			}
+		}
+    }
+
+    // pFirst is the image being compared, pFirstBlack its twin over black
+    // when it has transparency; pSecond an image of the sets.
+    bool TImageComparer::IsDuplPairShown(TImageDataPtr pFirst, TImageDataPtr pFirstBlack, TImageDataPtr pSecond, double *pDifference)
+    {
+        const bool firstAlpha = m_asShown && pFirst->data->alpha;
+        const bool secondAlpha = m_asShown && pSecond->data->alpha;
+        if(!firstAlpha && !secondAlpha)
+            return IsDuplPairAny(pFirst, pSecond, pDifference);
+        TImageDataPtr pSecondBlack = secondAlpha ? m_blackTwins[pSecond] : pSecond;
+        bool shown = IsDuplPairOver(pFirst, pFirstBlack, firstAlpha, pSecond, pSecondBlack, secondAlpha, pDifference);
+        double masked;
+        if(m_ignoreTransparent && PassControls(pFirst, pSecond) &&
+            MaskedDifference(pFirst, firstAlpha ? &m_incomingPart : NULL,
+                pSecond, secondAlpha ? m_opaqueParts[pSecond] : NULL, &masked) &&
+            (!shown || masked < *pDifference))
+        {
+            *pDifference = masked;
+            shown = true;
+        }
+        return shown;
+    }
+
+    bool TImageComparer::IsDuplPairOver(TImageDataPtr pFirst, TImageDataPtr pFirstBlack, bool firstAlpha,
+        TImageDataPtr pSecond, TImageDataPtr pSecondBlack, bool secondAlpha, double *pDifference)
+    {
+        if(firstAlpha && secondAlpha)
+            return OverBoth(pFirst, pFirstBlack, pSecond, pSecondBlack, pDifference);
+        TUInt8 bgr[3];
+        if(firstAlpha)
+        {
+            if(UniformFill(pFirst, pFirstBlack, pSecond, bgr))
+            {
+                MakeFilled(m_pFilled, pFirst, pFirstBlack, bgr);
+                return IsDuplPairAny(m_pFilled, pSecond, pDifference);
+            }
+            return OverBoth(pFirst, pFirstBlack, pSecond, pSecond, pDifference);
+        }
+        if(UniformFill(pSecond, pSecondBlack, pFirst, bgr))
+        {
+            MakeFilled(m_pFilled, pSecond, pSecondBlack, bgr);
+            return IsDuplPairAny(pFirst, m_pFilled, pDifference);
+        }
+        return OverBoth(pFirst, pFirst, pSecond, pSecondBlack, pDifference);
+    }
+
+    // A pair over white and over black: a duplicate only if it is one over
+    // both, with the larger difference. Content in the colour of one
+    // background vanishes into it, but not into the other.
+    bool TImageComparer::OverBoth(TImageDataPtr pFirst, TImageDataPtr pFirstBlack, TImageDataPtr pSecond, TImageDataPtr pSecondBlack, double *pDifference)
+    {
+        double white, black;
+        if(!IsDuplPairAny(pFirst, pSecond, &white) || !IsDuplPairAny(pFirstBlack, pSecondBlack, &black))
+            return false;
+        *pDifference = std::max(white, black);
+        return true;
+    }
+
+    // Whether pOpaque could be pAlpha with its transparency filled in with
+    // one colour, and which (B, G, R): where pAlpha is transparent, pOpaque
+    // is nearly one colour, and where pAlpha is opaque it doesn't show that
+    // colour, or a picture whose visible part has the colour of the fill
+    // (white lines filled with white) would pair with an empty page. The
+    // colour thumbnails over white and black give each pixel's coverage:
+    // over white minus over black is 255 times the uncovered share.
+    bool TImageComparer::UniformFill(TImageDataPtr pAlpha, TImageDataPtr pAlphaBlack, TImageDataPtr pOpaque, TUInt8 *bgr)
+    {
+        // A loose first look on the 4x4 data: pOpaque against pAlpha over
+        // one grey level k, fitted, leaves no cell far off.
+        const TUInt8 *fw = pAlpha->data->fast, *fb = pAlphaBlack->data->fast, *fo = pOpaque->data->fast;
+        double dd = 0, dr = 0;
+        for(int i = 0; i < FAST_DATA_SIZE; ++i)
+        {
+            const double d = double(fw[i]) - fb[i];
+            dd += d*d;
+            dr += d*(double(fo[i]) - fb[i]);
+        }
+        const double k = dd > 0 ? std::max(0.0, std::min(1.0, dr/dd)) : 0;
+        for(int i = 0; i < FAST_DATA_SIZE; ++i)
+        {
+            if(fabs(fb[i] + k*(double(fw[i]) - fb[i]) - fo[i]) > UNIFORM_FILL_FAST_DIFFERENCE_MAX)
+                return false;
+        }
+
+        const TUInt8 *w = pAlpha->data->color, *b = pAlphaBlack->data->color, *o = pOpaque->data->color;
+        const size_t pixels = COLOR_IMAGE_SIZE*COLOR_IMAGE_SIZE;
+        double sum[3] = {0, 0, 0}, square[3] = {0, 0, 0};
+        size_t clear = 0, solid = 0;
+        for(size_t p = 0; p < pixels; ++p)
+        {
+            const int uncovered = int(w[3*p]) + w[3*p + 1] + w[3*p + 2] - b[3*p] - b[3*p + 1] - b[3*p + 2];
+            if(uncovered >= 3*0xFF*(100 - UNIFORM_FILL_COVERAGE_PERCENT)/100)
+            {
+                ++clear;
+                for(int c = 0; c < 3; ++c)
+                {
+                    sum[c] += o[3*p + c];
+                    square[c] += double(o[3*p + c])*o[3*p + c];
+                }
+            }
+            else if(uncovered <= 3*0xFF*UNIFORM_FILL_COVERAGE_PERCENT/100)
+                ++solid;
+        }
+        if(clear*100 < pixels*UNIFORM_FILL_AREA_PERCENT || solid*100 < pixels*UNIFORM_FILL_AREA_PERCENT)
+            return false;
+        for(int c = 0; c < 3; ++c)
+        {
+            const double mean = sum[c]/clear;
+            if(square[c]/clear - mean*mean > Simd::Square(UNIFORM_FILL_DEVIATION_MAX))
+                return false;
+            bgr[c] = TUInt8(mean + 0.5);
+        }
+        double contrast = 0;
+        for(size_t p = 0; p < pixels; ++p)
+        {
+            const int uncovered = int(w[3*p]) + w[3*p + 1] + w[3*p + 2] - b[3*p] - b[3*p + 1] - b[3*p + 2];
+            if(uncovered <= 3*0xFF*UNIFORM_FILL_COVERAGE_PERCENT/100)
+            {
+                int most = 0;
+                for(int c = 0; c < 3; ++c)
+                    most = std::max(most, abs(int(w[3*p + c]) - bgr[c]));
+                contrast += most;
+            }
+        }
+        return contrast/solid >= UNIFORM_FILL_CONTRAST_MIN;
+    }
+
+    // The info a comparer reads of an image (type, size, ratio, path, CRC).
+    void TImageComparer::CopyInfo(TImageData *pTo, TImageDataPtr pFrom)
+    {
+        *static_cast<TImageInfo*>(pTo) = *pFrom;
+        pTo->ratio = pFrom->ratio;
+        pTo->valid = pFrom->valid;
+        pTo->index = pFrom->index;
+        pTo->defect = pFrom->defect;
+        pTo->crc32c = pFrom->crc32c;
+    }
+
+    // An image's twin made of its over-black thumbnails. The hash stays the
+    // image's, so two images showing the same pixels stay equal over black.
+    void TImageComparer::MakeBlack(TImageData *pBlack, TImageDataPtr pImageData)
+    {
+        CopyInfo(pBlack, pImageData);
+        TPixelData & to = *pBlack->data;
+        const TPixelData & from = *pImageData->data;
+        memcpy(to.main, from.mainBlack, to.size);
+        memcpy(to.color, from.colorBlack, COLOR_DATA_SIZE);
+        to.pixelHash = from.pixelHash;
+        to.FillFast(m_pOptions->GetIgnoreWidthFrame());
+        to.FillMoments();
+        to.filled = true;
+    }
+
+    // An image with transparency laid over one colour, from its thumbnails
+    // over white and black: over colour c a pixel is black + (white - black)
+    // * c / 255, and the grey thumbnail takes c's grey.
+    void TImageComparer::MakeFilled(TImageData *pFilled, TImageDataPtr pImageData, TImageDataPtr pBlack, const TUInt8 *bgr)
+    {
+        CopyInfo(pFilled, pImageData);
+        TPixelData & to = *pFilled->data;
+        const TPixelData & white = *pImageData->data;
+        const TPixelData & black = *pBlack->data;
+        const int gray = (29*bgr[0] + 150*bgr[1] + 77*bgr[2] + 128) >> 8;
+        for(size_t i = 0; i < to.size; ++i)
+            to.main[i] = TUInt8(black.main[i] + ((int(white.main[i]) - black.main[i])*gray + 127)/255);
+        for(size_t i = 0; i < COLOR_DATA_SIZE; ++i)
+            to.color[i] = TUInt8(black.color[i] + ((int(white.color[i]) - black.color[i])*bgr[i%3] + 127)/255);
+        to.pixelHash = 0;
+        to.FillFast(m_pOptions->GetIgnoreWidthFrame());
+        to.FillMoments();
+        to.filled = true;
+    }
+
+    // A plane's opaque pixels, from its values over white (w) and black (b)
+    // in pixels of `channels` bytes: opaque where the uncovered share is at
+    // most UNIFORM_FILL_COVERAGE_PERCENT, and there the colour over black
+    // divided by the coverage, which takes out what little of the
+    // background shows. Returns the grey variance of the opaque pixels.
+    static double OpaquePlane(const TUInt8 *w, const TUInt8 *b, size_t pixels, size_t channels,
+        std::vector<TUInt8> &value, std::vector<TUInt8> &opaque, size_t &count)
+    {
+        value.assign(pixels*channels, 0);
+        opaque.assign(pixels, 0);
+        count = 0;
+        double sum = 0, square = 0;
+        for(size_t p = 0; p < pixels; ++p)
+        {
+            int uncovered = 0;
+            for(size_t c = 0; c < channels; ++c)
+                uncovered += int(w[p*channels + c]) - b[p*channels + c];
+            if(uncovered*100 > int(channels*0xFF*UNIFORM_FILL_COVERAGE_PERCENT))
+                continue;
+            const int coverage = int(channels*0xFF) - std::max(0, uncovered);
+            double gray = 0;
+            for(size_t c = 0; c < channels; ++c)
+            {
+                const int v = std::min(0xFF, (int(b[p*channels + c])*int(channels*0xFF) + coverage/2)/coverage);
+                value[p*channels + c] = TUInt8(v);
+                static const double GRAY[3] = { 29/256.0, 150/256.0, 77/256.0 };
+                gray += channels == 3 ? GRAY[c]*v : v;
+            }
+            opaque[p] = 1;
+            ++count;
+            sum += gray;
+            square += gray*gray;
+        }
+        if(count == 0)
+            return 0;
+        const double mean = sum/count;
+        return square/count - mean*mean;
+    }
+
+    void TImageComparer::MakeOpaquePart(TOpaquePart &part, TImageDataPtr pImageData, TImageDataPtr pBlack)
+    {
+        const double deviation = Simd::Square(MASKED_DEVIATION_MIN);
+        part.mainVaried = OpaquePlane(pImageData->data->main, pBlack->data->main, m_mainSize, 1,
+            part.main, part.mainOpaque, part.mainCount) >= deviation;
+        part.colorVaried = OpaquePlane(pImageData->data->color, pBlack->data->color,
+            COLOR_IMAGE_SIZE*COLOR_IMAGE_SIZE, 3, part.color, part.colorOpaque, part.colorCount) >= deviation;
+    }
+
+    bool TImageComparer::MaskedArea(size_t compared, size_t pixels, size_t first, size_t second)
+    {
+        if(compared == 0 || compared*100 < pixels*MASKED_AREA_PERCENT)
+            return false;
+        if(first > 0 && second > 0 && compared*100 < std::min(first, second)*MASKED_OVERLAP_PERCENT)
+            return false;
+        return true;
+    }
+
+    bool TImageComparer::MaskedDifference(TImageDataPtr pFirst, const TOpaquePart *pFirstPart,
+        TImageDataPtr pSecond, const TOpaquePart *pSecondPart, double *pDifference)
+    {
+        if((pFirstPart && !pFirstPart->mainVaried) || (pSecondPart && !pSecondPart->mainVaried))
+            return false;
+        const TUInt8 *a = pFirstPart ? pFirstPart->main.data() : pFirst->data->main;
+        const TUInt8 *b = pSecondPart ? pSecondPart->main.data() : pSecond->data->main;
+        const TUInt8 *aOpaque = pFirstPart ? pFirstPart->mainOpaque.data() : NULL;
+        const TUInt8 *bOpaque = pSecondPart ? pSecondPart->mainOpaque.data() : NULL;
+        const size_t firstCount = pFirstPart ? pFirstPart->mainCount : 0;
+        const size_t secondCount = pSecondPart ? pSecondPart->mainCount : 0;
+        // At most as many pixels as the smaller opaque part are compared:
+        // a sum over the threshold for that many fails the pair at once.
+        const double threshold = m_pOptions->compare.thresholdDifference*PIXEL_MAX_DIFFERENCE/DENOMINATOR;
+        const size_t most = firstCount && secondCount ? std::min(firstCount, secondCount) : std::max(firstCount, secondCount);
+        const double limit = threshold*threshold*most;
+        uint64_t sum = 0;
+        size_t compared = 0;
+        for(size_t p = 0; p < m_mainSize; ++p)
+        {
+            if((aOpaque && !aOpaque[p]) || (bOpaque && !bOpaque[p]) || (m_pMask && m_pMask[p] != FRAME_MASK_INDEX))
+                continue;
+            const int d = int(a[p]) - int(b[p]);
+            sum += d*d;
+            ++compared;
+            if(double(sum) > limit)
+                return false;
+        }
+        if(!MaskedArea(compared, m_mainSize, firstCount, secondCount))
+            return false;
+        double difference = PixelDifference(pFirst, pSecond,
+            sqrt(double(sum)/(Simd::Square(PIXEL_MAX_DIFFERENCE)*double(compared)))*100);
+        if(difference > m_pOptions->compare.thresholdDifference)
+            return false;
+        *pDifference = difference;
+        if(pFirst->crc32c != pSecond->crc32c)
+            *pDifference += ADDITIONAL_DIFFERENCE_FOR_DIFFERENT_CRC32;
+        return true;
     }
 
 	// Сравнение двух картинок
@@ -397,14 +707,21 @@ namespace ad
 
     void TImageComparer_1D::Add(TImageDataPtr pImageData)
     {
-        AddToSet(m_sets[GetIndex(pImageData)], pImageData);
+        if(m_asShown && pImageData->data->alpha)
+            AddToSet(m_alphaSet, pImageData);
+        else
+            AddToSet(m_sets[GetIndex(pImageData)], pImageData);
     }
 
     void TImageComparer_1D::Compare(TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform)
     {
         int index = GetIndex(pTransformed);
-        for(int i = std::max(0, index - m_halfCompareRange), end = std::min(index + m_halfCompareRange, RANGE); i < end; ++i)
+        int begin = std::max(0, index - m_halfCompareRange), end = std::min(index + m_halfCompareRange, RANGE);
+        if(m_asShown && pTransformed->data->alpha)
+            begin = 0, end = RANGE;
+        for(int i = begin; i < end; ++i)
             CompareWithSet(m_sets[i], pOriginal, pTransformed, transform);
+        CompareWithSet(m_alphaSet, pOriginal, pTransformed, transform);
     }
 
     int TImageComparer_1D::GetIndex(TImageDataPtr pImageData)
@@ -439,6 +756,11 @@ namespace ad
 
     void TImageComparer_3D::Add(TImageDataPtr pImageData)
     {
+        if(m_asShown && pImageData->data->alpha)
+        {
+            AddToSet(m_alphaSet, pImageData);
+            return;
+        }
         TIndex i;
         GetIndex(pImageData, i);
         AddToSet(m_sets[i.s*m_stride.s + i.x*m_stride.x + i.y*m_stride.y], pImageData);
@@ -446,6 +768,13 @@ namespace ad
 
     void TImageComparer_3D::Compare(TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform)
     {
+        CompareWithSet(m_alphaSet, pOriginal, pTransformed, transform);
+        if(m_asShown && pTransformed->data->alpha)
+        {
+            for(size_t i = 0; i < m_sets.size(); ++i)
+                CompareWithSet(m_sets[i], pOriginal, pTransformed, transform);
+            return;
+        }
         TIndex i, lo, hi;
         GetIndex(pTransformed, i);
 
@@ -565,6 +894,56 @@ namespace ad
         return true;
     }
 
+    // SSIM's global form, as IsDuplPair, over the pixels compared.
+    bool TImageComparer_SSIM::MaskedDifference(TImageDataPtr pFirst, const TOpaquePart *pFirstPart,
+        TImageDataPtr pSecond, const TOpaquePart *pSecondPart, double *pDifference)
+    {
+        if((pFirstPart && !pFirstPart->mainVaried) || (pSecondPart && !pSecondPart->mainVaried))
+            return false;
+        const TUInt8 *a = pFirstPart ? pFirstPart->main.data() : pFirst->data->main;
+        const TUInt8 *b = pSecondPart ? pSecondPart->main.data() : pSecond->data->main;
+        const TUInt8 *aOpaque = pFirstPart ? pFirstPart->mainOpaque.data() : NULL;
+        const TUInt8 *bOpaque = pSecondPart ? pSecondPart->mainOpaque.data() : NULL;
+        const size_t size = pFirst->data->size;
+        uint64_t sum1 = 0, sum2 = 0, square1 = 0, square2 = 0, correlation = 0;
+        size_t compared = 0;
+        for(size_t p = 0; p < size; ++p)
+        {
+            if((aOpaque && !aOpaque[p]) || (bOpaque && !bOpaque[p]))
+                continue;
+            sum1 += a[p];
+            sum2 += b[p];
+            square1 += a[p]*a[p];
+            square2 += b[p]*b[p];
+            correlation += a[p]*b[p];
+            ++compared;
+        }
+        if(!MaskedArea(compared, size, pFirstPart ? pFirstPart->mainCount : 0, pSecondPart ? pSecondPart->mainCount : 0))
+            return false;
+        double difference;
+        // As in IsDuplPair: equal pixels give exactly 0.
+        if(correlation == square1 && correlation == square2)
+            difference = 0;
+        else
+        {
+            const double n = double(compared);
+            const double average1 = double(sum1)/n, average2 = double(sum2)/n;
+            const double variance1 = double(square1)/n - average1*average1;
+            const double variance2 = double(square2)/n - average2*average2;
+            const double covariance = double(correlation)/n - average1*average2;
+            const double ssim = (2*average1*average2 + C1)*(2*covariance + C2)/
+                ((average1*average1 + average2*average2 + C1)*(variance1 + variance2 + C2));
+            difference = std::max(0.0, 100*(1 - ssim));
+        }
+        difference = PixelDifference(pFirst, pSecond, difference);
+        if(difference > m_pOptions->compare.thresholdDifference)
+            return false;
+        *pDifference = difference;
+        if(pFirst->crc32c != pSecond->crc32c)
+            *pDifference += ADDITIONAL_DIFFERENCE_FOR_DIFFERENT_CRC32;
+        return true;
+    }
+
 	// Comparison of two images by the SSIM method with shift compensation on the overlap area.
     bool TImageComparer_SSIM::ShiftedDifference(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference)
     {
@@ -648,6 +1027,66 @@ namespace ad
     bool TImageComparer_LocalColor::ShiftedDifference(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference)
     {
         return false;
+    }
+
+    bool TImageComparer_LocalColor::MaskedDifference(TImageDataPtr pFirst, const TOpaquePart *pFirstPart,
+        TImageDataPtr pSecond, const TOpaquePart *pSecondPart, double *pDifference)
+    {
+        if((pFirstPart && !pFirstPart->colorVaried) || (pSecondPart && !pSecondPart->colorVaried))
+            return false;
+        const TUInt8 *a = pFirstPart ? pFirstPart->color.data() : pFirst->data->color;
+        const TUInt8 *b = pSecondPart ? pSecondPart->color.data() : pSecond->data->color;
+        const TUInt8 *aOpaque = pFirstPart ? pFirstPart->colorOpaque.data() : NULL;
+        const TUInt8 *bOpaque = pSecondPart ? pSecondPart->colorOpaque.data() : NULL;
+        const size_t blocks = COLOR_IMAGE_SIZE/COLOR_BLOCK_SIZE;
+        const size_t blockPixels = COLOR_BLOCK_SIZE*COLOR_BLOCK_SIZE;
+        uint64_t worst = 0;
+        size_t compared = 0, measured = 0;
+        for(size_t by = m_frameBlocks; by < blocks - m_frameBlocks; ++by)
+        {
+            for(size_t bx = m_frameBlocks; bx < blocks - m_frameBlocks; ++bx)
+            {
+                uint64_t sum = 0;
+                size_t opaque = 0;
+                for(size_t y = by*COLOR_BLOCK_SIZE; y < (by + 1)*COLOR_BLOCK_SIZE; ++y)
+                {
+                    for(size_t x = bx*COLOR_BLOCK_SIZE; x < (bx + 1)*COLOR_BLOCK_SIZE; ++x)
+                    {
+                        const size_t p = y*COLOR_IMAGE_SIZE + x;
+                        if((aOpaque && !aOpaque[p]) || (bOpaque && !bOpaque[p]))
+                            continue;
+                        ++opaque;
+                        for(size_t c = 0; c < 3; ++c)
+                        {
+                            const int d = int(a[3*p + c]) - int(b[3*p + c]);
+                            sum += uint64_t(d*d);
+                        }
+                    }
+                }
+                compared += opaque;
+                if(opaque*2 < blockPixels)
+                    continue;
+                // Scaled to a whole block, for the block threshold.
+                const uint64_t scaled = sum*blockPixels/opaque;
+                if(scaled > m_blockThreshold)
+                    return false;
+                worst = std::max(worst, scaled);
+                ++measured;
+            }
+        }
+        // A drawing of thin lines leaves every block mostly transparent:
+        // nothing measured, nothing to judge it on.
+        if(measured == 0 || !MaskedArea(compared, COLOR_IMAGE_SIZE*COLOR_IMAGE_SIZE,
+            pFirstPart ? pFirstPart->colorCount : 0, pSecondPart ? pSecondPart->colorCount : 0))
+            return false;
+        const double rms = sqrt(double(worst)/(blockPixels*3));
+        double difference = PixelDifference(pFirst, pSecond, rms*DENOMINATOR/PIXEL_MAX_DIFFERENCE);
+        if(difference > m_pOptions->compare.thresholdDifference)
+            return false;
+        *pDifference = difference;
+        if(pFirst->crc32c != pSecond->crc32c)
+            *pDifference += ADDITIONAL_DIFFERENCE_FOR_DIFFERENT_CRC32;
+        return true;
     }
 
     bool TImageComparer_LocalColor::IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference)

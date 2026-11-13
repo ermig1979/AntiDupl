@@ -124,6 +124,8 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_UndoQueueSizeLabeledIntegerEdit_Text = "Queue size of undo";
             s.CoreOptionsForm_ResultCountMaxLabeledIntegerEdit_Text = "Maximal count of results";
             s.CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text = "Width of ignored frame of image";
+            s.CoreOptionsForm_TransparentAsShownCheckBox_Text = "Improve transparent image comparison";
+            s.CoreOptionsForm_IgnoreTransparentCheckBox_Text = "Ignore areas with transparency in both images";
             s.CoreOptionsForm_UseLibJpegTurboCheckBox_Text = "Use libjpeg-turbo";
 
             s.CoreOptionsForm_HighlightTabPage_Text = "Highlight";

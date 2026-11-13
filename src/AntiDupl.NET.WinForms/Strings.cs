@@ -127,6 +127,8 @@ namespace AntiDupl.NET.WinForms
         public string CoreOptionsForm_UndoQueueSizeLabeledIntegerEdit_Text;
         public string CoreOptionsForm_ResultCountMaxLabeledIntegerEdit_Text;
         public string CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text;
+        public string CoreOptionsForm_TransparentAsShownCheckBox_Text;
+        public string CoreOptionsForm_IgnoreTransparentCheckBox_Text;
         public string CoreOptionsForm_UseLibJpegTurboCheckBox_Text;
 
         public string CoreOptionsForm_HighlightTabPage_Text;

@@ -101,26 +101,27 @@ namespace ad
 			m_owner = true;
 		}
 		else
-		{
-			memcpy(data->fast, imageData.data->fast, data->full);
-			memcpy(data->color, imageData.data->color, COLOR_DATA_SIZE);
-			data->average = imageData.data->average;
-			data->varianceSquare = imageData.data->varianceSquare;
-			data->sum = imageData.data->sum;
-			data->sumSquare = imageData.data->sumSquare;
-			data->pixelHash = imageData.data->pixelHash;
-		}
+			data->CopyFrom(*imageData.data);
 		return *this;
 	}
 
 	bool TImageData::PixelDataFillingNeed(const TOptions * pOptions) const
 	{
-		return (pOptions->compare.checkOnEquality == TRUE || 
-			pOptions->defect.checkOnDefect == TRUE || 
-			pOptions->defect.checkOnBlockiness == TRUE  || 
-			pOptions->defect.checkOnBlurring == TRUE) && 
-			(!data->filled || blockiness < 0 || blurring < 0) &&
+		return (pOptions->compare.checkOnEquality == TRUE ||
+			pOptions->defect.checkOnDefect == TRUE ||
+			pOptions->defect.checkOnBlockiness == TRUE  ||
+			pOptions->defect.checkOnBlurring == TRUE) &&
+			(!data->filled || blockiness < 0 || blurring < 0 || !ShownAsOptionSays(pOptions)) &&
 			type != AD_IMAGE_NONE;
+	}
+
+	// Whether the thumbnails were made with transparency shown or not, as
+	// the option now asks. A JPEG has no transparency, so its thumbnails are
+	// the same either way: only the flag is out of date.
+	bool TImageData::ShownAsOptionSays(const TOptions * pOptions) const
+	{
+		return data->asShown == (pOptions->compare.transparentAsShown == TRUE) ||
+			(type == AD_IMAGE_JPEG && !data->alpha);
 	}
 
 	bool TImageData::DefectCheckingNeed(const TOptions * pOptions) const
