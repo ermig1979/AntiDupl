@@ -314,7 +314,8 @@ namespace AntiDupl.NET.WinForms
                 List<ComparableBitmap[]> bitmap1 = new List<ComparableBitmap[]>();
                 List<ComparableBitmap[]> bitmap2 = new List<ComparableBitmap[]>();
                 GetFragments(m_firstImagePreviewPanel.GetBitmap(), m_secondImagePreviewPanel.GetBitmap(),
-                    m_options.resultsOptions, m_coreOptions.compareOptions.transparentAsShown, bitmap1, bitmap2);
+                    m_options.resultsOptions, m_coreOptions.compareOptions.transparentAsShown,
+                    m_coreOptions.compareOptions.ignoreTransparent, bitmap1, bitmap2);
                 _thread = new Thread(
                      unused => CalculateRectanglesOfDifferences(bitmap1, bitmap2));
                 _thread.Name = "Calculate rectangles of differences";
@@ -330,16 +331,21 @@ namespace AntiDupl.NET.WinForms
         /// <summary>
         /// The fragments of a pair's pictures to compare: one set each, or
         /// with the transparency option one set per background the pictures
-        /// are laid over (TransparentPair.Shown), like the search. None when
-        /// a picture is missing or the normalized size too small.
+        /// are laid over (TransparentPair.Shown), like the search. With
+        /// transparent areas ignored as well, a pair the search compares that
+        /// way is compared only where its images with transparency are opaque
+        /// (TransparentPair.Masked). None when a picture is missing or the
+        /// normalized size too small.
         /// </summary>
         public static void GetFragments(Bitmap first, Bitmap second, ResultsOptions options, bool transparentAsShown,
-            List<ComparableBitmap[]> firstFragments, List<ComparableBitmap[]> secondFragments)
+            bool ignoreTransparent, List<ComparableBitmap[]> firstFragments, List<ComparableBitmap[]> secondFragments)
         {
             if (first == null || second == null)
                 return;
             Func<Bitmap, Bitmap> normalize = bitmap => ImagePreviewPanel.Normalize(bitmap, options);
-            List<Bitmap[]> pairs = transparentAsShown ? TransparentPair.Shown(first, second, normalize) :
+            Bitmap[] masked = transparentAsShown && ignoreTransparent ? TransparentPair.Masked(first, second, normalize) : null;
+            List<Bitmap[]> pairs = masked != null ? new List<Bitmap[]> { masked } :
+                transparentAsShown ? TransparentPair.Shown(first, second, normalize) :
                 new List<Bitmap[]> { new Bitmap[] { normalize(first), normalize(second) } };
             foreach (Bitmap[] pair in pairs)
             {

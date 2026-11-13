@@ -340,6 +340,15 @@ The differences highlighted in the preview of a pair are found the same way.
 By default, this option is enabled.
  </p></li>
  <li><p align="justify">
+<b>Ignore areas with transparency in both images</b> - with this option on, a pair with transparency is also compared only where the image with transparency is opaque, leaving out the same areas of the other image.
+This finds a copy laid over a different background, a texture or another picture.
+When both images have transparency, they are compared where both are opaque, and that area must make at least half of the smaller opaque part.
+A picture whose opaque part is nearly one colour is not compared this way, since it would match any image of that colour in the same place.
+A small drawing can still match a picture that contains it, for example the same character on a different scene.
+The option needs <b>Improve transparent image comparison</b>.
+By default, this option is disabled.
+ </p></li>
+ <li><p align="justify">
 <b>Use libjpeg-turbo</b> - a flag to use libjpeg-turbo library to improve performance of loading of JPEG images.
 Otherwise, they will be deleted permanently.
 By default, this option is enabled.

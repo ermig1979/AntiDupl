@@ -87,6 +87,31 @@ namespace ad
         bool m_asShown;
         Set m_alphaSet;
 
+        // Transparent areas ignored (adCompareOptions::ignoreTransparent,
+        // with transparency shown): a pair with transparency is also
+        // compared only where each image with it is opaque, and is a
+        // duplicate if either comparison says so, with the smaller
+        // difference. An image's opaque part: per thumbnail pixel whether it
+        // is opaque, and its colour there with the background taken out
+        // (main grey, and B, G, R of the colour thumbnail); how many are
+        // opaque; whether they vary enough to be compared alone.
+        struct TOpaquePart
+        {
+            std::vector<TUInt8> main, mainOpaque, color, colorOpaque;
+            size_t mainCount, colorCount;
+            bool mainVaried, colorVaried;
+        };
+        bool m_ignoreTransparent;
+        // Whether the pixels compared, compared of pixels in all, satisfy
+        // the MASKED_* limits; first and second are the opaque counts of the
+        // images with transparency, 0 for an opaque one.
+        static bool MaskedArea(size_t compared, size_t pixels, size_t first, size_t second);
+        // The difference of a pair over the pixels where each image with
+        // transparency is opaque; a NULL part is an opaque image, all of it
+        // compared. Mean square on the main thumbnails here.
+        virtual bool MaskedDifference(TImageDataPtr pFirst, const TOpaquePart *pFirstPart,
+            TImageDataPtr pSecond, const TOpaquePart *pSecondPart, double *pDifference);
+
     private:
         //Comparison of an image pair without shift and (if enabled) with shift compensation; the smaller difference is kept.
         bool IsDuplPairAny(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference);
@@ -96,11 +121,16 @@ namespace ad
         // transparency was filled with one colour, judged over that colour,
         // and otherwise over white and over black too.
         bool IsDuplPairShown(TImageDataPtr pFirst, TImageDataPtr pFirstBlack, TImageDataPtr pSecond, double *pDifference);
+        // The part of IsDuplPairShown over backgrounds, for a pair where at
+        // least one image has transparency.
+        bool IsDuplPairOver(TImageDataPtr pFirst, TImageDataPtr pFirstBlack, bool firstAlpha,
+            TImageDataPtr pSecond, TImageDataPtr pSecondBlack, bool secondAlpha, double *pDifference);
         bool OverBoth(TImageDataPtr pFirst, TImageDataPtr pFirstBlack, TImageDataPtr pSecond, TImageDataPtr pSecondBlack, double *pDifference);
         bool UniformFill(TImageDataPtr pAlpha, TImageDataPtr pAlphaBlack, TImageDataPtr pOpaque, TUInt8 *bgr);
         void MakeBlack(TImageData *pBlack, TImageDataPtr pImageData);
         void MakeFilled(TImageData *pFilled, TImageDataPtr pImageData, TImageDataPtr pBlack, const TUInt8 *bgr);
         void CopyInfo(TImageData *pTo, TImageDataPtr pFrom);
+        void MakeOpaquePart(TOpaquePart &part, TImageDataPtr pImageData, TImageDataPtr pBlack);
 
         TResultStorage *m_pResult;
         TImageData *m_pTransformedImageData;
@@ -111,6 +141,10 @@ namespace ad
         std::map<TImageDataPtr, TImageData*> m_blackTwins;
         TImageData *m_pIncomingBlack;
         TImageData *m_pFilled;
+        // The opaque part of each image with transparency in the sets, and
+        // of the image being compared (transparent areas ignored).
+        std::map<TImageDataPtr, TOpaquePart*> m_opaqueParts;
+        TOpaquePart m_incomingPart;
 
         int m_mainThreshold;
         int m_maxDifference;
@@ -178,6 +212,8 @@ namespace ad
         virtual void Compare(TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform);
 		virtual bool IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference);
         virtual bool ShiftedDifference(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference);
+        virtual bool MaskedDifference(TImageDataPtr pFirst, const TOpaquePart *pFirstPart,
+            TImageDataPtr pSecond, const TOpaquePart *pSecondPart, double *pDifference);
 
     private:
 		double C1;
@@ -201,6 +237,10 @@ namespace ad
         // None here: the base's shift search measures the grey reduced images
         // in mean square's percents, which aren't this comparer's differences.
         virtual bool ShiftedDifference(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference);
+        // On the colour thumbnails: blocks less than half opaque are left
+        // out, the others measured over their opaque pixels.
+        virtual bool MaskedDifference(TImageDataPtr pFirst, const TOpaquePart *pFirstPart,
+            TImageDataPtr pSecond, const TOpaquePart *pSecondPart, double *pDifference);
 
     private:
         size_t m_frameBlocks; // blocks left out along each edge (Ignore frame width)

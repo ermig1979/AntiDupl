@@ -127,6 +127,18 @@ namespace ad
     const double UNIFORM_FILL_DEVIATION_MAX = 12;
     const double UNIFORM_FILL_CONTRAST_MIN = 16;
     const double UNIFORM_FILL_FAST_DIFFERENCE_MAX = 48;
+    // Transparent areas ignored (TImageComparer::MaskedDifference): a pair
+    // is compared only where each image with transparency is opaque (above
+    // 100 minus UNIFORM_FILL_COVERAGE_PERCENT coverage). Those pixels must
+    // make MASKED_AREA_PERCENT of the thumbnail and, when both images have
+    // transparency, MASKED_OVERLAP_PERCENT of the smaller opaque part, or two
+    // drawings in different places would compare on a few pixels. The
+    // opaque part of each image with transparency must vary by
+    // MASKED_DEVIATION_MIN grey levels (RMS), or a drawing in one colour
+    // would match any picture showing that colour where the drawing is.
+    const size_t MASKED_AREA_PERCENT = 2;
+    const size_t MASKED_OVERLAP_PERCENT = 50;
+    const double MASKED_DEVIATION_MIN = 16;
     const TUInt32 COLLECT_THREAD_QUEUE_SIZE_MAX = 16;
     const TUInt32 DEAFAULT_THREAD_SLEEP_INTERVAL = 10;
     const TUInt32 LARGE_IMAGE_COLLECTION_SIZE_MIN = 100000;

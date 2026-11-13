@@ -17,6 +17,13 @@
             existed.
             </summary>
         </member>
+        <member name="F:AntiDupl.NET.Core.CoreCompareOptions.ignoreTransparent">
+            <summary>
+            With transparentAsShown, pairs with transparency also compared
+            only where the images with transparency are opaque. Off in a
+            profile saved before the option existed.
+            </summary>
+        </member>
         <member name="M:AntiDupl.NET.Core.CoreCompareOptions.ThresholdSteps(System.Int32)">
             <summary>
             The thresholds the option lists offer, up to max: quarters of a

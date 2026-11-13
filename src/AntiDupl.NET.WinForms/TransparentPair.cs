@@ -50,6 +50,11 @@ namespace AntiDupl.NET.WinForms
         private const double DEVIATION_MAX = 12;
         private const double CONTRAST_MIN = 16;
         private const double FAST_DIFFERENCE_MAX = 48;
+        // The core's limits for comparing only where an image with
+        // transparency is opaque (MASKED_* in adConfig.h).
+        private const int MASKED_AREA_PERCENT = 2;
+        private const int MASKED_OVERLAP_PERCENT = 50;
+        private const double MASKED_DEVIATION_MIN = 16;
         // The sizes of the core's thumbnails the decision is made on.
         private const int COLOR_SIZE = 64;
         private const int FAST_SIZE = 4;
@@ -90,6 +95,95 @@ namespace AntiDupl.NET.WinForms
             foreach (Bitmap picture in shown)
                 pairs.Add(firstClear ? new Bitmap[] { picture, shownOpaque } : new Bitmap[] { shownOpaque, picture });
             return pairs;
+        }
+
+        /// <summary>
+        /// With transparent areas ignored (CoreCompareOptions.ignoreTransparent):
+        /// the pair as the core's TImageComparer::MaskedDifference compares
+        /// it, through output, which must give both pictures one size. A
+        /// pixel where an image with transparency isn't opaque is left out
+        /// by making it the same in both; where it is, the background that
+        /// shows through is taken out. Null when the pair isn't compared
+        /// this way: no transparency, too small an opaque area or overlap,
+        /// or an opaque part of nearly one colour (the MASKED_* limits).
+        /// </summary>
+        public static Bitmap[] Masked(Bitmap first, Bitmap second, Func<Bitmap, Bitmap> output)
+        {
+            Kind a = KindOf(first), b = KindOf(second);
+            if (a != Kind.Transparent && b != Kind.Transparent)
+                return null;
+            OpaquePart partA = OpaquePart.Of(first, a, output), partB = OpaquePart.Of(second, b, output);
+            if (partA == null || partB == null || partA.Width != partB.Width || partA.Height != partB.Height)
+                return null;
+            if ((partA.Transparent && !partA.Varied) || (partB.Transparent && !partB.Varied))
+                return null;
+            int pixels = partA.Width * partA.Height, compared = 0;
+            for (int p = 0; p < pixels; ++p)
+                if (partA.Opaque[p] && partB.Opaque[p])
+                    compared++;
+            if (compared == 0 || compared * 100 < pixels * MASKED_AREA_PERCENT)
+                return null;
+            if (partA.Transparent && partB.Transparent &&
+                compared * 100 < Math.Min(partA.Count, partB.Count) * MASKED_OVERLAP_PERCENT)
+                return null;
+            byte[] left = partA.Values, right = (byte[])partB.Values.Clone();
+            for (int p = 0; p < pixels; ++p)
+                if (!(partA.Opaque[p] && partB.Opaque[p]))
+                    for (int c = 0; c < 3; ++c)
+                        right[4 * p + c] = left[4 * p + c];
+            return new Bitmap[] { ToBitmap(left, partA.Width, partA.Height), ToBitmap(right, partA.Width, partA.Height) };
+        }
+
+        // A picture's opaque part, as MakeOpaquePart in the core: per pixel
+        // whether it is opaque and its colour there with the background
+        // taken out; an opaque picture is opaque everywhere.
+        private class OpaquePart
+        {
+            public int Width, Height, Count;
+            public byte[] Values; // B, G, R, 255 per pixel
+            public bool[] Opaque;
+            public bool Transparent, Varied;
+
+            public static OpaquePart Of(Bitmap bitmap, Kind kind, Func<Bitmap, Bitmap> output)
+            {
+                OpaquePart part = new OpaquePart();
+                part.Transparent = kind == Kind.Transparent;
+                Bitmap shown = output(part.Transparent ? Over(bitmap, Color.White) : Opaque(bitmap, kind));
+                Bitmap black = part.Transparent ? output(Over(bitmap, Color.Black)) : shown;
+                if (shown == null || black == null)
+                    return null;
+                part.Width = shown.Width;
+                part.Height = shown.Height;
+                byte[] w = Bytes(shown), b = Bytes(black);
+                int pixels = part.Width * part.Height;
+                part.Values = new byte[pixels * 4];
+                part.Opaque = new bool[pixels];
+                double sum = 0, square = 0;
+                for (int p = 0; p < pixels; ++p)
+                {
+                    int i = 4 * p, uncovered = 0;
+                    for (int c = 0; c < 3; ++c)
+                        uncovered += w[i + c] - b[i + c];
+                    part.Values[i + 3] = 255;
+                    if (uncovered * 100 > 3 * 255 * COVERAGE_PERCENT)
+                    {
+                        for (int c = 0; c < 3; ++c)
+                            part.Values[i + c] = w[i + c];
+                        continue;
+                    }
+                    int coverage = 3 * 255 - Math.Max(0, uncovered);
+                    for (int c = 0; c < 3; ++c)
+                        part.Values[i + c] = (byte)Math.Min(255, (b[i + c] * 3 * 255 + coverage / 2) / coverage);
+                    part.Opaque[p] = true;
+                    part.Count++;
+                    double gray = (29 * part.Values[i] + 150 * part.Values[i + 1] + 77 * part.Values[i + 2]) / 256.0;
+                    sum += gray;
+                    square += gray * gray;
+                }
+                double mean = part.Count > 0 ? sum / part.Count : 0;
+                part.Varied = part.Count > 0 && square / part.Count - mean * mean >= MASKED_DEVIATION_MIN * MASKED_DEVIATION_MIN;
+                return part;
+            }
         }
 
         private enum Kind
@@ -181,13 +275,19 @@ namespace AntiDupl.NET.WinForms
                     shown[i + c] = (byte)(b[i + c] + ((w[i + c] - b[i + c]) * bgr[c] + 127) / 255);
                 shown[i + 3] = w[i + 3];
             }
-            Bitmap bitmap = new Bitmap(overWhite.Width, overWhite.Height, PixelFormat.Format32bppArgb);
-            Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+            return ToBitmap(shown, overWhite.Width, overWhite.Height);
+        }
+
+        // A bitmap of B, G, R, A bytes, top row first, without padding.
+        private static Bitmap ToBitmap(byte[] bgra, int width, int height)
+        {
+            Bitmap bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+            Rectangle rect = new Rectangle(0, 0, width, height);
             BitmapData data = bitmap.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
             try
             {
-                for (int y = 0; y < rect.Height; ++y)
-                    Marshal.Copy(shown, y * rect.Width * 4, data.Scan0 + y * data.Stride, rect.Width * 4);
+                for (int y = 0; y < height; ++y)
+                    Marshal.Copy(bgra, y * width * 4, data.Scan0 + y * data.Stride, width * 4);
             }
             finally
             {

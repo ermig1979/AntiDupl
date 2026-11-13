@@ -273,6 +273,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
                     <CheckBox Grid.Column="0" Grid.Row="0"
@@ -366,6 +367,11 @@
                               ToolTip="{DynamicResource configurationWindow_tooltip_transparentAsShown}"
                               IsChecked="{Binding Option.compareOptions.TransparentAsShown}" />
                     <CheckBox Grid.Column="0" Grid.Row="10"
+                              Content="{DynamicResource configurationWindow_ignoreTransparent}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_ignoreTransparent}"
+                              IsEnabled="{Binding Option.compareOptions.TransparentAsShown}"
+                              IsChecked="{Binding Option.compareOptions.IgnoreTransparent}" />
+                    <CheckBox Grid.Column="0" Grid.Row="11"
                               Content="{DynamicResource configurationWindow_useLibJpegTurbo}"
                               ToolTip="{DynamicResource configurationWindow_tooltip_useLibJpegTurbo}"
                               IsChecked="{Binding Option.advancedOptions.UseLibJpegTurbo, Mode=TwoWay}" />

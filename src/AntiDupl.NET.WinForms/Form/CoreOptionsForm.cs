@@ -134,6 +134,7 @@ namespace AntiDupl.NET.WinForms
         private CheckBox m_compareInsideOneSearchPathCheckBox;
         private CheckBox m_skipHardlinksCheckBox;
         private CheckBox m_transparentAsShownCheckBox;
+        private CheckBox m_ignoreTransparentCheckBox;
 
         private TabPage m_defectTabPage;
         private CheckBox m_checkOnDefectCheckBox;
@@ -446,7 +447,7 @@ namespace AntiDupl.NET.WinForms
             m_advancedTabPage = new TabPage();
             m_mainTabControl.Controls.Add(m_advancedTabPage);
 
-            TableLayoutPanel advancedTableLayoutPanel = InitFactory.Layout.Create(1, 12, 5);
+            TableLayoutPanel advancedTableLayoutPanel = InitFactory.Layout.Create(1, 13, 5);
             advancedTableLayoutPanel.AutoScroll = true;
             m_advancedTabPage.Controls.Add(advancedTableLayoutPanel);
 
@@ -499,8 +500,11 @@ namespace AntiDupl.NET.WinForms
             m_transparentAsShownCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
             advancedTableLayoutPanel.Controls.Add(m_transparentAsShownCheckBox, 0, 10);
 
+            m_ignoreTransparentCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
+            advancedTableLayoutPanel.Controls.Add(m_ignoreTransparentCheckBox, 0, 11);
+
             m_useLibJpegTurboCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            advancedTableLayoutPanel.Controls.Add(m_useLibJpegTurboCheckBox, 0, 11);
+            advancedTableLayoutPanel.Controls.Add(m_useLibJpegTurboCheckBox, 0, 12);
         }
 
         private void InitilizeHighlightTabPage()
@@ -672,6 +676,7 @@ namespace AntiDupl.NET.WinForms
             m_compareInsideOneSearchPathCheckBox.Checked = m_newCoreOptions.compareOptions.compareInsideOneSearchPath;
             m_skipHardlinksCheckBox.Checked = m_newCoreOptions.compareOptions.skipHardlinks;
             m_transparentAsShownCheckBox.Checked = m_newCoreOptions.compareOptions.transparentAsShown;
+            m_ignoreTransparentCheckBox.Checked = m_newCoreOptions.compareOptions.ignoreTransparent;
 
             m_checkOnDefectCheckBox.Checked = m_newCoreOptions.defectOptions.checkOnDefect;
             m_checkOnBlockinessCheckBox.Checked = m_newCoreOptions.defectOptions.checkOnBlockiness;
@@ -736,6 +741,7 @@ namespace AntiDupl.NET.WinForms
             m_newCoreOptions.compareOptions.compareInsideOneSearchPath = m_compareInsideOneSearchPathCheckBox.Checked;
             m_newCoreOptions.compareOptions.skipHardlinks = m_skipHardlinksCheckBox.Checked;
             m_newCoreOptions.compareOptions.transparentAsShown = m_transparentAsShownCheckBox.Checked;
+            m_newCoreOptions.compareOptions.ignoreTransparent = m_ignoreTransparentCheckBox.Checked;
 
             m_newCoreOptions.defectOptions.checkOnDefect = m_checkOnDefectCheckBox.Checked;
             m_newCoreOptions.defectOptions.checkOnBlockiness = m_checkOnBlockinessCheckBox.Checked;
@@ -805,6 +811,7 @@ namespace AntiDupl.NET.WinForms
             m_compareInsideOneSearchPathCheckBox.Text = s.CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text;
             m_skipHardlinksCheckBox.Text = s.CoreOptionsForm_SkipHardlinksCheckBox_Text;
             m_transparentAsShownCheckBox.Text = s.CoreOptionsForm_TransparentAsShownCheckBox_Text;
+            m_ignoreTransparentCheckBox.Text = s.CoreOptionsForm_IgnoreTransparentCheckBox_Text;
 
             m_defectTabPage.Text = s.CoreOptionsForm_DefectTabPage_Text;
             m_checkOnDefectCheckBox.Text = s.CoreOptionsForm_CheckOnDefectCheckBox_Text;
@@ -923,6 +930,10 @@ namespace AntiDupl.NET.WinForms
             m_compareInsideOneSearchPathCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
             m_skipHardlinksCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
             m_transparentAsShownCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
+            // It works on the thumbnails over white and black that only the
+            // first option makes.
+            m_ignoreTransparentCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality &&
+              m_newCoreOptions.compareOptions.transparentAsShown;
 
             m_ratioResolutionLabeledComboBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality &&
               !m_newCoreOptions.compareOptions.sizeControl && m_newCoreOptions.compareOptions.ratioControl;

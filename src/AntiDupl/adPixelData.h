@@ -56,7 +56,7 @@ namespace ad
 		// an image with transparent pixels then has alpha set, its fast, main
 		// and color show it laid over white, and fastBlack, mainBlack and
 		// colorBlack the same over black. Any other background is a blend of
-		// the two (TImageComparer::MakeShown). Without alpha the black
+		// the two (TImageComparer::MakeFilled). Without alpha the black
 		// buffers are NULL.
 		bool asShown;
 		bool alpha;
