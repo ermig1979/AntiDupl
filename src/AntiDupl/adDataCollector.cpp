@@ -131,7 +131,7 @@ namespace ad
     // different sizes differ. Byte channels, the same format in and out;
     // an input smaller than the output in either direction is enlarged
     // bilinearly.
-    static void AreaResize(const TView & src, TView & dst)
+    void AreaResize(const TView & src, TView & dst)
     {
         if (src.width < dst.width || src.height < dst.height)
         {

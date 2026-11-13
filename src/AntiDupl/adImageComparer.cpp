@@ -25,6 +25,7 @@
 #include <climits>
 #include <cstdlib>
 
+#include "adButteraugli.h"
 #include "adEngine.h"
 #include "adImageData.h"
 #include "adOptions.h"
@@ -621,8 +622,20 @@ namespace ad
     TImageComparer_LocalColor::TImageComparer_LocalColor(TEngine *pEngine)
         :TImageComparer(pEngine)
     {
+        Init(m_pOptions->compare.thresholdDifference);
+    }
+
+    TImageComparer_LocalColor::TImageComparer_LocalColor(TEngine *pEngine, double threshold)
+        :TImageComparer(pEngine)
+    {
+        Init(threshold);
+    }
+
+    void TImageComparer_LocalColor::Init(double thresholdPercent)
+    {
         m_sets.resize(1);
-        const double threshold = m_pOptions->compare.thresholdDifference*double(PIXEL_MAX_DIFFERENCE)/DENOMINATOR;
+        m_threshold = thresholdPercent;
+        const double threshold = thresholdPercent*double(PIXEL_MAX_DIFFERENCE)/DENOMINATOR;
         m_blockThreshold = uint64_t(floor(COLOR_BLOCK_SIZE*COLOR_BLOCK_SIZE*3*threshold*threshold));
         // A fast-data cell is the mean grey of a sixteenth of the image, a
         // whole number of blocks. Grey weighs B, G and R with weights whose
@@ -652,31 +665,46 @@ namespace ad
 
     bool TImageComparer_LocalColor::IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference)
     {
+        const double localColor = LocalColorDifference(pFirst, pSecond);
+        if(localColor < 0)
+            return false;
+        double difference = PixelDifference(pFirst, pSecond, localColor);
+        if(difference > m_threshold)
+            return false;
+
+        *pDifference = difference;
+        if(pFirst->crc32c != pSecond->crc32c)
+            *pDifference += ADDITIONAL_DIFFERENCE_FOR_DIFFERENT_CRC32;
+        return true;
+    }
+
+    double TImageComparer_LocalColor::LocalColorDifference(TImageDataPtr pFirst, TImageDataPtr pSecond) const
+    {
         if(m_pOptions->compare.typeControl == TRUE &&
             pFirst->type != pSecond->type)
-            return false;
+            return -1;
 
         if(m_pOptions->compare.sizeControl == TRUE &&
             (pFirst->height != pSecond->height ||
             pFirst->width != pSecond->width))
-            return false;
+            return -1;
 
         if(m_pOptions->compare.ratioControl == TRUE)
         {
             if(Simd::Square(pFirst->ratio - pSecond->ratio) > Simd::Square(RATIO_THRESHOLD_DIFFERENCE))
-                return false;
+                return -1;
         }
 
         if(m_pOptions->compare.compareInsideOneFolder == FALSE && TPath::EqualByDirectory(pFirst->path, pSecond->path))
-            return false;
+            return -1;
 
         if(m_pOptions->compare.compareInsideOneSearchPath == FALSE && pFirst->index == pSecond->index)
-            return false;
+            return -1;
 
         for(size_t i = 0; i < FAST_DATA_SIZE; ++i)
         {
             if(abs(int(pFirst->data->fast[i]) - int(pSecond->data->fast[i])) > m_fastCellThreshold)
-                return false;
+                return -1;
         }
 
         const size_t blocks = COLOR_IMAGE_SIZE/COLOR_BLOCK_SIZE;
@@ -699,13 +727,43 @@ namespace ad
                     }
                 }
                 if(sum > m_blockThreshold)
-                    return false;
+                    return -1;
                 worst = std::max(worst, sum);
             }
         }
 
         const double rms = sqrt(double(worst)/(COLOR_BLOCK_SIZE*COLOR_BLOCK_SIZE*3));
-        double difference = PixelDifference(pFirst, pSecond, rms*DENOMINATOR/PIXEL_MAX_DIFFERENCE);
+        return rms*DENOMINATOR/PIXEL_MAX_DIFFERENCE;
+    }
+    //-------------------------------------------------------------------------
+    TImageComparer_Butteraugli::TImageComparer_Butteraugli(TEngine *pEngine)
+        :TImageComparer_LocalColor(pEngine, BUTTERAUGLI_CANDIDATE_THRESHOLD),
+        m_pStore(pEngine->ButteraugliStore()),
+        m_pOriginal(NULL),
+        m_transform(AD_TRANSFORM_TURN_0)
+    {
+    }
+
+    void TImageComparer_Butteraugli::Compare(TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform)
+    {
+        m_pOriginal = pOriginal;
+        m_transform = transform;
+        TImageComparer_LocalColor::Compare(pOriginal, pTransformed, transform);
+    }
+
+    bool TImageComparer_Butteraugli::IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference)
+    {
+        if(LocalColorDifference(pFirst, pSecond) < 0)
+            return false;
+        // Pixel-identical images need no score; PixelDifference gives them 0.
+        double score = PixelDifference(pFirst, pSecond, 1);
+        if(score > 0)
+        {
+            score = m_pStore->Score(m_pOriginal, pSecond, m_transform);
+            if(score < 0)
+                return false;
+        }
+        double difference = PixelDifference(pFirst, pSecond, score);
         if(difference > m_pOptions->compare.thresholdDifference)
             return false;
 
@@ -738,6 +796,8 @@ namespace ad
 		}
 		else if (pEngine->Options()->compare.algorithmComparing == AD_COMPARING_LOCAL_COLOR)
 			return new TImageComparer_LocalColor(pEngine);
+		else if (pEngine->Options()->compare.algorithmComparing == AD_COMPARING_BUTTERAUGLI)
+			return new TImageComparer_Butteraugli(pEngine);
 		else
 			return new TImageComparer_SSIM(pEngine);
     }

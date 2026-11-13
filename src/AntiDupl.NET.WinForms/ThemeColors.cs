@@ -44,6 +44,19 @@ namespace AntiDupl.NET.WinForms
         static public Color Text { get { return Dark ? Color.FromArgb(0xF8, 0xF8, 0xF8) : SystemColors.ControlText; } }
 
         /// <summary>
+        /// A remark beside an option: half way between text and the text of
+        /// an option that isn't available, so that it reads as neither.
+        /// </summary>
+        static public Color Remark
+        {
+            get
+            {
+                Color text = Text, unavailable = SystemColors.GrayText;
+                return Color.FromArgb((text.R + unavailable.R) / 2, (text.G + unavailable.G) / 2, (text.B + unavailable.B) / 2);
+            }
+        }
+
+        /// <summary>
         /// Selected rows of the results table. The dark-mode highlight is a
         /// darker blue than the system one, for the light text on it (the
         /// system pairs it with black text).

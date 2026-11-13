@@ -97,7 +97,10 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_AlgorithmComparingLabeledComboBox_Text = "Алгоритм сравнения изображений";
             s.CoreOptionsForm_AlgorithmComparingLabeledComboBox_SquaredSum = "Среднеквадратичная разность";
             s.CoreOptionsForm_AlgorithmComparingLabeledComboBox_LocalColor = "Локальная разность цвета";
+            s.CoreOptionsForm_AlgorithmComparingLabeledComboBox_Butteraugli = "Перцептивная (Butteraugli)";
             s.CoreOptionsForm_ThresholdDifferenceLabeledComboBox_Text = "Пороговая разность";
+            s.CoreOptionsForm_ThresholdHintLabel_Text = "{0:0.##}: только копии; {1:0.##}: и варианты";
+            s.CoreOptionsForm_ButteraugliSizeLabeledComboBox_Text = "Размер для сравнения Butteraugli (длинная сторона)";
             s.CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text = "Минимальная ширина/высота картинок";
             s.CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text = "Максимальная ширина/высота картинок";
             s.CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text = "Сравнивать картинки из одного пути поиска друг с другом";

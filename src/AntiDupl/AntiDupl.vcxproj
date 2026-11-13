@@ -95,6 +95,7 @@
   <ItemGroup>
     <ClCompile Include="adAvif.cpp" />
     <ClCompile Include="adBlurringDetector.cpp" />
+    <ClCompile Include="adButteraugli.cpp" />
     <ClCompile Include="adDataCollector.cpp" />
     <ClCompile Include="adDds.cpp" />
     <ClCompile Include="adDump.cpp" />
@@ -144,6 +145,7 @@
   <ItemGroup>
     <ClInclude Include="adAvif.h" />
     <ClInclude Include="adBlurringDetector.h" />
+    <ClInclude Include="adButteraugli.h" />
     <ClInclude Include="adConfig.h" />
     <ClInclude Include="adDataCollector.h" />
     <ClInclude Include="adDds.h" />

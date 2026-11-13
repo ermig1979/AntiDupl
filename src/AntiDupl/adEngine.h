@@ -57,6 +57,7 @@ namespace ad
     class TSearcher;
     class TRecycleBin;
 	class TCriticalSection;
+    class TButteraugliStore;
 
     typedef TImageData *TImageDataPtr; 
     //-------------------------------------------------------------------------
@@ -82,6 +83,8 @@ namespace ad
         TResultStorage* Result() {return m_pResult;}
         TCriticalSection* CriticalSection() {return m_pCriticalSection;}
         TRecycleBin* RecycleBin() {return m_pRecycleBin;}
+        // During a search with the Butteraugli algorithm; NULL otherwise.
+        TButteraugliStore* ButteraugliStore() {return m_pButteraugliStore;}
 
     private:
         TString _userPath;
@@ -98,6 +101,7 @@ namespace ad
         TInit *m_pInit;
         TSearcher *m_pSearcher;
         TRecycleBin *m_pRecycleBin;
+        TButteraugliStore *m_pButteraugliStore;
     };
     //-------------------------------------------------------------------------
 }

@@ -35,6 +35,7 @@ namespace ad
     class TEngine;
     class TResultStorage;
 	class TImageDataStorage;
+    class TButteraugliStore;
     typedef TImageData* TImageDataPtr;
     //-------------------------------------------------------------------------
 	// Общий класс движка
@@ -167,6 +168,10 @@ namespace ad
         TImageComparer_LocalColor(TEngine *pEngine);
 
     protected:
+        // Pairs within the threshold given, in percent, instead of the
+        // options' one.
+        TImageComparer_LocalColor(TEngine *pEngine, double threshold);
+
         virtual void Add(TImageDataPtr pImageData);
         virtual void Compare(TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform);
         virtual bool IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference);
@@ -174,10 +179,40 @@ namespace ad
         // in mean square's percents, which aren't this comparer's differences.
         virtual bool ShiftedDifference(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference);
 
+        // The pair's local colour difference in percent, or a negative value
+        // when the options' filters leave it out or it is over the threshold.
+        double LocalColorDifference(TImageDataPtr pFirst, TImageDataPtr pSecond) const;
+
     private:
+        void Init(double threshold);
+
+        double m_threshold;
         size_t m_frameBlocks; // blocks left out along each edge (Ignore frame width)
         uint64_t m_blockThreshold; // a block's squared-difference sum above this fails the pair
         int m_fastCellThreshold; // so does a fast-data cell difference above this
+    };
+    //-------------------------------------------------------------------------
+    // Butteraugli (libjxl's), a model of how visible a difference
+    // is, which discounts what texture hides: re-saved and resized copies
+    // stay low while a local edit stands out. Too slow for every pair, it
+    // scores the pairs local colour finds within
+    // BUTTERAUGLI_CANDIDATE_THRESHOLD, at the working size
+    // (TButteraugliStore). The threshold and the difference are its score.
+    class TImageComparer_Butteraugli : public TImageComparer_LocalColor
+    {
+    public:
+        TImageComparer_Butteraugli(TEngine *pEngine);
+
+    protected:
+        virtual void Compare(TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform);
+        virtual bool IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference);
+
+    private:
+        TButteraugliStore *m_pStore;
+        // The image being compared and its turn: IsDuplPair gets the turned
+        // copy of the reduced images, the store the image itself.
+        TImageDataPtr m_pOriginal;
+        adTransformType m_transform;
     };
     //-------------------------------------------------------------------------
     TImageComparer* CreateImageComparer(TEngine *pEngine);

@@ -7,6 +7,15 @@
         <member name="F:AntiDupl.NET.Core.CoreCompareOptions.thresholdDifference">
             <summary>Percent; fractions allowed. Whole numbers in settings files saved before load as they are.</summary>
         </member>
+        <member name="F:AntiDupl.NET.Core.CoreCompareOptions.butteraugliSize">
+            <summary>
+            Longest side of the images Butteraugli compares. The initial value
+            is what a settings file saved without it loads with.
+            </summary>
+        </member>
+        <member name="F:AntiDupl.NET.Core.CoreCompareOptions.BUTTERAUGLI_SIZES">
+            <summary>The working sizes the option lists offer.</summary>
+        </member>
         <member name="F:AntiDupl.NET.Core.CoreCompareOptions.skipHardlinks">
             <summary>On in a profile saved before the option existed.</summary>
         </member>
@@ -86,6 +95,9 @@
         </member>
         <member name="F:AntiDupl.NET.Core.Enums.AlgorithmComparing.LocalColor">
             <summary>The worst 4 × 4 block of 64 × 64 colour thumbnails (core: AD_COMPARING_LOCAL_COLOR).</summary>
+        </member>
+        <member name="F:AntiDupl.NET.Core.Enums.AlgorithmComparing.Butteraugli">
+            <summary>Butteraugli's score on the pairs local colour finds within 10 % (core: AD_COMPARING_BUTTERAUGLI).</summary>
         </member>
     </members>
 </doc>

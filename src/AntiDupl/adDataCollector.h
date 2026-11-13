@@ -41,6 +41,8 @@ namespace ad
     // TDataCollector::GetBlockiness). Свободная функция — вызывается и из
     // TDataCollector, и из adLoadBitmapLetterboxMetricsW (deep-пайплайн).
     double ComputeBlockiness(const TView & gray);
+    // Area-averaged resize of byte channels, the same format in and out.
+    void AreaResize(const TView & src, TView & dst);
     //-------------------------------------------------------------------------
     class TDataCollector
     {
