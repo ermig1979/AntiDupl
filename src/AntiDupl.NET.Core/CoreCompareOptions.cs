@@ -48,6 +48,12 @@ namespace AntiDupl.NET.Core
         public AlgorithmComparing algorithmComparing;
         /// <summary>On in a profile saved before the option existed.</summary>
         public bool skipHardlinks = true;
+        /// <summary>
+        /// Images with transparent pixels compared as shown, not by the
+        /// colour stored under them. On in a profile saved before the option
+        /// existed.
+        /// </summary>
+        public bool transparentAsShown = true;
 
         public CoreCompareOptions()
         {
@@ -68,6 +74,7 @@ namespace AntiDupl.NET.Core
             compareInsideOneFolder = compareOptions.compareInsideOneFolder;
             compareInsideOneSearchPath = compareOptions.compareInsideOneSearchPath;
             skipHardlinks = compareOptions.skipHardlinks;
+            transparentAsShown = compareOptions.transparentAsShown;
         }
 
         public CoreCompareOptions(ref CoreDll.adCompareOptions compareOptions)
@@ -85,6 +92,7 @@ namespace AntiDupl.NET.Core
             compareInsideOneFolder = compareOptions.compareInsideOneFolder != CoreDll.FALSE;
             compareInsideOneSearchPath = compareOptions.compareInsideOneSearchPath != CoreDll.FALSE;
             skipHardlinks = compareOptions.skipHardlinks != CoreDll.FALSE;
+            transparentAsShown = compareOptions.transparentAsShown != CoreDll.FALSE;
         }
 
         public void ConvertTo(ref CoreDll.adCompareOptions compareOptions)
@@ -102,6 +110,7 @@ namespace AntiDupl.NET.Core
             compareOptions.compareInsideOneFolder = compareInsideOneFolder ? CoreDll.TRUE : CoreDll.FALSE;
             compareOptions.compareInsideOneSearchPath = compareInsideOneSearchPath ? CoreDll.TRUE : CoreDll.FALSE;
             compareOptions.skipHardlinks = skipHardlinks ? CoreDll.TRUE : CoreDll.FALSE;
+            compareOptions.transparentAsShown = transparentAsShown ? CoreDll.TRUE : CoreDll.FALSE;
         }
 
         public CoreCompareOptions Clone()
@@ -146,7 +155,8 @@ namespace AntiDupl.NET.Core
                 maximalImageSize == compareOptions.maximalImageSize &&
                 compareInsideOneFolder == compareOptions.compareInsideOneFolder &&
                 compareInsideOneSearchPath == compareOptions.compareInsideOneSearchPath &&
-                skipHardlinks == compareOptions.skipHardlinks;
+                skipHardlinks == compareOptions.skipHardlinks &&
+                transparentAsShown == compareOptions.transparentAsShown;
         }
 
         public bool CheckOnEquality
@@ -266,6 +276,16 @@ namespace AntiDupl.NET.Core
             {
                 skipHardlinks = value;
                 NotifyPropertyChanged("SkipHardlinks");
+            }
+        }
+
+        public bool TransparentAsShown
+        {
+            get { return transparentAsShown; }
+            set
+            {
+                transparentAsShown = value;
+                NotifyPropertyChanged("TransparentAsShown");
             }
         }
 

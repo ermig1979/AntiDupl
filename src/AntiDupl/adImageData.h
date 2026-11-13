@@ -50,6 +50,7 @@ namespace ad
 		TImageData& operator = (const TImageData& imageData);
 
 		bool PixelDataFillingNeed(const TOptions *pOptions) const;
+		bool ShownAsOptionSays(const TOptions *pOptions) const;
 		bool DefectCheckingNeed(const TOptions *pOptions) const;
 
 		void FillOther(TOptions *pOptions);

@@ -45,8 +45,16 @@ namespace ad
         m_pResult(pEngine->Result()),
         m_pTransformedImageData(NULL),
         m_pBuffer(NULL),
-        m_pMask(NULL) 
+        m_pMask(NULL),
+        m_asShown(pEngine->Options()->compare.transparentAsShown == TRUE),
+        m_pIncomingBlack(NULL),
+        m_pFilled(NULL)
     {
+        if(m_asShown)
+        {
+            m_pIncomingBlack = new TImageData(m_pOptions->advanced.reducedImageSize);
+            m_pFilled = new TImageData(m_pOptions->advanced.reducedImageSize);
+        }
         // The threshold may be a fraction of a percent: kept as a double, and
         // the sums derived from it rounded up, so that they let through
         // every pair the exact difference is then checked on.
@@ -94,12 +102,20 @@ namespace ad
         if(m_pOptions->compare.transformedImage == TRUE)
         {
             delete m_pTransformedImageData;
-            SimdFree(m_pBuffer); 
+            SimdFree(m_pBuffer);
         }
+
+        delete m_pIncomingBlack;
+        delete m_pFilled;
+        for(std::map<TImageDataPtr, TImageData*>::iterator i = m_blackTwins.begin(); i != m_blackTwins.end(); ++i)
+            delete i->second;
     }
 
     void TImageComparer::Accept(TImageDataPtr pImageData, bool add)
     {
+        const bool alpha = m_asShown && pImageData->data->alpha;
+        if(alpha)
+            MakeBlack(m_pIncomingBlack, pImageData);
         Compare(pImageData, pImageData, AD_TRANSFORM_TURN_0);
         if(m_pOptions->compare.transformedImage == TRUE)
         {
@@ -109,6 +125,8 @@ namespace ad
                 m_pTransformedImageData->Turn(m_pBuffer);
                 if(i_transform == AD_TRANSFORM_MIRROR_TURN_0)
                     m_pTransformedImageData->Mirror(m_pBuffer);
+                if(alpha)
+                    MakeBlack(m_pIncomingBlack, m_pTransformedImageData);
                 Compare(pImageData, m_pTransformedImageData, (adTransformType)i_transform);
             }
         }
@@ -128,14 +146,14 @@ namespace ad
 			// Сравниваем с набором проверенных
             for(TImageDataPtrList::const_iterator i = set.valid.begin(); i != set.valid.end(); ++i)
             {
-                if(IsDuplPairAny(pTransformed, *i, &difference))
+                if(IsDuplPairShown(pTransformed, m_pIncomingBlack, *i, &difference))
                     m_pResult->AddDuplImagePair(pOriginal, *i, difference, transform);
             }
         }
 		// Сравниваем с набором остальных
 		for(TImageDataPtrList::const_iterator i = set.other.begin(); i != set.other.end(); ++i)
 		{
-			if(IsDuplPairAny(pTransformed, *i, &difference))
+			if(IsDuplPairShown(pTransformed, m_pIncomingBlack, *i, &difference))
 				m_pResult->AddDuplImagePair(pOriginal, *i, difference, transform);
 		}
 	}
@@ -146,6 +164,168 @@ namespace ad
 			set.valid.push_back(pImageData);
 		else
 			set.other.push_back(pImageData);
+		if(m_asShown && pImageData->data->alpha)
+		{
+			TImageData *pBlack = new TImageData(m_pOptions->advanced.reducedImageSize);
+			MakeBlack(pBlack, pImageData);
+			m_blackTwins[pImageData] = pBlack;
+		}
+    }
+
+    // pFirst is the image being compared, pFirstBlack its twin over black
+    // when it has transparency; pSecond an image of the sets.
+    bool TImageComparer::IsDuplPairShown(TImageDataPtr pFirst, TImageDataPtr pFirstBlack, TImageDataPtr pSecond, double *pDifference)
+    {
+        const bool firstAlpha = m_asShown && pFirst->data->alpha;
+        const bool secondAlpha = m_asShown && pSecond->data->alpha;
+        if(!firstAlpha && !secondAlpha)
+            return IsDuplPairAny(pFirst, pSecond, pDifference);
+        TImageDataPtr pSecondBlack = secondAlpha ? m_blackTwins[pSecond] : pSecond;
+        if(firstAlpha && secondAlpha)
+            return OverBoth(pFirst, pFirstBlack, pSecond, pSecondBlack, pDifference);
+        TUInt8 bgr[3];
+        if(firstAlpha)
+        {
+            if(UniformFill(pFirst, pFirstBlack, pSecond, bgr))
+            {
+                MakeFilled(m_pFilled, pFirst, pFirstBlack, bgr);
+                return IsDuplPairAny(m_pFilled, pSecond, pDifference);
+            }
+            return OverBoth(pFirst, pFirstBlack, pSecond, pSecond, pDifference);
+        }
+        if(UniformFill(pSecond, pSecondBlack, pFirst, bgr))
+        {
+            MakeFilled(m_pFilled, pSecond, pSecondBlack, bgr);
+            return IsDuplPairAny(pFirst, m_pFilled, pDifference);
+        }
+        return OverBoth(pFirst, pFirst, pSecond, pSecondBlack, pDifference);
+    }
+
+    // A pair over white and over black: a duplicate only if it is one over
+    // both, with the larger difference. Content in the colour of one
+    // background vanishes into it, but not into the other.
+    bool TImageComparer::OverBoth(TImageDataPtr pFirst, TImageDataPtr pFirstBlack, TImageDataPtr pSecond, TImageDataPtr pSecondBlack, double *pDifference)
+    {
+        double white, black;
+        if(!IsDuplPairAny(pFirst, pSecond, &white) || !IsDuplPairAny(pFirstBlack, pSecondBlack, &black))
+            return false;
+        *pDifference = std::max(white, black);
+        return true;
+    }
+
+    // Whether pOpaque could be pAlpha with its transparency filled in with
+    // one colour, and which (B, G, R): where pAlpha is transparent, pOpaque
+    // is nearly one colour, and where pAlpha is opaque it doesn't show that
+    // colour, or a picture whose visible part has the colour of the fill
+    // (white lines filled with white) would pair with an empty page. The
+    // colour thumbnails over white and black give each pixel's coverage:
+    // over white minus over black is 255 times the uncovered share.
+    bool TImageComparer::UniformFill(TImageDataPtr pAlpha, TImageDataPtr pAlphaBlack, TImageDataPtr pOpaque, TUInt8 *bgr)
+    {
+        // A loose first look on the 4x4 data: pOpaque against pAlpha over
+        // one grey level k, fitted, leaves no cell far off.
+        const TUInt8 *fw = pAlpha->data->fast, *fb = pAlphaBlack->data->fast, *fo = pOpaque->data->fast;
+        double dd = 0, dr = 0;
+        for(int i = 0; i < FAST_DATA_SIZE; ++i)
+        {
+            const double d = double(fw[i]) - fb[i];
+            dd += d*d;
+            dr += d*(double(fo[i]) - fb[i]);
+        }
+        const double k = dd > 0 ? std::max(0.0, std::min(1.0, dr/dd)) : 0;
+        for(int i = 0; i < FAST_DATA_SIZE; ++i)
+        {
+            if(fabs(fb[i] + k*(double(fw[i]) - fb[i]) - fo[i]) > UNIFORM_FILL_FAST_DIFFERENCE_MAX)
+                return false;
+        }
+
+        const TUInt8 *w = pAlpha->data->color, *b = pAlphaBlack->data->color, *o = pOpaque->data->color;
+        const size_t pixels = COLOR_IMAGE_SIZE*COLOR_IMAGE_SIZE;
+        double sum[3] = {0, 0, 0}, square[3] = {0, 0, 0};
+        size_t clear = 0, solid = 0;
+        for(size_t p = 0; p < pixels; ++p)
+        {
+            const int uncovered = int(w[3*p]) + w[3*p + 1] + w[3*p + 2] - b[3*p] - b[3*p + 1] - b[3*p + 2];
+            if(uncovered >= 3*0xFF*(100 - UNIFORM_FILL_COVERAGE_PERCENT)/100)
+            {
+                ++clear;
+                for(int c = 0; c < 3; ++c)
+                {
+                    sum[c] += o[3*p + c];
+                    square[c] += double(o[3*p + c])*o[3*p + c];
+                }
+            }
+            else if(uncovered <= 3*0xFF*UNIFORM_FILL_COVERAGE_PERCENT/100)
+                ++solid;
+        }
+        if(clear*100 < pixels*UNIFORM_FILL_AREA_PERCENT || solid*100 < pixels*UNIFORM_FILL_AREA_PERCENT)
+            return false;
+        for(int c = 0; c < 3; ++c)
+        {
+            const double mean = sum[c]/clear;
+            if(square[c]/clear - mean*mean > Simd::Square(UNIFORM_FILL_DEVIATION_MAX))
+                return false;
+            bgr[c] = TUInt8(mean + 0.5);
+        }
+        double contrast = 0;
+        for(size_t p = 0; p < pixels; ++p)
+        {
+            const int uncovered = int(w[3*p]) + w[3*p + 1] + w[3*p + 2] - b[3*p] - b[3*p + 1] - b[3*p + 2];
+            if(uncovered <= 3*0xFF*UNIFORM_FILL_COVERAGE_PERCENT/100)
+            {
+                int most = 0;
+                for(int c = 0; c < 3; ++c)
+                    most = std::max(most, abs(int(w[3*p + c]) - bgr[c]));
+                contrast += most;
+            }
+        }
+        return contrast/solid >= UNIFORM_FILL_CONTRAST_MIN;
+    }
+
+    // The info a comparer reads of an image (type, size, ratio, path, CRC).
+    void TImageComparer::CopyInfo(TImageData *pTo, TImageDataPtr pFrom)
+    {
+        *static_cast<TImageInfo*>(pTo) = *pFrom;
+        pTo->ratio = pFrom->ratio;
+        pTo->valid = pFrom->valid;
+        pTo->index = pFrom->index;
+        pTo->defect = pFrom->defect;
+        pTo->crc32c = pFrom->crc32c;
+    }
+
+    // An image's twin made of its over-black thumbnails. The hash stays the
+    // image's, so two images showing the same pixels stay equal over black.
+    void TImageComparer::MakeBlack(TImageData *pBlack, TImageDataPtr pImageData)
+    {
+        CopyInfo(pBlack, pImageData);
+        TPixelData & to = *pBlack->data;
+        const TPixelData & from = *pImageData->data;
+        memcpy(to.main, from.mainBlack, to.size);
+        memcpy(to.color, from.colorBlack, COLOR_DATA_SIZE);
+        to.pixelHash = from.pixelHash;
+        to.FillFast(m_pOptions->GetIgnoreWidthFrame());
+        to.FillMoments();
+        to.filled = true;
+    }
+
+    // An image with transparency laid over one colour, from its thumbnails
+    // over white and black: over colour c a pixel is black + (white - black)
+    // * c / 255, and the grey thumbnail takes c's grey.
+    void TImageComparer::MakeFilled(TImageData *pFilled, TImageDataPtr pImageData, TImageDataPtr pBlack, const TUInt8 *bgr)
+    {
+        CopyInfo(pFilled, pImageData);
+        TPixelData & to = *pFilled->data;
+        const TPixelData & white = *pImageData->data;
+        const TPixelData & black = *pBlack->data;
+        const int gray = (29*bgr[0] + 150*bgr[1] + 77*bgr[2] + 128) >> 8;
+        for(size_t i = 0; i < to.size; ++i)
+            to.main[i] = TUInt8(black.main[i] + ((int(white.main[i]) - black.main[i])*gray + 127)/255);
+        for(size_t i = 0; i < COLOR_DATA_SIZE; ++i)
+            to.color[i] = TUInt8(black.color[i] + ((int(white.color[i]) - black.color[i])*bgr[i%3] + 127)/255);
+        to.pixelHash = 0;
+        to.FillFast(m_pOptions->GetIgnoreWidthFrame());
+        to.FillMoments();
+        to.filled = true;
     }
 
 	// Сравнение двух картинок
@@ -397,14 +577,21 @@ namespace ad
 
     void TImageComparer_1D::Add(TImageDataPtr pImageData)
     {
-        AddToSet(m_sets[GetIndex(pImageData)], pImageData);
+        if(m_asShown && pImageData->data->alpha)
+            AddToSet(m_alphaSet, pImageData);
+        else
+            AddToSet(m_sets[GetIndex(pImageData)], pImageData);
     }
 
     void TImageComparer_1D::Compare(TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform)
     {
         int index = GetIndex(pTransformed);
-        for(int i = std::max(0, index - m_halfCompareRange), end = std::min(index + m_halfCompareRange, RANGE); i < end; ++i)
+        int begin = std::max(0, index - m_halfCompareRange), end = std::min(index + m_halfCompareRange, RANGE);
+        if(m_asShown && pTransformed->data->alpha)
+            begin = 0, end = RANGE;
+        for(int i = begin; i < end; ++i)
             CompareWithSet(m_sets[i], pOriginal, pTransformed, transform);
+        CompareWithSet(m_alphaSet, pOriginal, pTransformed, transform);
     }
 
     int TImageComparer_1D::GetIndex(TImageDataPtr pImageData)
@@ -439,6 +626,11 @@ namespace ad
 
     void TImageComparer_3D::Add(TImageDataPtr pImageData)
     {
+        if(m_asShown && pImageData->data->alpha)
+        {
+            AddToSet(m_alphaSet, pImageData);
+            return;
+        }
         TIndex i;
         GetIndex(pImageData, i);
         AddToSet(m_sets[i.s*m_stride.s + i.x*m_stride.x + i.y*m_stride.y], pImageData);
@@ -446,6 +638,13 @@ namespace ad
 
     void TImageComparer_3D::Compare(TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform)
     {
+        CompareWithSet(m_alphaSet, pOriginal, pTransformed, transform);
+        if(m_asShown && pTransformed->data->alpha)
+        {
+            for(size_t i = 0; i < m_sets.size(); ++i)
+                CompareWithSet(m_sets[i], pOriginal, pTransformed, transform);
+            return;
+        }
         TIndex i, lo, hi;
         GetIndex(pTransformed, i);
 

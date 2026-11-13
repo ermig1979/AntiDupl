@@ -433,6 +433,7 @@ extern "C"
 		adBool compareInsideOneSearchPath;
 		adAlgorithmComparing algorithmComparing;
         adBool skipHardlinks;
+        adBool transparentAsShown; // images with transparency compared as shown, not by the colour under it
     };
     typedef adCompareOptions* adCompareOptionsPtr;
 	

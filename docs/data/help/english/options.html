@@ -102,6 +102,12 @@ By default, this option is disabled.
 With this option off, such a pair has <b>HL</b> as its difference and sorts first.
 By default, this option is enabled.
  </p></li>
+  <li><p align="justify">
+<b>Compare transparent images as they are shown</b> - a file keeps a colour under its transparent pixels that is never seen, and two copies of one picture can hold different ones (white in one, black in the other).
+With this option on, images with transparency are compared as they are shown: two of them over a white and over a black background, and they are duplicates only if they look alike over both.
+An image with transparency and an opaque image whose transparent part was filled with one colour are compared over that colour.
+By default, this option is enabled.
+ </p></li>
 
  <p align="justify">
 On the <b>Defects</b> tag

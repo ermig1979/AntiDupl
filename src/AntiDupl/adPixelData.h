@@ -52,11 +52,24 @@ namespace ad
 		// also after Turn or Mirror, so a transformed copy never counts as
 		// pixel-identical.
 		uint64_t pixelHash;
+		// Made with transparency shown (adCompareOptions::transparentAsShown):
+		// an image with transparent pixels then has alpha set, its fast, main
+		// and color show it laid over white, and fastBlack, mainBlack and
+		// colorBlack the same over black. Any other background is a blend of
+		// the two (TImageComparer::MakeShown). Without alpha the black
+		// buffers are NULL.
+		bool asShown;
+		bool alpha;
+		TUInt8* fastBlack;
+		TUInt8* mainBlack;
+		TUInt8* colorBlack;
 
         TPixelData(size_t side_);
         TPixelData(const TPixelData& pixelData);
         ~TPixelData();
 
+        void SetAlpha(bool alpha_);
+        void CopyFrom(const TPixelData& pixelData);
         void FillFast(int ignoreFrameWidth);
         void FillMoments();
         void Turn(TUInt8 *buffer);

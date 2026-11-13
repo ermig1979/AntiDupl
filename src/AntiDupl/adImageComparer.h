@@ -25,6 +25,8 @@
 #define __adImageComparer_h__
 
 #include <list>
+#include <map>
+#include <vector>
 
 #include "adConfig.h"
 
@@ -76,13 +78,39 @@ namespace ad
         // differ, which then get MIN_DIFFERENCE_OF_DIFFERENT_PIXELS at least.
         static double PixelDifference(TImageDataPtr pFirst, TImageDataPtr pSecond, double metric);
 
+        // Transparency shown (adCompareOptions::transparentAsShown): images
+        // with transparent pixels are kept apart from the index, which
+        // places an image by its thumbnails over white, while a pair may be
+        // judged over black or another colour. The index comparers compare
+        // every image with this set, and an image with transparency with
+        // every set.
+        bool m_asShown;
+        Set m_alphaSet;
+
     private:
         //Comparison of an image pair without shift and (if enabled) with shift compensation; the smaller difference is kept.
         bool IsDuplPairAny(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference);
+        // IsDuplPairAny for images as shown, when either has transparency:
+        // both over white and over black when both have it, the larger
+        // difference counting; when one has, the other may be a copy whose
+        // transparency was filled with one colour, judged over that colour,
+        // and otherwise over white and over black too.
+        bool IsDuplPairShown(TImageDataPtr pFirst, TImageDataPtr pFirstBlack, TImageDataPtr pSecond, double *pDifference);
+        bool OverBoth(TImageDataPtr pFirst, TImageDataPtr pFirstBlack, TImageDataPtr pSecond, TImageDataPtr pSecondBlack, double *pDifference);
+        bool UniformFill(TImageDataPtr pAlpha, TImageDataPtr pAlphaBlack, TImageDataPtr pOpaque, TUInt8 *bgr);
+        void MakeBlack(TImageData *pBlack, TImageDataPtr pImageData);
+        void MakeFilled(TImageData *pFilled, TImageDataPtr pImageData, TImageDataPtr pBlack, const TUInt8 *bgr);
+        void CopyInfo(TImageData *pTo, TImageDataPtr pFrom);
 
         TResultStorage *m_pResult;
         TImageData *m_pTransformedImageData;
         TUInt8* m_pBuffer;
+        // The over-black twin of each image with transparency in this
+        // comparer's sets, and of the image being compared; an image laid
+        // over a filled copy's colour.
+        std::map<TImageDataPtr, TImageData*> m_blackTwins;
+        TImageData *m_pIncomingBlack;
+        TImageData *m_pFilled;
 
         int m_mainThreshold;
         int m_maxDifference;

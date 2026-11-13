@@ -315,6 +315,7 @@
     <v:String x:Key="configurationWindow_compareInsideOneFolder">Compare images inside one directory</v:String>
     <v:String x:Key="configurationWindow_compareInsideOneSearchPath">Compare images from one path of search with one another</v:String>
     <v:String x:Key="configurationWindow_skipHardlinks">Do not compare hardlinked duplicates</v:String>
+    <v:String x:Key="configurationWindow_transparentAsShown">Compare transparent images as they are shown</v:String>
 
     <!-- ==== Advanced (подписи) ==== -->
     <v:String x:Key="configurationWindow_deleteToRecycleBin">Delete to recycle bin</v:String>
@@ -359,6 +360,7 @@
     <v:String x:Key="configurationWindow_tooltip_compareInsideOneFolder">Compare images only within the same directory.</v:String>
     <v:String x:Key="configurationWindow_tooltip_compareInsideOneSearchPath">Compare images with each other only if they come from the same search path.</v:String>
     <v:String x:Key="configurationWindow_tooltip_skipHardlinks">Hard links are several names of one file, so such a pair is not shown.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_transparentAsShown">The colour stored under transparent pixels is never seen, so it doesn't count.</v:String>
 
     <!-- ==== Tooltips: Advanced ==== -->
     <v:String x:Key="configurationWindow_tooltip_deleteToRecycleBin">When deleting images, move them to the Recycle Bin instead of deleting permanently.</v:String>

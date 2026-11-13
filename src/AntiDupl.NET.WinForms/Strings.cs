@@ -106,6 +106,7 @@ namespace AntiDupl.NET.WinForms
         public string CoreOptionsForm_CompareInsideOneFolderCheckBox_Text;
         public string CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text;
         public string CoreOptionsForm_SkipHardlinksCheckBox_Text;
+        public string CoreOptionsForm_TransparentAsShownCheckBox_Text;
 
         public string CoreOptionsForm_DefectTabPage_Text;
         public string CoreOptionsForm_CheckOnDefectCheckBox_Text;

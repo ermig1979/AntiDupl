@@ -111,6 +111,22 @@ namespace ad
     const size_t COLOR_IMAGE_SIZE = 64;
     const size_t COLOR_BLOCK_SIZE = 4;
     const size_t COLOR_DATA_SIZE = COLOR_IMAGE_SIZE*COLOR_IMAGE_SIZE*3;
+    // Transparency shown: when could an opaque image be a copy of one with
+    // transparency, its transparent area filled with one colour
+    // (TImageComparer::UniformFill). Pixels of the colour thumbnail count as
+    // transparent below UNIFORM_FILL_COVERAGE_PERCENT coverage and as opaque
+    // above 100 minus it; each kind must make UNIFORM_FILL_AREA_PERCENT of the
+    // thumbnail at least. The opaque image under the transparent pixels may
+    // deviate from its mean colour by UNIFORM_FILL_DEVIATION_MAX levels (RMS,
+    // each of B, G, R), and the visible pixels must differ from that colour by
+    // UNIFORM_FILL_CONTRAST_MIN levels on average. A 4x4 cell of the opaque
+    // image may differ by UNIFORM_FILL_FAST_DIFFERENCE_MAX levels from the
+    // other laid over the best grey, a loose look before the colour thumbnail.
+    const size_t UNIFORM_FILL_COVERAGE_PERCENT = 5;
+    const size_t UNIFORM_FILL_AREA_PERCENT = 2;
+    const double UNIFORM_FILL_DEVIATION_MAX = 12;
+    const double UNIFORM_FILL_CONTRAST_MIN = 16;
+    const double UNIFORM_FILL_FAST_DIFFERENCE_MAX = 48;
     const TUInt32 COLLECT_THREAD_QUEUE_SIZE_MAX = 16;
     const TUInt32 DEAFAULT_THREAD_SLEEP_INTERVAL = 10;
     const TUInt32 LARGE_IMAGE_COLLECTION_SIZE_MIN = 100000;
@@ -122,7 +138,11 @@ namespace ad
 	// images from an older database are decoded again for it.
 	// Version 7: the reduced image is area-averaged instead of bilinear, and
 	// the database stores a colour thumbnail; older records are decoded again.
-	const TUInt32 FILE_VERSION = 7;
+	// Version 8: each record says whether its thumbnails show transparency
+	// (TPixelData::asShown) and, for an image with transparent pixels, holds
+	// a second set over black; older records of formats that can hold
+	// transparency are decoded again.
+	const TUInt32 FILE_VERSION = 8;
 	const size_t SIZE_CHECK_LIMIT = 2147483646; //string.max_size()
 
 	const size_t BLOCKINESS_SIZE = 8;
