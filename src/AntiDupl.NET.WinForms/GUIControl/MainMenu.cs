@@ -66,6 +66,7 @@ namespace AntiDupl.NET.WinForms
         private ToolStripMenuItem m_view_hotKeysMenuItem;
         private ToolStripMenuItem m_view_stretchSmallImageMenuItem;
         private ToolStripMenuItem m_view_proportionalImageViewMenuItem;
+        private ToolStripMenuItem m_view_alignImagesMenuItem;
         private ToolStripMenuItem m_view_showNeighbourImageMenuItem;
 
         private ToolStripMenuItem m_searchMenuItem;
@@ -143,6 +144,7 @@ namespace AntiDupl.NET.WinForms
             m_view_hotKeysMenuItem = InitFactory.MenuItem.Create(null, null, OnHotKeysClick);
             m_view_stretchSmallImageMenuItem = InitFactory.MenuItem.Create(null, null, ViewItemCheckChangeAction, m_options.resultsOptions.StretchSmallImages);
             m_view_proportionalImageViewMenuItem = InitFactory.MenuItem.Create(null, null, ViewItemCheckChangeAction, m_options.resultsOptions.ProportionalImageSize);
+            m_view_alignImagesMenuItem = InitFactory.MenuItem.Create(null, null, ViewItemCheckChangeAction, m_options.resultsOptions.AlignImagesToDivider);
             m_view_showNeighbourImageMenuItem = InitFactory.MenuItem.Create(null, null, ViewItemCheckChangeAction, m_options.resultsOptions.ShowNeighboursImages);
  
             m_viewMenuItem = new ToolStripMenuItem();
@@ -159,6 +161,7 @@ namespace AntiDupl.NET.WinForms
             m_viewMenuItem.DropDownItems.Add(new ToolStripSeparator());
             m_viewMenuItem.DropDownItems.Add(m_view_stretchSmallImageMenuItem);
             m_viewMenuItem.DropDownItems.Add(m_view_proportionalImageViewMenuItem);
+            m_viewMenuItem.DropDownItems.Add(m_view_alignImagesMenuItem);
             m_viewMenuItem.DropDownItems.Add(m_view_showNeighbourImageMenuItem);
 
             m_search_startMenuItem = InitFactory.MenuItem.Create("StartMenu", null, StartSearchAction);
@@ -228,9 +231,10 @@ namespace AntiDupl.NET.WinForms
             m_view_hotKeysMenuItem.Text = s.MainMenu_View_HotKeysMenuItem_Text;
             m_view_stretchSmallImageMenuItem.Text = s.MainMenu_View_StretchSmallImagesMenuItem_Text;
             m_view_proportionalImageViewMenuItem.Text = s.MainMenu_View_ProportionalImageSizeMenuItem_Text;
+            m_view_alignImagesMenuItem.Text = s.MainMenu_View_AlignImagesToDividerMenuItem_Text;
             Keys showNeighboursHotKey = m_options.hotKeyOptions.Get(HotKeyOptions.Action.ShowNeighbours);
             if (showNeighboursHotKey != Keys.None)
-                m_view_showNeighbourImageMenuItem.Text = s.MainMenu_View_ShowNeighbourImageMenuItem_Text + String.Format(" ({0})", showNeighboursHotKey.ToString().Replace(',', '+'));
+                m_view_showNeighbourImageMenuItem.Text = s.MainMenu_View_ShowNeighbourImageMenuItem_Text + String.Format(" ({0})", HotKeyOptions.Text(showNeighboursHotKey));
             else
                 m_view_showNeighbourImageMenuItem.Text = s.MainMenu_View_ShowNeighbourImageMenuItem_Text;
 
@@ -273,6 +277,10 @@ namespace AntiDupl.NET.WinForms
             else if (item == m_view_showNeighbourImageMenuItem)
             {
                 m_options.resultsOptions.ShowNeighboursImages = item.Checked;
+            }
+            else if (item == m_view_alignImagesMenuItem)
+            {
+                m_options.resultsOptions.AlignImagesToDivider = item.Checked;
             }
             else if (item == m_view_resultCountsMenuItem)
             {

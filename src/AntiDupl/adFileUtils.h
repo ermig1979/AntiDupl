@@ -43,6 +43,7 @@ namespace ad
 
     bool IsDirectoryExists(const TChar* directoryName);	
     bool IsFileExists(const TChar* fileName);
+    bool IsSameFile(const TChar* first, const TChar* second);
 
     TString GetApplicationDirectory();
     TString GetApplicationName();

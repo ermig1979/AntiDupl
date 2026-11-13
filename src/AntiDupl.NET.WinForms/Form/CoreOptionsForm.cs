@@ -102,7 +102,7 @@ namespace AntiDupl.NET.WinForms
         static public int IGNORE_FRAME_WIDTH_STEP = 3;
         
         static public int FORM_WIDTH = 450;
-        static public int FORM_HEIGHT = 430;
+        static public int FORM_HEIGHT = 460;
         static public int COMBO_BOX_WIDTH = 65;
         static public int COMBO_BOX_HEIGHT = 20;
 
@@ -132,6 +132,7 @@ namespace AntiDupl.NET.WinForms
         private LabeledIntegerEdit m_maximalImageSizeLabeledIntegerEdit;
         private CheckBox m_compareInsideOneFolderCheckBox;
         private CheckBox m_compareInsideOneSearchPathCheckBox;
+        private CheckBox m_skipHardlinksCheckBox;
 
         private TabPage m_defectTabPage;
         private CheckBox m_checkOnDefectCheckBox;
@@ -280,7 +281,7 @@ namespace AntiDupl.NET.WinForms
             m_compareTabPage = new TabPage();
             m_mainTabControl.Controls.Add(m_compareTabPage);
 
-            TableLayoutPanel checkTableLayoutPanel = InitFactory.Layout.Create(1, 12, 5); //column, row, padding
+            TableLayoutPanel checkTableLayoutPanel = InitFactory.Layout.Create(1, 13, 5); //column, row, padding
             checkTableLayoutPanel.AutoScroll = true;
             m_compareTabPage.Controls.Add(checkTableLayoutPanel);
 
@@ -327,6 +328,9 @@ namespace AntiDupl.NET.WinForms
             checkTableLayoutPanel.Controls.Add(m_compareInsideOneFolderCheckBox, 0, 10);
             m_compareInsideOneSearchPathCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
             checkTableLayoutPanel.Controls.Add(m_compareInsideOneSearchPathCheckBox, 0, 11);
+
+            m_skipHardlinksCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
+            checkTableLayoutPanel.Controls.Add(m_skipHardlinksCheckBox, 0, 12);
         }
 
         private void InitilizeDefectTabPage()
@@ -662,6 +666,7 @@ namespace AntiDupl.NET.WinForms
             m_maximalImageSizeLabeledIntegerEdit.Value = m_newCoreOptions.compareOptions.maximalImageSize;
             m_compareInsideOneFolderCheckBox.Checked = m_newCoreOptions.compareOptions.compareInsideOneFolder;
             m_compareInsideOneSearchPathCheckBox.Checked = m_newCoreOptions.compareOptions.compareInsideOneSearchPath;
+            m_skipHardlinksCheckBox.Checked = m_newCoreOptions.compareOptions.skipHardlinks;
 
             m_checkOnDefectCheckBox.Checked = m_newCoreOptions.defectOptions.checkOnDefect;
             m_checkOnBlockinessCheckBox.Checked = m_newCoreOptions.defectOptions.checkOnBlockiness;
@@ -724,6 +729,7 @@ namespace AntiDupl.NET.WinForms
             m_newCoreOptions.compareOptions.maximalImageSize = m_maximalImageSizeLabeledIntegerEdit.Value;
             m_newCoreOptions.compareOptions.compareInsideOneFolder = m_compareInsideOneFolderCheckBox.Checked;
             m_newCoreOptions.compareOptions.compareInsideOneSearchPath = m_compareInsideOneSearchPathCheckBox.Checked;
+            m_newCoreOptions.compareOptions.skipHardlinks = m_skipHardlinksCheckBox.Checked;
 
             m_newCoreOptions.defectOptions.checkOnDefect = m_checkOnDefectCheckBox.Checked;
             m_newCoreOptions.defectOptions.checkOnBlockiness = m_checkOnBlockinessCheckBox.Checked;
@@ -791,6 +797,7 @@ namespace AntiDupl.NET.WinForms
             m_maximalImageSizeLabeledIntegerEdit.Text = s.CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text;
             m_compareInsideOneFolderCheckBox.Text = s.CoreOptionsForm_CompareInsideOneFolderCheckBox_Text;
             m_compareInsideOneSearchPathCheckBox.Text = s.CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text;
+            m_skipHardlinksCheckBox.Text = s.CoreOptionsForm_SkipHardlinksCheckBox_Text;
 
             m_defectTabPage.Text = s.CoreOptionsForm_DefectTabPage_Text;
             m_checkOnDefectCheckBox.Text = s.CoreOptionsForm_CheckOnDefectCheckBox_Text;
@@ -907,6 +914,7 @@ namespace AntiDupl.NET.WinForms
             m_thresholdDifferenceLabeledComboBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
             m_compareInsideOneFolderCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
             m_compareInsideOneSearchPathCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
+            m_skipHardlinksCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
 
             m_ratioResolutionLabeledComboBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality &&
               !m_newCoreOptions.compareOptions.sizeControl && m_newCoreOptions.compareOptions.ratioControl;

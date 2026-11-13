@@ -41,9 +41,18 @@ namespace AntiDupl.NET.WinForms
         // The largest difference shown with two decimals as 0.01.
         private const double SMALLEST_SHOWN = 0.01;
 
+        /// <summary>
+        /// Two names of one file: the core gives them a difference below
+        /// every real one, so they sort first.
+        /// </summary>
+        static public bool IsHardLink(double difference)
+        {
+            return difference < 0;
+        }
+
         static public bool IsByteIdentical(double difference)
         {
-            return difference == 0;
+            return difference <= 0;
         }
 
         static public bool IsIdentical(double difference)
@@ -52,11 +61,13 @@ namespace AntiDupl.NET.WinForms
         }
 
         /// <summary>
-        /// 0.00 for identical images, 0.01 for any difference up to 0.01,
-        /// otherwise two decimals.
+        /// HL for hard links, 0.00 for identical images, 0.01 for any
+        /// difference up to 0.01, otherwise two decimals.
         /// </summary>
         static public string ToString(double difference)
         {
+            if (IsHardLink(difference))
+                return "HL";
             if (IsIdentical(difference))
                 return 0.0.ToString("F2");
             if (difference <= SMALLEST_SHOWN)

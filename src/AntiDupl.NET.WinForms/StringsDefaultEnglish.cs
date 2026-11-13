@@ -101,6 +101,7 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text = "Minimal image width/height";
             s.CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text = "Maximal image width/height";
             s.CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text = "Compare images from one path of search with one another";
+            s.CoreOptionsForm_SkipHardlinksCheckBox_Text = "Do not compare hardlinked duplicates";
             s.CoreOptionsForm_CompareInsideOneFolderCheckBox_Text = "Compare images inside one directory";
 
             s.CoreOptionsForm_DefectTabPage_Text = "Defects";
@@ -219,6 +220,7 @@ namespace AntiDupl.NET.WinForms
             s.ResultRowSetter_MirrorTurn_180_Icon_ToolTip_Text = "Horizontally flipped and rotated on 180°";
             s.ResultRowSetter_MirrorTurn_270_Icon_ToolTip_Text = "Horizontally flipped and rotated on 270°";
 
+            s.ResultRowSetter_Difference_HardLink_ToolTip_Text = "Hard links: both names are one file";
             s.ResultRowSetter_Difference_ByteIdentical_ToolTip_Text = "Identical files";
             s.ResultRowSetter_Difference_PixelIdentical_ToolTip_Text = "Identical images, the files differ";
 
@@ -292,6 +294,7 @@ namespace AntiDupl.NET.WinForms
             s.MainMenu_View_HotKeysMenuItem_Text = "Hot keys";
             s.MainMenu_View_StretchSmallImagesMenuItem_Text = "Stretch small images";
             s.MainMenu_View_ProportionalImageSizeMenuItem_Text = "Proportional size of images";
+            s.MainMenu_View_AlignImagesToDividerMenuItem_Text = "Align images to the divider";
             s.MainMenu_View_ResultCountsMenuItem_Text = "Status on toolbar";
             s.ResultCountsPanel_CurrentShort_Text = "Cur.";
             s.ResultCountsPanel_SelectedShort_Text = "Select.";
