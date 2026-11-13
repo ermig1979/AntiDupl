@@ -165,7 +165,6 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
                     <CheckBox Grid.Column="0" Grid.Row="0"
@@ -252,10 +251,6 @@
                               Content="{DynamicResource configurationWindow_skipHardlinks}"
                               ToolTip="{DynamicResource configurationWindow_tooltip_skipHardlinks}"
                               IsChecked="{Binding Option.compareOptions.SkipHardlinks}" />
-                    <CheckBox Grid.Column="0" Grid.Row="13"
-                              Content="{DynamicResource configurationWindow_transparentAsShown}"
-                              ToolTip="{DynamicResource configurationWindow_tooltip_transparentAsShown}"
-                              IsChecked="{Binding Option.compareOptions.TransparentAsShown}" />
                 </Grid>
             </ScrollViewer>
         </TabItem>
@@ -367,6 +362,10 @@
                     </TextBox>
 
                     <CheckBox Grid.Column="0" Grid.Row="9"
+                              Content="{DynamicResource configurationWindow_transparentAsShown}"
+                              ToolTip="{DynamicResource configurationWindow_tooltip_transparentAsShown}"
+                              IsChecked="{Binding Option.compareOptions.TransparentAsShown}" />
+                    <CheckBox Grid.Column="0" Grid.Row="10"
                               Content="{DynamicResource configurationWindow_useLibJpegTurbo}"
                               ToolTip="{DynamicResource configurationWindow_tooltip_useLibJpegTurbo}"
                               IsChecked="{Binding Option.advancedOptions.UseLibJpegTurbo, Mode=TwoWay}" />

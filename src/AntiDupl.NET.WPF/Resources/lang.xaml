@@ -315,7 +315,6 @@
     <v:String x:Key="configurationWindow_compareInsideOneFolder">Compare images inside one directory</v:String>
     <v:String x:Key="configurationWindow_compareInsideOneSearchPath">Compare images from one path of search with one another</v:String>
     <v:String x:Key="configurationWindow_skipHardlinks">Do not compare hardlinked duplicates</v:String>
-    <v:String x:Key="configurationWindow_transparentAsShown">Compare transparent images as they are shown</v:String>
 
     <!-- ==== Advanced (подписи) ==== -->
     <v:String x:Key="configurationWindow_deleteToRecycleBin">Delete to recycle bin</v:String>
@@ -327,6 +326,7 @@
     <v:String x:Key="configurationWindow_undoQueueSize">Queue size of undo</v:String>
     <v:String x:Key="configurationWindow_resultCountMax">Maximal count of results</v:String>
     <v:String x:Key="configurationWindow_ignoreFrameWidth">Width of ignored frame of image</v:String>
+    <v:String x:Key="configurationWindow_transparentAsShown">Improve transparent image comparison</v:String>
     <v:String x:Key="configurationWindow_useLibJpegTurbo">Use libjpeg-turbo</v:String>
 
     <!-- ==== Defect (подписи) ==== -->
@@ -360,7 +360,6 @@
     <v:String x:Key="configurationWindow_tooltip_compareInsideOneFolder">Compare images only within the same directory.</v:String>
     <v:String x:Key="configurationWindow_tooltip_compareInsideOneSearchPath">Compare images with each other only if they come from the same search path.</v:String>
     <v:String x:Key="configurationWindow_tooltip_skipHardlinks">Hard links are several names of one file, so such a pair is not shown.</v:String>
-    <v:String x:Key="configurationWindow_tooltip_transparentAsShown">The colour stored under transparent pixels is never seen, so it doesn't count.</v:String>
 
     <!-- ==== Tooltips: Advanced ==== -->
     <v:String x:Key="configurationWindow_tooltip_deleteToRecycleBin">When deleting images, move them to the Recycle Bin instead of deleting permanently.</v:String>
@@ -372,6 +371,7 @@
     <v:String x:Key="configurationWindow_tooltip_undoQueueSize">Maximum number of undo operations kept in memory.</v:String>
     <v:String x:Key="configurationWindow_tooltip_resultCountMax">Maximum number of results returned by the core (0 = unlimited).</v:String>
     <v:String x:Key="configurationWindow_tooltip_ignoreFrameWidth">Width in pixels of the border around the image that is ignored when comparing.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_transparentAsShown">Compare images with transparency as they are shown, over white and over black: the colour a file stores under transparent pixels is never seen.</v:String>
     <v:String x:Key="configurationWindow_tooltip_useLibJpegTurbo">Use libjpeg-turbo for decoding JPEG (faster on most CPUs).</v:String>
 
     <!-- ==== Tooltips: Defect ==== -->

@@ -315,7 +315,6 @@
     <v:String x:Key="configurationWindow_compareInsideOneFolder">Сравнивать картинки внутри одного каталога</v:String>
     <v:String x:Key="configurationWindow_compareInsideOneSearchPath">Сравнивать картинки из одного пути поиска друг с другом</v:String>
     <v:String x:Key="configurationWindow_skipHardlinks">Не сравнивать жесткие ссылки на один файл</v:String>
-    <v:String x:Key="configurationWindow_transparentAsShown">Сравнивать прозрачные картинки так, как они видны</v:String>
 
     <!-- ==== Advanced (подписи) ==== -->
     <v:String x:Key="configurationWindow_deleteToRecycleBin">Удалять в корзину</v:String>
@@ -327,6 +326,7 @@
     <v:String x:Key="configurationWindow_undoQueueSize">Размер очереди отмены</v:String>
     <v:String x:Key="configurationWindow_resultCountMax">Максимальное количество результатов</v:String>
     <v:String x:Key="configurationWindow_ignoreFrameWidth">Ширина игнорируемой рамки картинки</v:String>
+    <v:String x:Key="configurationWindow_transparentAsShown">Улучшенное сравнение прозрачных картинок</v:String>
     <v:String x:Key="configurationWindow_useLibJpegTurbo">Использовать libjpeg-turbo</v:String>
 
     <!-- ==== Defect (подписи) ==== -->
@@ -360,7 +360,6 @@
     <v:String x:Key="configurationWindow_tooltip_compareInsideOneFolder">Сравнивать картинки только внутри одного каталога.</v:String>
     <v:String x:Key="configurationWindow_tooltip_compareInsideOneSearchPath">Сравнивать картинки между собой только в пределах одного пути поиска.</v:String>
     <v:String x:Key="configurationWindow_tooltip_skipHardlinks">Жесткие ссылки - это несколько имен одного файла, поэтому такая пара не показывается.</v:String>
-    <v:String x:Key="configurationWindow_tooltip_transparentAsShown">Цвет под прозрачными пикселями никогда не виден, поэтому он не учитывается.</v:String>
 
     <!-- ==== Tooltips: Advanced ==== -->
     <v:String x:Key="configurationWindow_tooltip_deleteToRecycleBin">При удалении картинок перемещать их в корзину, а не удалять безвозвратно.</v:String>
@@ -372,6 +371,7 @@
     <v:String x:Key="configurationWindow_tooltip_undoQueueSize">Максимальное число операций отмены, хранимых в памяти.</v:String>
     <v:String x:Key="configurationWindow_tooltip_resultCountMax">Максимальное число результатов, возвращаемых ядром (0 = без ограничения).</v:String>
     <v:String x:Key="configurationWindow_tooltip_ignoreFrameWidth">Ширина в пикселях рамки вокруг картинки, игнорируемой при сравнении.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_transparentAsShown">Сравнивать картинки с прозрачностью такими, какими они видны, на белом и на черном фоне: цвет под прозрачными пикселями никогда не виден.</v:String>
     <v:String x:Key="configurationWindow_tooltip_useLibJpegTurbo">Использовать libjpeg-turbo для декодирования JPEG (быстрее на большинстве CPU).</v:String>
 
     <!-- ==== Tooltips: Defect ==== -->

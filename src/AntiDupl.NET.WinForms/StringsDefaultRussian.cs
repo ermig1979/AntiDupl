@@ -102,7 +102,6 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text = "Максимальная ширина/высота картинок";
             s.CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text = "Сравнивать картинки из одного пути поиска друг с другом";
             s.CoreOptionsForm_SkipHardlinksCheckBox_Text = "Не сравнивать жесткие ссылки на один файл";
-            s.CoreOptionsForm_TransparentAsShownCheckBox_Text = "Сравнивать прозрачные картинки так, как они видны";
             s.CoreOptionsForm_CompareInsideOneFolderCheckBox_Text = "Сравнивать картинки внутри одного каталога";
 
             s.CoreOptionsForm_DefectTabPage_Text = "Дефекты";
@@ -125,6 +124,7 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_UndoQueueSizeLabeledIntegerEdit_Text = "Размер очереди отмены";
             s.CoreOptionsForm_ResultCountMaxLabeledIntegerEdit_Text = "Максимальное количество результатов";
             s.CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text = "Ширина игнорируемой рамки картинки";
+            s.CoreOptionsForm_TransparentAsShownCheckBox_Text = "Улучшенное сравнение прозрачных картинок";
             s.CoreOptionsForm_UseLibJpegTurboCheckBox_Text = "Использовать libjpeg-turbo";
 
             s.CoreOptionsForm_HighlightTabPage_Text = "Подсветка";

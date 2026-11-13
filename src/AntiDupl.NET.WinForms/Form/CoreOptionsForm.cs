@@ -102,7 +102,7 @@ namespace AntiDupl.NET.WinForms
         static public int IGNORE_FRAME_WIDTH_STEP = 3;
         
         static public int FORM_WIDTH = 450;
-        static public int FORM_HEIGHT = 490;
+        static public int FORM_HEIGHT = 460;
         static public int COMBO_BOX_WIDTH = 65;
         static public int COMBO_BOX_HEIGHT = 20;
 
@@ -282,7 +282,7 @@ namespace AntiDupl.NET.WinForms
             m_compareTabPage = new TabPage();
             m_mainTabControl.Controls.Add(m_compareTabPage);
 
-            TableLayoutPanel checkTableLayoutPanel = InitFactory.Layout.Create(1, 14, 5); //column, row, padding
+            TableLayoutPanel checkTableLayoutPanel = InitFactory.Layout.Create(1, 13, 5); //column, row, padding
             checkTableLayoutPanel.AutoScroll = true;
             m_compareTabPage.Controls.Add(checkTableLayoutPanel);
 
@@ -332,9 +332,6 @@ namespace AntiDupl.NET.WinForms
 
             m_skipHardlinksCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
             checkTableLayoutPanel.Controls.Add(m_skipHardlinksCheckBox, 0, 12);
-
-            m_transparentAsShownCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            checkTableLayoutPanel.Controls.Add(m_transparentAsShownCheckBox, 0, 13);
         }
 
         private void InitilizeDefectTabPage()
@@ -449,7 +446,7 @@ namespace AntiDupl.NET.WinForms
             m_advancedTabPage = new TabPage();
             m_mainTabControl.Controls.Add(m_advancedTabPage);
 
-            TableLayoutPanel advancedTableLayoutPanel = InitFactory.Layout.Create(1, 11, 5);
+            TableLayoutPanel advancedTableLayoutPanel = InitFactory.Layout.Create(1, 12, 5);
             advancedTableLayoutPanel.AutoScroll = true;
             m_advancedTabPage.Controls.Add(advancedTableLayoutPanel);
 
@@ -499,8 +496,11 @@ namespace AntiDupl.NET.WinForms
             m_ignoreFrameWidthLabeledComboBox = new LabeledComboBox(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
             advancedTableLayoutPanel.Controls.Add(m_ignoreFrameWidthLabeledComboBox, 0, 9);
 
+            m_transparentAsShownCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
+            advancedTableLayoutPanel.Controls.Add(m_transparentAsShownCheckBox, 0, 10);
+
             m_useLibJpegTurboCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            advancedTableLayoutPanel.Controls.Add(m_useLibJpegTurboCheckBox, 0, 10);
+            advancedTableLayoutPanel.Controls.Add(m_useLibJpegTurboCheckBox, 0, 11);
         }
 
         private void InitilizeHighlightTabPage()

@@ -106,7 +106,6 @@ namespace AntiDupl.NET.WinForms
         public string CoreOptionsForm_CompareInsideOneFolderCheckBox_Text;
         public string CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text;
         public string CoreOptionsForm_SkipHardlinksCheckBox_Text;
-        public string CoreOptionsForm_TransparentAsShownCheckBox_Text;
 
         public string CoreOptionsForm_DefectTabPage_Text;
         public string CoreOptionsForm_CheckOnDefectCheckBox_Text;
@@ -128,6 +127,7 @@ namespace AntiDupl.NET.WinForms
         public string CoreOptionsForm_UndoQueueSizeLabeledIntegerEdit_Text;
         public string CoreOptionsForm_ResultCountMaxLabeledIntegerEdit_Text;
         public string CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text;
+        public string CoreOptionsForm_TransparentAsShownCheckBox_Text;
         public string CoreOptionsForm_UseLibJpegTurboCheckBox_Text;
 
         public string CoreOptionsForm_HighlightTabPage_Text;

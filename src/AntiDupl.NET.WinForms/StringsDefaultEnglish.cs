@@ -102,7 +102,6 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text = "Maximal image width/height";
             s.CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text = "Compare images from one path of search with one another";
             s.CoreOptionsForm_SkipHardlinksCheckBox_Text = "Do not compare hardlinked duplicates";
-            s.CoreOptionsForm_TransparentAsShownCheckBox_Text = "Compare transparent images as they are shown";
             s.CoreOptionsForm_CompareInsideOneFolderCheckBox_Text = "Compare images inside one directory";
 
             s.CoreOptionsForm_DefectTabPage_Text = "Defects";
@@ -125,6 +124,7 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_UndoQueueSizeLabeledIntegerEdit_Text = "Queue size of undo";
             s.CoreOptionsForm_ResultCountMaxLabeledIntegerEdit_Text = "Maximal count of results";
             s.CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text = "Width of ignored frame of image";
+            s.CoreOptionsForm_TransparentAsShownCheckBox_Text = "Improve transparent image comparison";
             s.CoreOptionsForm_UseLibJpegTurboCheckBox_Text = "Use libjpeg-turbo";
 
             s.CoreOptionsForm_HighlightTabPage_Text = "Highlight";
