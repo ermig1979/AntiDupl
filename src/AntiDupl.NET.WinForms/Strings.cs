@@ -298,6 +298,9 @@ namespace AntiDupl.NET.WinForms
         public string MainMenu_View_StretchSmallImagesMenuItem_Text;
         public string MainMenu_View_ProportionalImageSizeMenuItem_Text;
         public string MainMenu_View_AlignImagesToDividerMenuItem_Text;
+        public string MainMenu_View_ResultCountsMenuItem_Text;
+        public string ResultCountsPanel_CurrentShort_Text;
+        public string ResultCountsPanel_SelectedShort_Text;
         public string MainMenu_View_ShowNeighbourImageMenuItem_Text;
 
         public string MainMenu_SearchMenuItem_Text;
