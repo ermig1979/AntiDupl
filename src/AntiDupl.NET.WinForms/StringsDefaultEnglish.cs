@@ -222,6 +222,7 @@ namespace AntiDupl.NET.WinForms
 
             s.ResultRowSetter_Difference_HardLink_ToolTip_Text = "Hard links: both names are one file";
             s.ResultRowSetter_Difference_ByteIdentical_ToolTip_Text = "Identical files";
+            s.SelectableLabel_Copy_Text = "Copy";
             s.ResultRowSetter_Difference_PixelIdentical_ToolTip_Text = "Identical images, the files differ";
 
             s.ResultsListView_Type_Column_Text = "Type";

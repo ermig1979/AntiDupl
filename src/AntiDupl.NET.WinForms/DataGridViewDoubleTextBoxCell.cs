@@ -55,6 +55,10 @@ namespace AntiDupl.NET.WinForms
         private MarkType m_markType = MarkType.None;
         public MarkType markType { get { return m_markType; } set { m_markType = value; } }
 
+        /// <summary>Parts of each line in the marker colour, in place of markType.</summary>
+        public CharacterRange[] firstMarks { get; set; }
+        public CharacterRange[] secondMarks { get; set; }
+
 
         private Object m_first;
         private Object m_second;
@@ -176,6 +180,11 @@ namespace AntiDupl.NET.WinForms
                 DrawTextWithDiff(graphics, firstBounds, m_first?.ToString() ?? "", m_second?.ToString() ?? "", cellStyle, format, ordinaryColor, markColor);
                 DrawTextWithDiff(graphics, secondBounds, m_second?.ToString() ?? "", m_first?.ToString() ?? "", cellStyle, format, ordinaryColor, markColor);
             }
+            else if (firstMarks != null || secondMarks != null)
+            {
+                DrawMarkedText(graphics, firstBounds, m_first.ToString(), firstMarks, cellStyle.Font, format, ordinaryColor, markColor);
+                DrawMarkedText(graphics, secondBounds, m_second.ToString(), secondMarks, cellStyle.Font, format, ordinaryColor, markColor);
+            }
             else
             {
                 graphics.DrawString(m_first.ToString(), cellStyle.Font, new SolidBrush(firstColor),
@@ -222,6 +231,36 @@ namespace AntiDupl.NET.WinForms
             return preferedSize;
         }
 
+        // The same text drawn twice, each time clipped to its colour's parts,
+        // so that it sits exactly where a plain line would.
+        private static void DrawMarkedText(Graphics g, Rectangle bounds, string text, CharacterRange[] marks, Font font,
+            StringFormat format, Color ordinaryColor, Color markColor)
+        {
+            using (SolidBrush ordinary = new SolidBrush(ordinaryColor))
+            using (SolidBrush mark = new SolidBrush(markColor))
+            {
+                if (marks == null || marks.Length == 0)
+                {
+                    g.DrawString(text, font, ordinary, bounds, format);
+                    return;
+                }
+                format.SetMeasurableCharacterRanges(marks);
+                using (Region marked = new Region())
+                using (Region whole = g.Clip)
+                {
+                    marked.MakeEmpty();
+                    foreach (Region part in g.MeasureCharacterRanges(text, font, bounds, format))
+                        marked.Union(part);
+                    g.ExcludeClip(marked);
+                    g.DrawString(text, font, ordinary, bounds, format);
+                    g.Clip = whole;
+                    g.IntersectClip(marked);
+                    g.DrawString(text, font, mark, bounds, format);
+                    g.Clip = whole;
+                }
+            }
+        }
+
         private void DrawTextWithDiff(Graphics g, Rectangle bounds, string text, string otherText, DataGridViewCellStyle style,
             StringFormat format, Color ordinaryColor, Color markColor)
         {
@@ -263,7 +302,7 @@ namespace AntiDupl.NET.WinForms
             }
         }
 
-        private struct DiffSegment
+        public struct DiffSegment
         {
             public string Text;
             public bool IsDifferent;
@@ -275,7 +314,7 @@ namespace AntiDupl.NET.WinForms
             }
         }
 
-        private List<DiffSegment> BuildDiffSegments(string text, string otherText)
+        static public List<DiffSegment> BuildDiffSegments(string text, string otherText)
         {
             var segments = new List<DiffSegment>();
             int i = 0, j = 0;
