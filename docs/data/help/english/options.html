@@ -333,8 +333,8 @@ This option is relevant if you want to compare pictures with frames of different
 By default, this value is 0 %.
  </p></li>
  <li><p align="justify">
-<b>Improve transparent image comparison</b> - a file keeps a colour under its transparent pixels that is never seen, and two copies of one picture can hold different ones (white in one, black in the other).
-With this option on, images with transparency are compared as they are shown: two of them over a white and over a black background, and they are duplicates only if they look alike over both.
+<b>Improve transparent image comparison</b> - a file keeps colours inside its transparent pixels that are invisible. Comparing them can cause false positives and false negatives.
+With this option on, images with transparency are compared as they appear: once over a white and once over a black background, and they are duplicates only if they look alike over both.
 An image with transparency and an opaque image whose transparent part was filled with one colour are compared over that colour.
 The differences highlighted in the preview of a pair are found the same way.
 By default, this option is enabled.
