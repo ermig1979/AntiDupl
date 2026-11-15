@@ -73,13 +73,13 @@ namespace AntiDupl.NET.WinForms
         public CoreImageInfo NeighbourImageInfo { get { return m_neighbourImageInfo; } }
         
         private PictureBoxPanel m_pictureBoxPanel;
-        private Label m_fileSizeLabel;
-        private Label m_imageSizeLabel;
-        private Label m_imageTypeLabel;
-        private Label m_imageBlocknessLabel;
-        private Label m_imageBlurringLabel;
+        private SelectableLabel m_fileSizeLabel;
+        private SelectableLabel m_imageSizeLabel;
+        private SelectableLabel m_imageTypeLabel;
+        private SelectableLabel m_imageBlocknessLabel;
+        private SelectableLabel m_imageBlurringLabel;
         private Label m_imageExifLabel;
-        private Label m_pathLabel;
+        private SelectableLabel m_pathLabel;
         private ToolTip m_toolTip;
 
         public ImagePreviewPanel(CoreLib core, Options options, ResultsListView resultsListView, Position position)
@@ -107,14 +107,16 @@ namespace AntiDupl.NET.WinForms
             m_pictureBoxPanel = new PictureBoxPanel(m_core, m_options);
             m_pictureBoxPanel.ContextMenuStrip = new ImagePreviewContextMenu(m_core, m_options, m_resultsListView.CoreOptions, this, m_resultsListView);
             
-            m_fileSizeLabel = new Label();
+            m_fileSizeLabel = new SelectableLabel();
+            m_fileSizeLabel.Release = ReleaseLabel;
             m_fileSizeLabel.Dock = DockStyle.Fill;
             ThemeColors.SetBorder(m_fileSizeLabel);
             m_fileSizeLabel.Padding = new Padding(1, 3, 1, 0);
             m_fileSizeLabel.TextAlign = ContentAlignment.TopCenter;
             m_fileSizeLabel.AutoSize = true;
             
-            m_imageSizeLabel = new Label();
+            m_imageSizeLabel = new SelectableLabel();
+            m_imageSizeLabel.Release = ReleaseLabel;
             m_imageSizeLabel.Dock = DockStyle.Fill;
             ThemeColors.SetBorder(m_imageSizeLabel);
             m_imageSizeLabel.Padding = new Padding(1, 3, 1, 0);
@@ -122,7 +124,8 @@ namespace AntiDupl.NET.WinForms
             m_imageSizeLabel.TextAlign = ContentAlignment.TopCenter;
             m_imageSizeLabel.AutoSize = true;
 
-            m_imageBlocknessLabel = new Label();
+            m_imageBlocknessLabel = new SelectableLabel();
+            m_imageBlocknessLabel.Release = ReleaseLabel;
             m_imageBlocknessLabel.Dock = DockStyle.Fill;
             ThemeColors.SetBorder(m_imageBlocknessLabel);
             m_imageBlocknessLabel.Padding = new Padding(1, 3, 1, 0);
@@ -130,7 +133,8 @@ namespace AntiDupl.NET.WinForms
             m_imageBlocknessLabel.TextAlign = ContentAlignment.TopCenter;
             m_imageBlocknessLabel.AutoSize = true;
 
-            m_imageBlurringLabel = new Label();
+            m_imageBlurringLabel = new SelectableLabel();
+            m_imageBlurringLabel.Release = ReleaseLabel;
             m_imageBlurringLabel.Dock = DockStyle.Fill;
             ThemeColors.SetBorder(m_imageBlurringLabel);
             m_imageBlurringLabel.Padding = new Padding(1, 3, 1, 0);
@@ -138,7 +142,8 @@ namespace AntiDupl.NET.WinForms
             m_imageBlurringLabel.TextAlign = ContentAlignment.TopCenter;
             m_imageBlurringLabel.AutoSize = true;
 
-            m_imageTypeLabel = new Label();
+            m_imageTypeLabel = new SelectableLabel();
+            m_imageTypeLabel.Release = ReleaseLabel;
             m_imageTypeLabel.Dock = DockStyle.Fill;
             ThemeColors.SetBorder(m_imageTypeLabel);
             m_imageTypeLabel.Padding = new Padding(1, 3, 1, 0);
@@ -156,12 +161,13 @@ namespace AntiDupl.NET.WinForms
             m_imageExifLabel.Text = s.ImagePreviewPanel_EXIF_Text;
             m_imageExifLabel.Visible = false;
 
-            m_pathLabel = new Label();
+            m_pathLabel = new SelectableLabel();
+            m_pathLabel.Release = ReleaseLabel;
             m_pathLabel.Location = new Point(0, 0);
             m_pathLabel.Dock = DockStyle.Fill;
             ThemeColors.SetBorder(m_pathLabel);
             m_pathLabel.Padding = new Padding(1, 3, 1, 0);
-            m_pathLabel.AutoEllipsis = true;
+            m_pathLabel.MiddleEllipsis = true;
             m_pathLabel.DoubleClick += new EventHandler(RenameImage);
 
             m_toolTip = new ToolTip();
@@ -220,9 +226,7 @@ namespace AntiDupl.NET.WinForms
                 m_pathLabel.Text = m_currentImageInfo.path;
                 if (m_neighbourImageInfo != null) //подсветка highlight
                 {
-                    m_imageSizeLabel.ForeColor =
-                            m_currentImageInfo.height * m_currentImageInfo.width < m_neighbourImageInfo.height * m_neighbourImageInfo.width ?
-                            ThemeColors.Worse : ThemeColors.Text;
+                    MarkDifferences();
                     m_imageTypeLabel.ForeColor = m_currentImageInfo.type != m_neighbourImageInfo.type ?
                             ThemeColors.Worse : ThemeColors.Text;
                     m_fileSizeLabel.ForeColor = m_currentImageInfo.size < m_neighbourImageInfo.size ?
@@ -237,8 +241,7 @@ namespace AntiDupl.NET.WinForms
             }
             else if (m_neighbourImageInfo != null)
             {
-                m_imageSizeLabel.ForeColor = m_currentImageInfo.height * m_currentImageInfo.width < m_neighbourImageInfo.height * m_neighbourImageInfo.width ?
-                        ThemeColors.Worse : ThemeColors.Text;
+                    MarkDifferences();
                 m_imageTypeLabel.ForeColor = m_currentImageInfo.type != m_neighbourImageInfo.type ?
                         ThemeColors.Worse : ThemeColors.Text;
                 m_fileSizeLabel.ForeColor = m_currentImageInfo.size < m_neighbourImageInfo.size ?
@@ -257,6 +260,37 @@ namespace AntiDupl.NET.WinForms
                     neighbourSizeMax = new Size((int)m_neighbourImageInfo.width, (int)m_neighbourImageInfo.height);
                 m_pictureBoxPanel.UpdateImagePadding(neighbourSizeMax);
                 Refresh();
+            }
+        }
+
+        // Back to the results list, with the key that ended the selecting.
+        private void ReleaseLabel(KeyEventArgs key)
+        {
+            m_resultsListView.Focus();
+            if (key != null)
+                m_resultsListView.SetKeyDownEvent(key);
+        }
+
+        // Against the other image: each number of the resolution that is
+        // lesser, and what differs in the file name.
+        private void MarkDifferences()
+        {
+            m_imageSizeLabel.ClearMarks();
+            foreach (CharacterRange number in DataGridViewMarkedTextBoxCell.LesserNumbers(m_currentImageInfo, m_neighbourImageInfo))
+                m_imageSizeLabel.AddMark(number.First, number.Length, ThemeColors.Worse);
+
+            m_pathLabel.ClearMarks();
+            string name = Path.GetFileName(m_currentImageInfo.path);
+            string other = Path.GetFileName(m_neighbourImageInfo.path);
+            if (name != other)
+            {
+                int place = m_currentImageInfo.path.Length - name.Length;
+                foreach (DataGridViewDoubleTextBoxCell.DiffSegment segment in DataGridViewDoubleTextBoxCell.BuildDiffSegments(name, other))
+                {
+                    if (segment.IsDifferent)
+                        m_pathLabel.AddMark(place, segment.Text.Length, ThemeColors.Worse);
+                    place += segment.Text.Length;
+                }
             }
         }
 
