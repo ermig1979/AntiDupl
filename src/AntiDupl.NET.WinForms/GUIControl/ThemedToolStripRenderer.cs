@@ -132,6 +132,9 @@ namespace AntiDupl.NET.WinForms
                 Rectangle drawing = m_litDrawing;
                 drawing.Offset((e.Item.Width - e.Item.Image.Width) / 2, (e.Item.Height - e.Item.Image.Height) / 2);
                 drawing.Inflate(LIT_MARGIN, LIT_MARGIN);
+                // The drawing's last column and row are a faint edge, which
+                // makes it look off centre: one pixel more above and left.
+                drawing = Rectangle.FromLTRB(drawing.Left - 1, drawing.Top - 1, drawing.Right, drawing.Bottom);
                 Lit(e.Graphics, Rectangle.Intersect(drawing, bounds));
             }
             else if (Highlighted(e.Item))
