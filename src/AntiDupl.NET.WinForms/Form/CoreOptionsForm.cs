@@ -792,6 +792,7 @@ namespace AntiDupl.NET.WinForms
             m_typeControlCheckBox.Text = s.CoreOptionsForm_TypeControlCheckBox_Text;
             m_ratioControlCheckBox.Text = s.CoreOptionsForm_RatioControlCheckBox_Text;
             m_algorithmComparingLabeledComboBox.Text = s.CoreOptionsForm_AlgorithmComparingLabeledComboBox_Text;
+            FitAlgorithmList();
             m_thresholdDifferenceLabeledComboBox.Text = s.CoreOptionsForm_ThresholdDifferenceLabeledComboBox_Text;
             m_minimalImageSizeLabeledIntegerEdit.Text = s.CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text;
             m_maximalImageSizeLabeledIntegerEdit.Text = s.CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text;
@@ -945,6 +946,27 @@ namespace AntiDupl.NET.WinForms
                 FillThresholds(m_thresholdDifferenceLabeledComboBox.comboBox, algorithm);
                 SelectThreshold(m_thresholdDifferenceLabeledComboBox.comboBox, ThresholdDefault(algorithm));
             }
+        }
+
+        // The narrowest that shows the longest name whole beside the arrow,
+        // in both of the program's list styles: a pixel less cuts its end.
+        public static int AlgorithmListWidth(ComboBox list)
+        {
+            int widest = 0;
+            foreach (object item in list.Items)
+                widest = Math.Max(widest, TextRenderer.MeasureText(item.ToString(), list.Font).Width);
+            return widest + SystemInformation.VerticalScrollBarWidth - 1;
+        }
+
+        // As wide as the longest name, as far as the tab has room beside the
+        // label; the part that drops down always is.
+        private void FitAlgorithmList()
+        {
+            ComboBox list = m_algorithmComparingLabeledComboBox.comboBox;
+            int widest = AlgorithmListWidth(list);
+            list.DropDownWidth = widest;
+            int room = FORM_WIDTH - 45 - TextRenderer.MeasureText(m_algorithmComparingLabeledComboBox.Text, list.Font).Width;
+            list.Width = Math.Max(COMBO_BOX_WIDTH + 115, Math.Min(widest, room));
         }
 
         private void OnOptionChanged(object sender, EventArgs e)
