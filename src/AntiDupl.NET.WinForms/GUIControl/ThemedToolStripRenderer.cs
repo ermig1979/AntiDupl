@@ -23,7 +23,6 @@
 */
 using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace AntiDupl.NET.WinForms
@@ -37,9 +36,6 @@ namespace AntiDupl.NET.WinForms
     /// </summary>
     public class ThemedToolStripRenderer : ToolStripSystemRenderer
     {
-        private const int FRAME_WIDTH = 3;
-        private Rectangle m_frameDrawing;
-
         /// <summary>
         /// Gives a tool bar or menu this renderer. In light mode it draws as
         /// the system renderer does, apart from Left.
@@ -78,10 +74,14 @@ namespace AntiDupl.NET.WinForms
         }
 
         /// <summary>
-        /// A button whose checked state lights only a frame around its
-        /// drawing, rather than the whole button.
+        /// A button that, while checked, is filled and framed in the
+        /// selection colour: the system's own checked look is a faint tint,
+        /// easily taken for off, and this button slows the program down
+        /// while on.
         /// </summary>
-        public ToolStripButton FramedWhenChecked { get; set; }
+        public ToolStripButton LitWhenChecked { get; set; }
+        private const int LIT_MARGIN = 3;
+        private Rectangle m_litDrawing;
 
         // Where the image isn't transparent.
         static private Rectangle DrawingBounds(Image image)
@@ -102,37 +102,42 @@ namespace AntiDupl.NET.WinForms
             }
         }
 
-        private Region Frame(ToolStripItem item)
+        // A quarter of the selection colour over the tool bar's in light
+        // mode, where the full colour would hide the drawing; the dark
+        // mode's selection colour is dark enough as it is.
+        static private void Lit(Graphics graphics, Rectangle bounds)
         {
-            if (m_frameDrawing.IsEmpty)
-                m_frameDrawing = DrawingBounds(item.Image);
-            Rectangle drawing = m_frameDrawing;
-            drawing.Offset((item.Width - item.Image.Width) / 2, (item.Height - item.Image.Height) / 2);
-            Rectangle outer = drawing;
-            outer.Inflate(FRAME_WIDTH, FRAME_WIDTH);
-            Region frame = new Region(outer);
-            frame.Exclude(drawing);
-            return frame;
+            Color frame = Application.IsDarkModeEnabled ? ThemeColors.Link : SystemColors.Highlight;
+            Color fill = ThemeColors.Selection;
+            if (!Application.IsDarkModeEnabled)
+            {
+                Color back = SystemColors.Control;
+                fill = Color.FromArgb((fill.R + 3 * back.R) / 4, (fill.G + 3 * back.G) / 4, (fill.B + 3 * back.B) / 4);
+            }
+            using (SolidBrush brush = new SolidBrush(fill))
+                graphics.FillRectangle(brush, bounds);
+            using (Pen pen = new Pen(frame))
+                graphics.DrawRectangle(pen, bounds.X, bounds.Y, bounds.Width - 1, bounds.Height - 1);
         }
 
         protected override void OnRenderButtonBackground(ToolStripItemRenderEventArgs e)
         {
-            bool framed = e.Item == FramedWhenChecked && FramedWhenChecked.Checked;
-            Region whole = framed ? e.Graphics.Clip : null;
-            if (framed)
-                using (Region frame = Frame(e.Item))
-                    e.Graphics.SetClip(frame, CombineMode.Intersect);
-
-            if (Highlighted(e.Item))
-                Fill(e.Graphics, new Rectangle(Point.Empty, e.Item.Size));
+            Rectangle bounds = new Rectangle(Point.Empty, e.Item.Size);
+            if (e.Item == LitWhenChecked && LitWhenChecked.Checked && e.Item.Enabled)
+            {
+                // Around the drawing, not the whole button: the button is
+                // taller than the tool bar shows, which would cut the frame.
+                if (m_litDrawing.IsEmpty)
+                    m_litDrawing = DrawingBounds(e.Item.Image);
+                Rectangle drawing = m_litDrawing;
+                drawing.Offset((e.Item.Width - e.Item.Image.Width) / 2, (e.Item.Height - e.Item.Image.Height) / 2);
+                drawing.Inflate(LIT_MARGIN, LIT_MARGIN);
+                Lit(e.Graphics, Rectangle.Intersect(drawing, bounds));
+            }
+            else if (Highlighted(e.Item))
+                Fill(e.Graphics, bounds);
             else
                 base.OnRenderButtonBackground(e);
-
-            if (framed)
-            {
-                e.Graphics.Clip = whole;
-                whole.Dispose();
-            }
         }
 
         protected override void OnRenderDropDownButtonBackground(ToolStripItemRenderEventArgs e)
