@@ -24,11 +24,14 @@
 #ifndef __adSearcher_h__
 #define __adSearcher_h__
 
+#include <memory>
+
 #include "adConfig.h"
 
 namespace ad
 {
     struct TOptions;
+    class TFilenameFilter;
     struct TImageData;
     typedef TImageData* TImageDataPtr;
     typedef std::list<TImageDataPtr> TImageDataPtrs;
@@ -58,6 +61,7 @@ namespace ad
         TOptions *m_pOptions;
         TImageDataStorage *m_pImageDataStorage;
         TStrings m_extensions;
+        std::shared_ptr<TFilenameFilter> m_pFilenameFilter;
         adUInt64 m_searchedImageSize;
     };
     //-------------------------------------------------------------------------

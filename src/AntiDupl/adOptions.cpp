@@ -292,4 +292,23 @@ namespace ad
         return (int)ceil(advanced.reducedImageSize*advanced.ignoreFrameWidth/double(DENOMINATOR));
     }
     //---------------------------------------------------------------------------
+    TFilenameFilter::TFilenameFilter(const TString& pattern)
+    {
+        if(pattern.empty())
+            return;
+        try
+        {
+            m_pRegex = std::make_shared<std::wregex>(pattern);
+        }
+        catch(...)
+        {
+            m_pRegex.reset();
+        }
+    }
+
+    bool TFilenameFilter::Excludes(const TString& path) const
+    {
+        return m_pRegex && std::regex_match(GetFileName(path), *m_pRegex);
+    }
+    //---------------------------------------------------------------------------
 }
