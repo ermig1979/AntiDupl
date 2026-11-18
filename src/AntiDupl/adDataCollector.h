@@ -56,6 +56,7 @@ namespace ad
 
     private:
         void FillPixelData(TImageData* pImageData);
+        void Reduce(const TView & gray, TUInt8 * main);
         void CheckOnDefect(TImageData* pImageData);
         void SetCrc32c(TImageData* pImageData);
 		double GetBlockiness(const TView & gray);

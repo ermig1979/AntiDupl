@@ -326,6 +326,8 @@
     <v:String x:Key="configurationWindow_undoQueueSize">Queue size of undo</v:String>
     <v:String x:Key="configurationWindow_resultCountMax">Maximal count of results</v:String>
     <v:String x:Key="configurationWindow_ignoreFrameWidth">Width of ignored frame of image</v:String>
+    <v:String x:Key="configurationWindow_transparentAsShown">Improve transparent image comparison</v:String>
+    <v:String x:Key="configurationWindow_ignoreTransparent">Ignore areas with transparency in both images</v:String>
     <v:String x:Key="configurationWindow_useLibJpegTurbo">Use libjpeg-turbo</v:String>
 
     <!-- ==== Defect (подписи) ==== -->
@@ -370,6 +372,8 @@
     <v:String x:Key="configurationWindow_tooltip_undoQueueSize">Maximum number of undo operations kept in memory.</v:String>
     <v:String x:Key="configurationWindow_tooltip_resultCountMax">Maximum number of results returned by the core (0 = unlimited).</v:String>
     <v:String x:Key="configurationWindow_tooltip_ignoreFrameWidth">Width in pixels of the border around the image that is ignored when comparing.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_transparentAsShown">Compare images with transparency as they appear over white and over black: the colour a file stores inside transparent pixels is never seen.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_ignoreTransparent">Also compare a pair only where the image with transparency is opaque, so that a copy laid over another background or picture is found. Needs the option above.</v:String>
     <v:String x:Key="configurationWindow_tooltip_useLibJpegTurbo">Use libjpeg-turbo for decoding JPEG (faster on most CPUs).</v:String>
 
     <!-- ==== Tooltips: Defect ==== -->

@@ -311,8 +311,11 @@ namespace AntiDupl.NET.WinForms
                 }
                 HighlightCompleteEvent += new HighlightCompleteDelegate(HighlightCompleteEventHandler);
                 _highlightStop = false;
-                ComparableBitmap[] bitmap1 = m_firstImagePreviewPanel.GetImageFragments();
-                ComparableBitmap[] bitmap2 = m_secondImagePreviewPanel.GetImageFragments();
+                List<ComparableBitmap[]> bitmap1 = new List<ComparableBitmap[]>();
+                List<ComparableBitmap[]> bitmap2 = new List<ComparableBitmap[]>();
+                GetFragments(m_firstImagePreviewPanel.GetBitmap(), m_secondImagePreviewPanel.GetBitmap(),
+                    m_options.resultsOptions, m_coreOptions.compareOptions.transparentAsShown,
+                    m_coreOptions.compareOptions.ignoreTransparent, bitmap1, bitmap2);
                 _thread = new Thread(
                      unused => CalculateRectanglesOfDifferences(bitmap1, bitmap2));
                 _thread.Name = "Calculate rectangles of differences";
@@ -325,21 +328,65 @@ namespace AntiDupl.NET.WinForms
             }
         }
 
-        private void CalculateRectanglesOfDifferences(ComparableBitmap[] bitmap1, ComparableBitmap[] bitmap2)
+        /// <summary>
+        /// The fragments of a pair's pictures to compare: one set each, or
+        /// with the transparency option one set per background the pictures
+        /// are laid over (TransparentPair.Shown), like the search. With
+        /// transparent areas ignored as well, a pair the search compares that
+        /// way is compared only where its images with transparency are opaque
+        /// (TransparentPair.Masked). None when a picture is missing or the
+        /// normalized size too small.
+        /// </summary>
+        public static void GetFragments(Bitmap first, Bitmap second, ResultsOptions options, bool transparentAsShown,
+            bool ignoreTransparent, List<ComparableBitmap[]> firstFragments, List<ComparableBitmap[]> secondFragments)
         {
-            if ((bitmap1 == null) || (bitmap2 == null))
+            if (first == null || second == null)
+                return;
+            Func<Bitmap, Bitmap> normalize = bitmap => ImagePreviewPanel.Normalize(bitmap, options);
+            Bitmap[] masked = transparentAsShown && ignoreTransparent ? TransparentPair.Masked(first, second, normalize) : null;
+            List<Bitmap[]> pairs = masked != null ? new List<Bitmap[]> { masked } :
+                transparentAsShown ? TransparentPair.Shown(first, second, normalize) :
+                new List<Bitmap[]> { new Bitmap[] { normalize(first), normalize(second) } };
+            foreach (Bitmap[] pair in pairs)
+            {
+                if (pair[0] == null || pair[1] == null)
+                {
+                    firstFragments.Clear();
+                    secondFragments.Clear();
+                    return;
+                }
+                firstFragments.Add(ImagePreviewPanel.GetImageFragments(pair[0], options));
+                secondFragments.Add(ImagePreviewPanel.GetImageFragments(pair[1], options));
+            }
+        }
+
+        /// <summary>
+        /// The similarity of fragment i: the least over the sets, as the
+        /// search takes the larger difference over white and over black.
+        /// </summary>
+        public static float Similarity(List<ComparableBitmap[]> first, List<ComparableBitmap[]> second, int i)
+        {
+            float similarity = float.MaxValue;
+            for (int set = 0; set < first.Count; set++)
+                similarity = Math.Min(similarity, Comparator.Similarity(first[set][i].GrayscaleData, second[set][i].GrayscaleData));
+            return similarity;
+        }
+
+        private void CalculateRectanglesOfDifferences(List<ComparableBitmap[]> bitmap1, List<ComparableBitmap[]> bitmap2)
+        {
+            if (bitmap1.Count == 0 || bitmap2.Count == 0)
                 return;
 
             List<RectanglesWithSimilarity> rectangles = new List<RectanglesWithSimilarity>();
             float similarity;
-            for (int i = 0; i < bitmap1.Length; i++)
+            for (int i = 0; i < bitmap1[0].Length; i++)
             {
                 if (_highlightStop)
                     return;
-                similarity = Comparator.Similarity(bitmap1[i].GrayscaleData, bitmap2[i].GrayscaleData);
+                similarity = Similarity(bitmap1, bitmap2, i);
                 if (similarity < m_options.resultsOptions.DifferenceThreshold)
                 {
-                    rectangles.Add(new RectanglesWithSimilarity(bitmap1[i].Rect, similarity));
+                    rectangles.Add(new RectanglesWithSimilarity(bitmap1[0][i].Rect, similarity));
                 }
             }
 

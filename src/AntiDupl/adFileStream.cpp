@@ -153,6 +153,21 @@ namespace ad
 			Load(pixelData.pixelHash);
 		if(m_version > 6)
 			Load(pixelData.color, COLOR_DATA_SIZE);
+		// The image database loads every record into the same object: a
+		// record without the over-black thumbnails must not keep the last.
+		bool alpha = false;
+		pixelData.asShown = false;
+		if(m_version > 7)
+		{
+			Load(pixelData.asShown);
+			Load(alpha);
+		}
+		pixelData.SetAlpha(alpha);
+		if(alpha)
+		{
+			Load(pixelData.mainBlack, pixelData.size);
+			Load(pixelData.colorBlack, COLOR_DATA_SIZE);
+		}
 	}
 
 	void TInputFileStream::Load(TImageData & imageData) const
@@ -297,6 +312,13 @@ namespace ad
 		Save(pixelData.varianceSquare);
 		Save(pixelData.pixelHash);
 		Save(pixelData.color, COLOR_DATA_SIZE);
+		Save(pixelData.asShown);
+		Save(pixelData.alpha);
+		if(pixelData.alpha)
+		{
+			Save(pixelData.mainBlack, pixelData.size);
+			Save(pixelData.colorBlack, COLOR_DATA_SIZE);
+		}
 	}
 
 	// Сохранение в потоке изображения

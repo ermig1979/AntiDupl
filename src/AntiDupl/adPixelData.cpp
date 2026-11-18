@@ -40,7 +40,12 @@ namespace ad
 		varianceSquare(0),
 		sum(0),
 		sumSquare(0),
-		pixelHash(0)
+		pixelHash(0),
+		asShown(false),
+		alpha(false),
+		fastBlack(NULL),
+		mainBlack(NULL),
+		colorBlack(NULL)
     {
     }
 
@@ -56,20 +61,63 @@ namespace ad
 		varianceSquare(pixelData.varianceSquare),
 		sum(pixelData.sum),
 		sumSquare(pixelData.sumSquare),
-		pixelHash(pixelData.pixelHash)
+		pixelHash(pixelData.pixelHash),
+		asShown(false),
+		alpha(false),
+		fastBlack(NULL),
+		mainBlack(NULL),
+		colorBlack(NULL)
     {
         if(pixelData.filled)
         {
-            memcpy(fast, pixelData.fast, full);
-            memcpy(color, pixelData.color, COLOR_DATA_SIZE);
+            CopyFrom(pixelData);
             filled = true;
         }
     }
 
     TPixelData::~TPixelData()
     {
+        SetAlpha(false);
         SimdFree((void*)fast);
         SimdFree((void*)color);
+    }
+
+    // Allocates or frees the over-black buffers.
+    void TPixelData::SetAlpha(bool alpha_)
+    {
+        if(alpha_ && fastBlack == NULL)
+        {
+            fastBlack = static_cast<TUInt8*>(SimdAllocate(full, SimdAlignment()));
+            mainBlack = fastBlack + FAST_DATA_SIZE;
+            colorBlack = static_cast<TUInt8*>(SimdAllocate(COLOR_DATA_SIZE, SimdAlignment()));
+        }
+        else if(!alpha_ && fastBlack != NULL)
+        {
+            SimdFree(fastBlack);
+            SimdFree(colorBlack);
+            fastBlack = mainBlack = colorBlack = NULL;
+        }
+        alpha = alpha_;
+    }
+
+    // The thumbnails and the values computed from them; not filled, which
+    // the callers set.
+    void TPixelData::CopyFrom(const TPixelData& pixelData)
+    {
+        memcpy(fast, pixelData.fast, full);
+        memcpy(color, pixelData.color, COLOR_DATA_SIZE);
+        average = pixelData.average;
+        varianceSquare = pixelData.varianceSquare;
+        sum = pixelData.sum;
+        sumSquare = pixelData.sumSquare;
+        pixelHash = pixelData.pixelHash;
+        asShown = pixelData.asShown;
+        SetAlpha(pixelData.alpha);
+        if(alpha)
+        {
+            memcpy(fastBlack, pixelData.fastBlack, full);
+            memcpy(colorBlack, pixelData.colorBlack, COLOR_DATA_SIZE);
+        }
     }
 
     // The colour thumbnail turned or mirrored the way Turn and Mirror move
@@ -102,7 +150,7 @@ namespace ad
     }
 
 	// Делаем очень уменьшенное изображение (4x4) для быстрого сравнения.
-    void TPixelData::FillFast(int ignoreFrameWidth)
+    static void FillFast(TUInt8 *fast, const TUInt8 *main, size_t side, int ignoreFrameWidth)
     {
         size_t step = (side - 2*ignoreFrameWidth)/FAST_IMAGE_SIZE;
         size_t area = Simd::Square(step);
@@ -125,16 +173,17 @@ namespace ad
         }
     }
 
-    void TPixelData::Turn(TUInt8* buffer)
+    void TPixelData::FillFast(int ignoreFrameWidth)
     {
-        bool inner = false;
-        if(buffer == NULL)
-        {
-            buffer = (TUInt8*)SimdAllocate(full, SimdAlignment());
-            inner = true;
-        }
+        ad::FillFast(fast, main, side, ignoreFrameWidth);
+        if(alpha)
+            ad::FillFast(fastBlack, mainBlack, side, ignoreFrameWidth);
+    }
 
-        TUInt8* pMain = main;
+    // fast (FAST_DATA_SIZE bytes) and main after it, turned through buffer.
+    static void Turn(TUInt8 *fast, size_t side, size_t full, TUInt8 *buffer)
+    {
+        TUInt8* pMain = fast + FAST_DATA_SIZE;
         TUInt8* pBufferMain = buffer + FAST_DATA_SIZE;
         for(size_t new_x = 0; new_x < side; new_x++)
         {
@@ -155,15 +204,9 @@ namespace ad
         }
 
         memcpy(fast, buffer, full);
-        const size_t n = COLOR_IMAGE_SIZE;
-        TransformColor(color, [n](size_t x, size_t y) { return n*(n - 1 - x) + y; });
-        pixelHash = 0;
-
-        if(inner)
-            SimdFree(buffer);
     }
 
-    void TPixelData::Mirror(TUInt8* buffer)
+    void TPixelData::Turn(TUInt8* buffer)
     {
         bool inner = false;
         if(buffer == NULL)
@@ -172,7 +215,25 @@ namespace ad
             inner = true;
         }
 
-        TUInt8* pMain = main;
+        ad::Turn(fast, side, full, buffer);
+        const size_t n = COLOR_IMAGE_SIZE;
+        auto to = [n](size_t x, size_t y) { return n*(n - 1 - x) + y; };
+        TransformColor(color, to);
+        if(alpha)
+        {
+            ad::Turn(fastBlack, side, full, buffer);
+            TransformColor(colorBlack, to);
+        }
+        pixelHash = 0;
+
+        if(inner)
+            SimdFree(buffer);
+    }
+
+    // fast (FAST_DATA_SIZE bytes) and main after it, mirrored through buffer.
+    static void Mirror(TUInt8 *fast, size_t side, size_t full, TUInt8 *buffer)
+    {
+        TUInt8* pMain = fast + FAST_DATA_SIZE;
         TUInt8* pBufferMain = buffer + FAST_DATA_SIZE;
         for(size_t new_y = 0; new_y < side; new_y++)
         {
@@ -193,8 +254,26 @@ namespace ad
         }
 
         memcpy(fast, buffer, full);
+    }
+
+    void TPixelData::Mirror(TUInt8* buffer)
+    {
+        bool inner = false;
+        if(buffer == NULL)
+        {
+            buffer = (TUInt8*)SimdAllocate(full, SimdAlignment());
+            inner = true;
+        }
+
+        ad::Mirror(fast, side, full, buffer);
         const size_t n = COLOR_IMAGE_SIZE;
-        TransformColor(color, [n](size_t x, size_t y) { return n*y + (n - 1 - x); });
+        auto to = [n](size_t x, size_t y) { return n*y + (n - 1 - x); };
+        TransformColor(color, to);
+        if(alpha)
+        {
+            ad::Mirror(fastBlack, side, full, buffer);
+            TransformColor(colorBlack, to);
+        }
         pixelHash = 0;
 
         if(inner)
