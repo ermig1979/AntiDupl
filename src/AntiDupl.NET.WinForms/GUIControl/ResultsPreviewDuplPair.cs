@@ -301,14 +301,17 @@ namespace AntiDupl.NET.WinForms
 
         private void SetDifference()
         {
-            if (m_options.resultsOptions.HighlightDifference)
+            // A pair shown as 0.00 has the same pixels: nothing to mark, so
+            // its row change doesn't wait for a comparison of every fragment.
+            bool identical = m_currentSearchResult != null && DifferenceFormat.IsIdentical(m_currentSearchResult.difference);
+            if (_thread != null && _thread.ThreadState == System.Threading.ThreadState.Running)
             {
-                if (_thread != null && _thread.ThreadState == System.Threading.ThreadState.Running)
-                {
-                    HighlightCompleteEvent -= new HighlightCompleteDelegate(HighlightCompleteEventHandler);
-                    _highlightStop = true;
-                    _thread.Join();
-                }
+                HighlightCompleteEvent -= new HighlightCompleteDelegate(HighlightCompleteEventHandler);
+                _highlightStop = true;
+                _thread.Join();
+            }
+            if (m_options.resultsOptions.HighlightDifference && !identical)
+            {
                 HighlightCompleteEvent += new HighlightCompleteDelegate(HighlightCompleteEventHandler);
                 _highlightStop = false;
                 ComparableBitmap[] bitmap1 = m_firstImagePreviewPanel.GetImageFragments();
