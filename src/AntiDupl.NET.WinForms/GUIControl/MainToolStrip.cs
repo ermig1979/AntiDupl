@@ -122,13 +122,14 @@ namespace AntiDupl.NET.WinForms
 
             m_algorithmComparingComboBox = new ToolStripComboBox();
             m_algorithmComparingComboBox.AutoSize = false;
-            m_algorithmComparingComboBox.Size = new System.Drawing.Size(70, 20);
             m_algorithmComparingComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             m_algorithmComparingComboBox.FlatStyle = FlatStyle.Popup;
             m_algorithmComparingComboBox.SelectedIndexChanged += new EventHandler(OnAlgorithmComparingChanged);
             m_algorithmComparingComboBox.Items.Add(Resources.Strings.Current.CoreOptionsForm_AlgorithmComparingLabeledComboBox_SquaredSum);
             m_algorithmComparingComboBox.Items.Add("SSIM");
             m_algorithmComparingComboBox.Items.Add(Resources.Strings.Current.CoreOptionsForm_AlgorithmComparingLabeledComboBox_LocalColor);
+            m_algorithmComparingComboBox.Size = new System.Drawing.Size(
+                CoreOptionsForm.AlgorithmListWidth(m_algorithmComparingComboBox.ComboBox), 20);
 
             m_undoButton = InitFactory.ToolButton.Create("UndoButton", null, m_mainMenu.UndoAction);
             m_redoButton = InitFactory.ToolButton.Create("RedoButton", null, m_mainMenu.RedoAction);
