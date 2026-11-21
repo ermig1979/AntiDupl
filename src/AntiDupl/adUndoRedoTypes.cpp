@@ -244,19 +244,23 @@ namespace ad
 		class TValidator
         {
 			TOptions *m_pOptions;
+			TFilenameFilter m_filenameFilter;
         public:
-			TValidator(TOptions *pOptions) :m_pOptions(pOptions) {}
+			TValidator(TOptions *pOptions) :m_pOptions(pOptions), m_filenameFilter(pOptions->ignoreFilenameFilter) {}
             bool operator()(TImageInfo* a) const //DEFECT
 			{
 				return !((m_pOptions->ignorePaths.IsHasPath(a->path.Original()) != AD_IS_NOT_EXIST) ||
-						 (m_pOptions->ignorePaths.IsHasPath(a->path.GetDirectory()) != AD_IS_NOT_EXIST));
-			} 
+						 (m_pOptions->ignorePaths.IsHasPath(a->path.GetDirectory()) != AD_IS_NOT_EXIST) ||
+						 m_filenameFilter.Excludes(a->path.Original()));
+			}
             bool operator()(TImageInfo* a, TImageInfo* b) const  //DUPL_IMAGE_PAIR true - оставлять, false- удалять
             {	// != AD_IS_NOT_EXIST - есть в каталоге пропуска (удалить), == AD_IS_NOT_EXIST - нету в каталоге пропуска
 				return !((m_pOptions->ignorePaths.IsHasPath(a->path.Original()) != AD_IS_NOT_EXIST) ||
 					   (m_pOptions->ignorePaths.IsHasPath(a->path.GetDirectory()) != AD_IS_NOT_EXIST) ||
 					   (m_pOptions->ignorePaths.IsHasPath(b->path.Original()) != AD_IS_NOT_EXIST) ||
-					   (m_pOptions->ignorePaths.IsHasPath(b->path.GetDirectory()) != AD_IS_NOT_EXIST));
+					   (m_pOptions->ignorePaths.IsHasPath(b->path.GetDirectory()) != AD_IS_NOT_EXIST) ||
+					   m_filenameFilter.Excludes(a->path.Original()) ||
+					   m_filenameFilter.Excludes(b->path.Original()));
 			}
         };
 

@@ -25,6 +25,8 @@
 #define __adOptions_h__
 
 #include <list>
+#include <memory>
+#include <regex>
 
 #include <limits.h>
 
@@ -97,6 +99,19 @@ namespace ad
         typedef std::list<TOption> TOptionsList;
 
         TOptionsList m_options;
+    };
+    //-------------------------------------------------------------------------
+    // The filename filter (TOptions::ignoreFilenameFilter), compiled once: a
+    // file whose name, extension included, matches it is left out, by the
+    // search and by refreshing the results. An empty or invalid expression
+    // leaves out nothing.
+    class TFilenameFilter
+    {
+    public:
+        explicit TFilenameFilter(const TString& pattern);
+        bool Excludes(const TString& path) const;
+    private:
+        std::shared_ptr<std::wregex> m_pRegex;
     };
     //-------------------------------------------------------------------------
 }
