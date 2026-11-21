@@ -32,6 +32,7 @@
 #include "adThreadManagement.h"
 #include "adSearcher.h"
 #include "adRecycleBin.h"
+#include "adButteraugli.h"
 #include "adEngine.h"
 #include "adPerformance.h"
 #include "adLogger.h"
@@ -58,6 +59,7 @@ namespace ad
         m_pCompareManager = new TCompareManager(this);
         m_pCollectManager = new TCollectManager(this, m_pCompareManager);
         m_pSearcher = new TSearcher(this, m_pImageDataPtrs);
+        m_pButteraugliStore = NULL;
     }
 
     TEngine::~TEngine()
@@ -95,6 +97,9 @@ namespace ad
 
         if(m_pOptions->compare.checkOnEquality == TRUE)
         {
+            // Before the compare threads, whose comparers take it.
+            if(m_pOptions->compare.algorithmComparing == AD_COMPARING_BUTTERAUGLI)
+                m_pButteraugliStore = new TButteraugliStore(this);
             m_pCompareManager->Start(m_pImageDataPtrs->size());
             m_pCompareManager->SetPriority(THREAD_PRIORITY_LOWEST);
         }
@@ -117,6 +122,8 @@ namespace ad
             m_pStatus->Wait(AD_THREAD_TYPE_MAIN, 0);
             m_pCompareManager->SetPriority(THREAD_PRIORITY_NORMAL);
             m_pCompareManager->Finish();
+            delete m_pButteraugliStore; // saves the scores
+            m_pButteraugliStore = NULL;
         }
 
         m_pImageDataPtrs->clear();

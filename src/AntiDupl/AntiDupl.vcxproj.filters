@@ -2,6 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="adBlurringDetector.cpp" />
+    <ClCompile Include="adButteraugli.cpp" />
     <ClCompile Include="adDataCollector.cpp" />
     <ClCompile Include="adDump.cpp" />
     <ClCompile Include="adDuplResultFilter.cpp" />
@@ -79,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="adBlurringDetector.h" />
+    <ClInclude Include="adButteraugli.h" />
     <ClInclude Include="adConfig.h" />
     <ClInclude Include="adDataCollector.h" />
     <ClInclude Include="adDump.h" />

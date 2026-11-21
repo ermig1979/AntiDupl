@@ -111,6 +111,24 @@ namespace ad
     const size_t COLOR_IMAGE_SIZE = 64;
     const size_t COLOR_BLOCK_SIZE = 4;
     const size_t COLOR_DATA_SIZE = COLOR_IMAGE_SIZE*COLOR_IMAGE_SIZE*3;
+    // Butteraugli scores only the pairs whose local colour difference is
+    // within this many percent: the settings study's pairs up to a score of
+    // 15 at 512 px all were within 5.21 %.
+    const double BUTTERAUGLI_CANDIDATE_THRESHOLD = 10.0;
+    const TInt32 BUTTERAUGLI_SIZE_DEFAULT = 768;
+    const TInt32 BUTTERAUGLI_SIZE_MIN = 128;
+    const TInt32 BUTTERAUGLI_SIZE_MAX = 2048;
+    // The brightness of white, in nits, Butteraugli judges a pair as seen at.
+    // At libjxl's default, 80 (sRGB's reference), the eye it models hardly
+    // tells near-black shades apart, so two different dark pictures score
+    // like copies of one. At 400, a bright monitor, copies and other pictures
+    // separate well on pairs judged by hand, dark ones included.
+    const float BUTTERAUGLI_INTENSITY_TARGET = 400.0f;
+    // Images decoded at the working size are kept up to this many bytes.
+    const size_t BUTTERAUGLI_IMAGE_CACHE_BYTES = size_t(512) << 20;
+    // Part of the stored scores' key: a change to how a score is computed
+    // (the working images, the metric) makes the stored ones stale.
+    const TUInt32 BUTTERAUGLI_SCORE_VERSION = 2;
     // Transparency shown: when could an opaque image be a copy of one with
     // transparency, its transparent area filled with one colour
     // (TImageComparer::UniformFill). Pixels of the colour thumbnail count as
