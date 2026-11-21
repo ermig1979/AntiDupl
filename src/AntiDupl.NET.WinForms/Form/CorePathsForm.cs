@@ -204,6 +204,7 @@ namespace AntiDupl.NET.WinForms
             m_cancelButton = new Button();
             m_cancelButton.Click += new EventHandler(OnCancelButtonClick);
             mainButtonsTableLayoutPanel.Controls.Add(m_cancelButton, 2, 0);
+            CancelButton = m_cancelButton;
 
             AllowDrop = true;
             DragDrop += new DragEventHandler(OnDragDrop);
@@ -447,16 +448,20 @@ namespace AntiDupl.NET.WinForms
             if (path == null)
                 return;
             var dialog = new FolderPicker();
+            dialog.Multiselect = true;
             dialog.InputPath = GetInitialPath(path);
             if (dialog.ShowDialog(IntPtr.Zero) == true)
             {
-                Array.Resize(ref path, path.Length + 1);
-                path[path.Length - 1] = new CorePathWithSubFolder();
-                if (dialog.ResultPath[dialog.ResultPath.Length - 1] == Path.DirectorySeparatorChar)
-                    path[path.Length - 1].path = dialog.ResultPath.Remove(dialog.ResultPath.Length - 1);
-                else
-                    path[path.Length - 1].path = dialog.ResultPath;
-                path[path.Length - 1].enableSubFolder = true;
+                foreach (string folder in dialog.ResultPaths)
+                {
+                    Array.Resize(ref path, path.Length + 1);
+                    path[path.Length - 1] = new CorePathWithSubFolder();
+                    if (folder[folder.Length - 1] == Path.DirectorySeparatorChar)
+                        path[path.Length - 1].path = folder.Remove(folder.Length - 1);
+                    else
+                        path[path.Length - 1].path = folder;
+                    path[path.Length - 1].enableSubFolder = true;
+                }
                 SetCurrentPath(path);
                 m_newCoreOptions.Validate(m_core, m_options.onePath);
                 UpdatePath();

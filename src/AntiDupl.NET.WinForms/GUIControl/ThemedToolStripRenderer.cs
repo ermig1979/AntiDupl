@@ -21,7 +21,9 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
+using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace AntiDupl.NET.WinForms
@@ -30,23 +32,43 @@ namespace AntiDupl.NET.WinForms
     /// The system look of tool bars and menus; in dark mode the button or
     /// menu item under the mouse, or pressed, or open, is filled with
     /// ThemeColors.Selection, like the selected rows of the results table.
-    /// Its drop-down menus use it too.
+    /// In both themes a menu item left for another one while its sub-menu
+    /// is still open is drawn plain (Left). Its drop-down menus use it too.
     /// </summary>
     public class ThemedToolStripRenderer : ToolStripSystemRenderer
     {
+        private const int FRAME_WIDTH = 3;
+        private Rectangle m_frameDrawing;
+
         /// <summary>
-        /// Gives a tool bar or menu this renderer in dark mode; in light mode
-        /// it keeps the system renderer it has.
+        /// Gives a tool bar or menu this renderer. In light mode it draws as
+        /// the system renderer does, apart from Left.
         /// </summary>
         static public void Set(ToolStrip toolStrip)
         {
-            if (Application.IsDarkModeEnabled)
-                toolStrip.Renderer = new ThemedToolStripRenderer();
+            toolStrip.Renderer = new ThemedToolStripRenderer();
+        }
+
+        /// <summary>
+        /// A menu item whose sub-menu is still open while the mouse is on
+        /// another item of its menu. WinForms closes that sub-menu only after
+        /// the hover delay, and until then the item stays pressed, which the
+        /// system renderer draws lit like the item under the mouse: the
+        /// highlight seemed to lag behind the mouse.
+        /// </summary>
+        static private bool Left(ToolStripItem item)
+        {
+            if (item == null || item.Selected || !item.Pressed || !item.IsOnDropDown || item.Owner == null)
+                return false;
+            foreach (ToolStripItem other in item.Owner.Items)
+                if (other != item && other.Selected)
+                    return true;
+            return false;
         }
 
         static private bool Highlighted(ToolStripItem item)
         {
-            return Application.IsDarkModeEnabled && item != null && item.Enabled && (item.Selected || item.Pressed);
+            return Application.IsDarkModeEnabled && item != null && item.Enabled && (item.Selected || item.Pressed) && !Left(item);
         }
 
         static private void Fill(Graphics graphics, Rectangle bounds)
@@ -55,12 +77,62 @@ namespace AntiDupl.NET.WinForms
                 graphics.FillRectangle(brush, bounds);
         }
 
+        /// <summary>
+        /// A button whose checked state lights only a frame around its
+        /// drawing, rather than the whole button.
+        /// </summary>
+        public ToolStripButton FramedWhenChecked { get; set; }
+
+        // Where the image isn't transparent.
+        static private Rectangle DrawingBounds(Image image)
+        {
+            using (Bitmap bitmap = new Bitmap(image))
+            {
+                int left = bitmap.Width, top = bitmap.Height, right = 0, bottom = 0;
+                for (int y = 0; y < bitmap.Height; y++)
+                    for (int x = 0; x < bitmap.Width; x++)
+                        if (bitmap.GetPixel(x, y).A != 0)
+                        {
+                            left = Math.Min(left, x);
+                            top = Math.Min(top, y);
+                            right = Math.Max(right, x + 1);
+                            bottom = Math.Max(bottom, y + 1);
+                        }
+                return Rectangle.FromLTRB(left, top, right, bottom);
+            }
+        }
+
+        private Region Frame(ToolStripItem item)
+        {
+            if (m_frameDrawing.IsEmpty)
+                m_frameDrawing = DrawingBounds(item.Image);
+            Rectangle drawing = m_frameDrawing;
+            drawing.Offset((item.Width - item.Image.Width) / 2, (item.Height - item.Image.Height) / 2);
+            Rectangle outer = drawing;
+            outer.Inflate(FRAME_WIDTH, FRAME_WIDTH);
+            Region frame = new Region(outer);
+            frame.Exclude(drawing);
+            return frame;
+        }
+
         protected override void OnRenderButtonBackground(ToolStripItemRenderEventArgs e)
         {
+            bool framed = e.Item == FramedWhenChecked && FramedWhenChecked.Checked;
+            Region whole = framed ? e.Graphics.Clip : null;
+            if (framed)
+                using (Region frame = Frame(e.Item))
+                    e.Graphics.SetClip(frame, CombineMode.Intersect);
+
             if (Highlighted(e.Item))
                 Fill(e.Graphics, new Rectangle(Point.Empty, e.Item.Size));
             else
                 base.OnRenderButtonBackground(e);
+
+            if (framed)
+            {
+                e.Graphics.Clip = whole;
+                whole.Dispose();
+            }
         }
 
         protected override void OnRenderDropDownButtonBackground(ToolStripItemRenderEventArgs e)
@@ -89,7 +161,7 @@ namespace AntiDupl.NET.WinForms
                     bounds.Inflate(-2, 0);
                 Fill(e.Graphics, bounds);
             }
-            else
+            else if (!Left(e.Item)) // the base would draw it pressed
                 base.OnRenderMenuItemBackground(e);
         }
 
@@ -97,6 +169,8 @@ namespace AntiDupl.NET.WinForms
         {
             if (Highlighted(e.Item))
                 e.TextColor = ThemeColors.SelectionText;
+            else if (Left(e.Item))
+                e.TextColor = e.Item.ForeColor;
             base.OnRenderItemText(e);
         }
 
@@ -104,6 +178,8 @@ namespace AntiDupl.NET.WinForms
         {
             if (Highlighted(e.Item))
                 e.ArrowColor = ThemeColors.SelectionText;
+            else if (Left(e.Item))
+                e.ArrowColor = e.Item.ForeColor;
             base.OnRenderArrow(e);
         }
     }

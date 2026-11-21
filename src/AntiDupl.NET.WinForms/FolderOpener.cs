@@ -29,6 +29,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Threading;
+using System.Runtime.InteropServices;
 
 using AntiDupl.NET.Core;
 
@@ -83,10 +84,46 @@ namespace AntiDupl.NET.WinForms
             return false;
         }
 
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        private static extern int SHParseDisplayName(string name, IntPtr bindingContext, out IntPtr pidl, uint attributesIn, out uint attributesOut);
+
+        [DllImport("shell32.dll")]
+        private static extern int SHOpenFolderAndSelectItems(IntPtr folder, uint count, IntPtr[] items, uint flags);
+
+        [DllImport("ole32.dll")]
+        private static extern void CoTaskMemFree(IntPtr memory);
+
+        // Explorer's /select switch leaves the file unselected when Explorer
+        // has not listed its folder yet (a large folder not opened since
+        // logon opens at its top); SHOpenFolderAndSelectItems selects it.
+        static private bool SelectInExplorer(string path)
+        {
+            // The shell doesn't parse the \\?\ prefix of long paths.
+            if (path.StartsWith(@"\\?\UNC\"))
+                path = @"\\" + path.Substring(8);
+            else if (path.StartsWith(@"\\?\"))
+                path = path.Substring(4);
+            IntPtr pidl;
+            uint attributes;
+            if (SHParseDisplayName(path, IntPtr.Zero, out pidl, 0, out attributes) != 0)
+                return false;
+            try
+            {
+                // No items: pidl names the file itself, which gets selected.
+                return SHOpenFolderAndSelectItems(pidl, 0, null, 0) == 0;
+            }
+            finally
+            {
+                CoTaskMemFree(pidl);
+            }
+        }
+
         static public void OpenContainingFolder(CoreImageInfo imageInfo)
         {
             try
             {
+                if (m_canOpenFolderWithExplorer && SelectInExplorer(imageInfo.path))
+                    return;
                 ProcessStartInfo startInfo = new ProcessStartInfo();
                 if (m_canOpenFolderWithExplorer)
                 {

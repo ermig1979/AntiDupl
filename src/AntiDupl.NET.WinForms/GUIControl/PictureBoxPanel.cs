@@ -399,6 +399,25 @@ namespace AntiDupl.NET.WinForms
                         }
                     }
                 }
+                // Neighbour images have the room beside the image.
+                if (m_options.resultsOptions.AlignImagesToDivider && !m_options.resultsOptions.ShowNeighboursImages)
+                {
+                    switch (m_position)
+                    {
+                        case ImagePreviewPanel.Position.Left:
+                            horizontalPosition = clientWidth - targetWidth;
+                            break;
+                        case ImagePreviewPanel.Position.Right:
+                            horizontalPosition = 0;
+                            break;
+                        case ImagePreviewPanel.Position.Top:
+                            verticalPosition = clientHeight - targetHeight;
+                            break;
+                        case ImagePreviewPanel.Position.Bottom:
+                            verticalPosition = 0;
+                            break;
+                    }
+                }
                 m_bitmapRect = new Rectangle(horizontalPosition, verticalPosition, targetWidth, targetHeight);
             }
             //Refresh();

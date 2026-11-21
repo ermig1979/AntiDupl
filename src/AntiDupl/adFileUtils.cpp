@@ -336,6 +336,28 @@ namespace ad
             path2;
     }
     
+    // Whether two paths lead to one file, as hard links do. A path that can't
+    // be opened counts as another file.
+    bool IsSameFile(const TChar* first, const TChar* second)
+    {
+        const TChar* paths[2] = {first, second};
+        BY_HANDLE_FILE_INFORMATION info[2];
+        for (int i = 0; i < 2; ++i)
+        {
+            HANDLE hFile = ::CreateFile(paths[i], 0, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+                NULL, OPEN_EXISTING, 0, NULL);
+            if (hFile == INVALID_HANDLE_VALUE)
+                return false;
+            BOOL known = ::GetFileInformationByHandle(hFile, &info[i]);
+            ::CloseHandle(hFile);
+            if (!known)
+                return false;
+        }
+        return info[0].dwVolumeSerialNumber == info[1].dwVolumeSerialNumber &&
+            info[0].nFileIndexHigh == info[1].nFileIndexHigh &&
+            info[0].nFileIndexLow == info[1].nFileIndexLow;
+    }
+
     HGLOBAL LoadFileToMemory(const TChar* path)
     {
         AD_FUNCTION_PERFORMANCE_TEST

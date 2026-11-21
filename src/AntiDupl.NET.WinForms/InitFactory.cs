@@ -78,6 +78,26 @@ namespace AntiDupl.NET.WinForms
                 return layout;
             }
 
+            /// <summary>
+            /// Grows the form until the table fits in it without scroll bars:
+            /// the size of its controls depends on the language and the font.
+            /// The table may get only a share of the form's growth (a percent
+            /// row), so the form grows in steps.
+            /// </summary>
+            public static void GrowToFit(Form form, TableLayoutPanel table)
+            {
+                for (int step = 0; step < 10; step++)
+                {
+                    form.PerformLayout();
+                    Size needed = table.GetPreferredSize(Size.Empty);
+                    int width = needed.Width - table.ClientSize.Width;
+                    int height = needed.Height - table.ClientSize.Height;
+                    if (width <= 0 && height <= 0)
+                        return;
+                    form.ClientSize += new Size(Math.Max(width, 0), Math.Max(height, 0));
+                }
+            }
+
             public static TableLayoutPanel CreateVerticalCompensatedCenterAlign(int first, int second)
             {
                 TableLayoutPanel layout = Create(1, 5, 0, 0);

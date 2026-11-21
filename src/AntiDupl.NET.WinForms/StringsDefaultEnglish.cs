@@ -104,6 +104,7 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text = "Minimal image width/height";
             s.CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text = "Maximal image width/height";
             s.CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text = "Compare images from one path of search with one another";
+            s.CoreOptionsForm_SkipHardlinksCheckBox_Text = "Do not compare hardlinked duplicates";
             s.CoreOptionsForm_CompareInsideOneFolderCheckBox_Text = "Compare images inside one directory";
 
             s.CoreOptionsForm_DefectTabPage_Text = "Defects";
@@ -126,6 +127,8 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_UndoQueueSizeLabeledIntegerEdit_Text = "Queue size of undo";
             s.CoreOptionsForm_ResultCountMaxLabeledIntegerEdit_Text = "Maximal count of results";
             s.CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text = "Width of ignored frame of image";
+            s.CoreOptionsForm_TransparentAsShownCheckBox_Text = "Improve transparent image comparison";
+            s.CoreOptionsForm_IgnoreTransparentCheckBox_Text = "Ignore areas with transparency in both images";
             s.CoreOptionsForm_UseLibJpegTurboCheckBox_Text = "Use libjpeg-turbo";
 
             s.CoreOptionsForm_HighlightTabPage_Text = "Highlight";
@@ -222,7 +225,9 @@ namespace AntiDupl.NET.WinForms
             s.ResultRowSetter_MirrorTurn_180_Icon_ToolTip_Text = "Horizontally flipped and rotated on 180°";
             s.ResultRowSetter_MirrorTurn_270_Icon_ToolTip_Text = "Horizontally flipped and rotated on 270°";
 
+            s.ResultRowSetter_Difference_HardLink_ToolTip_Text = "Hard links: both names are one file";
             s.ResultRowSetter_Difference_ByteIdentical_ToolTip_Text = "Identical files";
+            s.SelectableLabel_Copy_Text = "Copy";
             s.ResultRowSetter_Difference_PixelIdentical_ToolTip_Text = "Identical images, the files differ";
 
             s.ResultsListView_Type_Column_Text = "Type";
@@ -249,7 +254,7 @@ namespace AntiDupl.NET.WinForms
             s.ResultsListView_FirstBlockiness_Column_Text = "1: Blockiness";
             s.ResultsListView_FirstBlurring_Column_Text = "1: Blurring";
             s.ResultsListView_FirstFileSize_Column_Text = "1: Size";
-            s.ResultsListView_FirstFileTime_Column_Text = "1: First Date modified";
+            s.ResultsListView_FirstFileTime_Column_Text = "1: Date modified";
             s.ResultsListView_SecondFileName_Column_Text = "2: Name";
             s.ResultsListView_SecondFileDirectory_Column_Text = "2: In folder";
             s.ResultsListView_SecondImageSize_Column_Text = "2: Dimensions";
@@ -295,6 +300,10 @@ namespace AntiDupl.NET.WinForms
             s.MainMenu_View_HotKeysMenuItem_Text = "Hot keys";
             s.MainMenu_View_StretchSmallImagesMenuItem_Text = "Stretch small images";
             s.MainMenu_View_ProportionalImageSizeMenuItem_Text = "Proportional size of images";
+            s.MainMenu_View_AlignImagesToDividerMenuItem_Text = "Align images to the divider";
+            s.MainMenu_View_ResultCountsMenuItem_Text = "Status on middle toolbar";
+            s.ResultCountsPanel_CurrentShort_Text = "Cur.";
+            s.ResultCountsPanel_SelectedShort_Text = "Select.";
             s.MainMenu_View_ShowNeighbourImageMenuItem_Text = "Show neighbour images";
 
             s.MainMenu_SearchMenuItem_Text = "Search";

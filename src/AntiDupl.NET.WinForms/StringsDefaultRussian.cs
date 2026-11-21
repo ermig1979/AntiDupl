@@ -104,6 +104,7 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text = "Минимальная ширина/высота картинок";
             s.CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text = "Максимальная ширина/высота картинок";
             s.CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text = "Сравнивать картинки из одного пути поиска друг с другом";
+            s.CoreOptionsForm_SkipHardlinksCheckBox_Text = "Не сравнивать жесткие ссылки на один файл";
             s.CoreOptionsForm_CompareInsideOneFolderCheckBox_Text = "Сравнивать картинки внутри одного каталога";
 
             s.CoreOptionsForm_DefectTabPage_Text = "Дефекты";
@@ -126,6 +127,8 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_UndoQueueSizeLabeledIntegerEdit_Text = "Размер очереди отмены";
             s.CoreOptionsForm_ResultCountMaxLabeledIntegerEdit_Text = "Максимальное количество результатов";
             s.CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text = "Ширина игнорируемой рамки картинки";
+            s.CoreOptionsForm_TransparentAsShownCheckBox_Text = "Улучшенное сравнение прозрачных картинок";
+            s.CoreOptionsForm_IgnoreTransparentCheckBox_Text = "Игнорировать прозрачные области в обеих картинках";
             s.CoreOptionsForm_UseLibJpegTurboCheckBox_Text = "Использовать libjpeg-turbo";
 
             s.CoreOptionsForm_HighlightTabPage_Text = "Подсветка";
@@ -222,7 +225,9 @@ namespace AntiDupl.NET.WinForms
             s.ResultRowSetter_MirrorTurn_180_Icon_ToolTip_Text = "Горизонтально отраженный и повернутый на 180°";
             s.ResultRowSetter_MirrorTurn_270_Icon_ToolTip_Text = "Горизонтально отраженный и повернутый на 270°";
 
+            s.ResultRowSetter_Difference_HardLink_ToolTip_Text = "Жесткие ссылки: оба имени - один файл";
             s.ResultRowSetter_Difference_ByteIdentical_ToolTip_Text = "Одинаковые файлы";
+            s.SelectableLabel_Copy_Text = "Копировать";
             s.ResultRowSetter_Difference_PixelIdentical_ToolTip_Text = "Одинаковые изображения, файлы различаются";
 
             s.ResultsListView_Type_Column_Text = "Тип";
@@ -295,6 +300,10 @@ namespace AntiDupl.NET.WinForms
             s.MainMenu_View_HotKeysMenuItem_Text = "Горячие клавиши";
             s.MainMenu_View_StretchSmallImagesMenuItem_Text = "Растягивать небольшие изображения";
             s.MainMenu_View_ProportionalImageSizeMenuItem_Text = "Пропорциональный размер картинок";
+            s.MainMenu_View_AlignImagesToDividerMenuItem_Text = "Выровнять изображения по разделителю";
+            s.MainMenu_View_ResultCountsMenuItem_Text = "Статус на средней панели инструментов";
+            s.ResultCountsPanel_CurrentShort_Text = "Текущ.";
+            s.ResultCountsPanel_SelectedShort_Text = "Выдел.";
             s.MainMenu_View_ShowNeighbourImageMenuItem_Text = "Показывать соседние изображения";
 
             s.MainMenu_SearchMenuItem_Text = "Поиск";

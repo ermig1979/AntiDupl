@@ -97,6 +97,9 @@ namespace ad
     // The least difference of images whose decoded pixels differ: their
     // reduced images can be equal, which would give 0.
     const double MIN_DIFFERENCE_OF_DIFFERENT_PIXELS = 0.0001;
+    // Two names of one file: below every real difference, so the pair sorts
+    // first. The program shows it as HL (DifferenceFormat).
+    const double HARD_LINK_DIFFERENCE = -1;
     const TUInt32 D0_SEARCHED_FILE_NUMBER_MAX = 1000;
     const TUInt32 D1_SEARCHED_FILE_NUMBER_MAX = 10000;
     const TUInt32 D3_THRESHOLD_DIFFERENCE_MAX = TUInt32(DENOMINATOR*0.100);
@@ -115,11 +118,45 @@ namespace ad
     const TInt32 BUTTERAUGLI_SIZE_DEFAULT = 768;
     const TInt32 BUTTERAUGLI_SIZE_MIN = 128;
     const TInt32 BUTTERAUGLI_SIZE_MAX = 2048;
+    // The brightness of white, in nits, Butteraugli judges a pair as seen at.
+    // At libjxl's default, 80 (sRGB's reference), the eye it models hardly
+    // tells near-black shades apart, so two different dark pictures score
+    // like copies of one. At 400, a bright monitor, copies and other pictures
+    // separate well on pairs judged by hand, dark ones included.
+    const float BUTTERAUGLI_INTENSITY_TARGET = 400.0f;
     // Images decoded at the working size are kept up to this many bytes.
     const size_t BUTTERAUGLI_IMAGE_CACHE_BYTES = size_t(512) << 20;
     // Part of the stored scores' key: a change to how a score is computed
     // (the working images, the metric) makes the stored ones stale.
-    const TUInt32 BUTTERAUGLI_SCORE_VERSION = 1;
+    const TUInt32 BUTTERAUGLI_SCORE_VERSION = 2;
+    // Transparency shown: when could an opaque image be a copy of one with
+    // transparency, its transparent area filled with one colour
+    // (TImageComparer::UniformFill). Pixels of the colour thumbnail count as
+    // transparent below UNIFORM_FILL_COVERAGE_PERCENT coverage and as opaque
+    // above 100 minus it; each kind must make UNIFORM_FILL_AREA_PERCENT of the
+    // thumbnail at least. The opaque image under the transparent pixels may
+    // deviate from its mean colour by UNIFORM_FILL_DEVIATION_MAX levels (RMS,
+    // each of B, G, R), and the visible pixels must differ from that colour by
+    // UNIFORM_FILL_CONTRAST_MIN levels on average. A 4x4 cell of the opaque
+    // image may differ by UNIFORM_FILL_FAST_DIFFERENCE_MAX levels from the
+    // other laid over the best grey, a loose look before the colour thumbnail.
+    const size_t UNIFORM_FILL_COVERAGE_PERCENT = 5;
+    const size_t UNIFORM_FILL_AREA_PERCENT = 2;
+    const double UNIFORM_FILL_DEVIATION_MAX = 12;
+    const double UNIFORM_FILL_CONTRAST_MIN = 16;
+    const double UNIFORM_FILL_FAST_DIFFERENCE_MAX = 48;
+    // Transparent areas ignored (TImageComparer::MaskedDifference): a pair
+    // is compared only where each image with transparency is opaque (above
+    // 100 minus UNIFORM_FILL_COVERAGE_PERCENT coverage). Those pixels must
+    // make MASKED_AREA_PERCENT of the thumbnail and, when both images have
+    // transparency, MASKED_OVERLAP_PERCENT of the smaller opaque part, or two
+    // drawings in different places would compare on a few pixels. The
+    // opaque part of each image with transparency must vary by
+    // MASKED_DEVIATION_MIN grey levels (RMS), or a drawing in one colour
+    // would match any picture showing that colour where the drawing is.
+    const size_t MASKED_AREA_PERCENT = 2;
+    const size_t MASKED_OVERLAP_PERCENT = 50;
+    const double MASKED_DEVIATION_MIN = 16;
     const TUInt32 COLLECT_THREAD_QUEUE_SIZE_MAX = 16;
     const TUInt32 DEAFAULT_THREAD_SLEEP_INTERVAL = 10;
     const TUInt32 LARGE_IMAGE_COLLECTION_SIZE_MIN = 100000;
@@ -131,7 +168,11 @@ namespace ad
 	// images from an older database are decoded again for it.
 	// Version 7: the reduced image is area-averaged instead of bilinear, and
 	// the database stores a colour thumbnail; older records are decoded again.
-	const TUInt32 FILE_VERSION = 7;
+	// Version 8: each record says whether its thumbnails show transparency
+	// (TPixelData::asShown) and, for an image with transparent pixels, holds
+	// a second set over black; older records of formats that can hold
+	// transparency are decoded again.
+	const TUInt32 FILE_VERSION = 8;
 	const size_t SIZE_CHECK_LIMIT = 2147483646; //string.max_size()
 
 	const size_t BLOCKINESS_SIZE = 8;

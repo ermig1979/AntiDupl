@@ -77,9 +77,6 @@
     <ClCompile Include="adJxl.cpp">
       <Filter>Image</Filter>
     </ClCompile>
-    <ClCompile Include="3rd\butteraugli\butteraugli\butteraugli.cc">
-      <Filter>3rd</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="adBlurringDetector.h" />
@@ -164,9 +161,6 @@
     <ClInclude Include="adJxl.h">
       <Filter>Image</Filter>
     </ClInclude>
-    <ClInclude Include="3rd\butteraugli\butteraugli\butteraugli.h">
-      <Filter>3rd</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Image">
@@ -174,9 +168,6 @@
     </Filter>
     <Filter Include="Files">
       <UniqueIdentifier>{25bbbdfc-485e-4b5f-8d78-febf0a7f5e01}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="3rd">
-      <UniqueIdentifier>{6b0f3c2e-9a51-4d7e-b2a4-3f8e1c5d7a90}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
