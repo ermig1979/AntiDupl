@@ -37,6 +37,9 @@ namespace AntiDupl.NET.WinForms
     {
         public virtual string ResultPath { get; protected set; }
         public virtual string ResultName { get; protected set; }
+        /// <summary>The folders chosen, with Multiselect.</summary>
+        public virtual string[] ResultPaths { get; protected set; }
+        public virtual bool Multiselect { get; set; }
         public virtual string InputPath { get; set; }
         public virtual bool ForceFileSystem { get; set; }
         public virtual string Title { get; set; }
@@ -75,6 +78,8 @@ namespace AntiDupl.NET.WinForms
 
             var options = FOS.FOS_PICKFOLDERS;
             options = (FOS)SetOptions((int)options);
+            if (Multiselect)
+                options |= FOS.FOS_ALLOWMULTISELECT;
             dialog.SetOptions(options);
 
             if (Title != null)
@@ -107,6 +112,24 @@ namespace AntiDupl.NET.WinForms
 
             if (CheckHr(hr, throwOnError) != 0)
                 return null;
+
+            if (Multiselect)
+            {
+                if (CheckHr(dialog.GetResults(out var items), throwOnError) != 0)
+                    return null;
+                var array = (IShellItemArray)items;
+                if (CheckHr(array.GetCount(out var count), throwOnError) != 0)
+                    return null;
+                ResultPaths = new string[count];
+                for (int i = 0; i < count; i++)
+                {
+                    if (CheckHr(array.GetItemAt(i, out var item), throwOnError) != 0 ||
+                        CheckHr(item.GetDisplayName(SIGDN.SIGDN_DESKTOPABSOLUTEPARSING, out var folder), throwOnError) != 0)
+                        return null;
+                    ResultPaths[i] = folder;
+                }
+                return true;
+            }
 
             if (CheckHr(dialog.GetResult(out var result), throwOnError) != 0)
                 return null;
@@ -148,7 +171,10 @@ namespace AntiDupl.NET.WinForms
         {
         }
 
-        [ComImport, Guid("42f85136-db7e-439c-85f1-e4075d135fc8"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        // IID_IFileOpenDialog, NOT IID_IFileDialog: the methods from
+        // GetResults on exist only behind this one, and through the other
+        // they return garbage with no error.
+        [ComImport, Guid("d57c7288-d4ad-4768-be02-9d969532d960"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
         private interface IFileOpenDialog
         {
             [PreserveSig] int Show(IntPtr parent); // IModalWindow
@@ -177,6 +203,17 @@ namespace AntiDupl.NET.WinForms
             [PreserveSig] int SetFilter([MarshalAs(UnmanagedType.IUnknown)] object pFilter);
             [PreserveSig] int GetResults([MarshalAs(UnmanagedType.IUnknown)] out object ppenum);
             [PreserveSig] int GetSelectedItems([MarshalAs(UnmanagedType.IUnknown)] out object ppsai);
+        }
+
+        [ComImport, Guid("B63EA76D-1F85-456F-A19C-48159EFA858B"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        private interface IShellItemArray
+        {
+            [PreserveSig] int BindToHandler(); // not fully defined
+            [PreserveSig] int GetPropertyStore(); // not fully defined
+            [PreserveSig] int GetPropertyDescriptionList(); // not fully defined
+            [PreserveSig] int GetAttributes(); // not fully defined
+            [PreserveSig] int GetCount(out int pdwNumItems);
+            [PreserveSig] int GetItemAt(int dwIndex, out IShellItem ppsi);
         }
 
         [ComImport, Guid("43826D1E-E718-42EE-BC55-A1E261C37BFE"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]

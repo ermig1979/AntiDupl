@@ -326,6 +326,8 @@
     <v:String x:Key="configurationWindow_undoQueueSize">Размер очереди отмены</v:String>
     <v:String x:Key="configurationWindow_resultCountMax">Максимальное количество результатов</v:String>
     <v:String x:Key="configurationWindow_ignoreFrameWidth">Ширина игнорируемой рамки картинки</v:String>
+    <v:String x:Key="configurationWindow_transparentAsShown">Улучшенное сравнение прозрачных картинок</v:String>
+    <v:String x:Key="configurationWindow_ignoreTransparent">Игнорировать прозрачные области в обеих картинках</v:String>
     <v:String x:Key="configurationWindow_useLibJpegTurbo">Использовать libjpeg-turbo</v:String>
 
     <!-- ==== Defect (подписи) ==== -->
@@ -370,6 +372,8 @@
     <v:String x:Key="configurationWindow_tooltip_undoQueueSize">Максимальное число операций отмены, хранимых в памяти.</v:String>
     <v:String x:Key="configurationWindow_tooltip_resultCountMax">Максимальное число результатов, возвращаемых ядром (0 = без ограничения).</v:String>
     <v:String x:Key="configurationWindow_tooltip_ignoreFrameWidth">Ширина в пикселях рамки вокруг картинки, игнорируемой при сравнении.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_transparentAsShown">Сравнивать картинки с прозрачностью такими, какими они выглядят на белом и на черном фоне: цвета, которые файл хранит в прозрачных пикселях, никогда не видны.</v:String>
+    <v:String x:Key="configurationWindow_tooltip_ignoreTransparent">Также сравнивать пару только там, где картинка с прозрачностью непрозрачна, чтобы найти копию, наложенную на другой фон или картинку. Требует опции выше.</v:String>
     <v:String x:Key="configurationWindow_tooltip_useLibJpegTurbo">Использовать libjpeg-turbo для декодирования JPEG (быстрее на большинстве CPU).</v:String>
 
     <!-- ==== Tooltips: Defect ==== -->

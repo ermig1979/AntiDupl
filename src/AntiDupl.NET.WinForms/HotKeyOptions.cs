@@ -106,6 +106,12 @@ namespace AntiDupl.NET.WinForms
             return false;
         }
 
+        /// <summary>A key or combination in the usual notation, such as Ctrl+Shift+D.</summary>
+        public static string Text(Keys keys)
+        {
+            return new KeysConverter().ConvertToString(keys);
+        }
+
         public Keys Get(Action action)
         {
             Check();

@@ -130,6 +130,8 @@ namespace AntiDupl.NET.WinForms
         public string CoreOptionsForm_UndoQueueSizeLabeledIntegerEdit_Text;
         public string CoreOptionsForm_ResultCountMaxLabeledIntegerEdit_Text;
         public string CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text;
+        public string CoreOptionsForm_TransparentAsShownCheckBox_Text;
+        public string CoreOptionsForm_IgnoreTransparentCheckBox_Text;
         public string CoreOptionsForm_UseLibJpegTurboCheckBox_Text;
 
         public string CoreOptionsForm_HighlightTabPage_Text;
@@ -228,6 +230,7 @@ namespace AntiDupl.NET.WinForms
 
         public string ResultRowSetter_Difference_HardLink_ToolTip_Text;
         public string ResultRowSetter_Difference_ByteIdentical_ToolTip_Text;
+        public string SelectableLabel_Copy_Text;
         public string ResultRowSetter_Difference_PixelIdentical_ToolTip_Text;
 
         public string ResultsListView_Type_Column_Text;
@@ -300,6 +303,10 @@ namespace AntiDupl.NET.WinForms
         public string MainMenu_View_HotKeysMenuItem_Text;
         public string MainMenu_View_StretchSmallImagesMenuItem_Text;
         public string MainMenu_View_ProportionalImageSizeMenuItem_Text;
+        public string MainMenu_View_AlignImagesToDividerMenuItem_Text;
+        public string MainMenu_View_ResultCountsMenuItem_Text;
+        public string ResultCountsPanel_CurrentShort_Text;
+        public string ResultCountsPanel_SelectedShort_Text;
         public string MainMenu_View_ShowNeighbourImageMenuItem_Text;
 
         public string MainMenu_SearchMenuItem_Text;

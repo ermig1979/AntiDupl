@@ -109,6 +109,42 @@ namespace AntiDupl.NET.WinForms
             }
         }
 
+        private bool m_alignImagesToDivider = false;
+        public bool AlignImagesToDivider
+        {
+            get
+            {
+                return m_alignImagesToDivider;
+            }
+            set
+            {
+                if (m_alignImagesToDivider != value)
+                {
+                    m_alignImagesToDivider = value;
+                    if (OnImageViewChange != null)
+                        OnImageViewChange();
+                }
+            }
+        }
+
+        private bool m_showResultCounts = false;
+        public bool ShowResultCounts
+        {
+            get
+            {
+                return m_showResultCounts;
+            }
+            set
+            {
+                if (m_showResultCounts != value)
+                {
+                    m_showResultCounts = value;
+                    if (OnImageViewChange != null)
+                        OnImageViewChange();
+                }
+            }
+        }
+
         public delegate void HighlightDifferenceChangeHandler();
         public event HighlightDifferenceChangeHandler OnHighlightDifferenceChange;
         public void RaiseEventOnHighlightDifferenceChange()
@@ -343,6 +379,8 @@ namespace AntiDupl.NET.WinForms
             m_viewMode = options.m_viewMode;
             m_stretchSmallImages = options.m_stretchSmallImages;
             m_proportionalImageSize = options.m_proportionalImageSize;
+            m_alignImagesToDivider = options.m_alignImagesToDivider;
+            m_showResultCounts = options.m_showResultCounts;
             m_showNeighboursImages = options.m_showNeighboursImages;
 
             options.CopyHighlightTo(this);

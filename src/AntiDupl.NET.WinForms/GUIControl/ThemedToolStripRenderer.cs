@@ -21,7 +21,9 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
+using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace AntiDupl.NET.WinForms
@@ -35,6 +37,9 @@ namespace AntiDupl.NET.WinForms
     /// </summary>
     public class ThemedToolStripRenderer : ToolStripSystemRenderer
     {
+        private const int FRAME_WIDTH = 3;
+        private Rectangle m_frameDrawing;
+
         /// <summary>
         /// Gives a tool bar or menu this renderer. In light mode it draws as
         /// the system renderer does, apart from Left.
@@ -72,12 +77,62 @@ namespace AntiDupl.NET.WinForms
                 graphics.FillRectangle(brush, bounds);
         }
 
+        /// <summary>
+        /// A button whose checked state lights only a frame around its
+        /// drawing, rather than the whole button.
+        /// </summary>
+        public ToolStripButton FramedWhenChecked { get; set; }
+
+        // Where the image isn't transparent.
+        static private Rectangle DrawingBounds(Image image)
+        {
+            using (Bitmap bitmap = new Bitmap(image))
+            {
+                int left = bitmap.Width, top = bitmap.Height, right = 0, bottom = 0;
+                for (int y = 0; y < bitmap.Height; y++)
+                    for (int x = 0; x < bitmap.Width; x++)
+                        if (bitmap.GetPixel(x, y).A != 0)
+                        {
+                            left = Math.Min(left, x);
+                            top = Math.Min(top, y);
+                            right = Math.Max(right, x + 1);
+                            bottom = Math.Max(bottom, y + 1);
+                        }
+                return Rectangle.FromLTRB(left, top, right, bottom);
+            }
+        }
+
+        private Region Frame(ToolStripItem item)
+        {
+            if (m_frameDrawing.IsEmpty)
+                m_frameDrawing = DrawingBounds(item.Image);
+            Rectangle drawing = m_frameDrawing;
+            drawing.Offset((item.Width - item.Image.Width) / 2, (item.Height - item.Image.Height) / 2);
+            Rectangle outer = drawing;
+            outer.Inflate(FRAME_WIDTH, FRAME_WIDTH);
+            Region frame = new Region(outer);
+            frame.Exclude(drawing);
+            return frame;
+        }
+
         protected override void OnRenderButtonBackground(ToolStripItemRenderEventArgs e)
         {
+            bool framed = e.Item == FramedWhenChecked && FramedWhenChecked.Checked;
+            Region whole = framed ? e.Graphics.Clip : null;
+            if (framed)
+                using (Region frame = Frame(e.Item))
+                    e.Graphics.SetClip(frame, CombineMode.Intersect);
+
             if (Highlighted(e.Item))
                 Fill(e.Graphics, new Rectangle(Point.Empty, e.Item.Size));
             else
                 base.OnRenderButtonBackground(e);
+
+            if (framed)
+            {
+                e.Graphics.Clip = whole;
+                whole.Dispose();
+            }
         }
 
         protected override void OnRenderDropDownButtonBackground(ToolStripItemRenderEventArgs e)
