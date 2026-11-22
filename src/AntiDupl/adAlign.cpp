@@ -33,7 +33,6 @@ namespace ad
     // Keypoints: FAST corners (Rosten and Drummond) on a pyramid, ranked by
     // Harris' measure as ORB does (Rublee et al.), with BRIEF's comparisons
     // of smoothed pixels as the description (Calonder et al.).
-    static const int LEVELS = 8;
     static const double LEVEL_SCALE = 1.2;
     static const int FAST_THRESHOLD = 20;
     static const int FAST_THRESHOLD_LOW = 8; // for a picture with few corners
@@ -388,25 +387,30 @@ namespace ad
     }
 
     void FindKeypoints(const uint8_t * gray, size_t width, size_t height, ptrdiff_t stride,
-        size_t maxCount, TKeypoints & keypoints)
+        size_t maxCount, size_t levels, TKeypoints & keypoints)
     {
         keypoints.width = width;
         keypoints.height = height;
+        keypoints.unit = float(std::max<size_t>(std::max(width, height), 1)) / 65535;
         keypoints.x.clear();
         keypoints.y.clear();
         keypoints.bits.clear();
+        keypoints.x.reserve(maxCount);
+        keypoints.y.reserve(maxCount);
+        keypoints.bits.reserve(maxCount * KEYPOINT_WORDS);
 
         // Each level's share of the keypoints follows its area's root, as
         // in ORB, so that a smaller copy's keypoints find theirs.
-        double shares[LEVELS], total = 0;
-        for (int i = 0; i < LEVELS; ++i)
-            total += shares[i] = pow(1 / LEVEL_SCALE, i);
+        std::vector<double> shares(levels);
+        double total = 0;
+        for (size_t i = 0; i < levels; ++i)
+            total += shares[i] = pow(1 / LEVEL_SCALE, double(i));
 
         TPlane plane, smooth;
         std::vector<TCorner> corners;
-        for (int level = 0; level < LEVELS; ++level)
+        for (size_t level = 0; level < levels; ++level)
         {
-            const double scale = pow(LEVEL_SCALE, level);
+            const double scale = pow(LEVEL_SCALE, double(level));
             const int w = int(width / scale + 0.5), h = int(height / scale + 0.5);
             if (w < 2 * MARGIN + 8 || h < 2 * MARGIN + 8)
                 break;
@@ -422,27 +426,42 @@ namespace ad
             const double sx = double(width) / w, sy = double(height) / h;
             for (const TCorner & c : corners)
             {
-                keypoints.x.push_back(float((c.x + 0.5) * sx - 0.5));
-                keypoints.y.push_back(float((c.y + 0.5) * sy - 0.5));
+                keypoints.x.push_back(uint16_t((c.x + 0.5) * sx / keypoints.unit + 0.5));
+                keypoints.y.push_back(uint16_t((c.y + 0.5) * sy / keypoints.unit + 0.5));
                 keypoints.bits.resize(keypoints.bits.size() + KEYPOINT_WORDS);
                 Describe(smooth, c.x, c.y, keypoints.bits.data() + keypoints.bits.size() - KEYPOINT_WORDS);
             }
         }
+        keypoints.x.shrink_to_fit();
+        keypoints.y.shrink_to_fit();
+        keypoints.bits.shrink_to_fit();
     }
     //-------------------------------------------------------------------------
-    TKeypointIndex::TKeypointIndex(size_t imagesExpected, size_t entriesPerKey, size_t hitsMin, size_t tables)
+    TKeypointIndex::TKeypointIndex(size_t images, size_t entriesPerKey, size_t hitsMin, size_t tables)
         : m_tables(tables)
-        , m_keyBits(16)
-        , m_entriesPerKey(std::min<size_t>(entriesPerKey, 255))
+        , m_keyBits(KeyBits(images))
+        , m_entriesPerKey(entriesPerKey)
         , m_hitsMin(hitsMin)
-        , m_imageCount(0)
+    {
+        m_starts.assign((m_tables << m_keyBits) + 1, 0);
+        m_full.assign(m_tables << m_keyBits, false);
+    }
+
+    size_t TKeypointIndex::KeyBits(size_t images)
     {
         // About one entry per key at most in a table, whose keys are bits
         // the description's words give without any hashing.
-        while (m_keyBits < 24 && (size_t(1) << m_keyBits) < imagesExpected * KEYPOINT_INDEX_ENTRIES_PER_IMAGE)
-            ++m_keyBits;
-        m_heads.assign(m_tables << m_keyBits, 0);
-        m_counts.assign(m_tables << m_keyBits, 0);
+        size_t bits = 16;
+        while (bits < 24 && (size_t(1) << bits) < images * KEYPOINT_INDEX_ENTRIES_PER_IMAGE)
+            ++bits;
+        return bits;
+    }
+
+    size_t TKeypointIndex::Bytes(size_t images, size_t keypointsPerImage, size_t tables)
+    {
+        const size_t keys = tables << KeyBits(images);
+        return keys * sizeof(uint32_t) + keys / 8 + images * keypointsPerImage * tables * sizeof(uint32_t) +
+            images * (sizeof(uint16_t) + sizeof(uint32_t));
     }
 
     size_t TKeypointIndex::Key(const uint64_t * bits, size_t table) const
@@ -451,25 +470,17 @@ namespace ad
         return (table << m_keyBits) + size_t((bits[word] >> (part * m_keyBits)) & ((uint64_t(1) << m_keyBits) - 1));
     }
 
-    void TKeypointIndex::Add(const TKeypoints & keypoints)
+    void TKeypointIndex::Keys(const TKeypoints & keypoints, std::vector<uint32_t> & keys) const
     {
-        const uint32_t image = m_imageCount++;
-        m_hits.push_back(0);
+        keys.clear();
         for (size_t i = 0, n = keypoints.Size(); i < n; ++i)
         {
             const uint64_t * bits = keypoints.bits.data() + i * KEYPOINT_WORDS;
             for (size_t table = 0; table < m_tables; ++table)
-            {
-                const size_t key = Key(bits, table);
-                uint32_t & head = m_heads[key];
-                if (m_counts[key] >= m_entriesPerKey || (head != 0 && m_entries[head - 1].image == image))
-                    continue;
-                ++m_counts[key];
-                TEntry entry = { image, head };
-                m_entries.push_back(entry);
-                head = uint32_t(m_entries.size());
-            }
+                keys.push_back(uint32_t(Key(bits, table)));
         }
+        std::sort(keys.begin(), keys.end());
+        keys.erase(std::unique(keys.begin(), keys.end()), keys.end());
     }
 
     void TKeypointIndex::Find(const TKeypoints & keypoints, std::vector<uint32_t> & images)
@@ -482,13 +493,9 @@ namespace ad
             for (size_t table = 0; table < m_tables; ++table)
             {
                 const size_t key = Key(bits, table);
-                // A key that many images share says nothing about any of
-                // them, and would make its first images candidates for all.
-                if (m_counts[key] >= m_entriesPerKey)
-                    continue;
-                for (uint32_t e = m_heads[key]; e != 0; e = m_entries[e - 1].next)
+                for (uint32_t e = m_starts[key], end = m_starts[key + 1]; e < end; ++e)
                 {
-                    const uint32_t image = m_entries[e - 1].image;
+                    const uint32_t image = m_entries[e];
                     if (m_hits[image]++ == 0)
                         m_hit.push_back(image);
                 }
@@ -588,7 +595,7 @@ namespace ad
             }
             if (m >= 2 && best * RATIO_DENOMINATOR < second * RATIO_NUMERATOR)
             {
-                TMatch match = { from.x[i], from.y[i], to.x[bestIndex], to.y[bestIndex] };
+                TMatch match = { from.X(i), from.Y(i), to.X(bestIndex), to.Y(bestIndex) };
                 matches.push_back(match);
             }
         }

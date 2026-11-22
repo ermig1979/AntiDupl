@@ -69,6 +69,17 @@ namespace AntiDupl.NET.Core
         /// profile saved before the option existed.
         /// </summary>
         public bool ignoreTransparent = false;
+        /// <summary>
+        /// The aligned search's keypoint level, 1 to ALIGNED_LEVEL_COUNT, or
+        /// ALIGNED_LEVEL_AUTO for the highest that fits in the memory free
+        /// when the search starts. Auto in a profile saved before the option
+        /// existed.
+        /// </summary>
+        public int alignedLevel = ALIGNED_LEVEL_AUTO;
+
+        public const int ALIGNED_LEVEL_AUTO = 0;
+        /// <summary>The core's ALIGN_LEVEL_COUNT.</summary>
+        public const int ALIGNED_LEVEL_COUNT = 3;
 
         public CoreCompareOptions()
         {
@@ -92,6 +103,7 @@ namespace AntiDupl.NET.Core
             skipHardlinks = compareOptions.skipHardlinks;
             transparentAsShown = compareOptions.transparentAsShown;
             ignoreTransparent = compareOptions.ignoreTransparent;
+            alignedLevel = compareOptions.alignedLevel;
         }
 
         public CoreCompareOptions(ref CoreDll.adCompareOptions compareOptions)
@@ -112,6 +124,7 @@ namespace AntiDupl.NET.Core
             skipHardlinks = compareOptions.skipHardlinks != CoreDll.FALSE;
             transparentAsShown = compareOptions.transparentAsShown != CoreDll.FALSE;
             ignoreTransparent = compareOptions.ignoreTransparent != CoreDll.FALSE;
+            alignedLevel = compareOptions.alignedLevel;
         }
 
         public void ConvertTo(ref CoreDll.adCompareOptions compareOptions)
@@ -132,6 +145,7 @@ namespace AntiDupl.NET.Core
             compareOptions.skipHardlinks = skipHardlinks ? CoreDll.TRUE : CoreDll.FALSE;
             compareOptions.transparentAsShown = transparentAsShown ? CoreDll.TRUE : CoreDll.FALSE;
             compareOptions.ignoreTransparent = ignoreTransparent ? CoreDll.TRUE : CoreDll.FALSE;
+            compareOptions.alignedLevel = alignedLevel;
         }
 
         public CoreCompareOptions Clone()
@@ -179,7 +193,8 @@ namespace AntiDupl.NET.Core
                 butteraugliSize == compareOptions.butteraugliSize &&
                 skipHardlinks == compareOptions.skipHardlinks &&
                 transparentAsShown == compareOptions.transparentAsShown &&
-                ignoreTransparent == compareOptions.ignoreTransparent;
+                ignoreTransparent == compareOptions.ignoreTransparent &&
+                alignedLevel == compareOptions.alignedLevel;
         }
 
         public bool CheckOnEquality
@@ -309,6 +324,16 @@ namespace AntiDupl.NET.Core
             {
                 transparentAsShown = value;
                 NotifyPropertyChanged("TransparentAsShown");
+            }
+        }
+
+        public int AlignedLevel
+        {
+            get { return alignedLevel; }
+            set
+            {
+                alignedLevel = value;
+                NotifyPropertyChanged("AlignedLevel");
             }
         }
 

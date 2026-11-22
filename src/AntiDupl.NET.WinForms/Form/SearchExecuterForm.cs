@@ -68,6 +68,8 @@ namespace AntiDupl.NET.WinForms
         private Button m_minimizeToSystrayButton;
         private ProgressPanel m_progressPanel;
         private NotifyIcon m_notifyIcon;
+        private bool m_alignedMemoryChecked = false;
+        private AlignedMemoryForm m_alignedMemoryForm = null;
 
         public SearchExecuterForm(CoreLib core, Options options, CoreOptions coreOptions, MainSplitContainer mainSplitContainer, MainForm mainForm)
         {
@@ -188,6 +190,9 @@ namespace AntiDupl.NET.WinForms
         {
             if (m_state == State.Finish)
             {
+                CheckAlignedMemory();
+                if (m_alignedMemoryForm != null && !m_alignedMemoryForm.IsDisposed)
+                    m_alignedMemoryForm.SearchEnded();
                 if(m_notifyIcon.Visible)
                     OnNotifyIconDoubleClick(null, null);
                 m_timer.Stop();
@@ -230,6 +235,7 @@ namespace AntiDupl.NET.WinForms
                     case State.Search:
                         {
                             m_stopButton.Enabled = true;
+                            CheckAlignedMemory();
                             builder.Append(s.SearchExecuterForm_Search);
                             double progress = EstimateSearchProgress();
                             builder.AppendFormat(" ({0})...", ProgressUtils.GetProgressString(progress, m_startDateTime));
@@ -273,6 +279,22 @@ namespace AntiDupl.NET.WinForms
                     m_mainForm.UpdateCaption();
                 }
             }
+        }
+
+        // Once the aligned search has chosen its level, a warning when its
+        // smallest crops need more memory than is free; the search goes on.
+        private void CheckAlignedMemory()
+        {
+            if (m_alignedMemoryChecked)
+                return;
+            CoreDll.adAlignedMemory? memory = m_core.GetAlignedMemory();
+            if (memory == null)
+                return;
+            m_alignedMemoryChecked = true;
+            if (!AlignedMemoryForm.Needed(memory.Value))
+                return;
+            m_alignedMemoryForm = new AlignedMemoryForm(memory.Value, () => OnStopButtonClick(null, null));
+            m_alignedMemoryForm.Show(m_mainForm);
         }
 
         private void OnStopButtonClick(Object obj, EventArgs eventArgs)

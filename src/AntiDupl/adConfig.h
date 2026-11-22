@@ -129,15 +129,39 @@ namespace ad
     // Part of the stored scores' key: a change to how a score is computed
     // (the working images, the metric) makes the stored ones stale.
     const TUInt32 BUTTERAUGLI_SCORE_VERSION = 2;
-    // The aligned search (adAlign.h). Keypoints are found on a grey copy of
-    // about this many pixels, whatever the shape: a long strip keeps a width
-    // to find corners in, which a limit on the longest side wouldn't leave.
-    const size_t ALIGN_IMAGE_AREA = 512*384;
-    const size_t ALIGN_KEYPOINTS_MAX = 500;
+    // The aligned search (adAlign.h), at one of these levels: keypoints are
+    // found on a grey copy of about area pixels, whatever the shape (a long
+    // strip keeps a width to find corners in, which a limit on the longest
+    // side wouldn't leave), up to keypointsMax of them on a pyramid of
+    // pyramidLevels scales. A higher level finds smaller crops: a crop
+    // covers more pixels of a larger copy, and so more keypoints. Every
+    // image's keypoints stay in memory for the whole search, so each level
+    // takes more of it per image; the setting's Auto picks the highest that
+    // fits (TButteraugliStore::ChooseLevel). A larger copy of the original
+    // is further in scale from a small crop file, which more scales cover.
+    struct TAlignLevel
+    {
+        size_t area, keypointsMax, pyramidLevels;
+    };
+    const TAlignLevel ALIGN_LEVELS[] = {
+        { 512*384, 500, 8 },
+        { 1024*768, 2000, 8 },
+        { 2048*1536, 8000, 10 },
+    };
+    const size_t ALIGN_LEVEL_COUNT = sizeof(ALIGN_LEVELS) / sizeof(ALIGN_LEVELS[0]);
+    // What else the search holds per image beside its keypoints: the
+    // keypoints' own structure and the maps that find them.
+    const size_t ALIGN_IMAGE_OVERHEAD_BYTES = 320;
+    // Auto leaves this much of the memory free at the search's start to
+    // everything else, whichever is more: some programs fail rather than
+    // wait once Windows starts moving memory to the page file.
+    const size_t ALIGN_MEMORY_RESERVE_BYTES = size_t(1) << 30;
+    const double ALIGN_MEMORY_RESERVE_SHARE = 0.1; // of all the memory
     // Hits an image needs in the keypoint index, and the images a key may
     // hold before it says too little. A key that fills up stops counting, so
     // more entries find the crops of a picture a folder has many copies of,
-    // and pass more unrelated pairs on to be aligned.
+    // and pass more unrelated pairs on to be aligned: fewer than 255 lost a
+    // crop beside many sketches of one series.
     const size_t ALIGN_INDEX_HITS_MIN = 16;
     const size_t ALIGN_INDEX_KEY_ENTRIES_MAX = 255;
     // A pair local colour lets through scores under this without needing

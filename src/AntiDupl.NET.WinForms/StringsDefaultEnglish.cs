@@ -130,6 +130,11 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text = "Width of ignored frame of image";
             s.CoreOptionsForm_TransparentAsShownCheckBox_Text = "Improve transparent image comparison";
             s.CoreOptionsForm_IgnoreTransparentCheckBox_Text = "Ignore areas with transparency in both images";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Text = "Smallest crop (aligned search)";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Auto = "Auto: as small as memory allows";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level1 = "1/4 of the picture, 0.4 GB / 10,000 images";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level2 = "1/10 of the picture, 1.1 GB / 10,000 images";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level3 = "1/50 of the picture, 4 GB / 10,000 images";
             s.CoreOptionsForm_UseLibJpegTurboCheckBox_Text = "Use libjpeg-turbo";
 
             s.CoreOptionsForm_HighlightTabPage_Text = "Highlight";
@@ -185,6 +190,20 @@ namespace AntiDupl.NET.WinForms
             s.SearchExecuterForm_Stopped = "Stopping of search";
             s.SearchExecuterForm_MinimizeToTaskbarButton_Text = "Minimize";
             s.SearchExecuterForm_MinimizeToSystrayButton_Text = "Background Mode";
+
+            s.AlignedMemoryForm_Text = "Not enough memory for the smallest crops";
+            s.AlignedMemoryForm_Reduced = "This search holds {0:N0} images. Finding crops down to {1} needs about {2} of memory, and {3} is free. The search is looking for crops down to {4} instead, which needs about {5}.";
+            s.AlignedMemoryForm_Forced = "This search holds {0:N0} images. Finding crops down to {1}, as set in Options > Advanced, needs about {2} of memory, and {3} is free. The search goes on at that setting, but Windows may move memory to the disk, which slows this search and the other programs, and some programs may fail.";
+            s.AlignedMemoryForm_Lowest = "This search holds {0:N0} images. Even crops down to {1} need about {2} of memory, and {3} is free. The search goes on, but Windows may move memory to the disk, which slows this search and the other programs, and some programs may fail.";
+            s.AlignedMemoryForm_Choices = "The search goes on meanwhile. To find the smaller crops, you can:\n\u2022 stop the search, close other programs to free memory, and search again;\n\u2022 let it finish, review these results, delete or move what you have decided on, and search again with fewer images;\n\u2022 stop the search and search fewer folders at a time.";
+            s.AlignedMemoryForm_ChoicesForced = "You can:\n\u2022 stop the search, close other programs to free memory, and search again;\n\u2022 stop the search, set the smallest crop to Auto in Options > Advanced, and search again;\n\u2022 let it finish, review these results, delete or move what you have decided on, and search again with fewer images;\n\u2022 stop the search and search fewer folders at a time.";
+            s.AlignedMemoryForm_ChoicesLowest = "You can:\n\u2022 stop the search, close other programs to free memory, and search again;\n\u2022 let it finish, review these results, delete or move what you have decided on, and search again with fewer images;\n\u2022 stop the search and search fewer folders at a time.";
+            s.AlignedMemoryForm_Gigabytes = "{0:0.0} GB";
+            s.AlignedMemoryForm_StopButton_Text = "Stop the search";
+            s.AlignedMemoryForm_CloseButton_Text = "Close";
+            s.AlignedMemoryForm_Level1 = "about 1/4 of the picture";
+            s.AlignedMemoryForm_Level2 = "about 1/10 of the picture";
+            s.AlignedMemoryForm_Level3 = "about 1/50 of the picture";
 
             s.ResultsPreviewBase_NextButton_ToolTip_Text = "Go to the next result";
             s.ResultsPreviewBase_PreviousButton_ToolTip_Text = "Go to the previous result";

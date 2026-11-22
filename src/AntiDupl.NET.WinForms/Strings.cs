@@ -133,6 +133,11 @@ namespace AntiDupl.NET.WinForms
         public string CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text;
         public string CoreOptionsForm_TransparentAsShownCheckBox_Text;
         public string CoreOptionsForm_IgnoreTransparentCheckBox_Text;
+        public string CoreOptionsForm_AlignedLevelLabeledComboBox_Text;
+        public string CoreOptionsForm_AlignedLevelLabeledComboBox_Auto;
+        public string CoreOptionsForm_AlignedLevelLabeledComboBox_Level1;
+        public string CoreOptionsForm_AlignedLevelLabeledComboBox_Level2;
+        public string CoreOptionsForm_AlignedLevelLabeledComboBox_Level3;
         public string CoreOptionsForm_UseLibJpegTurboCheckBox_Text;
 
         public string CoreOptionsForm_HighlightTabPage_Text;
@@ -188,6 +193,20 @@ namespace AntiDupl.NET.WinForms
         public string SearchExecuterForm_Stopped;
         public string SearchExecuterForm_MinimizeToTaskbarButton_Text;
         public string SearchExecuterForm_MinimizeToSystrayButton_Text;
+
+        public string AlignedMemoryForm_Text;
+        public string AlignedMemoryForm_Reduced;
+        public string AlignedMemoryForm_Forced;
+        public string AlignedMemoryForm_Lowest;
+        public string AlignedMemoryForm_Choices;
+        public string AlignedMemoryForm_ChoicesForced;
+        public string AlignedMemoryForm_ChoicesLowest;
+        public string AlignedMemoryForm_Gigabytes;
+        public string AlignedMemoryForm_StopButton_Text;
+        public string AlignedMemoryForm_CloseButton_Text;
+        public string AlignedMemoryForm_Level1;
+        public string AlignedMemoryForm_Level2;
+        public string AlignedMemoryForm_Level3;
 
         public string ResultsPreviewBase_NextButton_ToolTip_Text;
         public string ResultsPreviewBase_PreviousButton_ToolTip_Text;

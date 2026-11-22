@@ -130,6 +130,11 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text = "Ширина игнорируемой рамки картинки";
             s.CoreOptionsForm_TransparentAsShownCheckBox_Text = "Улучшенное сравнение прозрачных картинок";
             s.CoreOptionsForm_IgnoreTransparentCheckBox_Text = "Игнорировать прозрачные области в обеих картинках";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Text = "Наименьший фрагмент (поиск с выравниванием)";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Auto = "Авто: насколько позволяет память";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level1 = "1/4 картинки, 0,4 ГБ / 10 000 картинок";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level2 = "1/10 картинки, 1,1 ГБ / 10 000 картинок";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level3 = "1/50 картинки, 4 ГБ / 10 000 картинок";
             s.CoreOptionsForm_UseLibJpegTurboCheckBox_Text = "Использовать libjpeg-turbo";
 
             s.CoreOptionsForm_HighlightTabPage_Text = "Подсветка";
@@ -184,6 +189,20 @@ namespace AntiDupl.NET.WinForms
             s.SearchExecuterForm_Search = "Поиск";
             s.SearchExecuterForm_Stopped = "Остановка поиска";
             s.SearchExecuterForm_MinimizeToTaskbarButton_Text = "Свернуть";
+            s.AlignedMemoryForm_Text = "Недостаточно памяти для самых малых фрагментов";
+            s.AlignedMemoryForm_Reduced = "В этом поиске {0:N0} картинок. Для поиска фрагментов размером до {1} нужно около {2} памяти, а свободно {3}. Вместо этого поиск ищет фрагменты размером до {4}, для чего нужно около {5}.";
+            s.AlignedMemoryForm_Forced = "В этом поиске {0:N0} картинок. Для поиска фрагментов размером до {1}, как задано в Настройки > Дополнительно, нужно около {2} памяти, а свободно {3}. Поиск продолжается с этой настройкой, но Windows может переносить память на диск, что замедлит этот поиск и другие программы, а некоторые программы могут дать сбой.";
+            s.AlignedMemoryForm_Lowest = "В этом поиске {0:N0} картинок. Даже для фрагментов размером до {1} нужно около {2} памяти, а свободно {3}. Поиск продолжается, но Windows может переносить память на диск, что замедлит этот поиск и другие программы, а некоторые программы могут дать сбой.";
+            s.AlignedMemoryForm_Choices = "Поиск тем временем продолжается. Чтобы найти фрагменты меньше, можно:\n\u2022 остановить поиск, закрыть другие программы, чтобы освободить память, и начать поиск заново;\n\u2022 дождаться конца, просмотреть эти результаты, удалить или переместить то, что решено, и начать поиск заново с меньшим числом картинок;\n\u2022 остановить поиск и искать в меньшем числе папок за раз.";
+            s.AlignedMemoryForm_ChoicesForced = "Можно:\n\u2022 остановить поиск, закрыть другие программы, чтобы освободить память, и начать поиск заново;\n\u2022 остановить поиск, выбрать «Авто» для наименьшего фрагмента в Настройки > Дополнительно и начать поиск заново;\n\u2022 дождаться конца, просмотреть эти результаты, удалить или переместить то, что решено, и начать поиск заново с меньшим числом картинок;\n\u2022 остановить поиск и искать в меньшем числе папок за раз.";
+            s.AlignedMemoryForm_ChoicesLowest = "Можно:\n\u2022 остановить поиск, закрыть другие программы, чтобы освободить память, и начать поиск заново;\n\u2022 дождаться конца, просмотреть эти результаты, удалить или переместить то, что решено, и начать поиск заново с меньшим числом картинок;\n\u2022 остановить поиск и искать в меньшем числе папок за раз.";
+            s.AlignedMemoryForm_Gigabytes = "{0:0.0} ГБ";
+            s.AlignedMemoryForm_StopButton_Text = "Остановить поиск";
+            s.AlignedMemoryForm_CloseButton_Text = "Закрыть";
+            s.AlignedMemoryForm_Level1 = "около 1/4 картинки";
+            s.AlignedMemoryForm_Level2 = "около 1/10 картинки";
+            s.AlignedMemoryForm_Level3 = "около 1/50 картинки";
+
             s.SearchExecuterForm_MinimizeToSystrayButton_Text = "Фоновый режим";
 
             s.ResultsPreviewBase_NextButton_ToolTip_Text = "Перейти к следующему результату";

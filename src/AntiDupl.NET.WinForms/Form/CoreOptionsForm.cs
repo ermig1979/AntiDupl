@@ -221,6 +221,7 @@ namespace AntiDupl.NET.WinForms
         private LabeledIntegerEdit m_resultCountMaxLabeledIntegerEdit;
         private LabeledComboBox m_ignoreFrameWidthLabeledComboBox;
         private CheckBox m_useLibJpegTurboCheckBox;
+        private LabeledComboBox m_alignedLevelLabeledComboBox;
 
         private TabPage m_highlightTabPage;
         private CheckBox m_highlightDifferenceCheckBox;
@@ -506,7 +507,7 @@ namespace AntiDupl.NET.WinForms
             m_advancedTabPage = new TabPage();
             m_mainTabControl.Controls.Add(m_advancedTabPage);
 
-            TableLayoutPanel advancedTableLayoutPanel = InitFactory.Layout.Create(1, 13, 5);
+            TableLayoutPanel advancedTableLayoutPanel = InitFactory.Layout.Create(1, 14, 5);
             advancedTableLayoutPanel.AutoScroll = true;
             m_advancedTabPage.Controls.Add(advancedTableLayoutPanel);
 
@@ -562,8 +563,20 @@ namespace AntiDupl.NET.WinForms
             m_ignoreTransparentCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
             advancedTableLayoutPanel.Controls.Add(m_ignoreTransparentCheckBox, 0, 11);
 
+            m_alignedLevelLabeledComboBox = new LabeledComboBox(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
+            {
+                Strings s = Resources.Strings.Current;
+                string[] levels = { s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level1,
+                    s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level2, s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level3 };
+                m_alignedLevelLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value(
+                    CoreCompareOptions.ALIGNED_LEVEL_AUTO, s.CoreOptionsForm_AlignedLevelLabeledComboBox_Auto));
+                for (int level = 1; level <= CoreCompareOptions.ALIGNED_LEVEL_COUNT; level++)
+                    m_alignedLevelLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value(level, levels[level - 1]));
+            }
+            advancedTableLayoutPanel.Controls.Add(m_alignedLevelLabeledComboBox, 0, 12);
+
             m_useLibJpegTurboCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            advancedTableLayoutPanel.Controls.Add(m_useLibJpegTurboCheckBox, 0, 12);
+            advancedTableLayoutPanel.Controls.Add(m_useLibJpegTurboCheckBox, 0, 13);
         }
 
         private void InitilizeHighlightTabPage()
@@ -737,6 +750,7 @@ namespace AntiDupl.NET.WinForms
             m_skipHardlinksCheckBox.Checked = m_newCoreOptions.compareOptions.skipHardlinks;
             m_transparentAsShownCheckBox.Checked = m_newCoreOptions.compareOptions.transparentAsShown;
             m_ignoreTransparentCheckBox.Checked = m_newCoreOptions.compareOptions.ignoreTransparent;
+            m_alignedLevelLabeledComboBox.SelectedValue = m_newCoreOptions.compareOptions.alignedLevel;
 
             m_checkOnDefectCheckBox.Checked = m_newCoreOptions.defectOptions.checkOnDefect;
             m_checkOnBlockinessCheckBox.Checked = m_newCoreOptions.defectOptions.checkOnBlockiness;
@@ -803,6 +817,7 @@ namespace AntiDupl.NET.WinForms
             m_newCoreOptions.compareOptions.skipHardlinks = m_skipHardlinksCheckBox.Checked;
             m_newCoreOptions.compareOptions.transparentAsShown = m_transparentAsShownCheckBox.Checked;
             m_newCoreOptions.compareOptions.ignoreTransparent = m_ignoreTransparentCheckBox.Checked;
+            m_newCoreOptions.compareOptions.alignedLevel = m_alignedLevelLabeledComboBox.SelectedValue;
 
             m_newCoreOptions.defectOptions.checkOnDefect = m_checkOnDefectCheckBox.Checked;
             m_newCoreOptions.defectOptions.checkOnBlockiness = m_checkOnBlockinessCheckBox.Checked;
@@ -875,6 +890,8 @@ namespace AntiDupl.NET.WinForms
             m_skipHardlinksCheckBox.Text = s.CoreOptionsForm_SkipHardlinksCheckBox_Text;
             m_transparentAsShownCheckBox.Text = s.CoreOptionsForm_TransparentAsShownCheckBox_Text;
             m_ignoreTransparentCheckBox.Text = s.CoreOptionsForm_IgnoreTransparentCheckBox_Text;
+            m_alignedLevelLabeledComboBox.Text = s.CoreOptionsForm_AlignedLevelLabeledComboBox_Text;
+            FitList(m_alignedLevelLabeledComboBox);
 
             m_defectTabPage.Text = s.CoreOptionsForm_DefectTabPage_Text;
             m_checkOnDefectCheckBox.Text = s.CoreOptionsForm_CheckOnDefectCheckBox_Text;
@@ -999,6 +1016,8 @@ namespace AntiDupl.NET.WinForms
             // first option makes.
             m_ignoreTransparentCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality &&
               m_newCoreOptions.compareOptions.transparentAsShown;
+            m_alignedLevelLabeledComboBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality &&
+              m_newCoreOptions.compareOptions.algorithmComparing == AlgorithmComparing.ButteraugliAligned;
 
             m_ratioResolutionLabeledComboBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality &&
               !m_newCoreOptions.compareOptions.sizeControl && m_newCoreOptions.compareOptions.ratioControl;
@@ -1054,10 +1073,15 @@ namespace AntiDupl.NET.WinForms
         // label; the part that drops down always is.
         private void FitAlgorithmList()
         {
-            ComboBox list = m_algorithmComparingLabeledComboBox.comboBox;
+            FitList(m_algorithmComparingLabeledComboBox);
+        }
+
+        private static void FitList(LabeledComboBox labeled)
+        {
+            ComboBox list = labeled.comboBox;
             int widest = AlgorithmListWidth(list);
             list.DropDownWidth = widest;
-            int room = FORM_WIDTH - 45 - TextRenderer.MeasureText(m_algorithmComparingLabeledComboBox.Text, list.Font).Width;
+            int room = FORM_WIDTH - 45 - TextRenderer.MeasureText(labeled.Text, list.Font).Width;
             list.Width = Math.Max(COMBO_BOX_WIDTH + 115, Math.Min(widest, room));
         }
 

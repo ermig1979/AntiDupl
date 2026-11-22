@@ -60,6 +60,10 @@ namespace ad
         // decoding the images the image database would otherwise spare.
         bool NeedsKeypoints() const { return m_pIndex != NULL; }
 
+        // The aligned search's level, chosen when the store is made, and
+        // the memory behind the choice; all 0 in other searches.
+        const adAlignedMemory & AlignedMemory() const { return m_alignedMemory; }
+
         // An image's keypoints, from its grey pixels at full size.
         void SetKeypoints(TImageDataPtr pImageData, const TView & gray);
 
@@ -117,6 +121,10 @@ namespace ad
         double Compute(const TView & first, const TView & second, adTransformType transform) const;
         double ComputeAligned(const TView & first, const TView & second, const TAffine & transform) const;
         std::shared_ptr<const TKeypoints> Keypoints(TImageDataPtr pImageData);
+        // The setting's level, or for Auto the highest whose keypoints for
+        // so many images fit in the memory free now, less a reserve and
+        // the decoded images' cache; the lowest when none fits.
+        void ChooseLevel(size_t imageCount);
         void Load();
         void Save() const;
 
@@ -132,6 +140,8 @@ namespace ad
         std::mutex m_keypointMutex;
         std::unordered_map<TImageDataPtr, std::shared_ptr<const TKeypoints>> m_keypoints;
         TEngine *m_pEngine;
+        adAlignedMemory m_alignedMemory;
+        const TAlignLevel *m_pLevel; // NULL but in the aligned search
         std::mutex m_indexMutex;
         std::condition_variable m_gathered;
         size_t m_participants, m_arrived;

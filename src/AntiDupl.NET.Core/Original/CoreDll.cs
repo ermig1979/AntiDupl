@@ -315,6 +315,18 @@ namespace AntiDupl.NET.Core.Original
             public int skipHardlinks;
             public int transparentAsShown;
             public int ignoreTransparent;
+            public int alignedLevel;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct adAlignedMemory
+        {
+            public int wanted;
+            public int used;
+            public ulong wantedBytes;
+            public ulong usedBytes;
+            public ulong freeBytes;
+            public ulong imageCount;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -552,6 +564,11 @@ namespace AntiDupl.NET.Core.Original
         public delegate Error adStatisticGet_fn(IntPtr handle, IntPtr pStatistic);
         [DynamicModuleApi]
         public adStatisticGet_fn adStatisticGet = null;
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+        public delegate Error adAlignedMemoryGet_fn(IntPtr handle, ref adAlignedMemory alignedMemory);
+        [DynamicModuleApi]
+        public adAlignedMemoryGet_fn adAlignedMemoryGet = null;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
         public delegate Error adStatusGetW_fn(IntPtr handle, ThreadType threadType, IntPtr threadId, IntPtr pStatusW);

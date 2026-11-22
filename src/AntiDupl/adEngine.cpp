@@ -60,6 +60,7 @@ namespace ad
         m_pCollectManager = new TCollectManager(this, m_pCompareManager);
         m_pSearcher = new TSearcher(this, m_pImageDataPtrs);
         m_pButteraugliStore = NULL;
+        m_alignedMemory = adAlignedMemory();
     }
 
     TEngine::~TEngine()
@@ -92,6 +93,7 @@ namespace ad
         m_pStatus->ClearStatistic();
         m_pStatus->SetProgress(0, 0);
         m_pResult->Clear();
+        ClearAlignedMemory();
 
         m_pSearcher->SearchImages();
 
@@ -100,7 +102,11 @@ namespace ad
             // Before the compare threads, whose comparers take it.
             if(m_pOptions->compare.algorithmComparing == AD_COMPARING_BUTTERAUGLI ||
                 m_pOptions->compare.algorithmComparing == AD_COMPARING_BUTTERAUGLI_ALIGNED)
+            {
                 m_pButteraugliStore = new TButteraugliStore(this, m_pImageDataPtrs->size());
+                std::lock_guard<std::mutex> lock(m_alignedMemoryMutex);
+                m_alignedMemory = m_pButteraugliStore->AlignedMemory();
+            }
             m_pCompareManager->Start(m_pImageDataPtrs->size());
             m_pCompareManager->SetPriority(THREAD_PRIORITY_LOWEST);
         }
@@ -129,6 +135,21 @@ namespace ad
 
         m_pImageDataPtrs->clear();
         m_pStatus->Reset();
+    }
+
+    adError TEngine::ExportAlignedMemory(adAlignedMemoryPtr pAlignedMemory)
+    {
+        if (pAlignedMemory == NULL)
+            return AD_ERROR_INVALID_POINTER;
+        std::lock_guard<std::mutex> lock(m_alignedMemoryMutex);
+        *pAlignedMemory = m_alignedMemory;
+        return AD_OK;
+    }
+
+    void TEngine::ClearAlignedMemory()
+    {
+        std::lock_guard<std::mutex> lock(m_alignedMemoryMutex);
+        m_alignedMemory = adAlignedMemory();
     }
 
     adError TEngine::ScanCandidates(adCandidateInfoPtrW pCandidates, adSizePtr pCandidateSize)

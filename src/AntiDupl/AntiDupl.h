@@ -438,8 +438,22 @@ extern "C"
         adBool skipHardlinks;
         adBool transparentAsShown; // images with transparency compared as shown, not by the colour under it
         adBool ignoreTransparent; // with transparentAsShown: pairs also compared only where images with transparency are opaque
+        adInt32 alignedLevel; // the aligned search's level, 1 and up; 0: the highest that fits in memory
     };
     typedef adCompareOptions* adCompareOptionsPtr;
+
+    // The aligned search's level and the memory it needs, as the search
+    // chose it (all 0 before, and in other searches).
+    struct adAlignedMemory
+    {
+        adInt32 wanted; // the level the setting asks for, its highest for Auto
+        adInt32 used; // the level the search runs at
+        adUInt64 wantedBytes; // the most the wanted level's keypoints take
+        adUInt64 usedBytes; // the most the used level's take
+        adUInt64 freeBytes; // what the search may use of the memory free at its start
+        adUInt64 imageCount; // the images the estimates are for
+    };
+    typedef adAlignedMemory* adAlignedMemoryPtr;
 	
     struct adDefectOptions
     {
@@ -656,6 +670,7 @@ extern "C"
     DLLAPI adError adIgnoreFilenameFilterGetW(adEngineHandle handle, wchar_t* pFilter, adSize bufferSize, adSizePtr pFilterSize);
 
     DLLAPI adError adStatisticGet(adEngineHandle handle, adStatisticPtr pStatistic);
+    DLLAPI adError adAlignedMemoryGet(adEngineHandle handle, adAlignedMemoryPtr pAlignedMemory);
     DLLAPI adError adStatusGetA(adEngineHandle handle, adThreadType threadType, adSize threadId, adStatusPtrA pStatus);
     DLLAPI adError adStatusGetW(adEngineHandle handle, adThreadType threadType, adSize threadId, adStatusPtrW pStatus);
 

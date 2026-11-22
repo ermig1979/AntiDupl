@@ -160,15 +160,23 @@ namespace ad
     }
 
     // Keypoints from a picture's grey pixels at full size, on a copy of
-    // about ALIGN_IMAGE_AREA pixels.
-    static void ImageKeypoints(const TView & gray, TKeypoints & keypoints)
+    // about the level's area.
+    static void ImageKeypoints(const TView & gray, const TAlignLevel & level, TKeypoints & keypoints)
     {
-        const double scale = std::min(1.0, sqrt(double(ALIGN_IMAGE_AREA) / (double(gray.width) * gray.height)));
+        const double scale = std::min(1.0, sqrt(double(level.area) / (double(gray.width) * gray.height)));
         const size_t w = std::max<size_t>(1, size_t(gray.width * scale + 0.5));
         const size_t h = std::max<size_t>(1, size_t(gray.height * scale + 0.5));
         TView copy(w, h, TView::Gray8);
         AreaResize(gray, copy);
-        FindKeypoints(copy.data, w, h, copy.stride, ALIGN_KEYPOINTS_MAX, keypoints);
+        FindKeypoints(copy.data, w, h, copy.stride, level.keypointsMax, level.pyramidLevels, keypoints);
+    }
+
+    // The most memory the keypoints of so many images take at a level,
+    // with their index.
+    static size_t LevelBytes(const TAlignLevel & level, size_t imageCount)
+    {
+        return imageCount * (ALIGN_IMAGE_OVERHEAD_BYTES + level.keypointsMax * TKeypoints::BYTES_PER_POINT) +
+            TKeypointIndex::Bytes(imageCount, level.keypointsMax);
     }
 
     // Whether two pictures, by their keypoints' transform from the second to
@@ -199,6 +207,8 @@ namespace ad
     TButteraugliStore::TButteraugliStore(TEngine *pEngine, size_t imageCount)
         : m_pOptions(pEngine->Options())
         , m_pEngine(pEngine)
+        , m_alignedMemory()
+        , m_pLevel(NULL)
         , m_participants(0)
         , m_arrived(0)
         , m_indexBuilt(false)
@@ -208,8 +218,41 @@ namespace ad
     {
         static_assert(sizeof(TKey) == 40, "TKey is written to the file as it is");
         if (m_pOptions->compare.algorithmComparing == AD_COMPARING_BUTTERAUGLI_ALIGNED)
+        {
+            ChooseLevel(imageCount);
             m_pIndex.reset(new TKeypointIndex(imageCount, ALIGN_INDEX_KEY_ENTRIES_MAX, ALIGN_INDEX_HITS_MIN));
+        }
         Load();
+    }
+
+    void TButteraugliStore::ChooseLevel(size_t imageCount)
+    {
+        MEMORYSTATUSEX status = { sizeof(status) };
+        size_t room = 0;
+        if (::GlobalMemoryStatusEx(&status))
+        {
+            const size_t reserve = std::max(ALIGN_MEMORY_RESERVE_BYTES,
+                size_t(double(status.ullTotalPhys) * ALIGN_MEMORY_RESERVE_SHARE));
+            const size_t taken = reserve + BUTTERAUGLI_IMAGE_CACHE_BYTES;
+            // Memory is allocated against the commit limit (the memory and
+            // the page file together), which other programs can have taken
+            // more of than they use: what is free there can be less.
+            const size_t free = size_t(std::min(status.ullAvailPhys, status.ullAvailPageFile));
+            room = free > taken ? free - taken : 0;
+        }
+        const TInt32 setting = m_pOptions->compare.alignedLevel;
+        const size_t wanted = setting >= 1 && size_t(setting) <= ALIGN_LEVEL_COUNT ? size_t(setting) : ALIGN_LEVEL_COUNT;
+        size_t used = wanted;
+        if (setting == 0)
+            while (used > 1 && LevelBytes(ALIGN_LEVELS[used - 1], imageCount) > room)
+                --used;
+        m_pLevel = &ALIGN_LEVELS[used - 1];
+        m_alignedMemory.wanted = adInt32(wanted);
+        m_alignedMemory.used = adInt32(used);
+        m_alignedMemory.wantedBytes = LevelBytes(ALIGN_LEVELS[wanted - 1], imageCount);
+        m_alignedMemory.usedBytes = LevelBytes(*m_pLevel, imageCount);
+        m_alignedMemory.freeBytes = room;
+        m_alignedMemory.imageCount = imageCount;
     }
 
     TButteraugliStore::~TButteraugliStore()
@@ -255,7 +298,7 @@ namespace ad
     void TButteraugliStore::SetKeypoints(TImageDataPtr pImageData, const TView & gray)
     {
         std::shared_ptr<TKeypoints> keypoints = std::make_shared<TKeypoints>();
-        ImageKeypoints(gray, *keypoints);
+        ImageKeypoints(gray, *m_pLevel, *keypoints);
         std::lock_guard<std::mutex> lock(m_keypointMutex);
         m_keypoints[pImageData] = keypoints;
     }
@@ -294,11 +337,13 @@ namespace ad
             // them, added in an order that doesn't depend on the threads.
             std::sort(m_indexed.begin(), m_indexed.end(), [](TImageDataPtr a, TImageDataPtr b)
                 { return TPath::LesserByPath(a->path, b->path); });
+            std::vector<std::shared_ptr<const TKeypoints>> keypoints(m_indexed.size());
             for (size_t i = 0; i < m_indexed.size(); ++i)
             {
-                m_pIndex->Add(*Keypoints(m_indexed[i]));
+                keypoints[i] = Keypoints(m_indexed[i]);
                 m_number[m_indexed[i]] = uint32_t(i);
             }
+            m_pIndex->Build(keypoints.size(), [&](size_t i) -> const TKeypoints & { return *keypoints[i]; });
             m_indexBuilt = true;
             m_gathered.notify_all();
             return true;
