@@ -339,6 +339,12 @@ This restriction is useful to save program resources allocated to the graphical 
 By default, this value is 100000.
  </p></li>
  <li><p align="justify">
+<b>RAM limit for Butteraugli's images, MB</b> - the most memory (RAM) the perceptual algorithms keep decoded images in during a search, so that an image compared with many others is decoded only once.
+Memory is taken only as images are decoded, and freed when the search ends.
+A larger value speeds up the search of a large collection: an image takes about 1.3 MB at a working size of 768 px (twice that when it has transparency and transparency is shown).
+By default, this value is 512 MB.
+ </p></li>
+ <li><p align="justify">
 <b>Width of ignored frame of image</b> - This parameter determines the width of frame of the image, the contents of which will be ignored during the comparison of images.
 This option is relevant if you want to compare pictures with frames of different colors or small inscription on the edge.
 By default, this value is 0 %.
@@ -364,12 +370,6 @@ By default, this option is disabled.
 <b>Use libjpeg-turbo</b> - a flag to use libjpeg-turbo library to improve performance of loading of JPEG images.
 Otherwise, they will be deleted permanently.
 By default, this option is enabled.
- </p></li>
- <li><p align="justify">
-<b>Memory for Butteraugli's images, MB</b> - the most memory the perceptual algorithms keep decoded images in during a search, so that an image compared with many others is decoded only once.
-Memory is taken only as images are decoded, and freed when the search ends.
-A larger value speeds up the search of a large collection: an image takes about 1.3 MB at a working size of 768 px (twice that when it has transparency and transparency is shown).
-By default, this value is 512 MB.
  </p></li>
 </ul>
 

@@ -547,23 +547,23 @@ namespace AntiDupl.NET.WinForms
             m_resultCountMaxLabeledIntegerEdit.Default = m_defaultCoreOptions.advancedOptions.resultCountMax;
             advancedTableLayoutPanel.Controls.Add(m_resultCountMaxLabeledIntegerEdit, 0, 8);
 
-            m_ignoreFrameWidthLabeledComboBox = new LabeledComboBox(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
-            advancedTableLayoutPanel.Controls.Add(m_ignoreFrameWidthLabeledComboBox, 0, 9);
-
-            m_transparentAsShownCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            advancedTableLayoutPanel.Controls.Add(m_transparentAsShownCheckBox, 0, 10);
-
-            m_ignoreTransparentCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            advancedTableLayoutPanel.Controls.Add(m_ignoreTransparentCheckBox, 0, 11);
-
-            m_useLibJpegTurboCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            advancedTableLayoutPanel.Controls.Add(m_useLibJpegTurboCheckBox, 0, 12);
-
             m_butteraugliCacheSizeLabeledIntegerEdit = new LabeledIntegerEdit(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
             m_butteraugliCacheSizeLabeledIntegerEdit.Min = 64;
             m_butteraugliCacheSizeLabeledIntegerEdit.Max = 99999;
             m_butteraugliCacheSizeLabeledIntegerEdit.Default = m_defaultCoreOptions.advancedOptions.butteraugliCacheSize;
-            advancedTableLayoutPanel.Controls.Add(m_butteraugliCacheSizeLabeledIntegerEdit, 0, 13);
+            advancedTableLayoutPanel.Controls.Add(m_butteraugliCacheSizeLabeledIntegerEdit, 0, 9);
+
+            m_ignoreFrameWidthLabeledComboBox = new LabeledComboBox(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
+            advancedTableLayoutPanel.Controls.Add(m_ignoreFrameWidthLabeledComboBox, 0, 10);
+
+            m_transparentAsShownCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
+            advancedTableLayoutPanel.Controls.Add(m_transparentAsShownCheckBox, 0, 11);
+
+            m_ignoreTransparentCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
+            advancedTableLayoutPanel.Controls.Add(m_ignoreTransparentCheckBox, 0, 12);
+
+            m_useLibJpegTurboCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
+            advancedTableLayoutPanel.Controls.Add(m_useLibJpegTurboCheckBox, 0, 13);
         }
 
         private void InitilizeHighlightTabPage()

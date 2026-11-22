@@ -130,7 +130,7 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_TransparentAsShownCheckBox_Text = "Улучшенное сравнение прозрачных картинок";
             s.CoreOptionsForm_IgnoreTransparentCheckBox_Text = "Игнорировать прозрачные области в обеих картинках";
             s.CoreOptionsForm_UseLibJpegTurboCheckBox_Text = "Использовать libjpeg-turbo";
-            s.CoreOptionsForm_ButteraugliCacheSizeLabeledIntegerEdit_Text = "Память для изображений Butteraugli, МБ";
+            s.CoreOptionsForm_ButteraugliCacheSizeLabeledIntegerEdit_Text = "Предел оперативной памяти для изображений Butteraugli, МБ";
 
             s.CoreOptionsForm_HighlightTabPage_Text = "Подсветка";
             s.CoreOptionsForm_HighlightDifferenceCheckBox_Text = "Подсветка различий";
