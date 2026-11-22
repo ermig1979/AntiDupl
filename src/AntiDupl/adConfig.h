@@ -129,6 +129,29 @@ namespace ad
     // Part of the stored scores' key: a change to how a score is computed
     // (the working images, the metric) makes the stored ones stale.
     const TUInt32 BUTTERAUGLI_SCORE_VERSION = 2;
+    // The aligned search (adAlign.h). Keypoints are found on a grey copy of
+    // about this many pixels, whatever the shape: a long strip keeps a width
+    // to find corners in, which a limit on the longest side wouldn't leave.
+    const size_t ALIGN_IMAGE_AREA = 512*384;
+    const size_t ALIGN_KEYPOINTS_MAX = 500;
+    // Hits an image needs in the keypoint index, and the images a key may
+    // hold before it says too little. A key that fills up stops counting, so
+    // more entries find the crops of a picture a folder has many copies of,
+    // and pass more unrelated pairs on to be aligned.
+    const size_t ALIGN_INDEX_HITS_MIN = 16;
+    const size_t ALIGN_INDEX_KEY_ENTRIES_MAX = 32;
+    // A pair local colour lets through scores under this without needing
+    // alignment: what alignment gains is worth a second score only above it.
+    const double ALIGN_PLAIN_SCORE_MIN = 7.5;
+    // Pairs share at least this share of the smaller image...
+    const double ALIGN_OVERLAP_MIN = 0.5;
+    // ...and a box at least this wide and high at the working size.
+    const size_t ALIGN_BOX_SIDE_MIN = 32;
+    // Above this scale the larger image is area-reduced before it is warped:
+    // bicubic sampling alone aliases as it shrinks.
+    const double ALIGN_REDUCE_SCALE = 1.02;
+    // Part of an aligned score's key, as BUTTERAUGLI_SCORE_VERSION is of all.
+    const TInt32 ALIGNED_SCORE_VERSION = 1;
     // Transparency shown: when could an opaque image be a copy of one with
     // transparency, its transparent area filled with one colour
     // (TImageComparer::UniformFill). Pixels of the colour thumbnail count as

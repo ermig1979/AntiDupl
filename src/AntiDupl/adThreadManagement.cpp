@@ -22,6 +22,7 @@
 * SOFTWARE.
 */
 #include "adFileUtils.h"
+#include "adButteraugli.h"
 #include "adEngine.h"
 #include "adImageData.h"
 #include "adOptions.h"
@@ -316,7 +317,9 @@ namespace ad
 
     void TCollectManager::Add(TImageData *pImageData)
     {
-        if(pImageData->DefectCheckingNeed(m_pOptions) || pImageData->PixelDataFillingNeed(m_pOptions) || pImageData->crc32c == 0)
+        const TButteraugliStore * pStore = m_pEngine->ButteraugliStore();
+        if(pImageData->DefectCheckingNeed(m_pOptions) || pImageData->PixelDataFillingNeed(m_pOptions) || pImageData->crc32c == 0 ||
+            (pStore && pStore->NeedsKeypoints()))
         {
             pImageData->hGlobal = LoadFileToMemory(pImageData->path.Original().c_str());
             size_t threadId = GetThreadId();

@@ -98,8 +98,9 @@ namespace ad
         if(m_pOptions->compare.checkOnEquality == TRUE)
         {
             // Before the compare threads, whose comparers take it.
-            if(m_pOptions->compare.algorithmComparing == AD_COMPARING_BUTTERAUGLI)
-                m_pButteraugliStore = new TButteraugliStore(this);
+            if(m_pOptions->compare.algorithmComparing == AD_COMPARING_BUTTERAUGLI ||
+                m_pOptions->compare.algorithmComparing == AD_COMPARING_BUTTERAUGLI_ALIGNED)
+                m_pButteraugliStore = new TButteraugliStore(this, m_pImageDataPtrs->size());
             m_pCompareManager->Start(m_pImageDataPtrs->size());
             m_pCompareManager->SetPriority(THREAD_PRIORITY_LOWEST);
         }

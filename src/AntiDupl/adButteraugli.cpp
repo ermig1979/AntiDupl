@@ -155,6 +155,29 @@ namespace ad
         params.intensity_target = BUTTERAUGLI_INTENSITY_TARGET;
         return jxl::ButteraugliDiffmap(rgb0, rgb1, params, diffmap);
     }
+
+    // Keypoints from a picture's grey pixels at full size, on a copy of
+    // about ALIGN_IMAGE_AREA pixels.
+    static void ImageKeypoints(const TView & gray, TKeypoints & keypoints)
+    {
+        const double scale = std::min(1.0, sqrt(double(ALIGN_IMAGE_AREA) / (double(gray.width) * gray.height)));
+        const size_t w = std::max<size_t>(1, size_t(gray.width * scale + 0.5));
+        const size_t h = std::max<size_t>(1, size_t(gray.height * scale + 0.5));
+        TView copy(w, h, TView::Gray8);
+        AreaResize(gray, copy);
+        FindKeypoints(copy.data, w, h, copy.stride, ALIGN_KEYPOINTS_MAX, keypoints);
+    }
+
+    // Whether two pictures, by their keypoints' transform from the second to
+    // the first, share enough of the smaller one to compare.
+    static bool EnoughOverlap(const TKeypoints & first, const TKeypoints & second, const TAffine & transform)
+    {
+        const TBox box = OverlapBox(transform, second.width, second.height, first.width, first.height);
+        const double area = double(box.Width()) * box.Height();
+        const double secondShare = area / (double(second.width) * second.height);
+        const double firstShare = area * Simd::Square(transform.Scale()) / (double(first.width) * first.height);
+        return std::max(firstShare, secondShare) >= ALIGN_OVERLAP_MIN;
+    }
     //-------------------------------------------------------------------------
     bool TButteraugliStore::TKey::operator==(const TKey & key) const
     {
@@ -170,13 +193,15 @@ namespace ad
         return hash;
     }
     //-------------------------------------------------------------------------
-    TButteraugliStore::TButteraugliStore(TEngine *pEngine)
+    TButteraugliStore::TButteraugliStore(TEngine *pEngine, size_t imageCount)
         : m_pOptions(pEngine->Options())
         , m_path(pEngine->UserPath() + TEXT("\\butteraugli.adp"))
         , m_imageBytes(0)
         , m_changed(false)
     {
         static_assert(sizeof(TKey) == 40, "TKey is written to the file as it is");
+        if (m_pOptions->compare.algorithmComparing == AD_COMPARING_BUTTERAUGLI_ALIGNED)
+            m_pIndex.reset(new TKeypointIndex(imageCount, ALIGN_INDEX_KEY_ENTRIES_MAX, ALIGN_INDEX_HITS_MIN));
         Load();
     }
 
@@ -212,6 +237,87 @@ namespace ad
         const double score = Compute(*first->bgr, *second->bgr, transform);
 
         if (keyed && score >= 0)
+        {
+            std::lock_guard<std::mutex> lock(m_mutex);
+            m_scores[key] = score;
+            m_changed = true;
+        }
+        return score;
+    }
+
+    void TButteraugliStore::SetKeypoints(TImageDataPtr pImageData, const TView & gray)
+    {
+        std::shared_ptr<TKeypoints> keypoints = std::make_shared<TKeypoints>();
+        ImageKeypoints(gray, *keypoints);
+        std::lock_guard<std::mutex> lock(m_keypointMutex);
+        m_keypoints[pImageData] = keypoints;
+    }
+
+    std::shared_ptr<const TKeypoints> TButteraugliStore::Keypoints(TImageDataPtr pImageData)
+    {
+        std::lock_guard<std::mutex> lock(m_keypointMutex);
+        auto it = m_keypoints.find(pImageData);
+        return it != m_keypoints.end() ? it->second : NULL;
+    }
+
+    void TButteraugliStore::Candidates(TImageDataPtr pImageData, std::vector<TImageDataPtr> & candidates)
+    {
+        candidates.clear();
+        const std::shared_ptr<const TKeypoints> keypoints = Keypoints(pImageData);
+        if (!keypoints || keypoints->Size() == 0 || !m_pIndex)
+            return;
+        std::vector<uint32_t> found;
+        std::lock_guard<std::mutex> lock(m_indexMutex);
+        m_pIndex->Find(*keypoints, found);
+        for (const uint32_t image : found)
+            candidates.push_back(m_indexed[image]);
+        m_pIndex->Add(*keypoints);
+        m_indexed.push_back(pImageData);
+    }
+
+    // From pixels of a picture of one size to those of another: pixel
+    // centres correspond, not pixel corners.
+    static TAffine Rescale(size_t fromWidth, size_t fromHeight, size_t toWidth, size_t toHeight)
+    {
+        const double sx = double(toWidth) / fromWidth, sy = double(toHeight) / fromHeight;
+        TAffine t = { sx, 0, 0.5 * sx - 0.5, 0, sy, 0.5 * sy - 0.5 };
+        return t;
+    }
+
+    double TButteraugliStore::AlignedScore(TImageDataPtr pFirst, TImageDataPtr pSecond)
+    {
+        if (Before(pSecond, pFirst))
+            std::swap(pFirst, pSecond);
+        TKey key = { pFirst->size, pSecond->size, pFirst->crc32c, pSecond->crc32c, AD_TRANSFORM_TURN_0,
+            m_pOptions->compare.butteraugliSize, m_pOptions->advanced.ignoreFrameWidth, ALIGNED_SCORE_VERSION };
+        const bool keyed = pFirst->crc32c != 0 && pFirst->crc32c != TUInt32(-1) &&
+            pSecond->crc32c != 0 && pSecond->crc32c != TUInt32(-1);
+        if (keyed)
+        {
+            std::lock_guard<std::mutex> lock(m_mutex);
+            auto it = m_scores.find(key);
+            if (it != m_scores.end())
+                return it->second;
+        }
+
+        // Most candidates end here, and matching them again costs less than
+        // keeping them all in the scores' file.
+        const std::shared_ptr<const TKeypoints> firstKeypoints = Keypoints(pFirst), secondKeypoints = Keypoints(pSecond);
+        TAffine transform;
+        if (!firstKeypoints || !secondKeypoints || !FindTransform(*secondKeypoints, *firstKeypoints, transform, NULL))
+            return -1;
+        const TKeypoints & a = *firstKeypoints, & b = *secondKeypoints;
+        if (!EnoughOverlap(a, b, transform))
+            return -1;
+
+        TWorkImagePtr first = Image(pFirst), second = Image(pSecond);
+        if (!first->bgr || !second->bgr)
+            return -1;
+        const double score = ComputeAligned(*first->bgr, *second->bgr,
+            Rescale(a.width, a.height, first->bgr->width, first->bgr->height).After(transform).After(
+                Rescale(second->bgr->width, second->bgr->height, b.width, b.height)));
+
+        if (keyed)
         {
             std::lock_guard<std::mutex> lock(m_mutex);
             m_scores[key] = score;
@@ -353,6 +459,109 @@ namespace ad
         return jxl::ButteraugliScoreFromDiffmap(diffmap);
     }
 
+    // The local colour difference of two views, of any size, in percent: as
+    // TImageComparer_LocalColor on thumbnails made from them.
+    static double LocalColor(const TView & first, const TView & second)
+    {
+        const size_t n = COLOR_IMAGE_SIZE, block = COLOR_BLOCK_SIZE;
+        TView a(n, n, TView::Bgr24), b(n, n, TView::Bgr24);
+        AreaResize(first, a);
+        AreaResize(second, b);
+        uint64_t worst = 0;
+        for (size_t by = 0; by < n; by += block)
+        {
+            for (size_t bx = 0; bx < n; bx += block)
+            {
+                uint64_t sum = 0;
+                for (size_t y = by; y < by + block; ++y)
+                {
+                    const TUInt8 * p = a.data + y * a.stride + bx * 3, * q = b.data + y * b.stride + bx * 3;
+                    for (size_t i = 0; i < block * 3; ++i)
+                    {
+                        const int d = int(p[i]) - int(q[i]);
+                        sum += uint64_t(d * d);
+                    }
+                }
+                worst = std::max(worst, sum);
+            }
+        }
+        return sqrt(double(worst) / (block * block * 3)) * DENOMINATOR / PIXEL_MAX_DIFFERENCE;
+    }
+
+    // Two pictures laid over each other.
+    struct TOverlay
+    {
+        const TView * pOther; // the one that stays as it is
+        TView warped; // the other one, on its pixels
+        TBox box; // what both show, in other's pixels
+    };
+
+    // The image that shows the picture smaller stays as it is and the other
+    // is reduced and laid over it, as in Compute: blowing an image up blurs
+    // it, which Butteraugli would score. That isn't always the one with fewer
+    // pixels: a crop can have as many as the whole. Transform: second's
+    // pixels to first's; frame: the share of each edge to leave out. False
+    // when too little is left.
+    static bool Overlay(const TView & first, const TView & second, const TAffine & transform, double frame, TOverlay & overlay)
+    {
+        const bool firstIsLarger = transform.Scale() >= 1;
+        const TView & larger = firstIsLarger ? first : second;
+        const TView & other = firstIsLarger ? second : first;
+        overlay.pOther = &other;
+        TAffine t = firstIsLarger ? transform : transform.Inverse();
+
+        TView reduced;
+        const TView * pReference = &larger;
+        const double scale = t.Scale();
+        if (scale > ALIGN_REDUCE_SCALE)
+        {
+            const size_t w = std::max<size_t>(8, size_t(larger.width / scale + 0.5));
+            const size_t h = std::max<size_t>(8, size_t(larger.height / scale + 0.5));
+            reduced.Recreate(w, h, TView::Bgr24);
+            AreaResize(larger, reduced);
+            t = Rescale(larger.width, larger.height, w, h).After(t);
+            pReference = &reduced;
+        }
+        const TView & reference = *pReference;
+
+        TView otherGray(other.width, other.height, TView::Gray8), referenceGray(reference.width, reference.height, TView::Gray8);
+        Simd::BgrToGray(other, otherGray);
+        Simd::BgrToGray(reference, referenceGray);
+        RefineTransform(otherGray.data, other.width, other.height, otherGray.stride,
+            referenceGray.data, reference.width, reference.height, referenceGray.stride, t);
+
+        TBox & box = overlay.box;
+        box = OverlapBox(t, other.width, other.height, reference.width, reference.height);
+        const ptrdiff_t fx = (ptrdiff_t)ceil(other.width * frame), fy = (ptrdiff_t)ceil(other.height * frame);
+        box.left = std::max(box.left, fx);
+        box.top = std::max(box.top, fy);
+        box.right = std::min(box.right, ptrdiff_t(other.width) - fx);
+        box.bottom = std::min(box.bottom, ptrdiff_t(other.height) - fy);
+        if (box.Width() < ptrdiff_t(ALIGN_BOX_SIDE_MIN) || box.Height() < ptrdiff_t(ALIGN_BOX_SIDE_MIN))
+            return false;
+
+        overlay.warped.Recreate(other.width, other.height, TView::Bgr24);
+        WarpBicubic(reference.data, reference.width, reference.height, reference.stride, 3, t,
+            overlay.warped.data, overlay.warped.width, overlay.warped.height, overlay.warped.stride);
+        return true;
+    }
+
+    double TButteraugliStore::ComputeAligned(const TView & first, const TView & second, const TAffine & transform) const
+    {
+        TOverlay overlay;
+        if (!Overlay(first, second, transform, m_pOptions->advanced.ignoreFrameWidth / double(DENOMINATOR), overlay))
+            return -1;
+        const TBox & box = overlay.box;
+        const TView a = overlay.warped.Region(box.left, box.top, box.right, box.bottom);
+        const TView b = overlay.pOther->Region(box.left, box.top, box.right, box.bottom);
+        if (LocalColor(a, b) > BUTTERAUGLI_CANDIDATE_THRESHOLD)
+            return -1;
+        jxl::ImageF diffmap;
+        if (!Diffmap(a, b, diffmap))
+            return -1;
+        return jxl::ButteraugliScoreFromDiffmap(diffmap);
+    }
+
     void TButteraugliStore::Load()
     {
         std::ifstream file(m_path.c_str(), std::ios::binary);
@@ -401,4 +610,5 @@ namespace ad
         }
         ::MoveFileEx(temporary.c_str(), m_path.c_str(), MOVEFILE_REPLACE_EXISTING);
     }
+    //-------------------------------------------------------------------------
 }

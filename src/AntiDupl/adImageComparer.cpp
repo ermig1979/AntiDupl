@@ -1117,27 +1117,35 @@ namespace ad
         return true;
     }
 
-    double TImageComparer_LocalColor::LocalColorDifference(TImageDataPtr pFirst, TImageDataPtr pSecond) const
+    bool TImageComparer_LocalColor::Comparable(TImageDataPtr pFirst, TImageDataPtr pSecond) const
     {
         if(m_pOptions->compare.typeControl == TRUE &&
             pFirst->type != pSecond->type)
-            return -1;
+            return false;
 
         if(m_pOptions->compare.sizeControl == TRUE &&
             (pFirst->height != pSecond->height ||
             pFirst->width != pSecond->width))
-            return -1;
+            return false;
 
         if(m_pOptions->compare.ratioControl == TRUE)
         {
             if(Simd::Square(pFirst->ratio - pSecond->ratio) > Simd::Square(RATIO_THRESHOLD_DIFFERENCE))
-                return -1;
+                return false;
         }
 
         if(m_pOptions->compare.compareInsideOneFolder == FALSE && TPath::EqualByDirectory(pFirst->path, pSecond->path))
-            return -1;
+            return false;
 
         if(m_pOptions->compare.compareInsideOneSearchPath == FALSE && pFirst->index == pSecond->index)
+            return false;
+
+        return true;
+    }
+
+    double TImageComparer_LocalColor::LocalColorDifference(TImageDataPtr pFirst, TImageDataPtr pSecond) const
+    {
+        if(!Comparable(pFirst, pSecond))
             return -1;
 
         for(size_t i = 0; i < FAST_DATA_SIZE; ++i)
@@ -1190,6 +1198,11 @@ namespace ad
         TImageComparer_LocalColor::Compare(pOriginal, pTransformed, transform);
     }
 
+    double TImageComparer_Butteraugli::Score(TImageDataPtr pSecond)
+    {
+        return m_pStore->Score(m_pOriginal, pSecond, m_transform);
+    }
+
     bool TImageComparer_Butteraugli::IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference)
     {
         if(LocalColorDifference(pFirst, pSecond) < 0)
@@ -1198,11 +1211,59 @@ namespace ad
         double score = PixelDifference(pFirst, pSecond, 1);
         if(score > 0)
         {
-            score = m_pStore->Score(m_pOriginal, pSecond, m_transform);
+            score = Score(pSecond);
             if(score < 0)
                 return false;
         }
         double difference = PixelDifference(pFirst, pSecond, score);
+        if(difference > m_pOptions->compare.thresholdDifference)
+            return false;
+
+        *pDifference = difference;
+        if(pFirst->crc32c != pSecond->crc32c)
+            *pDifference += ADDITIONAL_DIFFERENCE_FOR_DIFFERENT_CRC32;
+        return true;
+    }
+    //-------------------------------------------------------------------------
+    TImageComparer_ButteraugliAligned::TImageComparer_ButteraugliAligned(TEngine *pEngine)
+        :TImageComparer_Butteraugli(pEngine)
+    {
+    }
+
+    void TImageComparer_ButteraugliAligned::Add(TImageDataPtr pImageData)
+    {
+        TImageComparer_Butteraugli::Add(pImageData);
+        m_pStore->Candidates(pImageData, m_candidates);
+        for(TImageDataPtr pOther : m_candidates)
+        {
+            double difference;
+            if(pImageData->valid && pOther->valid)
+                continue;
+            if(IsAlignedPair(pImageData, pOther, &difference))
+                m_pResult->AddDuplImagePair(pImageData, pOther, difference, AD_TRANSFORM_TURN_0);
+        }
+    }
+
+    double TImageComparer_ButteraugliAligned::Score(TImageDataPtr pSecond)
+    {
+        const double score = TImageComparer_Butteraugli::Score(pSecond);
+        if(score < ALIGN_PLAIN_SCORE_MIN || m_transform != AD_TRANSFORM_TURN_0)
+            return score;
+        const double aligned = m_pStore->AlignedScore(m_pOriginal, pSecond);
+        return aligned >= 0 ? std::min(score, aligned) : score;
+    }
+
+    bool TImageComparer_ButteraugliAligned::IsAlignedPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference)
+    {
+        // Compare, on whichever thread owns the other image, judges the
+        // pairs local colour lets through.
+        if(!Comparable(pFirst, pSecond) || LocalColorDifference(pFirst, pSecond) >= 0)
+            return false;
+
+        const double score = m_pStore->AlignedScore(pFirst, pSecond);
+        if(score < 0)
+            return false;
+        const double difference = PixelDifference(pFirst, pSecond, score);
         if(difference > m_pOptions->compare.thresholdDifference)
             return false;
 
@@ -1237,6 +1298,8 @@ namespace ad
 			return new TImageComparer_LocalColor(pEngine);
 		else if (pEngine->Options()->compare.algorithmComparing == AD_COMPARING_BUTTERAUGLI)
 			return new TImageComparer_Butteraugli(pEngine);
+		else if (pEngine->Options()->compare.algorithmComparing == AD_COMPARING_BUTTERAUGLI_ALIGNED)
+			return new TImageComparer_ButteraugliAligned(pEngine);
 		else
 			return new TImageComparer_SSIM(pEngine);
     }

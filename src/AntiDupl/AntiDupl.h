@@ -390,6 +390,7 @@ extern "C"
 		// .NET side runs itself; the core compares it as SSIM.
 		AD_COMPARING_LOCAL_COLOR = 3,
 		AD_COMPARING_BUTTERAUGLI = 4,
+		AD_COMPARING_BUTTERAUGLI_ALIGNED = 5,
 		AD_COMPARING_SIZE
 	};
 

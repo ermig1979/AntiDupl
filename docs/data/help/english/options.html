@@ -66,6 +66,10 @@ In algorithm <b>'Local colour difference'</b> each image keeps a 64x64 colour th
 A change of colour or a small local edit therefore counts in full instead of vanishing in an average over the whole picture, so this algorithm tells copies of a picture from its other versions much better, at about the speed of <b>'SSIM'</b>.
 Algorithm <b>'Perceptual (Butteraugli)'</b> judges how visible a difference is to the eye: copies that were compressed or resized score low, while an edit scores high, even if the difference is small.
 It is too slow to compare every pair, so it scores only the pairs that <b>'Local colour difference'</b> finds within 10%, and it keeps the scores for the next search in the file <b>butteraugli.adp</b> in the user folder.
+Algorithm <b>'Aligned perceptual (crops, shifts)'</b> finds all that <b>'Perceptual (Butteraugli)'</b> does, and also images that show the same picture framed differently: crops, new canvases, shifted or rescaled copies.
+It finds them by the corners they share, lays the two images over each other and scores what both show, with the thresholds and the size of <b>'Perceptual (Butteraugli)'</b>.
+Every image has to be decoded in every search, so a first search takes about twice as long.
+Turned and mirrored crops are not found, nor pictures with few corners.
 The default setting is <b>'Mean square difference'</b>.
 This parameter is duplicated on the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>.
  </p></li>
