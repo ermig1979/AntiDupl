@@ -60,6 +60,8 @@ namespace ad
         virtual ~TImageComparer();
 
         void Accept(TImageDataPtr pImageData, bool add);
+        // Called by the comparer's thread once its queue is done.
+        virtual void Finish() {}
 
     protected:
         virtual void Add(TImageDataPtr pImageData) = 0; // pure virtual or abstract function and requires to be overwritten in an derived class
@@ -305,9 +307,14 @@ namespace ad
         TImageComparer_ButteraugliAligned(TEngine *pEngine);
 
     protected:
+    public:
+        // Each thread's own images meet their candidates in the whole index.
+        virtual void Finish();
+
+    protected:
         // Called once per image, by the thread that owns it, where Compare
-        // runs on every thread for its share of the images: the index holds
-        // all of them, so this is where an image meets its candidates.
+        // runs on every thread for its share of the images: the image is
+        // queued for the keypoint index, and kept as this thread's own.
         virtual void Add(TImageDataPtr pImageData);
         virtual double Score(TImageDataPtr pSecond);
 
@@ -315,6 +322,7 @@ namespace ad
         bool IsAlignedPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference);
 
         std::vector<TImageDataPtr> m_candidates;
+        std::vector<TImageDataPtr> m_own;
     };
     //-------------------------------------------------------------------------
     TImageComparer* CreateImageComparer(TEngine *pEngine);

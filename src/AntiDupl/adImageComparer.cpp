@@ -1228,19 +1228,33 @@ namespace ad
     TImageComparer_ButteraugliAligned::TImageComparer_ButteraugliAligned(TEngine *pEngine)
         :TImageComparer_Butteraugli(pEngine)
     {
+        m_pStore->Join();
     }
 
     void TImageComparer_ButteraugliAligned::Add(TImageDataPtr pImageData)
     {
         TImageComparer_Butteraugli::Add(pImageData);
-        m_pStore->Candidates(pImageData, m_candidates);
-        for(TImageDataPtr pOther : m_candidates)
+        m_pStore->Queue(pImageData);
+        m_own.push_back(pImageData);
+    }
+
+    void TImageComparer_ButteraugliAligned::Finish()
+    {
+        if(!m_pStore->Gather())
+            return;
+        for(TImageDataPtr pImageData : m_own)
         {
-            double difference;
-            if(pImageData->valid && pOther->valid)
-                continue;
-            if(IsAlignedPair(pImageData, pOther, &difference))
-                m_pResult->AddDuplImagePair(pImageData, pOther, difference, AD_TRANSFORM_TURN_0);
+            m_pStore->Candidates(pImageData, m_candidates);
+            for(TImageDataPtr pOther : m_candidates)
+            {
+                double difference;
+                if(pImageData->valid && pOther->valid)
+                    continue;
+                if(!m_pStore->Claim(pImageData, pOther))
+                    continue;
+                if(IsAlignedPair(pImageData, pOther, &difference))
+                    m_pResult->AddDuplImagePair(pImageData, pOther, difference, AD_TRANSFORM_TURN_0);
+            }
         }
     }
 

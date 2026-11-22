@@ -88,6 +88,8 @@ namespace ad
     protected:
         virtual void DoOwn(TImageData *pImageData) = 0;
         virtual void DoOther(TImageData *pImageData) = 0;
+        // Once the queue is done, before the thread ends.
+        virtual void DoFinish() {}
 
         TEngine *m_pEngine;
         TStatus *m_pStatus;
@@ -106,6 +108,7 @@ namespace ad
     protected:
         virtual void DoOwn(TImageData *pImageData);
         virtual void DoOther(TImageData *pImageData);
+        virtual void DoFinish();
 
     private:
         TImageComparer* m_pImageComparer;

@@ -139,7 +139,7 @@ namespace ad
     // more entries find the crops of a picture a folder has many copies of,
     // and pass more unrelated pairs on to be aligned.
     const size_t ALIGN_INDEX_HITS_MIN = 16;
-    const size_t ALIGN_INDEX_KEY_ENTRIES_MAX = 32;
+    const size_t ALIGN_INDEX_KEY_ENTRIES_MAX = 255;
     // A pair local colour lets through scores under this without needing
     // alignment: what alignment gains is worth a second score only above it.
     const double ALIGN_PLAIN_SCORE_MIN = 7.5;

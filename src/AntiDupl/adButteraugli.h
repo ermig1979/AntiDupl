@@ -24,7 +24,9 @@
 
 #include <list>
 #include <memory>
+#include <condition_variable>
 #include <mutex>
+#include <unordered_set>
 #include <unordered_map>
 
 #include "adAlign.h"
@@ -61,9 +63,20 @@ namespace ad
         // An image's keypoints, from its grey pixels at full size.
         void SetKeypoints(TImageDataPtr pImageData, const TView & gray);
 
-        // The images given here before that share many keypoints with this
-        // one, which then joins them: of any two, the later finds the earlier.
+        // The aligned search's candidates, in three steps, so that they don't
+        // depend on the order images arrive in: each compare thread joins
+        // (its comparer, when made) and queues its images for the keypoint
+        // index as they come; when its queue is done, it waits in Gather
+        // until every thread has come, and the last one builds the index in
+        // path order; then each looks its own images up in the whole index
+        // (Candidates) and scores a pair only if it claims it first, as
+        // both images of a pair may find each other.
+        void Join();
+        void Queue(TImageDataPtr pImageData);
+        // False when the search was stopped while waiting.
+        bool Gather();
         void Candidates(TImageDataPtr pImageData, std::vector<TImageDataPtr> & candidates);
+        bool Claim(TImageDataPtr pFirst, TImageDataPtr pSecond);
 
         // Butteraugli's score for what the two images show in common, each
         // laid over the other; negative when they don't align, share too
@@ -118,9 +131,15 @@ namespace ad
 
         std::mutex m_keypointMutex;
         std::unordered_map<TImageDataPtr, std::shared_ptr<const TKeypoints>> m_keypoints;
+        TEngine *m_pEngine;
         std::mutex m_indexMutex;
+        std::condition_variable m_gathered;
+        size_t m_participants, m_arrived;
+        bool m_indexBuilt;
         std::unique_ptr<TKeypointIndex> m_pIndex; // NULL but in the aligned search
-        std::vector<TImageDataPtr> m_indexed; // by the index's image numbers
+        std::vector<TImageDataPtr> m_indexed; // by the index's image numbers, in path order once built
+        std::unordered_map<TImageDataPtr, uint32_t> m_number; // the index's number of each image
+        std::unordered_set<uint64_t> m_claimed; // pairs of index numbers, the smaller first
     };
     //-------------------------------------------------------------------------
 }

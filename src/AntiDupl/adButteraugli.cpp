@@ -20,6 +20,8 @@
 * SOFTWARE.
 */
 #include <math.h>
+#include <algorithm>
+#include <chrono>
 #include <fstream>
 
 // libjxl's Butteraugli, compiled into the static jxl.lib, with headers the
@@ -45,6 +47,7 @@
 #include "adImage.h"
 #include "adImageData.h"
 #include "adOptions.h"
+#include "adStatus.h"
 
 namespace ad
 {
@@ -195,6 +198,10 @@ namespace ad
     //-------------------------------------------------------------------------
     TButteraugliStore::TButteraugliStore(TEngine *pEngine, size_t imageCount)
         : m_pOptions(pEngine->Options())
+        , m_pEngine(pEngine)
+        , m_participants(0)
+        , m_arrived(0)
+        , m_indexBuilt(false)
         , m_path(pEngine->UserPath() + TEXT("\\butteraugli.adp"))
         , m_imageBytes(0)
         , m_changed(false)
@@ -260,6 +267,51 @@ namespace ad
         return it != m_keypoints.end() ? it->second : NULL;
     }
 
+    void TButteraugliStore::Join()
+    {
+        std::lock_guard<std::mutex> lock(m_indexMutex);
+        ++m_participants;
+    }
+
+    void TButteraugliStore::Queue(TImageDataPtr pImageData)
+    {
+        const std::shared_ptr<const TKeypoints> keypoints = Keypoints(pImageData);
+        if (!keypoints || keypoints->Size() == 0 || !m_pIndex)
+            return;
+        std::lock_guard<std::mutex> lock(m_indexMutex);
+        m_indexed.push_back(pImageData);
+    }
+
+    bool TButteraugliStore::Gather()
+    {
+        std::unique_lock<std::mutex> lock(m_indexMutex);
+        if (!m_pIndex)
+            return false;
+        if (++m_arrived == m_participants)
+        {
+            // A key full of images stops counting, so the images in the
+            // index when one is looked up decide its candidates: all of
+            // them, added in an order that doesn't depend on the threads.
+            std::sort(m_indexed.begin(), m_indexed.end(), [](TImageDataPtr a, TImageDataPtr b)
+                { return TPath::LesserByPath(a->path, b->path); });
+            for (size_t i = 0; i < m_indexed.size(); ++i)
+            {
+                m_pIndex->Add(*Keypoints(m_indexed[i]));
+                m_number[m_indexed[i]] = uint32_t(i);
+            }
+            m_indexBuilt = true;
+            m_gathered.notify_all();
+            return true;
+        }
+        while (!m_indexBuilt)
+        {
+            if (m_pEngine->Status()->Stopped())
+                return false;
+            m_gathered.wait_for(lock, std::chrono::milliseconds(200));
+        }
+        return true;
+    }
+
     void TButteraugliStore::Candidates(TImageDataPtr pImageData, std::vector<TImageDataPtr> & candidates)
     {
         candidates.clear();
@@ -268,11 +320,20 @@ namespace ad
             return;
         std::vector<uint32_t> found;
         std::lock_guard<std::mutex> lock(m_indexMutex);
+        auto self = m_number.find(pImageData);
+        if (!m_indexBuilt || self == m_number.end())
+            return;
         m_pIndex->Find(*keypoints, found);
         for (const uint32_t image : found)
-            candidates.push_back(m_indexed[image]);
-        m_pIndex->Add(*keypoints);
-        m_indexed.push_back(pImageData);
+            if (image != self->second)
+                candidates.push_back(m_indexed[image]);
+    }
+
+    bool TButteraugliStore::Claim(TImageDataPtr pFirst, TImageDataPtr pSecond)
+    {
+        std::lock_guard<std::mutex> lock(m_indexMutex);
+        const uint64_t a = m_number[pFirst], b = m_number[pSecond];
+        return m_claimed.insert(a < b ? (a << 32) | b : (b << 32) | a).second;
     }
 
     // From pixels of a picture of one size to those of another: pixel

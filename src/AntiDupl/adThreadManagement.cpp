@@ -128,7 +128,8 @@ namespace ad
                 Sleep(m_sleepInterval);
                 continue;
             case TThreadQueue::FINISH:
-            default: 
+            default:
+                DoFinish();
                 return;
             }
         }
@@ -154,6 +155,11 @@ namespace ad
     void TCompareTask::DoOther(TImageData *pImageData)
     {
         m_pImageComparer->Accept(pImageData, false);
+    }
+
+    void TCompareTask::DoFinish()
+    {
+        m_pImageComparer->Finish();
     }
 
     //-------------------------------------------------------------------------
@@ -191,9 +197,13 @@ namespace ad
 
     void TThreadManager::Finish()
     {
+        // Every queue first, then the waiting: a thread may wait at its end
+        // for the others (the aligned search's index), which must all be
+        // told to finish.
+        for(TThreads::iterator i = m_pThreads->begin(); i != m_pThreads->end(); i++)
+            i->task->Queue()->Finish();
         for(TThreads::iterator i = m_pThreads->begin(); i != m_pThreads->end(); i++)
         {
-            i->task->Queue()->Finish();
             WaitForSingleObject(i->thread->Handle(), INFINITE);
             delete i->thread;
             delete i->task;
