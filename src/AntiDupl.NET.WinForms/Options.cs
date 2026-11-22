@@ -86,6 +86,10 @@ namespace AntiDupl.NET.WinForms
         /// </summary>
         public List<ThresholdChoice> thresholdChoices = new List<ThresholdChoice>();
 
+        /// <summary>Whether switching the algorithm restores its threshold
+        /// (thresholdChoices) rather than setting its default.</summary>
+        public bool rememberThresholds = true;
+
         public double RememberedThreshold(string scale, double fallback)
         {
             ThresholdChoice choice = thresholdChoices.Find(c => c.scale == scale);
@@ -170,6 +174,7 @@ namespace AntiDupl.NET.WinForms
             imageDiff2ExecutableArguments = options.imageDiff2ExecutableArguments;
             colorMode = options.colorMode;
             thresholdChoices = ThresholdChoice.Clone(options.thresholdChoices);
+            rememberThresholds = options.rememberThresholds;
         }
 
         public void Save()
@@ -214,6 +219,7 @@ namespace AntiDupl.NET.WinForms
             options.imageDiff2ExecutableArguments = imageDiff2ExecutableArguments;
             options.colorMode = colorMode;
             options.thresholdChoices = ThresholdChoice.Clone(thresholdChoices);
+            options.rememberThresholds = rememberThresholds;
         }
 
         public static void PathCopy(string[] source, ref string[] destination)
@@ -266,6 +272,8 @@ namespace AntiDupl.NET.WinForms
             if (checkingForUpdates != options.checkingForUpdates)
                 return false;
             if (onePath != options.onePath)
+                return false;
+            if (rememberThresholds != options.rememberThresholds)
                 return false;
             if (useImageDataBase != options.useImageDataBase)
                 return false;

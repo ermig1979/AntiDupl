@@ -96,10 +96,13 @@ namespace AntiDupl.NET.WinForms
         /// <summary>
         /// Keeps the threshold in use on the scale being left, and returns the
         /// one for the new scale: the one last used there, else its default.
+        /// Without remember, only the new scale's default.
         /// </summary>
-        static public double SwitchThreshold(Options options, string from, double threshold,
+        static public double SwitchThreshold(Options options, bool remember, string from, double threshold,
             AlgorithmComparing algorithm, int butteraugliSize)
         {
+            if (!remember)
+                return ThresholdDefault(algorithm, butteraugliSize);
             options.RememberThreshold(from, threshold);
             return options.RememberedThreshold(ThresholdScale(algorithm, butteraugliSize), ThresholdDefault(algorithm, butteraugliSize));
         }
@@ -158,7 +161,7 @@ namespace AntiDupl.NET.WinForms
         static public int IGNORE_FRAME_WIDTH_STEP = 3;
         
         static public int FORM_WIDTH = 450;
-        static public int FORM_HEIGHT = 490;
+        static public int FORM_HEIGHT = 515;
         static public int COMBO_BOX_WIDTH = 65;
         static public int COMBO_BOX_HEIGHT = 20;
 
@@ -191,6 +194,7 @@ namespace AntiDupl.NET.WinForms
         private CheckBox m_compareInsideOneFolderCheckBox;
         private CheckBox m_compareInsideOneSearchPathCheckBox;
         private CheckBox m_skipHardlinksCheckBox;
+        private CheckBox m_rememberThresholdsCheckBox;
         private CheckBox m_transparentAsShownCheckBox;
         private CheckBox m_ignoreTransparentCheckBox;
 
@@ -343,7 +347,7 @@ namespace AntiDupl.NET.WinForms
             m_compareTabPage = new TabPage();
             m_mainTabControl.Controls.Add(m_compareTabPage);
 
-            TableLayoutPanel checkTableLayoutPanel = InitFactory.Layout.Create(1, 14, 5); //column, row, padding
+            TableLayoutPanel checkTableLayoutPanel = InitFactory.Layout.Create(1, 15, 5); //column, row, padding
             checkTableLayoutPanel.AutoScroll = true;
             m_compareTabPage.Controls.Add(checkTableLayoutPanel);
 
@@ -383,28 +387,31 @@ namespace AntiDupl.NET.WinForms
             m_thresholdDifferenceLabeledComboBox.Controls.Add(m_thresholdHintLabel, 2, 0);
             checkTableLayoutPanel.Controls.Add(m_thresholdDifferenceLabeledComboBox, 0, 7);
 
+            m_rememberThresholdsCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
+            checkTableLayoutPanel.Controls.Add(m_rememberThresholdsCheckBox, 0, 8);
+
             m_butteraugliSizeLabeledComboBox = new LabeledComboBox(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
             foreach (int size in CoreCompareOptions.BUTTERAUGLI_SIZES)
                 m_butteraugliSizeLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value(size, string.Format("{0} px", size)));
-            checkTableLayoutPanel.Controls.Add(m_butteraugliSizeLabeledComboBox, 0, 8);
+            checkTableLayoutPanel.Controls.Add(m_butteraugliSizeLabeledComboBox, 0, 9);
 
             m_minimalImageSizeLabeledIntegerEdit = new LabeledIntegerEdit(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
             m_minimalImageSizeLabeledIntegerEdit.Min = 0;
             m_minimalImageSizeLabeledIntegerEdit.Default = m_defaultCoreOptions.compareOptions.minimalImageSize;
-            checkTableLayoutPanel.Controls.Add(m_minimalImageSizeLabeledIntegerEdit, 0, 9);
+            checkTableLayoutPanel.Controls.Add(m_minimalImageSizeLabeledIntegerEdit, 0, 10);
 
             m_maximalImageSizeLabeledIntegerEdit = new LabeledIntegerEdit(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
             m_maximalImageSizeLabeledIntegerEdit.Min = 0;
             m_maximalImageSizeLabeledIntegerEdit.Default = m_defaultCoreOptions.compareOptions.maximalImageSize;
-            checkTableLayoutPanel.Controls.Add(m_maximalImageSizeLabeledIntegerEdit, 0, 10);
+            checkTableLayoutPanel.Controls.Add(m_maximalImageSizeLabeledIntegerEdit, 0, 11);
 
             m_compareInsideOneFolderCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            checkTableLayoutPanel.Controls.Add(m_compareInsideOneFolderCheckBox, 0, 11);
+            checkTableLayoutPanel.Controls.Add(m_compareInsideOneFolderCheckBox, 0, 12);
             m_compareInsideOneSearchPathCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            checkTableLayoutPanel.Controls.Add(m_compareInsideOneSearchPathCheckBox, 0, 12);
+            checkTableLayoutPanel.Controls.Add(m_compareInsideOneSearchPathCheckBox, 0, 13);
 
             m_skipHardlinksCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            checkTableLayoutPanel.Controls.Add(m_skipHardlinksCheckBox, 0, 13);
+            checkTableLayoutPanel.Controls.Add(m_skipHardlinksCheckBox, 0, 14);
         }
 
         private void InitilizeDefectTabPage()
@@ -748,6 +755,7 @@ namespace AntiDupl.NET.WinForms
             m_compareInsideOneFolderCheckBox.Checked = m_newCoreOptions.compareOptions.compareInsideOneFolder;
             m_compareInsideOneSearchPathCheckBox.Checked = m_newCoreOptions.compareOptions.compareInsideOneSearchPath;
             m_skipHardlinksCheckBox.Checked = m_newCoreOptions.compareOptions.skipHardlinks;
+            m_rememberThresholdsCheckBox.Checked = m_options.rememberThresholds;
             m_transparentAsShownCheckBox.Checked = m_newCoreOptions.compareOptions.transparentAsShown;
             m_ignoreTransparentCheckBox.Checked = m_newCoreOptions.compareOptions.ignoreTransparent;
 
@@ -859,6 +867,7 @@ namespace AntiDupl.NET.WinForms
             m_options.imageDiffExecutableArguments = m_imageDiffExecutableArgumentsLabeledStringEdit.Value;
             m_options.imageDiff2ExecutablePath = m_imageDiff2ExecutablePathLabeledStringEdit.Value;
             m_options.imageDiff2ExecutableArguments = m_imageDiff2ExecutableArgumentsLabeledStringEdit.Value;
+            m_options.rememberThresholds = m_rememberThresholdsCheckBox.Checked;
         }
 
         private void UpdateStrings()
@@ -886,6 +895,7 @@ namespace AntiDupl.NET.WinForms
             m_compareInsideOneFolderCheckBox.Text = s.CoreOptionsForm_CompareInsideOneFolderCheckBox_Text;
             m_compareInsideOneSearchPathCheckBox.Text = s.CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text;
             m_skipHardlinksCheckBox.Text = s.CoreOptionsForm_SkipHardlinksCheckBox_Text;
+            m_rememberThresholdsCheckBox.Text = s.CoreOptionsForm_RememberThresholdsCheckBox_Text;
             m_transparentAsShownCheckBox.Text = s.CoreOptionsForm_TransparentAsShownCheckBox_Text;
             m_ignoreTransparentCheckBox.Text = s.CoreOptionsForm_IgnoreTransparentCheckBox_Text;
 
@@ -1042,7 +1052,8 @@ namespace AntiDupl.NET.WinForms
             if (algorithm != m_thresholdAlgorithm ||
                 (algorithm == AlgorithmComparing.Butteraugli && butteraugliSize != m_thresholdButteraugliSize))
             {
-                double threshold = SwitchThreshold(m_options, ThresholdScale(m_thresholdAlgorithm, m_thresholdButteraugliSize),
+                double threshold = SwitchThreshold(m_options, m_rememberThresholdsCheckBox.Checked,
+                    ThresholdScale(m_thresholdAlgorithm, m_thresholdButteraugliSize),
                     m_newCoreOptions.compareOptions.thresholdDifference, algorithm, butteraugliSize);
                 ShowThresholds(algorithm, butteraugliSize, threshold);
             }

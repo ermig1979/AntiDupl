@@ -325,9 +325,10 @@ namespace AntiDupl.NET.WinForms
             {
                 // Another algorithm has its own range: the same percentage
                 // means different things to each. Each keeps the threshold
-                // last used with it.
+                // last used with it, unless the user turned that off.
                 int size = m_coreOptions.compareOptions.butteraugliSize;
-                double threshold = CoreOptionsForm.SwitchThreshold(m_options, CoreOptionsForm.ThresholdScale(m_thresholdAlgorithm, size),
+                double threshold = CoreOptionsForm.SwitchThreshold(m_options, m_options.rememberThresholds,
+                    CoreOptionsForm.ThresholdScale(m_thresholdAlgorithm, size),
                     m_coreOptions.compareOptions.thresholdDifference, algorithm, size);
                 m_settingItems = true;
                 FillThresholds(algorithm);
