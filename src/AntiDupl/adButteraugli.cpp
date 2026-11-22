@@ -251,7 +251,7 @@ namespace ad
         }
         // The two images of the pair being scored stay; the shared pointers
         // keep an evicted image alive while a thread still scores with it.
-        while (m_imageBytes > BUTTERAUGLI_IMAGE_CACHE_BYTES && m_uses.size() > 2)
+        while (m_imageBytes > (size_t(m_pOptions->advanced.butteraugliCacheSize) << 20) && m_uses.size() > 2)
         {
             auto victim = m_images.find(m_uses.back());
             if (victim->second.image->counted)

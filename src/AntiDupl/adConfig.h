@@ -124,8 +124,12 @@ namespace ad
     // like copies of one. At 400, a bright monitor, copies and other pictures
     // separate well on pairs judged by hand, dark ones included.
     const float BUTTERAUGLI_INTENSITY_TARGET = 400.0f;
-    // Images decoded at the working size are kept up to this many bytes.
-    const size_t BUTTERAUGLI_IMAGE_CACHE_BYTES = size_t(512) << 20;
+    // Images decoded at the working size are kept during a search up to
+    // the advanced option ButteraugliCacheSize, in MB: an image compared
+    // with many others is decoded once while they fit.
+    const TInt32 BUTTERAUGLI_CACHE_SIZE_DEFAULT = 512;
+    const TInt32 BUTTERAUGLI_CACHE_SIZE_MIN = 64;
+    const TInt32 BUTTERAUGLI_CACHE_SIZE_MAX = 99999;
     // Part of the stored scores' key: a change to how a score is computed
     // (the working images, the metric) makes the stored ones stale.
     const TUInt32 BUTTERAUGLI_SCORE_VERSION = 2;

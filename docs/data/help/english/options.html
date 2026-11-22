@@ -365,6 +365,12 @@ By default, this option is disabled.
 Otherwise, they will be deleted permanently.
 By default, this option is enabled.
  </p></li>
+ <li><p align="justify">
+<b>Memory for Butteraugli's images, MB</b> - the most memory the perceptual algorithms keep decoded images in during a search, so that an image compared with many others is decoded only once.
+Memory is taken only as images are decoded, and freed when the search ends.
+A larger value speeds up the search of a large collection: an image takes about 1.3 MB at a working size of 768 px (twice that when it has transparency and transparency is shown).
+By default, this value is 512 MB.
+ </p></li>
 </ul>
 
 <p align="justify">
