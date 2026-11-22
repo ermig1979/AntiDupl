@@ -146,7 +146,7 @@ namespace AntiDupl.NET.WinForms
 
             m_highlightButton = InitFactory.ToolButton.Create("HighlightButton.png", null, OnHighlightButtonClicked);
             m_highlightButton.CheckOnClick = true;
-            renderer.FramedWhenChecked = m_highlightButton;
+            renderer.LitWhenChecked = m_highlightButton;
             m_highlightButton.Checked = m_options.resultsOptions.HighlightDifference;
             m_options.resultsOptions.OnHighlightDifferenceChange += delegate
             {
