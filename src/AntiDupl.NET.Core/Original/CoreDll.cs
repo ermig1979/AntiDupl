@@ -342,6 +342,7 @@ namespace AntiDupl.NET.Core.Original
             public int ignoreFrameWidth;
             public int useLibJpegTurbo;
             public int butteraugliCacheSize;
+            public int butteraugliCachePercent;
         }
 
         [StructLayout(LayoutKind.Sequential)]

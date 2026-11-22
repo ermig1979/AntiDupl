@@ -339,10 +339,10 @@ This restriction is useful to save program resources allocated to the graphical 
 By default, this value is 100000.
  </p></li>
  <li><p align="justify">
-<b>RAM limit for Butteraugli's images, MB</b> - the most memory (RAM) the perceptual algorithms keep decoded images in during a search, so that an image compared with many others is decoded only once.
-Memory is taken only as images are decoded, and freed when the search ends.
-A larger value speeds up the search of a large collection: an image takes about 1.3 MB at a working size of 768 px (twice that when it has transparency and transparency is shown).
-By default, this value is 512 MB.
+<b>RAM for Butteraugli's images, % of free</b> and <b>RAM limit for Butteraugli's images, MB (0: none)</b> - the memory (RAM) the perceptual algorithms keep decoded images in during a search, so that an image compared with many others is decoded only once: this share of the memory free when the search starts, and at most the limit in MB unless it is 0.
+Memory is taken only as images are decoded, and freed when the search ends; while Windows runs short of memory (less than 1 GB free, or a tenth of all memory on a smaller computer), images are given back whatever the setting.
+More memory speeds up the search of a large collection: an image takes about 1.3 MB at a working size of 768 px (twice that when it has transparency and transparency is shown).
+By default, 50 % of the free memory, with no limit in MB.
  </p></li>
  <li><p align="justify">
 <b>Width of ignored frame of image</b> - This parameter determines the width of frame of the image, the contents of which will be ignored during the comparison of images.

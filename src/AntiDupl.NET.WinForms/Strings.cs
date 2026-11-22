@@ -134,6 +134,7 @@ namespace AntiDupl.NET.WinForms
         public string CoreOptionsForm_IgnoreTransparentCheckBox_Text;
         public string CoreOptionsForm_UseLibJpegTurboCheckBox_Text;
         public string CoreOptionsForm_ButteraugliCacheSizeLabeledIntegerEdit_Text;
+        public string CoreOptionsForm_ButteraugliCachePercentLabeledIntegerEdit_Text;
 
         public string CoreOptionsForm_HighlightTabPage_Text;
         public string CoreOptionsForm_HighlightDifferenceCheckBox_Text;

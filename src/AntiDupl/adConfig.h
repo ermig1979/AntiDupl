@@ -124,11 +124,24 @@ namespace ad
     // like copies of one. At 400, a bright monitor, copies and other pictures
     // separate well on pairs judged by hand, dark ones included.
     const float BUTTERAUGLI_INTENSITY_TARGET = 400.0f;
-    // Images decoded at the working size are kept during a search up to
-    // the advanced option ButteraugliCacheSize, in MB: an image compared
+    // Images decoded at the working size are kept during a search, up to
+    // ButteraugliCachePercent of the memory free when it starts and, when
+    // ButteraugliCacheSize isn't 0, at most that many MB: an image compared
     // with many others is decoded once while they fit.
-    const TInt32 BUTTERAUGLI_CACHE_SIZE_DEFAULT = 512;
-    const TInt32 BUTTERAUGLI_CACHE_SIZE_MIN = 64;
+    const TInt32 BUTTERAUGLI_CACHE_SIZE_DEFAULT = 0; // no limit in MB
+    // The share of the free physical memory at the search's start the
+    // images may take, in percent (the advanced option
+    // ButteraugliCachePercent).
+    const TInt32 BUTTERAUGLI_CACHE_PERCENT_DEFAULT = 50;
+    const TInt32 BUTTERAUGLI_CACHE_PERCENT_MIN = 1;
+    const TInt32 BUTTERAUGLI_CACHE_PERCENT_MAX = 90;
+    // When Windows doesn't say how much memory is free.
+    const TInt32 BUTTERAUGLI_CACHE_SIZE_DEFAULT_FALLBACK = 512;
+    // Whatever the limits, the images give way while the free physical
+    // memory is under the smaller of these: others need it more.
+    const TUInt64 BUTTERAUGLI_FREE_MEMORY_MIN = TUInt64(1) << 30;
+    const TUInt64 BUTTERAUGLI_FREE_MEMORY_SHARE = 10; // percent of all
+    const TInt32 BUTTERAUGLI_CACHE_SIZE_MIN = 0;
     const TInt32 BUTTERAUGLI_CACHE_SIZE_MAX = 99999;
     // Part of the stored scores' key: a change to how a score is computed
     // (the working images, the metric) makes the stored ones stale.

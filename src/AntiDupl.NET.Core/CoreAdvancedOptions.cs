@@ -41,7 +41,8 @@ namespace AntiDupl.NET.Core
         public int resultCountMax;
         public int ignoreFrameWidth;
         public bool useLibJpegTurbo;
-        public int butteraugliCacheSize; // MB
+        public int butteraugliCacheSize; // MB, 0 for no limit
+        public int butteraugliCachePercent; // of the free memory
 
         public CoreAdvancedOptions()
         {
@@ -60,6 +61,7 @@ namespace AntiDupl.NET.Core
             ignoreFrameWidth = advancedOptions.ignoreFrameWidth;
             useLibJpegTurbo = advancedOptions.useLibJpegTurbo;
             butteraugliCacheSize = advancedOptions.butteraugliCacheSize;
+            butteraugliCachePercent = advancedOptions.butteraugliCachePercent;
         }
 
         public CoreAdvancedOptions(ref CoreDll.adAdvancedOptions advancedOptions)
@@ -75,6 +77,7 @@ namespace AntiDupl.NET.Core
             ignoreFrameWidth = advancedOptions.ignoreFrameWidth;
             useLibJpegTurbo = advancedOptions.useLibJpegTurbo != CoreDll.FALSE;
             butteraugliCacheSize = advancedOptions.butteraugliCacheSize;
+            butteraugliCachePercent = advancedOptions.butteraugliCachePercent;
         }
 
         public void ConvertTo(ref CoreDll.adAdvancedOptions advancedOptions)
@@ -90,6 +93,7 @@ namespace AntiDupl.NET.Core
             advancedOptions.ignoreFrameWidth = ignoreFrameWidth;
             advancedOptions.useLibJpegTurbo = useLibJpegTurbo ? CoreDll.TRUE : CoreDll.FALSE;
             advancedOptions.butteraugliCacheSize = butteraugliCacheSize;
+            advancedOptions.butteraugliCachePercent = butteraugliCachePercent;
         }
 
         public CoreAdvancedOptions Clone()
@@ -110,7 +114,8 @@ namespace AntiDupl.NET.Core
                 resultCountMax == advancedOptions.resultCountMax &&
                 ignoreFrameWidth == advancedOptions.ignoreFrameWidth &&
                 useLibJpegTurbo == advancedOptions.useLibJpegTurbo &&
-                butteraugliCacheSize == advancedOptions.butteraugliCacheSize;
+                butteraugliCacheSize == advancedOptions.butteraugliCacheSize &&
+                butteraugliCachePercent == advancedOptions.butteraugliCachePercent;
         }
 
         public int RatioResolution

@@ -433,7 +433,7 @@ namespace AntiDupl.NET.WinForms
             writer.WriteLine(string.Format("Used {0} load and {1} compare threads.", statistic.collectThreadCount, statistic.compareThreadCount));
             writer.WriteLine(string.Format("Use image database: {0}.", m_options.useImageDataBase));
             writer.WriteLine(string.Format("Use libjpeg-turbo: {0}.", m_coreOptions.advancedOptions.useLibJpegTurbo));
-            writer.WriteLine(string.Format("RAM limit for Butteraugli's images: {0} MB.", m_coreOptions.advancedOptions.butteraugliCacheSize));
+            writer.WriteLine(string.Format("RAM for Butteraugli's images: {0} % of free, at most {1} MB (0: no limit).", m_coreOptions.advancedOptions.butteraugliCachePercent, m_coreOptions.advancedOptions.butteraugliCacheSize));
 
             writer.Close();
         }
