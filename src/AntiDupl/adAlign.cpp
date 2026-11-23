@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstring>
+#include <immintrin.h>
 #include <intrin.h>
 
 #include "adAlign.h"
@@ -394,10 +395,10 @@ namespace ad
         keypoints.unit = float(std::max<size_t>(std::max(width, height), 1)) / 65535;
         keypoints.x.clear();
         keypoints.y.clear();
-        keypoints.bits.clear();
         keypoints.x.reserve(maxCount);
         keypoints.y.reserve(maxCount);
-        keypoints.bits.reserve(maxCount * KEYPOINT_WORDS);
+        std::vector<uint64_t> bits;
+        bits.reserve(maxCount * KEYPOINT_WORDS);
 
         // Each level's share of the keypoints follows its area's root, as
         // in ORB, so that a smaller copy's keypoints find theirs.
@@ -428,13 +429,41 @@ namespace ad
             {
                 keypoints.x.push_back(uint16_t((c.x + 0.5) * sx / keypoints.unit + 0.5));
                 keypoints.y.push_back(uint16_t((c.y + 0.5) * sy / keypoints.unit + 0.5));
-                keypoints.bits.resize(keypoints.bits.size() + KEYPOINT_WORDS);
-                Describe(smooth, c.x, c.y, keypoints.bits.data() + keypoints.bits.size() - KEYPOINT_WORDS);
+                bits.resize(bits.size() + KEYPOINT_WORDS);
+                Describe(smooth, c.x, c.y, bits.data() + bits.size() - KEYPOINT_WORDS);
             }
         }
         keypoints.x.shrink_to_fit();
         keypoints.y.shrink_to_fit();
-        keypoints.bits.shrink_to_fit();
+        keypoints.SetDescriptions(bits);
+    }
+
+    // A description's 32-bit word w is the low (even w) or high half of its
+    // 64-bit word w / 2, as both lie in memory on a little-endian machine.
+    void TKeypoints::Description(size_t i, uint64_t * bits) const
+    {
+        const uint32_t * block = words.data() + (i / KEYPOINT_BLOCK) * KEYPOINT_BLOCK * 2 * KEYPOINT_WORDS;
+        const size_t lane = i % KEYPOINT_BLOCK;
+        for (size_t k = 0; k < KEYPOINT_WORDS; ++k)
+            bits[k] = uint64_t(block[(2 * k) * KEYPOINT_BLOCK + lane]) |
+                uint64_t(block[(2 * k + 1) * KEYPOINT_BLOCK + lane]) << 32;
+    }
+
+    void TKeypoints::SetDescriptions(const std::vector<uint64_t> & bits)
+    {
+        const size_t count = bits.size() / KEYPOINT_WORDS;
+        const size_t blocks = (count + KEYPOINT_BLOCK - 1) / KEYPOINT_BLOCK;
+        words.assign(blocks * KEYPOINT_BLOCK * 2 * KEYPOINT_WORDS, 0);
+        for (size_t i = 0; i < count; ++i)
+        {
+            uint32_t * block = words.data() + (i / KEYPOINT_BLOCK) * KEYPOINT_BLOCK * 2 * KEYPOINT_WORDS;
+            const size_t lane = i % KEYPOINT_BLOCK;
+            for (size_t k = 0; k < KEYPOINT_WORDS; ++k)
+            {
+                block[(2 * k) * KEYPOINT_BLOCK + lane] = uint32_t(bits[i * KEYPOINT_WORDS + k]);
+                block[(2 * k + 1) * KEYPOINT_BLOCK + lane] = uint32_t(bits[i * KEYPOINT_WORDS + k] >> 32);
+            }
+        }
     }
     //-------------------------------------------------------------------------
     TKeypointIndex::TKeypointIndex(size_t images, size_t entriesPerKey, size_t hitsMin, size_t tables)
@@ -473,9 +502,10 @@ namespace ad
     void TKeypointIndex::Keys(const TKeypoints & keypoints, std::vector<uint32_t> & keys) const
     {
         keys.clear();
+        uint64_t bits[KEYPOINT_WORDS];
         for (size_t i = 0, n = keypoints.Size(); i < n; ++i)
         {
-            const uint64_t * bits = keypoints.bits.data() + i * KEYPOINT_WORDS;
+            keypoints.Description(i, bits);
             for (size_t table = 0; table < m_tables; ++table)
                 keys.push_back(uint32_t(Key(bits, table)));
         }
@@ -487,9 +517,10 @@ namespace ad
     {
         images.clear();
         m_hit.clear();
+        uint64_t bits[KEYPOINT_WORDS];
         for (size_t i = 0, n = keypoints.Size(); i < n; ++i)
         {
-            const uint64_t * bits = keypoints.bits.data() + i * KEYPOINT_WORDS;
+            keypoints.Description(i, bits);
             for (size_t table = 0; table < m_tables; ++table)
             {
                 const size_t key = Key(bits, table);
@@ -509,9 +540,108 @@ namespace ad
         }
     }
     //-------------------------------------------------------------------------
-    static inline int Distance(const uint64_t * a, const uint64_t * b)
+    // The nearest and second nearest of to's descriptions to one (its eight
+    // 32-bit words given), by bits that differ: the nearest's earliest
+    // index on ties, and the second counting every other, an equal one too.
+    struct TNearest
     {
-        return int(__popcnt64(a[0] ^ b[0]) + __popcnt64(a[1] ^ b[1]) + __popcnt64(a[2] ^ b[2]) + __popcnt64(a[3] ^ b[3]));
+        int best, second;
+        size_t bestIndex;
+    };
+
+    static TNearest NearestScalar(const uint32_t * query, const TKeypoints & to)
+    {
+        TNearest n = { INT32_MAX, INT32_MAX, 0 };
+        for (size_t j = 0, m = to.Size(); j < m; ++j)
+        {
+            const uint32_t * block = to.words.data() + (j / KEYPOINT_BLOCK) * KEYPOINT_BLOCK * 2 * KEYPOINT_WORDS;
+            const size_t lane = j % KEYPOINT_BLOCK;
+            int d = 0;
+            for (size_t w = 0; w < 2 * KEYPOINT_WORDS; ++w)
+                d += int(__popcnt(query[w] ^ block[w * KEYPOINT_BLOCK + lane]));
+            if (d < n.best)
+            {
+                n.second = n.best;
+                n.best = d;
+                n.bestIndex = j;
+            }
+            else if (d < n.second)
+                n.second = d;
+        }
+        return n;
+    }
+
+    // The same, a block at a time: each lane keeps its own nearest (the
+    // earliest on ties) and second, and the lanes merge into exactly what
+    // the scalar loop finds. Bits are counted by a nibble table per byte.
+    static TNearest NearestAvx2(const uint32_t * query, const TKeypoints & to)
+    {
+        static_assert(KEYPOINT_BLOCK == 8 && KEYPOINT_WORDS == 4, "a block is one register of 32-bit words");
+        const __m256i table = _mm256_setr_epi8(0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4,
+            0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4);
+        const __m256i low = _mm256_set1_epi8(0x0f), ones8 = _mm256_set1_epi8(1), ones16 = _mm256_set1_epi16(1);
+        const __m256i step = _mm256_set1_epi32(KEYPOINT_BLOCK), none = _mm256_set1_epi32(INT32_MAX);
+        const __m256i count = _mm256_set1_epi32(int(to.Size()));
+        __m256i q[8];
+        for (int w = 0; w < 8; ++w)
+            q[w] = _mm256_set1_epi32(int(query[w]));
+        __m256i best = none, second = none, bestIndex = _mm256_setzero_si256();
+        __m256i index = _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7);
+        const size_t blocks = (to.Size() + KEYPOINT_BLOCK - 1) / KEYPOINT_BLOCK;
+        for (size_t b = 0; b < blocks; ++b)
+        {
+            const __m256i * t = (const __m256i *)(to.words.data() + b * 64);
+            // At most 8 bits per byte from each of the 8 words: a byte holds the sum.
+            __m256i sum = _mm256_setzero_si256();
+            for (int w = 0; w < 8; ++w)
+            {
+                const __m256i x = _mm256_xor_si256(q[w], _mm256_loadu_si256(t + w));
+                sum = _mm256_add_epi8(sum, _mm256_add_epi8(_mm256_shuffle_epi8(table, _mm256_and_si256(x, low)),
+                    _mm256_shuffle_epi8(table, _mm256_and_si256(_mm256_srli_epi16(x, 4), low))));
+            }
+            __m256i d = _mm256_madd_epi16(_mm256_maddubs_epi16(sum, ones8), ones16);
+            // The padding past the last keypoint never comes near.
+            d = _mm256_blendv_epi8(none, d, _mm256_cmpgt_epi32(count, index));
+            const __m256i nearer = _mm256_cmpgt_epi32(best, d), nearerSecond = _mm256_cmpgt_epi32(second, d);
+            second = _mm256_blendv_epi8(second, _mm256_blendv_epi8(d, best, nearer), nearerSecond);
+            best = _mm256_blendv_epi8(best, d, nearer);
+            bestIndex = _mm256_blendv_epi8(bestIndex, index, nearer);
+            index = _mm256_add_epi32(index, step);
+        }
+        alignas(32) int32_t bests[8], seconds[8], indices[8];
+        _mm256_store_si256((__m256i *)bests, best);
+        _mm256_store_si256((__m256i *)seconds, second);
+        _mm256_store_si256((__m256i *)indices, bestIndex);
+        TNearest n = { INT32_MAX, INT32_MAX, 0 };
+        int lane = -1;
+        for (int l = 0; l < 8; ++l)
+            if (bests[l] < n.best || (bests[l] == n.best && size_t(indices[l]) < n.bestIndex))
+            {
+                n.best = bests[l];
+                n.bestIndex = size_t(indices[l]);
+                lane = l;
+            }
+        for (int l = 0; l < 8; ++l)
+        {
+            n.second = std::min(n.second, seconds[l]);
+            if (l != lane)
+                n.second = std::min(n.second, bests[l]);
+        }
+        return n;
+    }
+
+    static bool HasAvx2()
+    {
+        int info[4];
+        __cpuid(info, 0);
+        if (info[0] < 7)
+            return false;
+        __cpuid(info, 1);
+        const bool osSaves = (info[2] & (1 << 27)) != 0, avx = (info[2] & (1 << 28)) != 0;
+        if (!osSaves || !avx || (_xgetbv(0) & 6) != 6)
+            return false;
+        __cpuidex(info, 7, 0);
+        return (info[1] & (1 << 5)) != 0;
     }
 
     struct TMatch
@@ -575,27 +705,17 @@ namespace ad
 
     bool FindTransform(const TKeypoints & from, const TKeypoints & to, TAffine & transform, size_t * pInliers)
     {
+        static const bool avx2 = HasAvx2();
         std::vector<TMatch> matches;
+        uint64_t bits[KEYPOINT_WORDS];
         for (size_t i = 0, n = from.Size(), m = to.Size(); i < n; ++i)
         {
-            const uint64_t * query = from.bits.data() + i * KEYPOINT_WORDS;
-            int best = INT32_MAX, second = INT32_MAX;
-            size_t bestIndex = 0;
-            for (size_t j = 0; j < m; ++j)
+            from.Description(i, bits);
+            const uint32_t * query = (const uint32_t *)bits;
+            const TNearest nearest = avx2 ? NearestAvx2(query, to) : NearestScalar(query, to);
+            if (m >= 2 && nearest.best * RATIO_DENOMINATOR < nearest.second * RATIO_NUMERATOR)
             {
-                const int d = Distance(query, to.bits.data() + j * KEYPOINT_WORDS);
-                if (d < best)
-                {
-                    second = best;
-                    best = d;
-                    bestIndex = j;
-                }
-                else if (d < second)
-                    second = d;
-            }
-            if (m >= 2 && best * RATIO_DENOMINATOR < second * RATIO_NUMERATOR)
-            {
-                TMatch match = { from.X(i), from.Y(i), to.X(bestIndex), to.Y(bestIndex) };
+                TMatch match = { from.X(i), from.Y(i), to.X(nearest.bestIndex), to.Y(nearest.bestIndex) };
                 matches.push_back(match);
             }
         }

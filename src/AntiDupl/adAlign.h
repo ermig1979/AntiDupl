@@ -36,6 +36,7 @@
 namespace ad
 {
     const size_t KEYPOINT_WORDS = 4; // 256 bits per keypoint
+    const size_t KEYPOINT_BLOCK = 8; // keypoints whose descriptions are stored together
 
     //-------------------------------------------------------------------------
     struct TKeypoints
@@ -47,12 +48,21 @@ namespace ad
         // copy up to 4096 pixels long, coarser on longer ones only.
         std::vector<uint16_t> x, y;
         float unit;
-        std::vector<uint64_t> bits; // KEYPOINT_WORDS per keypoint
+        // The descriptions in blocks of KEYPOINT_BLOCK keypoints: for each
+        // of a description's eight 32-bit words, that word of the block's
+        // keypoints side by side, so that matching compares one
+        // description with a whole block at once. The last block is padded.
+        std::vector<uint32_t> words;
 
         TKeypoints() : width(0), height(0), unit(1) {}
         size_t Size() const { return x.size(); }
         float X(size_t i) const { return x[i] * unit - 0.5f; }
         float Y(size_t i) const { return y[i] * unit - 0.5f; }
+        // Keypoint i's description as KEYPOINT_WORDS 64-bit words.
+        void Description(size_t i, uint64_t * bits) const;
+        // Stores descriptions given as KEYPOINT_WORDS words each, one per
+        // keypoint, in the blocks.
+        void SetDescriptions(const std::vector<uint64_t> & bits);
 
         // The memory each keypoint takes, for estimates.
         static const size_t BYTES_PER_POINT = 2 * sizeof(uint16_t) + KEYPOINT_WORDS * sizeof(uint64_t);
