@@ -121,26 +121,33 @@ namespace AntiDupl.NET.WinForms
             m_stopButton.Text = s.AlignedMemoryForm_StopButton_Text;
             m_closeButton.Text = s.AlignedMemoryForm_CloseButton_Text;
 
-            string what, choices;
+            string size = string.Format(s.AlignedMemoryForm_Size, memory.imageCount);
+            string free = string.Format(s.AlignedMemoryForm_Free, Memory(s, memory.freeBytes));
+            string text;
             if (memory.used < memory.wanted && memory.usedBytes <= memory.freeBytes)
             {
-                what = string.Format(s.AlignedMemoryForm_Reduced, memory.imageCount, Level(s, memory.wanted),
-                    Memory(s, memory.wantedBytes), Memory(s, memory.freeBytes), Level(s, memory.used), Memory(s, memory.usedBytes));
-                choices = s.AlignedMemoryForm_Choices;
+                // Auto took a lower level, which fits.
+                text = size + "\n" +
+                    string.Format(s.AlignedMemoryForm_Needed, Memory(s, memory.wantedBytes), Level(s, memory.wanted)) + "\n" +
+                    free + "\n" +
+                    string.Format(s.AlignedMemoryForm_Instead, Level(s, memory.used), Memory(s, memory.usedBytes)) +
+                    "\n\n" + s.AlignedMemoryForm_Choices;
             }
-            else if (memory.used < memory.wanted || memory.used == 1)
+            else if (memory.used == 1)
             {
-                what = string.Format(s.AlignedMemoryForm_Lowest, memory.imageCount, Level(s, memory.used),
-                    Memory(s, memory.usedBytes), Memory(s, memory.freeBytes));
-                choices = s.AlignedMemoryForm_ChoicesLowest;
+                // Not even the lowest level fits.
+                text = size + "\n" +
+                    string.Format(s.AlignedMemoryForm_NeededLowest, Memory(s, memory.usedBytes), Level(s, memory.used)) + "\n" +
+                    free + "\n" + s.AlignedMemoryForm_ContinuesLowest + "\n\n" + s.AlignedMemoryForm_ChoicesLowest;
             }
             else
             {
-                what = string.Format(s.AlignedMemoryForm_Forced, memory.imageCount, Level(s, memory.used),
-                    Memory(s, memory.usedBytes), Memory(s, memory.freeBytes));
-                choices = s.AlignedMemoryForm_ChoicesForced;
+                // A level set in the options, kept though it doesn't fit.
+                text = size + "\n" +
+                    string.Format(s.AlignedMemoryForm_Needed, Memory(s, memory.usedBytes), Level(s, memory.used)) + "\n" +
+                    free + "\n" + s.AlignedMemoryForm_ContinuesForced + "\n\n" + s.AlignedMemoryForm_ChoicesForced;
             }
-            m_label.Text = what + "\n\n" + choices;
+            m_label.Text = text;
         }
 
         /// <summary>Once the search has ended, there is nothing to stop.</summary>

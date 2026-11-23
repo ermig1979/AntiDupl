@@ -195,9 +195,13 @@ namespace AntiDupl.NET.WinForms
         public string SearchExecuterForm_MinimizeToSystrayButton_Text;
 
         public string AlignedMemoryForm_Text;
-        public string AlignedMemoryForm_Reduced;
-        public string AlignedMemoryForm_Forced;
-        public string AlignedMemoryForm_Lowest;
+        public string AlignedMemoryForm_Size;
+        public string AlignedMemoryForm_Needed;
+        public string AlignedMemoryForm_NeededLowest;
+        public string AlignedMemoryForm_Free;
+        public string AlignedMemoryForm_Instead;
+        public string AlignedMemoryForm_ContinuesForced;
+        public string AlignedMemoryForm_ContinuesLowest;
         public string AlignedMemoryForm_Choices;
         public string AlignedMemoryForm_ChoicesForced;
         public string AlignedMemoryForm_ChoicesLowest;
