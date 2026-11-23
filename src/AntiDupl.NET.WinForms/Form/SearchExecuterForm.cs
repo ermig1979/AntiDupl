@@ -245,9 +245,12 @@ namespace AntiDupl.NET.WinForms
                             }
                             else if (aligned.Value.alignedImages == 0 && aligned.Value.alignedSeconds == 0)
                             {
-                                // Reading the files, the level chosen.
+                                // Reading the files, the level chosen: the share
+                                // read, and the whole search's time, not the
+                                // reading's, which the aligning outlasts.
                                 builder.Append(s.SearchExecuterForm_Search);
-                                builder.AppendFormat(" ({0}; {1})...", ProgressUtils.GetProgressString(progress, m_startDateTime),
+                                builder.AppendFormat(" ({0}; {1})...",
+                                    string.Format(s.ProgressUtils_Completed, Convert.ToInt32(Math.Ceiling(progress * 100)).ToString()),
                                     string.Format(s.SearchExecuterForm_AlignedPlan, AlignedText.Level(s, aligned.Value.used),
                                     AlignedText.Duration(s, aligned.Value.usedSeconds)));
                             }

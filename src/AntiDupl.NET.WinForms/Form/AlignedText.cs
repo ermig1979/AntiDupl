@@ -68,16 +68,21 @@ namespace AntiDupl.NET.WinForms
         /// <summary>
         /// The time the aligning has left: done images leave less to do for
         /// the rest, each pair being matched once, so the work done after k
-        /// of n images is 1 - (1 - k/n)^2 of it. Before the aligning starts,
-        /// the estimate less the time the search has run.
+        /// of n images is 1 - (1 - k/n)^2 of it. The pace of the first few
+        /// images says little (each thread starts on its own), so until a
+        /// tenth of the work is done the time left leans on the estimate
+        /// made as the search started, less the time it has run.
         /// </summary>
         public static double SecondsLeft(CoreDll.adAlignedSearch search, double secondsRun)
         {
+            double estimated = Math.Max(0, search.usedSeconds - secondsRun);
             if (search.alignedImages == 0 || search.imageCount == 0)
-                return Math.Max(0, search.usedSeconds - secondsRun);
+                return estimated;
             double left = 1 - Math.Min(1.0, (double)search.alignedImages / search.imageCount);
             double done = 1 - left * left;
-            return search.alignedSeconds * (1 - done) / done;
+            double measured = search.alignedSeconds * (1 - done) / done;
+            double weight = Math.Min(1.0, done / 0.1);
+            return weight * measured + (1 - weight) * estimated;
         }
     }
 }
