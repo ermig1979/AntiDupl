@@ -891,7 +891,7 @@ namespace AntiDupl.NET.WinForms
             m_transparentAsShownCheckBox.Text = s.CoreOptionsForm_TransparentAsShownCheckBox_Text;
             m_ignoreTransparentCheckBox.Text = s.CoreOptionsForm_IgnoreTransparentCheckBox_Text;
             m_alignedLevelLabeledComboBox.Text = s.CoreOptionsForm_AlignedLevelLabeledComboBox_Text;
-            FitList(m_alignedLevelLabeledComboBox);
+            FitList(m_alignedLevelLabeledComboBox, true);
 
             m_defectTabPage.Text = s.CoreOptionsForm_DefectTabPage_Text;
             m_checkOnDefectCheckBox.Text = s.CoreOptionsForm_CheckOnDefectCheckBox_Text;
@@ -1076,12 +1076,23 @@ namespace AntiDupl.NET.WinForms
             FitList(m_algorithmComparingLabeledComboBox);
         }
 
-        private static void FitList(LabeledComboBox labeled)
+        // A label that leaves the list too little room beside it goes below
+        // it, indented so that it reads as the list's and not as an option
+        // of its own, and closer to the list than the next option is.
+        public const int LABEL_BELOW_INDENT = 50;
+        public const int LABEL_BELOW_GAP = 7;
+
+        private static void FitList(LabeledComboBox labeled, bool labelMayGoBelow = false)
         {
             ComboBox list = labeled.comboBox;
             int widest = AlgorithmListWidth(list);
             list.DropDownWidth = widest;
             int room = FORM_WIDTH - 45 - TextRenderer.MeasureText(labeled.Text, list.Font).Width;
+            bool below = labelMayGoBelow && widest > room;
+            if (labelMayGoBelow)
+                labeled.PlaceLabel(below, LABEL_BELOW_INDENT, LABEL_BELOW_GAP);
+            if (below)
+                room = FORM_WIDTH - 45;
             list.Width = Math.Max(COMBO_BOX_WIDTH + 115, Math.Min(widest, room));
         }
 

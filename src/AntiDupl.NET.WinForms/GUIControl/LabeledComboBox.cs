@@ -53,7 +53,38 @@ namespace AntiDupl.NET.WinForms
 
             m_label = InitFactory.Label.Create();
             m_label.Padding = new Padding(0, 5, 5, 5);
+            m_labelMargin = m_label.Margin;
             Controls.Add(m_label, 1, 0);
+        }
+
+        private Padding m_labelMargin;
+
+        /// <summary>
+        /// The label beside the list, or on a line of its own below it,
+        /// indented by indent and gap pixels under the list: for a label
+        /// too long to leave the list room beside it.
+        /// </summary>
+        public void PlaceLabel(bool below, int indent, int gap)
+        {
+            SuspendLayout();
+            Controls.Remove(m_label);
+            if (below)
+            {
+                RowCount = 2;
+                Controls.Add(m_label, 0, 1);
+                SetColumnSpan(m_label, 2);
+                m_label.Margin = new Padding(indent, 0, 0, 0);
+                m_label.Padding = new Padding(0, gap, 5, 0);
+            }
+            else
+            {
+                RowCount = 1;
+                Controls.Add(m_label, 1, 0);
+                SetColumnSpan(m_label, 1);
+                m_label.Margin = m_labelMargin;
+                m_label.Padding = new Padding(0, 5, 5, 5);
+            }
+            ResumeLayout();
         }
 
         public class Value : object
