@@ -132,9 +132,9 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_IgnoreTransparentCheckBox_Text = "Ignore areas with transparency in both images";
             s.CoreOptionsForm_AlignedLevelLabeledComboBox_Text = "Smallest findable crop (aligned search)";
             s.CoreOptionsForm_AlignedLevelLabeledComboBox_Auto = "Auto: as small as memory allows";
-            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level1 = "1/4 of image, 0.4 GB / 10,000 files";
-            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level2 = "1/10 of image, 1.1 GB / 10,000 files";
-            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level3 = "1/50 of image, 4 GB / 10,000 files";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level1 = "1/4 of image, 0.4 GB per 10k files";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level2 = "1/10 of image, 1.1 GB per 10k files";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level3 = "1/50 of image, 4 GB per 10k files";
             s.CoreOptionsForm_UseLibJpegTurboCheckBox_Text = "Use libjpeg-turbo";
 
             s.CoreOptionsForm_HighlightTabPage_Text = "Highlight";

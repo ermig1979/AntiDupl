@@ -143,7 +143,7 @@ namespace AntiDupl.NET.WinForms
         static public int IGNORE_FRAME_WIDTH_MAX = 12;
         static public int IGNORE_FRAME_WIDTH_STEP = 3;
         
-        static public int FORM_WIDTH = 450;
+        static public int FORM_WIDTH = 456;
         static public int FORM_HEIGHT = 490;
         static public int COMBO_BOX_WIDTH = 65;
         static public int COMBO_BOX_HEIGHT = 20;

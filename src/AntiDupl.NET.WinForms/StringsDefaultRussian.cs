@@ -132,9 +132,9 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_IgnoreTransparentCheckBox_Text = "Игнорировать прозрачные области в обеих картинках";
             s.CoreOptionsForm_AlignedLevelLabeledComboBox_Text = "Наименьший находимый фрагмент (поиск с выравниванием)";
             s.CoreOptionsForm_AlignedLevelLabeledComboBox_Auto = "Авто: насколько позволяет память";
-            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level1 = "1/4 картинки, 0,4 ГБ / 10 000 файлов";
-            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level2 = "1/10 картинки, 1,1 ГБ / 10 000 файлов";
-            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level3 = "1/50 картинки, 4 ГБ / 10 000 файлов";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level1 = "1/4 картинки, 0,4 ГБ / 10\u202F000 файлов";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level2 = "1/10 картинки, 1,1 ГБ / 10\u202F000 файлов";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level3 = "1/50 картинки, 4 ГБ / 10\u202F000 файлов";
             s.CoreOptionsForm_UseLibJpegTurboCheckBox_Text = "Использовать libjpeg-turbo";
 
             s.CoreOptionsForm_HighlightTabPage_Text = "Подсветка";
