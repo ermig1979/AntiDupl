@@ -149,6 +149,8 @@ namespace ad
         { 2048*1536, 8000, 10 },
     };
     const size_t ALIGN_LEVEL_COUNT = sizeof(ALIGN_LEVELS) / sizeof(ALIGN_LEVELS[0]);
+    // Aligned scores are kept by their level's place in ALIGN_LEVELS: a
+    // change to a level's values takes a new ALIGNED_SCORE_VERSION.
     // What else the search holds per image beside its keypoints: the
     // keypoints' own structure and the maps that find them.
     const size_t ALIGN_IMAGE_OVERHEAD_BYTES = 320;
@@ -176,6 +178,16 @@ namespace ad
     const double ALIGN_REDUCE_SCALE = 1.02;
     // Part of an aligned score's key, as BUTTERAUGLI_SCORE_VERSION is of all.
     const TInt32 ALIGNED_SCORE_VERSION = 1;
+    // The pairs the aligned search finds no alignment for at a level are
+    // kept, 8 bytes each, so that a search of the same files skips them:
+    // nearly every pair is one, and matching them is most of the search.
+    // New ones go to disk in chunks of this many as the search runs, so
+    // that they don't hold memory the keypoints need...
+    const size_t ALIGN_FAILED_CHUNK = size_t(8) << 20;
+    // ...and past this many in all, only those the last search looked up
+    // or added stay, which drops the pairs of files changed, gone or not
+    // searched since.
+    const size_t ALIGN_FAILED_MAX = size_t(128) << 20;
     // Transparency shown: when could an opaque image be a copy of one with
     // transparency, its transparent area filled with one colour
     // (TImageComparer::UniformFill). Pixels of the colour thumbnail count as

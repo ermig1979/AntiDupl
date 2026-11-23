@@ -127,6 +127,14 @@ namespace ad
         void ChooseLevel(size_t imageCount);
         void Load();
         void Save() const;
+        // A pair's key for the pairs without an alignment: its score's key
+        // and the level's keypoint settings, hashed.
+        uint64_t FailedKey(const TKey & key) const;
+        bool Failed(uint64_t key);
+        void AddFailed(uint64_t key);
+        size_t FailedBytes() const; // what the kept pairs take during a search
+        void LoadFailed();
+        void SaveFailed();
 
         const TOptions *m_pOptions;
         TString m_path;
@@ -136,6 +144,14 @@ namespace ad
         size_t m_imageBytes;
         std::unordered_map<TKey, double, TKeyHash> m_scores;
         bool m_changed;
+        // The pairs without an alignment as loaded, sorted, and read only
+        // during the search; a bit per entry for those looked up; the new
+        // ones not yet written to the chunk file beside m_failedPath.
+        TString m_failedPath;
+        std::vector<uint64_t> m_failed;
+        std::vector<uint64_t> m_failedUsed;
+        std::vector<uint64_t> m_failedNew;
+        size_t m_failedSpilled;
 
         std::mutex m_keypointMutex;
         std::unordered_map<TImageDataPtr, std::shared_ptr<const TKeypoints>> m_keypoints;
