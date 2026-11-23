@@ -144,7 +144,7 @@ namespace AntiDupl.NET.WinForms
         static public int IGNORE_FRAME_WIDTH_STEP = 3;
         
         static public int FORM_WIDTH = 459;
-        static public int FORM_HEIGHT = 490;
+        static public int FORM_HEIGHT = 565;
         static public int COMBO_BOX_WIDTH = 65;
         static public int COMBO_BOX_HEIGHT = 20;
 
@@ -222,6 +222,7 @@ namespace AntiDupl.NET.WinForms
         private LabeledComboBox m_ignoreFrameWidthLabeledComboBox;
         private CheckBox m_useLibJpegTurboCheckBox;
         private LabeledComboBox m_alignedLevelLabeledComboBox;
+        private LabeledIntegerEdit m_alignedTimeLimitLabeledIntegerEdit;
 
         private TabPage m_highlightTabPage;
         private CheckBox m_highlightDifferenceCheckBox;
@@ -507,7 +508,7 @@ namespace AntiDupl.NET.WinForms
             m_advancedTabPage = new TabPage();
             m_mainTabControl.Controls.Add(m_advancedTabPage);
 
-            TableLayoutPanel advancedTableLayoutPanel = InitFactory.Layout.Create(1, 14, 5);
+            TableLayoutPanel advancedTableLayoutPanel = InitFactory.Layout.Create(1, 15, 5);
             advancedTableLayoutPanel.AutoScroll = true;
             m_advancedTabPage.Controls.Add(advancedTableLayoutPanel);
 
@@ -567,7 +568,8 @@ namespace AntiDupl.NET.WinForms
             {
                 Strings s = Resources.Strings.Current;
                 string[] levels = { s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level1,
-                    s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level2, s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level3 };
+                    s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level2, s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level3,
+                    s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level4 };
                 m_alignedLevelLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value(
                     CoreCompareOptions.ALIGNED_LEVEL_AUTO, s.CoreOptionsForm_AlignedLevelLabeledComboBox_Auto));
                 for (int level = 1; level <= CoreCompareOptions.ALIGNED_LEVEL_COUNT; level++)
@@ -575,8 +577,14 @@ namespace AntiDupl.NET.WinForms
             }
             advancedTableLayoutPanel.Controls.Add(m_alignedLevelLabeledComboBox, 0, 12);
 
+            m_alignedTimeLimitLabeledIntegerEdit = new LabeledIntegerEdit(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
+            m_alignedTimeLimitLabeledIntegerEdit.Min = 0;
+            m_alignedTimeLimitLabeledIntegerEdit.Max = CoreCompareOptions.ALIGNED_TIME_LIMIT_MAX;
+            m_alignedTimeLimitLabeledIntegerEdit.Default = m_defaultCoreOptions.compareOptions.alignedTimeLimit;
+            advancedTableLayoutPanel.Controls.Add(m_alignedTimeLimitLabeledIntegerEdit, 0, 13);
+
             m_useLibJpegTurboCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            advancedTableLayoutPanel.Controls.Add(m_useLibJpegTurboCheckBox, 0, 13);
+            advancedTableLayoutPanel.Controls.Add(m_useLibJpegTurboCheckBox, 0, 14);
         }
 
         private void InitilizeHighlightTabPage()
@@ -751,6 +759,7 @@ namespace AntiDupl.NET.WinForms
             m_transparentAsShownCheckBox.Checked = m_newCoreOptions.compareOptions.transparentAsShown;
             m_ignoreTransparentCheckBox.Checked = m_newCoreOptions.compareOptions.ignoreTransparent;
             m_alignedLevelLabeledComboBox.SelectedValue = m_newCoreOptions.compareOptions.alignedLevel;
+            m_alignedTimeLimitLabeledIntegerEdit.Value = m_newCoreOptions.compareOptions.alignedTimeLimit;
 
             m_checkOnDefectCheckBox.Checked = m_newCoreOptions.defectOptions.checkOnDefect;
             m_checkOnBlockinessCheckBox.Checked = m_newCoreOptions.defectOptions.checkOnBlockiness;
@@ -818,6 +827,7 @@ namespace AntiDupl.NET.WinForms
             m_newCoreOptions.compareOptions.transparentAsShown = m_transparentAsShownCheckBox.Checked;
             m_newCoreOptions.compareOptions.ignoreTransparent = m_ignoreTransparentCheckBox.Checked;
             m_newCoreOptions.compareOptions.alignedLevel = m_alignedLevelLabeledComboBox.SelectedValue;
+            m_newCoreOptions.compareOptions.alignedTimeLimit = m_alignedTimeLimitLabeledIntegerEdit.Value;
 
             m_newCoreOptions.defectOptions.checkOnDefect = m_checkOnDefectCheckBox.Checked;
             m_newCoreOptions.defectOptions.checkOnBlockiness = m_checkOnBlockinessCheckBox.Checked;
@@ -892,6 +902,8 @@ namespace AntiDupl.NET.WinForms
             m_ignoreTransparentCheckBox.Text = s.CoreOptionsForm_IgnoreTransparentCheckBox_Text;
             m_alignedLevelLabeledComboBox.Text = s.CoreOptionsForm_AlignedLevelLabeledComboBox_Text;
             FitList(m_alignedLevelLabeledComboBox, true);
+            m_alignedTimeLimitLabeledIntegerEdit.Text = s.CoreOptionsForm_AlignedTimeLimitLabeledIntegerEdit_Text;
+            m_alignedTimeLimitLabeledIntegerEdit.WrapLabel(FORM_WIDTH - 45 - m_alignedTimeLimitLabeledIntegerEdit.BoxWidth);
 
             m_defectTabPage.Text = s.CoreOptionsForm_DefectTabPage_Text;
             m_checkOnDefectCheckBox.Text = s.CoreOptionsForm_CheckOnDefectCheckBox_Text;
@@ -1018,6 +1030,7 @@ namespace AntiDupl.NET.WinForms
               m_newCoreOptions.compareOptions.transparentAsShown;
             m_alignedLevelLabeledComboBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality &&
               m_newCoreOptions.compareOptions.algorithmComparing == AlgorithmComparing.ButteraugliAligned;
+            m_alignedTimeLimitLabeledIntegerEdit.Enabled = m_alignedLevelLabeledComboBox.Enabled;
 
             m_ratioResolutionLabeledComboBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality &&
               !m_newCoreOptions.compareOptions.sizeControl && m_newCoreOptions.compareOptions.ratioControl;

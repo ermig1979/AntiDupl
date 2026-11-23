@@ -60,7 +60,7 @@ namespace ad
         m_pCollectManager = new TCollectManager(this, m_pCompareManager);
         m_pSearcher = new TSearcher(this, m_pImageDataPtrs);
         m_pButteraugliStore = NULL;
-        m_alignedMemory = adAlignedMemory();
+        m_alignedSearch = adAlignedSearch();
     }
 
     TEngine::~TEngine()
@@ -93,7 +93,7 @@ namespace ad
         m_pStatus->ClearStatistic();
         m_pStatus->SetProgress(0, 0);
         m_pResult->Clear();
-        ClearAlignedMemory();
+        ClearAlignedSearch();
 
         m_pSearcher->SearchImages();
 
@@ -103,9 +103,10 @@ namespace ad
             if(m_pOptions->compare.algorithmComparing == AD_COMPARING_BUTTERAUGLI ||
                 m_pOptions->compare.algorithmComparing == AD_COMPARING_BUTTERAUGLI_ALIGNED)
             {
-                m_pButteraugliStore = new TButteraugliStore(this, m_pImageDataPtrs->size());
-                std::lock_guard<std::mutex> lock(m_alignedMemoryMutex);
-                m_alignedMemory = m_pButteraugliStore->AlignedMemory();
+                TButteraugliStore *pStore = new TButteraugliStore(this, m_pImageDataPtrs->size());
+                std::lock_guard<std::mutex> lock(m_alignedSearchMutex);
+                m_pButteraugliStore = pStore;
+                m_alignedSearch = pStore->AlignedSearch();
             }
             m_pCompareManager->Start(m_pImageDataPtrs->size());
             m_pCompareManager->SetPriority(THREAD_PRIORITY_LOWEST);
@@ -129,27 +130,37 @@ namespace ad
             m_pStatus->Wait(AD_THREAD_TYPE_MAIN, 0);
             m_pCompareManager->SetPriority(THREAD_PRIORITY_NORMAL);
             m_pCompareManager->Finish();
-            delete m_pButteraugliStore; // saves the scores
-            m_pButteraugliStore = NULL;
+            TButteraugliStore *pStore = m_pButteraugliStore;
+            {
+                // The report keeps the progress the store reached.
+                std::lock_guard<std::mutex> lock(m_alignedSearchMutex);
+                if (pStore)
+                    pStore->AlignedProgress(m_alignedSearch);
+                m_pButteraugliStore = NULL;
+            }
+            delete pStore; // saves the scores
         }
 
         m_pImageDataPtrs->clear();
         m_pStatus->Reset();
     }
 
-    adError TEngine::ExportAlignedMemory(adAlignedMemoryPtr pAlignedMemory)
+    adError TEngine::ExportAlignedSearch(adAlignedSearchPtr pAlignedSearch)
     {
-        if (pAlignedMemory == NULL)
+        if (pAlignedSearch == NULL)
             return AD_ERROR_INVALID_POINTER;
-        std::lock_guard<std::mutex> lock(m_alignedMemoryMutex);
-        *pAlignedMemory = m_alignedMemory;
+        std::lock_guard<std::mutex> lock(m_alignedSearchMutex);
+        // The store goes away under the same lock once the search ends.
+        if (m_pButteraugliStore)
+            m_pButteraugliStore->AlignedProgress(m_alignedSearch);
+        *pAlignedSearch = m_alignedSearch;
         return AD_OK;
     }
 
-    void TEngine::ClearAlignedMemory()
+    void TEngine::ClearAlignedSearch()
     {
-        std::lock_guard<std::mutex> lock(m_alignedMemoryMutex);
-        m_alignedMemory = adAlignedMemory();
+        std::lock_guard<std::mutex> lock(m_alignedSearchMutex);
+        m_alignedSearch = adAlignedSearch();
     }
 
     adError TEngine::ScanCandidates(adCandidateInfoPtrW pCandidates, adSizePtr pCandidateSize)

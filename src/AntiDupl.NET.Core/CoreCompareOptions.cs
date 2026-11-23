@@ -72,14 +72,24 @@ namespace AntiDupl.NET.Core
         /// <summary>
         /// The aligned search's keypoint level, 1 to ALIGNED_LEVEL_COUNT, or
         /// ALIGNED_LEVEL_AUTO for the highest that fits in the memory free
-        /// when the search starts. Auto in a profile saved before the option
-        /// existed.
+        /// when the search starts and in alignedTimeLimit. Auto in a profile
+        /// saved before the option existed.
         /// </summary>
         public int alignedLevel = ALIGNED_LEVEL_AUTO;
+        /// <summary>
+        /// The minutes Auto aims to finish the aligned search in, by the
+        /// time it estimates as the search starts; 0 for no limit. The
+        /// core's default in a profile saved before the option existed.
+        /// </summary>
+        public int alignedTimeLimit = ALIGNED_TIME_LIMIT_DEFAULT;
 
         public const int ALIGNED_LEVEL_AUTO = 0;
         /// <summary>The core's ALIGN_LEVEL_COUNT.</summary>
-        public const int ALIGNED_LEVEL_COUNT = 3;
+        public const int ALIGNED_LEVEL_COUNT = 4;
+        /// <summary>The core's ALIGN_TIME_LIMIT_MINUTES.</summary>
+        public const int ALIGNED_TIME_LIMIT_DEFAULT = 15;
+        /// <summary>The core option's largest value.</summary>
+        public const int ALIGNED_TIME_LIMIT_MAX = 1000000;
 
         public CoreCompareOptions()
         {
@@ -104,6 +114,7 @@ namespace AntiDupl.NET.Core
             transparentAsShown = compareOptions.transparentAsShown;
             ignoreTransparent = compareOptions.ignoreTransparent;
             alignedLevel = compareOptions.alignedLevel;
+            alignedTimeLimit = compareOptions.alignedTimeLimit;
         }
 
         public CoreCompareOptions(ref CoreDll.adCompareOptions compareOptions)
@@ -125,6 +136,7 @@ namespace AntiDupl.NET.Core
             transparentAsShown = compareOptions.transparentAsShown != CoreDll.FALSE;
             ignoreTransparent = compareOptions.ignoreTransparent != CoreDll.FALSE;
             alignedLevel = compareOptions.alignedLevel;
+            alignedTimeLimit = compareOptions.alignedTimeLimit;
         }
 
         public void ConvertTo(ref CoreDll.adCompareOptions compareOptions)
@@ -146,6 +158,7 @@ namespace AntiDupl.NET.Core
             compareOptions.transparentAsShown = transparentAsShown ? CoreDll.TRUE : CoreDll.FALSE;
             compareOptions.ignoreTransparent = ignoreTransparent ? CoreDll.TRUE : CoreDll.FALSE;
             compareOptions.alignedLevel = alignedLevel;
+            compareOptions.alignedTimeLimit = alignedTimeLimit;
         }
 
         public CoreCompareOptions Clone()
@@ -194,7 +207,8 @@ namespace AntiDupl.NET.Core
                 skipHardlinks == compareOptions.skipHardlinks &&
                 transparentAsShown == compareOptions.transparentAsShown &&
                 ignoreTransparent == compareOptions.ignoreTransparent &&
-                alignedLevel == compareOptions.alignedLevel;
+                alignedLevel == compareOptions.alignedLevel &&
+                alignedTimeLimit == compareOptions.alignedTimeLimit;
         }
 
         public bool CheckOnEquality
@@ -334,6 +348,16 @@ namespace AntiDupl.NET.Core
             {
                 alignedLevel = value;
                 NotifyPropertyChanged("AlignedLevel");
+            }
+        }
+
+        public int AlignedTimeLimit
+        {
+            get { return alignedTimeLimit; }
+            set
+            {
+                alignedTimeLimit = value;
+                NotifyPropertyChanged("AlignedTimeLimit");
             }
         }
 

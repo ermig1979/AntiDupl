@@ -211,7 +211,7 @@ namespace ad
     TButteraugliStore::TButteraugliStore(TEngine *pEngine, size_t imageCount)
         : m_pOptions(pEngine->Options())
         , m_pEngine(pEngine)
-        , m_alignedMemory()
+        , m_alignedSearch()
         , m_pLevel(NULL)
         , m_participants(0)
         , m_arrived(0)
@@ -221,6 +221,8 @@ namespace ad
         , m_changed(false)
         , m_failedPath(pEngine->UserPath() + TEXT("\\aligned-failed.adp"))
         , m_failedSpilled(0)
+        , m_alignedImages(0)
+        , m_alignStart(0)
     {
         static_assert(sizeof(TKey) == 40, "TKey is written to the file as it is");
         if (m_pOptions->compare.algorithmComparing == AD_COMPARING_BUTTERAUGLI_ALIGNED)
@@ -248,19 +250,61 @@ namespace ad
             const size_t free = size_t(std::min(status.ullAvailPhys, status.ullAvailPageFile));
             room = free > taken ? free - taken : 0;
         }
+        // The compare threads the aligned search runs (TCompareManager).
+        size_t threads = size_t(std::max(m_pOptions->advanced.compareThreadCount, 0));
+        if (threads == 0)
+        {
+            SYSTEM_INFO info;
+            ::GetSystemInfo(&info);
+            threads = std::max<size_t>(info.dwNumberOfProcessors, 1);
+        }
+        double seconds[ALIGN_LEVEL_COUNT];
+        for (size_t i = 0; i < ALIGN_LEVEL_COUNT; ++i)
+            seconds[i] = LevelSeconds(ALIGN_LEVELS[i], imageCount, threads,
+                MatchingSeconds(ALIGN_LEVELS[i].keypointsMax, threads));
+        const double limit = 60.0 * std::max(m_pOptions->compare.alignedTimeLimit, 0);
+
+        size_t memoryLevel = ALIGN_LEVEL_COUNT, timeLevel = ALIGN_LEVEL_COUNT;
+        while (memoryLevel > 1 && LevelBytes(ALIGN_LEVELS[memoryLevel - 1], imageCount) > room)
+            --memoryLevel;
+        while (limit > 0 && timeLevel > 1 && seconds[timeLevel - 1] > limit)
+            --timeLevel;
+        // Auto wants what the time limit, which the user sets, allows, and
+        // takes less only when memory falls short of it.
         const TInt32 setting = m_pOptions->compare.alignedLevel;
-        const size_t wanted = setting >= 1 && size_t(setting) <= ALIGN_LEVEL_COUNT ? size_t(setting) : ALIGN_LEVEL_COUNT;
-        size_t used = wanted;
-        if (setting == 0)
-            while (used > 1 && LevelBytes(ALIGN_LEVELS[used - 1], imageCount) > room)
-                --used;
+        const size_t wanted = setting >= 1 && size_t(setting) <= ALIGN_LEVEL_COUNT ? size_t(setting) : timeLevel;
+        const size_t used = setting == 0 ? std::min(memoryLevel, timeLevel) : wanted;
         m_pLevel = &ALIGN_LEVELS[used - 1];
-        m_alignedMemory.wanted = adInt32(wanted);
-        m_alignedMemory.used = adInt32(used);
-        m_alignedMemory.wantedBytes = LevelBytes(ALIGN_LEVELS[wanted - 1], imageCount);
-        m_alignedMemory.usedBytes = LevelBytes(*m_pLevel, imageCount);
-        m_alignedMemory.freeBytes = room;
-        m_alignedMemory.imageCount = imageCount;
+        m_alignedSearch.wanted = adInt32(wanted);
+        m_alignedSearch.used = adInt32(used);
+        m_alignedSearch.memoryLevel = adInt32(memoryLevel);
+        m_alignedSearch.timeLevel = adInt32(timeLevel);
+        m_alignedSearch.wantedBytes = LevelBytes(ALIGN_LEVELS[wanted - 1], imageCount);
+        m_alignedSearch.usedBytes = LevelBytes(*m_pLevel, imageCount);
+        m_alignedSearch.freeBytes = room;
+        m_alignedSearch.wantedSeconds = adUInt64(seconds[wanted - 1] + 0.5);
+        m_alignedSearch.usedSeconds = adUInt64(seconds[used - 1] + 0.5);
+        m_alignedSearch.limitSeconds = adUInt64(limit);
+        m_alignedSearch.imageCount = imageCount;
+    }
+
+    double TButteraugliStore::LevelSeconds(const TAlignLevel & level, size_t imageCount, size_t threads, double pairSeconds) const
+    {
+        // The index lets nearly every pair through: drawings by one artist
+        // share keypoint descriptions.
+        const double pairs = 0.5 * double(imageCount) * (double(imageCount) - 1);
+        return pairs * pairSeconds + imageCount * level.imageSeconds / threads;
+    }
+
+    void TButteraugliStore::AlignedProgress(adAlignedSearch & report) const
+    {
+        const long long start = m_alignStart.load();
+        if (start == 0)
+            return;
+        const long long now = std::chrono::steady_clock::now().time_since_epoch().count();
+        report.alignedImages = m_alignedImages.load();
+        report.alignedSeconds = adUInt64(double(now - start) * std::chrono::steady_clock::period::num /
+            std::chrono::steady_clock::period::den);
     }
 
     TButteraugliStore::~TButteraugliStore()
@@ -362,6 +406,7 @@ namespace ad
             }
             m_pIndex->Build(keypoints.size(), [&](size_t i) -> const TKeypoints & { return *keypoints[i]; });
             m_indexBuilt = true;
+            m_alignStart = std::max<long long>(1, std::chrono::steady_clock::now().time_since_epoch().count());
             m_gathered.notify_all();
             return true;
         }
@@ -412,7 +457,7 @@ namespace ad
         if (Before(pSecond, pFirst))
             std::swap(pFirst, pSecond);
         // Each level's keypoints give their own transform, and so their own
-        // score; the first level's key is the one scores had before levels.
+        // score.
         const TInt32 level = TInt32(m_pLevel ? m_pLevel - ALIGN_LEVELS : 0);
         TKey key = { pFirst->size, pSecond->size, pFirst->crc32c, pSecond->crc32c, AD_TRANSFORM_TURN_0,
             m_pOptions->compare.butteraugliSize, m_pOptions->advanced.ignoreFrameWidth, ALIGNED_SCORE_VERSION + 256 * level };

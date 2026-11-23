@@ -22,6 +22,8 @@
 #ifndef __adButteraugli_h__
 #define __adButteraugli_h__
 
+#include <atomic>
+#include <chrono>
 #include <list>
 #include <memory>
 #include <condition_variable>
@@ -61,8 +63,10 @@ namespace ad
         bool NeedsKeypoints() const { return m_pIndex != NULL; }
 
         // The aligned search's level, chosen when the store is made, and
-        // the memory behind the choice; all 0 in other searches.
-        const adAlignedMemory & AlignedMemory() const { return m_alignedMemory; }
+        // the memory and time behind the choice; all 0 in other searches.
+        const adAlignedSearch & AlignedSearch() const { return m_alignedSearch; }
+        // The aligning's progress so far, into the report's fields for it.
+        void AlignedProgress(adAlignedSearch & report) const;
 
         // An image's keypoints, from its grey pixels at full size.
         void SetKeypoints(TImageDataPtr pImageData, const TView & gray);
@@ -81,6 +85,8 @@ namespace ad
         bool Gather();
         void Candidates(TImageDataPtr pImageData, std::vector<TImageDataPtr> & candidates);
         bool Claim(TImageDataPtr pFirst, TImageDataPtr pSecond);
+        // An image aligned with all its candidates, for the progress.
+        void Aligned() { ++m_alignedImages; }
 
         // Butteraugli's score for what the two images show in common, each
         // laid over the other; negative when they don't align, share too
@@ -123,8 +129,13 @@ namespace ad
         std::shared_ptr<const TKeypoints> Keypoints(TImageDataPtr pImageData);
         // The setting's level, or for Auto the highest whose keypoints for
         // so many images fit in the memory free now, less a reserve and
-        // the decoded images' cache; the lowest when none fits.
+        // the decoded images' cache, and whose search fits in the time
+        // limit; the lowest when none does.
         void ChooseLevel(size_t imageCount);
+        // The whole search's estimated time at a level: every pair's
+        // keypoints matched, at the pace measured on this machine as the
+        // search starts, and each image's own work.
+        double LevelSeconds(const TAlignLevel & level, size_t imageCount, size_t threads, double pairSeconds) const;
         void Load();
         void Save() const;
         // A pair's key for the pairs without an alignment: its score's key
@@ -156,7 +167,7 @@ namespace ad
         std::mutex m_keypointMutex;
         std::unordered_map<TImageDataPtr, std::shared_ptr<const TKeypoints>> m_keypoints;
         TEngine *m_pEngine;
-        adAlignedMemory m_alignedMemory;
+        adAlignedSearch m_alignedSearch;
         const TAlignLevel *m_pLevel; // NULL but in the aligned search
         std::mutex m_indexMutex;
         std::condition_variable m_gathered;
@@ -166,6 +177,8 @@ namespace ad
         std::vector<TImageDataPtr> m_indexed; // by the index's image numbers, in path order once built
         std::unordered_map<TImageDataPtr, uint32_t> m_number; // the index's number of each image
         std::unordered_set<uint64_t> m_claimed; // pairs of index numbers, the smaller first
+        std::atomic<uint64_t> m_alignedImages; // aligned with all their candidates
+        std::atomic<long long> m_alignStart; // steady_clock ticks when the index was built; 0 before
     };
     //-------------------------------------------------------------------------
 }

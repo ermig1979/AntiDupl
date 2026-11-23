@@ -236,9 +236,28 @@ namespace AntiDupl.NET.WinForms
                         {
                             m_stopButton.Enabled = true;
                             CheckAlignedMemory();
-                            builder.Append(s.SearchExecuterForm_Search);
                             double progress = EstimateSearchProgress();
-                            builder.AppendFormat(" ({0})...", ProgressUtils.GetProgressString(progress, m_startDateTime));
+                            CoreDll.adAlignedSearch? aligned = m_core.GetAlignedSearch();
+                            if (aligned == null)
+                            {
+                                builder.Append(s.SearchExecuterForm_Search);
+                                builder.AppendFormat(" ({0})...", ProgressUtils.GetProgressString(progress, m_startDateTime));
+                            }
+                            else if (aligned.Value.alignedImages == 0 && aligned.Value.alignedSeconds == 0)
+                            {
+                                // Reading the files, the level chosen.
+                                builder.Append(s.SearchExecuterForm_Search);
+                                builder.AppendFormat(" ({0}; {1})...", ProgressUtils.GetProgressString(progress, m_startDateTime),
+                                    string.Format(s.SearchExecuterForm_AlignedPlan, AlignedText.Level(s, aligned.Value.used),
+                                    AlignedText.Duration(s, aligned.Value.usedSeconds)));
+                            }
+                            else
+                            {
+                                double run = (DateTime.Now - m_startDateTime).TotalSeconds;
+                                builder.AppendFormat(s.SearchExecuterForm_Aligning, AlignedText.Level(s, aligned.Value.used),
+                                    AlignedText.Duration(s, AlignedText.SecondsLeft(aligned.Value, run)));
+                                builder.Append("...");
+                            }
                         }
                         break;
                     case State.SetGroup:
@@ -287,7 +306,7 @@ namespace AntiDupl.NET.WinForms
         {
             if (m_alignedMemoryChecked)
                 return;
-            CoreDll.adAlignedMemory? memory = m_core.GetAlignedMemory();
+            CoreDll.adAlignedSearch? memory = m_core.GetAlignedSearch();
             if (memory == null)
                 return;
             m_alignedMemoryChecked = true;

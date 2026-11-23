@@ -131,10 +131,12 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_TransparentAsShownCheckBox_Text = "Improve transparent image comparison";
             s.CoreOptionsForm_IgnoreTransparentCheckBox_Text = "Ignore areas with transparency in both images";
             s.CoreOptionsForm_AlignedLevelLabeledComboBox_Text = "Smallest findable crop (aligned search)";
-            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Auto = "Auto: as small as memory allows";
-            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level1 = "1/4 of image, 0.4 GB per 10k files";
-            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level2 = "1/10 of image, 1.1 GB per 10k files";
-            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level3 = "1/50 of image, 4 GB per 10k files";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Auto = "Auto: as small as memory and time allow";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level1 = "1/10 of image, 0.6 GB per 10k files";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level2 = "1/20 of image, 1.1 GB per 10k files";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level3 = "1/50 of image, 2.1 GB per 10k files";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level4 = "1/100 of image, 4.0 GB per 10k files";
+            s.CoreOptionsForm_AlignedTimeLimitLabeledIntegerEdit_Text = "Aligned search time limit, minutes (0 = none)";
             s.CoreOptionsForm_UseLibJpegTurboCheckBox_Text = "Use libjpeg-turbo";
 
             s.CoreOptionsForm_HighlightTabPage_Text = "Highlight";
@@ -187,6 +189,8 @@ namespace AntiDupl.NET.WinForms
 
             s.SearchExecuterForm_Result = "Result processing";
             s.SearchExecuterForm_Search = "Search";
+            s.SearchExecuterForm_AlignedPlan = "crops down to ~{0}, about {1} in all";
+            s.SearchExecuterForm_Aligning = "Finding crops down to ~{0}: about {1} left";
             s.SearchExecuterForm_Stopped = "Stopping of search";
             s.SearchExecuterForm_MinimizeToTaskbarButton_Text = "Minimize";
             s.SearchExecuterForm_MinimizeToSystrayButton_Text = "Background Mode";
@@ -205,9 +209,13 @@ namespace AntiDupl.NET.WinForms
             s.AlignedMemoryForm_Gigabytes = "{0:0.0} GB";
             s.AlignedMemoryForm_StopButton_Text = "Stop search";
             s.AlignedMemoryForm_CloseButton_Text = "Close";
-            s.AlignedMemoryForm_Level1 = "1/4";
-            s.AlignedMemoryForm_Level2 = "1/10";
+            s.AlignedMemoryForm_Level1 = "1/10";
+            s.AlignedMemoryForm_Level2 = "1/20";
             s.AlignedMemoryForm_Level3 = "1/50";
+            s.AlignedMemoryForm_Level4 = "1/100";
+            s.AlignedSearch_Minutes = "{0} min";
+            s.AlignedSearch_Hours = "{0} h {1} min";
+            s.AlignedSearch_Days = "{0} d {1} h";
 
             s.ResultsPreviewBase_NextButton_ToolTip_Text = "Go to the next result";
             s.ResultsPreviewBase_PreviousButton_ToolTip_Text = "Go to the previous result";

@@ -33,7 +33,9 @@ namespace AntiDupl.NET.WinForms
     /// <summary>
     /// Says, as an aligned search starts, that its smallest crops need more
     /// memory than is free, and what can be done. Not modal: the search goes
-    /// on while it is read, and it stays over the results until closed.
+    /// on while it is read, and it stays over the results until closed. The
+    /// time limit, which the user sets, lowers the level without a warning:
+    /// the search's progress line says the level and its time.
     /// </summary>
     public class AlignedMemoryForm : Form
     {
@@ -45,15 +47,16 @@ namespace AntiDupl.NET.WinForms
         private Button m_closeButton;
 
         /// <summary>
-        /// Whether the search's choice is worth a warning: the level wanted
-        /// needs more than is free, or the level used does.
+        /// Whether the search's choice is worth a warning: memory held Auto
+        /// below the level wanted (for Auto, what the time limit allows), or
+        /// the level used needs more than is free.
         /// </summary>
-        public static bool Needed(CoreDll.adAlignedMemory memory)
+        public static bool Needed(CoreDll.adAlignedSearch memory)
         {
-            return memory.wantedBytes > memory.freeBytes || memory.usedBytes > memory.freeBytes;
+            return memory.used < memory.wanted || memory.usedBytes > memory.freeBytes;
         }
 
-        public AlignedMemoryForm(CoreDll.adAlignedMemory memory, Action stop)
+        public AlignedMemoryForm(CoreDll.adAlignedSearch memory, Action stop)
         {
             m_stop = stop;
             InitializeComponent();
@@ -101,20 +104,15 @@ namespace AntiDupl.NET.WinForms
 
         private static string Level(Strings s, int level)
         {
-            switch (level)
-            {
-                case 1: return s.AlignedMemoryForm_Level1;
-                case 2: return s.AlignedMemoryForm_Level2;
-                default: return s.AlignedMemoryForm_Level3;
-            }
+            return AlignedText.Level(s, level);
         }
 
         private static string Memory(Strings s, ulong bytes)
         {
-            return string.Format(s.AlignedMemoryForm_Gigabytes, bytes / (double)(1UL << 30));
+            return AlignedText.Memory(s, bytes);
         }
 
-        private void UpdateStrings(CoreDll.adAlignedMemory memory)
+        private void UpdateStrings(CoreDll.adAlignedSearch memory)
         {
             Strings s = Resources.Strings.Current;
             Text = s.AlignedMemoryForm_Text;

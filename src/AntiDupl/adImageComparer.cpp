@@ -1255,6 +1255,7 @@ namespace ad
                 if(IsAlignedPair(pImageData, pOther, &difference))
                     m_pResult->AddDuplImagePair(pImageData, pOther, difference, AD_TRANSFORM_TURN_0);
             }
+            m_pStore->Aligned();
         }
     }
 

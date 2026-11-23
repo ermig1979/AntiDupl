@@ -89,8 +89,8 @@ namespace ad
         TButteraugliStore* ButteraugliStore() {return m_pButteraugliStore;}
         // The last aligned search's level and memory, for the program to
         // warn while the search goes on; all 0 until it is chosen.
-        adError ExportAlignedMemory(adAlignedMemoryPtr pAlignedMemory);
-        void ClearAlignedMemory();
+        adError ExportAlignedSearch(adAlignedSearchPtr pAlignedSearch);
+        void ClearAlignedSearch();
 
     private:
         TString _userPath;
@@ -108,8 +108,8 @@ namespace ad
         TSearcher *m_pSearcher;
         TRecycleBin *m_pRecycleBin;
         TButteraugliStore *m_pButteraugliStore;
-        std::mutex m_alignedMemoryMutex;
-        adAlignedMemory m_alignedMemory;
+        std::mutex m_alignedSearchMutex;
+        adAlignedSearch m_alignedSearch;
     };
     //-------------------------------------------------------------------------
 }

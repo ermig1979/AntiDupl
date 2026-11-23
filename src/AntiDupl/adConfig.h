@@ -136,19 +136,33 @@ namespace ad
     // pyramidLevels scales. A higher level finds smaller crops: a crop
     // covers more pixels of a larger copy, and so more keypoints. Every
     // image's keypoints stay in memory for the whole search, so each level
-    // takes more of it per image; the setting's Auto picks the highest that
-    // fits (TButteraugliStore::ChooseLevel). A larger copy of the original
-    // is further in scale from a small crop file, which more scales cover.
+    // takes more of it per image; matching a pair takes time with the
+    // square of the keypoints; the setting's Auto picks the highest that
+    // fits both (TButteraugliStore::ChooseLevel). A larger copy of the
+    // original is further in scale from a small crop file, which more
+    // scales cover. imageSeconds is one image's own work besides matching
+    // (decoding, keypoints, comparing what its plain score lets through),
+    // in seconds of one thread, for the estimate.
     struct TAlignLevel
     {
         size_t area, keypointsMax, pyramidLevels;
+        double imageSeconds;
     };
+    // Each level's matching takes four times the one before. On 3 million
+    // pixels with fewer than 4000 keypoints, a small file's crop of a
+    // large one was missed; at the 1.5 million below, nothing was.
+    // imageSeconds as measured on a 24-thread machine (an i9-12900KF),
+    // the whole search's time less the aligning's, times the threads, per
+    // image of an artist's folder of web pictures.
     const TAlignLevel ALIGN_LEVELS[] = {
-        { 512*384, 500, 8 },
-        { 1024*768, 2000, 8 },
-        { 2048*1536, 8000, 10 },
+        { 1536*1024, 1000, 13, 0.45 },
+        { 1536*1024, 2000, 13, 0.5 },
+        { 2048*1536, 4000, 16, 0.55 },
+        { 2048*1536, 8000, 16, 0.6 },
     };
     const size_t ALIGN_LEVEL_COUNT = sizeof(ALIGN_LEVELS) / sizeof(ALIGN_LEVELS[0]);
+    // The aligned search's time limit by default, in minutes.
+    const TInt32 ALIGN_TIME_LIMIT_MINUTES = 15;
     // Aligned scores are kept by their level's place in ALIGN_LEVELS: a
     // change to a level's values takes a new ALIGNED_SCORE_VERSION.
     // What else the search holds per image beside its keypoints: the
@@ -177,7 +191,7 @@ namespace ad
     // bicubic sampling alone aliases as it shrinks.
     const double ALIGN_REDUCE_SCALE = 1.02;
     // Part of an aligned score's key, as BUTTERAUGLI_SCORE_VERSION is of all.
-    const TInt32 ALIGNED_SCORE_VERSION = 1;
+    const TInt32 ALIGNED_SCORE_VERSION = 2;
     // The pairs the aligned search finds no alignment for at a level are
     // kept, 8 bytes each, so that a search of the same files skips them:
     // nearly every pair is one, and matching them is most of the search.

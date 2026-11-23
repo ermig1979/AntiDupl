@@ -276,16 +276,17 @@ namespace AntiDupl.NET.Core
         }
 
         /// <summary>
-        /// The aligned search's level and memory, as the running or last
-        /// search chose them; null before it has chosen.
+        /// The aligned search's level, the memory and time behind it, and
+        /// its progress, as the running or last search chose and reached
+        /// them; null before it has chosen.
         /// </summary>
-        public CoreDll.adAlignedMemory? GetAlignedMemory()
+        public CoreDll.adAlignedSearch? GetAlignedSearch()
         {
             try
             {
-                CoreDll.adAlignedMemory memory = new CoreDll.adAlignedMemory();
-                if (m_dll.adAlignedMemoryGet(m_handle, ref memory) == Error.Ok && memory.used > 0)
-                    return memory;
+                CoreDll.adAlignedSearch search = new CoreDll.adAlignedSearch();
+                if (m_dll.adAlignedSearchGet(m_handle, ref search) == Error.Ok && search.used > 0)
+                    return search;
             }
             catch (Exception)
             {

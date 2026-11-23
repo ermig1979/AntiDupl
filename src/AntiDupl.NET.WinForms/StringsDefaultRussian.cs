@@ -131,10 +131,12 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_TransparentAsShownCheckBox_Text = "Улучшенное сравнение прозрачных картинок";
             s.CoreOptionsForm_IgnoreTransparentCheckBox_Text = "Игнорировать прозрачные области в обеих картинках";
             s.CoreOptionsForm_AlignedLevelLabeledComboBox_Text = "Мин. находимая обрезка (поиск с выравниванием)";
-            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Auto = "Авто: насколько позволяет память";
-            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level1 = "1/4 картинки, 0,4 ГБ / 10\u202F000 файлов";
-            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level2 = "1/10 картинки, 1,1 ГБ / 10\u202F000 файлов";
-            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level3 = "1/50 картинки, 4 ГБ / 10\u202F000 файлов";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Auto = "Авто: насколько позволяют память и время";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level1 = "1/10 картинки, 0,6 ГБ / 10\u202F000 файлов";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level2 = "1/20 картинки, 1,1 ГБ / 10\u202F000 файлов";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level3 = "1/50 картинки, 2,1 ГБ / 10\u202F000 файлов";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level4 = "1/100 картинки, 4,0 ГБ / 10\u202F000 файлов";
+            s.CoreOptionsForm_AlignedTimeLimitLabeledIntegerEdit_Text = "Лимит времени поиска с выравниванием, мин (0 = нет)";
             s.CoreOptionsForm_UseLibJpegTurboCheckBox_Text = "Использовать libjpeg-turbo";
 
             s.CoreOptionsForm_HighlightTabPage_Text = "Подсветка";
@@ -187,6 +189,8 @@ namespace AntiDupl.NET.WinForms
 
             s.SearchExecuterForm_Result = "Обработка результатов";
             s.SearchExecuterForm_Search = "Поиск";
+            s.SearchExecuterForm_AlignedPlan = "фрагменты от ~{0}, всего около {1}";
+            s.SearchExecuterForm_Aligning = "Поиск фрагментов от ~{0}: осталось около {1}";
             s.SearchExecuterForm_Stopped = "Остановка поиска";
             s.SearchExecuterForm_MinimizeToTaskbarButton_Text = "Свернуть";
             s.AlignedMemoryForm_Text = "Недостаточно памяти для самых малых фрагментов";
@@ -203,9 +207,13 @@ namespace AntiDupl.NET.WinForms
             s.AlignedMemoryForm_Gigabytes = "{0:0.0} ГБ";
             s.AlignedMemoryForm_StopButton_Text = "Остановить поиск";
             s.AlignedMemoryForm_CloseButton_Text = "Закрыть";
-            s.AlignedMemoryForm_Level1 = "1/4";
-            s.AlignedMemoryForm_Level2 = "1/10";
+            s.AlignedMemoryForm_Level1 = "1/10";
+            s.AlignedMemoryForm_Level2 = "1/20";
             s.AlignedMemoryForm_Level3 = "1/50";
+            s.AlignedMemoryForm_Level4 = "1/100";
+            s.AlignedSearch_Minutes = "{0} мин";
+            s.AlignedSearch_Hours = "{0} ч {1} мин";
+            s.AlignedSearch_Days = "{0} дн. {1} ч";
 
             s.SearchExecuterForm_MinimizeToSystrayButton_Text = "Фоновый режим";
 

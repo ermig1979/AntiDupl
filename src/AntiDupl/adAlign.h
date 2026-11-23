@@ -172,6 +172,11 @@ namespace ad
     // turn and a shift. False when too few matches agree on one.
     bool FindTransform(const TKeypoints & from, const TKeypoints & to, TAffine & transform, size_t * pInliers);
 
+    // The seconds FindTransform takes on a pair of so many keypoints each,
+    // per pair, with threads pairs matched at once on as many threads: its
+    // time depends on the counts alone, so random descriptions measure it.
+    double MatchingSeconds(size_t keypoints, size_t threads);
+
     // Makes a transform from fixed's pixels to moving's exact: patches with
     // texture in fixed are sought in moving, and those that agree give the
     // correction, so what differs between the two doesn't pull it aside.

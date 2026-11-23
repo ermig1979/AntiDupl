@@ -275,7 +275,7 @@ DLLAPI adError adClear(adEngineHandle handle, adFileType fileType)
         handle->Result()->Clear();
         // The program clears the results before a search and then waits for
         // the new search's report: the last one's must not pass for it.
-        handle->ClearAlignedMemory();
+        handle->ClearAlignedSearch();
         break;
     case AD_FILE_MISTAKE_DATA_BASE:
         handle->MistakeStorage()->Clear();
@@ -435,11 +435,11 @@ DLLAPI adError adStatisticGet(adEngineHandle handle, adStatisticPtr pStatistic)
     return handle->Status()->Export(pStatistic);
 }
 
-DLLAPI adError adAlignedMemoryGet(adEngineHandle handle, adAlignedMemoryPtr pAlignedMemory)
+DLLAPI adError adAlignedSearchGet(adEngineHandle handle, adAlignedSearchPtr pAlignedSearch)
 {
     CHECK_HANDLE
 
-    return handle->ExportAlignedMemory(pAlignedMemory);
+    return handle->ExportAlignedSearch(pAlignedSearch);
 }
 
 DLLAPI adError adStatusGetA(adEngineHandle handle, adThreadType threadType, adSize threadId, adStatusPtrA pStatus)

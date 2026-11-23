@@ -138,6 +138,8 @@ namespace AntiDupl.NET.WinForms
         public string CoreOptionsForm_AlignedLevelLabeledComboBox_Level1;
         public string CoreOptionsForm_AlignedLevelLabeledComboBox_Level2;
         public string CoreOptionsForm_AlignedLevelLabeledComboBox_Level3;
+        public string CoreOptionsForm_AlignedLevelLabeledComboBox_Level4;
+        public string CoreOptionsForm_AlignedTimeLimitLabeledIntegerEdit_Text;
         public string CoreOptionsForm_UseLibJpegTurboCheckBox_Text;
 
         public string CoreOptionsForm_HighlightTabPage_Text;
@@ -190,6 +192,8 @@ namespace AntiDupl.NET.WinForms
 
         public string SearchExecuterForm_Result;
         public string SearchExecuterForm_Search;
+        public string SearchExecuterForm_AlignedPlan;
+        public string SearchExecuterForm_Aligning;
         public string SearchExecuterForm_Stopped;
         public string SearchExecuterForm_MinimizeToTaskbarButton_Text;
         public string SearchExecuterForm_MinimizeToSystrayButton_Text;
@@ -211,6 +215,10 @@ namespace AntiDupl.NET.WinForms
         public string AlignedMemoryForm_Level1;
         public string AlignedMemoryForm_Level2;
         public string AlignedMemoryForm_Level3;
+        public string AlignedMemoryForm_Level4;
+        public string AlignedSearch_Minutes;
+        public string AlignedSearch_Hours;
+        public string AlignedSearch_Days;
 
         public string ResultsPreviewBase_NextButton_ToolTip_Text;
         public string ResultsPreviewBase_PreviousButton_ToolTip_Text;

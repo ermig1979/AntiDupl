@@ -22,8 +22,10 @@
 * SOFTWARE.
 */
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <cstring>
+#include <thread>
 #include <immintrin.h>
 #include <intrin.h>
 
@@ -50,7 +52,9 @@ namespace ad
     static const double INLIER_DISTANCE = 2.0; // pixels of the keypoints' picture
     static const int RANSAC_ROUNDS_MAX = 2000;
     static const double RANSAC_CONFIDENCE = 0.995;
-    static const double SCALE_MIN = 1.0 / 8, SCALE_MAX = 8.0;
+    // A small file against a crop of a large one, both copied to 3 million
+    // pixels, can differ 11 times in scale; 8 missed such pairs.
+    static const double SCALE_MIN = 1.0 / 16, SCALE_MAX = 16.0;
     static const double TURN_MAX = 0.35; // radians; upright descriptions don't match past it
 
     // The index.
@@ -767,6 +771,51 @@ namespace ad
         if (pInliers)
             *pInliers = best.size();
         return true;
+    }
+
+    double MatchingSeconds(size_t keypoints, size_t threads)
+    {
+        // Two sets of random descriptions, the same for every call.
+        TKeypoints sets[2];
+        uint64_t state = 0x9E3779B97F4A7C15ull;
+        for (TKeypoints & set : sets)
+        {
+            std::vector<uint64_t> bits(keypoints * KEYPOINT_WORDS);
+            for (uint64_t & word : bits)
+            {
+                state ^= state << 13;
+                state ^= state >> 7;
+                state ^= state << 17;
+                word = state;
+            }
+            set.width = set.height = 1000;
+            set.x.assign(keypoints, 0);
+            set.y.assign(keypoints, 0);
+            set.SetDescriptions(bits);
+        }
+        threads = std::max<size_t>(threads, 1);
+        // Enough pairs per thread that starting the threads costs little
+        // beside them: a small level's pair takes under a millisecond.
+        const size_t repeats = std::max<size_t>(1, (size_t(16) << 20) / (keypoints * keypoints + 1));
+        // The faster of two rounds: the first can meet the threads' start.
+        double best = 0;
+        for (int round = 0; round < 2; ++round)
+        {
+            const auto start = std::chrono::steady_clock::now();
+            std::vector<std::thread> workers;
+            for (size_t i = 0; i < threads; ++i)
+                workers.emplace_back([&sets, repeats]()
+                {
+                    TAffine t;
+                    for (size_t r = 0; r < repeats; ++r)
+                        FindTransform(sets[0], sets[1], t, NULL);
+                });
+            for (std::thread & worker : workers)
+                worker.join();
+            const double seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
+            best = round == 0 ? seconds : std::min(best, seconds);
+        }
+        return best / (threads * repeats);
     }
     //-------------------------------------------------------------------------
     TBox OverlapBox(const TAffine & transform, size_t fixedWidth, size_t fixedHeight, size_t movingWidth, size_t movingHeight)
