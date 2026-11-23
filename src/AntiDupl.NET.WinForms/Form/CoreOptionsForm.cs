@@ -143,7 +143,7 @@ namespace AntiDupl.NET.WinForms
         static public int IGNORE_FRAME_WIDTH_MAX = 12;
         static public int IGNORE_FRAME_WIDTH_STEP = 3;
         
-        static public int FORM_WIDTH = 456;
+        static public int FORM_WIDTH = 459;
         static public int FORM_HEIGHT = 490;
         static public int COMBO_BOX_WIDTH = 65;
         static public int COMBO_BOX_HEIGHT = 20;
@@ -1076,23 +1076,23 @@ namespace AntiDupl.NET.WinForms
             FitList(m_algorithmComparingLabeledComboBox);
         }
 
-        // A label that leaves the list too little room beside it goes below
-        // it, indented so that it reads as the list's and not as an option
-        // of its own, and closer to the list than the next option is.
-        public const int LABEL_BELOW_INDENT = 50;
-        public const int LABEL_BELOW_GAP = 7;
+        // With labelWraps, the list is as wide as its longest item, with
+        // LIST_TEXT_SLACK more so that the item's last letter isn't cut at
+        // the arrow, and the label wraps in the room left beside it.
+        public const int LIST_TEXT_SLACK = 3;
 
-        private static void FitList(LabeledComboBox labeled, bool labelMayGoBelow = false)
+        private static void FitList(LabeledComboBox labeled, bool labelWraps = false)
         {
             ComboBox list = labeled.comboBox;
             int widest = AlgorithmListWidth(list);
             list.DropDownWidth = widest;
+            if (labelWraps)
+            {
+                list.Width = Math.Max(COMBO_BOX_WIDTH + 115, widest + LIST_TEXT_SLACK);
+                labeled.WrapLabel(FORM_WIDTH - 45 - list.Width);
+                return;
+            }
             int room = FORM_WIDTH - 45 - TextRenderer.MeasureText(labeled.Text, list.Font).Width;
-            bool below = labelMayGoBelow && widest > room;
-            if (labelMayGoBelow)
-                labeled.PlaceLabel(below, LABEL_BELOW_INDENT, LABEL_BELOW_GAP);
-            if (below)
-                room = FORM_WIDTH - 45;
             list.Width = Math.Max(COMBO_BOX_WIDTH + 115, Math.Min(widest, room));
         }
 

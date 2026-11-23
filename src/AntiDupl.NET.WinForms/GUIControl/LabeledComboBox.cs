@@ -53,38 +53,31 @@ namespace AntiDupl.NET.WinForms
 
             m_label = InitFactory.Label.Create();
             m_label.Padding = new Padding(0, 5, 5, 5);
-            m_labelMargin = m_label.Margin;
             Controls.Add(m_label, 1, 0);
         }
 
-        private Padding m_labelMargin;
-
         /// <summary>
-        /// The label beside the list, or on a line of its own below it,
-        /// indented by indent and gap pixels under the list: for a label
-        /// too long to leave the list room beside it.
+        /// Breaks the label's text at spaces into lines at most width pixels
+        /// wide beside the list. Done here rather than by the label's
+        /// MaximumSize, with which an auto-sized label broke inside a word.
         /// </summary>
-        public void PlaceLabel(bool below, int indent, int gap)
+        public void WrapLabel(int width)
         {
-            SuspendLayout();
-            Controls.Remove(m_label);
-            if (below)
+            string[] words = m_label.Text.Replace("\n", " ").Split(' ');
+            var text = new StringBuilder();
+            string line = "";
+            foreach (string word in words)
             {
-                RowCount = 2;
-                Controls.Add(m_label, 0, 1);
-                SetColumnSpan(m_label, 2);
-                m_label.Margin = new Padding(indent, 0, 0, 0);
-                m_label.Padding = new Padding(0, gap, 5, 0);
+                string longer = line.Length == 0 ? word : line + " " + word;
+                if (line.Length > 0 && TextRenderer.MeasureText(longer, m_label.Font).Width > width)
+                {
+                    text.Append(line).Append('\n');
+                    line = word;
+                }
+                else
+                    line = longer;
             }
-            else
-            {
-                RowCount = 1;
-                Controls.Add(m_label, 1, 0);
-                SetColumnSpan(m_label, 1);
-                m_label.Margin = m_labelMargin;
-                m_label.Padding = new Padding(0, 5, 5, 5);
-            }
-            ResumeLayout();
+            m_label.Text = text.Append(line).ToString();
         }
 
         public class Value : object
