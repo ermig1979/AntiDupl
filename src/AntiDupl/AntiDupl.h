@@ -390,6 +390,7 @@ extern "C"
 		// .NET side runs itself; the core compares it as SSIM.
 		AD_COMPARING_LOCAL_COLOR = 3,
 		AD_COMPARING_BUTTERAUGLI = 4,
+		AD_COMPARING_BUTTERAUGLI_ALIGNED = 5,
 		AD_COMPARING_SIZE
 	};
 
@@ -437,8 +438,33 @@ extern "C"
         adBool skipHardlinks;
         adBool transparentAsShown; // images with transparency compared as shown, not by the colour under it
         adBool ignoreTransparent; // with transparentAsShown: pairs also compared only where images with transparency are opaque
+        adInt32 alignedLevel; // the aligned search's level, 1 and up; 0: the highest that fits in memory and time
+        adInt32 alignedTimeLimit; // minutes the aligned search's Auto aims to finish in; 0: no limit
     };
     typedef adCompareOptions* adCompareOptionsPtr;
+
+    // The aligned search's level, the memory and time behind the choice,
+    // and its progress (all 0 before, and in other searches).
+    struct adAlignedSearch
+    {
+        adInt32 wanted; // the level the setting asks for; for Auto the highest the time limit allows
+        adInt32 used; // the level the search runs at
+        adInt32 memoryLevel; // the highest level that fits in memory, 1 when none does
+        adInt32 timeLevel; // the highest level within the time limit, 1 when none is
+        adUInt64 wantedBytes; // the most the wanted level's keypoints take
+        adUInt64 usedBytes; // the most the used level's take
+        adUInt64 freeBytes; // what the search may use of the memory free at its start
+        adUInt64 wantedSeconds; // the whole search's estimated time at the wanted level
+        adUInt64 usedSeconds; // and at the used one
+        adUInt64 topSeconds; // and at the highest level, which finds the smallest crops
+        adUInt64 limitSeconds; // the time limit, 0: none
+        adUInt64 imageCount; // the images the estimates are for
+        // Once every image's keypoints are in, the images aligned with all
+        // others so far, and the seconds since aligning began.
+        adUInt64 alignedImages;
+        adUInt64 alignedSeconds;
+    };
+    typedef adAlignedSearch* adAlignedSearchPtr;
 	
     struct adDefectOptions
     {
@@ -655,6 +681,7 @@ extern "C"
     DLLAPI adError adIgnoreFilenameFilterGetW(adEngineHandle handle, wchar_t* pFilter, adSize bufferSize, adSizePtr pFilterSize);
 
     DLLAPI adError adStatisticGet(adEngineHandle handle, adStatisticPtr pStatistic);
+    DLLAPI adError adAlignedSearchGet(adEngineHandle handle, adAlignedSearchPtr pAlignedSearch);
     DLLAPI adError adStatusGetA(adEngineHandle handle, adThreadType threadType, adSize threadId, adStatusPtrA pStatus);
     DLLAPI adError adStatusGetW(adEngineHandle handle, adThreadType threadType, adSize threadId, adStatusPtrW pStatus);
 

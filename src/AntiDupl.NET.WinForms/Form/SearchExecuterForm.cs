@@ -68,6 +68,8 @@ namespace AntiDupl.NET.WinForms
         private Button m_minimizeToSystrayButton;
         private ProgressPanel m_progressPanel;
         private NotifyIcon m_notifyIcon;
+        private bool m_alignedMemoryChecked = false;
+        private AlignedMemoryForm m_alignedMemoryForm = null;
 
         public SearchExecuterForm(CoreLib core, Options options, CoreOptions coreOptions, MainSplitContainer mainSplitContainer, MainForm mainForm)
         {
@@ -188,6 +190,9 @@ namespace AntiDupl.NET.WinForms
         {
             if (m_state == State.Finish)
             {
+                CheckAlignedMemory();
+                if (m_alignedMemoryForm != null && !m_alignedMemoryForm.IsDisposed)
+                    m_alignedMemoryForm.SearchEnded();
                 if(m_notifyIcon.Visible)
                     OnNotifyIconDoubleClick(null, null);
                 m_timer.Stop();
@@ -230,9 +235,32 @@ namespace AntiDupl.NET.WinForms
                     case State.Search:
                         {
                             m_stopButton.Enabled = true;
-                            builder.Append(s.SearchExecuterForm_Search);
+                            CheckAlignedMemory();
                             double progress = EstimateSearchProgress();
-                            builder.AppendFormat(" ({0})...", ProgressUtils.GetProgressString(progress, m_startDateTime));
+                            CoreDll.adAlignedSearch? aligned = m_core.GetAlignedSearch();
+                            if (aligned == null)
+                            {
+                                builder.Append(s.SearchExecuterForm_Search);
+                                builder.AppendFormat(" ({0})...", ProgressUtils.GetProgressString(progress, m_startDateTime));
+                            }
+                            else if (aligned.Value.alignedImages == 0 && aligned.Value.alignedSeconds == 0)
+                            {
+                                // Reading the files, the level chosen: the share
+                                // read, and the whole search's time, not the
+                                // reading's, which the aligning outlasts.
+                                builder.Append(s.SearchExecuterForm_Search);
+                                builder.AppendFormat(" ({0}; {1})...",
+                                    string.Format(s.ProgressUtils_Completed, Convert.ToInt32(Math.Ceiling(progress * 100)).ToString()),
+                                    string.Format(s.SearchExecuterForm_AlignedPlan, AlignedText.Level(s, aligned.Value.used),
+                                    AlignedText.Duration(s, aligned.Value.usedSeconds)));
+                            }
+                            else
+                            {
+                                double run = (DateTime.Now - m_startDateTime).TotalSeconds;
+                                builder.AppendFormat(s.SearchExecuterForm_Aligning, AlignedText.Level(s, aligned.Value.used),
+                                    AlignedText.Duration(s, AlignedText.SecondsLeft(aligned.Value, run)));
+                                builder.Append("...");
+                            }
                         }
                         break;
                     case State.SetGroup:
@@ -273,6 +301,45 @@ namespace AntiDupl.NET.WinForms
                     m_mainForm.UpdateCaption();
                 }
             }
+        }
+
+        // Once the aligned search has chosen its level, a warning when its
+        // smallest crops need more memory than is free, the risk nobody
+        // chose, then one when they need more time than the limit, shown
+        // once the first is closed without stopping the search; the search
+        // goes on meanwhile.
+        private void CheckAlignedMemory()
+        {
+            if (m_alignedMemoryChecked)
+                return;
+            CoreDll.adAlignedSearch? search = m_core.GetAlignedSearch();
+            if (search == null)
+                return;
+            m_alignedMemoryChecked = true;
+            bool auto = m_coreOptions.compareOptions.alignedLevel == CoreCompareOptions.ALIGNED_LEVEL_AUTO;
+            bool time = AlignedMemoryForm.TimeNeeded(search.Value, auto);
+            if (AlignedMemoryForm.Needed(search.Value))
+            {
+                AlignedMemoryForm memory = new AlignedMemoryForm(search.Value, () => OnStopButtonClick(null, null));
+                if (time)
+                    memory.FormClosed += (sender, e) => { if (!memory.Stopped) ShowAlignedTime(search.Value, auto); };
+                ShowAligned(memory);
+            }
+            else if (time)
+                ShowAlignedTime(search.Value, auto);
+        }
+
+        private void ShowAlignedTime(CoreDll.adAlignedSearch search, bool auto)
+        {
+            ShowAligned(new AlignedMemoryForm(search, auto, () => OnStopButtonClick(null, null)));
+        }
+
+        private void ShowAligned(AlignedMemoryForm form)
+        {
+            m_alignedMemoryForm = form;
+            if (m_state == State.Finish)
+                form.SearchEnded();
+            form.Show(m_mainForm);
         }
 
         private void OnStopButtonClick(Object obj, EventArgs eventArgs)

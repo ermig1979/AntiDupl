@@ -57,7 +57,7 @@ namespace AntiDupl.NET.WinForms
         // The algorithm list's entries in order: its index is not the enum's
         // value, which leaves a gap where Dinov2 is.
         private static readonly AlgorithmComparing[] ALGORITHMS =
-            { AlgorithmComparing.SquaredSum, AlgorithmComparing.SSIM, AlgorithmComparing.LocalColor, AlgorithmComparing.Butteraugli };
+            { AlgorithmComparing.SquaredSum, AlgorithmComparing.SSIM, AlgorithmComparing.LocalColor, AlgorithmComparing.Butteraugli, AlgorithmComparing.ButteraugliAligned };
         // The algorithm the threshold list was filled for.
         private AlgorithmComparing m_thresholdAlgorithm;
         // Set while the lists are changed from code, whose selection events
@@ -129,6 +129,7 @@ namespace AntiDupl.NET.WinForms
             m_algorithmComparingComboBox.Items.Add("SSIM");
             m_algorithmComparingComboBox.Items.Add(Resources.Strings.Current.CoreOptionsForm_AlgorithmComparingLabeledComboBox_LocalColor);
             m_algorithmComparingComboBox.Items.Add(Resources.Strings.Current.CoreOptionsForm_AlgorithmComparingLabeledComboBox_Butteraugli);
+            m_algorithmComparingComboBox.Items.Add(Resources.Strings.Current.CoreOptionsForm_AlgorithmComparingLabeledComboBox_ButteraugliAligned);
             m_algorithmComparingComboBox.Size = new System.Drawing.Size(
                 CoreOptionsForm.AlgorithmListWidth(m_algorithmComparingComboBox.ComboBox), 20);
 

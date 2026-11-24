@@ -101,6 +101,7 @@ namespace AntiDupl.NET.WinForms
         public string CoreOptionsForm_AlgorithmComparingLabeledComboBox_SquaredSum;
         public string CoreOptionsForm_AlgorithmComparingLabeledComboBox_LocalColor;
         public string CoreOptionsForm_AlgorithmComparingLabeledComboBox_Butteraugli;
+        public string CoreOptionsForm_AlgorithmComparingLabeledComboBox_ButteraugliAligned;
         public string CoreOptionsForm_ThresholdDifferenceLabeledComboBox_Text;
         public string CoreOptionsForm_ThresholdHintLabel_Text;
         public string CoreOptionsForm_ButteraugliSizeLabeledComboBox_Text;
@@ -133,6 +134,13 @@ namespace AntiDupl.NET.WinForms
         public string CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text;
         public string CoreOptionsForm_TransparentAsShownCheckBox_Text;
         public string CoreOptionsForm_IgnoreTransparentCheckBox_Text;
+        public string CoreOptionsForm_AlignedLevelLabeledComboBox_Text;
+        public string CoreOptionsForm_AlignedLevelLabeledComboBox_Auto;
+        public string CoreOptionsForm_AlignedLevelLabeledComboBox_Level1;
+        public string CoreOptionsForm_AlignedLevelLabeledComboBox_Level2;
+        public string CoreOptionsForm_AlignedLevelLabeledComboBox_Level3;
+        public string CoreOptionsForm_AlignedLevelLabeledComboBox_Level4;
+        public string CoreOptionsForm_AlignedTimeLimitLabeledIntegerEdit_Text;
         public string CoreOptionsForm_UseLibJpegTurboCheckBox_Text;
 
         public string CoreOptionsForm_HighlightTabPage_Text;
@@ -185,9 +193,43 @@ namespace AntiDupl.NET.WinForms
 
         public string SearchExecuterForm_Result;
         public string SearchExecuterForm_Search;
+        public string SearchExecuterForm_AlignedPlan;
+        public string SearchExecuterForm_Aligning;
         public string SearchExecuterForm_Stopped;
         public string SearchExecuterForm_MinimizeToTaskbarButton_Text;
         public string SearchExecuterForm_MinimizeToSystrayButton_Text;
+
+        public string AlignedMemoryForm_Text;
+        public string AlignedMemoryForm_Size;
+        public string AlignedMemoryForm_Needed;
+        public string AlignedMemoryForm_NeededLowest;
+        public string AlignedMemoryForm_Free;
+        public string AlignedMemoryForm_Instead;
+        public string AlignedMemoryForm_ContinuesForced;
+        public string AlignedMemoryForm_ContinuesLowest;
+        public string AlignedMemoryForm_Choices;
+        public string AlignedMemoryForm_ChoicesForced;
+        public string AlignedMemoryForm_ChoicesLowest;
+        public string AlignedMemoryForm_TimeText;
+        public string AlignedMemoryForm_TimeNeeded;
+        public string AlignedMemoryForm_TimeNeededLowest;
+        public string AlignedMemoryForm_TimeLimit;
+        public string AlignedMemoryForm_TimeInstead;
+        public string AlignedMemoryForm_TimeContinuesForced;
+        public string AlignedMemoryForm_TimeContinuesLowest;
+        public string AlignedMemoryForm_TimeChoices;
+        public string AlignedMemoryForm_TimeChoicesForced;
+        public string AlignedMemoryForm_TimeChoicesLowest;
+        public string AlignedMemoryForm_Gigabytes;
+        public string AlignedMemoryForm_StopButton_Text;
+        public string AlignedMemoryForm_CloseButton_Text;
+        public string AlignedMemoryForm_Level1;
+        public string AlignedMemoryForm_Level2;
+        public string AlignedMemoryForm_Level3;
+        public string AlignedMemoryForm_Level4;
+        public string AlignedSearch_Minutes;
+        public string AlignedSearch_Hours;
+        public string AlignedSearch_Days;
 
         public string ResultsPreviewBase_NextButton_ToolTip_Text;
         public string ResultsPreviewBase_PreviousButton_ToolTip_Text;

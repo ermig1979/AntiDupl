@@ -9,5 +9,7 @@
         LocalColor = 3,
         /// <summary>Butteraugli's score on the pairs local colour finds within 10 % (core: AD_COMPARING_BUTTERAUGLI).</summary>
         Butteraugli = 4,
+        /// <summary>The same, and what a keypoint index finds, scored on the overlap once aligned: crops, new canvases, shifted or rescaled copies (core: AD_COMPARING_BUTTERAUGLI_ALIGNED).</summary>
+        ButteraugliAligned = 5,
     };
 }

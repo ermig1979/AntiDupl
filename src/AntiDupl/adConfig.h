@@ -129,6 +129,79 @@ namespace ad
     // Part of the stored scores' key: a change to how a score is computed
     // (the working images, the metric) makes the stored ones stale.
     const TUInt32 BUTTERAUGLI_SCORE_VERSION = 2;
+    // The aligned search (adAlign.h), at one of these levels: keypoints are
+    // found on a grey copy of about area pixels, whatever the shape (a long
+    // strip keeps a width to find corners in, which a limit on the longest
+    // side wouldn't leave), up to keypointsMax of them on a pyramid of
+    // pyramidLevels scales. A higher level finds smaller crops: a crop
+    // covers more pixels of a larger copy, and so more keypoints. Every
+    // image's keypoints stay in memory for the whole search, so each level
+    // takes more of it per image; matching a pair takes time with the
+    // square of the keypoints; the setting's Auto picks the highest that
+    // fits both (TButteraugliStore::ChooseLevel). A larger copy of the
+    // original is further in scale from a small crop file, which more
+    // scales cover. imageSeconds is one image's own work besides matching
+    // (decoding, keypoints, comparing what its plain score lets through),
+    // in seconds of one thread, for the estimate.
+    struct TAlignLevel
+    {
+        size_t area, keypointsMax, pyramidLevels;
+        double imageSeconds;
+    };
+    // Each level's matching takes four times the one before. On 3 million
+    // pixels with fewer than 4000 keypoints, a small file's crop of a
+    // large one was missed; at the 1.5 million below, nothing was.
+    // imageSeconds as measured on a 24-thread machine (an i9-12900KF),
+    // the whole search's time less the aligning's, times the threads, per
+    // image of an artist's folder of web pictures.
+    const TAlignLevel ALIGN_LEVELS[] = {
+        { 1536*1024, 1000, 13, 0.45 },
+        { 1536*1024, 2000, 13, 0.5 },
+        { 2048*1536, 4000, 16, 0.55 },
+        { 2048*1536, 8000, 16, 0.6 },
+    };
+    const size_t ALIGN_LEVEL_COUNT = sizeof(ALIGN_LEVELS) / sizeof(ALIGN_LEVELS[0]);
+    // The aligned search's time limit by default, in minutes.
+    const TInt32 ALIGN_TIME_LIMIT_MINUTES = 15;
+    // Aligned scores are kept by their level's place in ALIGN_LEVELS: a
+    // change to a level's values takes a new ALIGNED_SCORE_VERSION.
+    // What else the search holds per image beside its keypoints: the
+    // keypoints' own structure and the maps that find them.
+    const size_t ALIGN_IMAGE_OVERHEAD_BYTES = 320;
+    // Auto leaves this much of the memory free at the search's start to
+    // everything else, whichever is more: some programs fail rather than
+    // wait once Windows starts moving memory to the page file.
+    const size_t ALIGN_MEMORY_RESERVE_BYTES = size_t(1) << 30;
+    const double ALIGN_MEMORY_RESERVE_SHARE = 0.1; // of all the memory
+    // Hits an image needs in the keypoint index, and the images a key may
+    // hold before it says too little. A key that fills up stops counting, so
+    // more entries find the crops of a picture a folder has many copies of,
+    // and pass more unrelated pairs on to be aligned: fewer than 255 lost a
+    // crop beside many sketches of one series.
+    const size_t ALIGN_INDEX_HITS_MIN = 16;
+    const size_t ALIGN_INDEX_KEY_ENTRIES_MAX = 255;
+    // A pair local colour lets through scores under this without needing
+    // alignment: what alignment gains is worth a second score only above it.
+    const double ALIGN_PLAIN_SCORE_MIN = 7.5;
+    // Pairs share at least this share of the smaller image...
+    const double ALIGN_OVERLAP_MIN = 0.5;
+    // ...and a box at least this wide and high at the working size.
+    const size_t ALIGN_BOX_SIDE_MIN = 32;
+    // Above this scale the larger image is area-reduced before it is warped:
+    // bicubic sampling alone aliases as it shrinks.
+    const double ALIGN_REDUCE_SCALE = 1.02;
+    // Part of an aligned score's key, as BUTTERAUGLI_SCORE_VERSION is of all.
+    const TInt32 ALIGNED_SCORE_VERSION = 2;
+    // The pairs the aligned search finds no alignment for at a level are
+    // kept, 8 bytes each, so that a search of the same files skips them:
+    // nearly every pair is one, and matching them is most of the search.
+    // New ones go to disk in chunks of this many as the search runs, so
+    // that they don't hold memory the keypoints need...
+    const size_t ALIGN_FAILED_CHUNK = size_t(8) << 20;
+    // ...and past this many in all, only those the last search looked up
+    // or added stay, which drops the pairs of files changed, gone or not
+    // searched since.
+    const size_t ALIGN_FAILED_MAX = size_t(128) << 20;
     // Transparency shown: when could an opaque image be a copy of one with
     // transparency, its transparent area filled with one colour
     // (TImageComparer::UniformFill). Pixels of the colour thumbnail count as

@@ -117,6 +117,32 @@ namespace AntiDupl.NET.WinForms
             Controls.Add(m_label, 1, 0);
         }
 
+        /// <summary>
+        /// Breaks the label's text at spaces into lines at most width pixels
+        /// wide beside the box, as LabeledComboBox.WrapLabel does.
+        /// </summary>
+        public void WrapLabel(int width)
+        {
+            string[] words = m_label.Text.Replace("\n", " ").Split(' ');
+            var text = new StringBuilder();
+            string line = "";
+            foreach (string word in words)
+            {
+                string longer = line.Length == 0 ? word : line + " " + word;
+                if (line.Length > 0 && TextRenderer.MeasureText(longer, m_label.Font).Width > width)
+                {
+                    text.Append(line).Append('\n');
+                    line = word;
+                }
+                else
+                    line = longer;
+            }
+            m_label.Text = text.Append(line).ToString();
+        }
+
+        /// <summary>The box's width, for laying the label out beside it.</summary>
+        public int BoxWidth { get { return m_textBox.Width; } }
+
         private void OnTextBoxKeyUp(object sender, KeyEventArgs e)
         {
             int old = m_value;

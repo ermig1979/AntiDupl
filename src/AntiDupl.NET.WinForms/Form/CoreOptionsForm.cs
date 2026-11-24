@@ -53,6 +53,12 @@ namespace AntiDupl.NET.WinForms
         static private readonly Dictionary<int, double> THRESHOLD_DIFFERENCE_WIDE_BUTTERAUGLI =
             new Dictionary<int, double> { { 384, 11 }, { 512, 13 }, { 768, 15 }, { 1024, 16 } };
 
+        /// <summary>Whether an algorithm's differences are Butteraugli's scores.</summary>
+        static public bool IsButteraugli(AlgorithmComparing algorithm)
+        {
+            return algorithm == AlgorithmComparing.Butteraugli || algorithm == AlgorithmComparing.ButteraugliAligned;
+        }
+
         /// <summary>The highest threshold the lists offer for an algorithm.</summary>
         static public int ThresholdMax(AlgorithmComparing algorithm)
         {
@@ -60,7 +66,7 @@ namespace AntiDupl.NET.WinForms
                 return THRESHOLD_DIFFERENCE_MAX_SQUARED_SUM;
             if (algorithm == AlgorithmComparing.LocalColor)
                 return THRESHOLD_DIFFERENCE_MAX_LOCAL_COLOR;
-            if (algorithm == AlgorithmComparing.Butteraugli)
+            if (IsButteraugli(algorithm))
                 return THRESHOLD_DIFFERENCE_MAX_BUTTERAUGLI;
             return THRESHOLD_DIFFERENCE_MAX_SSIM;
         }
@@ -75,7 +81,7 @@ namespace AntiDupl.NET.WinForms
                 return THRESHOLD_DIFFERENCE_DEFAULT_SQUARED_SUM;
             if (algorithm == AlgorithmComparing.LocalColor)
                 return THRESHOLD_DIFFERENCE_DEFAULT_LOCAL_COLOR;
-            if (algorithm == AlgorithmComparing.Butteraugli)
+            if (IsButteraugli(algorithm))
             {
                 double threshold;
                 return THRESHOLD_DIFFERENCE_DEFAULT_BUTTERAUGLI.TryGetValue(butteraugliSize, out threshold) ? threshold :
@@ -90,7 +96,7 @@ namespace AntiDupl.NET.WinForms
         /// </summary>
         static public string ThresholdScale(AlgorithmComparing algorithm, int butteraugliSize)
         {
-            return algorithm == AlgorithmComparing.Butteraugli ? algorithm + " " + butteraugliSize : algorithm.ToString();
+            return IsButteraugli(algorithm) ? algorithm + " " + butteraugliSize : algorithm.ToString();
         }
 
         /// <summary>
@@ -114,7 +120,7 @@ namespace AntiDupl.NET.WinForms
         /// </summary>
         static public double[] ThresholdValues(AlgorithmComparing algorithm)
         {
-            if (algorithm != AlgorithmComparing.Butteraugli)
+            if (!IsButteraugli(algorithm))
                 return CoreCompareOptions.ThresholdSteps(ThresholdMax(algorithm));
             var steps = new List<double>();
             for (int i = 0; i <= 20; i++)
@@ -133,7 +139,7 @@ namespace AntiDupl.NET.WinForms
         /// </summary>
         static public void FillThresholds(ComboBox comboBox, AlgorithmComparing algorithm)
         {
-            string format = algorithm == AlgorithmComparing.Butteraugli ? "{0:0.##}" : "{0:0.##} %";
+            string format = IsButteraugli(algorithm) ? "{0:0.##}" : "{0:0.##} %";
             comboBox.Items.Clear();
             foreach (double value in ThresholdValues(algorithm))
                 comboBox.Items.Add(new LabeledComboBox.Value((int)Math.Round(value * 100), string.Format(format, value)));
@@ -160,8 +166,8 @@ namespace AntiDupl.NET.WinForms
         static public int IGNORE_FRAME_WIDTH_MAX = 12;
         static public int IGNORE_FRAME_WIDTH_STEP = 3;
         
-        static public int FORM_WIDTH = 450;
-        static public int FORM_HEIGHT = 515;
+        static public int FORM_WIDTH = 459;
+        static public int FORM_HEIGHT = 565;
         static public int COMBO_BOX_WIDTH = 65;
         static public int COMBO_BOX_HEIGHT = 20;
 
@@ -239,6 +245,8 @@ namespace AntiDupl.NET.WinForms
         private LabeledIntegerEdit m_resultCountMaxLabeledIntegerEdit;
         private LabeledComboBox m_ignoreFrameWidthLabeledComboBox;
         private CheckBox m_useLibJpegTurboCheckBox;
+        private LabeledComboBox m_alignedLevelLabeledComboBox;
+        private LabeledIntegerEdit m_alignedTimeLimitLabeledIntegerEdit;
 
         private TabPage m_highlightTabPage;
         private CheckBox m_highlightDifferenceCheckBox;
@@ -374,6 +382,7 @@ namespace AntiDupl.NET.WinForms
             m_algorithmComparingLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value(1, "SSIM"));
             m_algorithmComparingLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value((int)AlgorithmComparing.LocalColor, Resources.Strings.Current.CoreOptionsForm_AlgorithmComparingLabeledComboBox_LocalColor));
             m_algorithmComparingLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value((int)AlgorithmComparing.Butteraugli, Resources.Strings.Current.CoreOptionsForm_AlgorithmComparingLabeledComboBox_Butteraugli));
+            m_algorithmComparingLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value((int)AlgorithmComparing.ButteraugliAligned, Resources.Strings.Current.CoreOptionsForm_AlgorithmComparingLabeledComboBox_ButteraugliAligned));
             checkTableLayoutPanel.Controls.Add(m_algorithmComparingLabeledComboBox, 0, 6);
 
             m_thresholdDifferenceLabeledComboBox = new LabeledComboBox(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
@@ -526,7 +535,7 @@ namespace AntiDupl.NET.WinForms
             m_advancedTabPage = new TabPage();
             m_mainTabControl.Controls.Add(m_advancedTabPage);
 
-            TableLayoutPanel advancedTableLayoutPanel = InitFactory.Layout.Create(1, 13, 5);
+            TableLayoutPanel advancedTableLayoutPanel = InitFactory.Layout.Create(1, 15, 5);
             advancedTableLayoutPanel.AutoScroll = true;
             m_advancedTabPage.Controls.Add(advancedTableLayoutPanel);
 
@@ -582,8 +591,27 @@ namespace AntiDupl.NET.WinForms
             m_ignoreTransparentCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
             advancedTableLayoutPanel.Controls.Add(m_ignoreTransparentCheckBox, 0, 11);
 
+            m_alignedLevelLabeledComboBox = new LabeledComboBox(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
+            {
+                Strings s = Resources.Strings.Current;
+                string[] levels = { s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level1,
+                    s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level2, s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level3,
+                    s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level4 };
+                m_alignedLevelLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value(
+                    CoreCompareOptions.ALIGNED_LEVEL_AUTO, s.CoreOptionsForm_AlignedLevelLabeledComboBox_Auto));
+                for (int level = 1; level <= CoreCompareOptions.ALIGNED_LEVEL_COUNT; level++)
+                    m_alignedLevelLabeledComboBox.comboBox.Items.Add(new LabeledComboBox.Value(level, levels[level - 1]));
+            }
+            advancedTableLayoutPanel.Controls.Add(m_alignedLevelLabeledComboBox, 0, 12);
+
+            m_alignedTimeLimitLabeledIntegerEdit = new LabeledIntegerEdit(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
+            m_alignedTimeLimitLabeledIntegerEdit.Min = 0;
+            m_alignedTimeLimitLabeledIntegerEdit.Max = CoreCompareOptions.ALIGNED_TIME_LIMIT_MAX;
+            m_alignedTimeLimitLabeledIntegerEdit.Default = m_defaultCoreOptions.compareOptions.alignedTimeLimit;
+            advancedTableLayoutPanel.Controls.Add(m_alignedTimeLimitLabeledIntegerEdit, 0, 13);
+
             m_useLibJpegTurboCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            advancedTableLayoutPanel.Controls.Add(m_useLibJpegTurboCheckBox, 0, 12);
+            advancedTableLayoutPanel.Controls.Add(m_useLibJpegTurboCheckBox, 0, 14);
         }
 
         private void InitilizeHighlightTabPage()
@@ -758,6 +786,8 @@ namespace AntiDupl.NET.WinForms
             m_rememberThresholdsCheckBox.Checked = m_options.rememberThresholds;
             m_transparentAsShownCheckBox.Checked = m_newCoreOptions.compareOptions.transparentAsShown;
             m_ignoreTransparentCheckBox.Checked = m_newCoreOptions.compareOptions.ignoreTransparent;
+            m_alignedLevelLabeledComboBox.SelectedValue = m_newCoreOptions.compareOptions.alignedLevel;
+            m_alignedTimeLimitLabeledIntegerEdit.Value = m_newCoreOptions.compareOptions.alignedTimeLimit;
 
             m_checkOnDefectCheckBox.Checked = m_newCoreOptions.defectOptions.checkOnDefect;
             m_checkOnBlockinessCheckBox.Checked = m_newCoreOptions.defectOptions.checkOnBlockiness;
@@ -824,6 +854,8 @@ namespace AntiDupl.NET.WinForms
             m_newCoreOptions.compareOptions.skipHardlinks = m_skipHardlinksCheckBox.Checked;
             m_newCoreOptions.compareOptions.transparentAsShown = m_transparentAsShownCheckBox.Checked;
             m_newCoreOptions.compareOptions.ignoreTransparent = m_ignoreTransparentCheckBox.Checked;
+            m_newCoreOptions.compareOptions.alignedLevel = m_alignedLevelLabeledComboBox.SelectedValue;
+            m_newCoreOptions.compareOptions.alignedTimeLimit = m_alignedTimeLimitLabeledIntegerEdit.Value;
 
             m_newCoreOptions.defectOptions.checkOnDefect = m_checkOnDefectCheckBox.Checked;
             m_newCoreOptions.defectOptions.checkOnBlockiness = m_checkOnBlockinessCheckBox.Checked;
@@ -898,6 +930,10 @@ namespace AntiDupl.NET.WinForms
             m_rememberThresholdsCheckBox.Text = s.CoreOptionsForm_RememberThresholdsCheckBox_Text;
             m_transparentAsShownCheckBox.Text = s.CoreOptionsForm_TransparentAsShownCheckBox_Text;
             m_ignoreTransparentCheckBox.Text = s.CoreOptionsForm_IgnoreTransparentCheckBox_Text;
+            m_alignedLevelLabeledComboBox.Text = s.CoreOptionsForm_AlignedLevelLabeledComboBox_Text;
+            FitList(m_alignedLevelLabeledComboBox, true);
+            m_alignedTimeLimitLabeledIntegerEdit.Text = s.CoreOptionsForm_AlignedTimeLimitLabeledIntegerEdit_Text;
+            m_alignedTimeLimitLabeledIntegerEdit.WrapLabel(FORM_WIDTH - 45 - m_alignedTimeLimitLabeledIntegerEdit.BoxWidth);
 
             m_defectTabPage.Text = s.CoreOptionsForm_DefectTabPage_Text;
             m_checkOnDefectCheckBox.Text = s.CoreOptionsForm_CheckOnDefectCheckBox_Text;
@@ -1013,7 +1049,7 @@ namespace AntiDupl.NET.WinForms
               !m_newCoreOptions.compareOptions.sizeControl;
             m_thresholdDifferenceLabeledComboBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
             m_butteraugliSizeLabeledComboBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality &&
-              m_newCoreOptions.compareOptions.algorithmComparing == AlgorithmComparing.Butteraugli;
+              IsButteraugli(m_newCoreOptions.compareOptions.algorithmComparing);
             m_compareInsideOneFolderCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
             m_compareInsideOneSearchPathCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
             m_skipHardlinksCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
@@ -1022,6 +1058,10 @@ namespace AntiDupl.NET.WinForms
             // first option makes.
             m_ignoreTransparentCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality &&
               m_newCoreOptions.compareOptions.transparentAsShown;
+            // Their labels say they are the aligned search's: they can be
+            // set before choosing it.
+            m_alignedLevelLabeledComboBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
+            m_alignedTimeLimitLabeledIntegerEdit.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
 
             m_ratioResolutionLabeledComboBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality &&
               !m_newCoreOptions.compareOptions.sizeControl && m_newCoreOptions.compareOptions.ratioControl;
@@ -1050,7 +1090,7 @@ namespace AntiDupl.NET.WinForms
             AlgorithmComparing algorithm = (AlgorithmComparing)m_algorithmComparingLabeledComboBox.SelectedValue;
             int butteraugliSize = m_butteraugliSizeLabeledComboBox.SelectedValue;
             if (algorithm != m_thresholdAlgorithm ||
-                (algorithm == AlgorithmComparing.Butteraugli && butteraugliSize != m_thresholdButteraugliSize))
+                (IsButteraugli(algorithm) && butteraugliSize != m_thresholdButteraugliSize))
             {
                 double threshold = SwitchThreshold(m_options, m_rememberThresholdsCheckBox.Checked,
                     ThresholdScale(m_thresholdAlgorithm, m_thresholdButteraugliSize),
@@ -1058,7 +1098,7 @@ namespace AntiDupl.NET.WinForms
                 ShowThresholds(algorithm, butteraugliSize, threshold);
             }
 
-            m_thresholdHintLabel.Visible = algorithm == AlgorithmComparing.Butteraugli;
+            m_thresholdHintLabel.Visible = IsButteraugli(algorithm);
             m_thresholdHintLabel.Text = string.Format(Resources.Strings.Current.CoreOptionsForm_ThresholdHintLabel_Text,
                 ThresholdDefault(AlgorithmComparing.Butteraugli, butteraugliSize), THRESHOLD_DIFFERENCE_WIDE_BUTTERAUGLI[butteraugliSize]);
         }
@@ -1087,10 +1127,26 @@ namespace AntiDupl.NET.WinForms
         // label; the part that drops down always is.
         private void FitAlgorithmList()
         {
-            ComboBox list = m_algorithmComparingLabeledComboBox.comboBox;
+            FitList(m_algorithmComparingLabeledComboBox);
+        }
+
+        // With labelWraps, the list is as wide as its longest item, with
+        // LIST_TEXT_SLACK more so that the item's last letter isn't cut at
+        // the arrow, and the label wraps in the room left beside it.
+        public const int LIST_TEXT_SLACK = 3;
+
+        private static void FitList(LabeledComboBox labeled, bool labelWraps = false)
+        {
+            ComboBox list = labeled.comboBox;
             int widest = AlgorithmListWidth(list);
             list.DropDownWidth = widest;
-            int room = FORM_WIDTH - 45 - TextRenderer.MeasureText(m_algorithmComparingLabeledComboBox.Text, list.Font).Width;
+            if (labelWraps)
+            {
+                list.Width = Math.Max(COMBO_BOX_WIDTH + 115, widest + LIST_TEXT_SLACK);
+                labeled.WrapLabel(FORM_WIDTH - 45 - list.Width);
+                return;
+            }
+            int room = FORM_WIDTH - 45 - TextRenderer.MeasureText(labeled.Text, list.Font).Width;
             list.Width = Math.Max(COMBO_BOX_WIDTH + 115, Math.Min(widest, room));
         }
 

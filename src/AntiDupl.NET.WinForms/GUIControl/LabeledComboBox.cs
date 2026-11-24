@@ -56,6 +56,30 @@ namespace AntiDupl.NET.WinForms
             Controls.Add(m_label, 1, 0);
         }
 
+        /// <summary>
+        /// Breaks the label's text at spaces into lines at most width pixels
+        /// wide beside the list. Done here rather than by the label's
+        /// MaximumSize, with which an auto-sized label broke inside a word.
+        /// </summary>
+        public void WrapLabel(int width)
+        {
+            string[] words = m_label.Text.Replace("\n", " ").Split(' ');
+            var text = new StringBuilder();
+            string line = "";
+            foreach (string word in words)
+            {
+                string longer = line.Length == 0 ? word : line + " " + word;
+                if (line.Length > 0 && TextRenderer.MeasureText(longer, m_label.Font).Width > width)
+                {
+                    text.Append(line).Append('\n');
+                    line = word;
+                }
+                else
+                    line = longer;
+            }
+            m_label.Text = text.Append(line).ToString();
+        }
+
         public class Value : object
         {
             public int value;

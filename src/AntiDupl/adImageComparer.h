@@ -54,11 +54,14 @@ namespace ad
         Sets m_sets;
 
         TOptions *m_pOptions;
+        TResultStorage *m_pResult;
     public:
         TImageComparer(TEngine *pEngine);
         virtual ~TImageComparer();
 
         void Accept(TImageDataPtr pImageData, bool add);
+        // Called by the comparer's thread once its queue is done.
+        virtual void Finish() {}
 
     protected:
         virtual void Add(TImageDataPtr pImageData) = 0; // pure virtual or abstract function and requires to be overwritten in an derived class
@@ -133,7 +136,6 @@ namespace ad
         void CopyInfo(TImageData *pTo, TImageDataPtr pFrom);
         void MakeOpaquePart(TOpaquePart &part, TImageDataPtr pImageData, TImageDataPtr pBlack);
 
-        TResultStorage *m_pResult;
         TImageData *m_pTransformedImageData;
         TUInt8* m_pBuffer;
         // The over-black twin of each image with transparency in this
@@ -247,6 +249,9 @@ namespace ad
         virtual bool MaskedDifference(TImageDataPtr pFirst, const TOpaquePart *pFirstPart,
             TImageDataPtr pSecond, const TOpaquePart *pSecondPart, double *pDifference);
 
+        // Whether the options' filters let the pair through.
+        bool Comparable(TImageDataPtr pFirst, TImageDataPtr pSecond) const;
+
         // The pair's local colour difference in percent, or a negative value
         // when the options' filters leave it out or it is over the threshold.
         double LocalColorDifference(TImageDataPtr pFirst, TImageDataPtr pSecond) const;
@@ -275,12 +280,49 @@ namespace ad
         virtual void Compare(TImageDataPtr pOriginal, TImageDataPtr pTransformed, adTransformType transform);
         virtual bool IsDuplPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference);
 
-    private:
+        // The score of a pair local colour lets through, for the image being
+        // compared in its turn; negative when a file can't be decoded.
+        virtual double Score(TImageDataPtr pSecond);
+
         TButteraugliStore *m_pStore;
         // The image being compared and its turn: IsDuplPair gets the turned
         // copy of the reduced images, the store the image itself.
         TImageDataPtr m_pOriginal;
         adTransformType m_transform;
+    };
+    //-------------------------------------------------------------------------
+    // Butteraugli as above, and besides the pairs local colour finds, those
+    // that show the same picture framed differently, the case where every
+    // comparison point by point fails: a crop, a wider canvas, a copy shifted
+    // or slightly rescaled. The keypoint index picks the candidates and
+    // Butteraugli scores what the two have in common, laid over each other
+    // (TButteraugliStore::AlignedScore). Of the pairs local colour lets
+    // through, the ones that score badly get the same second look, so a
+    // pair's difference doesn't depend on which way it was found. Not for
+    // turned or mirrored images, whose keypoints don't match; their reduced
+    // images still pair them as in Butteraugli's search.
+    class TImageComparer_ButteraugliAligned : public TImageComparer_Butteraugli
+    {
+    public:
+        TImageComparer_ButteraugliAligned(TEngine *pEngine);
+
+    protected:
+    public:
+        // Each thread's own images meet their candidates in the whole index.
+        virtual void Finish();
+
+    protected:
+        // Called once per image, by the thread that owns it, where Compare
+        // runs on every thread for its share of the images: the image is
+        // queued for the keypoint index, and kept as this thread's own.
+        virtual void Add(TImageDataPtr pImageData);
+        virtual double Score(TImageDataPtr pSecond);
+
+    private:
+        bool IsAlignedPair(TImageDataPtr pFirst, TImageDataPtr pSecond, double *pDifference);
+
+        std::vector<TImageDataPtr> m_candidates;
+        std::vector<TImageDataPtr> m_own;
     };
     //-------------------------------------------------------------------------
     TImageComparer* CreateImageComparer(TEngine *pEngine);

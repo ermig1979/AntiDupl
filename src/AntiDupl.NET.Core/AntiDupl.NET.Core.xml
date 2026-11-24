@@ -33,6 +33,30 @@
             profile saved before the option existed.
             </summary>
         </member>
+        <member name="F:AntiDupl.NET.Core.CoreCompareOptions.alignedLevel">
+            <summary>
+            The aligned search's keypoint level, 1 to ALIGNED_LEVEL_COUNT, or
+            ALIGNED_LEVEL_AUTO for the highest that fits in the memory free
+            when the search starts and in alignedTimeLimit. Auto in a profile
+            saved before the option existed.
+            </summary>
+        </member>
+        <member name="F:AntiDupl.NET.Core.CoreCompareOptions.alignedTimeLimit">
+            <summary>
+            The minutes Auto aims to finish the aligned search in, by the
+            time it estimates as the search starts; 0 for no limit. The
+            core's default in a profile saved before the option existed.
+            </summary>
+        </member>
+        <member name="F:AntiDupl.NET.Core.CoreCompareOptions.ALIGNED_LEVEL_COUNT">
+            <summary>The core's ALIGN_LEVEL_COUNT.</summary>
+        </member>
+        <member name="F:AntiDupl.NET.Core.CoreCompareOptions.ALIGNED_TIME_LIMIT_DEFAULT">
+            <summary>The core's ALIGN_TIME_LIMIT_MINUTES.</summary>
+        </member>
+        <member name="F:AntiDupl.NET.Core.CoreCompareOptions.ALIGNED_TIME_LIMIT_MAX">
+            <summary>The core option's largest value.</summary>
+        </member>
         <member name="M:AntiDupl.NET.Core.CoreCompareOptions.ThresholdSteps(System.Int32)">
             <summary>
             The thresholds the option lists offer, up to max: quarters of a
@@ -41,6 +65,13 @@
         </member>
         <member name="M:AntiDupl.NET.Core.CoreCompareOptions.NearestThresholdStep(System.Double,System.Int32)">
             <summary>The listed threshold up to max nearest to the value.</summary>
+        </member>
+        <member name="M:AntiDupl.NET.Core.CoreLib.GetAlignedSearch">
+            <summary>
+            The aligned search's level, the memory and time behind it, and
+            its progress, as the running or last search chose and reached
+            them; null before it has chosen.
+            </summary>
         </member>
         <member name="M:AntiDupl.NET.Core.CoreLib.GetGroupSize">
             <summary>
@@ -112,6 +143,9 @@
         </member>
         <member name="F:AntiDupl.NET.Core.Enums.AlgorithmComparing.Butteraugli">
             <summary>Butteraugli's score on the pairs local colour finds within 10 % (core: AD_COMPARING_BUTTERAUGLI).</summary>
+        </member>
+        <member name="F:AntiDupl.NET.Core.Enums.AlgorithmComparing.ButteraugliAligned">
+            <summary>The same, and what a keypoint index finds, scored on the overlap once aligned: crops, new canvases, shifted or rescaled copies (core: AD_COMPARING_BUTTERAUGLI_ALIGNED).</summary>
         </member>
     </members>
 </doc>

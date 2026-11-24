@@ -35,6 +35,7 @@ namespace ad
     struct TPixelData; 
     class TEngine;
     class TResultStorage;
+    class TButteraugliStore;
 
     //-------------------------------------------------------------------------
     // Блочность на сером растре (алгоритм 1-в-1 с классическим пайплайном:
@@ -48,6 +49,7 @@ namespace ad
     {
         TOptions *m_pOptions;
         TResultStorage *m_pResult;
+        TButteraugliStore *m_pKeypointStore; // NULL when the search doesn't need keypoints
         std::vector<TView*> m_pGrayBuffers;
 
     public:
@@ -58,6 +60,7 @@ namespace ad
 
     private:
         void FillPixelData(TImageData* pImageData);
+        void FillKeypoints(TImageData* pImageData);
         void Reduce(const TView & gray, TUInt8 * main);
         void CheckOnDefect(TImageData* pImageData);
         void SetCrc32c(TImageData* pImageData);

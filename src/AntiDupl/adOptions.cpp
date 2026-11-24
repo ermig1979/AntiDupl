@@ -137,6 +137,8 @@ namespace ad
         m_options.push_back(TOption(&compare.skipHardlinks, TEXT("CompareOptions"), TEXT("SkipHardlinks"), TRUE, FALSE, TRUE));
         m_options.push_back(TOption(&compare.transparentAsShown, TEXT("CompareOptions"), TEXT("TransparentAsShown"), TRUE, FALSE, TRUE));
         m_options.push_back(TOption(&compare.ignoreTransparent, TEXT("CompareOptions"), TEXT("IgnoreTransparent"), FALSE, FALSE, TRUE));
+        m_options.push_back(TOption(&compare.alignedLevel, TEXT("CompareOptions"), TEXT("AlignedLevel"), 0, 0, TInt32(ALIGN_LEVEL_COUNT)));
+        m_options.push_back(TOption(&compare.alignedTimeLimit, TEXT("CompareOptions"), TEXT("AlignedTimeLimit"), ALIGN_TIME_LIMIT_MINUTES, 0, 1000000));
 
         m_options.push_back(TOption(&defect.checkOnDefect, TEXT("DefectOptions"), TEXT("CheckOnDefect"), TRUE, FALSE, TRUE));
         m_options.push_back(TOption(&defect.checkOnBlockiness, TEXT("DefectOptions"), TEXT("CheckOnBlockiness"), FALSE, FALSE, TRUE));
