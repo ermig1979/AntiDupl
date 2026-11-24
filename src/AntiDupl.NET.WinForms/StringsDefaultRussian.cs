@@ -104,6 +104,7 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_MinimalImageSizeLabeledIntegerEdit_Text = "Минимальная ширина/высота картинок";
             s.CoreOptionsForm_MaximalImageSizeLabeledIntegerEdit_Text = "Максимальная ширина/высота картинок";
             s.CoreOptionsForm_CompareInsideOneSearchPathCheckBox_Text = "Сравнивать картинки из одного пути поиска друг с другом";
+            s.CoreOptionsForm_RememberThresholdsCheckBox_Text = "Запоминать порог каждого алгоритма";
             s.CoreOptionsForm_SkipHardlinksCheckBox_Text = "Не сравнивать жесткие ссылки на один файл";
             s.CoreOptionsForm_CompareInsideOneFolderCheckBox_Text = "Сравнивать картинки внутри одного каталога";
 

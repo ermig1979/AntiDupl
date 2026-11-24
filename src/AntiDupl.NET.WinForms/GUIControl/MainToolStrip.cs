@@ -323,13 +323,17 @@ namespace AntiDupl.NET.WinForms
             m_coreOptions.compareOptions.algorithmComparing = algorithm;
             if (algorithm != m_thresholdAlgorithm)
             {
-                // Another algorithm brings its own range and starting
-                // threshold: the same percentage means different things to each.
+                // Another algorithm has its own range: the same percentage
+                // means different things to each. Each keeps the threshold
+                // last used with it, unless the user turned that off.
+                int size = m_coreOptions.compareOptions.butteraugliSize;
+                double threshold = CoreOptionsForm.SwitchThreshold(m_options, m_options.rememberThresholds,
+                    CoreOptionsForm.ThresholdScale(m_thresholdAlgorithm, size),
+                    m_coreOptions.compareOptions.thresholdDifference, algorithm, size);
                 m_settingItems = true;
                 FillThresholds(algorithm);
                 m_settingItems = false;
-                CoreOptionsForm.SelectThreshold(m_thresholdDifferenceComboBox.ComboBox,
-                    CoreOptionsForm.ThresholdDefault(algorithm, m_coreOptions.compareOptions.butteraugliSize));
+                CoreOptionsForm.SelectThreshold(m_thresholdDifferenceComboBox.ComboBox, threshold);
             }
         }
     }
