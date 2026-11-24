@@ -304,9 +304,10 @@ namespace AntiDupl.NET.WinForms
         }
 
         // Once the aligned search has chosen its level, a warning when its
-        // smallest crops need more time than the limit, then one when they
-        // need more memory than is free, shown once the first is closed
-        // without stopping the search; the search goes on meanwhile.
+        // smallest crops need more memory than is free, the risk nobody
+        // chose, then one when they need more time than the limit, shown
+        // once the first is closed without stopping the search; the search
+        // goes on meanwhile.
         private void CheckAlignedMemory()
         {
             if (m_alignedMemoryChecked)
@@ -316,21 +317,21 @@ namespace AntiDupl.NET.WinForms
                 return;
             m_alignedMemoryChecked = true;
             bool auto = m_coreOptions.compareOptions.alignedLevel == CoreCompareOptions.ALIGNED_LEVEL_AUTO;
-            bool memory = AlignedMemoryForm.Needed(search.Value);
-            if (AlignedMemoryForm.TimeNeeded(search.Value, auto))
+            bool time = AlignedMemoryForm.TimeNeeded(search.Value, auto);
+            if (AlignedMemoryForm.Needed(search.Value))
             {
-                AlignedMemoryForm time = new AlignedMemoryForm(search.Value, auto, () => OnStopButtonClick(null, null));
-                if (memory)
-                    time.FormClosed += (sender, e) => { if (!time.Stopped) ShowAlignedMemory(search.Value); };
-                ShowAligned(time);
+                AlignedMemoryForm memory = new AlignedMemoryForm(search.Value, () => OnStopButtonClick(null, null));
+                if (time)
+                    memory.FormClosed += (sender, e) => { if (!memory.Stopped) ShowAlignedTime(search.Value, auto); };
+                ShowAligned(memory);
             }
-            else if (memory)
-                ShowAlignedMemory(search.Value);
+            else if (time)
+                ShowAlignedTime(search.Value, auto);
         }
 
-        private void ShowAlignedMemory(CoreDll.adAlignedSearch search)
+        private void ShowAlignedTime(CoreDll.adAlignedSearch search, bool auto)
         {
-            ShowAligned(new AlignedMemoryForm(search, () => OnStopButtonClick(null, null)));
+            ShowAligned(new AlignedMemoryForm(search, auto, () => OnStopButtonClick(null, null)));
         }
 
         private void ShowAligned(AlignedMemoryForm form)
