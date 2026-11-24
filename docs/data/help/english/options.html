@@ -83,6 +83,7 @@ It can vary in the range from 0 to 15% for algorithm <b>'Mean square difference'
 For algorithm <b>'Perceptual (Butteraugli)'</b> this parameter is a score without a unit, from 0 to 50, <b>not</b> a percent difference between the two images.
 By default, this parameter is equal to 5% for algorithm <b>'Mean square difference'</b>, 20% for algorithm <b>'SSIM'</b> and 4% for algorithm <b>'Local colour difference'</b>.
 For algorithm <b>'Perceptual (Butteraugli)'</b> the default value changes depending on <b>Size Butteraugli compares at</b>, and beside the list are the two values worth using at that size: e.g. at 768 px, 12 finds copies and leaves out the other versions of a picture, and 15 finds the copies that 12 misses, but also some of those versions, so look at those results more closely.
+With <b>Remember the threshold of each algorithm</b> on (the default), each algorithm keeps the value last used with it, <b>'Perceptual (Butteraugli)'</b> and <b>'Aligned perceptual (crops, shifts)'</b> one for each size; an algorithm not used before starts at its default. With it off, switching the algorithm sets its default value.
 This parameter is duplicated on the <a href="index.html?page=toolbar.html" target="_top">Tool Bar</a>.
  </p></li>
  <li><p align="justify">

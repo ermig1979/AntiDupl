@@ -30,7 +30,6 @@
 #include "adEngine.h"
 #include "adPerformance.h"
 #include "adSearcher.h"
-#include <regex>
 
 namespace ad
 {
@@ -48,6 +47,7 @@ namespace ad
         AD_FUNCTION_PERFORMANCE_TEST;
         m_searchedImageSize = 0;
         InitExtensions();
+        m_pFilenameFilter = std::make_shared<TFilenameFilter>(m_pOptions->ignoreFilenameFilter);
         if(!m_extensions.empty())
         {
             for(size_t i = 0; i < m_pOptions->searchPaths.Size(); i++)
@@ -139,22 +139,7 @@ namespace ad
         {
             if(extension == m_extensions[i])
             {
-                // Check filename filter - only applies to files
-                if(!m_pOptions->ignoreFilenameFilter.empty())
-                {
-                    TString filename = GetFileName(path);
-                    try
-                    {
-                        std::wregex regex(m_pOptions->ignoreFilenameFilter);
-                        if(std::regex_match(filename, regex))
-                            return false; // File matches filter, reject it
-                    }
-                    catch(...)
-                    {
-                        // Invalid regex, ignore and accept file
-                    }
-                }
-                return true;
+                return !m_pFilenameFilter->Excludes(path);
             }
         }
         return false;
