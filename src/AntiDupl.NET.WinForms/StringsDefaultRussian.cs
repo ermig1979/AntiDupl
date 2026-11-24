@@ -131,7 +131,7 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_TransparentAsShownCheckBox_Text = "Улучшенное сравнение прозрачных картинок";
             s.CoreOptionsForm_IgnoreTransparentCheckBox_Text = "Игнорировать прозрачные области в обеих картинках";
             s.CoreOptionsForm_AlignedLevelLabeledComboBox_Text = "Мин. находимая обрезка (поиск с выравниванием)";
-            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Auto = "Авто: насколько позволяют память и время";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Auto = "Авто: ограничено памятью и временем";
             s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level1 = "1/10 картинки, 0,6 ГБ / 10\u202F000 файлов";
             s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level2 = "1/20 картинки, 1,1 ГБ / 10\u202F000 файлов";
             s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level3 = "1/50 картинки, 2,1 ГБ / 10\u202F000 файлов";
@@ -189,8 +189,8 @@ namespace AntiDupl.NET.WinForms
 
             s.SearchExecuterForm_Result = "Обработка результатов";
             s.SearchExecuterForm_Search = "Поиск";
-            s.SearchExecuterForm_AlignedPlan = "фрагменты от ~{0}, всего около {1}";
-            s.SearchExecuterForm_Aligning = "Поиск фрагментов от ~{0}: осталось около {1}";
+            s.SearchExecuterForm_AlignedPlan = "фрагменты от ~{0}, всего ~{1}";
+            s.SearchExecuterForm_Aligning = "Поиск фрагментов от ~{0}: осталось ~{1}";
             s.SearchExecuterForm_Stopped = "Остановка поиска";
             s.SearchExecuterForm_MinimizeToTaskbarButton_Text = "Свернуть";
             s.AlignedMemoryForm_Text = "Недостаточно памяти для самых малых фрагментов";
@@ -204,6 +204,16 @@ namespace AntiDupl.NET.WinForms
             s.AlignedMemoryForm_Choices = "Чтобы найти фрагменты меньше, можно:\n\u2022 дождаться конца поиска, просмотреть результаты, удалить или переместить файлы и повторить поиск с меньшим числом картинок;\n\u2022 остановить поиск и искать в меньшем числе папок за раз;\n\u2022 остановить поиск, закрыть другие программы, чтобы освободить память, и начать поиск заново.";
             s.AlignedMemoryForm_ChoicesForced = "Можно:\n\u2022 дождаться медленного окончания поиска;\n\u2022 остановить поиск и искать в меньшем числе папок за раз;\n\u2022 остановить поиск, закрыть другие программы, чтобы освободить память, и начать поиск заново;\n\u2022 остановить поиск, выбрать «Авто» в Опции > Дополнительные > Мин. находимая обрезка и начать поиск заново.";
             s.AlignedMemoryForm_ChoicesLowest = "Можно:\n\u2022 дождаться медленного окончания поиска;\n\u2022 остановить поиск и искать в меньшем числе папок за раз;\n\u2022 остановить поиск, закрыть другие программы, чтобы освободить память, и начать поиск заново.";
+            s.AlignedMemoryForm_TimeText = "Недостаточно времени для самых малых фрагментов";
+            s.AlignedMemoryForm_TimeNeeded = "Нужно времени: ~{0} (для наименьшего фрагмента ~{1}).";
+            s.AlignedMemoryForm_TimeNeededLowest = "Нужно времени: ~{0} (для самой лёгкой настройки: наименьший фрагмент ~{1}).";
+            s.AlignedMemoryForm_TimeLimit = "Лимит времени: {0} (Опции > Дополнительные > Лимит времени поиска с выравниванием).";
+            s.AlignedMemoryForm_TimeInstead = "Вместо этого ищутся фрагменты от ~{0} (нужно ~{1}).";
+            s.AlignedMemoryForm_TimeContinuesForced = "Поиск продолжится с вашей настройкой.";
+            s.AlignedMemoryForm_TimeContinuesLowest = "Поиск продолжится с самой лёгкой настройкой.";
+            s.AlignedMemoryForm_TimeChoices = "Чтобы найти фрагменты меньше, можно:\n\u2022 дождаться конца поиска, просмотреть результаты, удалить или переместить файлы и повторить поиск с меньшим числом картинок;\n\u2022 остановить поиск и искать в меньшем числе папок за раз;\n\u2022 остановить поиск, увеличить лимит времени и начать поиск заново.";
+            s.AlignedMemoryForm_TimeChoicesForced = "Можно:\n\u2022 дождаться окончания поиска;\n\u2022 остановить поиск и искать в меньшем числе папок за раз;\n\u2022 остановить поиск, выбрать «Авто» в Опции > Дополнительные > Мин. находимая обрезка и начать поиск заново.";
+            s.AlignedMemoryForm_TimeChoicesLowest = "Можно:\n\u2022 дождаться окончания поиска;\n\u2022 остановить поиск и искать в меньшем числе папок за раз.";
             s.AlignedMemoryForm_Gigabytes = "{0:0.0} ГБ";
             s.AlignedMemoryForm_StopButton_Text = "Остановить поиск";
             s.AlignedMemoryForm_CloseButton_Text = "Закрыть";

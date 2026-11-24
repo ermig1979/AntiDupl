@@ -284,6 +284,7 @@ namespace ad
         m_alignedSearch.freeBytes = room;
         m_alignedSearch.wantedSeconds = adUInt64(seconds[wanted - 1] + 0.5);
         m_alignedSearch.usedSeconds = adUInt64(seconds[used - 1] + 0.5);
+        m_alignedSearch.topSeconds = adUInt64(seconds[ALIGN_LEVEL_COUNT - 1] + 0.5);
         m_alignedSearch.limitSeconds = adUInt64(limit);
         m_alignedSearch.imageCount = imageCount;
     }

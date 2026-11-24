@@ -331,6 +331,7 @@ namespace AntiDupl.NET.Core.Original
             public ulong freeBytes;
             public ulong wantedSeconds;
             public ulong usedSeconds;
+            public ulong topSeconds;
             public ulong limitSeconds;
             public ulong imageCount;
             public ulong alignedImages;

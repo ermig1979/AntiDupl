@@ -304,19 +304,41 @@ namespace AntiDupl.NET.WinForms
         }
 
         // Once the aligned search has chosen its level, a warning when its
-        // smallest crops need more memory than is free; the search goes on.
+        // smallest crops need more time than the limit, then one when they
+        // need more memory than is free, shown once the first is closed
+        // without stopping the search; the search goes on meanwhile.
         private void CheckAlignedMemory()
         {
             if (m_alignedMemoryChecked)
                 return;
-            CoreDll.adAlignedSearch? memory = m_core.GetAlignedSearch();
-            if (memory == null)
+            CoreDll.adAlignedSearch? search = m_core.GetAlignedSearch();
+            if (search == null)
                 return;
             m_alignedMemoryChecked = true;
-            if (!AlignedMemoryForm.Needed(memory.Value))
-                return;
-            m_alignedMemoryForm = new AlignedMemoryForm(memory.Value, () => OnStopButtonClick(null, null));
-            m_alignedMemoryForm.Show(m_mainForm);
+            bool auto = m_coreOptions.compareOptions.alignedLevel == CoreCompareOptions.ALIGNED_LEVEL_AUTO;
+            bool memory = AlignedMemoryForm.Needed(search.Value);
+            if (AlignedMemoryForm.TimeNeeded(search.Value, auto))
+            {
+                AlignedMemoryForm time = new AlignedMemoryForm(search.Value, auto, () => OnStopButtonClick(null, null));
+                if (memory)
+                    time.FormClosed += (sender, e) => { if (!time.Stopped) ShowAlignedMemory(search.Value); };
+                ShowAligned(time);
+            }
+            else if (memory)
+                ShowAlignedMemory(search.Value);
+        }
+
+        private void ShowAlignedMemory(CoreDll.adAlignedSearch search)
+        {
+            ShowAligned(new AlignedMemoryForm(search, () => OnStopButtonClick(null, null)));
+        }
+
+        private void ShowAligned(AlignedMemoryForm form)
+        {
+            m_alignedMemoryForm = form;
+            if (m_state == State.Finish)
+                form.SearchEnded();
+            form.Show(m_mainForm);
         }
 
         private void OnStopButtonClick(Object obj, EventArgs eventArgs)

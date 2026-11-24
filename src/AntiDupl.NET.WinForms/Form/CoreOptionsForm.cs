@@ -1028,9 +1028,10 @@ namespace AntiDupl.NET.WinForms
             // first option makes.
             m_ignoreTransparentCheckBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality &&
               m_newCoreOptions.compareOptions.transparentAsShown;
-            m_alignedLevelLabeledComboBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality &&
-              m_newCoreOptions.compareOptions.algorithmComparing == AlgorithmComparing.ButteraugliAligned;
-            m_alignedTimeLimitLabeledIntegerEdit.Enabled = m_alignedLevelLabeledComboBox.Enabled;
+            // Their labels say they are the aligned search's: they can be
+            // set before choosing it.
+            m_alignedLevelLabeledComboBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
+            m_alignedTimeLimitLabeledIntegerEdit.Enabled = m_newCoreOptions.compareOptions.checkOnEquality;
 
             m_ratioResolutionLabeledComboBox.Enabled = m_newCoreOptions.compareOptions.checkOnEquality &&
               !m_newCoreOptions.compareOptions.sizeControl && m_newCoreOptions.compareOptions.ratioControl;

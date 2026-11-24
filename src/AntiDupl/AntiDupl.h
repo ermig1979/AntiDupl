@@ -456,6 +456,7 @@ extern "C"
         adUInt64 freeBytes; // what the search may use of the memory free at its start
         adUInt64 wantedSeconds; // the whole search's estimated time at the wanted level
         adUInt64 usedSeconds; // and at the used one
+        adUInt64 topSeconds; // and at the highest level, which finds the smallest crops
         adUInt64 limitSeconds; // the time limit, 0: none
         adUInt64 imageCount; // the images the estimates are for
         // Once every image's keypoints are in, the images aligned with all

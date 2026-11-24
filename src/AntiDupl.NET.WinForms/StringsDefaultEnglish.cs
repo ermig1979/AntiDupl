@@ -131,7 +131,7 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_TransparentAsShownCheckBox_Text = "Improve transparent image comparison";
             s.CoreOptionsForm_IgnoreTransparentCheckBox_Text = "Ignore areas with transparency in both images";
             s.CoreOptionsForm_AlignedLevelLabeledComboBox_Text = "Smallest findable crop (aligned search)";
-            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Auto = "Auto: as small as memory and time allow";
+            s.CoreOptionsForm_AlignedLevelLabeledComboBox_Auto = "Auto: limited by memory and time";
             s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level1 = "1/10 of image, 0.6 GB per 10k files";
             s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level2 = "1/20 of image, 1.1 GB per 10k files";
             s.CoreOptionsForm_AlignedLevelLabeledComboBox_Level3 = "1/50 of image, 2.1 GB per 10k files";
@@ -189,8 +189,8 @@ namespace AntiDupl.NET.WinForms
 
             s.SearchExecuterForm_Result = "Result processing";
             s.SearchExecuterForm_Search = "Search";
-            s.SearchExecuterForm_AlignedPlan = "crops down to ~{0}, about {1} in all";
-            s.SearchExecuterForm_Aligning = "Finding crops down to ~{0}: about {1} left";
+            s.SearchExecuterForm_AlignedPlan = "crops down to ~{0}, ~{1} total";
+            s.SearchExecuterForm_Aligning = "Finding crops down to ~{0}: ~{1} left";
             s.SearchExecuterForm_Stopped = "Stopping of search";
             s.SearchExecuterForm_MinimizeToTaskbarButton_Text = "Minimize";
             s.SearchExecuterForm_MinimizeToSystrayButton_Text = "Background Mode";
@@ -206,6 +206,16 @@ namespace AntiDupl.NET.WinForms
             s.AlignedMemoryForm_Choices = "To find the smaller crops, you can:\n\u2022 let this search finish, review results, delete or move files, then repeat this search with fewer images;\n\u2022 stop the search, then search fewer folders at a time;\n\u2022 stop the search, close other programs to free memory, then search again.";
             s.AlignedMemoryForm_ChoicesForced = "You can:\n\u2022 let this search finish slowly;\n\u2022 stop the search, then search fewer folders at a time;\n\u2022 stop the search, close other programs to free memory, then search again;\n\u2022 stop the search, set Options > Advanced > Smallest findable crop to Auto, then search again.";
             s.AlignedMemoryForm_ChoicesLowest = "You can:\n\u2022 let this search finish slowly;\n\u2022 stop the search, then search fewer folders at a time;\n\u2022 stop the search, close other programs to free memory, then search again.";
+            s.AlignedMemoryForm_TimeText = "Not enough time for the smallest crops";
+            s.AlignedMemoryForm_TimeNeeded = "Time needed: ~{0} (for minimum crop size ~{1}).";
+            s.AlignedMemoryForm_TimeNeededLowest = "Time needed: ~{0} (for lightest setting: minimum crop size ~{1}).";
+            s.AlignedMemoryForm_TimeLimit = "Time limit: {0} (Options > Advanced > Aligned search time limit).";
+            s.AlignedMemoryForm_TimeInstead = "Searching for minimum crop size ~{0} instead (~{1} needed).";
+            s.AlignedMemoryForm_TimeContinuesForced = "Search will continue at your setting.";
+            s.AlignedMemoryForm_TimeContinuesLowest = "Search will continue at the lightest setting.";
+            s.AlignedMemoryForm_TimeChoices = "To find the smaller crops, you can:\n\u2022 let this search finish, review results, delete or move files, then repeat this search with fewer images;\n\u2022 stop the search, then search fewer folders at a time;\n\u2022 stop the search, raise the time limit, then search again.";
+            s.AlignedMemoryForm_TimeChoicesForced = "You can:\n\u2022 let this search finish;\n\u2022 stop the search, then search fewer folders at a time;\n\u2022 stop the search, set Options > Advanced > Smallest findable crop to Auto, then search again.";
+            s.AlignedMemoryForm_TimeChoicesLowest = "You can:\n\u2022 let this search finish;\n\u2022 stop the search, then search fewer folders at a time.";
             s.AlignedMemoryForm_Gigabytes = "{0:0.0} GB";
             s.AlignedMemoryForm_StopButton_Text = "Stop search";
             s.AlignedMemoryForm_CloseButton_Text = "Close";

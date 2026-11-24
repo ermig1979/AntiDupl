@@ -209,6 +209,16 @@ namespace AntiDupl.NET.WinForms
         public string AlignedMemoryForm_Choices;
         public string AlignedMemoryForm_ChoicesForced;
         public string AlignedMemoryForm_ChoicesLowest;
+        public string AlignedMemoryForm_TimeText;
+        public string AlignedMemoryForm_TimeNeeded;
+        public string AlignedMemoryForm_TimeNeededLowest;
+        public string AlignedMemoryForm_TimeLimit;
+        public string AlignedMemoryForm_TimeInstead;
+        public string AlignedMemoryForm_TimeContinuesForced;
+        public string AlignedMemoryForm_TimeContinuesLowest;
+        public string AlignedMemoryForm_TimeChoices;
+        public string AlignedMemoryForm_TimeChoicesForced;
+        public string AlignedMemoryForm_TimeChoicesLowest;
         public string AlignedMemoryForm_Gigabytes;
         public string AlignedMemoryForm_StopButton_Text;
         public string AlignedMemoryForm_CloseButton_Text;

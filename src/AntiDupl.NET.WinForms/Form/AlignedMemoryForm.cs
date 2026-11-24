@@ -32,10 +32,9 @@ namespace AntiDupl.NET.WinForms
 {
     /// <summary>
     /// Says, as an aligned search starts, that its smallest crops need more
-    /// memory than is free, and what can be done. Not modal: the search goes
-    /// on while it is read, and it stays over the results until closed. The
-    /// time limit, which the user sets, lowers the level without a warning:
-    /// the search's progress line says the level and its time.
+    /// memory than is free, or more time than its limit, and what can be
+    /// done. Not modal: the search goes on while it is read, and it stays
+    /// over the results until closed.
     /// </summary>
     public class AlignedMemoryForm : Form
     {
@@ -45,6 +44,31 @@ namespace AntiDupl.NET.WinForms
         private Label m_label;
         private Button m_stopButton;
         private Button m_closeButton;
+
+        /// <summary>Whether its Stop button was pressed.</summary>
+        public bool Stopped { get; private set; }
+
+        /// <summary>
+        /// Whether the time limit is worth a warning: it held Auto below the
+        /// highest level, or even the lowest level, or a level set in the
+        /// options, takes longer than it.
+        /// </summary>
+        public static bool TimeNeeded(CoreDll.adAlignedSearch search, bool auto)
+        {
+            if (search.limitSeconds == 0)
+                return false;
+            if (auto)
+                return search.timeLevel < CoreCompareOptions.ALIGNED_LEVEL_COUNT || search.usedSeconds > search.limitSeconds;
+            return search.usedSeconds > search.limitSeconds;
+        }
+
+        public AlignedMemoryForm(CoreDll.adAlignedSearch search, bool auto, Action stop)
+        {
+            m_stop = stop;
+            InitializeComponent();
+            ThemeColors.Apply(this);
+            UpdateTimeStrings(search, auto);
+        }
 
         /// <summary>
         /// Whether the search's choice is worth a warning: memory held Auto
@@ -148,6 +172,43 @@ namespace AntiDupl.NET.WinForms
             m_label.Text = text;
         }
 
+        private void UpdateTimeStrings(CoreDll.adAlignedSearch search, bool auto)
+        {
+            Strings s = Resources.Strings.Current;
+            Text = s.AlignedMemoryForm_TimeText;
+            m_stopButton.Text = s.AlignedMemoryForm_StopButton_Text;
+            m_closeButton.Text = s.AlignedMemoryForm_CloseButton_Text;
+
+            string size = string.Format(s.AlignedMemoryForm_Size, search.imageCount);
+            string limit = string.Format(s.AlignedMemoryForm_TimeLimit, AlignedText.Duration(s, search.limitSeconds));
+            string text;
+            if (auto && search.timeLevel == 1 && search.used == 1 && search.usedSeconds > search.limitSeconds)
+            {
+                // Not even the lowest level is within the limit.
+                text = size + "\n" +
+                    string.Format(s.AlignedMemoryForm_TimeNeededLowest, AlignedText.Duration(s, search.usedSeconds), Level(s, 1)) + "\n" +
+                    limit + "\n" + s.AlignedMemoryForm_TimeContinuesLowest + "\n\n" + s.AlignedMemoryForm_TimeChoicesLowest;
+            }
+            else if (auto)
+            {
+                // Auto took the level the limit allows; "wanted" is that level.
+                text = size + "\n" +
+                    string.Format(s.AlignedMemoryForm_TimeNeeded, AlignedText.Duration(s, search.topSeconds),
+                        Level(s, CoreCompareOptions.ALIGNED_LEVEL_COUNT)) + "\n" +
+                    limit + "\n" +
+                    string.Format(s.AlignedMemoryForm_TimeInstead, Level(s, search.wanted), AlignedText.Duration(s, search.wantedSeconds)) +
+                    "\n\n" + s.AlignedMemoryForm_TimeChoices;
+            }
+            else
+            {
+                // A level set in the options, kept though it takes longer.
+                text = size + "\n" +
+                    string.Format(s.AlignedMemoryForm_TimeNeeded, AlignedText.Duration(s, search.usedSeconds), Level(s, search.used)) + "\n" +
+                    limit + "\n" + s.AlignedMemoryForm_TimeContinuesForced + "\n\n" + s.AlignedMemoryForm_TimeChoicesForced;
+            }
+            m_label.Text = text;
+        }
+
         /// <summary>Once the search has ended, there is nothing to stop.</summary>
         public void SearchEnded()
         {
@@ -156,6 +217,7 @@ namespace AntiDupl.NET.WinForms
 
         private void OnStopButtonClick(object sender, EventArgs e)
         {
+            Stopped = true;
             m_stop();
             m_stopButton.Enabled = false;
         }
