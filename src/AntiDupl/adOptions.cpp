@@ -155,6 +155,10 @@ namespace ad
         m_options.push_back(TOption(&advanced.resultCountMax, TEXT("AdvancedOptions"), TEXT("ResultCountMax"), 100000, 1, INT_MAX));
         m_options.push_back(TOption(&advanced.ignoreFrameWidth, TEXT("AdvancedOptions"), TEXT("IgnoreFrameWidth"), 0, 0, 12));
         m_options.push_back(TOption(&advanced.useLibJpegTurbo, TEXT("AdvancedOptions"), TEXT("UseLibJpegTurbo"), TRUE, FALSE, TRUE));
+        m_options.push_back(TOption(&advanced.butteraugliCacheSize, TEXT("AdvancedOptions"), TEXT("ButteraugliCacheSize"),
+            BUTTERAUGLI_CACHE_SIZE_DEFAULT, BUTTERAUGLI_CACHE_SIZE_MIN, BUTTERAUGLI_CACHE_SIZE_MAX));
+        m_options.push_back(TOption(&advanced.butteraugliCachePercent, TEXT("AdvancedOptions"), TEXT("ButteraugliCachePercent"),
+            BUTTERAUGLI_CACHE_PERCENT_DEFAULT, BUTTERAUGLI_CACHE_PERCENT_MIN, BUTTERAUGLI_CACHE_PERCENT_MAX));
 
         SetDefault();
     }

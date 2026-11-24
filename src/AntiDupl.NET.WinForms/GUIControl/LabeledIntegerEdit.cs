@@ -108,7 +108,8 @@ namespace AntiDupl.NET.WinForms
             m_textBox.Padding = new Padding(0, 0, 0, 0);
             m_textBox.Margin = new Padding(0, 0, 0, 0);
             m_textBox.Multiline = false;
-            m_textBox.KeyUp += new KeyEventHandler(OnTextBoxKeyUp);
+            m_textBox.TextChanged += new EventHandler(OnTextBoxTextChanged);
+            m_textBox.Leave += new EventHandler(OnTextBoxLeave);
             Controls.Add(ThemeColors.Framed(m_textBox), 0, 0);
 
             m_label = new System.Windows.Forms.Label();
@@ -117,28 +118,45 @@ namespace AntiDupl.NET.WinForms
             Controls.Add(m_label, 1, 0);
         }
 
-        private void OnTextBoxKeyUp(object sender, KeyEventArgs e)
+        // The number typed, without group separators ("16,384", "16.384",
+        // "16 384"); false when it isn't a whole number within range.
+        private bool TryParse(string text, out int value)
         {
-            int old = m_value;
-
-            try
+            StringBuilder digits = new StringBuilder();
+            foreach (char c in text.Trim())
             {
-                m_value = Convert.ToInt32(m_textBox.Text);
-                if (m_value > m_max || m_value < m_min)
-                {
-                    m_value = old;
-                }
+                if (c == ',' || c == '.' || c == '\'' || char.IsWhiteSpace(c))
+                    continue;
+                digits.Append(c);
             }
-            catch (System.Exception)
-            {
-                m_value = old;
-            }
+            return int.TryParse(digits.ToString(), System.Globalization.NumberStyles.AllowLeadingSign,
+                System.Globalization.CultureInfo.InvariantCulture, out value) && value >= m_min && value <= m_max;
+        }
 
-            if (old != m_value && m_valueChangedHandler != null)
-            {
+        // While typing or pasting, a valid number takes effect and the text
+        // stays as typed: an emptied or half-typed box isn't reset under the
+        // user's hands.
+        private void OnTextBoxTextChanged(object sender, EventArgs e)
+        {
+            int value;
+            if (!TryParse(m_textBox.Text, out value) || value == m_value)
+                return;
+            m_value = value;
+            if (m_valueChangedHandler != null)
                 m_valueChangedHandler(sender, e);
-            }
+        }
 
+        // On leaving, the text shows the value in effect: the number as
+        // written plainly, or the last valid one when the text isn't one.
+        private void OnTextBoxLeave(object sender, EventArgs e)
+        {
+            int value;
+            if (TryParse(m_textBox.Text, out value) && value != m_value)
+            {
+                m_value = value;
+                if (m_valueChangedHandler != null)
+                    m_valueChangedHandler(sender, e);
+            }
             m_textBox.Text = m_value.ToString();
         }
     }

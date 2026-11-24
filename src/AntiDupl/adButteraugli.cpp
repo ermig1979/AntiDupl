@@ -174,6 +174,7 @@ namespace ad
         : m_pOptions(pEngine->Options())
         , m_path(pEngine->UserPath() + TEXT("\\butteraugli.adp"))
         , m_imageBytes(0)
+        , m_cacheBytes(CacheBytes(pEngine->Options()))
         , m_changed(false)
     {
         static_assert(sizeof(TKey) == 40, "TKey is written to the file as it is");
@@ -220,6 +221,32 @@ namespace ad
         return score;
     }
 
+    // Whether Windows is short of physical memory: free under the smaller
+    // of BUTTERAUGLI_FREE_MEMORY_MIN and BUTTERAUGLI_FREE_MEMORY_SHARE of all.
+    static bool MemoryLow()
+    {
+        MEMORYSTATUSEX status;
+        status.dwLength = sizeof(status);
+        if (!::GlobalMemoryStatusEx(&status))
+            return false;
+        const TUInt64 floor = std::min<TUInt64>(BUTTERAUGLI_FREE_MEMORY_MIN, status.ullTotalPhys / 100 * BUTTERAUGLI_FREE_MEMORY_SHARE);
+        return status.ullAvailPhys < floor;
+    }
+
+    // The memory the images may take in this search: a share of the memory
+    // free now, and at most the limit in MB when there is one.
+    size_t TButteraugliStore::CacheBytes(const TOptions * pOptions)
+    {
+        MEMORYSTATUSEX status;
+        status.dwLength = sizeof(status);
+        TUInt64 bytes = TUInt64(BUTTERAUGLI_CACHE_SIZE_DEFAULT_FALLBACK) << 20;
+        if (::GlobalMemoryStatusEx(&status))
+            bytes = status.ullAvailPhys / 100 * pOptions->advanced.butteraugliCachePercent;
+        if (pOptions->advanced.butteraugliCacheSize > 0)
+            bytes = std::min<TUInt64>(bytes, TUInt64(pOptions->advanced.butteraugliCacheSize) << 20);
+        return size_t(bytes);
+    }
+
     TButteraugliStore::TWorkImagePtr TButteraugliStore::Image(TImageDataPtr pImageData)
     {
         TWorkImagePtr image;
@@ -251,7 +278,7 @@ namespace ad
         }
         // The two images of the pair being scored stay; the shared pointers
         // keep an evicted image alive while a thread still scores with it.
-        while (m_imageBytes > BUTTERAUGLI_IMAGE_CACHE_BYTES && m_uses.size() > 2)
+        while ((m_imageBytes > m_cacheBytes || MemoryLow()) && m_uses.size() > 2)
         {
             auto victim = m_images.find(m_uses.back());
             if (victim->second.image->counted)

@@ -131,6 +131,8 @@ namespace AntiDupl.NET.WinForms
             s.CoreOptionsForm_TransparentAsShownCheckBox_Text = "Improve transparent image comparison";
             s.CoreOptionsForm_IgnoreTransparentCheckBox_Text = "Ignore areas with transparency in both images";
             s.CoreOptionsForm_UseLibJpegTurboCheckBox_Text = "Use libjpeg-turbo";
+            s.CoreOptionsForm_ButteraugliCacheSizeLabeledIntegerEdit_Text = "RAM limit for Butteraugli's images, MB (0: none)";
+            s.CoreOptionsForm_ButteraugliCachePercentLabeledIntegerEdit_Text = "RAM for Butteraugli's images, % of free";
 
             s.CoreOptionsForm_HighlightTabPage_Text = "Highlight";
             s.CoreOptionsForm_HighlightDifferenceCheckBox_Text = "Highlight differences";

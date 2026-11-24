@@ -237,6 +237,8 @@ namespace AntiDupl.NET.WinForms
         private LabeledComboBox m_reducedImageSizeLabeledComboBox;
         private LabeledIntegerEdit m_undoQueueSizeLabeledIntegerEdit;
         private LabeledIntegerEdit m_resultCountMaxLabeledIntegerEdit;
+        private LabeledIntegerEdit m_butteraugliCacheSizeLabeledIntegerEdit;
+        private LabeledIntegerEdit m_butteraugliCachePercentLabeledIntegerEdit;
         private LabeledComboBox m_ignoreFrameWidthLabeledComboBox;
         private CheckBox m_useLibJpegTurboCheckBox;
 
@@ -526,7 +528,7 @@ namespace AntiDupl.NET.WinForms
             m_advancedTabPage = new TabPage();
             m_mainTabControl.Controls.Add(m_advancedTabPage);
 
-            TableLayoutPanel advancedTableLayoutPanel = InitFactory.Layout.Create(1, 13, 5);
+            TableLayoutPanel advancedTableLayoutPanel = InitFactory.Layout.Create(1, 15, 5);
             advancedTableLayoutPanel.AutoScroll = true;
             m_advancedTabPage.Controls.Add(advancedTableLayoutPanel);
 
@@ -573,17 +575,29 @@ namespace AntiDupl.NET.WinForms
             m_resultCountMaxLabeledIntegerEdit.Default = m_defaultCoreOptions.advancedOptions.resultCountMax;
             advancedTableLayoutPanel.Controls.Add(m_resultCountMaxLabeledIntegerEdit, 0, 8);
 
+            m_butteraugliCachePercentLabeledIntegerEdit = new LabeledIntegerEdit(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
+            m_butteraugliCachePercentLabeledIntegerEdit.Min = 1;
+            m_butteraugliCachePercentLabeledIntegerEdit.Max = 90;
+            m_butteraugliCachePercentLabeledIntegerEdit.Default = m_defaultCoreOptions.advancedOptions.butteraugliCachePercent;
+            advancedTableLayoutPanel.Controls.Add(m_butteraugliCachePercentLabeledIntegerEdit, 0, 9);
+
+            m_butteraugliCacheSizeLabeledIntegerEdit = new LabeledIntegerEdit(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
+            m_butteraugliCacheSizeLabeledIntegerEdit.Min = 0;
+            m_butteraugliCacheSizeLabeledIntegerEdit.Max = 99999;
+            m_butteraugliCacheSizeLabeledIntegerEdit.Default = m_defaultCoreOptions.advancedOptions.butteraugliCacheSize;
+            advancedTableLayoutPanel.Controls.Add(m_butteraugliCacheSizeLabeledIntegerEdit, 0, 10);
+
             m_ignoreFrameWidthLabeledComboBox = new LabeledComboBox(COMBO_BOX_WIDTH, COMBO_BOX_HEIGHT, OnOptionChanged);
-            advancedTableLayoutPanel.Controls.Add(m_ignoreFrameWidthLabeledComboBox, 0, 9);
+            advancedTableLayoutPanel.Controls.Add(m_ignoreFrameWidthLabeledComboBox, 0, 11);
 
             m_transparentAsShownCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            advancedTableLayoutPanel.Controls.Add(m_transparentAsShownCheckBox, 0, 10);
+            advancedTableLayoutPanel.Controls.Add(m_transparentAsShownCheckBox, 0, 12);
 
             m_ignoreTransparentCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            advancedTableLayoutPanel.Controls.Add(m_ignoreTransparentCheckBox, 0, 11);
+            advancedTableLayoutPanel.Controls.Add(m_ignoreTransparentCheckBox, 0, 13);
 
             m_useLibJpegTurboCheckBox = InitFactory.CheckBox.Create(OnOptionChanged);
-            advancedTableLayoutPanel.Controls.Add(m_useLibJpegTurboCheckBox, 0, 12);
+            advancedTableLayoutPanel.Controls.Add(m_useLibJpegTurboCheckBox, 0, 14);
         }
 
         private void InitilizeHighlightTabPage()
@@ -794,6 +808,8 @@ namespace AntiDupl.NET.WinForms
             m_reducedImageSizeLabeledComboBox.SelectedValue = m_newCoreOptions.advancedOptions.reducedImageSize;
             m_undoQueueSizeLabeledIntegerEdit.Value = m_newCoreOptions.advancedOptions.undoQueueSize;
             m_resultCountMaxLabeledIntegerEdit.Value = m_newCoreOptions.advancedOptions.resultCountMax;
+            m_butteraugliCacheSizeLabeledIntegerEdit.Value = m_newCoreOptions.advancedOptions.butteraugliCacheSize;
+            m_butteraugliCachePercentLabeledIntegerEdit.Value = m_newCoreOptions.advancedOptions.butteraugliCachePercent;
             m_ignoreFrameWidthLabeledComboBox.SelectedValue = m_newCoreOptions.advancedOptions.ignoreFrameWidth;
             m_useLibJpegTurboCheckBox.Checked = m_newCoreOptions.advancedOptions.useLibJpegTurbo;
 
@@ -860,6 +876,8 @@ namespace AntiDupl.NET.WinForms
             m_newCoreOptions.advancedOptions.reducedImageSize = m_reducedImageSizeLabeledComboBox.SelectedValue;
             m_newCoreOptions.advancedOptions.undoQueueSize = m_undoQueueSizeLabeledIntegerEdit.Value;
             m_newCoreOptions.advancedOptions.resultCountMax = m_resultCountMaxLabeledIntegerEdit.Value;
+            m_newCoreOptions.advancedOptions.butteraugliCacheSize = m_butteraugliCacheSizeLabeledIntegerEdit.Value;
+            m_newCoreOptions.advancedOptions.butteraugliCachePercent = m_butteraugliCachePercentLabeledIntegerEdit.Value;
             m_newCoreOptions.advancedOptions.ignoreFrameWidth = m_ignoreFrameWidthLabeledComboBox.SelectedValue;
             m_newCoreOptions.advancedOptions.useLibJpegTurbo = m_useLibJpegTurboCheckBox.Checked;
 
@@ -942,6 +960,8 @@ namespace AntiDupl.NET.WinForms
             m_resultCountMaxLabeledIntegerEdit.Text = s.CoreOptionsForm_ResultCountMaxLabeledIntegerEdit_Text;
             m_ignoreFrameWidthLabeledComboBox.Text = s.CoreOptionsForm_IgnoreFrameWidthLabeledComboBox_Text;
             m_useLibJpegTurboCheckBox.Text = s.CoreOptionsForm_UseLibJpegTurboCheckBox_Text;
+            m_butteraugliCacheSizeLabeledIntegerEdit.Text = s.CoreOptionsForm_ButteraugliCacheSizeLabeledIntegerEdit_Text;
+            m_butteraugliCachePercentLabeledIntegerEdit.Text = s.CoreOptionsForm_ButteraugliCachePercentLabeledIntegerEdit_Text;
 
             m_highlightTabPage.Text = s.CoreOptionsForm_HighlightTabPage_Text;
             m_highlightDifferenceCheckBox.Text = s.CoreOptionsForm_HighlightDifferenceCheckBox_Text;

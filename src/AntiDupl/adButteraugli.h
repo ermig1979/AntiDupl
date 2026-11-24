@@ -82,6 +82,7 @@ namespace ad
         };
 
         TWorkImagePtr Image(TImageDataPtr pImageData);
+        static size_t CacheBytes(const TOptions * pOptions);
         void Decode(TImageDataPtr pImageData, TWorkImage & image) const;
         double Compute(const TView & first, const TView & second, adTransformType transform) const;
         void Load();
@@ -93,6 +94,7 @@ namespace ad
         std::unordered_map<TImageDataPtr, TCached> m_images;
         std::list<TImageDataPtr> m_uses; // the most recently used first
         size_t m_imageBytes;
+        const size_t m_cacheBytes;
         std::unordered_map<TKey, double, TKeyHash> m_scores;
         bool m_changed;
     };

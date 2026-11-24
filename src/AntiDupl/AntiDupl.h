@@ -463,6 +463,8 @@ extern "C"
         adInt32 resultCountMax;        
         adInt32 ignoreFrameWidth;
         adBool useLibJpegTurbo;
+        adInt32 butteraugliCacheSize; // MB, 0 for no limit
+        adInt32 butteraugliCachePercent; // of the free memory
     };
     typedef adAdvancedOptions* adAdvancedOptionsPtr;
 
